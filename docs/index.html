@@ -120,6 +120,14 @@ a{color:inherit;text-decoration:none}
   color:var(--dim);
   margin-bottom:.75rem;
 }
+.card-body .folder{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;
+  color:var(--card-accent,var(--dim));
+  opacity:.7;
+  margin-bottom:.5rem;
+}
+.card-body .folder::before{content:'/';}
 .card-body p{
   color:var(--muted);
   font-size:.875rem;
@@ -178,6 +186,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Au</div>
     <div class="card-body">
       <h2>Aurora</h2>
+      <div class="folder">aurora</div>
       <div class="version">v1.0.0</div>
       <p>Dark + magenta-to-violet gradient + glow auras. A rebuild of the Maxreach SEO direction in pure PHP/CSS/JS.</p>
       <div class="tags">
@@ -191,6 +200,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Ba</div>
     <div class="card-body">
       <h2>Bauhaus</h2>
+      <div class="folder">bauhaus</div>
       <div class="version">v1.0.0</div>
       <p>Black + yellow + uppercase + wave contour lines. A rebuild of the Growla digital-agency direction in pure PHP/CSS/JS.</p>
       <div class="tags">
@@ -204,6 +214,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Co</div>
     <div class="card-body">
       <h2>Coterie</h2>
+      <div class="folder">Coterie</div>
       <div class="version">v1.0.0</div>
       <p>Warm cream + community red + soft cards. For member-led studios, co-ops and community magazines.</p>
       <div class="tags">
@@ -217,6 +228,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Ec</div>
     <div class="card-body">
       <h2>Eclipse</h2>
+      <div class="folder">eclipse</div>
       <div class="version">v1.0.0</div>
       <p>Dark + burnt orange moon + dotted grid background. A rebuild of the Pixelon creative-digital direction.</p>
       <div class="tags">
@@ -230,7 +242,8 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Ka</div>
     <div class="card-body">
       <h2>Kavithai — Relief</h2>
-      <div class="version">v2.1.0 &middot; JRPOETRY.com</div>
+      <div class="folder">JRPOETRY.com</div>
+      <div class="version">v2.1.0</div>
       <p>A calm, dignified Tamil poetry theme — South Asian Editorial direction. Relief letterforms, bilingual section heads, marginalia, drop caps, Tamil numerals. Designed for ease of reading at 75+.</p>
       <div class="tags">
         <span class="tag">poetry</span><span class="tag">tamil</span><span class="tag">editorial</span>
@@ -243,7 +256,8 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">M1</div>
     <div class="card-body">
       <h2>M1O Hub</h2>
-      <div class="version">v2.0.0 &middot; M1O.at</div>
+      <div class="folder">M1O.at</div>
+      <div class="version">v2.0.0</div>
       <p>Curated link hub. Terminal / DAW direction. Brutalist Architecture. Custom theme for m1o.at.</p>
       <div class="tags">
         <span class="tag">brutalist</span><span class="tag">terminal</span><span class="tag">link-hub</span>
@@ -256,6 +270,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Mo</div>
     <div class="card-body">
       <h2>Monolith</h2>
+      <div class="folder">monolith</div>
       <div class="version">v1.0.0</div>
       <p>Solid oxblood full-bleed + centered asterism + sparse type. A rebuild of the Geroz creative-portfolio direction.</p>
       <div class="tags">
@@ -269,7 +284,8 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">O1</div>
     <div class="card-body">
       <h2>on1.agency</h2>
-      <div class="version">v4.0.0 &middot; ON1.agency</div>
+      <div class="folder">ON!.agency</div>
+      <div class="version">v4.0.0</div>
       <p>A one-person digital atelier in Wien. Dark editorial design with a magenta accent. Full custom admin panel, no ACF dependency.</p>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">agency</span><span class="tag">editorial</span>
@@ -282,6 +298,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Or</div>
     <div class="card-body">
       <h2>Orbit</h2>
+      <div class="folder">orbit</div>
       <div class="version">v1.0.0</div>
       <p>Black + orange planet + massive AIM/SKY display. A rebuild of the Darkyn creative-agency direction. No page builder dependency.</p>
       <div class="tags">
@@ -295,6 +312,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">&gt;_</div>
     <div class="card-body">
       <h2>Phosphor</h2>
+      <div class="folder">phosphor</div>
       <div class="version">v1.0.0</div>
       <p>Pure black + phosphor green + JetBrains Mono. A brutalist terminal-style theme for musicians, hackers and tinkerers.</p>
       <div class="tags">
@@ -308,7 +326,8 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Rv</div>
     <div class="card-body">
       <h2>Catalogue Noir</h2>
-      <div class="version">v3.6.5 &middot; Raveenthiran.com</div>
+      <div class="folder">Raveenthiran.com</div>
+      <div class="version">v3.6.5</div>
       <p>Single-screen, no-scroll photography portfolio. Warm near-black canvas, bone-white type, one sodium-amber accent. Fullscreen hero with dot-constellation navigation and page-wipe transitions.</p>
       <div class="tags">
         <span class="tag">photography</span><span class="tag">no-scroll</span><span class="tag">editorial</span>
@@ -321,6 +340,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Rc</div>
     <div class="card-body">
       <h2>Catalogue Noir — Child</h2>
+      <div class="folder">Raveenthiran.com-child</div>
       <div class="version">v1.0.0</div>
       <p>Child theme for Catalogue Noir. Override templates, add CSS, register custom hooks — parent stays updatable.</p>
       <div class="tags">
@@ -334,6 +354,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Re</div>
     <div class="card-body">
       <h2>Revolt</h2>
+      <div class="folder">revolt</div>
       <div class="version">v1.0.0</div>
       <p>Dark + crimson red + heavy declarative display. A rebuild of the Gaudy creative-agency direction in pure PHP/CSS/JS.</p>
       <div class="tags">
@@ -347,6 +368,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Sa</div>
     <div class="card-body">
       <h2>Salon</h2>
+      <div class="folder">salon</div>
       <div class="version">v1.0.0</div>
       <p>Light cream + hot pink + serif italic accents. A rebuild of the Revolix digital-marketing direction in pure PHP/CSS/JS.</p>
       <div class="tags">
@@ -360,6 +382,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">Ta</div>
     <div class="card-body">
       <h2>Tableau</h2>
+      <div class="folder">tableau</div>
       <div class="version">v1.0.0</div>
       <p>Warm dark + amber + cinematic 21:9 hero. For photographers, art directors and image-led portfolios.</p>
       <div class="tags">
@@ -373,6 +396,7 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon" style="color:#f5f0e8">Ve</div>
     <div class="card-body">
       <h2>Verse</h2>
+      <div class="folder">Verse</div>
       <div class="version">v1.0.0</div>
       <p>Paper cream + oxblood + serif + asterism breaks. A quiet, dignified theme for poets, essayists and editorial publications.</p>
       <div class="tags">
@@ -386,7 +410,8 @@ a{color:inherit;text-decoration:none}
     <div class="card-icon">VP</div>
     <div class="card-body">
       <h2>VPG &middot; v2</h2>
-      <div class="version">v2.0.0 &middot; Viennaphotogroup.com</div>
+      <div class="folder">Viennaphotogroup.com</div>
+      <div class="version">v2.0.0</div>
       <p>Editorial community theme. Seven CPT archives, member dashboards, submission flows, PWA, monthly magazine PDF generator. Co-produced by Raveenthiran &amp; on1.agency.</p>
       <div class="tags">
         <span class="tag">editorial</span><span class="tag">community</span><span class="tag">magazine</span><span class="tag">photography</span>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M1O Hub — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../M1O.at/m1o-hub/style.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+
+/* Preview tab system */
+.preview-tabs{position:fixed;top:42px;left:0;right:0;z-index:9998;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.1);display:flex;gap:0;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+.preview-tabs button{background:none;border:none;color:rgba(255,255,255,.5);padding:.7rem 1.5rem;cursor:pointer;transition:color .15s,background .15s;font:inherit;letter-spacing:inherit;text-transform:inherit}
+.preview-tabs button:hover{color:#fff;background:rgba(255,255,255,.04)}
+.preview-tabs button.is-on{color:#00FF66;border-bottom:1px solid #00FF66}
+.tab-panel{display:none}
+.tab-panel.is-on{display:block}
+body>.systembar{top:76px}
+.page{padding-top:1rem}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">M1O Hub</span>
+</div>
+
+<div class="preview-tabs">
+    <button class="is-on" onclick="showTab('front')">Front Page</button>
+    <button onclick="showTab('footer')">Footer</button>
+</div>
+
+<!-- SYSTEM BAR -->
+<header class="systembar">
+    <span class="systembar__left">sys:online</span>
+    <span class="systembar__center">M1O<span style="color:var(--signal)">.</span>AT</span>
+    <span class="systembar__right">Wien &middot; 48.20&deg;N</span>
+</header>
+
+<!-- TAB: FRONT PAGE -->
+<div id="tab-front" class="tab-panel is-on">
+<main id="main" class="page">
+
+    <!-- IDENTITY -->
+    <header class="id">
+        <h1 class="id__name">M1O<span class="period">.</span></h1>
+        <p class="id__tagline">Design, code, and photo &mdash; compressed into one practice.<br>Studio hub for Nishuthan Raveenthiran.</p>
+        <div class="id__meta">
+            <span class="led">Available</span>
+            <span>Wien, Austria</span>
+            <span>est. 2018</span>
+        </div>
+    </header>
+
+    <!-- GROUP: WORK -->
+    <section class="group">
+        <div class="group__head">
+            <span class="label">// Work</span>
+            <span class="rule"></span>
+            <span class="count">04</span>
+        </div>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 01</span>
+            <div class="link__main">
+                <span class="link__title">on1.agency</span>
+                <span class="link__host">on1.agency</span>
+            </div>
+            <span class="link__status">Active</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 02</span>
+            <div class="link__main">
+                <span class="link__title">Raveenthiran Photography</span>
+                <span class="link__host">raveenthiran.com</span>
+            </div>
+            <span class="link__status">Active</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 03</span>
+            <div class="link__main">
+                <span class="link__title">Vienna Photo Group</span>
+                <span class="link__host">viennaphotogroup.com</span>
+            </div>
+            <span class="link__status link__status--current">Current</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 04</span>
+            <div class="link__main">
+                <span class="link__title">JR Poetry</span>
+                <span class="link__host">jrpoetry.com</span>
+            </div>
+            <span class="link__status link__status--mute">Idle</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+    </section>
+
+    <!-- GROUP: SOCIAL -->
+    <section class="group">
+        <div class="group__head">
+            <span class="label">// Social</span>
+            <span class="rule"></span>
+            <span class="count">03</span>
+        </div>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 05</span>
+            <div class="link__main">
+                <span class="link__title">GitHub</span>
+                <span class="link__host">github.com/m1o-studio</span>
+            </div>
+            <span class="link__status">Active</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 06</span>
+            <div class="link__main">
+                <span class="link__title">LinkedIn</span>
+                <span class="link__host">linkedin.com/in/nishuthan</span>
+            </div>
+            <span class="link__status link__status--mute">Idle</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 07</span>
+            <div class="link__main">
+                <span class="link__title">Instagram</span>
+                <span class="link__host">instagram.com/raveenthiran</span>
+            </div>
+            <span class="link__status link__status--live">Live</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+    </section>
+
+    <!-- GROUP: LABS -->
+    <section class="group">
+        <div class="group__head">
+            <span class="label">// Labs</span>
+            <span class="rule"></span>
+            <span class="count">02</span>
+        </div>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 08</span>
+            <div class="link__main">
+                <span class="link__title">Darkroom Presets</span>
+                <span class="link__host">m1o.at/presets</span>
+            </div>
+            <span class="link__status link__status--mute">Idle</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+            <span class="link__num">CH 09</span>
+            <div class="link__main">
+                <span class="link__title">WP Theme Lab</span>
+                <span class="link__host">m1o.at/lab</span>
+            </div>
+            <span class="link__status">Active</span>
+            <span class="link__arrow">&nearr;</span>
+        </a>
+    </section>
+
+    <!-- CTA -->
+    <a class="cta" href="mailto:hello@m1o.at">
+        <div>
+            <span class="cta__label">&#9654; Send a signal</span>
+            <span class="cta__main">hello@m1o.at</span>
+        </div>
+        <span class="cta__arrow">&rarr;</span>
+    </a>
+
+</main>
+</div>
+
+<!-- TAB: FOOTER -->
+<div id="tab-footer" class="tab-panel">
+<footer class="footer" style="margin-top:0">
+    <div class="footer__in">
+        <span>&copy; 2026 M1O<span class="signal">.</span> &middot; Wien, Austria &middot; All rights reserved</span>
+        <span class="footer__end"><span class="blink">_</span></span>
+    </div>
+</footer>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('is-on'));
+  document.querySelectorAll('.preview-tabs button').forEach(b=>b.classList.remove('is-on'));
+  document.getElementById('tab-'+id).classList.add('is-on');
+  event.target.classList.add('is-on');
+}
+</script>
+
+</body>
+</html>

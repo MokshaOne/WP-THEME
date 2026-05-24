@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raveenthiran Child Theme — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px;margin:0}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:#0B0C10;
+  color:#F2EFE9;
+  font-family:'Inter Tight',system-ui,sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+.child-page{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:4rem 2rem;
+  text-align:center;
+}
+.child-page__badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:rgba(242,160,61,.65);
+  margin-bottom:2rem;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.child-page__badge::before{
+  content:'';width:18px;height:1px;background:#F2A03D;
+}
+.child-page__title{
+  font-weight:300;
+  font-size:clamp(36px,5vw,64px);
+  letter-spacing:-.04em;
+  line-height:.92;
+  margin:0 0 1.5rem;
+}
+.child-page__title em{
+  font-weight:700;
+  font-style:normal;
+  letter-spacing:-.05em;
+}
+.child-page__desc{
+  font-size:15px;
+  color:rgba(242,239,233,.55);
+  max-width:48ch;
+  line-height:1.65;
+  margin:0 0 2.5rem;
+}
+.child-page__link{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 22px;
+  border:1px solid rgba(242,239,233,.14);
+  border-radius:999px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#F2EFE9;
+  text-decoration:none;
+  transition:all .3s cubic-bezier(.65,.05,.2,1);
+  position:relative;
+  overflow:hidden;
+}
+.child-page__link::before{
+  content:'';position:absolute;inset:0;background:#F2A03D;
+  transform:translateX(-101%);transition:transform .4s cubic-bezier(.65,.05,.2,1);z-index:0;
+  border-radius:999px;
+}
+.child-page__link:hover{border-color:#F2A03D;color:#0B0C10}
+.child-page__link:hover::before{transform:translateX(0)}
+.child-page__link span{position:relative;z-index:1}
+.child-page__dot{
+  width:6px;height:6px;border-radius:50%;background:#F2A03D;
+  box-shadow:0 0 0 4px rgba(242,160,61,.14);
+}
+.child-page__foot{
+  margin-top:4rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:rgba(242,239,233,.32);
+}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">Raveenthiran Child Theme</span>
+</div>
+
+<div class="child-page">
+    <span class="child-page__badge">Child Theme</span>
+    <h1 class="child-page__title">Catalogue <em>Noir</em></h1>
+    <p class="child-page__desc">
+        Child theme for the Catalogue Noir parent theme. Inherits all templates,
+        the fullscreen hero, dot navigation, and page-wipe transitions. Override
+        styles and templates here without touching the parent.
+    </p>
+    <a class="child-page__link" href="raveenthiran.html">
+        <span class="child-page__dot"></span>
+        <span>View parent theme</span>
+        <span>&#8594;</span>
+    </a>
+    <p class="child-page__foot">raveenthiran.com &middot; child theme &middot; v1.0</p>
+</div>
+
+</body>
+</html>

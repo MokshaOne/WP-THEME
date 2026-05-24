@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phosphor — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../phosphor/phosphor/assets/css/main.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+[data-skin-page]{display:none}
+[data-skin-page].is-active{display:block}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">&gt;_ Phosphor</span>
+</div>
+
+<main id="main" class="mo-main">
+
+<nav class="mo-nav">
+    <span class="mo-prompt">root@on1:~$</span>
+    <ul class="mo-nav__links"><li><a data-skin-link="home" class="is-active">./home</a></li><li><a data-skin-link="about">./about</a></li><li><a data-skin-link="work">./work</a></li><li><a data-skin-link="pricing">./pricing</a></li><li><a data-skin-link="faq">./faq</a></li><li><a data-skin-link="contact">./contact</a></li></ul>
+    <span class="mo-status">&#9679; ONLINE</span>
+</nav>
+<div data-skin-page="home" class="is-active">
+    <header class="mo-hero">
+        <pre class="mo-ascii">    &#9619;&#9619;&#9619;&#9619;&#9619;&#9619;&#9619;  &#9619;&#9619;    &#9619;&#9619;  &#9619;&#9619;&#9619;
+   &#9619;&#9619;     &#9619;&#9619; &#9619;&#9619;&#9619;   &#9619;&#9619;  &#9619;&#9619;&#9619;
+   &#9619;&#9619;     &#9619;&#9619; &#9619;&#9619; &#9619;&#9619; &#9619;&#9619;  &#9619;&#9619;&#9619;
+   &#9619;&#9619;     &#9619;&#9619; &#9619;&#9619;  &#9619;&#9619;&#9619;&#9619;  &#9619;&#9619;&#9619;
+    &#9619;&#9619;&#9619;&#9619;&#9619;&#9619;&#9619;  &#9619;&#9619;    &#9619;&#9619;  &#9619;&#9619;&#9619;</pre>
+        <p class="mo-tag">&gt; on1.agency &middot; v4.0.1 &middot; vienna &middot; 2026</p>
+        <h1 class="mo-hero__head">// digital atelier<br>// hand-coded since 2018</h1>
+        <pre class="mo-output">$ ls -la /sites
+total 14
+drwxr-xr-x  raveenthiran  2024  photography portfolio
+drwxr-xr-x  vpg           2023  community magazine
+drwxr-xr-x  m1o           2024  link hub
+drwxr-xr-x  jrpoetry      2024  tamil poetry
+drwxr-xr-x  katalog       2023  product catalogue
+drwxr-xr-x  modehaus      2022  fashion editorial
+$ _</pre>
+        <a class="mo-btn" data-skin-link="contact">[ START A PROJECT ]</a>
+    </header>
+    <section class="mo-stats"><div class="mo-stat"><h3>14+</h3><p>// sites_shipped</p></div><div class="mo-stat"><h3>72h</h3><p>// reply_window</p></div><div class="mo-stat"><h3>3mo</h3><p>// avg_engagement</p></div><div class="mo-stat"><h3>0</h3><p>// page_builders</p></div></section>
+    <section class="mo-services"><h2 class="mo-section-head">// services</h2><ul class="mo-service-list"><li><span>01</span> wordpress-development <span class="mo-arrow">&rarr;</span></li><li><span>02</span> editorial-design <span class="mo-arrow">&rarr;</span></li><li><span>03</span> brand-identity <span class="mo-arrow">&rarr;</span></li><li><span>04</span> design-systems <span class="mo-arrow">&rarr;</span></li><li><span>05</span> front-end-engineering <span class="mo-arrow">&rarr;</span></li></ul></section>
+    <footer class="mo-foot"><span>&copy; 2026 on1.agency</span><span>vienna &middot; UTC+1</span><span class="mo-prompt mo-blink">_</span></footer>
+</div>
+<div data-skin-page="about">
+    <header class="mo-hero"><p class="mo-tag">&gt; /about</p><h1 class="mo-hero__head">// founder<br>// nishuthan raveenthiran</h1><pre class="mo-output">$ whoami\nnishuthan@on1.agency\n$ uptime &middot; 8y &middot; 14 sites &middot; 0 page-builders</pre></header>
+    <section class="mo-services"><h2 class="mo-section-head">// principles</h2><ul class="mo-service-list"><li><span>01</span> quiet design is the most generous kind of work <span class="mo-arrow">&rarr;</span></li><li><span>02</span> one person responsible, start to ship <span class="mo-arrow">&rarr;</span></li><li><span>03</span> editorial over template <span class="mo-arrow">&rarr;</span></li><li><span>04</span> code that lasts a decade <span class="mo-arrow">&rarr;</span></li></ul></section>
+</div>
+<div data-skin-page="work">
+    <header class="mo-hero"><p class="mo-tag">&gt; /work</p><h1 class="mo-hero__head">$ ls /sites</h1></header>
+    <section class="mo-services"><ul class="mo-service-list"><li><span>2024</span> raveenthiran &middot; photography portfolio <span class="mo-arrow">&rarr;</span></li><li><span>2023</span> vpg &middot; community magazine <span class="mo-arrow">&rarr;</span></li><li><span>2024</span> m1o &middot; link hub <span class="mo-arrow">&rarr;</span></li><li><span>2024</span> jrpoetry &middot; tamil poetry <span class="mo-arrow">&rarr;</span></li><li><span>2023</span> katalog &middot; product catalogue <span class="mo-arrow">&rarr;</span></li><li><span>2022</span> modehaus &middot; fashion editorial <span class="mo-arrow">&rarr;</span></li></ul></section>
+</div>
+<div data-skin-page="pricing">
+    <header class="mo-hero"><p class="mo-tag">&gt; /pricing</p><h1 class="mo-hero__head">$ cat tiers.json</h1></header>
+    <section class="mo-services"><ul class="mo-service-list"><li><span>01</span> sprint &middot; &euro;2,400 &middot; one-page site in two weeks <span class="mo-arrow">&rarr;</span></li><li><span>02</span> standard &middot; &euro;4,800 &middot; full theme build in six weeks <span class="mo-arrow">&rarr;</span></li><li><span>03</span> retainer &middot; &euro;1,200/mo &middot; ongoing development &amp; design <span class="mo-arrow">&rarr;</span></li></ul></section>
+</div>
+<div data-skin-page="faq">
+    <header class="mo-hero"><p class="mo-tag">&gt; /faq</p><h1 class="mo-hero__head">$ man on1</h1></header>
+    <section class="mo-services"><ul class="mo-service-list"><li><span>01</span> do you use page builders? &middot; never. every theme is hand-coded php, css, vanilla js.</li><li><span>02</span> how long does a project take? &middot; two to six weeks depending on scope.</li><li><span>03</span> do you work with teams? &middot; solo practice. one person, start to ship.</li><li><span>04</span> what about hosting? &middot; any standard wordpress host. no exotic dependencies.</li><li><span>05</span> can i see previous work? &middot; check the work section or ask for a private walkthrough.</li></ul></section>
+</div>
+<div data-skin-page="contact">
+    <header class="mo-hero"><p class="mo-tag">&gt; /contact</p><h1 class="mo-hero__head">$ open brief</h1></header>
+    <section class="mo-services"><ul class="mo-service-list"><li><span>email</span> hello@on1.agency <span class="mo-arrow">&rarr;</span></li><li><span>loc</span> vienna &middot; utc+1 <span class="mo-arrow">&rarr;</span></li><li><span>reply</span> 72 hours <span class="mo-arrow">&rarr;</span></li><li><span>q3</span> booking open <span class="mo-arrow">&rarr;</span></li></ul></section>
+</div>
+
+</main>
+
+<script>
+(function(){
+  var pages=document.querySelectorAll('[data-skin-page]');
+  var links=document.querySelectorAll('[data-skin-link]');
+  function go(p){
+    pages.forEach(function(el){el.classList.toggle('is-active',el.getAttribute('data-skin-page')===p)});
+    links.forEach(function(a){a.classList.toggle('is-active',a.getAttribute('data-skin-link')===p)});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  links.forEach(function(a){a.style.cursor='pointer';a.addEventListener('click',function(e){e.preventDefault();go(a.getAttribute('data-skin-link'))})});
+})();
+</script>
+</body>
+</html>

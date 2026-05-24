@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salon — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../salon/salon/assets/css/main.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+[data-skin-page]{display:none}
+[data-skin-page].is-active{display:block}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">Salon</span>
+</div>
+
+<main id="main" class="rv-main">
+
+<nav class="rv-nav">
+    <a class="rv-nav__brand" data-skin-link="home">on1.</a>
+    <ul class="rv-nav__links"><li><a data-skin-link="home" class="is-active">home</a></li><li><a data-skin-link="about">about</a></li><li><a data-skin-link="work">projects</a></li><li><a data-skin-link="pricing">pricing</a></li><li><a data-skin-link="faq">faq</a></li><li><a data-skin-link="contact">contact</a></li></ul>
+    <a class="rv-nav__cta" data-skin-link="contact">let's talk &#8599;</a>
+</nav>
+<div data-skin-page="home" class="is-active">
+    <header class="rv-hero"><p class="rv-tag">start project</p><h1 class="rv-hero__head"><span class="rv-faint">where strategy</span><br>meets <em>creativity</em></h1>
+        <div class="rv-hero__stats"><div><strong>14+</strong><span>shipped projects</span></div><div><strong>50+</strong><span>happy clients</span></div><div><strong>72h</strong><span>reply window</span></div></div>
+        <div class="rv-hero__card"><p class="rv-faint">about us</p><p>A one-person Vienna atelier since 2018. We build editorial WordPress sites and design systems. Quiet design, hand-coded, no page builders.</p><div class="rv-rating">&#9733;&#9733;&#9733;&#9733;&#9733; <strong>4.9</strong> <span class="rv-faint">average rating from 500+ clients</span></div><a class="rv-pink-btn" data-skin-link="about">learn more</a></div>
+    </header>
+    <section class="rv-services"><span class="rv-faint">what we do</span><h2 class="rv-section-head">Empowering studios to grow online.</h2><div class="rv-service-grid"><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>wordpress development.</h3><p class="rv-faint">Bespoke themes built from blank canvas. No templates, no page builders.</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>editorial design.</h3><p class="rv-faint">Typography-first layouts for magazines, journals and long-form editorial.</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>brand identity.</h3><p class="rv-faint">Visual identity systems that translate seamlessly from screen to print.</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>design systems.</h3><p class="rv-faint">Token-based design systems with component libraries and documentation.</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>front-end engineering.</h3><p class="rv-faint">Clean, semantic HTML/CSS/JS. No frameworks, no build tools, no dependencies.</p></div></div></section>
+    <section class="rv-cta"><h2>talk to us.<br>let's unlock <em>your digital potential.</em></h2><a class="rv-pink-btn rv-pink-btn--lg" data-skin-link="contact">submit &#8599;</a></section>
+    <footer class="rv-foot"><h3 class="rv-foot__brand">on1.</h3><p>&copy;2026 on1.agency &middot; all rights reserved.</p></footer>
+</div>
+<div data-skin-page="about"><header class="rv-hero"><p class="rv-tag">founder</p><h1 class="rv-hero__head"><span class="rv-faint">about</span><br>nishuthan <em>raveenthiran</em></h1><div class="rv-hero__card"><p class="rv-faint">studio</p><p>A one-person Vienna atelier since 2018. Eight years building editorial WordPress sites and design systems.</p></div></header><section class="rv-services"><span class="rv-faint">principles</span><h2 class="rv-section-head">Four working <em>principles</em>.</h2><div class="rv-service-grid"><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>quiet.</h3><p class="rv-faint">Quiet design is the most generous kind of work</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>one.</h3><p class="rv-faint">One person responsible, start to ship</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>editorial.</h3><p class="rv-faint">Editorial over template</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>code.</h3><p class="rv-faint">Code that lasts a decade</p></div></div></section></div>
+<div data-skin-page="work"><header class="rv-hero"><p class="rv-tag">portfolio</p><h1 class="rv-hero__head"><span class="rv-faint">recent</span><br><em>projects.</em></h1></header><section class="rv-services"><div class="rv-service-grid"><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>Raveenthiran<br><span class="rv-faint" style="font-size:0.6em">2024</span></h3><p class="rv-faint">Photography portfolio</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>VPG<br><span class="rv-faint" style="font-size:0.6em">2023</span></h3><p class="rv-faint">Community magazine</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>M1O<br><span class="rv-faint" style="font-size:0.6em">2024</span></h3><p class="rv-faint">Link hub</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>JRPoetry<br><span class="rv-faint" style="font-size:0.6em">2024</span></h3><p class="rv-faint">Tamil poetry</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>Katalog<br><span class="rv-faint" style="font-size:0.6em">2023</span></h3><p class="rv-faint">Product catalogue</p></div><div class="rv-service"><span class="rv-arrow">&#8599;</span><h3>Modehaus<br><span class="rv-faint" style="font-size:0.6em">2022</span></h3><p class="rv-faint">Fashion editorial</p></div></div></section></div>
+<div data-skin-page="pricing"><header class="rv-hero"><p class="rv-tag">pricing</p><h1 class="rv-hero__head"><span class="rv-faint">three</span><br><em>engagements.</em></h1></header><section class="rv-services"><div class="rv-service-grid" style="grid-template-columns:repeat(3,1fr)"><div class="rv-service"><h3>sprint.<br><span style="color:#FF1F8C">&euro;2,400</span></h3><p class="rv-faint">One-page site in two weeks</p></div><div class="rv-service" style="background:#0F0F12;color:#fff;padding:1.5rem;border-radius:14px"><h3 style="color:#fff">standard.<br><span style="color:#FF1F8C">&euro;4,800</span></h3><p class="rv-faint" style="color:rgba(255,255,255,0.6)">Full theme build in six weeks</p></div><div class="rv-service"><h3>retainer.<br><span style="color:#FF1F8C">&euro;1,200/mo</span></h3><p class="rv-faint">Ongoing development &amp; design</p></div></div></section></div>
+<div data-skin-page="faq"><header class="rv-hero"><p class="rv-tag">faq</p><h1 class="rv-hero__head"><span class="rv-faint">common</span><br><em>questions.</em></h1></header><section class="rv-services"><div class="rv-service-grid"><div class="rv-service"><h3>do you use page builders?</h3><p class="rv-faint">Never. Every theme is hand-coded PHP, CSS, vanilla JS.</p></div><div class="rv-service"><h3>how long does a project take?</h3><p class="rv-faint">Two to six weeks depending on scope.</p></div><div class="rv-service"><h3>do you work with teams?</h3><p class="rv-faint">Solo practice. One person, start to ship.</p></div><div class="rv-service"><h3>what about hosting?</h3><p class="rv-faint">Any standard WordPress host. No exotic dependencies.</p></div><div class="rv-service"><h3>can i see previous work?</h3><p class="rv-faint">Check the work section or ask for a private walkthrough.</p></div></div></section></div>
+<div data-skin-page="contact"><header class="rv-hero"><p class="rv-tag">contact</p><h1 class="rv-hero__head"><span class="rv-faint">send a</span><br><em>brief.</em></h1></header><section class="rv-cta" style="border-radius:24px"><h2>let's unlock your <em>digital potential</em></h2><div class="rv-service-grid" style="grid-template-columns:repeat(4,1fr);max-width:900px;margin:2rem auto 0"><div><strong>@</strong><br><span class="rv-faint">hello@on1.agency</span></div><div><strong>&#128205;</strong><br><span class="rv-faint">wien &middot; utc+1</span></div><div><strong>&#9201;</strong><br><span class="rv-faint">72h response</span></div><div><strong>&#9889;</strong><br><span class="rv-faint">q3 slots open</span></div></div></section></div>
+
+</main>
+
+<script>
+(function(){
+  var pages=document.querySelectorAll('[data-skin-page]');
+  var links=document.querySelectorAll('[data-skin-link]');
+  function go(p){
+    pages.forEach(function(el){el.classList.toggle('is-active',el.getAttribute('data-skin-page')===p)});
+    links.forEach(function(a){a.classList.toggle('is-active',a.getAttribute('data-skin-link')===p)});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  links.forEach(function(a){a.style.cursor='pointer';a.addEventListener('click',function(e){e.preventDefault();go(a.getAttribute('data-skin-link'))})});
+})();
+</script>
+</body>
+</html>

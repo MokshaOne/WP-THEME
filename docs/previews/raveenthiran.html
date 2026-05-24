@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue Noir — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../Raveenthiran.com/raveenthiran-catalogue-noir/assets/css/theme.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+
+/* Override no-scroll for preview */
+html,body{height:auto;overflow:auto}
+body{cursor:auto;min-height:100vh}
+body::before,body::after{display:none}
+
+/* Preview tab system */
+.preview-tabs{position:fixed;top:42px;left:0;right:0;z-index:9998;background:var(--bg);border-bottom:1px solid var(--hair);display:flex;gap:0;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+.preview-tabs button{background:none;border:none;color:var(--ink-3);padding:.7rem 1.5rem;cursor:pointer;transition:color .15s,background .15s;font:inherit;letter-spacing:inherit;text-transform:inherit}
+.preview-tabs button:hover{color:var(--ink);background:rgba(242,160,61,.04)}
+.preview-tabs button.is-on{color:var(--amber);border-bottom:1px solid var(--amber)}
+.tab-panel{display:none}
+.tab-panel.is-on{display:block}
+
+/* Make hero non-fixed for preview */
+.nr-hero{position:relative;top:auto;right:auto;bottom:auto;left:auto;min-height:90vh}
+.nr-topbar{position:relative;top:auto}
+.nr-fullscreen{position:relative;top:auto;right:auto;bottom:auto;left:auto}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">Catalogue Noir</span>
+</div>
+
+<div class="preview-tabs">
+    <button class="is-on" onclick="showTab('hero')">Hero / Home</button>
+    <button onclick="showTab('topbar')">Top Bar</button>
+    <button onclick="showTab('components')">Components</button>
+</div>
+
+<!-- TAB: TOP BAR -->
+<div id="tab-topbar" class="tab-panel">
+<header class="nr-topbar">
+    <a class="nr-logo" href="#">Raveenthiran</a>
+    <nav class="nr-menu">
+        <ul>
+            <li><a href="#" aria-current="page">Portfolio</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Journal</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="nr-topbar-right">
+        <span class="nr-avail"><span class="nr-avail-dot"></span> Available</span>
+        <span class="nr-clock">14:32 CET</span>
+        <a class="nr-book" href="#"><span>Book</span><span>&rarr;</span></a>
+    </div>
+</header>
+<div style="padding:4rem var(--pad);text-align:center;color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase">
+    Top bar detail &middot; amber pulse dot &middot; tube lamp nav &middot; book CTA
+</div>
+</div>
+
+<!-- TAB: HERO -->
+<div id="tab-hero" class="tab-panel is-on">
+<header class="nr-topbar">
+    <a class="nr-logo" href="#">Raveenthiran</a>
+    <nav class="nr-menu">
+        <ul>
+            <li><a href="#" aria-current="page">Portfolio</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Journal</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="nr-topbar-right">
+        <span class="nr-avail"><span class="nr-avail-dot"></span> Available</span>
+        <a class="nr-book" href="#"><span>Book</span><span>&rarr;</span></a>
+    </div>
+</header>
+
+<section class="nr-page nr-hero" data-hero data-slides="6" data-i="0">
+
+    <div class="nr-hero__frame">
+        <span class="nr-reg tl"></span><span class="nr-reg tr"></span>
+        <span class="nr-reg bl"></span><span class="nr-reg br"></span>
+
+        <!-- Plate 1 (active) -->
+        <div class="nr-hero__plate is-active" data-slide="0" aria-hidden="false">
+            <div style="width:100%;height:100%;background:
+                radial-gradient(ellipse at 35% 40%, rgba(242,160,61,.12) 0%, transparent 50%),
+                linear-gradient(135deg, #1A1A20 0%, #0B0C10 100%);display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.22em;text-transform:uppercase">
+                Nachtdienst &middot; Plate 01
+            </div>
+            <div class="nr-hero__gradient"></div>
+        </div>
+
+        <div class="nr-hero__meta nr-hero__meta--tl">
+            <div><span class="tick"></span><b data-meta-cat>Editorial</b></div>
+            <div data-meta-loc>Wien &middot; 48.20&deg;N &middot; 16.36&deg;E</div>
+        </div>
+
+        <div class="nr-hero__meta nr-hero__meta--br">
+            <div><b data-meta-client>SZ Magazin</b> &middot; <span data-meta-year>2024</span></div>
+            <div>plate <b data-meta-plate>01</b> of 06 &middot; raveenthiran.com</div>
+        </div>
+
+        <div class="nr-hero__center">
+            <h1 class="nr-hero__title" data-hero-title>
+                <span class="nr-hero__word">Nacht</span>
+                <span class="nr-hero__word is-em">dienst</span>
+            </h1>
+            <div class="nr-hero__actions">
+                <a class="nr-btn" href="#" data-hero-link><span>View project</span> <span>&rarr;</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="nr-hero__bottom">
+        <div class="nr-hero__counter">
+            <span class="nr-hero__counter-n" data-hero-curr-big>01</span>
+            <span class="nr-hero__counter-total">of 06</span>
+            <span class="nr-hero__counter-meta">Featured work &middot; <span data-meta-year>2024</span></span>
+        </div>
+
+        <div class="nr-hero__thumbs" role="tablist" aria-label="Featured projects">
+            <button type="button" role="tab" data-hero-thumb="0" class="nr-hero__thumb is-on" aria-selected="true" aria-label="Nachtdienst"></button>
+            <button type="button" role="tab" data-hero-thumb="1" class="nr-hero__thumb" aria-selected="false" aria-label="A House in Mariahilf"></button>
+            <button type="button" role="tab" data-hero-thumb="2" class="nr-hero__thumb" aria-selected="false" aria-label="The Vienna Notebook"></button>
+            <button type="button" role="tab" data-hero-thumb="3" class="nr-hero__thumb" aria-selected="false" aria-label="Naschmarkt at Dawn"></button>
+            <button type="button" role="tab" data-hero-thumb="4" class="nr-hero__thumb" aria-selected="false" aria-label="Belvedere After Hours"></button>
+            <button type="button" role="tab" data-hero-thumb="5" class="nr-hero__thumb" aria-selected="false" aria-label="Rote Bar"></button>
+        </div>
+
+        <div class="nr-hero__nav">
+            <button type="button" class="nr-hero__arrow" data-hero-prev aria-label="Previous"><span>&larr;</span></button>
+            <button type="button" class="nr-hero__arrow" data-hero-next aria-label="Next"><span>&rarr;</span></button>
+        </div>
+    </div>
+
+</section>
+</div>
+
+<!-- TAB: COMPONENTS -->
+<div id="tab-components" class="tab-panel">
+<div style="max-width:960px;margin:0 auto;padding:4rem var(--pad)">
+
+    <!-- Eyebrow -->
+    <div style="margin-bottom:3rem">
+        <span class="nr-eyebrow">Featured Work</span>
+        <h2 class="nr-display nr-display--lg" style="margin-top:1rem">The Vienna <em>Notebook</em></h2>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem">
+        <a class="nr-btn" href="#"><span>View project</span> <span>&rarr;</span></a>
+        <a class="nr-btn nr-btn--primary" href="#"><span>Book now</span> <span>&rarr;</span></a>
+        <a class="nr-book" href="#"><span>Book</span><span>&rarr;</span></a>
+    </div>
+
+    <!-- Display type scale -->
+    <div style="margin-bottom:3rem;border-top:1px solid var(--hair);padding-top:3rem">
+        <span class="nr-eyebrow" style="margin-bottom:2rem">Type Scale</span>
+        <h1 class="nr-display nr-display--xl" style="margin-bottom:1rem">Nacht<em>dienst</em></h1>
+        <h2 class="nr-display nr-display--lg" style="margin-bottom:1rem">A House in <em>Mariahilf</em></h2>
+        <h3 class="nr-display nr-display--md">The Vienna <em>Notebook</em></h3>
+    </div>
+
+    <!-- Registration marks -->
+    <div style="margin-bottom:3rem;border-top:1px solid var(--hair);padding-top:3rem">
+        <span class="nr-eyebrow" style="margin-bottom:2rem">Registration Marks &amp; Dot Nav</span>
+        <div style="position:relative;height:200px;border:1px solid var(--hair);margin-top:2rem">
+            <span class="nr-reg tl"></span><span class="nr-reg tr"></span>
+            <span class="nr-reg bl"></span><span class="nr-reg br"></span>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)">
+                Frame with corner registration marks
+            </div>
+        </div>
+    </div>
+
+    <!-- Color palette -->
+    <div style="border-top:1px solid var(--hair);padding-top:3rem">
+        <span class="nr-eyebrow" style="margin-bottom:2rem">Palette</span>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-top:1.5rem">
+            <div>
+                <div style="height:80px;background:var(--bg);border:1px solid var(--hair);margin-bottom:.5rem"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)">bg #0B0C10</span>
+            </div>
+            <div>
+                <div style="height:80px;background:var(--bg-2);border:1px solid var(--hair);margin-bottom:.5rem"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)">bg-2 #13141A</span>
+            </div>
+            <div>
+                <div style="height:80px;background:var(--ink);margin-bottom:.5rem"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)">ink #F2EFE9</span>
+            </div>
+            <div>
+                <div style="height:80px;background:var(--amber);margin-bottom:.5rem"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)">amber #F2A03D</span>
+            </div>
+            <div>
+                <div style="height:80px;background:var(--hair);margin-bottom:.5rem"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)">hair / rules</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('is-on'));
+  document.querySelectorAll('.preview-tabs button').forEach(b=>b.classList.remove('is-on'));
+  document.getElementById('tab-'+id).classList.add('is-on');
+  event.target.classList.add('is-on');
+}
+</script>
+
+</body>
+</html>

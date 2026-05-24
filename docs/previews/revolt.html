@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revolt — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../revolt/revolt/assets/css/main.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+[data-skin-page]{display:none}
+[data-skin-page].is-active{display:block}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">Revolt</span>
+</div>
+
+<main id="main" class="gd-main">
+
+<nav class="gd-nav">
+    <a class="gd-nav__brand" data-skin-link="home">on1<span class="gd-r">.</span>agency</a>
+    <ul class="gd-nav__links"><li><a data-skin-link="home" class="gd-active is-active">Home</a></li><li><a data-skin-link="about">About</a></li><li><a data-skin-link="work">Work</a></li><li><a data-skin-link="pricing">Pricing</a></li><li><a data-skin-link="faq">FAQ</a></li><li><a data-skin-link="contact">Contact</a></li></ul>
+</nav>
+<div data-skin-page="home" class="is-active">
+    <header class="gd-hero"><h1 class="gd-hero__head"><span class="gd-r">We</span> Design,<br><span class="gd-r">We</span> Create,<br><span class="gd-r">We Are</span><br>One Studio<span class="gd-r">.</span></h1></header>
+    <section class="gd-cards"><div class="gd-card"><h3>Concept<br>Design</h3><p>Bespoke WordPress themes built from blank canvas. No templates, no page builders.</p></div><div class="gd-card gd-card--accent"><h3>Editorial<br>Design</h3><p>Typography-first layouts for magazines, journals and long-form editorial.</p></div><div class="gd-card"><h3>Brand<br>Identity</h3><p>Visual identity systems that translate seamlessly from screen to print.</p></div></section>
+    <section class="gd-story"><div class="gd-story__img"></div><div><p class="gd-eyebrow">&mdash; What we do for you</p><h2 class="gd-section-head">A little story about our studio</h2><p>A one-person Vienna atelier since 2018. We build editorial WordPress sites and design systems. Quiet design, hand-coded, no page builders.</p><a class="gd-btn gd-btn--accent" data-skin-link="about">LEARN MORE</a></div></section>
+    <footer class="gd-foot"><h3>on1<span class="gd-r">.</span>agency</h3><span>&copy;2026 &middot; WIEN</span></footer>
+</div>
+<div data-skin-page="about"><header class="gd-hero"><h1 class="gd-hero__head"><span class="gd-r">about</span><br>the studio<span class="gd-r">.</span></h1></header>
+    <section class="gd-cards"><div class="gd-card"><h3>Quiet Design</h3></div><div class="gd-card gd-card--accent"><h3>One Person Responsible</h3></div><div class="gd-card"><h3>Editorial Over Template</h3></div></section>
+</div>
+<div data-skin-page="work"><header class="gd-hero"><h1 class="gd-hero__head"><span class="gd-r">recent</span><br>works<span class="gd-r">.</span></h1></header>
+    <section class="gd-cards"><div class="gd-card"><h3>Raveenthiran</h3><p>Photography portfolio &middot; 2024</p></div><div class="gd-card gd-card--accent"><h3>VPG</h3><p>Community magazine &middot; 2023</p></div><div class="gd-card"><h3>M1O</h3><p>Link hub &middot; 2024</p></div></section>
+    <section class="gd-cards" style="margin-top:1rem"><div class="gd-card"><h3>JRPoetry</h3><p>Tamil poetry &middot; 2024</p></div><div class="gd-card"><h3>Katalog</h3><p>Product catalogue &middot; 2023</p></div><div class="gd-card"><h3>Modehaus</h3><p>Fashion editorial &middot; 2022</p></div></section>
+</div>
+<div data-skin-page="pricing"><header class="gd-hero"><h1 class="gd-hero__head"><span class="gd-r">three</span><br>engagements<span class="gd-r">.</span></h1></header>
+    <section class="gd-cards"><div class="gd-card"><h3>Sprint</h3><p style="color:#E5174A;font-size:2rem;font-weight:800;margin:0.5rem 0">&euro;2,400</p><p>One-page site in two weeks</p></div><div class="gd-card gd-card--accent"><h3>Standard</h3><p style="color:#E5174A;font-size:2rem;font-weight:800;margin:0.5rem 0">&euro;4,800</p><p>Full theme build in six weeks</p></div><div class="gd-card"><h3>Retainer</h3><p style="color:#E5174A;font-size:2rem;font-weight:800;margin:0.5rem 0">&euro;1,200/mo</p><p>Ongoing development &amp; design</p></div></section>
+</div>
+<div data-skin-page="faq"><header class="gd-hero"><h1 class="gd-hero__head"><span class="gd-r">frequently</span><br>asked<span class="gd-r">.</span></h1></header>
+    <section class="gd-cards"><div class="gd-card"><h3>Do you use page builders?</h3><p>Never. Every theme is hand-coded PHP, CSS, vanilla JS.</p></div><div class="gd-card gd-card--accent"><h3>How long does a project take?</h3><p>Two to six weeks depending on scope.</p></div><div class="gd-card"><h3>Do you work with teams?</h3><p>Solo practice. One person, start to ship.</p></div></section>
+</div>
+<div data-skin-page="contact"><header class="gd-hero"><h1 class="gd-hero__head"><span class="gd-r">send</span><br>a brief<span class="gd-r">.</span></h1></header>
+    <section class="gd-cards"><div class="gd-card"><h3>Email</h3><p>hello@on1.agency</p></div><div class="gd-card gd-card--accent"><h3>Location</h3><p>Wien &middot; UTC+1</p></div><div class="gd-card"><h3>Response</h3><p>72 hours</p></div></section>
+</div>
+
+</main>
+
+<script>
+(function(){
+  var pages=document.querySelectorAll('[data-skin-page]');
+  var links=document.querySelectorAll('[data-skin-link]');
+  function go(p){
+    pages.forEach(function(el){el.classList.toggle('is-active',el.getAttribute('data-skin-page')===p)});
+    links.forEach(function(a){a.classList.toggle('is-active',a.getAttribute('data-skin-link')===p)});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  links.forEach(function(a){a.style.cursor='pointer';a.addEventListener('click',function(e){e.preventDefault();go(a.getAttribute('data-skin-link'))})});
+})();
+</script>
+</body>
+</html>

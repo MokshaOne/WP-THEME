@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kavithai Tamil Poetry — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+Tamil:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../JRPOETRY.com/kavithai-modernized/style.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+
+/* Preview tab system */
+.preview-tabs{position:fixed;top:42px;left:0;right:0;z-index:9998;background:var(--paper-deep);border-bottom:1px solid var(--rule);display:flex;gap:0;font-family:var(--serif-la);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.preview-tabs button{background:none;border:none;color:var(--ink-mute);padding:.7rem 1.5rem;cursor:pointer;transition:color .2s,background .2s;font:inherit;letter-spacing:inherit;text-transform:inherit}
+.preview-tabs button:hover{color:var(--ink);background:rgba(139,90,15,.04)}
+.preview-tabs button.is-on{color:var(--oxblood);border-bottom:1px solid var(--oxblood)}
+.tab-panel{display:none}
+.tab-panel.is-on{display:block}
+.nav{top:76px}
+/* Relief positioning override for static preview */
+.relief{display:none}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">Kavithai Tamil Poetry</span>
+</div>
+
+<div class="preview-tabs">
+    <button class="is-on" onclick="showTab('hero')">Hero</button>
+    <button onclick="showTab('poem')">Featured Poem</button>
+    <button onclick="showTab('works')">Selected Works</button>
+    <button onclick="showTab('books')">Books</button>
+    <button onclick="showTab('awards')">Awards</button>
+    <button onclick="showTab('about')">About</button>
+</div>
+
+<!-- MASTHEAD -->
+<div class="masthead" style="position:relative;top:auto">
+    <span class="masthead__left">Kavithai &middot; Poetry</span>
+    <span class="masthead__center">&#2997;</span>
+    <span class="masthead__right">MMXXVI</span>
+</div>
+
+<!-- NAV -->
+<nav class="nav" style="position:relative;top:auto">
+    <div class="nav__in">
+        <div class="nav__seal">
+            <span class="seal">&#2997;</span>
+        </div>
+        <span class="nav__name">&#2997;&#3014;&#2993;&#3021;&#2993;&#3007;&#2970;&#3021;&#2970;&#3014;&#2994;&#3021;&#2997;&#3007; <span class="pen">&#9830;</span> <span class="la">Vetriselvi</span></span>
+        <ul class="nav__links">
+            <li><a href="#" class="is-current">&#2990;&#3009;&#2965;&#2986;&#3021;&#2986;&#3009;</a></li>
+            <li><a href="#">&#2965;&#2997;&#3007;&#2980;&#3016;&#2965;&#2995;&#3021;</a></li>
+            <li><a href="#">&#2984;&#3010;&#2994;&#3021;&#2965;&#2995;&#3021;</a></li>
+            <li><a href="#">&#2980;&#3018;&#2975;&#2992;&#3021;&#2986;&#3009;</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- TAB: HERO -->
+<div id="tab-hero" class="tab-panel is-on">
+<header class="hero" style="position:relative">
+    <div class="hero__text">
+        <div class="hero__above">
+            <p class="hero__honorific">
+                &#2965;&#2997;&#3007;&#2974;&#2992;&#3021; <span class="sep">&middot;</span> <span class="ta">&#2986;&#3006;&#2997;&#2994;&#2992;&#3021;&#2990;&#2979;&#3007;</span> <span class="sep">&middot;</span> Tamil Poet
+            </p>
+        </div>
+
+        <h1 class="hero__name">&#2997;&#3014;&#2993;&#3021;&#2993;&#3007;&#2970;&#3021;<br>&#2970;&#3014;&#2994;&#3021;&#2997;&#3007;</h1>
+
+        <p class="hero__birth">&#9670; &#2965;&#3009;&#2993;&#3009;&#2965;&#3009;&#2994;&#2990;&#3021;: &#2997;&#3014;&#2993;&#3021;&#2993;&#3007;&#2986;&#3009;&#2992;&#2990;&#3021;</p>
+
+        <span class="hero__rule"></span>
+
+        <p class="hero__intro">
+            &#2952;&#2996;&#2980;&#3021;&#2980;&#3007;&#2985;&#3021; &#2997;&#3015;&#2992;&#3021;&#2965;&#2995;&#3016;&#2970;&#3021; &#2970;&#3009;&#2990;&#2984;&#3021;&#2980;&#3009;,<br>
+            &#2949;&#2965;&#2997;&#2994;&#3021;&#2965;&#2995;&#3007;&#2994;&#3021; &#2980;&#2990;&#3007;&#2996;&#3021; &#2990;&#2992;&#2986;&#3016; &#2997;&#3006;&#2996;&#3021;&#2997;&#3007;&#2965;&#3021;&#2965;&#3007;&#2993;&#3015;&#2985;&#3021;.
+        </p>
+
+        <div class="hero__journey">
+            <span class="label">Born</span>
+            <span class="place">&#2949;&#2970;&#3021;&#2970;&#3009;&#2997;&#3015;&#2994;&#3007;, &#2991;&#3006;&#2996;&#3021;&#2986;&#3021;&#2986;&#3006;&#2979;&#2990;&#3021;</span>
+            <span class="label">Now</span>
+            <span class="place">Wien, Austria</span>
+            <span class="label">Form</span>
+            <span class="place">&#2949;&#2965;&#2997;&#2994;&#3021; &middot; classical akaval verse</span>
+        </div>
+    </div>
+
+    <div class="hero__portrait">
+        <div class="hero__portrait-empty"><span class="label">Portrait &middot; 3:5</span></div>
+        <span class="hero__portrait-caption">
+            <span>Wien, Austria</span>
+            <span class="la">MMXXIV</span>
+        </span>
+    </div>
+</header>
+</div>
+
+<!-- TAB: FEATURED POEM -->
+<div id="tab-poem" class="tab-panel">
+<div class="asterism asterism--break">* * *</div>
+<section class="featured" id="poem" style="position:relative">
+    <div class="featured__in">
+        <div class="eyebrow-bi">
+            <h3 class="eyebrow-bi__ta">&#2951;&#2985;&#3021;&#2993;&#3016;&#2991; &#2997;&#2992;&#3007;&#2965;&#2995;&#3021;</h3>
+            <p class="eyebrow-bi__la"><span>&mdash;</span> Today's Lines <span>&mdash;</span></p>
+        </div>
+
+        <h2 class="featured__title">&#2990;&#2979;&#3021;&#2979;&#3007;&#2985;&#3021; &#2990;&#2979;&#2990;&#3021;</h2>
+        <p class="featured__subtitle">Fragrance of the Earth</p>
+
+        <div class="poem-grid">
+            <aside class="poem-margin-left">
+                <span class="line"><span class="label">Written</span><span class="value">2023</span></span>
+                <span class="line"><span class="label">Place</span><span class="value">Wien</span></span>
+                <span class="line"><span class="label">For</span><span class="value">&#2980;&#2990;&#3007;&#2996;&#3021;&#2980;&#3021;&#2980;&#3006;&#2991;&#3021;</span></span>
+            </aside>
+
+            <div class="poem-body">
+                <p>
+                    <span class="dropcap">&#2990;&#2979;</span>&#3021;&#2979;&#3007;&#2985;&#3021; &#2990;&#2979;&#2990;&#3021; &#2980;&#3006;&#2985;&#3021;<br>
+                    &#2990;&#2996;&#3016;&#2991;&#3007;&#2994;&#3021; &#2997;&#3007;&#2996;&#3009;&#2990;&#3021; &#2949;&#2985;&#3021;&#2986;&#3007;&#2985;&#3021;<br>
+                    &#2970;&#3007;&#2993;&#3009;&#2990;&#2994;&#2992;&#3021; &#2965;&#3010;&#2975;&#3021;&#2975;&#2990;&#3021; &#2986;&#3019;&#2994;<br>
+                    &#2984;&#3014;&#2974;&#3021;&#2970;&#3007;&#2994;&#3021; &#2997;&#3006;&#2996;&#3009;&#2990;&#3021; &#2965;&#2985;&#2997;&#3009;
+                </p>
+                <p class="asterism asterism--stanza">&bull; &bull; &bull;</p>
+                <p>
+                    &#2965;&#3006;&#2994;&#2990;&#3021; &#2990;&#3006;&#2993;&#3007;&#2985;&#3009;&#2990;&#3021;<br>
+                    &#2965;&#2992;&#3009;&#2979;&#3016; &#2990;&#3006;&#2993;&#3006;&#2980;&#3009;<br>
+                    &#2980;&#2990;&#3007;&#2996;&#3007;&#2994;&#3021; &#2958;&#2985;&#3021; &#2990;&#3010;&#2970;&#3021;&#2970;&#3009;<br>
+                    &#2980;&#2975;&#3009;&#2990;&#3006;&#2993;&#3006;&#2980;&#3009; &#2958;&#2985;&#3021;&#2993;&#3009;&#2990;&#3021;
+                </p>
+                <p class="asterism asterism--stanza">&bull; &bull; &bull;</p>
+                <p>
+                    &#2965;&#2975;&#2994;&#3021; &#2965;&#2975;&#2984;&#3021;&#2980;&#3006;&#2994;&#3009;&#2990;&#3021;<br>
+                    &#2997;&#3015;&#2992;&#3021; &#2986;&#3007;&#2975;&#3007;&#2965;&#3021;&#2965;&#3009;&#2990;&#3021; &#2958;&#2985;&#3021;<br>
+                    &#2990;&#2992;&#2990;&#3021; &#2980;&#2985;&#3016;&#2980;&#3021;&#2980; &#2997;&#3006;&#2991;&#3021;&#2986;&#3021;&#2986;&#3006;&#2975;&#3009;<br>
+                    &#2990;&#2993;&#3016;&#2991;&#3006;&#2980;&#3009; &#2990;&#2979;&#2990;&#3015;
+                </p>
+            </div>
+        </div>
+
+        <div class="poem-end"><span class="seal seal--sm">&#2997;</span></div>
+        <div class="poem-footer">
+            <p class="poem-footer__cite"><span class="ta">&#2997;&#3014;&#2993;&#3021;&#2993;&#3007;&#2970;&#3021;&#2970;&#3014;&#2994;&#3021;&#2997;&#3007;</span><span class="la">, 2023</span></p>
+        </div>
+        <div class="poem-more">
+            <a href="#">&#2990;&#3009;&#2996;&#3009;&#2990;&#3016;&#2991;&#3006;&#2965; &#2986;&#2975;&#3007;&#2965;&#3021;&#2965; <span class="la">&rarr;</span></a>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- TAB: SELECTED WORKS -->
+<div id="tab-works" class="tab-panel">
+<div class="asterism asterism--break">* * *</div>
+<section class="toc-section" id="works">
+    <div class="eyebrow-bi">
+        <h3 class="eyebrow-bi__ta">&#2980;&#3015;&#2992;&#3021;&#2984;&#3021;&#2980; &#2986;&#2975;&#3016;&#2986;&#3021;&#2986;&#3009;&#2965;&#2995;&#3021;</h3>
+        <p class="eyebrow-bi__la"><span>&mdash;</span> Selected Works <span>&mdash;</span></p>
+    </div>
+
+    <ul class="toc">
+        <li class="toc__row">
+            <span class="toc__num">&#3047;</span>
+            <span class="toc__year">2024</span>
+            <span class="toc__title"><a href="#">&#2997;&#3007;&#2975;&#3007;&#2991;&#2994;&#3021; &#2965;&#3006;&#2993;&#3021;&#2993;&#3009;</a></span>
+            <span class="toc__first">&#2997;&#3007;&#2975;&#3007;&#2991;&#2994;&#3007;&#2985;&#3021; &#2965;&#3006;&#2993;&#3021;&#2993;&#3009; &#2997;&#3008;&#2970;&#3009;&#2990;&#3021; &#2986;&#3006;&#2975;&#2994;&#3021;&hellip;</span>
+        </li>
+        <li class="toc__row">
+            <span class="toc__num">&#3048;</span>
+            <span class="toc__year">2023</span>
+            <span class="toc__title"><a href="#">&#2949;&#2990;&#3021;&#2990;&#3006;&#2997;&#3007;&#2985;&#3021; &#2965;&#2979;&#3021;&#2965;&#2995;&#3021;</a></span>
+            <span class="toc__first">&#2949;&#2990;&#3021;&#2990;&#3006;&#2997;&#3007;&#2985;&#3021; &#2965;&#2979;&#3021;&#2965;&#2995;&#3007;&#2994;&#3021; &#2986;&#3006;&#2970;&#2990;&#3021;&hellip;</span>
+        </li>
+        <li class="toc__row">
+            <span class="toc__num">&#3049;</span>
+            <span class="toc__year">2022</span>
+            <span class="toc__title"><a href="#">&#2990;&#3009;&#2994;&#3021;&#2994;&#3016; &#2990;&#2994;&#2992;&#3021;</a></span>
+            <span class="toc__first">&#2980;&#3018;&#2975;&#3021;&#2975; &#2990;&#3009;&#2994;&#3021;&#2994;&#3016; &#2990;&#2994;&#2992;&#3021;&hellip;</span>
+        </li>
+        <li class="toc__row">
+            <span class="toc__num">&#3050;</span>
+            <span class="toc__year">2021</span>
+            <span class="toc__title"><a href="#">&#2986;&#2985;&#3007;&#2980;&#3021;&#2980;&#3009;&#2995;&#3007;</a></span>
+            <span class="toc__first">&#2986;&#2985;&#3007; &#2997;&#3007;&#2996;&#3009;&#2990;&#3021; &#2949;&#2980;&#3007;&#2965;&#3006;&#2994;&#3016;&hellip;</span>
+        </li>
+        <li class="toc__row">
+            <span class="toc__num">&#3051;</span>
+            <span class="toc__year">2020</span>
+            <span class="toc__title"><a href="#">&#2980;&#3006;&#2991;&#3021; &#2990;&#2979;&#3021;</a></span>
+            <span class="toc__first">&#2980;&#3006;&#2991;&#3021; &#2990;&#2979;&#3021;&#2979;&#3007;&#2985;&#3021; &#2990;&#2965;&#3007;&#2990;&#3016;&hellip;</span>
+        </li>
+        <li class="toc__row">
+            <span class="toc__num">&#3052;</span>
+            <span class="toc__year">2019</span>
+            <span class="toc__title"><a href="#">&#2965;&#3006;&#2994;&#2990;&#3021; &#2965;&#2975;&#2984;&#3021;&#2980; &#2986;&#3007;&#2985;&#3021;</a></span>
+            <span class="toc__first">&#2965;&#3006;&#2994;&#2990;&#3021; &#2965;&#2975;&#2965;&#3021;&#2965;&#3006;&#2980;&#3009; &#2958;&#2985;&#3021;&#2993;&#3009;&#2990;&#3021;&hellip;</span>
+        </li>
+    </ul>
+
+    <p style="text-align:center; margin-top:2.5rem;">
+        <a href="#" class="smallcaps" style="border-bottom:1px solid var(--rule); padding-bottom:4px;">&#2949;&#2985;&#3016;&#2980;&#3021;&#2980;&#3009; &#2965;&#2997;&#3007;&#2980;&#3016;&#2965;&#2995;&#3021; &rarr;</a>
+    </p>
+</section>
+</div>
+
+<!-- TAB: BOOKS -->
+<div id="tab-books" class="tab-panel">
+<div class="asterism asterism--break">* * *</div>
+<section class="books" id="books">
+    <div class="eyebrow-bi">
+        <h3 class="eyebrow-bi__ta">&#2984;&#3010;&#2994;&#3021;&#2965;&#2995;&#3021;</h3>
+        <p class="eyebrow-bi__la"><span>&mdash;</span> Published Works <span>&mdash;</span></p>
+    </div>
+
+    <div class="books__grid">
+        <a class="book" href="#">
+            <span class="book__num">&#3047;</span>
+            <div class="book__cover book__cover--plain">
+                <span class="book__cover-title">&#2990;&#2979;&#3021;&#2979;&#3007;&#2985;&#3021; &#2990;&#2979;&#2990;&#3021;</span>
+            </div>
+            <h3 class="book__title">&#2990;&#2979;&#3021;&#2979;&#3007;&#2985;&#3021; &#2990;&#2979;&#2990;&#3021;</h3>
+            <p class="book__meta"><span class="la">2022</span><span class="dot">&middot;</span>Poetry</p>
+        </a>
+
+        <a class="book" href="#">
+            <span class="book__num">&#3048;</span>
+            <div class="book__cover book__cover--photo">
+                <span class="book__cover-title">&#2997;&#3015;&#2992;&#3021;&#2965;&#2995;&#3007;&#2985;&#3021; &#2965;&#3009;&#2992;&#2994;&#3021;</span>
+            </div>
+            <h3 class="book__title">&#2997;&#3015;&#2992;&#3021;&#2965;&#2995;&#3007;&#2985;&#3021; &#2965;&#3009;&#2992;&#2994;&#3021;</h3>
+            <p class="book__meta"><span class="la">2020</span><span class="dot">&middot;</span>Poetry</p>
+        </a>
+
+        <a class="book" href="#">
+            <span class="book__num">&#3049;</span>
+            <div class="book__cover book__cover--plain">
+                <span class="book__cover-title">&#2986;&#2985;&#3007;&#2980;&#3021;&#2980;&#3009;&#2995;&#3007;&#2965;&#2995;&#3021;</span>
+            </div>
+            <h3 class="book__title">&#2986;&#2985;&#3007;&#2980;&#3021;&#2980;&#3009;&#2995;&#3007;&#2965;&#2995;&#3021;</h3>
+            <p class="book__meta"><span class="la">2018</span><span class="dot">&middot;</span>Stories</p>
+        </a>
+
+        <a class="book" href="#">
+            <span class="book__num">&#3050;</span>
+            <div class="book__cover book__cover--photo">
+                <span class="book__cover-title">&#2965;&#3006;&#2994;&#2990;&#3021; &#2986;&#3015;&#2970;&#3009;&#2990;&#3021;</span>
+            </div>
+            <h3 class="book__title">&#2965;&#3006;&#2994;&#2990;&#3021; &#2986;&#3015;&#2970;&#3009;&#2990;&#3021;</h3>
+            <p class="book__meta"><span class="la">2016</span><span class="dot">&middot;</span>Essays</p>
+        </a>
+
+        <a class="book" href="#">
+            <span class="book__num">&#3051;</span>
+            <div class="book__cover book__cover--plain">
+                <span class="book__cover-title">&#2949;&#2965;&#2997;&#2994;&#3021; &#2997;&#2996;&#3007;</span>
+            </div>
+            <h3 class="book__title">&#2949;&#2965;&#2997;&#2994;&#3021; &#2997;&#2996;&#3007;</h3>
+            <p class="book__meta"><span class="la">2014</span><span class="dot">&middot;</span>Poetry</p>
+        </a>
+
+        <a class="book" href="#">
+            <span class="book__num">&#3052;</span>
+            <div class="book__cover book__cover--photo">
+                <span class="book__cover-title">&#2990;&#3009;&#2980;&#2994;&#3021; &#2980;&#3010;&#2993;&#2994;&#3021;</span>
+            </div>
+            <h3 class="book__title">&#2990;&#3009;&#2980;&#2994;&#3021; &#2980;&#3010;&#2993;&#2994;&#3021;</h3>
+            <p class="book__meta"><span class="la">2012</span><span class="dot">&middot;</span>Poetry</p>
+        </a>
+    </div>
+</section>
+</div>
+
+<!-- TAB: AWARDS -->
+<div id="tab-awards" class="tab-panel">
+<div class="asterism asterism--break">* * *</div>
+<section class="awards" id="awards">
+    <div class="eyebrow-bi">
+        <h3 class="eyebrow-bi__ta">&#2997;&#3007;&#2992;&#3009;&#2980;&#3009;&#2965;&#2995;&#3021;</h3>
+        <p class="eyebrow-bi__la"><span>&mdash;</span> Honours &amp; Recognition <span>&mdash;</span></p>
+    </div>
+
+    <ul class="awards__list">
+        <li class="award">
+            <span class="award__year">2023</span>
+            <span class="award__name">&#2986;&#3006;&#2997;&#2994;&#2992;&#3021;&#2990;&#2979;&#3007; &#2997;&#3007;&#2992;&#3009;&#2980;&#3009;</span>
+            <span class="award__org">&#2980;&#2990;&#3007;&#2996;&#3021; &#2951;&#2994;&#2965;&#3021;&#2965;&#3007;&#2991; &#2965;&#2996;&#2965;&#2990;&#3021;</span>
+        </li>
+        <li class="award">
+            <span class="award__year">2021</span>
+            <span class="award__name">&#2970;&#3007;&#2993;&#2984;&#3021;&#2980; &#2965;&#2997;&#3007;&#2974;&#2992;&#3021; &#2949;&#2997;&#3006;&#2992;&#3021;&#2975;&#3021;</span>
+            <span class="award__org">&#2991;&#3006;&#2996;&#3021;&#2986;&#3021;&#2986;&#3006;&#2979; &#2980;&#2990;&#3007;&#2996;&#3021;&#2970;&#3021; &#2970;&#2969;&#3021;&#2965;&#2990;&#3021;</span>
+        </li>
+        <li class="award">
+            <span class="award__year">2019</span>
+            <span class="award__name">&#2970;&#3006;&#2965;&#3007;&#2980;&#3021;&#2991; &#2986;&#2992;&#3007;&#2970;&#3009; &#2997;&#3007;&#2992;&#3009;&#2980;&#3009;</span>
+            <span class="award__org">&#2949;&#2965;&#3007;&#2994; &#2951;&#2994;&#2969;&#3021;&#2965;&#3016; &#2980;&#2990;&#3007;&#2996;&#3021;&#2970;&#3021; &#2970;&#2969;&#3021;&#2965;&#2990;&#3021;</span>
+        </li>
+        <li class="award">
+            <span class="award__year">2017</span>
+            <span class="award__name">&#2965;&#2997;&#3007;&#2990;&#3006;&#2990;&#2979;&#3007; &#2997;&#3007;&#2992;&#3009;&#2980;&#3009;</span>
+            <span class="award__org">&#2958;&#2996;&#3009;&#2980;&#3021;&#2980;&#2990;&#3007;&#2996;&#3021;&#2970;&#3021; &#2970;&#2969;&#3021;&#2965;&#2990;&#3021;</span>
+        </li>
+        <li class="award">
+            <span class="award__year">2015</span>
+            <span class="award__name">&#2990;&#2965;&#3006;&#2965;&#2997;&#3007; &#2997;&#3007;&#2992;&#3009;&#2980;&#3009;</span>
+            <span class="award__org">&#2980;&#2990;&#3007;&#2996;&#3021; &#2990;&#3009;&#2985;&#3021;&#2985;&#3015;&#2993;&#3021;&#2993; &#2949;&#2992;&#2969;&#3021;&#2965;&#2990;&#3021;</span>
+        </li>
+    </ul>
+</section>
+</div>
+
+<!-- TAB: ABOUT -->
+<div id="tab-about" class="tab-panel">
+<div class="asterism asterism--break">* * *</div>
+<section class="about" id="about" style="position:relative">
+    <div class="about__in">
+        <div class="about__title">
+            <h2 class="about__title-ta">&#2962;&#2992;&#3009; &#2997;&#3006;&#2996;&#3021;&#2965;&#3021;&#2965;&#3016;, &#2997;&#3006;&#2992;&#3021;&#2980;&#3021;&#2980;&#3016;&#2965;&#2995;&#3007;&#2994;&#3021;</h2>
+            <p class="about__title-la">A Life &middot; In Words</p>
+        </div>
+
+        <div class="about__section">
+            <div class="about__sec-head">
+                <h3 class="about__sec-ta">&#2949;&#2975;&#3007;&#2980;&#3021;&#2980;&#2995;&#2990;&#3021;</h3>
+                <p class="about__sec-la">Foundation</p>
+            </div>
+            <div class="about__sec-body">&#2951;&#2993;&#3016;&#2991;&#2992;&#3009;&#2995;&#3009;&#2990;&#3021; &#2965;&#3009;&#2992;&#3009;&#2997;&#2992;&#3009;&#2995;&#3009;&#2990;&#3021; &#2980;&#3009;&#2979;&#3016;&#2991;&#3006;&#2965; &#2984;&#3007;&#2993;&#3021;&#2965;, &#2980;&#2990;&#3007;&#2996;&#3021;&#2980;&#3021;&#2980;&#3006;&#2991;&#3016; &#2997;&#2979;&#2969;&#3021;&#2965;&#3007; &#2958;&#2985;&#3021; &#2970;&#3007;&#2984;&#3021;&#2980;&#2985;&#3016;&#2965;&#2995;&#3016; &#2958;&#2996;&#3009;&#2980;&#3021;&#2980;&#3006;&#2965;&#3021;&#2965;&#3009;&#2965;&#3007;&#2993;&#3015;&#2985;&#3021;. &#2962;&#2997;&#3021;&#2997;&#3018;&#2992;&#3009; &#2970;&#3018;&#2994;&#3021;&#2994;&#3009;&#2990;&#3021; &#2958;&#2985;&#3021; &#2997;&#3015;&#2992;&#3021;&#2965;&#2995;&#3009;&#2965;&#3021;&#2965;&#3006;&#2985; &#2970;&#2990;&#2992;&#3021;&#2986;&#3021;&#2986;&#2979;&#2990;&#3021;.</div>
+        </div>
+
+        <div class="about__section">
+            <div class="about__sec-head">
+                <h3 class="about__sec-ta">&#2986;&#3010;&#2992;&#3021;&#2997;&#3008;&#2965;&#2990;&#3009;&#2990;&#3021; &#2986;&#2991;&#2979;&#2990;&#3009;&#2990;&#3021;</h3>
+                <p class="about__sec-la">Origin &amp; Journey</p>
+            </div>
+            <div class="about__sec-body">&#2952;&#2996;&#2980;&#3021;&#2980;&#3007;&#2985;&#3021; &#2949;&#2970;&#3021;&#2970;&#3009;&#2997;&#3015;&#2994;&#3007;&#2991;&#3007;&#2994;&#3021; (&#2991;&#3006;&#2996;&#3021;&#2986;&#3021;&#2986;&#3006;&#2979;&#2990;&#3021;) &#2986;&#3007;&#2993;&#2984;&#3021;&#2980;&#3009;, &#2950;&#2970;&#3007;&#2992;&#3007;&#2991;&#2992;&#3006;&#2965;&#2986;&#3021; &#2986;&#2979;&#3007;&#2991;&#3006;&#2993;&#3021;&#2993;&#3007;&#2991; &#2984;&#3006;&#2985;&#3021;, &#2986;&#3019;&#2992;&#3021;&#2970;&#3021;&#2970;&#3010;&#2996;&#2994;&#3021; &#2965;&#3006;&#2992;&#2979;&#2990;&#3006;&#2965; &#2965;&#3009;&#2975;&#3009;&#2990;&#3021;&#2986;&#2980;&#3021;&#2980;&#3009;&#2975;&#2985;&#3021; &#2951;&#2975;&#2990;&#3021;&#2986;&#3014;&#2991;&#2992;&#3021;&#2984;&#3021;&#2980;&#3009; &#2950;&#2970;&#3021;&#2980;&#3007;&#2992;&#3007;&#2991;&#3006;&#2997;&#3016; &#2958;&#2985;&#2980;&#3009; &#2986;&#3009;&#2980;&#3007;&#2991; &#2997;&#3006;&#2996;&#3021;&#2997;&#3007;&#2975;&#2990;&#3006;&#2965;&#2965;&#3021; &#2965;&#3018;&#2979;&#3021;&#2975;&#3015;&#2985;&#3021;.</div>
+        </div>
+
+        <div class="about__section">
+            <div class="about__sec-head">
+                <h3 class="about__sec-ta">&#2951;&#2994;&#2965;&#3021;&#2965;&#3007;&#2991;&#2986;&#3021; &#2986;&#2991;&#2979;&#2990;&#3021;</h3>
+                <p class="about__sec-la">Literary Path</p>
+            </div>
+            <div class="about__sec-body">&#2950;&#2992;&#2990;&#3021;&#2986;&#2980;&#3021;&#2980;&#3007;&#2994;&#3021; &#2970;&#3007;&#2993;&#3009;&#2965;&#2980;&#3016;&#2965;&#2995;&#3021; &#2990;&#2993;&#3021;&#2993;&#3009;&#2990;&#3021; &#2986;&#3009;&#2980;&#3009;&#2965;&#3021;&#2965;&#2997;&#3007;&#2980;&#3016;&#2965;&#2995;&#3021; &#2962;&#2975;&#3006;&#2965; &#2958;&#2985;&#2980;&#3009; &#2958;&#2979;&#3021;&#2979;&#2969;&#3021;&#2965;&#2995;&#3016;&#2986;&#3021; &#2986;&#2980;&#3007;&#2997;&#3009; &#2970;&#3014;&#2991;&#3021;&#2980;&#3015;&#2985;&#3021;. &#2958;&#2996;&#3009;&#2980;&#3021;&#2980;&#3009; &#2958;&#2985;&#2965;&#3021;&#2965;&#3009; &#2962;&#2992;&#3009; &#2997;&#2975;&#3007;&#2965;&#3006;&#2994;&#3006;&#2965;&#2997;&#3009;&#2990;&#3021;, &#2949;&#2975;&#3016;&#2991;&#3006;&#2995;&#2990;&#3006;&#2965;&#2997;&#3009;&#2990;&#3021; &#2949;&#2990;&#3016;&#2984;&#3021;&#2980;&#2980;&#3009;.</div>
+        </div>
+
+        <div class="about__section">
+            <div class="about__sec-head">
+                <h3 class="about__sec-ta">&#2990;&#2992;&#2986;&#3016; &#2984;&#3019;&#2965;&#3021;&#2965;&#3007;&#2991; &#2984;&#2965;&#2992;&#3021;&#2997;&#3009;</h3>
+                <p class="about__sec-la">Return to the Tradition</p>
+            </div>
+            <div class="about__sec-body">&#2990;&#2992;&#2986;&#3009;&#2965;&#3021;&#2965;&#2997;&#3007;&#2980;&#3016; &#2990;&#3008;&#2980;&#3006;&#2985; &#2980;&#3006;&#2965;&#2980;&#3021;&#2980;&#3006;&#2994;&#3021;, &#2986;&#3006;&#2975;&#3021;&#2975;&#2992;&#2970;&#2992;&#3021; &#2965;&#3007;. &#2986;&#3006;&#2992;&#2980;&#3007;&#2980;&#3006;&#2970;&#2985;&#3021; &#2960;&#2991;&#3006;&#2997;&#3007;&#2985;&#3021; &#2997;&#2996;&#3007;&#2965;&#3006;&#2975;&#3021;&#2975;&#2994;&#3007;&#2994;&#3021; &#2991;&#3006;&#2986;&#3021;&#2986;&#3007;&#2994;&#2965;&#3021;&#2965;&#2979;&#2990;&#3021; &#2965;&#2993;&#3021;&#2993;&#3015;&#2985;&#3021;. &#2951;&#2985;&#3021;&#2993;&#3009; &#2986;&#3006;&#2992;&#2990;&#3021;&#2986;&#2992;&#3007;&#2991; &#2949;&#2965;&#2997;&#2994;&#3021; &#2986;&#3006;&#2965;&#3021;&#2965;&#2995;&#3016;&#2986;&#3021; &#2986;&#2975;&#3016;&#2980;&#3021;&#2980;&#3009;, &#2980;&#2990;&#3007;&#2996;&#3021; &#2990;&#2992;&#2986;&#3007;&#2985;&#3021; &#2997;&#3015;&#2992;&#3021;&#2965;&#2995;&#3016; &#2958;&#2985;&#3021; &#2965;&#2997;&#3007;&#2980;&#3016;&#2965;&#2995;&#3007;&#2994;&#3021; &#2984;&#3007;&#2994;&#3016;&#2984;&#3007;&#2993;&#3009;&#2980;&#3021;&#2980;&#3009;&#2965;&#3007;&#2993;&#3015;&#2985;&#3021;.</div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section style="text-align:center; padding: var(--pad-section) var(--pad-x);">
+    <div class="eyebrow-bi">
+        <h3 class="eyebrow-bi__ta">&#2980;&#3018;&#2975;&#2992;&#3021;&#2986;&#3009;</h3>
+        <p class="eyebrow-bi__la"><span>&mdash;</span> Get in Touch <span>&mdash;</span></p>
+    </div>
+    <p style="font-family:var(--serif-ta); font-size:1.18rem; color:var(--ink-soft); margin-bottom:2.5rem; line-height:1.8;">
+        &#2962;&#2992;&#3009; &#2965;&#3015;&#2995;&#3021;&#2997;&#3007;, &#2962;&#2992;&#3009; &#2984;&#2985;&#3021;&#2993;&#3007;, &#2949;&#2994;&#3021;&#2994;&#2980;&#3009; &#2962;&#2992;&#3009; &#2965;&#2997;&#3007;&#2980;&#3016; &mdash;<br>&#2958;&#2994;&#3021;&#2994;&#3006;&#2990;&#3015; &#2997;&#2992;&#2997;&#3015;&#2993;&#3021;&#2965;&#3021;&#2965;&#3007;&#2993;&#3015;&#2985;&#3021;.
+    </p>
+    <a href="mailto:poet@jrpoetry.com" style="font-family:var(--serif-la); font-style:italic; font-size:clamp(1.5rem, 3vw, 2.2rem); color:var(--oxblood); border-bottom:1px solid var(--ochre); padding-bottom:6px; display:inline-block;">
+        poet@jrpoetry.com
+    </a>
+</section>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('is-on'));
+  document.querySelectorAll('.preview-tabs button').forEach(b=>b.classList.remove('is-on'));
+  document.getElementById('tab-'+id).classList.add('is-on');
+  event.target.classList.add('is-on');
+}
+</script>
+
+</body>
+</html>

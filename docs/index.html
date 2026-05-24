@@ -135,11 +135,39 @@ a{color:inherit;text-decoration:none}
   flex:1;
 }
 
-.tags{
-  display:flex;flex-wrap:wrap;gap:6px;
+.card-actions{
+  display:flex;gap:8px;
   margin-top:1rem;
   padding-top:1rem;
   border-top:1px solid var(--border);
+}
+.btn-preview{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;
+  border-radius:8px;
+  font-size:.78rem;
+  font-weight:500;
+  background:var(--card-accent,#333);
+  color:#fff;
+  transition:opacity .2s,transform .15s;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+}
+.btn-preview:hover{opacity:.85;transform:translateY(-1px)}
+.btn-github{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;
+  border-radius:8px;
+  font-size:.78rem;
+  font-weight:500;
+  background:rgba(255,255,255,.08);
+  color:var(--muted);
+  transition:background .2s;
+}
+.btn-github:hover{background:rgba(255,255,255,.14)}
+
+.tags{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin-top:.75rem;
 }
 .tag{
   font-size:.7rem;
@@ -189,6 +217,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">aurora</div>
       <div class="version">v1.0.0</div>
       <p>Dark + magenta-to-violet gradient + glow auras. A rebuild of the Maxreach SEO direction in pure PHP/CSS/JS.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/aurora.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/aurora">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">marketing</span><span class="tag">seo</span>
       </div>
@@ -203,6 +235,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">bauhaus</div>
       <div class="version">v1.0.0</div>
       <p>Black + yellow + uppercase + wave contour lines. A rebuild of the Growla digital-agency direction in pure PHP/CSS/JS.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/bauhaus.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/bauhaus">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">agency</span><span class="tag">bold</span>
       </div>
@@ -217,6 +253,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">Coterie</div>
       <div class="version">v1.0.0</div>
       <p>Warm cream + community red + soft cards. For member-led studios, co-ops and community magazines.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/coterie.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/Coterie">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">light</span><span class="tag">community</span><span class="tag">magazine</span>
       </div>
@@ -231,6 +271,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">eclipse</div>
       <div class="version">v1.0.0</div>
       <p>Dark + burnt orange moon + dotted grid background. A rebuild of the Pixelon creative-digital direction.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/eclipse.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/eclipse">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">portfolio</span><span class="tag">agency</span>
       </div>
@@ -245,6 +289,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">JRPOETRY.com</div>
       <div class="version">v2.1.0</div>
       <p>A calm, dignified Tamil poetry theme — South Asian Editorial direction. Relief letterforms, bilingual section heads, marginalia, drop caps, Tamil numerals. Designed for ease of reading at 75+.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/jrpoetry.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/JRPOETRY.com">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">poetry</span><span class="tag">tamil</span><span class="tag">editorial</span>
       </div>
@@ -259,6 +307,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">M1O.at</div>
       <div class="version">v2.0.0</div>
       <p>Curated link hub. Terminal / DAW direction. Brutalist Architecture. Custom theme for m1o.at.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/m1o.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/M1O.at">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">brutalist</span><span class="tag">terminal</span><span class="tag">link-hub</span>
       </div>
@@ -273,6 +325,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">monolith</div>
       <div class="version">v1.0.0</div>
       <p>Solid oxblood full-bleed + centered asterism + sparse type. A rebuild of the Geroz creative-portfolio direction.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/monolith.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/monolith">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">red</span><span class="tag">portfolio</span><span class="tag">minimal</span>
       </div>
@@ -287,6 +343,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">ON!.agency</div>
       <div class="version">v4.0.0</div>
       <p>A one-person digital atelier in Wien. Dark editorial design with a magenta accent. Full custom admin panel, no ACF dependency.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/on1agency.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/ON!.agency">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">agency</span><span class="tag">editorial</span>
       </div>
@@ -301,6 +361,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">orbit</div>
       <div class="version">v1.0.0</div>
       <p>Black + orange planet + massive AIM/SKY display. A rebuild of the Darkyn creative-agency direction. No page builder dependency.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/orbit.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/orbit">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">agency</span><span class="tag">portfolio</span>
       </div>
@@ -315,6 +379,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">phosphor</div>
       <div class="version">v1.0.0</div>
       <p>Pure black + phosphor green + JetBrains Mono. A brutalist terminal-style theme for musicians, hackers and tinkerers.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/phosphor.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/phosphor">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">terminal</span><span class="tag">brutalist</span>
       </div>
@@ -329,6 +397,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">Raveenthiran.com</div>
       <div class="version">v3.6.5</div>
       <p>Single-screen, no-scroll photography portfolio. Warm near-black canvas, bone-white type, one sodium-amber accent. Fullscreen hero with dot-constellation navigation and page-wipe transitions.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/raveenthiran.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/Raveenthiran.com">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">photography</span><span class="tag">no-scroll</span><span class="tag">editorial</span>
       </div>
@@ -343,6 +415,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">Raveenthiran.com-child</div>
       <div class="version">v1.0.0</div>
       <p>Child theme for Catalogue Noir. Override templates, add CSS, register custom hooks — parent stays updatable.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/raveenthiran-child.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/Raveenthiran.com-child">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">child-theme</span><span class="tag">photography</span>
       </div>
@@ -357,6 +433,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">revolt</div>
       <div class="version">v1.0.0</div>
       <p>Dark + crimson red + heavy declarative display. A rebuild of the Gaudy creative-agency direction in pure PHP/CSS/JS.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/revolt.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/revolt">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">agency</span><span class="tag">bold</span>
       </div>
@@ -371,6 +451,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">salon</div>
       <div class="version">v1.0.0</div>
       <p>Light cream + hot pink + serif italic accents. A rebuild of the Revolix digital-marketing direction in pure PHP/CSS/JS.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/salon.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/salon">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">light</span><span class="tag">marketing</span><span class="tag">portfolio</span>
       </div>
@@ -385,6 +469,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">tableau</div>
       <div class="version">v1.0.0</div>
       <p>Warm dark + amber + cinematic 21:9 hero. For photographers, art directors and image-led portfolios.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/tableau.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/tableau">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">dark</span><span class="tag">photography</span><span class="tag">cinematic</span>
       </div>
@@ -399,6 +487,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">Verse</div>
       <div class="version">v1.0.0</div>
       <p>Paper cream + oxblood + serif + asterism breaks. A quiet, dignified theme for poets, essayists and editorial publications.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/verse.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/Verse">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">light</span><span class="tag">poetry</span><span class="tag">editorial</span>
       </div>
@@ -413,6 +505,10 @@ a{color:inherit;text-decoration:none}
       <div class="folder">Viennaphotogroup.com</div>
       <div class="version">v2.0.0</div>
       <p>Editorial community theme. Seven CPT archives, member dashboards, submission flows, PWA, monthly magazine PDF generator. Co-produced by Raveenthiran &amp; on1.agency.</p>
+      <div class="card-actions">
+        <a class="btn-preview" href="previews/vpg.html">Preview ↗</a>
+        <a class="btn-github" href="https://github.com/MokshaOne/WP-THEME/tree/main/Viennaphotogroup.com">Source</a>
+      </div>
       <div class="tags">
         <span class="tag">editorial</span><span class="tag">community</span><span class="tag">magazine</span><span class="tag">photography</span>
       </div>

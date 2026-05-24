@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>on1.agency — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../ON!.agency/on1-agency/assets/css/main.css">
+<style>
+.preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#000;border-bottom:1px solid #333;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.8rem}
+.preview-bar a{color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s}
+.preview-bar a:hover{opacity:1}
+.preview-bar .name{color:#fff;font-weight:600}
+body{padding-top:42px}
+
+/* Preview tab system */
+.preview-tabs{position:fixed;top:42px;left:0;right:0;z-index:9998;background:var(--bg);border-bottom:1px solid var(--rule);display:flex;gap:0;font-family:var(--sans);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.preview-tabs button{background:none;border:none;color:var(--mute);padding:.7rem 1.5rem;cursor:pointer;transition:color .15s,background .15s;font:inherit;letter-spacing:inherit;text-transform:inherit}
+.preview-tabs button:hover{color:var(--fg);background:rgba(255,31,140,.03)}
+.preview-tabs button.is-on{color:var(--accent);border-bottom:1px solid var(--accent)}
+.tab-panel{display:none}
+.tab-panel.is-on{display:block}
+.nav{top:76px}
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+    <a href="../index.html">&larr; Back to Overview</a>
+    <span class="name">on1.agency Atelier</span>
+</div>
+
+<div class="preview-tabs">
+    <button class="is-on" onclick="showTab('hero')">Hero</button>
+    <button onclick="showTab('services')">Services</button>
+    <button onclick="showTab('work')">Work</button>
+    <button onclick="showTab('pricing')">Pricing</button>
+    <button onclick="showTab('quotes')">Testimonials</button>
+    <button onclick="showTab('faq')">FAQ</button>
+    <button onclick="showTab('brief')">Brief CTA</button>
+</div>
+
+<!-- NAV -->
+<nav class="nav" style="position:relative;top:auto">
+    <span class="nav__brand">ON1<sup>agency</sup></span>
+    <ul class="nav__links">
+        <li><a href="#" class="current-menu-item">Home</a></li>
+        <li><a href="#practice">Practice<sup>04</sup></a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav__cta-row">
+        <a href="#brief" class="pill pill--accent pill--sm">Start a brief <span class="pill__arrow">&nearr;</span></a>
+    </div>
+</nav>
+
+<!-- TAB: HERO -->
+<div id="tab-hero" class="tab-panel is-on">
+<main id="main">
+<div class="on1-default">
+
+<header class="hero" id="top">
+    <div class="hero__planet" aria-hidden="true"></div>
+
+    <div class="hero__in">
+        <div class="hero__lede-row">
+            <div class="hero__lede">
+                <strong>We design for studios that don't want to look like everyone else.</strong>
+                <p>On1 Agency is a one-person design atelier based in Vienna. We build brand identities, design systems, and bespoke WordPress themes for photographers, architects, and creative practices.</p>
+                <div class="hero__signoff">
+                    Nishuthan Raveenthiran
+                    <small>Founder &middot; <em>On1 Agency</em></small>
+                </div>
+            </div>
+            <div></div>
+        </div>
+
+        <h1 class="hero__head">
+            <span class="word-1">Design</span>
+            <span class="word-2"><em>Atelier</em></span>
+        </h1>
+
+        <div class="hero__bottom">
+            <p class="hero__tag">Strategy &middot; Identity &middot; <em>Craft</em></p>
+            <a href="#brief" class="pill pill--accent">
+                Start a brief
+                <span class="pill__arrow">&nearr;</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- STAT BAR -->
+<div class="stats-bar">
+    <div class="stats-bar__in">
+        <div class="stat">
+            <div class="stat__num"><em>47</em></div>
+            <div class="stat__label">Projects<br>shipped</div>
+        </div>
+        <div class="stat">
+            <div class="stat__num"><em>6</em></div>
+            <div class="stat__label">Years<br>running</div>
+        </div>
+        <div class="stat">
+            <div class="stat__num"><em>1</em></div>
+            <div class="stat__label">Person<br>studio</div>
+        </div>
+        <div class="stat">
+            <div class="stat__num"><em>100</em><small style="font-family:var(--sans);font-style:normal;font-size:14px;color:var(--mute)">%</small></div>
+            <div class="stat__label">Owner<br>operated</div>
+        </div>
+    </div>
+</div>
+
+</div>
+</main>
+</div>
+
+<!-- TAB: SERVICES -->
+<div id="tab-services" class="tab-panel">
+<section class="section" id="practice">
+    <div class="section__in">
+        <header class="section__head">
+            <div>
+                <p class="eyebrow">What we do</p>
+                <h2 class="section__title">empowering studios to <em>look like themselves</em>.</h2>
+            </div>
+            <p class="section__sub">Four core services. Strategy is always included. You always work with one person.</p>
+        </header>
+
+        <ul class="services-list">
+            <li><a class="service-row" href="#brief">
+                <span class="service-row__num">&nearr; 01</span>
+                <div><h3 class="service-row__name">Brand <em>Identity</em></h3></div>
+                <p class="service-row__desc">Logo, type system, colour palette, and brand guidelines. <strong>The foundation.</strong></p>
+                <span class="service-row__cta">&rarr;</span>
+            </a></li>
+            <li><a class="service-row" href="#brief">
+                <span class="service-row__num">&nearr; 02</span>
+                <div><h3 class="service-row__name">Web <em>Design</em></h3></div>
+                <p class="service-row__desc">Bespoke WordPress themes. No page builders, no templates. <strong>Designed and coded by hand.</strong></p>
+                <span class="service-row__cta">&rarr;</span>
+            </a></li>
+            <li><a class="service-row" href="#brief">
+                <span class="service-row__num">&nearr; 03</span>
+                <div><h3 class="service-row__name">Design <em>System</em></h3></div>
+                <p class="service-row__desc">Tokens, components, and documentation. Keeps your brand consistent as you scale.</p>
+                <span class="service-row__cta">&rarr;</span>
+            </a></li>
+            <li><a class="service-row" href="#brief">
+                <span class="service-row__num">&nearr; 04</span>
+                <div><h3 class="service-row__name">Art <em>Direction</em></h3></div>
+                <p class="service-row__desc">Photo direction, editorial layout, campaign concepts. <strong>The feeling before the pixels.</strong></p>
+                <span class="service-row__cta">&rarr;</span>
+            </a></li>
+        </ul>
+    </div>
+</section>
+</div>
+
+<!-- TAB: WORK -->
+<div id="tab-work" class="tab-panel">
+<section class="section" id="work" style="padding-top:var(--pad-y)">
+    <div class="section__in">
+        <header class="section__head">
+            <div>
+                <p class="eyebrow">Featured case</p>
+                <h2 class="section__title">the work that <em>got</em> us here.</h2>
+            </div>
+            <p class="section__sub">Selected case studies from across the studio's range.</p>
+        </header>
+
+        <a class="featured-case" href="#">
+            <div class="featured-case__text">
+                <p class="featured-case__num">Case 001 &middot; 2024</p>
+                <div>
+                    <h3 class="featured-case__title">Catalogue <em>Noir</em></h3>
+                    <p class="featured-case__lede">A fullscreen photography portfolio with dot navigation, page-wipe transitions, and a stoic-minimal palette for Vienna-based photographer Raveenthiran.</p>
+                </div>
+                <dl class="featured-case__meta">
+                    <div><dt>Client</dt><dd>Raveenthiran</dd></div>
+                    <div><dt>Stack</dt><dd>WordPress &middot; <em>Custom</em></dd></div>
+                    <div><dt>Year</dt><dd>2024</dd></div>
+                </dl>
+                <span class="pill" style="align-self: flex-start;">View case <span class="pill__arrow">&nearr;</span></span>
+            </div>
+            <div class="featured-case__media">
+                <span class="featured-case__tag">Live</span>
+                <span class="featured-case__media-handle">raveenthiran.com</span>
+            </div>
+        </a>
+
+        <div class="work-grid" style="margin-top:1.5rem">
+            <a class="case-card" href="#">
+                <div class="case-card__media"></div>
+                <div class="case-card__body">
+                    <p class="case-card__n&ordm;">Case 002 &middot; 2023</p>
+                    <h3 class="case-card__title">Kavithai <em>Relief</em></h3>
+                    <p class="case-card__lede">A Tamil poetry theme with editorial relief letterforms and bilingual sections.</p>
+                    <div class="case-card__foot">
+                        <span class="live">jrpoetry.com</span>
+                        <span class="case-card__arrow">&nearr;</span>
+                    </div>
+                </div>
+            </a>
+            <a class="case-card" href="#">
+                <div class="case-card__media case-card__media--alt"></div>
+                <div class="case-card__body">
+                    <p class="case-card__n&ordm;">Case 003 &middot; 2024</p>
+                    <h3 class="case-card__title">VPG <em>Coop</em></h3>
+                    <p class="case-card__lede">Community magazine platform for Vienna Photo Group with 7 custom post types.</p>
+                    <div class="case-card__foot">
+                        <span class="live">viennaphotogroup.com</span>
+                        <span class="case-card__arrow">&nearr;</span>
+                    </div>
+                </div>
+            </a>
+            <a class="case-card case-card--cta" href="#brief">
+                <div class="case-card__media" style="background: var(--bg);">
+                    <span class="case-card__media-handle" style="color: var(--accent);">[ Open &middot; Q2 2026 ]</span>
+                </div>
+                <div class="case-card__body">
+                    <p class="case-card__n&ordm;">Next case &middot; MMXXVI</p>
+                    <h3 class="case-card__title">Your studio, here.</h3>
+                    <p class="case-card__lede">One slot open this quarter. We design, we build, we ship.</p>
+                    <div class="case-card__foot">
+                        <span class="live" style="color: var(--accent);">Booking open</span>
+                        <span class="case-card__arrow" style="background: var(--accent);">&nearr;</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- TAB: PRICING -->
+<div id="tab-pricing" class="tab-panel">
+<section class="section section--alt" id="pricing">
+    <div class="section__in">
+        <header class="section__head">
+            <div>
+                <p class="eyebrow">Investment</p>
+                <h2 class="section__title">prices that <em>don't hide</em>.</h2>
+            </div>
+            <p class="section__sub">Indicative ranges. Final scope agreed after the brief.</p>
+        </header>
+
+        <div class="pricing">
+            <div class="tier">
+                <h3 class="tier__name">Starter <em>&middot; brand</em></h3>
+                <div class="tier__price">&euro;2,400</div>
+                <ul class="tier__features">
+                    <li>Logo + wordmark</li>
+                    <li>Color palette + type</li>
+                    <li>Brand guidelines PDF</li>
+                    <li>2 revision rounds</li>
+                </ul>
+                <a href="#brief" class="pill pill--sm tier__cta">Choose <span class="pill__arrow">&nearr;</span></a>
+            </div>
+
+            <div class="tier tier--featured">
+                <h3 class="tier__name">Premium <em>&middot; web</em></h3>
+                <div class="tier__price">&euro;6,800</div>
+                <ul class="tier__features">
+                    <li>Full brand identity</li>
+                    <li>Bespoke WP theme</li>
+                    <li>Responsive + fast</li>
+                    <li>3 CPTs included</li>
+                    <li>30 days post-launch support</li>
+                </ul>
+                <a href="#brief" class="pill pill--sm pill--accent tier__cta">Choose <span class="pill__arrow">&nearr;</span></a>
+            </div>
+
+            <div class="tier">
+                <h3 class="tier__name">Studio <em>&middot; full</em></h3>
+                <div class="tier__price">&euro;12,000</div>
+                <ul class="tier__features">
+                    <li>Everything in Premium</li>
+                    <li>Design system + tokens</li>
+                    <li>Art direction session</li>
+                    <li>Priority scheduling</li>
+                    <li>60 days support</li>
+                </ul>
+                <a href="#brief" class="pill pill--sm tier__cta">Choose <span class="pill__arrow">&nearr;</span></a>
+            </div>
+
+            <div class="tier">
+                <h3 class="tier__name">Retainer <em>&middot; ongoing</em></h3>
+                <div class="tier__price">&euro;1,400<small>/mo</small></div>
+                <ul class="tier__features">
+                    <li>Monthly design hours</li>
+                    <li>Priority response</li>
+                    <li>Feature updates</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <a href="#brief" class="pill pill--sm tier__cta">Choose <span class="pill__arrow">&nearr;</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- TAB: TESTIMONIALS -->
+<div id="tab-quotes" class="tab-panel">
+<section class="section">
+    <div class="section__in">
+        <header class="section__head">
+            <div>
+                <p class="eyebrow">What they say</p>
+                <h2 class="section__title">studios we've <em>worked with</em>.</h2>
+            </div>
+            <p class="section__sub">A small portfolio. The work is the testimonial.</p>
+        </header>
+
+        <div class="quotes">
+            <div class="quote">
+                <p class="quote__text">The site looks exactly like I imagined but never could articulate. Every detail is intentional.</p>
+                <div class="quote__author">
+                    <div class="quote__avatar">JR</div>
+                    <div class="quote__by">J. Rajalingam<small>Poet &middot; JR Poetry</small></div>
+                </div>
+            </div>
+            <div class="quote">
+                <p class="quote__text">Working with On1 felt like having a creative partner who actually understood our vision from the start.</p>
+                <div class="quote__author">
+                    <div class="quote__avatar">MK</div>
+                    <div class="quote__by">Max K.<small>Photographer &middot; Wien</small></div>
+                </div>
+            </div>
+            <div class="quote">
+                <p class="quote__text">Our community site went from zero to a real editorial platform in weeks. The magazine layout is stunning.</p>
+                <div class="quote__author">
+                    <div class="quote__avatar">VP</div>
+                    <div class="quote__by">VPG Team<small>Vienna Photo Group</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- TAB: FAQ -->
+<div id="tab-faq" class="tab-panel">
+<section class="section section--alt" id="faq">
+    <div class="section__in">
+        <header class="section__head">
+            <div>
+                <p class="eyebrow">Common questions</p>
+                <h2 class="section__title">things people <em>ask first</em>.</h2>
+            </div>
+            <p class="section__sub">If your question isn't here, write it in the brief.</p>
+        </header>
+
+        <div class="faq">
+            <div class="faq__item is-open">
+                <span class="faq__num">01</span>
+                <h4 class="faq__q">How long does a typical project take?</h4>
+                <span class="faq__icon">+</span>
+                <p class="faq__a">Most projects run 6 to 10 weeks from brief to launch. Larger scopes with design systems or multiple CPTs may take 12 weeks. We scope this clearly in the first call.</p>
+            </div>
+            <div class="faq__item">
+                <span class="faq__num">02</span>
+                <h4 class="faq__q">Do you use page builders like Elementor?</h4>
+                <span class="faq__icon">+</span>
+                <p class="faq__a">No. Every theme is hand-coded in PHP, CSS, and vanilla JS. This means better performance, lower maintenance, and a site that feels like yours.</p>
+            </div>
+            <div class="faq__item">
+                <span class="faq__num">03</span>
+                <h4 class="faq__q">Can I update content myself?</h4>
+                <span class="faq__icon">+</span>
+                <p class="faq__a">Absolutely. We build custom admin panels and Customizer sections so you can change everything without touching code.</p>
+            </div>
+            <div class="faq__item">
+                <span class="faq__num">04</span>
+                <h4 class="faq__q">What does "one-person studio" mean for me?</h4>
+                <span class="faq__icon">+</span>
+                <p class="faq__a">You always talk to the same person who designs, codes, and ships your project. No handoffs, no telephone game.</p>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- TAB: BRIEF -->
+<div id="tab-brief" class="tab-panel">
+<section class="brief" id="brief">
+    <div class="brief__in">
+        <p class="eyebrow" style="justify-content: center; display: inline-flex;">Send a signal</p>
+        <h2 class="brief__lede">
+            Tell us what you're <em>building</em>.<br>
+            We'll tell you if we're <em>right</em>.
+        </h2>
+        <p class="brief__sub">One email. No sales call. We read every brief within 24 hours and reply with a clear yes, no, or question.</p>
+        <div class="brief__cta-row">
+            <a href="mailto:hello@on1.agency" class="pill pill--accent">
+                Send a brief
+                <span class="pill__arrow">&nearr;</span>
+            </a>
+            <a href="#work" class="pill">
+                See the work
+                <span class="pill__arrow">&rarr;</span>
+            </a>
+        </div>
+    </div>
+</section>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('is-on'));
+  document.querySelectorAll('.preview-tabs button').forEach(b=>b.classList.remove('is-on'));
+  document.getElementById('tab-'+id).classList.add('is-on');
+  event.target.classList.add('is-on');
+}
+// FAQ toggle
+document.querySelectorAll('.faq__item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    item.classList.toggle('is-open');
+  });
+});
+</script>
+
+</body>
+</html>

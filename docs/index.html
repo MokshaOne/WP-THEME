@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WP-THEME — WordPress Theme Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#141414;--border:#222;
+  --text:#e5e5e5;--muted:#888;--dim:#555;
+  --radius:12px;
+}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+
+.hero{
+  text-align:center;
+  padding:6rem 2rem 4rem;
+  border-bottom:1px solid var(--border);
+}
+.hero h1{
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:700;
+  letter-spacing:-.03em;
+  margin-bottom:.75rem;
+}
+.hero .accent{
+  background:linear-gradient(135deg,#e040fb,#ff6d00,#ffd600);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{
+  color:var(--muted);
+  font-size:1.1rem;
+  max-width:540px;
+  margin:0 auto;
+}
+.hero .stats{
+  margin-top:2rem;
+  display:flex;
+  justify-content:center;
+  gap:2.5rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;
+  color:var(--dim);
+}
+.hero .stats span{color:var(--text);font-weight:600;font-size:1.4rem;display:block}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:1.5rem;
+  max-width:1200px;
+  margin:0 auto;
+  padding:3rem 2rem 6rem;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  transition:transform .2s,border-color .3s;
+  display:flex;
+  flex-direction:column;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--card-accent,#333);
+}
+
+.card-banner{
+  height:120px;
+  position:relative;
+  overflow:hidden;
+}
+.card-banner::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 40%,var(--surface));
+}
+.card-icon{
+  position:absolute;
+  bottom:-18px;left:24px;
+  width:44px;height:44px;
+  border-radius:10px;
+  background:var(--card-accent,#333);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1.1rem;
+  z-index:2;
+  border:2px solid var(--surface);
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
+}
+
+.card-body{
+  padding:1.75rem 1.5rem 1.5rem;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.card-body h2{
+  font-size:1.15rem;
+  font-weight:600;
+  letter-spacing:-.01em;
+  margin-bottom:.35rem;
+}
+.card-body .version{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;
+  color:var(--dim);
+  margin-bottom:.75rem;
+}
+.card-body p{
+  color:var(--muted);
+  font-size:.875rem;
+  line-height:1.55;
+  flex:1;
+}
+
+.tags{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin-top:1rem;
+  padding-top:1rem;
+  border-top:1px solid var(--border);
+}
+.tag{
+  font-size:.7rem;
+  font-family:'JetBrains Mono',monospace;
+  padding:3px 8px;
+  border-radius:6px;
+  background:rgba(255,255,255,.06);
+  color:var(--dim);
+}
+
+.footer{
+  text-align:center;
+  padding:2rem;
+  border-top:1px solid var(--border);
+  color:var(--dim);
+  font-size:.8rem;
+  font-family:'JetBrains Mono',monospace;
+}
+.footer a{color:var(--muted);text-decoration:underline}
+
+@media(max-width:480px){
+  .grid{grid-template-columns:1fr;padding:1.5rem 1rem 4rem}
+  .hero{padding:4rem 1.5rem 3rem}
+  .hero .stats{flex-direction:column;gap:1rem}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1><span class="accent">WP-THEME</span></h1>
+  <p>A curated collection of hand-crafted WordPress themes. Pure PHP, CSS, vanilla JS. No page builders, no premium-plugin lock-in.</p>
+  <div class="stats">
+    <div><span>17</span>themes</div>
+    <div><span>0</span>dependencies</div>
+    <div><span>100%</span>custom</div>
+  </div>
+</header>
+
+<main class="grid">
+
+  <article class="card" style="--card-accent:#e040fb">
+    <div class="card-banner" style="background:linear-gradient(135deg,#1a0020,#e040fb 140%)"></div>
+    <div class="card-icon">Au</div>
+    <div class="card-body">
+      <h2>Aurora</h2>
+      <div class="version">v1.0.0</div>
+      <p>Dark + magenta-to-violet gradient + glow auras. A rebuild of the Maxreach SEO direction in pure PHP/CSS/JS.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">marketing</span><span class="tag">seo</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#ffd600">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0a00,#ffd600 140%)"></div>
+    <div class="card-icon">Ba</div>
+    <div class="card-body">
+      <h2>Bauhaus</h2>
+      <div class="version">v1.0.0</div>
+      <p>Black + yellow + uppercase + wave contour lines. A rebuild of the Growla digital-agency direction in pure PHP/CSS/JS.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">agency</span><span class="tag">bold</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#c0392b">
+    <div class="card-banner" style="background:linear-gradient(135deg,#1a0a08,#c0392b 140%)"></div>
+    <div class="card-icon">Co</div>
+    <div class="card-body">
+      <h2>Coterie</h2>
+      <div class="version">v1.0.0</div>
+      <p>Warm cream + community red + soft cards. For member-led studios, co-ops and community magazines.</p>
+      <div class="tags">
+        <span class="tag">light</span><span class="tag">community</span><span class="tag">magazine</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#e65100">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0500,#e65100 140%)"></div>
+    <div class="card-icon">Ec</div>
+    <div class="card-body">
+      <h2>Eclipse</h2>
+      <div class="version">v1.0.0</div>
+      <p>Dark + burnt orange moon + dotted grid background. A rebuild of the Pixelon creative-digital direction.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">portfolio</span><span class="tag">agency</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#8d6e63">
+    <div class="card-banner" style="background:linear-gradient(135deg,#1a1008,#8d6e63 140%)"></div>
+    <div class="card-icon">Ka</div>
+    <div class="card-body">
+      <h2>Kavithai — Relief</h2>
+      <div class="version">v2.1.0 &middot; JRPOETRY.com</div>
+      <p>A calm, dignified Tamil poetry theme — South Asian Editorial direction. Relief letterforms, bilingual section heads, marginalia, drop caps, Tamil numerals. Designed for ease of reading at 75+.</p>
+      <div class="tags">
+        <span class="tag">poetry</span><span class="tag">tamil</span><span class="tag">editorial</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#00e676">
+    <div class="card-banner" style="background:linear-gradient(135deg,#001a0a,#00e676 140%)"></div>
+    <div class="card-icon">M1</div>
+    <div class="card-body">
+      <h2>M1O Hub</h2>
+      <div class="version">v2.0.0 &middot; M1O.at</div>
+      <p>Curated link hub. Terminal / DAW direction. Brutalist Architecture. Custom theme for m1o.at.</p>
+      <div class="tags">
+        <span class="tag">brutalist</span><span class="tag">terminal</span><span class="tag">link-hub</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#6d1a1a">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0000,#6d1a1a 140%)"></div>
+    <div class="card-icon">Mo</div>
+    <div class="card-body">
+      <h2>Monolith</h2>
+      <div class="version">v1.0.0</div>
+      <p>Solid oxblood full-bleed + centered asterism + sparse type. A rebuild of the Geroz creative-portfolio direction.</p>
+      <div class="tags">
+        <span class="tag">red</span><span class="tag">portfolio</span><span class="tag">minimal</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#e040fb">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0014,#e040fb 140%)"></div>
+    <div class="card-icon">O1</div>
+    <div class="card-body">
+      <h2>on1.agency</h2>
+      <div class="version">v4.0.0 &middot; ON1.agency</div>
+      <p>A one-person digital atelier in Wien. Dark editorial design with a magenta accent. Full custom admin panel, no ACF dependency.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">agency</span><span class="tag">editorial</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#ff6d00">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0500,#ff6d00 140%)"></div>
+    <div class="card-icon">Or</div>
+    <div class="card-body">
+      <h2>Orbit</h2>
+      <div class="version">v1.0.0</div>
+      <p>Black + orange planet + massive AIM/SKY display. A rebuild of the Darkyn creative-agency direction. No page builder dependency.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">agency</span><span class="tag">portfolio</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#00ff41">
+    <div class="card-banner" style="background:linear-gradient(135deg,#000a00,#00ff41 140%)"></div>
+    <div class="card-icon">&gt;_</div>
+    <div class="card-body">
+      <h2>Phosphor</h2>
+      <div class="version">v1.0.0</div>
+      <p>Pure black + phosphor green + JetBrains Mono. A brutalist terminal-style theme for musicians, hackers and tinkerers.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">terminal</span><span class="tag">brutalist</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#d4a04a">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0800,#d4a04a 140%)"></div>
+    <div class="card-icon">Rv</div>
+    <div class="card-body">
+      <h2>Catalogue Noir</h2>
+      <div class="version">v3.6.5 &middot; Raveenthiran.com</div>
+      <p>Single-screen, no-scroll photography portfolio. Warm near-black canvas, bone-white type, one sodium-amber accent. Fullscreen hero with dot-constellation navigation and page-wipe transitions.</p>
+      <div class="tags">
+        <span class="tag">photography</span><span class="tag">no-scroll</span><span class="tag">editorial</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#d4a04a">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0800,#b8923e 140%)"></div>
+    <div class="card-icon">Rc</div>
+    <div class="card-body">
+      <h2>Catalogue Noir — Child</h2>
+      <div class="version">v1.0.0</div>
+      <p>Child theme for Catalogue Noir. Override templates, add CSS, register custom hooks — parent stays updatable.</p>
+      <div class="tags">
+        <span class="tag">child-theme</span><span class="tag">photography</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#d50000">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0000,#d50000 140%)"></div>
+    <div class="card-icon">Re</div>
+    <div class="card-body">
+      <h2>Revolt</h2>
+      <div class="version">v1.0.0</div>
+      <p>Dark + crimson red + heavy declarative display. A rebuild of the Gaudy creative-agency direction in pure PHP/CSS/JS.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">agency</span><span class="tag">bold</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#ff4081">
+    <div class="card-banner" style="background:linear-gradient(135deg,#1a0010,#ff4081 140%)"></div>
+    <div class="card-icon">Sa</div>
+    <div class="card-body">
+      <h2>Salon</h2>
+      <div class="version">v1.0.0</div>
+      <p>Light cream + hot pink + serif italic accents. A rebuild of the Revolix digital-marketing direction in pure PHP/CSS/JS.</p>
+      <div class="tags">
+        <span class="tag">light</span><span class="tag">marketing</span><span class="tag">portfolio</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#ffab00">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0800,#ffab00 140%)"></div>
+    <div class="card-icon">Ta</div>
+    <div class="card-body">
+      <h2>Tableau</h2>
+      <div class="version">v1.0.0</div>
+      <p>Warm dark + amber + cinematic 21:9 hero. For photographers, art directors and image-led portfolios.</p>
+      <div class="tags">
+        <span class="tag">dark</span><span class="tag">photography</span><span class="tag">cinematic</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#6d1a1a">
+    <div class="card-banner" style="background:linear-gradient(135deg,#f5f0e8,#6d1a1a 180%)"></div>
+    <div class="card-icon" style="color:#f5f0e8">Ve</div>
+    <div class="card-body">
+      <h2>Verse</h2>
+      <div class="version">v1.0.0</div>
+      <p>Paper cream + oxblood + serif + asterism breaks. A quiet, dignified theme for poets, essayists and editorial publications.</p>
+      <div class="tags">
+        <span class="tag">light</span><span class="tag">poetry</span><span class="tag">editorial</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" style="--card-accent:#90a4ae">
+    <div class="card-banner" style="background:linear-gradient(135deg,#0a0e12,#90a4ae 140%)"></div>
+    <div class="card-icon">VP</div>
+    <div class="card-body">
+      <h2>VPG &middot; v2</h2>
+      <div class="version">v2.0.0 &middot; Viennaphotogroup.com</div>
+      <p>Editorial community theme. Seven CPT archives, member dashboards, submission flows, PWA, monthly magazine PDF generator. Co-produced by Raveenthiran &amp; on1.agency.</p>
+      <div class="tags">
+        <span class="tag">editorial</span><span class="tag">community</span><span class="tag">magazine</span><span class="tag">photography</span>
+      </div>
+    </div>
+  </article>
+
+</main>
+
+<footer class="footer">
+  <p>Built by <a href="https://github.com/MokshaOne">MokshaOne</a> &middot; Pure PHP &middot; CSS &middot; Vanilla JS</p>
+</footer>
+
+</body>
+</html>

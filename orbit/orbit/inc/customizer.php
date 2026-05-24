@@ -1,0 +1,97 @@
+<?php
+/**
+ * Orbit — Customizer.
+ * One panel (Orbit) · sections for Identity, Hero, Principles, Services, Work, Pricing, FAQ, Contact, Palette.
+ * Every helper in inc/helpers.php pulls its value from one of these settings.
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+add_action( 'customize_register', function ( $wp ) {
+
+    $wp->add_panel( 'ORBIT_panel', [
+        'title'    => 'Orbit · ' . __( 'Site content', 'ORBIT' ),
+        'priority' => 30,
+    ] );
+
+    $sections = [
+        'identity'   => __( 'Identity',  'ORBIT' ),
+        'hero'       => __( 'Hero',      'ORBIT' ),
+        'principles' => __( 'Principles','ORBIT' ),
+        'services'   => __( 'Services',  'ORBIT' ),
+        'work'       => __( 'Work',      'ORBIT' ),
+        'tiers'      => __( 'Pricing',   'ORBIT' ),
+        'faq'        => __( 'FAQ',       'ORBIT' ),
+        'contact'    => __( 'Contact',   'ORBIT' ),
+        'palette'    => __( 'Palette',   'ORBIT' ),
+    ];
+    foreach ( $sections as $id => $title ) {
+        $wp->add_section( 'ORBIT_' . $id, [ 'title' => $title, 'panel' => 'ORBIT_panel' ] );
+    }
+
+    $add_text = function ( $id, $section, $label_, $default = '', $multi = false ) use ( $wp ) {
+        $wp->add_setting( 'ORBIT_' . $id, [
+            'default'           => $default,
+            'sanitize_callback' => $multi ? 'wp_kses_post' : 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ] );
+        $wp->add_control( 'ORBIT_' . $id, [
+            'label'   => $label_,
+            'section' => 'ORBIT_' . $section,
+            'type'    => $multi ? 'textarea' : 'text',
+        ] );
+    };
+
+    // Identity
+    $add_text( 'email',    'identity', __( 'Email', 'ORBIT' ),    get_option( 'admin_email' ) );
+    $add_text( 'location', 'identity', __( 'Location', 'ORBIT' ), 'Wien · UTC+1' );
+    $add_text( 'booking',  'identity', __( 'Booking status', 'ORBIT' ), 'Q3 · slots open' );
+    $add_text( 'since',    'identity', __( 'Founded year', 'ORBIT' ),   '2018' );
+    $add_text( 'sites',    'identity', __( 'Sites shipped count', 'ORBIT' ), '14' );
+    $add_text( 'reply',    'identity', __( 'Reply window (hours)', 'ORBIT' ), '72' );
+
+    // Hero
+    $add_text( 'hero_eyebrow', 'hero', __( 'Eyebrow', 'ORBIT' ),       'An atelier · Wien · since MMXVIII' );
+    $add_text( 'hero_line1',   'hero', __( 'Headline · line 1', 'ORBIT' ), 'where craft' );
+    $add_text( 'hero_line2',   'hero', __( 'Headline · line 2', 'ORBIT' ), 'meets code' );
+    $add_text( 'hero_lede',    'hero', __( 'Lede paragraph', 'ORBIT' ), 'A one-person digital atelier crafting editorial WordPress sites and design systems.', true );
+    $add_text( 'hero_cta',     'hero', __( 'Primary CTA label', 'ORBIT' ), 'Start a project' );
+    $add_text( 'hero_cta_url', 'hero', __( 'Primary CTA URL', 'ORBIT' ),   '#brief' );
+
+    // Repeater-style textareas (one item per line, |-separated columns).
+    $add_text( 'principles', 'principles', __( 'Principles · one per line · oman | text', 'ORBIT' ),
+        "i. | Quiet design is the most generous kind of work
+iv. | Code that lasts a decade, not a quarter", true );
+
+    $add_text( 'services', 'services', __( 'Services · one per line · 
+ame | one-line description', 'ORBIT' ),
+        "Editorial WordPress themes | Hand-built themes, no page builders.
+Design systems | Token libraries that scale across years.", true );
+
+    $add_text( 'work', 'work', __( 'Work · one per line · year | title | description. (CPT entries override this.)', 'ORBIT' ),
+        "2024 | Kavithai | Tamil poetry archive", true );
+
+    $add_text( 'tiers', 'tiers', __( 'Pricing tiers · one per line · 
+ame | price | sub | features (;-separated) | featured (0/1)', 'ORBIT' ),
+        "Studio | €6,800 | Custom WP · 4 weeks | Strategy + 2 directions; Custom theme; 4 weeks aftercare | 1", true );
+
+    $add_text( 'faq', 'faq', __( 'FAQ · one per line · question | answer', 'ORBIT' ),
+        "How long does a project take? | 4–8 weeks kickoff to launch.", true );
+
+    // Palette — pure color overrides
+    foreach ( [
+        'color_bg'     => [ __( 'Background', 'ORBIT' ),  '#0A0A0A' ],
+        'color_fg'     => [ __( 'Text', 'ORBIT' ),        '#FFFFFF' ],
+        'color_accent' => [ __( 'Accent', 'ORBIT' ),      '#E8651A' ],
+    ] as $id => $row ) {
+        $wp->add_setting( 'ORBIT_' . $id, [ 'default' => $row[1], 'sanitize_callback' => 'sanitize_hex_color' ] );
+        $wp->add_control( new WP_Customize_Color_Control( $wp, 'ORBIT_' . $id, [
+            'label'   => $row[0],
+            'section' => 'ORBIT_palette',
+        ] ) );
+    }
+} );
+
+// Selective refresh helper (optional, no-op fallback)
+add_action( 'customize_preview_init', function () {
+    // hook here later if you want partial refreshes for hero fields
+} );

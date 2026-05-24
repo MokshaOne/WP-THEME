@@ -1,0 +1,28 @@
+/*
+Theme Name: Catalogue Noir — Child
+Theme URI: https://raveenthiran.com
+Template: raveenthiran-catalogue-noir
+Author: Nishuthan Raveenthiran
+Description: Child theme for Catalogue Noir. Override templates, add CSS, register custom hooks here so the parent theme can be updated without losing your customizations.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: catalogue-noir-child
+*/
+
+/* =========================================================
+   Child overrides. Anything here loads AFTER the parent's
+   theme.css and wins on equal-specificity selectors. Use
+   sparingly — for project-specific tweaks that shouldn't
+   be promoted into the parent theme.
+   ========================================================= */
+
+/* Example — uncomment to tweak the accent color without
+   touching Theme Settings:
+:root{ --amber: #E83E2A; }
+*/
+
+/* Example — override the hero title weight for a specific
+   client's brand voice:
+.nr-hero__title{ font-weight: 200; letter-spacing: -.04em; }
+*/

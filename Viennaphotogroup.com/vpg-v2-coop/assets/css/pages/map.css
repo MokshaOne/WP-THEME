@@ -1,0 +1,174 @@
+/* VPG v2 · pages/map.css · Leaflet container · custom markers · clusters · filter bar */
+
+.vpg-map {
+    width: 100%;
+    height: 520px;
+    border-radius: var(--vpg-radius-lg);
+    border: 1px solid var(--vpg-rule);
+    box-shadow: var(--vpg-shadow-card);
+    overflow: hidden;
+    background: var(--vpg-card-deep);
+}
+.vpg-map--tall { height: 78vh; min-height: 540px; }
+
+/* Generous horizontal padding for the full-screen map page so the canvas
+   doesn't kiss the viewport edges. Scales from 1.5rem on phones up to
+   5rem on widescreens. */
+.vpg-section--map > .vpg-wrap,
+.vpg-section--map .vpg-wrap {
+    padding-left:  clamp(1.5rem, 5vw, 5rem);
+    padding-right: clamp(1.5rem, 5vw, 5rem);
+}
+.vpg-section--map { padding-top: var(--vpg-sp-5); padding-bottom: var(--vpg-sp-9); }
+
+/* ── Popup theming ───────────────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+    border-radius: var(--vpg-radius);
+    background: var(--vpg-card);
+    box-shadow: var(--vpg-shadow-lift);
+    border: 1px solid var(--vpg-rule);
+}
+.leaflet-popup-content {
+    margin: var(--vpg-sp-4) var(--vpg-sp-5);
+    font-family: var(--vpg-font-body);
+    color: var(--vpg-ink);
+    line-height: 1.5;
+}
+.leaflet-popup-tip { background: var(--vpg-card); }
+.leaflet-container a.leaflet-popup-close-button { color: var(--vpg-muted); }
+.leaflet-container { font-family: var(--vpg-font-body) !important; background: var(--vpg-card-deep); }
+
+/* ── Custom marker · teardrop pin with category color + glyph ─── */
+.vpg-pin {
+    background: transparent;
+    border: none;
+    width: 32px !important;
+    height: 42px !important;
+    display: block;
+}
+.vpg-pin__inner {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 10px rgba(15, 10, 4, 0.30);
+    border: 2px solid var(--vpg-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--vpg-t-fast), box-shadow var(--vpg-t-fast);
+}
+.vpg-pin__glyph {
+    transform: rotate(45deg);
+    color: var(--vpg-bg);
+    font-family: var(--vpg-font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+}
+.vpg-pin:hover .vpg-pin__inner {
+    transform: rotate(-45deg) scale(1.12);
+    box-shadow: 0 8px 18px rgba(15, 10, 4, 0.42);
+}
+
+/* Per-category colours · drawn from token palette */
+.vpg-pin--location  .vpg-pin__inner { background: var(--vpg-accent); }     /* sienna   */
+.vpg-pin--studio    .vpg-pin__inner { background: var(--vpg-studio-text); }/* purple   */
+.vpg-pin--shop      .vpg-pin__inner { background: var(--vpg-shop-text); }  /* blue     */
+.vpg-pin--event     .vpg-pin__inner { background: var(--vpg-event-text); } /* orange   */
+.vpg-pin--review    .vpg-pin__inner { background: var(--vpg-review-text); }
+.vpg-pin--tutorial  .vpg-pin__inner { background: var(--vpg-tut-text); }
+.vpg-pin--magazine  .vpg-pin__inner { background: var(--vpg-oxblood); }
+.vpg-pin--member    .vpg-pin__inner { background: var(--vpg-member); }
+
+/* ── Cluster bubbles · circle in accent with numeral ─────────── */
+.vpg-cluster {
+    background: var(--vpg-ink);
+    border: 3px solid var(--vpg-bg);
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(15, 10, 4, 0.32);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--vpg-t-fast);
+}
+.vpg-cluster:hover { transform: scale(1.06); }
+.vpg-cluster span {
+    color: var(--vpg-bg);
+    font-family: var(--vpg-font-display);
+    font-weight: var(--vpg-fw-bold);
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* ── Filter bar (used on the full-screen map page) ─────────── */
+.vpg-map-filter {
+    display: flex;
+    gap: var(--vpg-sp-3);
+    margin-bottom: var(--vpg-sp-4);
+    flex-wrap: wrap;
+    align-items: center;
+}
+.vpg-map-filter__label {
+    font-family: var(--vpg-font-mono);
+    font-size: var(--vpg-fs-xs);
+    letter-spacing: var(--vpg-tr-caps);
+    text-transform: uppercase;
+    color: var(--vpg-muted);
+    margin-right: var(--vpg-sp-3);
+}
+.vpg-map-filter button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vpg-sp-2);
+    padding: var(--vpg-sp-2) var(--vpg-sp-4);
+    background: var(--vpg-card-deep);
+    color: var(--vpg-ink);
+    border: 1px solid var(--vpg-rule);
+    border-radius: var(--vpg-radius-pill);
+    font-family: var(--vpg-font-mono);
+    font-size: var(--vpg-fs-sm);
+    letter-spacing: var(--vpg-tr-caps);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background var(--vpg-t-fast), color var(--vpg-t-fast);
+}
+.vpg-map-filter button:hover { background: var(--vpg-card); }
+.vpg-map-filter button.is-active {
+    background: var(--vpg-ink);
+    color: var(--vpg-bg);
+    border-color: var(--vpg-ink);
+}
+.vpg-map-filter button::before {
+    content: '';
+    width: 10px; height: 10px; border-radius: 50%;
+    background: currentColor;
+    opacity: 0.65;
+}
+.vpg-map-filter button[data-type="location"]::before { background: var(--vpg-accent); opacity: 1; }
+.vpg-map-filter button[data-type="studio"]::before   { background: var(--vpg-studio-text); opacity: 1; }
+.vpg-map-filter button[data-type="shop"]::before     { background: var(--vpg-shop-text); opacity: 1; }
+.vpg-map-filter button[data-type="event"]::before    { background: var(--vpg-event-text); opacity: 1; }
+
+/* ── Marker count chip · shown in top-right corner of map ──── */
+.vpg-map-count {
+    position: relative;
+}
+.vpg-map-count::after {
+    content: attr(data-count);
+    position: absolute;
+    top: var(--vpg-sp-3);
+    right: var(--vpg-sp-3);
+    background: rgba(244, 239, 227, 0.96);
+    color: var(--vpg-ink);
+    padding: var(--vpg-sp-2) var(--vpg-sp-4);
+    border-radius: var(--vpg-radius-pill);
+    font-family: var(--vpg-font-mono);
+    font-size: var(--vpg-fs-xs);
+    letter-spacing: var(--vpg-tr-caps);
+    text-transform: uppercase;
+    z-index: 400;
+    pointer-events: none;
+    box-shadow: var(--vpg-shadow-card);
+}

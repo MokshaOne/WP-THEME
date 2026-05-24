@@ -1,0 +1,16 @@
+/*
+Theme Name: on1.agency
+Theme URI: https://on1.agency
+Author: Nishuthan Raveenthiran
+Author URI: https://on1.agency
+Description: A custom WordPress theme for on1.agency — a one-person digital atelier in Wien. Dark editorial design with a magenta accent. v4 ships with a full custom admin panel (no ACF dependency) so every section is editable in plain language.
+Version: 4.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: on1-agency
+Tags: portfolio, agency, editorial, custom-theme, dark, one-column
+*/
+
+/* All styles live in /assets/css/main.css — this file is required by WP for theme discovery only. */

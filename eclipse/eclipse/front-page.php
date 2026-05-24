@@ -1,0 +1,42 @@
+<?php
+/**
+ * Eclipse — front-page.php
+ * Pulls all content from inc/helpers.php (Customizer-backed),
+ * then renders the homepage in the Eclipse design language.
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+$identity   = eclipse_get_identity();
+$hero       = eclipse_get_hero();
+$on1_content = [
+    'identity'   => $identity,
+    'lede'       => $hero['lede'],
+    'principles' => eclipse_get_principles(),
+    'services'   => eclipse_get_services(),
+    'work'       => eclipse_get_work(),
+    'tiers'      => eclipse_get_tiers(),
+    'faq'        => eclipse_get_faq(),
+];
+
+get_header();
+?>
+<main id="main" class="px-main">
+
+<nav class="px-nav">
+    <a class="px-nav__brand" data-skin-link="home">eclipse<span class="px-dot">.</span> ON1</a>
+    <ul class="px-nav__links"><li><a data-skin-link="home" class="is-active">HOME</a></li><li><a data-skin-link="about">ABOUT</a></li><li><a data-skin-link="work">WORK</a></li><li><a data-skin-link="pricing">PRICING</a></li><li><a data-skin-link="faq">FAQ</a></li><li><a data-skin-link="contact">CONTACT</a></li></ul>
+</nav>
+<div data-skin-page="home" class="is-active">
+    <header class="px-hero"><div class="px-moon px-moon--1"></div><div class="px-moon px-moon--2"></div><p class="px-eyebrow">— CREATIVE STUDIO · PORTFOLIO</p><h1 class="px-hero__head">on1<span class="px-dot">.</span></h1><h2 class="px-hero__sub">Editorial Studio<br>WordPress Atelier</h2><a class="px-btn" data-skin-link="work">EXPLORE WORK →</a></header>
+    <section class="px-stats"><div class="px-stat"><h3>14+</h3><p>SITES SHIPPED</p></div><div class="px-stat"><h3>72H</h3><p>REPLY WINDOW</p></div><div class="px-stat"><h3>3MO</h3><p>AVG ENGAGEMENT</p></div><div class="px-stat"><h3>2018</h3><p>EST.</p></div></section>
+    <section class="px-work"><p class="px-eyebrow">— SELECTED WORK</p><h2 class="px-section-head">recent builds<span class="px-dot">.</span></h2><div class="px-grid"><?php foreach ( array_slice( $on1_content['work'], 0, 3 ) as $i => $w ) : ?><div class="px-card"><div class="px-card__media<?php echo $i % 2 ? ' px-card__media--alt' : ''; ?>"></div><p class="px-eyebrow">— <?php echo esc_html( $w['year'] ); ?></p><h3><?php echo esc_html( $w['title'] ); ?></h3></div><?php endforeach; ?></div></section>
+    <footer class="px-foot"><h3>eclipse<span class="px-dot">.</span></h3><span>© 2026 · Vienna</span></footer>
+</div>
+<div data-skin-page="about"><header class="px-hero"><div class="px-moon px-moon--1"></div><p class="px-eyebrow">— FOUNDER</p><h1 class="px-hero__head">about<span class="px-dot">.</span></h1><h2 class="px-hero__sub">Nishuthan Raveenthiran<br>One-person Vienna atelier</h2></header><section class="px-stats"><?php foreach ( $on1_content['principles'] as $p ) : ?><div class="px-stat"><h3><?php echo esc_html( strtoupper( explode( ' ', $p[1] )[0] ) ); ?></h3><p><?php echo esc_html( strtoupper( $p[1] ) ); ?></p></div><?php endforeach; ?></section></div>
+<div data-skin-page="work"><header class="px-hero"><div class="px-moon px-moon--1"></div><p class="px-eyebrow">— 14 SITES · SINCE 2018</p><h1 class="px-hero__head">work<span class="px-dot">.</span></h1></header><section class="px-work"><div class="px-grid"><?php foreach ( $on1_content['work'] as $i => $w ) : ?><div class="px-card"><div class="px-card__media<?php echo $i % 2 ? ' px-card__media--alt' : ''; ?>"></div><p class="px-eyebrow">— <?php echo esc_html( $w['year'] ); ?></p><h3><?php echo esc_html( $w['title'] ); ?></h3></div><?php endforeach; ?></div></section></div>
+<div data-skin-page="pricing"><header class="px-hero"><div class="px-moon px-moon--1"></div><p class="px-eyebrow">— THREE ENGAGEMENTS</p><h1 class="px-hero__head">pricing<span class="px-dot">.</span></h1></header><section class="px-stats" style="grid-template-columns:repeat(3,1fr)"><?php $rom = [ 'i.', 'ii.', 'iii.' ]; foreach ( $on1_content['tiers'] as $i => $t ) : $f = ! empty( $t['featured'] ); ?><div class="px-stat"<?php echo $f ? ' style="border-color:#FF6B35"' : ''; ?>><h3><?php echo esc_html( $t['price'] ); ?></h3><p><?php echo esc_html( ( $rom[ $i ] ?? '·' ) . ' ' . strtoupper( $t['name'] ) . ' · ' . strtoupper( $t['sub'] ) ); ?></p></div><?php endforeach; ?></section></div>
+<div data-skin-page="faq"><header class="px-hero"><div class="px-moon px-moon--1"></div><p class="px-eyebrow">— FREQUENTLY ASKED</p><h1 class="px-hero__head">faq<span class="px-dot">.</span></h1></header><section class="px-stats" style="grid-template-columns:repeat(3,1fr)"><?php foreach ( array_slice( $on1_content['faq'], 0, 3 ) as $f ) : ?><div class="px-stat"><h3 style="font-size:1.2rem"><?php echo esc_html( strtoupper( $f['q'] ) ); ?></h3><p><?php echo esc_html( strtoupper( $f['a'] ) ); ?></p></div><?php endforeach; ?></section></div>
+<div data-skin-page="contact"><header class="px-hero"><div class="px-moon px-moon--1"></div><p class="px-eyebrow">— SEND A BRIEF · 72H</p><h1 class="px-hero__head">contact<span class="px-dot">.</span></h1></header><section class="px-stats"><div class="px-stat"><h3 style="font-size:1.2rem">@</h3><p><?php echo esc_html( strtoupper( $on1_content['identity']['email'] ) ); ?></p></div><div class="px-stat"><h3 style="font-size:1.2rem">📍</h3><p>WIEN · UTC+1</p></div><div class="px-stat"><h3 style="font-size:1.2rem">⏱</h3><p>72 HOURS</p></div><div class="px-stat"><h3 style="font-size:1.2rem">⚡</h3><p>Q3 SLOTS OPEN</p></div></section></div>
+
+</main>
+<?php get_footer();

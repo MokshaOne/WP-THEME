@@ -1,0 +1,19 @@
+/*
+Theme Name:  VPG · v2
+Theme URI:   https://viennaphotogroup.com
+Author:      Raveenthiran × on1.agency
+Author URI:  https://on1.agency
+Description: Vienna Photo Group · v2 — A from-scratch editorial community theme. Co-produced by Raveenthiran (photography portfolio · Catalogue Noir) and on1.agency (editorial WordPress atelier). Seven CPT archives (events, locations, magazine, reviews, shops, studios, tutorials), member dashboards, submission flows, PWA, monthly magazine PDF generator. Pure PHP · CSS · vanilla JS. No page builder, no Elementor, no premium-plugin dependencies.
+Version:     2.0.0
+Requires at least: 6.0
+Tested up to:      6.5
+Requires PHP:      8.0
+License:     GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: vpg-v2
+Tags: editorial, magazine, community, photography, custom-menu, custom-logo, featured-images, threaded-comments, translation-ready, theme-options, two-columns, full-width-template
+
+This style.css is the WP theme header only.
+Real styles live in assets/css/{tokens, base, layout, components}.css
+and assets/css/pages/*.css (each page-template scoped sheet).
+*/

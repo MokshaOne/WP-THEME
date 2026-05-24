@@ -1,0 +1,19 @@
+/*
+Theme Name: Eclipse
+Theme URI: https://on1.agency/themes/ECLIPSE
+Author: on1.agency
+Author URI: https://on1.agency
+Description: Dark + burnt orange moon + dotted grid background. A rebuild of the Pixelon creative-digital direction in pure PHP/CSS/JS.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.5
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: ECLIPSE
+Tags: dark, portfolio, agency, custom-menu, custom-logo, featured-images, translation-ready, theme-options
+
+This theme is a from-scratch rebuild — pure PHP/CSS/JS, no Elementor,
+no page builders, no premium plugin dependencies. Main styles live in
+assets/css/main.css; this style.css is only the WordPress theme header.
+*/

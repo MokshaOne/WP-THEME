@@ -1,0 +1,198 @@
+:root {
+  /* M1O — Schwarz */
+  --m1o-bg: #0A0A0A;
+  --m1o-text: #FFFFFF;
+  --m1o-muted: rgba(255,255,255,0.35);
+  --m1o-border: rgba(255,255,255,0.08);
+
+  /* Portfolio — Weiß */
+  --port-bg: #FFFFFF;
+  --port-text: #0D0D0D;
+  --port-muted: #888884;
+  --port-border: rgba(0,0,0,0.1);
+
+  /* VPG — Dunkelgrau */
+  --vpg-bg: #1E1E1E;
+  --vpg-text: #FFFFFF;
+  --vpg-muted: rgba(255,255,255,0.4);
+  --vpg-border: rgba(255,255,255,0.1);
+
+  /* Brutalist Typography Stack */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+/* --- Resets & Base --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; }
+
+body { 
+    font-family: var(--font-ui); 
+    background-color: var(--m1o-bg); 
+    color: var(--m1o-text); 
+    line-height: 1.5; 
+    -webkit-font-smoothing: antialiased; 
+}
+
+/* Verhindert lila Browser-Links */
+a { color: inherit; text-decoration: none; transition: opacity 0.3s; }
+
+/* --- Typography --- */
+.m1o-display { 
+    font-family: var(--font-display); 
+    font-weight: 700; 
+    letter-spacing: -0.03em; 
+    text-transform: uppercase; 
+}
+.m1o-mono { font-family: var(--font-mono); font-size: 0.85rem; }
+
+/* --- Header --- */
+.m1o-header { 
+    position: sticky; 
+    top: 0; 
+    background-color: var(--m1o-bg); 
+    color: var(--m1o-text);
+    padding: 2rem 4rem; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid var(--m1o-border); 
+    z-index: 100; 
+}
+
+.m1o-logo a { font-size: 2rem; font-weight: 700; }
+
+ul.m1o-nav-links { display: flex; list-style-type: none; margin: 0; padding: 0; gap: 3rem; }
+ul.m1o-nav-links a { opacity: 0.5; font-size: 0.9rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; }
+ul.m1o-nav-links a:hover, ul.m1o-nav-links .current-menu-item > a { opacity: 1; }
+
+/* --- Front Page Layout --- */
+.m1o-hero { 
+    min-height: 80vh; 
+    padding: 8rem 4rem; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+}
+.m1o-hero-title { font-size: clamp(4rem, 10vw, 9rem); line-height: 0.85; margin: 0; }
+.m1o-hero-meta { align-self: flex-end; text-align: right; font-family: var(--font-mono); font-size: 0.85rem; color: var(--m1o-muted); }
+
+.m1o-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #333; margin-right: 6px; }
+.m1o-status-dot.is-online { background: #4CAF50; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+
+/* --- Panels (Split Screen) --- */
+.m1o-panels { display: flex; flex-wrap: wrap; width: 100%; border-top: 1px solid var(--m1o-border); }
+.m1o-panel { 
+    flex: 1; 
+    min-width: 50%; 
+    padding: 6rem 4rem; 
+    position: relative; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    min-height: 60vh; 
+    transition: filter 0.3s; 
+    border-right: 1px solid var(--m1o-border);
+}
+.m1o-panel:last-child { border-right: none; }
+.m1o-panel-port { background-color: var(--port-bg); color: var(--port-text); }
+.m1o-panel-vpg { background-color: var(--vpg-bg); color: var(--vpg-text); }
+.m1o-panel:hover { filter: contrast(1.05); }
+
+.m1o-arrow { position: absolute; top: 3rem; right: 3rem; font-size: 2rem; opacity: 0.3; transition: transform 0.3s; }
+.m1o-panel:hover .m1o-arrow { transform: translate(5px, -5px); opacity: 1; }
+
+/* --- Animations --- */
+.m1o-reveal { opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.m1o-reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* --- Footer --- */
+.m1o-footer { 
+    padding: 3rem 4rem; 
+    background-color: var(--m1o-bg); 
+    color: var(--m1o-text); 
+    border-top: 1px solid var(--m1o-border); 
+    display: flex; 
+    justify-content: space-between; 
+    font-family: var(--font-mono); 
+    font-size: 0.8rem; 
+}
+.m1o-footer a { color: var(--m1o-muted); }
+.m1o-footer a:hover { color: var(--m1o-text); }
+
+/* ── Accessibility ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto !important; }
+  .m1o-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .m1o-page-transition { display: none !important; }
+  .m1o-ticker-track { animation: none !important; }
+}
+
+:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.65);
+  outline-offset: 3px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* ── Portal rows ─────────────────────────────────────────────────────────── */
+.m1o-portals {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--m1o-border);
+}
+.m1o-row-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3.5rem clamp(1.5rem, 6vw, 5rem);
+  min-height: 10rem;
+  border-bottom: 1px solid var(--m1o-border);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: background-color 0.35s ease;
+}
+
+/* Ambient background image */
+.m1o-row-link.has-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--portal-bg);
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  filter: saturate(0.4) brightness(0.35);
+}
+.m1o-row-link.has-bg:hover::before { opacity: 1; }
+
+.m1o-row-link .m1o-display,
+.m1o-row-link .m1o-mono {
+  position: relative;
+  z-index: 1;
+}
+.m1o-row-link .m1o-display {
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  letter-spacing: -0.02em;
+  transition: letter-spacing 0.35s ease;
+}
+.m1o-row-link:hover .m1o-display { letter-spacing: 0.01em; }
+.m1o-row-link .m1o-mono {
+  font-size: 0.85rem;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+.m1o-row-link:hover .m1o-mono { opacity: 1; }
+
+@media (max-width: 640px) {
+  .m1o-row-link { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 2rem 1.5rem; }
+}

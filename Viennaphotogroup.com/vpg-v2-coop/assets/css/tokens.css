@@ -1,0 +1,159 @@
+/*
+ * VPG v2 · Design tokens
+ * Single source of truth for the editorial-magazine system.
+ * Edit here · everything else follows.
+ *
+ * Palette synthesis: warm cream paper (vpg signature) + deep ink for
+ * editorial bite + burnt-sienna accent + forest-green member tag + oxblood
+ * for declarative moments + gold for highlight underlines + dot-grid behind
+ * photo sections + glow auras for featured cards.
+ */
+
+:root {
+
+    /* ── Page surfaces ────────────────────────────────────────────────
+       Warm cream stack · paper → surface → card */
+    --vpg-bg:         #F4EFE3;   /* warm paper · page background */
+    --vpg-surface:    #ECE3D1;   /* darker paper · alt section bg */
+    --vpg-card:       #F9F5EA;   /* lifted card · brighter than bg */
+    --vpg-card-deep:  #E0D4BD;   /* card variant · darker side */
+
+    /* ── Ink scale ────────────────────────────────────────────────────
+       Deeper than v1 (#1A1814 → #0F0A04) for stronger photo contrast */
+    --vpg-ink:        #0F0A04;
+    --vpg-ink-mid:    #3A2C1E;
+    --vpg-muted:      #6B5A48;
+    --vpg-subtle:     #7A6750;   /* darkened from #9A8770 for WCAG AA (4.6:1 on bg) */
+    --vpg-faint:      #C5B6A0;
+
+    /* ── Accents ─────────────────────────────────────────────────────
+       Burnt sienna is the signature. Oxblood for declarative moments
+       (gaudy-influence). Gold for highlight underlines (growla on light). */
+    --vpg-accent:        #C8601A;
+    --vpg-accent-deep:   #9A4408;
+    --vpg-accent-light:  #FBE9D8;
+    --vpg-oxblood:       #7A1F0E;
+    --vpg-gold:          #B8860B;
+
+    /* ── Member · forest green stays (community identifier) ────── */
+    --vpg-member:        #2D4A3E;
+    --vpg-member-light:  #DCE7DF;
+
+    /* ── Category palette ─────────────────────────────────────── */
+    --vpg-shop-bg:    #E6EEF8;  --vpg-shop-text:    #1F4A86;
+    --vpg-studio-bg:  #E8DDF4;  --vpg-studio-text:  #4F2F8E;
+    --vpg-loc-bg:     #DCE7DF;  --vpg-loc-text:     #1A4F2C;
+    --vpg-event-bg:   #F8E0CC;  --vpg-event-text:   #7A3800;
+    --vpg-review-bg:  #FAEFC8;  --vpg-review-text:  #5C3800;
+    --vpg-tut-bg:     #DFE6F2;  --vpg-tut-text:     #1A2F6A;
+    --vpg-mag-bg:     #F0DACA;  --vpg-mag-text:     #6B2A0E;
+
+    /* ── Semantic ────────────────────────────────────────────── */
+    --vpg-success:    #2F8F44;
+    --vpg-warning:    #C68A1A;
+    --vpg-danger:     #B82A24;
+    --vpg-info:       #1F4A86;
+
+    /* ── Borders ─────────────────────────────────────────────── */
+    --vpg-rule:           rgba(42, 31, 18, 0.16);
+    --vpg-rule-soft:      rgba(42, 31, 18, 0.08);
+    --vpg-rule-strong:    rgba(42, 31, 18, 0.32);
+
+    /* ── Type stack ──────────────────────────────────────────── */
+    --vpg-font-display:  'Playfair Display', 'Bodoni Moda', 'Georgia', serif;
+    --vpg-font-body:     'Inter', system-ui, -apple-system, sans-serif;
+    --vpg-font-italic:   'Playfair Display', 'Instrument Serif', 'Georgia', serif;
+    --vpg-font-mono:     'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+    /* ── Size scale ──────────────────────────────────────────── */
+    --vpg-fs-xs:     10.5px;
+    --vpg-fs-sm:     12px;
+    --vpg-fs-md:     14px;
+    --vpg-fs-base:   16px;
+    --vpg-fs-lg:     18.5px;
+    --vpg-fs-xl:     22px;
+    --vpg-fs-h4:     clamp(20px, 2vw,   28px);
+    --vpg-fs-h3:     clamp(28px, 3.4vw, 44px);
+    --vpg-fs-h2:     clamp(40px, 6vw,   78px);
+    --vpg-fs-h1:     clamp(56px, 9vw,  132px);
+    --vpg-fs-cover:  clamp(64px, 11vw, 168px);
+
+    /* ── Weight · tracking · line-height ─────────────────────── */
+    --vpg-fw-light:  300;
+    --vpg-fw-body:   400;
+    --vpg-fw-medium: 500;
+    --vpg-fw-semi:   600;
+    --vpg-fw-bold:   700;
+    --vpg-fw-black:  800;   /* declarative headlines · use sparingly */
+
+    --vpg-tr-display:    -0.035em;
+    --vpg-tr-tight:      -0.02em;
+    --vpg-tr-normal:     0;
+    --vpg-tr-loose:      0.04em;
+    --vpg-tr-caps-sm:    0.14em;   /* caps text < 12px */
+    --vpg-tr-caps:       0.18em;
+    --vpg-tr-caps-wide:  0.28em;
+
+    --vpg-lh-display: 0.95;
+    --vpg-lh-tight:   1.12;
+    --vpg-lh-body:    1.55;
+    --vpg-lh-loose:   1.75;
+    --vpg-lh-prose:   1.7;
+
+    /* ── Spacing scale (rems) ───────────────────────────────── */
+    --vpg-sp-1:  0.25rem;
+    --vpg-sp-2:  0.5rem;
+    --vpg-sp-3:  0.75rem;
+    --vpg-sp-4:  1rem;
+    --vpg-sp-5:  1.5rem;
+    --vpg-sp-6:  2rem;
+    --vpg-sp-7:  3rem;
+    --vpg-sp-8:  4rem;
+    --vpg-sp-9:  6rem;
+    --vpg-sp-10: 8rem;
+    --vpg-sp-11: 12rem;
+
+    /* ── Layout maxima ──────────────────────────────────────── */
+    --vpg-max-w:        1320px;
+    --vpg-max-narrow:    720px;   /* tightened from 780 for prose-style measure */
+    --vpg-max-magazine: 1180px;
+    --vpg-max-prose:     680px;
+
+    /* ── Radius ─────────────────────────────────────────────── */
+    --vpg-radius-sm:  4px;
+    --vpg-radius:     10px;
+    --vpg-radius-lg:  18px;
+    --vpg-radius-xl:  28px;
+    --vpg-radius-pill: 999px;
+
+    /* ── Motion ─────────────────────────────────────────────── */
+    --vpg-ease:   cubic-bezier(.65,.05,.2,1);
+    --vpg-ease-out: cubic-bezier(.16,1,.3,1);
+    --vpg-t-fast: 0.18s;
+    --vpg-t-mid:  0.32s;
+    --vpg-t-slow: 0.55s;
+
+    /* ── Decorative ─────────────────────────────────────────── */
+    --vpg-glow-warm: radial-gradient(circle at 30% 30%, rgba(200,96,26,0.22) 0%, transparent 55%);
+    --vpg-glow-cool: radial-gradient(circle at 70% 40%, rgba(45,74,62,0.16) 0%, transparent 55%);
+    --vpg-glow-oxblood: radial-gradient(circle at 50% 50%, rgba(122,31,14,0.20) 0%, transparent 60%);
+
+    --vpg-dot-grid:  radial-gradient(rgba(42,31,18,0.10) 1px, transparent 1px);
+    --vpg-dot-size:  22px 22px;
+
+    --vpg-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.95'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.12 0 0 0 0 0.07 0 0 0 0.06 0'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>");
+
+    /* ── Shadows · for cards, modals, sticky chrome ──────── */
+    --vpg-shadow-card:    0 8px 28px rgba(15, 10, 4, 0.06);
+    --vpg-shadow-lift:    0 18px 40px rgba(15, 10, 4, 0.08);
+    --vpg-shadow-modal:   0 32px 80px rgba(15, 10, 4, 0.18);
+    --vpg-shadow-inset:   inset 0 1px 0 rgba(255,255,255,0.65);
+
+    /* ── Sticky chrome heights ───────────────────────────── */
+    --vpg-h-header:  72px;
+    --vpg-h-mobnav:  64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root { --vpg-t-fast: 0.001s; --vpg-t-mid: 0.001s; --vpg-t-slow: 0.001s; }
+}

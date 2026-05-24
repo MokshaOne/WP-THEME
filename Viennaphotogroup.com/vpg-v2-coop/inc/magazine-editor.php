@@ -1,0 +1,514 @@
+<?php
+/**
+ * VPG v2 — Magazine Editor
+ *
+ * Custom admin tool for assembling magazine issues. Replaces the
+ * generic vpg_magazine post editor with an issue-aware workflow:
+ *
+ *   📖 Magazine          → list of issues (status, cover, articles count, PDF link)
+ *   📖 ↳ New Issue       → create / edit an issue (cover, lede, articles repeater)
+ *   📖 ↳ Generate PDF    → renders the issue via mPDF (vendor/) into uploads/vpg-pdf/
+ *
+ * Storage model · everything lives on the vpg_magazine post:
+ *   post_title         → issue title
+ *   post_excerpt       → issue lede
+ *   _thumbnail_id      → cover image
+ *   _vpg_issue_number  → "Vol. III · No. 09" etc.
+ *   _vpg_issue_date    → publication date (string, free format)
+ *   _vpg_articles      → JSON array of articles
+ *                        [{ title, author, body, image_id, page_break_after }, …]
+ *   _vpg_pdf_url       → set after PDF is generated
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/* ─── Admin menu ─────────────────────────────────────────────────── */
+add_action( 'admin_menu', function () {
+    add_menu_page(
+        '📖 ' . __( 'Magazine', 'vpg-v2' ),
+        '📖 ' . __( 'Magazine', 'vpg-v2' ),
+        'edit_others_posts',
+        'vpg-magazine',
+        'vpg_magazine_list_page',
+        'dashicons-book-alt',
+        18
+    );
+    add_submenu_page( 'vpg-magazine', __( 'All Issues', 'vpg-v2' ), __( 'All Issues', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine', 'vpg_magazine_list_page' );
+    add_submenu_page( 'vpg-magazine', __( 'New Issue', 'vpg-v2' ), __( '+ New Issue', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine-new', 'vpg_magazine_edit_page' );
+    add_submenu_page( 'vpg-magazine', __( 'Duplicate Issue', 'vpg-v2' ), __( '↻ Duplicate Last', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine-duplicate', 'vpg_magazine_duplicate_handler' );
+
+    // hidden edit page (linked from list)
+    // pass an empty string for parent slug (PHP 8.1+ deprecates null here)
+    add_submenu_page( '', __( 'Edit Issue', 'vpg-v2' ), '', 'edit_others_posts', 'vpg-magazine-edit', 'vpg_magazine_edit_page' );
+}, 12 );
+
+/* ─── List page · all issues ─────────────────────────────────────── */
+function vpg_magazine_list_page() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+
+    $issues = get_posts( [
+        'post_type'      => 'vpg_magazine',
+        'post_status'    => [ 'publish', 'draft', 'future', 'private' ],
+        'posts_per_page' => -1,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+    ] );
+    ?>
+    <div class="wrap vpg-mag-admin">
+        <h1 class="wp-heading-inline">📖 <?php esc_html_e( 'Magazine', 'vpg-v2' ); ?></h1>
+        <a class="page-title-action" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-magazine-new' ) ); ?>">
+            <?php esc_html_e( '+ New Issue', 'vpg-v2' ); ?>
+        </a>
+
+        <?php if ( ! $issues ) : ?>
+            <div class="vpg-mag-empty">
+                <h2><?php esc_html_e( 'No issues yet.', 'vpg-v2' ); ?></h2>
+                <p><?php esc_html_e( 'Start the first issue of the Vienna Photo Group magazine.', 'vpg-v2' ); ?></p>
+                <a class="button button-primary button-hero" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-magazine-new' ) ); ?>">
+                    <?php esc_html_e( 'Create the first issue →', 'vpg-v2' ); ?>
+                </a>
+            </div>
+        <?php else : ?>
+            <table class="widefat striped vpg-mag-table" style="margin-top:1rem">
+                <thead>
+                    <tr>
+                        <th style="width:80px"><?php esc_html_e( 'Cover', 'vpg-v2' ); ?></th>
+                        <th><?php esc_html_e( 'Issue', 'vpg-v2' ); ?></th>
+                        <th style="width:120px"><?php esc_html_e( 'Articles', 'vpg-v2' ); ?></th>
+                        <th style="width:120px"><?php esc_html_e( 'Status', 'vpg-v2' ); ?></th>
+                        <th style="width:140px"><?php esc_html_e( 'Date', 'vpg-v2' ); ?></th>
+                        <th style="width:200px"><?php esc_html_e( 'Actions', 'vpg-v2' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $issues as $issue ) :
+                        $articles  = vpg_get_articles( $issue->ID );
+                        $issue_no  = get_post_meta( $issue->ID, '_vpg_issue_number', true );
+                        $cover_url = get_the_post_thumbnail_url( $issue->ID, 'thumbnail' );
+                        $pdf_url   = get_post_meta( $issue->ID, '_vpg_pdf_url', true );
+                        $edit_url  = admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $issue->ID );
+                    ?>
+                    <tr>
+                        <td>
+                            <div class="vpg-mag-thumb" style="<?php echo $cover_url ? 'background-image:url(' . esc_url( $cover_url ) . ')' : ''; ?>">
+                                <?php if ( ! $cover_url ) echo '⁕'; ?>
+                            </div>
+                        </td>
+                        <td>
+                            <strong><a href="<?php echo esc_url( $edit_url ); ?>"><?php echo esc_html( $issue->post_title ?: '(untitled)' ); ?></a></strong>
+                            <?php if ( $issue_no ) : ?>
+                                <div style="opacity:.55;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-top:.2em"><?php echo esc_html( $issue_no ); ?></div>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo count( $articles ); ?></td>
+                        <td>
+                            <span class="vpg-mag-status vpg-mag-status--<?php echo esc_attr( $issue->post_status ); ?>">
+                                <?php echo esc_html( $issue->post_status ); ?>
+                            </span>
+                        </td>
+                        <td><?php echo esc_html( mysql2date( 'M j, Y', $issue->post_date ) ); ?></td>
+                        <td>
+                            <a class="button button-small" href="<?php echo esc_url( $edit_url ); ?>"><?php esc_html_e( 'Edit', 'vpg-v2' ); ?></a>
+                            <a class="button button-small" href="<?php echo esc_url( get_permalink( $issue ) ); ?>" target="_blank"><?php esc_html_e( 'Preview', 'vpg-v2' ); ?></a>
+                            <?php if ( $pdf_url ) : ?>
+                                <a class="button button-small" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank">PDF ↓</a>
+                            <?php else : ?>
+                                <a class="button button-small" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_generate_pdf&issue=' . $issue->ID ), 'vpg_generate_pdf' ) ); ?>"><?php esc_html_e( 'Build PDF', 'vpg-v2' ); ?></a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+
+    <style>
+        .vpg-mag-admin .vpg-mag-thumb {
+            width: 60px; height: 80px; border-radius: 4px;
+            background: linear-gradient(135deg, #E0D4BD, #C8601A);
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.5); font-size: 24px;
+        }
+        .vpg-mag-status { padding: .2rem .5rem; border-radius: 999px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-family: ui-monospace, monospace; }
+        .vpg-mag-status--publish { background: #DCE7DF; color: #1A4F2C; }
+        .vpg-mag-status--draft   { background: #F3F3F3; color: #555; }
+        .vpg-mag-status--future  { background: #F8E0CC; color: #7A3800; }
+        .vpg-mag-empty { background: #fff; border: 1px solid #ccd0d4; padding: 4rem 2rem; text-align: center; margin-top: 2rem; border-radius: 8px; }
+        .vpg-mag-empty h2 { font-size: 1.6rem; margin: 0 0 1rem; }
+        .vpg-mag-empty p  { color: #646970; margin: 0 0 2rem; }
+        .vpg-mag-table th { font-weight: 600; }
+    </style>
+    <?php
+}
+
+/* ─── Edit page · single issue ────────────────────────────────── */
+function vpg_magazine_edit_page() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+
+    $issue_id = isset( $_GET['issue'] ) ? (int) $_GET['issue'] : 0;
+    $issue    = $issue_id ? get_post( $issue_id ) : null;
+
+    if ( $issue && $issue->post_type !== 'vpg_magazine' ) $issue = null;
+
+    $title     = $issue ? $issue->post_title   : '';
+    $lede      = $issue ? $issue->post_excerpt : '';
+    $issue_no  = $issue ? get_post_meta( $issue_id, '_vpg_issue_number', true ) : '';
+    $issue_dt  = $issue ? get_post_meta( $issue_id, '_vpg_issue_date',   true ) : '';
+    $cover_id  = $issue ? (int) get_post_thumbnail_id( $issue_id ) : 0;
+    $cover_url = $cover_id ? wp_get_attachment_image_url( $cover_id, 'medium' ) : '';
+    $articles  = $issue ? vpg_get_articles( $issue_id ) : [];
+    $status    = $issue ? $issue->post_status : 'draft';
+
+    wp_enqueue_media();
+    wp_enqueue_editor();
+    ?>
+    <div class="wrap vpg-mag-edit">
+        <h1>📖 <?php echo $issue ? esc_html( $issue->post_title ?: '(untitled)' ) : esc_html__( 'New Issue', 'vpg-v2' ); ?></h1>
+
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" id="vpg-mag-form">
+            <?php wp_nonce_field( 'vpg_save_issue' ); ?>
+            <input type="hidden" name="action"   value="vpg_save_issue" />
+            <input type="hidden" name="issue_id" value="<?php echo esc_attr( $issue_id ); ?>" />
+
+            <div class="vpg-mag-grid">
+
+                <!-- ─── Issue metadata ─── -->
+                <section class="vpg-mag-panel">
+                    <h2><?php esc_html_e( 'Issue metadata', 'vpg-v2' ); ?></h2>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'Title', 'vpg-v2' ); ?></span>
+                        <input type="text" name="title" value="<?php echo esc_attr( $title ); ?>" required style="font-size:1.2rem;font-weight:600">
+                    </label>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'Issue number / volume', 'vpg-v2' ); ?></span>
+                        <input type="text" name="issue_number" value="<?php echo esc_attr( $issue_no ); ?>" placeholder="Vol. III · No. 09">
+                    </label>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'Publication date (free text)', 'vpg-v2' ); ?></span>
+                        <input type="text" name="issue_date" value="<?php echo esc_attr( $issue_dt ); ?>" placeholder="June MMXXVI">
+                    </label>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'Lede (1-2 sentence intro)', 'vpg-v2' ); ?></span>
+                        <textarea name="lede" rows="3" placeholder="A short editorial preface that previews the issue."><?php echo esc_textarea( $lede ); ?></textarea>
+                    </label>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'Status', 'vpg-v2' ); ?></span>
+                        <select name="status">
+                            <option value="draft"   <?php selected( $status, 'draft' ); ?>>Draft</option>
+                            <option value="publish" <?php selected( $status, 'publish' ); ?>>Published</option>
+                            <option value="future"  <?php selected( $status, 'future' ); ?>>Scheduled</option>
+                            <option value="private" <?php selected( $status, 'private' ); ?>>Members-only</option>
+                        </select>
+                    </label>
+                </section>
+
+                <!-- ─── Cover ─── -->
+                <section class="vpg-mag-panel">
+                    <h2><?php esc_html_e( 'Cover', 'vpg-v2' ); ?></h2>
+                    <input type="hidden" name="cover_id" id="vpg-cover-id" value="<?php echo esc_attr( $cover_id ); ?>">
+                    <div class="vpg-cover-pick" id="vpg-cover-pick">
+                        <?php if ( $cover_url ) : ?>
+                            <img src="<?php echo esc_url( $cover_url ); ?>" alt="" class="vpg-cover-img">
+                        <?php else : ?>
+                            <div class="vpg-cover-placeholder">⁕<br><small>Click to pick a cover</small></div>
+                        <?php endif; ?>
+                    </div>
+                    <p>
+                        <button type="button" class="button" id="vpg-cover-btn"><?php esc_html_e( 'Choose cover', 'vpg-v2' ); ?></button>
+                        <button type="button" class="button-link-delete" id="vpg-cover-remove"><?php esc_html_e( 'Remove', 'vpg-v2' ); ?></button>
+                    </p>
+                </section>
+            </div>
+
+            <!-- ─── Articles repeater ─── -->
+            <section class="vpg-mag-articles">
+                <div class="vpg-mag-articles-head">
+                    <h2><?php esc_html_e( 'Articles', 'vpg-v2' ); ?></h2>
+                    <button type="button" class="button button-primary" id="vpg-add-article"><?php esc_html_e( '+ Add article', 'vpg-v2' ); ?></button>
+                </div>
+                <p class="description"><?php esc_html_e( 'Drag the handle to reorder. Each article becomes a section in the published issue and a chapter in the PDF.', 'vpg-v2' ); ?></p>
+
+                <ol class="vpg-mag-list" id="vpg-mag-list">
+                    <?php foreach ( $articles as $i => $a ) : ?>
+                        <?php vpg_render_article_row( $i, $a ); ?>
+                    <?php endforeach; ?>
+                </ol>
+
+                <template id="vpg-article-template">
+                    <?php vpg_render_article_row( '__INDEX__', [ 'title' => '', 'author' => '', 'body' => '', 'image_id' => 0, 'page_break_after' => 0 ] ); ?>
+                </template>
+            </section>
+
+            <p style="margin-top:2rem">
+                <button type="submit" class="button button-primary button-large" name="save_action" value="save"><?php esc_html_e( 'Save issue', 'vpg-v2' ); ?></button>
+                <?php if ( $issue ) : ?>
+                    <a class="button button-large" href="<?php echo esc_url( get_permalink( $issue_id ) ); ?>" target="_blank"><?php esc_html_e( 'Preview', 'vpg-v2' ); ?></a>
+                    <a class="button button-large" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_generate_pdf&issue=' . $issue_id ), 'vpg_generate_pdf' ) ); ?>"><?php esc_html_e( 'Save & build PDF', 'vpg-v2' ); ?></a>
+                <?php endif; ?>
+                <a class="button button-large" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-magazine' ) ); ?>"><?php esc_html_e( 'Back', 'vpg-v2' ); ?></a>
+            </p>
+        </form>
+    </div>
+
+    <style>
+        .vpg-mag-edit .vpg-mag-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        @media (max-width: 900px) { .vpg-mag-edit .vpg-mag-grid { grid-template-columns: 1fr; } }
+        .vpg-mag-panel { background: #fff; border: 1px solid #ccd0d4; padding: 1.5rem; border-radius: 8px; }
+        .vpg-mag-panel h2 { font-size: 1.05rem; margin: 0 0 1rem; }
+        .vpg-mag-row { display: block; margin-bottom: 1rem; }
+        .vpg-mag-row > span { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: #646970; margin-bottom: .4rem; }
+        .vpg-mag-row input, .vpg-mag-row textarea, .vpg-mag-row select { width: 100%; padding: .55rem .7rem; font-size: 14px; border: 1px solid #ccd0d4; border-radius: 4px; }
+        .vpg-cover-pick { aspect-ratio: 3/4; background: #f0f0f0; border-radius: 4px; overflow: hidden; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .vpg-cover-pick img.vpg-cover-img { width: 100%; height: 100%; object-fit: cover; }
+        .vpg-cover-placeholder { color: #aaa; text-align: center; font-size: 48px; line-height: 1.4; padding: 1rem; }
+        .vpg-cover-placeholder small { font-size: 12px; display: block; margin-top: .4rem; }
+        .vpg-mag-articles { margin-top: 2rem; background: #fff; border: 1px solid #ccd0d4; padding: 1.5rem; border-radius: 8px; }
+        .vpg-mag-articles-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .vpg-mag-articles-head h2 { margin: 0; font-size: 1.05rem; }
+        .vpg-mag-list { list-style: none; padding: 0; margin: 1rem 0 0; }
+        .vpg-mag-article { background: #fafafa; border: 1px solid #ccd0d4; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+        .vpg-mag-article__head { display: grid; grid-template-columns: 30px 1fr auto auto; gap: .8rem; align-items: center; margin-bottom: .8rem; }
+        .vpg-mag-article__handle { cursor: grab; color: #999; font-size: 14px; user-select: none; }
+        .vpg-mag-article__title-input { font-weight: 600; font-size: 1rem; padding: .4rem .6rem !important; }
+        .vpg-mag-article__remove { color: #b32d2e; cursor: pointer; background: none; border: 0; }
+        .vpg-mag-article__body { width: 100%; min-height: 140px; padding: .6rem; border: 1px solid #ccd0d4; border-radius: 4px; font: 14px/1.6 'Inter', system-ui, sans-serif; }
+        .vpg-mag-article__meta { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: .8rem; align-items: center; margin-top: .8rem; }
+        .vpg-mag-article__meta input { padding: .4rem .6rem; }
+        .vpg-mag-article__img { width: 60px; height: 60px; background: #f0f0f0; border-radius: 4px; background-size: cover; background-position: center; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: #999; }
+        .vpg-mag-article.is-dragging { opacity: .4; }
+        .vpg-mag-article.is-over { border-color: #2271b1; background: #f0f6fc; }
+        .vpg-mag-article__pb { font-size: 12px; color: #646970; display: inline-flex; gap: .3rem; align-items: center; }
+    </style>
+
+    <script>
+    (function () {
+        var coverBtn   = document.getElementById('vpg-cover-btn');
+        var coverPick  = document.getElementById('vpg-cover-pick');
+        var coverInput = document.getElementById('vpg-cover-id');
+        var coverRm    = document.getElementById('vpg-cover-remove');
+
+        function openMediaFrame(cb) {
+            var f = wp.media({ title: 'Select image', button: { text: 'Use this image' }, multiple: false });
+            f.on('select', function () {
+                var att = f.state().get('selection').first().toJSON();
+                cb({ id: att.id, url: att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url });
+            });
+            f.open();
+        }
+
+        if (coverBtn) coverBtn.addEventListener('click', function () {
+            openMediaFrame(function (a) {
+                coverInput.value = a.id;
+                coverPick.innerHTML = '<img src="' + a.url + '" alt="" class="vpg-cover-img">';
+            });
+        });
+        if (coverPick && coverBtn) coverPick.addEventListener('click', function () { coverBtn.click(); });
+        if (coverRm) coverRm.addEventListener('click', function (e) {
+            e.preventDefault();
+            coverInput.value = '';
+            coverPick.innerHTML = '<div class="vpg-cover-placeholder">⁕<br><small>Click to pick a cover</small></div>';
+        });
+
+        // ─── Article rows ───
+        var list = document.getElementById('vpg-mag-list');
+        var tpl  = document.getElementById('vpg-article-template');
+        var addBtn = document.getElementById('vpg-add-article');
+
+        function reindex() {
+            list.querySelectorAll('.vpg-mag-article').forEach(function (row, i) {
+                row.querySelectorAll('[data-name]').forEach(function (el) {
+                    var name = el.getAttribute('data-name');
+                    el.setAttribute('name', 'articles[' + i + '][' + name + ']');
+                });
+            });
+        }
+
+        function bindRow(row) {
+            // Image picker
+            var imgBtn = row.querySelector('.vpg-mag-article__img');
+            var imgIn  = row.querySelector('[data-name="image_id"]');
+            imgBtn.addEventListener('click', function () {
+                openMediaFrame(function (a) {
+                    imgIn.value = a.id;
+                    imgBtn.style.backgroundImage = 'url(' + a.url + ')';
+                    imgBtn.textContent = '';
+                });
+            });
+
+            // Remove
+            row.querySelector('.vpg-mag-article__remove').addEventListener('click', function () {
+                if (confirm('Remove this article?')) { row.remove(); reindex(); }
+            });
+
+            // Drag-to-reorder (native HTML5)
+            row.setAttribute('draggable', 'true');
+            row.addEventListener('dragstart', function () { row.classList.add('is-dragging'); });
+            row.addEventListener('dragend',   function () { row.classList.remove('is-dragging'); reindex(); });
+            row.addEventListener('dragover',  function (e) { e.preventDefault(); row.classList.add('is-over'); });
+            row.addEventListener('dragleave', function () { row.classList.remove('is-over'); });
+            row.addEventListener('drop',      function (e) {
+                e.preventDefault();
+                row.classList.remove('is-over');
+                var dragging = list.querySelector('.is-dragging');
+                if (dragging && dragging !== row) {
+                    var rect = row.getBoundingClientRect();
+                    var after = (e.clientY - rect.top) > (rect.height / 2);
+                    list.insertBefore(dragging, after ? row.nextSibling : row);
+                }
+            });
+        }
+
+        list.querySelectorAll('.vpg-mag-article').forEach(bindRow);
+
+        addBtn.addEventListener('click', function () {
+            var html = tpl.innerHTML.replace(/__INDEX__/g, list.children.length);
+            var wrap = document.createElement('div');
+            wrap.innerHTML = html;
+            var row = wrap.firstElementChild;
+            list.appendChild(row);
+            bindRow(row);
+            reindex();
+            row.querySelector('.vpg-mag-article__title-input').focus();
+        });
+    })();
+    </script>
+    <?php
+}
+
+/* ─── Single article row · used in editor + template ─────────────── */
+function vpg_render_article_row( $i, $a ) {
+    $title    = $a['title']    ?? '';
+    $author   = $a['author']   ?? '';
+    $body     = $a['body']     ?? '';
+    $image_id = (int) ( $a['image_id'] ?? 0 );
+    $pb       = ! empty( $a['page_break_after'] );
+    $img_url  = $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : '';
+    ?>
+    <li class="vpg-mag-article">
+        <div class="vpg-mag-article__head">
+            <span class="vpg-mag-article__handle">⋮⋮</span>
+            <input type="text" data-name="title" class="vpg-mag-article__title-input" value="<?php echo esc_attr( $title ); ?>" placeholder="Article title">
+            <span style="font-family:ui-monospace,monospace;font-size:11px;color:#999;letter-spacing:.1em">#<?php echo is_numeric( $i ) ? ( (int) $i + 1 ) : '0'; ?></span>
+            <button type="button" class="vpg-mag-article__remove" title="Remove">×</button>
+        </div>
+
+        <textarea data-name="body" class="vpg-mag-article__body" placeholder="Article body · plain text or basic HTML (paragraphs, links, &lt;em&gt;, &lt;strong&gt;)"><?php echo esc_textarea( $body ); ?></textarea>
+
+        <div class="vpg-mag-article__meta">
+            <input type="text" data-name="author" value="<?php echo esc_attr( $author ); ?>" placeholder="Author / byline">
+            <input type="hidden" data-name="image_id" value="<?php echo esc_attr( $image_id ); ?>">
+            <span class="vpg-mag-article__img" title="Article image" style="<?php echo $img_url ? 'background-image:url(' . esc_url( $img_url ) . ')' : ''; ?>"><?php echo $img_url ? '' : '+'; ?></span>
+            <label class="vpg-mag-article__pb">
+                <input type="checkbox" data-name="page_break_after" value="1" <?php checked( $pb ); ?>>
+                <?php esc_html_e( 'Page break after', 'vpg-v2' ); ?>
+            </label>
+        </div>
+    </li>
+    <?php
+}
+
+/* ─── Save handler ───────────────────────────────────────────────── */
+add_action( 'admin_post_vpg_save_issue', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+    check_admin_referer( 'vpg_save_issue' );
+
+    $issue_id     = (int) ( $_POST['issue_id'] ?? 0 );
+    $title        = sanitize_text_field( wp_unslash( $_POST['title'] ?? '' ) );
+    $lede         = wp_kses_post( wp_unslash( $_POST['lede'] ?? '' ) );
+    $issue_no     = sanitize_text_field( wp_unslash( $_POST['issue_number'] ?? '' ) );
+    $issue_dt     = sanitize_text_field( wp_unslash( $_POST['issue_date'] ?? '' ) );
+    $cover_id     = (int) ( $_POST['cover_id'] ?? 0 );
+    $status_in    = sanitize_key( wp_unslash( $_POST['status'] ?? '' ) );
+    $status       = in_array( $status_in, [ 'draft', 'publish', 'future', 'private' ], true ) ? $status_in : 'draft';
+
+    // Articles (sanitized)
+    $articles = [];
+    if ( isset( $_POST['articles'] ) && is_array( $_POST['articles'] ) ) {
+        foreach ( $_POST['articles'] as $row ) {
+            if ( ! is_array( $row ) ) continue;
+            $articles[] = [
+                'title'            => sanitize_text_field( wp_unslash( $row['title']  ?? '' ) ),
+                'author'           => sanitize_text_field( wp_unslash( $row['author'] ?? '' ) ),
+                'body'             => wp_kses_post(       wp_unslash( $row['body']   ?? '' ) ),
+                'image_id'         => (int) ( $row['image_id'] ?? 0 ),
+                'page_break_after' => ! empty( $row['page_break_after'] ),
+            ];
+        }
+    }
+
+    $postarr = [
+        'post_type'    => 'vpg_magazine',
+        'post_title'   => $title,
+        'post_excerpt' => $lede,
+        'post_status'  => $status,
+        'post_content' => '', // articles are stored as meta, post_content stays empty
+    ];
+    if ( $issue_id ) {
+        $postarr['ID'] = $issue_id;
+        wp_update_post( $postarr );
+    } else {
+        $issue_id = wp_insert_post( $postarr );
+    }
+
+    if ( $cover_id ) set_post_thumbnail( $issue_id, $cover_id ); else delete_post_thumbnail( $issue_id );
+    update_post_meta( $issue_id, '_vpg_issue_number', $issue_no );
+    update_post_meta( $issue_id, '_vpg_issue_date',   $issue_dt );
+    update_post_meta( $issue_id, '_vpg_articles',     wp_json_encode( $articles ) );
+
+    $redirect = isset( $_POST['save_action'] ) && $_POST['save_action'] === 'save'
+        ? admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $issue_id . '&saved=1' )
+        : admin_url( 'admin.php?page=vpg-magazine&saved=' . $issue_id );
+
+    wp_safe_redirect( $redirect );
+    exit;
+} );
+
+/* ─── Helper · read articles ─────────────────────────────────────── */
+function vpg_get_articles( $issue_id ) {
+    $json = get_post_meta( $issue_id, '_vpg_articles', true );
+    if ( ! $json ) return [];
+    $decoded = json_decode( $json, true );
+    return is_array( $decoded ) ? $decoded : [];
+}
+
+/* ─── Duplicate previous issue · pre-fills a new draft with the ToC ── */
+function vpg_magazine_duplicate_handler() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+
+    $latest = get_posts( [ 'post_type' => 'vpg_magazine', 'posts_per_page' => 1, 'orderby' => 'date', 'order' => 'DESC' ] );
+    if ( ! $latest ) {
+        wp_safe_redirect( admin_url( 'admin.php?page=vpg-magazine&dup=empty' ) );
+        exit;
+    }
+
+    $src = $latest[0];
+    $articles = vpg_get_articles( $src->ID );
+
+    // Strip bodies/images · keep titles + authors as scaffolding
+    foreach ( $articles as &$a ) {
+        $a['body']     = '';
+        $a['image_id'] = 0;
+    }
+    unset( $a );
+
+    $new_id = wp_insert_post( [
+        'post_type'    => 'vpg_magazine',
+        'post_title'   => $src->post_title . ' · ' . __( '(copy)', 'vpg-v2' ),
+        'post_excerpt' => '',
+        'post_status'  => 'draft',
+        'post_content' => '',
+    ] );
+
+    update_post_meta( $new_id, '_vpg_articles',     wp_json_encode( $articles ) );
+    update_post_meta( $new_id, '_vpg_issue_number', '' );
+    update_post_meta( $new_id, '_vpg_issue_date',   '' );
+
+    wp_safe_redirect( admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $new_id . '&dup=ok' ) );
+    exit;
+}

@@ -10,10 +10,13 @@
     $ink  = re_opt('re_color_ink', '#F2EFE9');
     $accent = re_opt('re_accent', '#F2A03D');
 
-    // Convert hex to RGB
-    $bg_rgb  = implode(',', sscanf($bg, "#%02x%02x%02x"));
-    $ink_rgb = implode(',', sscanf($ink, "#%02x%02x%02x"));
-    $acc_rgb = implode(',', sscanf($accent, "#%02x%02x%02x"));
+    // Convert hex to RGB (with safe fallbacks)
+    $bg_parts  = sscanf($bg, "#%02x%02x%02x") ?: [11, 12, 16];
+    $ink_parts = sscanf($ink, "#%02x%02x%02x") ?: [242, 239, 233];
+    $acc_parts = sscanf($accent, "#%02x%02x%02x") ?: [242, 160, 61];
+    $bg_rgb  = implode(',', $bg_parts);
+    $ink_rgb = implode(',', $ink_parts);
+    $acc_rgb = implode(',', $acc_parts);
     ?>
     <style>
         :root {

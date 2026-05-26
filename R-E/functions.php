@@ -227,7 +227,7 @@ add_filter('body_class', function ($classes) {
 /* ─── Elementor Page Template Blank Override ───────────────── */
 
 add_filter('template_include', function ($template) {
-    if (is_singular() && re_is_elementor_page()) {
+    if (is_singular() && did_action('elementor/loaded') && re_is_elementor_page()) {
         $canvas = RE_DIR . '/template-parts/canvas.php';
         if (file_exists($canvas)) return $canvas;
     }
@@ -236,7 +236,12 @@ add_filter('template_include', function ($template) {
 
 function re_is_elementor_page() {
     if (!did_action('elementor/loaded')) return false;
-    return \Elementor\Plugin::$instance->documents->get(get_the_ID())->is_built_with_elementor();
+    if (!class_exists('\Elementor\Plugin')) return false;
+    $post_id = get_the_ID();
+    if (!$post_id) return false;
+    $document = \Elementor\Plugin::$instance->documents->get($post_id);
+    if (!$document) return false;
+    return $document->is_built_with_elementor();
 }
 
 /* ─── Disable Emoji for Performance ───────────────────────── */

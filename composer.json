@@ -1,0 +1,12 @@
+{
+    "name": "mokshaone/wp-theme",
+    "description": "WordPress theme collection",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.0"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

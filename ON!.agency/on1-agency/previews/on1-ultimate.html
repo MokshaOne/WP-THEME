@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>on1.agency — Ultimate Preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        bg:      '#0A0A0A',
+        bg2:     '#111111',
+        bg3:     '#161616',
+        bgcard:  '#131313',
+        fg:      '#FFFFFF',
+        mute:    'rgba(255,255,255,0.58)',
+        faint:   'rgba(255,255,255,0.32)',
+        rule:    'rgba(255,255,255,0.08)',
+        rule2:   'rgba(255,255,255,0.16)',
+        accent:  '#FF1F8C',
+        accentd: '#C8095F',
+        accentl: '#FF6BB0',
+        warm:    '#FF7A3D',
+      },
+      fontFamily: {
+        serif: ["'Instrument Serif'", "'Times New Roman'", 'serif'],
+        sans:  ["'Inter'", 'system-ui', '-apple-system', 'sans-serif'],
+      },
+    },
+  },
+}
+</script>
+<style>
+/* ── BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
+::selection{background:#FF1F8C;color:#0A0A0A}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal.is-visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.35s}
+.reveal-delay-4{transition-delay:.5s}
+.reveal-delay-5{transition-delay:.65s}
+
+/* ── NAVBAR ── */
+.nav-glass{
+  background:rgba(10,10,10,0.5);
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  transition:all .4s cubic-bezier(.16,1,.3,1);
+}
+.nav-glass.scrolled{
+  background:rgba(10,10,10,0.85);
+  border-bottom-color:rgba(255,255,255,0.1);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.nav-link{position:relative;padding:.4rem 0}
+.nav-link::after{
+  content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#FF1F8C,#FF6BB0);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.nav-link:hover::after,.nav-link.active::after{transform:scaleX(1)}
+
+/* ── MOBILE MENU ── */
+.mobile-menu{
+  clip-path:circle(0% at calc(100% - 2rem) 2rem);
+  transition:clip-path .6s cubic-bezier(.16,1,.3,1);
+}
+.mobile-menu.open{clip-path:circle(150% at calc(100% - 2rem) 2rem)}
+
+/* ── FANCY BUTTONS ── */
+.btn-fancy{
+  position:relative;display:inline-flex;align-items:center;gap:.6rem;
+  padding:.9rem 1.6rem .9rem 1.8rem;
+  border-radius:999px;font-size:14px;font-weight:500;letter-spacing:.02em;
+  cursor:pointer;overflow:hidden;transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+.btn-primary{
+  background:linear-gradient(135deg,#FF1F8C,#C8095F);
+  color:#fff;border:none;
+  box-shadow:0 0 0 0 rgba(255,31,140,0),0 4px 16px rgba(255,31,140,0.25);
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 30px rgba(255,31,140,0.3),0 8px 24px rgba(255,31,140,0.35);
+}
+.btn-primary::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.15) 50%,transparent 70%);
+  transform:translateX(-100%) rotate(45deg);
+  transition:none;
+}
+.btn-primary:hover::before{
+  animation:shimmer .8s ease-out;
+}
+@keyframes shimmer{
+  to{transform:translateX(100%) rotate(45deg)}
+}
+.btn-outline{
+  background:transparent;color:#fff;
+  border:1px solid rgba(255,255,255,0.16);
+}
+.btn-outline:hover{
+  border-color:#FF1F8C;color:#FF1F8C;
+  transform:translateY(-2px);
+  box-shadow:0 0 20px rgba(255,31,140,0.1);
+}
+.btn-outline .btn-arrow{
+  transition:transform .3s cubic-bezier(.16,1,.3,1);
+}
+.btn-outline:hover .btn-arrow{transform:translateX(4px)}
+.btn-sm{padding:.6rem 1.2rem .6rem 1.4rem;font-size:12px}
+
+/* ── HERO ANIMATIONS ── */
+@keyframes heroTextReveal{
+  0%{clip-path:inset(0 100% 0 0);opacity:0;transform:translateY(20px)}
+  100%{clip-path:inset(0 0 0 0);opacity:1;transform:translateY(0)}
+}
+.hero-text-reveal{
+  animation:heroTextReveal 1s cubic-bezier(.16,1,.3,1) both;
+}
+.hero-text-reveal-d1{animation-delay:.2s}
+.hero-text-reveal-d2{animation-delay:.4s}
+.hero-text-reveal-d3{animation-delay:.6s}
+.hero-text-reveal-d4{animation-delay:.85s}
+
+@keyframes float{
+  0%,100%{transform:translate(0,0)}
+  25%{transform:translate(10px,-15px)}
+  50%{transform:translate(-5px,-25px)}
+  75%{transform:translate(-15px,-10px)}
+}
+@keyframes pulse-glow{
+  0%,100%{opacity:.4;transform:scale(1)}
+  50%{opacity:.8;transform:scale(1.15)}
+}
+.particle{
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation:float 8s ease-in-out infinite;
+}
+.particle-glow{animation:pulse-glow 4s ease-in-out infinite}
+
+@keyframes gradient-shift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.gradient-text{
+  background:linear-gradient(135deg,#FF1F8C,#FF6BB0,#FF7A3D,#FF1F8C);
+  background-size:300% 300%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:gradient-shift 6s ease infinite;
+}
+
+@keyframes orbit{
+  from{transform:rotate(0deg) translateX(180px) rotate(0deg)}
+  to{transform:rotate(360deg) translateX(180px) rotate(-360deg)}
+}
+.orbit-ring{
+  position:absolute;top:50%;left:50%;width:0;height:0;
+}
+.orbit-dot{
+  width:6px;height:6px;border-radius:50%;background:#FF1F8C;
+  position:absolute;animation:orbit 12s linear infinite;
+  box-shadow:0 0 12px rgba(255,31,140,0.6);
+}
+
+/* ── EYEBROW ── */
+.eyebrow{
+  font-size:11px;letter-spacing:.35em;text-transform:uppercase;
+  color:#FF1F8C;font-weight:500;
+  display:inline-flex;align-items:center;gap:.7em;
+}
+.eyebrow::before{content:'';width:20px;height:1px;background:#FF1F8C}
+
+/* ── PROJECT CARDS ── */
+.project-card{
+  position:relative;overflow:hidden;border-radius:1.5rem;
+  border:1px solid rgba(255,255,255,0.06);
+  transition:all .5s cubic-bezier(.16,1,.3,1);
+}
+.project-card:hover{
+  border-color:rgba(255,31,140,0.3);
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 40px rgba(255,31,140,0.08);
+}
+.project-card img{transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.project-card:hover img{transform:scale(1.05)}
+.project-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,10,10,0.9) 0%,rgba(10,10,10,0.3) 40%,transparent 100%);
+  opacity:0;transition:opacity .4s;
+}
+.project-card:hover .project-overlay{opacity:1}
+.project-info{
+  position:absolute;bottom:0;left:0;right:0;padding:1.5rem;
+  transform:translateY(20px);opacity:0;
+  transition:all .4s cubic-bezier(.16,1,.3,1) .1s;
+}
+.project-card:hover .project-info{transform:translateY(0);opacity:1}
+
+/* ── TESTIMONIAL CARDS ── */
+.testimonial-card{
+  border-radius:1.5rem;border:1px solid rgba(255,255,255,0.06);
+  background:linear-gradient(135deg,#131313,#161616);
+  padding:2rem;transition:all .4s cubic-bezier(.16,1,.3,1);
+  position:relative;overflow:hidden;
+}
+.testimonial-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#FF1F8C,transparent);
+  transform:scaleX(0);transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.testimonial-card:hover::before{transform:scaleX(1)}
+.testimonial-card:hover{
+  border-color:rgba(255,31,140,0.2);
+  transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(0,0,0,0.3);
+}
+
+/* ── PRICING CARDS ── */
+.pricing-card{
+  border-radius:1.5rem;border:1px solid rgba(255,255,255,0.06);
+  background:#131313;padding:2rem;
+  transition:all .4s cubic-bezier(.16,1,.3,1);
+  position:relative;overflow:hidden;
+}
+.pricing-card:hover{
+  border-color:rgba(255,255,255,0.12);
+  transform:translateY(-4px);
+}
+.pricing-featured{
+  border-color:#FF1F8C !important;
+  background:linear-gradient(180deg,rgba(255,31,140,0.08),#131313 40%);
+}
+.pricing-featured::after{
+  content:'';position:absolute;inset:-1px;border-radius:1.5rem;
+  background:linear-gradient(135deg,#FF1F8C,#C8095F,#FF6BB0);
+  z-index:-1;opacity:0;transition:opacity .3s;
+}
+.pricing-featured:hover::after{opacity:1}
+
+/* ── CONTACT ── */
+.input-fancy{
+  width:100%;padding:.85rem 1.2rem;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:1rem;color:#fff;font-size:14px;
+  transition:all .3s;outline:none;font-family:inherit;
+}
+.input-fancy:focus{
+  border-color:#FF1F8C;
+  box-shadow:0 0 0 3px rgba(255,31,140,0.15);
+  background:rgba(255,255,255,0.06);
+}
+.input-fancy::placeholder{color:rgba(255,255,255,0.3)}
+
+/* ── MARQUEE ── */
+.marquee{overflow:hidden}
+.marquee-track{
+  display:flex;gap:4rem;width:max-content;
+  animation:marquee 30s linear infinite;
+}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SCROLL INDICATOR ── */
+@keyframes scrollPulse{
+  0%,100%{transform:translateY(0);opacity:1}
+  50%{transform:translateY(10px);opacity:.4}
+}
+
+/* ── MAGNETIC EFFECT (JS-driven) ── */
+.magnetic{transition:transform .3s cubic-bezier(.16,1,.3,1)}
+</style>
+</head>
+
+<body class="bg-bg text-fg font-sans leading-relaxed overflow-x-clip">
+
+<!-- ════════════════════════════════════════════════════════
+     NAVBAR — Glassmorphism + Scroll Effect
+     ════════════════════════════════════════════════════════ -->
+<nav id="navbar" class="nav-glass fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)] flex items-center justify-between h-16">
+    <!-- Brand -->
+    <a href="#" class="flex items-center gap-2 group">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-accent to-accentd flex items-center justify-center transition-transform group-hover:rotate-6 group-hover:scale-110">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      </div>
+      <span class="text-sm font-semibold tracking-[.25em] uppercase">on1<span class="text-accent">.</span>agency</span>
+    </a>
+
+    <!-- Desktop Links -->
+    <ul class="hidden md:flex items-center gap-8 list-none">
+      <li><a href="#work" class="nav-link text-[13px] tracking-wider font-medium text-white/70 hover:text-white transition-colors">Work<sup class="text-accent text-[9px] ml-0.5">14</sup></a></li>
+      <li><a href="#services" class="nav-link text-[13px] tracking-wider font-medium text-white/70 hover:text-white transition-colors">Practice</a></li>
+      <li><a href="#pricing" class="nav-link text-[13px] tracking-wider font-medium text-white/70 hover:text-white transition-colors">Pricing</a></li>
+      <li><a href="#testimonials" class="nav-link text-[13px] tracking-wider font-medium text-white/70 hover:text-white transition-colors">Clients</a></li>
+      <li><a href="#faq" class="nav-link text-[13px] tracking-wider font-medium text-white/70 hover:text-white transition-colors">FAQ</a></li>
+    </ul>
+
+    <!-- Desktop CTA -->
+    <div class="hidden md:flex items-center gap-3">
+      <a href="#contact" class="btn-fancy btn-primary btn-sm magnetic">
+        Let's talk
+        <span>&#8599;</span>
+      </a>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button id="menu-toggle" class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 group" aria-label="Menu">
+      <span class="block w-6 h-[2px] bg-white transition-all group-[.open]:rotate-45 group-[.open]:translate-y-[5px]"></span>
+      <span class="block w-6 h-[2px] bg-white transition-all group-[.open]:opacity-0"></span>
+      <span class="block w-6 h-[2px] bg-white transition-all group-[.open]:-rotate-45 group-[.open]:-translate-y-[5px]"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-0 bg-bg z-40 md:hidden flex flex-col pt-24 px-8">
+    <nav class="flex flex-col gap-6">
+      <a href="#work" class="mobile-link text-3xl font-bold tracking-tight hover:text-accent transition-colors" onclick="closeMobile()">Work</a>
+      <a href="#services" class="mobile-link text-3xl font-bold tracking-tight hover:text-accent transition-colors" onclick="closeMobile()">Practice</a>
+      <a href="#pricing" class="mobile-link text-3xl font-bold tracking-tight hover:text-accent transition-colors" onclick="closeMobile()">Pricing</a>
+      <a href="#testimonials" class="mobile-link text-3xl font-bold tracking-tight hover:text-accent transition-colors" onclick="closeMobile()">Clients</a>
+      <a href="#contact" class="mobile-link text-3xl font-bold tracking-tight hover:text-accent transition-colors" onclick="closeMobile()">Brief</a>
+    </nav>
+    <div class="mt-auto pb-12">
+      <a href="#contact" class="btn-fancy btn-primary w-full justify-center text-lg" onclick="closeMobile()">Start a project <span>&#8599;</span></a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════════════
+     HERO — Animated Text Reveal + Particles + Gradient
+     ════════════════════════════════════════════════════════ -->
+<header class="relative min-h-screen flex flex-col justify-center overflow-hidden pt-16">
+  <!-- Particles & Orbs -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="particle w-[300px] h-[300px] bg-accent/[0.04] blur-[100px] top-[10%] right-[5%]" style="animation-delay:0s;animation-duration:10s"></div>
+    <div class="particle w-[200px] h-[200px] bg-accentl/[0.06] blur-[80px] bottom-[15%] left-[10%]" style="animation-delay:2s;animation-duration:12s"></div>
+    <div class="particle w-[150px] h-[150px] bg-warm/[0.04] blur-[60px] top-[40%] left-[50%]" style="animation-delay:4s;animation-duration:14s"></div>
+    <!-- Small glowing dots -->
+    <div class="particle particle-glow w-2 h-2 bg-accent top-[20%] right-[25%]" style="animation-delay:1s"></div>
+    <div class="particle particle-glow w-1.5 h-1.5 bg-accentl top-[60%] left-[15%]" style="animation-delay:3s"></div>
+    <div class="particle particle-glow w-1 h-1 bg-warm top-[35%] right-[40%]" style="animation-delay:5s"></div>
+    <div class="particle particle-glow w-2 h-2 bg-accent bottom-[25%] right-[15%]" style="animation-delay:2.5s"></div>
+    <!-- Orbit ring -->
+    <div class="orbit-ring hidden lg:block" style="top:45%;left:70%">
+      <div class="orbit-dot" style="animation-duration:12s"></div>
+      <div class="orbit-dot" style="animation-duration:12s;animation-delay:-4s;opacity:.5;width:4px;height:4px"></div>
+      <div class="orbit-dot" style="animation-duration:12s;animation-delay:-8s;opacity:.3;width:3px;height:3px"></div>
+    </div>
+  </div>
+
+  <!-- Grid lines (subtle) -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-0 bottom-0 left-[25%] w-px bg-white/[0.03]"></div>
+    <div class="absolute top-0 bottom-0 left-[50%] w-px bg-white/[0.03]"></div>
+    <div class="absolute top-0 bottom-0 left-[75%] w-px bg-white/[0.03]"></div>
+  </div>
+
+  <div class="relative z-10 max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)] w-full">
+    <div class="max-w-4xl">
+      <!-- Eyebrow -->
+      <div class="hero-text-reveal">
+        <span class="eyebrow">A one-person digital atelier &middot; Wien, Austria</span>
+      </div>
+
+      <!-- Manifesto -->
+      <div class="hero-text-reveal hero-text-reveal-d1 mt-8 p-6 rounded-2xl border border-rule bg-white/[0.02] backdrop-blur-sm max-w-xl">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-1 rounded-full bg-gradient-to-b from-accent to-accentl"></div>
+          <div>
+            <p class="text-white/60 text-[15px] leading-relaxed">
+              <strong class="text-white font-medium">&ldquo; At on1.agency, we believe quiet design is the most generous kind of work.</strong>
+              Building editorial WordPress sites and design systems for studios who want to look like themselves.&rdquo;
+            </p>
+            <div class="mt-3 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-accentd flex items-center justify-center text-[10px] font-bold text-white">NR</div>
+              <div>
+                <span class="text-sm font-medium">Nishuthan Raveenthiran</span>
+                <span class="text-faint text-xs ml-2 font-serif italic">Founder</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Giant Headline -->
+      <h1 class="mt-10">
+        <span class="hero-text-reveal hero-text-reveal-d1 block text-6xl sm:text-7xl lg:text-8xl xl:text-[7rem] font-extrabold tracking-tighter leading-[0.88]">
+          where
+        </span>
+        <span class="hero-text-reveal hero-text-reveal-d2 block text-6xl sm:text-7xl lg:text-8xl xl:text-[7rem] font-extrabold tracking-tighter leading-[0.88]">
+          <em class="font-serif italic font-normal gradient-text">craft</em>
+        </span>
+        <span class="hero-text-reveal hero-text-reveal-d3 block text-6xl sm:text-7xl lg:text-8xl xl:text-[7rem] font-extrabold tracking-tighter leading-[0.88]">
+          meets code<em class="font-serif italic font-normal text-accent">.</em>
+        </span>
+      </h1>
+
+      <!-- CTAs -->
+      <div class="hero-text-reveal hero-text-reveal-d4 mt-10 flex flex-col sm:flex-row gap-4">
+        <a href="#contact" class="btn-fancy btn-primary text-base magnetic">
+          Start a project
+          <span>&#8599;</span>
+        </a>
+        <a href="#work" class="btn-fancy btn-outline text-base magnetic">
+          View our work
+          <span class="btn-arrow">&rarr;</span>
+        </a>
+      </div>
+
+      <!-- Booking badge -->
+      <div class="hero-text-reveal hero-text-reveal-d4 mt-8 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/[0.04] border border-rule text-sm">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        Booking <em class="font-serif italic text-accent">Q3</em> &mdash; slots open
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-faint" style="animation:scrollPulse 2.5s ease-in-out infinite">
+    <span class="text-[10px] tracking-[.3em] uppercase">Scroll</span>
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="currentColor"><animate attributeName="cy" values="8;16;8" dur="2.5s" repeatCount="indefinite"/></circle></svg>
+  </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════════════════
+     STATS BAR
+     ════════════════════════════════════════════════════════ -->
+<div class="border-y border-rule bg-bg2/50">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)] py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="reveal text-center">
+      <div class="text-4xl font-extrabold"><span class="gradient-text">14</span>+</div>
+      <div class="text-mute text-sm mt-2 leading-tight">Sites shipped<br>since 2018</div>
+    </div>
+    <div class="reveal reveal-delay-1 text-center">
+      <div class="text-4xl font-extrabold">3<small class="text-xl text-mute font-normal"> mo</small></div>
+      <div class="text-mute text-sm mt-2 leading-tight">Avg. engagement<br>length</div>
+    </div>
+    <div class="reveal reveal-delay-2 text-center">
+      <div class="text-4xl font-extrabold"><span class="gradient-text">72</span>h</div>
+      <div class="text-mute text-sm mt-2 leading-tight">Reply<br>window</div>
+    </div>
+    <div class="reveal reveal-delay-3 text-center">
+      <div class="text-4xl font-extrabold">1</div>
+      <div class="text-mute text-sm mt-2 leading-tight">Person<br>responsible</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PROJECTS — Bento Grid with Hover Reveals
+     ════════════════════════════════════════════════════════ -->
+<section id="work" class="py-28">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <header class="reveal flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-16">
+      <div>
+        <span class="eyebrow">Featured cases</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter mt-4">the work that <em class="font-serif italic font-normal">got</em> us here.</h2>
+      </div>
+      <p class="text-mute max-w-sm text-sm leading-relaxed">Selected case studies from across the studio's range — from heritage projects to brutalist hubs.</p>
+    </header>
+
+    <div class="grid md:grid-cols-4 md:grid-rows-2 gap-4">
+      <!-- Large featured -->
+      <div class="reveal project-card md:col-span-2 md:row-span-2 min-h-[420px] md:min-h-0 bg-bgcard cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&h=1100&fit=crop&q=80" alt="Raveenthiran.com" class="absolute inset-0 w-full h-full object-cover">
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="text-accent text-xs tracking-[.2em] uppercase font-medium">Case 001 &middot; 2024</span>
+          <h3 class="text-2xl font-bold mt-2">Raveenthiran.com</h3>
+          <p class="text-white/60 text-sm mt-1">Editorial photography portfolio. Heritage meets modernist grid.</p>
+          <div class="mt-4 flex items-center gap-3">
+            <span class="btn-fancy btn-primary btn-sm">View case <span>&#8599;</span></span>
+            <span class="text-xs text-white/40">raveenthiran.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- M1O -->
+      <div class="reveal reveal-delay-1 project-card min-h-[220px] bg-bgcard cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&h=400&fit=crop&q=80" alt="M1O Hub" class="absolute inset-0 w-full h-full object-cover">
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="text-accent text-xs tracking-[.2em] uppercase font-medium">Case 002</span>
+          <h3 class="text-lg font-bold mt-1">M1O Hub</h3>
+          <p class="text-white/60 text-xs">Brutalist link hub. One page, no filler.</p>
+        </div>
+      </div>
+
+      <!-- VPG -->
+      <div class="reveal reveal-delay-2 project-card min-h-[220px] bg-bgcard cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1493119508027-2b584f234d6c?w=600&h=400&fit=crop&q=80" alt="VPG" class="absolute inset-0 w-full h-full object-cover">
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="text-accent text-xs tracking-[.2em] uppercase font-medium">Case 003</span>
+          <h3 class="text-lg font-bold mt-1">Vienna Photo Group</h3>
+          <p class="text-white/60 text-xs">Community platform for photographers.</p>
+        </div>
+      </div>
+
+      <!-- JRPOETRY -->
+      <div class="reveal reveal-delay-3 project-card min-h-[220px] bg-bgcard cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=600&h=400&fit=crop&q=80" alt="JRPoetry" class="absolute inset-0 w-full h-full object-cover">
+        <div class="project-overlay"></div>
+        <div class="project-info">
+          <span class="text-accent text-xs tracking-[.2em] uppercase font-medium">Case 004</span>
+          <h3 class="text-lg font-bold mt-1">Kavithai</h3>
+          <p class="text-white/60 text-xs">Tamil poetry. Relief theme v2.</p>
+        </div>
+      </div>
+
+      <!-- CTA Card -->
+      <div class="reveal reveal-delay-4 project-card min-h-[220px] bg-bgcard border-dashed !border-accent/20 flex items-center justify-center cursor-pointer group">
+        <div class="text-center p-6">
+          <div class="w-12 h-12 rounded-full border-2 border-accent/30 flex items-center justify-center mx-auto mb-4 group-hover:border-accent group-hover:bg-accent/10 transition-all">
+            <span class="text-accent text-2xl">+</span>
+          </div>
+          <h3 class="font-bold">Your studio, here.</h3>
+          <p class="text-mute text-xs mt-1">One slot open this quarter.</p>
+          <span class="mt-3 inline-block text-accent text-xs font-medium">Booking open &#8599;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     SERVICES — Animated Rows
+     ════════════════════════════════════════════════════════ -->
+<section id="services" class="py-28 border-y border-rule">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <header class="reveal flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-16">
+      <div>
+        <span class="eyebrow">What we do</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter mt-4">empowering studios to <em class="font-serif italic font-normal">look like themselves</em>.</h2>
+      </div>
+      <p class="text-mute max-w-sm text-sm leading-relaxed">Four core services. Strategy is always included. You always work with one person.</p>
+    </header>
+
+    <div class="border-t border-rule">
+      <a href="#contact" class="reveal group grid grid-cols-[40px_1fr] md:grid-cols-[60px_1fr_2fr_40px] gap-4 md:gap-8 items-center py-8 border-b border-rule hover:bg-white/[0.02] transition-all px-4 -mx-4 rounded-xl">
+        <span class="text-faint text-sm font-serif italic">01</span>
+        <h3 class="text-xl font-bold">Editorial <em class="font-serif italic font-normal">WordPress</em> themes</h3>
+        <p class="hidden md:block text-mute text-sm leading-relaxed">Built like a printed monograph. ACF Pro-driven, type-led, custom CPTs. No page builders. From <strong class="text-fg">&#8364; 6.800</strong>.</p>
+        <span class="hidden md:flex w-8 h-8 rounded-full border border-rule items-center justify-center text-accent opacity-0 group-hover:opacity-100 group-hover:border-accent transition-all">&#8599;</span>
+      </a>
+      <a href="#contact" class="reveal reveal-delay-1 group grid grid-cols-[40px_1fr] md:grid-cols-[60px_1fr_2fr_40px] gap-4 md:gap-8 items-center py-8 border-b border-rule hover:bg-white/[0.02] transition-all px-4 -mx-4 rounded-xl">
+        <span class="text-faint text-sm font-serif italic">02</span>
+        <h3 class="text-xl font-bold">Design <em class="font-serif italic font-normal">systems</em> &amp; tokens</h3>
+        <p class="hidden md:block text-mute text-sm leading-relaxed">Palette, type, components, documentation. For when the next site, deck and pitch should look like the same studio. From <strong class="text-fg">&#8364; 3.200</strong>.</p>
+        <span class="hidden md:flex w-8 h-8 rounded-full border border-rule items-center justify-center text-accent opacity-0 group-hover:opacity-100 group-hover:border-accent transition-all">&#8599;</span>
+      </a>
+      <a href="#contact" class="reveal reveal-delay-2 group grid grid-cols-[40px_1fr] md:grid-cols-[60px_1fr_2fr_40px] gap-4 md:gap-8 items-center py-8 border-b border-rule hover:bg-white/[0.02] transition-all px-4 -mx-4 rounded-xl">
+        <span class="text-faint text-sm font-serif italic">03</span>
+        <h3 class="text-xl font-bold">Identity <em class="font-serif italic font-normal">refresh</em> for studios</h3>
+        <p class="hidden md:block text-mute text-sm leading-relaxed">Wordmark, voice, site, email. Quiet identity work for studios who want to look more like themselves. From <strong class="text-fg">&#8364; 4.500</strong>.</p>
+        <span class="hidden md:flex w-8 h-8 rounded-full border border-rule items-center justify-center text-accent opacity-0 group-hover:opacity-100 group-hover:border-accent transition-all">&#8599;</span>
+      </a>
+      <a href="#contact" class="reveal reveal-delay-3 group grid grid-cols-[40px_1fr] md:grid-cols-[60px_1fr_2fr_40px] gap-4 md:gap-8 items-center py-8 border-b border-rule hover:bg-white/[0.02] transition-all px-4 -mx-4 rounded-xl">
+        <span class="text-faint text-sm font-serif italic">04</span>
+        <h3 class="text-xl font-bold"><em class="font-serif italic font-normal">Audits</em> &amp; second opinions</h3>
+        <p class="hidden md:block text-mute text-sm leading-relaxed">Senior eyes on a site that's almost-but-not-quite right. Two weeks, written report, no bullshit. From <strong class="text-fg">&#8364; 1.800</strong>.</p>
+        <span class="hidden md:flex w-8 h-8 rounded-full border border-rule items-center justify-center text-accent opacity-0 group-hover:opacity-100 group-hover:border-accent transition-all">&#8599;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     MARQUEE — Trust Bar
+     ════════════════════════════════════════════════════════ -->
+<div class="marquee py-6 bg-bg2/50 border-b border-rule">
+  <div class="marquee-track">
+    <span class="text-mute/40 text-sm tracking-[.2em] uppercase whitespace-nowrap">Editorial WordPress &middot; Design Systems &middot; Identity Refresh &middot; Audits &middot; Studio Wien &middot; Atelier Neun &middot; VPG &middot; JRPOETRY &middot; M1O Hub &middot; Raveenthiran.com &middot; on1.agency &middot; Wien, Austria &middot;</span>
+    <span class="text-mute/40 text-sm tracking-[.2em] uppercase whitespace-nowrap">Editorial WordPress &middot; Design Systems &middot; Identity Refresh &middot; Audits &middot; Studio Wien &middot; Atelier Neun &middot; VPG &middot; JRPOETRY &middot; M1O Hub &middot; Raveenthiran.com &middot; on1.agency &middot; Wien, Austria &middot;</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     TESTIMONIALS — Cards with Top-Border Reveal
+     ════════════════════════════════════════════════════════ -->
+<section id="testimonials" class="py-28">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <header class="reveal text-center mb-16">
+      <span class="eyebrow" style="justify-content:center">What they say</span>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter mt-4">studios we've <em class="font-serif italic font-normal">worked with</em>.</h2>
+      <p class="text-mute mt-4 max-w-lg mx-auto text-sm">A small portfolio. The work is the testimonial. Words from a few who let us speak.</p>
+    </header>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="reveal testimonial-card">
+        <svg class="text-accent/20 mb-4" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        <blockquote class="text-[15px] leading-relaxed">&ldquo;Nishuthan reads a brief like an editor &mdash; finds the sentence we didn't write but meant to. Then builds exactly that.&rdquo;</blockquote>
+        <div class="mt-8 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-accent/20 to-accentd/20 flex items-center justify-center text-xs font-bold text-accent border border-accent/20">MR</div>
+          <div>
+            <p class="text-sm font-semibold">Maria R.</p>
+            <p class="text-xs text-mute">Director &middot; Studio Wien</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1 testimonial-card">
+        <svg class="text-accent/20 mb-4" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        <blockquote class="text-[15px] leading-relaxed">&ldquo;The kind of designer who pushes back when you ask for the wrong thing. Saved us from ourselves twice in one project.&rdquo;</blockquote>
+        <div class="mt-8 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-accent/20 to-accentd/20 flex items-center justify-center text-xs font-bold text-accent border border-accent/20">TK</div>
+          <div>
+            <p class="text-sm font-semibold">Thomas K.</p>
+            <p class="text-xs text-mute">Founder &middot; Atelier Neun</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2 testimonial-card">
+        <svg class="text-accent/20 mb-4" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        <blockquote class="text-[15px] leading-relaxed">&ldquo;Our site went from 'a WordPress site' to 'the studio's site'. Three years later, we still haven't touched it.&rdquo;</blockquote>
+        <div class="mt-8 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-accent/20 to-accentd/20 flex items-center justify-center text-xs font-bold text-accent border border-accent/20">JF</div>
+          <div>
+            <p class="text-sm font-semibold">Julia F.</p>
+            <p class="text-xs text-mute">Photographer &middot; VPG</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PRICING — Cards with Featured Glow
+     ════════════════════════════════════════════════════════ -->
+<section id="pricing" class="py-28 border-y border-rule bg-bg2/30">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <header class="reveal flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-16">
+      <div>
+        <span class="eyebrow">Investment</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter mt-4">prices that <em class="font-serif italic font-normal">don't hide</em>.</h2>
+      </div>
+      <p class="text-mute max-w-sm text-sm leading-relaxed">Indicative ranges. Final scope agreed after the brief.</p>
+    </header>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="reveal pricing-card flex flex-col">
+        <h3 class="font-semibold text-lg">Audit <em class="font-serif italic font-normal">plan</em></h3>
+        <div class="mt-4">
+          <span class="text-4xl font-extrabold">&#8364;1.8K</span>
+          <span class="text-mute text-sm ml-1">/ 2 wks</span>
+        </div>
+        <ul class="mt-6 space-y-3 text-sm text-mute flex-1">
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Code review</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>A11y &amp; perf pass</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Written report</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>1 follow-up call</li>
+        </ul>
+        <a href="#contact" class="btn-fancy btn-outline btn-sm mt-6 justify-center">Choose <span>&#8599;</span></a>
+      </div>
+
+      <div class="reveal reveal-delay-1 pricing-card pricing-featured flex flex-col">
+        <div class="absolute -top-px left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent"></div>
+        <span class="inline-flex self-start items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] font-semibold tracking-wider uppercase mb-3 border border-accent/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Popular
+        </span>
+        <h3 class="font-semibold text-lg">Premium <em class="font-serif italic font-normal">plan</em></h3>
+        <div class="mt-4">
+          <span class="text-4xl font-extrabold gradient-text">&#8364;6.8K</span>
+          <span class="text-mute text-sm ml-1">/ project</span>
+        </div>
+        <ul class="mt-6 space-y-3 text-sm text-mute flex-1">
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-[10px] text-accent">&#10003;</span>Custom WordPress build</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-[10px] text-accent">&#10003;</span>ACF Pro field design</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-[10px] text-accent">&#10003;</span>3 CPTs &middot; 1 admin panel</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-[10px] text-accent">&#10003;</span>2 rounds of refinement</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-[10px] text-accent">&#10003;</span>Launch &amp; handoff</li>
+        </ul>
+        <a href="#contact" class="btn-fancy btn-primary btn-sm mt-6 justify-center">Choose <span>&#8599;</span></a>
+      </div>
+
+      <div class="reveal reveal-delay-2 pricing-card flex flex-col">
+        <h3 class="font-semibold text-lg">Identity <em class="font-serif italic font-normal">refresh</em></h3>
+        <div class="mt-4">
+          <span class="text-4xl font-extrabold">&#8364;4.5K</span>
+          <span class="text-mute text-sm ml-1">/ project</span>
+        </div>
+        <ul class="mt-6 space-y-3 text-sm text-mute flex-1">
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Wordmark + variants</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Voice &amp; tone</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Light site refresh</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Email signature</li>
+        </ul>
+        <a href="#contact" class="btn-fancy btn-outline btn-sm mt-6 justify-center">Choose <span>&#8599;</span></a>
+      </div>
+
+      <div class="reveal reveal-delay-3 pricing-card flex flex-col">
+        <h3 class="font-semibold text-lg">Custom <em class="font-serif italic font-normal">plan</em></h3>
+        <div class="mt-4">
+          <span class="text-4xl font-extrabold">&#8364;&mdash;</span>
+          <span class="text-mute text-sm ml-1">/ depends</span>
+        </div>
+        <ul class="mt-6 space-y-3 text-sm text-mute flex-1">
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Design system + tokens</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Multi-site build</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Long engagements (3&ndash;6 mo)</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1 w-4 h-4 rounded-full border border-rule flex items-center justify-center text-[10px] text-accent">&#10003;</span>Retainer available</li>
+        </ul>
+        <a href="#contact" class="btn-fancy btn-outline btn-sm mt-6 justify-center">Get quote <span>&#8599;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     FAQ — Interactive Accordion
+     ════════════════════════════════════════════════════════ -->
+<section id="faq" class="py-28">
+  <div class="max-w-[800px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <header class="reveal mb-16">
+      <span class="eyebrow">Common questions</span>
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tighter mt-4">things people <em class="font-serif italic font-normal">ask first</em>.</h2>
+    </header>
+
+    <div class="border-t border-rule">
+      <details class="reveal group border-b border-rule" open>
+        <summary class="flex items-center gap-4 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+          <span class="text-faint text-sm w-8 font-serif italic">01</span>
+          <h4 class="flex-1 font-medium">How long does a typical project take?</h4>
+          <span class="w-8 h-8 rounded-full border border-rule flex items-center justify-center text-accent text-lg group-open:rotate-45 group-open:border-accent transition-all">+</span>
+        </summary>
+        <p class="text-mute text-sm pb-6 pl-12 leading-relaxed">Most full WordPress builds take 6&ndash;10 weeks. An audit is 2 weeks. An identity refresh is 3&ndash;5. The biggest variable is your decision speed &mdash; I move as fast as the slowest reviewer.</p>
+      </details>
+      <details class="reveal reveal-delay-1 group border-b border-rule">
+        <summary class="flex items-center gap-4 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+          <span class="text-faint text-sm w-8 font-serif italic">02</span>
+          <h4 class="flex-1 font-medium">Do you work with page builders?</h4>
+          <span class="w-8 h-8 rounded-full border border-rule flex items-center justify-center text-accent text-lg group-open:rotate-45 group-open:border-accent transition-all">+</span>
+        </summary>
+        <p class="text-mute text-sm pb-6 pl-12 leading-relaxed">No. Every site is custom WordPress with ACF Pro and hand-written templates. Page builders are great for the use case they were designed for; my work isn't that use case.</p>
+      </details>
+      <details class="reveal reveal-delay-2 group border-b border-rule">
+        <summary class="flex items-center gap-4 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+          <span class="text-faint text-sm w-8 font-serif italic">03</span>
+          <h4 class="flex-1 font-medium">Will my team be able to update the site?</h4>
+          <span class="w-8 h-8 rounded-full border border-rule flex items-center justify-center text-accent text-lg group-open:rotate-45 group-open:border-accent transition-all">+</span>
+        </summary>
+        <p class="text-mute text-sm pb-6 pl-12 leading-relaxed">Yes. The admin is custom-designed to match the front-end. Plain language, sensible defaults, no plugin spaghetti. I write the admin like I'm the one who'll use it.</p>
+      </details>
+      <details class="reveal reveal-delay-3 group border-b border-rule">
+        <summary class="flex items-center gap-4 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+          <span class="text-faint text-sm w-8 font-serif italic">04</span>
+          <h4 class="flex-1 font-medium">Where are you based, and do you travel?</h4>
+          <span class="w-8 h-8 rounded-full border border-rule flex items-center justify-center text-accent text-lg group-open:rotate-45 group-open:border-accent transition-all">+</span>
+        </summary>
+        <p class="text-mute text-sm pb-6 pl-12 leading-relaxed">Vienna. Most work is remote. I'll come to your studio for the kickoff and the launch if it's in Europe and useful &mdash; usually it is.</p>
+      </details>
+      <details class="reveal reveal-delay-4 group border-b border-rule">
+        <summary class="flex items-center gap-4 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+          <span class="text-faint text-sm w-8 font-serif italic">05</span>
+          <h4 class="flex-1 font-medium">Do you offer maintenance after launch?</h4>
+          <span class="w-8 h-8 rounded-full border border-rule flex items-center justify-center text-accent text-lg group-open:rotate-45 group-open:border-accent transition-all">+</span>
+        </summary>
+        <p class="text-mute text-sm pb-6 pl-12 leading-relaxed">A 90-day soft-warranty is included on every build (bug fixes, small adjustments). After that, I offer a monthly retainer or pay-as-you-go.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     CONTACT — Form + Info
+     ════════════════════════════════════════════════════════ -->
+<section id="contact" class="py-28 border-t border-rule relative overflow-hidden">
+  <!-- Background glow -->
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-accent/[0.03] blur-[150px] pointer-events-none"></div>
+
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)] relative">
+    <!-- CTA header -->
+    <div class="reveal text-center mb-20">
+      <span class="eyebrow" style="justify-content:center">Send a signal</span>
+      <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mt-6 leading-tight">
+        tell us what you're<br><em class="font-serif italic font-normal">actually</em> doing.
+      </h2>
+      <p class="text-mute mt-4 max-w-lg mx-auto">Five questions. One reply within 72 hours. No automated funnels. Just a conversation.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-12">
+      <!-- Contact info -->
+      <div class="reveal space-y-8">
+        <div class="flex items-start gap-4 group cursor-pointer">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.04] border border-rule flex items-center justify-center group-hover:border-accent group-hover:bg-accent/10 transition-all flex-shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF1F8C" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Location</h3>
+            <p class="text-mute text-sm mt-1">Wien, Austria</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 group cursor-pointer">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.04] border border-rule flex items-center justify-center group-hover:border-accent group-hover:bg-accent/10 transition-all flex-shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF1F8C" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Email</h3>
+            <p class="text-mute text-sm mt-1">hello@on1.agency</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 group cursor-pointer">
+          <div class="w-12 h-12 rounded-2xl bg-white/[0.04] border border-rule flex items-center justify-center group-hover:border-accent group-hover:bg-accent/10 transition-all flex-shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF1F8C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Reply window</h3>
+            <p class="text-mute text-sm mt-1">72 hours &middot; usually faster</p>
+          </div>
+        </div>
+
+        <!-- Sister projects -->
+        <div class="pt-8 border-t border-rule">
+          <h4 class="text-xs tracking-[.2em] uppercase text-mute font-semibold mb-4">Sister projects</h4>
+          <div class="flex flex-wrap gap-3">
+            <a href="#" class="px-4 py-2 rounded-xl border border-rule bg-white/[0.02] text-sm text-mute hover:border-accent hover:text-accent transition-all">m1o.at</a>
+            <a href="#" class="px-4 py-2 rounded-xl border border-rule bg-white/[0.02] text-sm text-mute hover:border-accent hover:text-accent transition-all">raveenthiran.com</a>
+            <a href="#" class="px-4 py-2 rounded-xl border border-rule bg-white/[0.02] text-sm text-mute hover:border-accent hover:text-accent transition-all">VPG</a>
+            <a href="#" class="px-4 py-2 rounded-xl border border-rule bg-white/[0.02] text-sm text-mute hover:border-accent hover:text-accent transition-all">jrpoetry.com</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact form -->
+      <div class="reveal reveal-delay-2">
+        <form class="rounded-3xl border border-rule bg-bgcard p-8 space-y-5" onsubmit="event.preventDefault()">
+          <h3 class="text-xl font-bold">Send a brief</h3>
+          <p class="text-mute text-sm">Tell us about your project and we'll reply within 72 hours.</p>
+          <div class="grid sm:grid-cols-2 gap-4 pt-2">
+            <div><label class="text-xs text-mute uppercase tracking-wider font-medium mb-2 block">First name</label><input class="input-fancy" placeholder="Your first name"></div>
+            <div><label class="text-xs text-mute uppercase tracking-wider font-medium mb-2 block">Last name</label><input class="input-fancy" placeholder="Your last name"></div>
+          </div>
+          <div><label class="text-xs text-mute uppercase tracking-wider font-medium mb-2 block">Email</label><input type="email" class="input-fancy" placeholder="hello@yourstudio.com"></div>
+          <div><label class="text-xs text-mute uppercase tracking-wider font-medium mb-2 block">Project type</label>
+            <select class="input-fancy appearance-none">
+              <option value="">Select a service...</option>
+              <option>Editorial WordPress theme</option>
+              <option>Design system &amp; tokens</option>
+              <option>Identity refresh</option>
+              <option>Audit &amp; second opinion</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div><label class="text-xs text-mute uppercase tracking-wider font-medium mb-2 block">Message</label><textarea class="input-fancy min-h-[120px] resize-y" placeholder="Tell us about your project..."></textarea></div>
+          <button type="submit" class="btn-fancy btn-primary w-full justify-center text-base">
+            Send brief <span>&#8599;</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════════ -->
+<footer class="border-t border-rule py-16">
+  <div class="max-w-[1320px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <div class="grid md:grid-cols-4 gap-10">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-accent to-accentd flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          </div>
+          <span class="text-lg font-bold">on<em class="font-serif italic">1</em>.agency</span>
+        </div>
+        <p class="text-mute text-sm leading-relaxed">A one-person digital atelier.<br>Wien, Austria.<br><em class="font-serif italic">Working slowly, on purpose.</em></p>
+      </div>
+      <div>
+        <h6 class="text-xs tracking-[.2em] uppercase text-mute font-semibold mb-4">Studio</h6>
+        <ul class="space-y-2.5 text-sm text-mute"><li><a href="#" class="hover:text-accent transition-colors">About</a></li><li><a href="#work" class="hover:text-accent transition-colors">Work</a></li><li><a href="#services" class="hover:text-accent transition-colors">Practice</a></li><li><a href="#pricing" class="hover:text-accent transition-colors">Pricing</a></li></ul>
+      </div>
+      <div>
+        <h6 class="text-xs tracking-[.2em] uppercase text-mute font-semibold mb-4">Contact</h6>
+        <ul class="space-y-2.5 text-sm text-mute"><li><a href="mailto:hello@on1.agency" class="hover:text-accent transition-colors">hello@on1.agency</a></li><li><a href="#contact" class="hover:text-accent transition-colors">Send a brief</a></li><li><a href="#faq" class="hover:text-accent transition-colors">FAQ</a></li></ul>
+      </div>
+      <div>
+        <h6 class="text-xs tracking-[.2em] uppercase text-mute font-semibold mb-4">Legal</h6>
+        <ul class="space-y-2.5 text-sm text-mute"><li><a href="#" class="hover:text-accent transition-colors">Imprint</a></li><li><a href="#" class="hover:text-accent transition-colors">Privacy</a></li><li><a href="#" class="hover:text-accent transition-colors">Terms</a></li></ul>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-rule text-xs text-faint gap-4">
+      <span>Set in <em class="font-serif italic">Instrument Serif</em> &amp; Inter</span>
+      <span>&copy; MMXXVI &middot; on1.agency</span>
+      <span>Built in Wien &middot; v4</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════════════════
+     JAVASCRIPT — Scroll reveal, navbar, mobile menu, magnetic
+     ════════════════════════════════════════════════════════ -->
+<script>
+// Scroll Reveal (IntersectionObserver)
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Mobile menu
+const menuToggle = document.getElementById('menu-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+menuToggle.addEventListener('click', () => {
+  menuToggle.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobile() {
+  menuToggle.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Magnetic button effect
+document.querySelectorAll('.magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

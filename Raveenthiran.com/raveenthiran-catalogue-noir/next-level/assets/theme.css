@@ -1,0 +1,1563 @@
+/* =========================================================
+   Catalogue Noir — theme stylesheet
+   raveenthiran · v3.0.0 · stoic minimal · no scroll
+   ========================================================= */
+
+:root{
+  --bg:#0B0C10;
+  --bg-2:#13141A;
+  --bg-3:#181A20;
+  --ink:#F2EFE9;
+  --ink-2:rgba(242,239,233,.62);
+  --ink-3:rgba(242,239,233,.42); /* lifted from .32 → .42 for WCAG AA (4.5:1) on small body text */
+  --ink-4:rgba(242,239,233,.12);
+  --ink-5:rgba(242,239,233,.06);
+  --amber:#F2A03D;
+  --amber-soft:rgba(242,160,61,.18);
+  --hair:rgba(242,239,233,.14);
+  --hair-soft:rgba(242,239,233,.06);
+  --pad:40px;
+  --bar-h:64px;
+  --strip-h:64px;
+  --ease:cubic-bezier(.65,.05,.2,1);
+
+  /* motion vocabulary */
+  --t-fast:.2s;
+  --t-mid:.35s;
+  --t-slow:.55s;
+
+  /* type vocabulary */
+  --ff-display:'Inter Tight',system-ui,sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,monospace;
+
+  /* size scale — chrome (mono) */
+  --fs-xs:9.5px;     /* tiny caps — admin hints, sub-meta, year columns */
+  --fs-sm:10.5px;    /* default chrome — eyebrows, card meta */
+  --fs-md:12px;      /* prominent chrome — primary nav, modal caps */
+
+  /* size scale — body */
+  --fs-body:14.5px;
+  --fs-lede:16px;
+
+  /* size scale — display (responsive) */
+  --fs-h3:clamp(22px,2.4vw,32px);
+  --fs-h2:clamp(36px,5vw,76px);
+  --fs-h1:clamp(48px,7vw,108px);
+  --fs-display:clamp(64px,11vw,176px);
+
+  /* weight */
+  --fw-light:300;
+  --fw-body:400;
+  --fw-medium:500;
+  --fw-bold:700;
+
+  /* tracking */
+  --tr-display:-.045em;
+  --tr-em:-.055em;
+  --tr-caps:.22em;       /* default chrome tracking — safe at <11px */
+  --tr-caps-wide:.28em;  /* only for ≥11px type */
+
+  /* line-height */
+  --lh-display:.88;
+  --lh-tight:1.05;
+  --lh-body:1.55;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter Tight',system-ui,sans-serif;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  cursor:none;
+}
+@media (pointer:coarse), (max-width:900px){ body{cursor:auto} }
+body.is-modal-open{overflow:hidden}
+
+/* =========================================================
+   Light mode — flips canvas to warm paper, ink to oxblood,
+   recomputes the ink-* alphas accordingly. Applied via
+   `body.nr-light` (manual) or `body.nr-mode-system`
+   media-query (system pref).
+   ========================================================= */
+body.nr-light{
+  --bg:#F4F1EA;        /* warm paper */
+  --bg-2:#ECE7DD;
+  --bg-3:#E2DBCC;
+  --ink:#1A0F0C;       /* near-black with warmth */
+  --ink-2:rgba(26,15,12,.62);
+  --ink-3:rgba(26,15,12,.42);
+  --ink-4:rgba(26,15,12,.12);
+  --ink-5:rgba(26,15,12,.06);
+  --hair:rgba(26,15,12,.14);
+  --hair-soft:rgba(26,15,12,.06);
+}
+body.nr-light::before{
+  background:
+    radial-gradient(150% 100% at 50% 110%, rgba(242,160,61,.04) 0%, transparent 55%),
+    radial-gradient(70% 50% at 85% 20%, rgba(26,15,12,.03) 0%, transparent 60%),
+    radial-gradient(160% 100% at 50% 50%, transparent 35%, rgba(0,0,0,.05) 100%);
+}
+body.nr-light::after{
+  opacity:.04;mix-blend-mode:multiply;
+}
+@media (prefers-color-scheme: light){
+  body.nr-mode-system{
+    --bg:#F4F1EA;--bg-2:#ECE7DD;--bg-3:#E2DBCC;
+    --ink:#1A0F0C;
+    --ink-2:rgba(26,15,12,.62);--ink-3:rgba(26,15,12,.42);
+    --ink-4:rgba(26,15,12,.12);--ink-5:rgba(26,15,12,.06);
+    --hair:rgba(26,15,12,.14);--hair-soft:rgba(26,15,12,.06);
+  }
+  body.nr-mode-system::before{
+    background:
+      radial-gradient(150% 100% at 50% 110%, rgba(242,160,61,.04) 0%, transparent 55%),
+      radial-gradient(70% 50% at 85% 20%, rgba(26,15,12,.03) 0%, transparent 60%),
+      radial-gradient(160% 100% at 50% 50%, transparent 35%, rgba(0,0,0,.05) 100%);
+  }
+  body.nr-mode-system::after{opacity:.04;mix-blend-mode:multiply}
+}
+
+a{color:inherit;text-decoration:none}
+button{font:inherit;background:none;border:0;color:inherit}
+img{max-width:100%;display:block}
+input,textarea,select{font:inherit}
+::selection{background:var(--amber);color:var(--bg)}
+
+/* Strip list markers from navigation + WordPress-rendered menus.
+   wp_nav_menu() outputs <li> items even when items_wrap removes
+   the <ul>; browsers still render the bullet glyphs. */
+nav ul, nav ol, nav li,
+.menu, .menu li,
+.nr-menu, .nr-menu li,
+.nr-sidebar__nav, .nr-sidebar__nav li{
+  list-style:none;margin:0;padding:0;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:
+    radial-gradient(150% 100% at 50% 110%, rgba(242,160,61,.06) 0%, transparent 55%),
+    radial-gradient(70% 50% at 85% 20%, rgba(184,188,200,.04) 0%, transparent 60%),
+    radial-gradient(60% 40% at 20% 80%, rgba(242,160,61,.04) 0%, transparent 70%),
+    radial-gradient(160% 100% at 50% 50%, transparent 35%, rgba(0,0,0,.5) 100%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:200;
+  opacity:.07;mix-blend-mode:overlay;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px);
+}
+
+.skip-link{position:absolute;left:-9999px}
+.skip-link:focus{left:8px;top:8px;background:var(--amber);color:var(--bg);padding:8px 12px;z-index:9999;font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.18em;text-transform:uppercase}
+
+/* =========================================================
+   :focus-visible — keyboard focus ring for every interactive
+   element. Honors reduced-motion preferences (no transition
+   on the ring itself).
+   ========================================================= */
+*:focus{outline:0}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible{
+  outline:2px solid var(--amber);
+  outline-offset:3px;
+  border-radius:2px;
+  box-shadow:0 0 0 4px rgba(11,12,16,.65);
+}
+/* For pill-shaped buttons, match the outline shape */
+.nr-btn:focus-visible,
+.nr-book:focus-visible,
+.nr-book-trigger:focus-visible,
+.nr-hero__arrow:focus-visible,
+.pager button:focus-visible,
+.nr-modal__close:focus-visible,
+.nr-sidebar__close:focus-visible{
+  outline-offset:4px;
+  border-radius:999px;
+}
+/* When user is using keyboard, also disable the custom-cursor hover state
+   so it doesn't fight with the focus ring. */
+body:has(*:focus-visible) .nr-cur{opacity:.3}
+
+/* =========================================================
+   prefers-reduced-motion — disable Ken Burns, ring pulse,
+   dot pulse, page wipe, slider title fade. Honors WCAG 2.3.3.
+   ========================================================= */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .nr-hero__plate.is-active img{animation:none !important;transform:none !important}
+  .nr-wipe{display:none !important}
+}
+
+.nr-page{animation:pageIn .55s var(--ease)}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)}}
+
+/* page-transition amber wipe */
+.nr-wipe{
+  position:fixed;inset:0;background:var(--bg);z-index:500;
+  transform:translateY(100%);transition:transform .5s var(--ease);pointer-events:none;
+}
+.nr-wipe::before{
+  content:'';position:absolute;inset:0 0 auto 0;height:2px;background:var(--amber);
+  transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease);
+}
+body.is-wiping .nr-wipe{transform:translateY(0);pointer-events:auto}
+body.is-wiping .nr-wipe::before{transform:scaleX(1)}
+
+/* =========================================================
+   Top bar
+   ========================================================= */
+.nr-topbar{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+  padding:0 var(--pad);min-height:var(--bar-h);
+  border-bottom:1px solid var(--hair);
+  background:linear-gradient(180deg, rgba(11,12,16,.95) 0%, rgba(11,12,16,.7) 70%, transparent 100%);
+  position:relative;z-index:30;
+}
+.nr-logo{
+  font-weight:700;font-size:13px;
+  letter-spacing:.14em;color:var(--ink);text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:14px;
+}
+.nr-logo::before{
+  content:'';width:6px;height:6px;background:var(--amber);border-radius:50%;
+  box-shadow:0 0 0 4px rgba(242,160,61,.14);
+  animation:nrPulse 3.5s ease-in-out infinite;
+}
+.nr-logo::after{
+  content:'studio · 2026';font-weight:400;font-size:var(--fs-xs);color:var(--ink-3);
+  letter-spacing:.32em;text-transform:uppercase;
+  border-left:1px solid var(--hair);padding-left:14px;align-self:center;
+  font-family:'JetBrains Mono',monospace;
+}
+@keyframes nrPulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(242,160,61,.14)}
+  50%{box-shadow:0 0 0 7px rgba(242,160,61,.05)}
+}
+
+.nr-menu{
+  position:relative;
+  display:flex;gap:34px;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.22em;text-transform:uppercase;
+  list-style:none;padding:0;margin:0;
+}
+.nr-menu li, nav ul li{list-style:none;margin:0;padding:0;display:inline-flex;align-items:center}
+.nr-menu ul{list-style:none;padding:0;margin:0;display:flex;gap:34px;position:relative}
+.nr-menu a{
+  color:var(--ink-2);position:relative;padding:8px 4px;display:inline-block;
+  transition:color .25s var(--ease);
+}
+.nr-menu a:hover{color:var(--ink)}
+.nr-menu a[aria-current="page"],
+.nr-menu .current-menu-item > a,
+.nr-menu .current_page_item > a{color:var(--ink)}
+
+/* "Tube light" lamp — a single amber bar that slides between
+   active / hovered nav items, with a 3-layer blurred glow halo.
+   Position is set by JS via translateX + width. */
+.nr-menu__lamp{
+  position:absolute;
+  bottom:-2px;left:0;top:auto;
+  height:2px;width:40px;
+  background:var(--amber);border-radius:999px;
+  pointer-events:none;opacity:0;
+  transform:translate3d(0,0,0);
+  transition:transform .42s cubic-bezier(.4,0,.2,1),
+             width .42s cubic-bezier(.4,0,.2,1),
+             opacity .3s var(--ease);
+  will-change:transform,width;
+}
+.nr-menu.is-ready .nr-menu__lamp{opacity:1}
+/* glow stack — three nested radial blurs to mimic a CRT halo */
+.nr-menu__lamp::before,
+.nr-menu__lamp::after{content:'';position:absolute;pointer-events:none}
+.nr-menu__lamp::before{
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  width:140%;height:24px;
+  background:radial-gradient(ellipse at center, var(--amber) 0%, transparent 65%);
+  filter:blur(10px);opacity:.7;
+}
+.nr-menu__lamp::after{
+  left:50%;bottom:-2px;transform:translateX(-50%);
+  width:180%;height:40px;
+  background:radial-gradient(ellipse at top, var(--amber) 0%, transparent 60%);
+  filter:blur(18px);opacity:.45;
+}
+
+.nr-topbar-right{
+  display:flex;align-items:center;gap:18px;justify-content:flex-end;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
+}
+.nr-avail{display:inline-flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums}
+.nr-avail-dot{
+  width:6px;height:6px;background:var(--amber);border-radius:50%;
+  box-shadow:0 0 0 4px rgba(242,160,61,.14);
+  animation:nrPulse 2.5s ease-in-out infinite;
+}
+.nr-clock{font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;gap:8px}
+
+.nr-book-trigger,
+.nr-book{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:9px 18px;border:1px solid var(--ink-4);background:transparent;color:var(--ink);
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;
+  transition:all .25s var(--ease);cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.nr-book-trigger::before,.nr-book::before{
+  content:'';position:absolute;inset:0;background:var(--amber);
+  transform:translateX(-101%);transition:transform .35s var(--ease);z-index:0;
+}
+.nr-book-trigger > *,.nr-book > *{position:relative;z-index:1}
+.nr-book-trigger:hover,.nr-book:hover{border-color:var(--amber);color:var(--bg)}
+.nr-book-trigger:hover::before,.nr-book:hover::before{transform:translateX(0)}
+
+.nr-hamb{display:none}
+@media (max-width:900px){
+  .nr-hamb{
+    width:30px;height:22px;display:inline-flex;flex-direction:column;justify-content:space-between;
+    cursor:pointer;color:var(--ink);background:none;border:0;padding:0;
+  }
+  .nr-hamb span{height:1px;background:currentColor;display:block;transition:transform .25s,opacity .25s}
+  .nr-hamb span:nth-child(1){width:100%}
+  .nr-hamb span:nth-child(2){width:70%;margin-left:auto}
+}
+
+/* =========================================================
+   Mobile sidebar
+   ========================================================= */
+.nr-sidebar{
+  position:fixed;inset:0 auto 0 0;width:min(420px,86vw);z-index:60;
+  background:var(--bg-2);border-right:1px solid var(--hair);
+  transform:translateX(-101%);transition:transform .45s var(--ease);
+  display:flex;flex-direction:column;padding:64px 32px 32px;overflow-y:auto;
+}
+.nr-sidebar.is-on{transform:translateX(0)}
+.nr-sidebar-backdrop{
+  position:fixed;inset:0;background:rgba(11,12,16,.75);z-index:59;backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;
+}
+.nr-sidebar-backdrop.is-on{opacity:1;visibility:visible}
+.nr-sidebar__close{
+  position:absolute;top:18px;right:18px;
+  /* see .nr-icon-btn — shared circular-button rules */
+}
+.nr-sidebar__nav{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.nr-sidebar__nav a{
+  font-weight:300;font-size:34px;letter-spacing:-.025em;color:var(--ink);
+  padding:6px 0;border-bottom:1px solid var(--hair-soft);
+}
+.nr-sidebar__nav a:hover{color:var(--amber)}
+.nr-sidebar__group{display:flex;flex-direction:column;gap:6px;margin-top:18px;padding-top:18px;border-top:1px solid var(--hair)}
+.nr-sidebar__group h4{font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.28em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-bottom:8px}
+.nr-sidebar__group a{font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);padding:4px 0}
+.nr-sidebar__group a:hover{color:var(--amber)}
+
+/* =========================================================
+   Custom cursor (desktop only)
+   ========================================================= */
+.nr-cur{
+  position:fixed;top:0;left:0;width:14px;height:14px;border:1px solid var(--ink);
+  border-radius:50%;pointer-events:none;z-index:300;transform:translate(-50%,-50%);
+  transition:width .25s var(--ease),height .25s var(--ease),background .25s var(--ease),border-color .25s var(--ease);
+  mix-blend-mode:difference;
+}
+.nr-cur::after{content:'';position:absolute;top:50%;left:50%;width:2px;height:2px;background:var(--ink);border-radius:50%;transform:translate(-50%,-50%)}
+.nr-cur__lbl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;color:var(--bg);opacity:0;text-transform:uppercase;font-weight:500;white-space:nowrap}
+.nr-cur.is-on-link{width:58px;height:58px;background:var(--amber);border-color:var(--amber);mix-blend-mode:normal}
+.nr-cur.is-on-link::after{display:none}
+.nr-cur.is-on-link .nr-cur__lbl{opacity:1}
+.nr-cur.is-on-image{width:54px;height:54px;border-color:var(--amber);background:rgba(242,160,61,.1);mix-blend-mode:normal}
+.nr-cur.is-on-image::after{display:none}
+.nr-cur.is-on-image .nr-cur__lbl{opacity:.85;color:var(--ink)}
+@media (pointer:coarse), (max-width:900px){ .nr-cur{display:none} }
+
+/* =========================================================
+   Utilities — eyebrow / display / btn / reg
+   ========================================================= */
+.nr-eyebrow{
+  font-family:var(--ff-mono);font-size:var(--fs-sm);letter-spacing:var(--tr-caps-wide);
+  text-transform:uppercase;color:var(--ink-2);font-weight:var(--fw-medium);
+  display:inline-flex;align-items:center;gap:10px;
+}
+.nr-eyebrow::before{content:'';width:18px;height:1px;background:var(--amber);display:inline-block}
+.nr-eyebrow--right{justify-content:flex-end}
+.nr-eyebrow--xs{font-size:var(--fs-xs);letter-spacing:var(--tr-caps)} /* tiny variant — recognition, captions */
+.nr-eyebrow b{color:var(--ink);font-weight:var(--fw-medium)}
+
+.nr-display{
+  font-weight:300;
+  line-height:.86;letter-spacing:-.045em;color:var(--ink);
+}
+.nr-display em{font-style:normal;font-weight:700;letter-spacing:-.055em;color:var(--ink)}
+.nr-display--xl{font-size:clamp(56px,9vw,140px);line-height:.86}
+.nr-display--lg{font-size:clamp(48px,7vw,108px);line-height:.88}
+.nr-display--md{font-size:clamp(36px,5vw,76px);line-height:.92}
+
+.nr-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:14px 22px;border:1px solid var(--ink-3);border-radius:999px;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink);background:rgba(11,12,16,.55);backdrop-filter:blur(10px);
+  transition:all .3s var(--ease);cursor:pointer;
+  position:relative;overflow:hidden;text-decoration:none;
+}
+.nr-btn::before{
+  content:'';position:absolute;inset:0;background:var(--amber);
+  transform:translateX(-101%);transition:transform .4s var(--ease);z-index:0;
+}
+.nr-btn > *{position:relative;z-index:1}
+.nr-btn:hover{border-color:var(--amber);color:var(--bg)}
+.nr-btn:hover::before{transform:translateX(0)}
+.nr-btn--primary{background:var(--amber);border-color:var(--amber);color:var(--bg)}
+.nr-btn--primary::before{background:var(--bg)}
+.nr-btn--primary:hover{color:var(--amber);border-color:var(--amber)}
+.nr-btn--block{display:flex;width:100%;justify-content:center}
+
+/* =========================================================
+   Button vocabulary (canonical):
+     .nr-btn                 pill, secondary action  (default outlined,
+                             amber wipe on hover)
+     .nr-btn.nr-btn--primary pill, primary action    (solid amber,
+                             reverses to outlined on hover)
+     .nr-btn--block          full-width modifier (used inside forms)
+     .nr-book                topbar Book CTA — smaller, square edges,
+                             same amber wipe (see top-bar section)
+     .nr-icon-btn            circular icon button — base + --fill modifier
+                             (see icon button section below)
+   .nr-btn--ghost / --ghost-light: removed in v3.4 — were aliases of
+   the default .nr-btn and unused in markup.
+   ========================================================= */
+
+/* Circular icon button — shared base for hero arrows, modal close,
+   sidebar close, and any future icon-only button. Grouped selectors
+   so existing markup keeps working without changing class names.
+   Add `.nr-icon-btn--fill` (or alias as `.nr-hero__arrow`) for the
+   amber-scale-in hover style; default is amber border + color shift. */
+.nr-icon-btn,
+.nr-hero__arrow,
+.nr-modal__close,
+.nr-sidebar__close{
+  width:40px;height:40px;border:1px solid var(--ink-4);color:var(--ink);
+  border-radius:50%;cursor:pointer;font-size:var(--fs-body);display:grid;place-items:center;
+  transition:all .25s var(--ease);overflow:hidden;
+}
+/* position is set per-element (.nr-modal__close + .nr-sidebar__close use
+   `position:absolute` to anchor inside their parent); .nr-icon-btn and the
+   --fill variant need `position:relative` so the ::before scales in place. */
+.nr-icon-btn,
+.nr-icon-btn--fill,
+.nr-hero__arrow{position:relative}
+
+/* default hover — quieter: border + color shift to amber */
+.nr-icon-btn:hover,
+.nr-modal__close:hover,
+.nr-sidebar__close:hover{border-color:var(--amber);color:var(--amber)}
+
+/* --fill modifier (and .nr-hero__arrow alias) — stronger feedback:
+   amber circle scales in from 0, foreground flips to bg color */
+.nr-icon-btn--fill::before,
+.nr-hero__arrow::before{
+  content:'';position:absolute;inset:0;background:var(--amber);border-radius:50%;
+  transform:scale(0);transition:transform .3s var(--ease);
+}
+.nr-icon-btn--fill:hover,
+.nr-hero__arrow:hover{border-color:var(--amber);color:var(--bg)}
+.nr-icon-btn--fill:hover::before,
+.nr-hero__arrow:hover::before{transform:scale(1)}
+.nr-icon-btn--fill > *,
+.nr-hero__arrow > *{position:relative;z-index:1}
+
+.nr-reg{position:absolute;width:22px;height:22px;border:1px solid var(--ink);z-index:5;pointer-events:none}
+.nr-reg.tl{top:-11px;left:-11px;border-right:0;border-bottom:0}
+.nr-reg.tr{top:-11px;right:-11px;border-left:0;border-bottom:0}
+.nr-reg.bl{bottom:-11px;left:-11px;border-right:0;border-top:0}
+.nr-reg.br{bottom:-11px;right:-11px;border-left:0;border-top:0}
+.nr-reg::before{content:'';position:absolute;width:6px;height:1px;background:var(--amber);top:50%;left:50%;transform:translate(-50%,-50%)}
+.nr-reg.tr::before,.nr-reg.bl::before{display:none}
+
+/* =========================================================
+   Hover frame — hairline border at rest, amber inset frame
+   scales in on hover. Used by .nr-card (portfolio archive)
+   and .nr-project__plate (single-project plate rail). Apply
+   .nr-hover-frame to any other element to opt in.
+   The per-element :hover translate / scale stays local to
+   each component — only the frame ::before/::after lives here.
+   ========================================================= */
+.nr-hover-frame,
+.nr-card,
+.nr-project__plate{position:relative}
+.nr-hover-frame::before,
+.nr-card::before,
+.nr-project__plate::before{
+  content:'';position:absolute;inset:0;border:1px solid var(--hair);z-index:3;
+  transition:border-color .35s var(--ease);pointer-events:none;
+}
+.nr-hover-frame::after,
+.nr-card::after,
+.nr-project__plate::after{
+  content:'';position:absolute;inset:0;border:1px solid var(--amber);z-index:3;
+  transform:scale(.96);opacity:0;
+  transition:transform .45s var(--ease),opacity .45s var(--ease);pointer-events:none;
+}
+.nr-hover-frame:hover::before,
+.nr-card:hover::before,
+.nr-project__plate:hover::before{border-color:transparent}
+.nr-hover-frame:hover::after,
+.nr-card:hover::after,
+.nr-project__plate:hover::after{transform:scale(1);opacity:1}
+
+/* =========================================================
+   Page shells
+   ========================================================= */
+.nr-page{position:relative;z-index:2}
+.nr-fullscreen{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;grid-template-rows:1fr auto;overflow:hidden;
+}
+/* When a fullscreen page has a head, head sizes to content and main fills the rest */
+.nr-fullscreen:has(> .nr-page__head){grid-template-rows:auto 1fr}
+.nr-page__head{
+  padding:32px var(--pad) 22px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;
+  border-bottom:1px solid var(--hair);position:relative;z-index:5;
+}
+.nr-page__head--stack{grid-template-columns:1fr 1fr}
+.nr-page__head-text{display:flex;flex-direction:column;gap:14px;max-width:600px}
+
+/* =========================================================
+   Front-page hero
+   ========================================================= */
+.nr-hero{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;grid-template-rows:1fr auto;overflow:hidden;
+}
+.nr-hero__frame{
+  position:relative;margin:32px 48px;border:1px solid var(--hair);overflow:hidden;isolation:isolate;
+}
+.nr-hero__plate{
+  position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .01s linear .22s, visibility 0s .22s;
+}
+.nr-hero__plate.is-active{opacity:1;visibility:visible;transition:opacity .01s}
+.nr-hero__plate img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.06) saturate(.94) brightness(.86)}
+.nr-hero__plate.is-active img{animation:nrKen 18s ease-in-out forwards}
+@keyframes nrKen{
+  0%{transform:scale(1.02) translate(0,0)}
+  100%{transform:scale(1.08) translate(-1%,-.5%)}
+}
+.nr-hero__gradient{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(150% 100% at 50% 50%, transparent 30%, rgba(11,12,16,.55) 100%),
+    linear-gradient(180deg, rgba(11,12,16,.5) 0%, transparent 22%, transparent 55%, rgba(11,12,16,.95) 100%);
+}
+
+.nr-hero__meta{
+  position:absolute;z-index:10;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.85;pointer-events:none;
+}
+.nr-hero__meta b{color:var(--ink);font-weight:500;letter-spacing:.22em}
+.nr-hero__meta--tl{top:24px;left:24px}
+.nr-hero__meta--br{bottom:24px;right:24px;text-align:right}
+
+.nr-hero__top, .nr-hero__rail{display:none}
+
+.nr-hero__center{
+  position:absolute;left:64px;right:64px;bottom:48px;z-index:15;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:48px;
+}
+.nr-hero__cat{
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);font-weight:500;color:var(--ink-2);letter-spacing:.28em;text-transform:uppercase;
+  display:flex;align-items:center;gap:12px;margin-bottom:24px;
+}
+.nr-hero__rule{width:24px;height:1px;background:var(--ink-3);display:inline-block}
+.nr-hero__title{
+  position:relative;
+  font-weight:300;font-size:clamp(64px,11vw,176px);line-height:.84;letter-spacing:-.05em;color:var(--ink);
+  transition:opacity .35s var(--ease), transform .35s var(--ease);
+}
+.nr-hero__title::before{
+  content:'';position:absolute;left:-24px;top:8px;bottom:8px;width:1px;
+  background:linear-gradient(180deg, transparent 0%, var(--amber) 30%, var(--amber) 70%, transparent 100%);
+}
+.nr-hero__word{display:inline}
+.nr-hero__word + .nr-hero__word{margin-left:.18em}
+.nr-hero__word.is-em{font-weight:700;letter-spacing:-.06em}
+
+.nr-hero__actions{align-self:flex-end}
+
+.nr-hero__bottom{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:32px;
+  padding:0 var(--pad);min-height:var(--strip-h);
+  border-top:1px solid var(--hair);
+  background:linear-gradient(0deg, rgba(11,12,16,.95) 0%, rgba(11,12,16,.7) 70%, transparent 100%);
+  position:relative;z-index:30;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
+}
+.nr-hero__counter{display:flex;align-items:baseline;gap:14px;min-width:220px}
+.nr-hero__counter-n{font-weight:300;font-size:46px;color:var(--ink);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.nr-hero__counter-bar, .nr-hero__counter-fill{display:none}
+.nr-hero__counter-total{color:var(--ink-3);font-size:22px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+.nr-hero__thumbs{
+  position:relative;display:flex;align-items:center;justify-content:center;gap:0;padding:0 12px;list-style:none;
+}
+.nr-hero__thumbs::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--ink-4);transform:translateY(-.5px)}
+.nr-hero__thumb{
+  position:relative;width:54px;height:54px;cursor:pointer;background:transparent;border:0;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-3);
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);
+}
+.nr-hero__thumb-n,.nr-hero__thumb-t{display:none}
+.nr-hero__thumb::after{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--ink-3);
+  transition:width .3s var(--ease),height .3s var(--ease),background .3s var(--ease),box-shadow .3s var(--ease);
+}
+.nr-hero__thumb:hover::after{background:var(--ink);width:9px;height:9px}
+.nr-hero__thumb.is-on::after{background:var(--amber);width:11px;height:11px;box-shadow:0 0 0 6px rgba(242,160,61,.14),0 0 24px rgba(242,160,61,.5)}
+.nr-hero__thumb.is-on::before{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:24px;height:24px;border:1px solid var(--amber);border-radius:50%;opacity:.5;
+  animation:nrRing 2.2s ease-out infinite;
+}
+@keyframes nrRing{
+  0%{transform:translate(-50%,-50%) scale(.5);opacity:.7}
+  100%{transform:translate(-50%,-50%) scale(2);opacity:0}
+}
+
+.nr-hero__nav{display:flex;align-items:center;gap:10px}
+/* .nr-hero__arrow is now a .nr-icon-btn--fill — see shared rules below */
+
+/* =========================================================
+   Portfolio archive
+   ========================================================= */
+.nr-portfolio-archive .nr-page__head{padding-bottom:18px}
+.nr-chips{display:flex;flex-wrap:wrap;gap:18px;justify-content:flex-end}
+.nr-chips--center{justify-content:flex-end}
+.nr-chip{
+  background:transparent;color:var(--ink-3);
+  padding:10px 4px;cursor:pointer;position:relative;border:0;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.22em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:color .25s var(--ease);
+}
+.nr-chip::before{
+  content:'';width:4px;height:4px;background:var(--ink-4);border-radius:50%;
+  transition:background .25s var(--ease),box-shadow .25s var(--ease),width .25s var(--ease),height .25s var(--ease);
+}
+.nr-chip::after{
+  content:'';position:absolute;left:14px;right:0;bottom:6px;height:1px;background:var(--amber);
+  transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease);
+}
+.nr-chip:hover{color:var(--ink)}
+.nr-chip:hover::before{background:var(--ink)}
+.nr-chip.is-on{color:var(--ink)}
+.nr-chip.is-on::before{background:var(--amber);width:6px;height:6px;box-shadow:0 0 0 4px rgba(242,160,61,.14)}
+.nr-chip.is-on::after{transform:scaleX(1)}
+
+.nr-portfolio-rail{
+  position:relative;overflow-x:auto;overflow-y:hidden;
+  padding:32px 48px;
+  display:flex;gap:18px;align-items:stretch;
+  scroll-snap-type:x mandatory;scroll-padding:48px;
+  scrollbar-width:none;height:100%;
+}
+.nr-portfolio-rail::-webkit-scrollbar{display:none}
+
+.nr-card{
+  position:relative;flex:0 0 auto;height:100%;
+  background:var(--bg-2);overflow:hidden;
+  scroll-snap-align:start;
+  transition:transform .45s var(--ease);
+  text-decoration:none;color:var(--ink);
+}
+.nr-card.is-portrait{aspect-ratio:4/5;width:auto}
+.nr-card.is-landscape{aspect-ratio:5/4;width:auto}
+/* hover frame (::before / ::after) lives in the shared .nr-hover-frame block */
+.nr-card:hover{transform:translateY(-6px)}
+.nr-card img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.04) saturate(.92) brightness(.76);transition:filter .45s var(--ease),transform .9s var(--ease)}
+.nr-card:hover img{filter:contrast(1.08) saturate(1) brightness(.94);transform:scale(1.05)}
+.nr-card__shade{position:absolute;inset:0;background:linear-gradient(180deg, rgba(11,12,16,0) 0%, transparent 35%, rgba(11,12,16,.9) 100%);pointer-events:none;z-index:2}
+.nr-card__head{
+  position:absolute;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  pointer-events:none;z-index:4;
+}
+.nr-card__foot{position:absolute;left:20px;right:20px;bottom:20px;display:flex;flex-direction:column;gap:6px;pointer-events:none;z-index:4}
+.nr-card__cat{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
+.nr-card__cat::before{content:'';width:10px;height:1px;background:var(--amber);display:inline-block;transition:width .25s var(--ease)}
+.nr-card:hover .nr-card__cat::before{width:22px}
+.nr-card__title{font-weight:600;font-size:clamp(22px,2.4vw,32px);line-height:1.05;letter-spacing:-.02em;color:var(--ink)}
+.nr-card__title.is-em{font-weight:300}
+
+/* =========================================================
+   Single project
+   ========================================================= */
+.nr-project{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;grid-template-rows:auto 1fr;overflow:hidden;
+}
+.nr-project__crumbs{
+  display:flex;align-items:center;gap:14px;padding:14px var(--pad);
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
+  border-bottom:1px solid var(--hair);position:relative;z-index:5;
+}
+.nr-project__crumbs a{color:var(--ink-2);transition:color .25s var(--ease)}
+.nr-project__crumbs a:hover{color:var(--ink)}
+.nr-project__crumbs .is-current{color:var(--ink)}
+.nr-project__crumbs span:not(.is-current){color:var(--ink-4)}
+
+.nr-project__layout{display:grid;grid-template-columns:420px 1fr;overflow:hidden;position:relative;height:100%}
+.nr-project__body{
+  padding:40px 40px 40px var(--pad);
+  display:flex;flex-direction:column;gap:20px;
+  border-right:1px solid var(--hair);overflow:hidden;position:relative;
+}
+.nr-project__body::after{
+  content:'§02·a';position:absolute;right:24px;bottom:18px;
+  font-weight:300;font-size:96px;line-height:1;letter-spacing:-.04em;
+  color:transparent;-webkit-text-stroke:1px var(--ink-5);pointer-events:none;
+}
+.nr-project__title-block{display:flex;flex-direction:column;gap:18px;position:relative;z-index:1}
+.nr-project__title{font-size:clamp(40px,5vw,76px)}
+.nr-project__title .nr-hero__word.is-em{font-weight:700;letter-spacing:-.05em}
+.nr-project__lede{font-size:var(--fs-body);line-height:1.55;color:var(--ink-2);font-weight:400;max-width:42ch}
+.nr-project__meta{list-style:none;display:grid;gap:0;border-top:1px solid var(--hair);position:relative;z-index:1}
+.nr-project__meta li{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--hair-soft)}
+.nr-project__meta li:last-child{border-bottom:0}
+.nr-project__meta li > span:first-child{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3)}
+.nr-project__meta-v{font-size:var(--fs-lede);font-weight:500;color:var(--ink);text-align:right;letter-spacing:-.005em}
+.nr-project__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;position:relative;z-index:1}
+
+.nr-project__rail{position:relative;overflow:hidden;height:100%}
+.nr-project__counter{
+  position:absolute;top:18px;right:24px;z-index:4;
+  display:inline-flex;align-items:baseline;gap:6px;
+  padding:8px 14px;background:rgba(11,12,16,.7);backdrop-filter:blur(8px);
+  border:1px solid var(--hair);
+  font-family:var(--ff-mono);font-size:var(--fs-sm);
+  letter-spacing:var(--tr-caps-wide);text-transform:uppercase;
+  font-variant-numeric:tabular-nums;color:var(--ink-2);pointer-events:none;
+}
+.nr-project__counter-cur{color:var(--ink);font-weight:var(--fw-medium)}
+.nr-project__counter-sep{color:var(--amber);font-weight:var(--fw-light)}
+.nr-project__rail-track{
+  position:absolute;inset:0;padding:36px 48px;
+  display:flex;gap:18px;align-items:stretch;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-padding:48px;
+  scrollbar-width:none;
+}
+.nr-project__rail-track::-webkit-scrollbar{display:none}
+.nr-project__plate{
+  flex:0 0 auto;height:100%;background:var(--bg-2);overflow:hidden;
+  scroll-snap-align:start;transition:transform .45s var(--ease);
+}
+/* hover frame (::before / ::after) lives in the shared .nr-hover-frame block */
+.nr-project__plate:hover{transform:scale(1.02)}
+.nr-project__plate.is-portrait{aspect-ratio:4/5}
+.nr-project__plate.is-landscape{aspect-ratio:5/4}
+.nr-project__plate img{width:100%;height:100%;object-fit:cover;filter:contrast(1.04) saturate(.95) brightness(.82);transition:filter .45s var(--ease),transform .9s var(--ease)}
+.nr-project__plate:hover img{filter:contrast(1.08) saturate(1.02) brightness(.98);transform:scale(1.04)}
+.nr-project__plate-btn{position:relative;width:100%;height:100%;background:none;border:0;padding:0;cursor:pointer}
+
+/* =========================================================
+   About / Studio
+   ========================================================= */
+.nr-about{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;grid-template-columns:minmax(420px,46%) 1fr;overflow:hidden;
+}
+.nr-about__portrait{position:relative;border-right:1px solid var(--hair);overflow:hidden}
+.nr-about__portrait img{width:100%;height:100%;object-fit:cover;filter:contrast(1.05) saturate(.88) brightness(.86)}
+.nr-about__portrait::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, transparent 65%, rgba(11,12,16,.92) 100%);pointer-events:none}
+.nr-about__portrait-foot{
+  position:absolute;left:28px;right:28px;bottom:22px;
+  display:flex;justify-content:space-between;align-items:end;gap:18px;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);z-index:2;
+}
+.nr-about__portrait-foot b{color:var(--ink);font-weight:500}
+
+.nr-about__body{
+  padding:48px var(--pad) 36px 40px;
+  display:flex;flex-direction:column;gap:22px;overflow-y:auto;overflow-x:hidden;min-width:0;position:relative;
+  scrollbar-width:thin;scrollbar-color:var(--ink-4) transparent;
+}
+.nr-about__body::-webkit-scrollbar{width:6px}
+.nr-about__body::-webkit-scrollbar-thumb{background:var(--ink-4)}
+.nr-about__body::after{
+  content:'§03';position:absolute;right:24px;top:36px;
+  font-weight:300;font-size:140px;line-height:1;letter-spacing:-.05em;
+  color:transparent;-webkit-text-stroke:1px var(--ink-5);pointer-events:none;z-index:0;
+}
+.nr-about__body > *{position:relative;z-index:1}
+.nr-about__body .nr-display{font-size:clamp(40px,5.4vw,86px)}
+.nr-about__lede{font-size:var(--fs-lede);line-height:1.5;font-weight:400;color:var(--ink);max-width:54ch}
+.nr-about__sub{font-size:var(--fs-body);line-height:1.6;font-weight:400;color:var(--ink-2);max-width:62ch;display:flex;flex-direction:column;gap:10px}
+.nr-about__sub p{margin:0}
+.nr-about__sub a{color:var(--ink);border-bottom:1px solid var(--amber);padding-bottom:1px}
+.nr-about__sub--empty{color:var(--ink-3)}
+
+.nr-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:6px;
+}
+.nr-stats > div{
+  padding:22px 14px 18px;display:flex;flex-direction:column;gap:6px;
+  border-right:1px solid var(--hair-soft);position:relative;transition:background .3s var(--ease);
+}
+.nr-stats > div:last-child{border-right:0}
+.nr-stats > div::before{content:'';position:absolute;left:0;top:0;width:0;height:1px;background:var(--amber);transition:width .45s var(--ease)}
+.nr-stats > div:hover::before{width:100%}
+.nr-stats > div:hover{background:rgba(242,160,61,.03)}
+.nr-stats__n{font-weight:500;font-size:var(--fs-sm);line-height:1.3;letter-spacing:.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.nr-stats__l{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3)}
+
+/* Byline — name + role/location, rendered between lede and bio.
+   Settings: nr_about_name + nr_about_role. Either may be blank. */
+.nr-about__byline{
+  display:flex;flex-direction:column;gap:2px;
+  padding:6px 0;margin:2px 0;
+}
+.nr-about__byline-name{
+  font-weight:600;font-size:var(--fs-body);letter-spacing:-.01em;color:var(--ink);
+}
+.nr-about__byline-role{
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);
+}
+
+/* Admin-only hint shown on the front-end when a placeholder default is
+   active (e.g. sample awards/press shown because the admin hasn't filled
+   them in yet). Only visible to logged-in editors via current_user_can(). */
+.nr-admin-hint{
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:10px;
+}
+.nr-admin-hint a{color:var(--ink-2);border-bottom:1px solid var(--amber);padding-bottom:1px}
+.nr-admin-hint a:hover{color:var(--ink)}
+
+/* Contact-page intro paragraph — sits below the title in the form pane. */
+.nr-contact__intro{
+  font-size:var(--fs-body);line-height:1.55;
+  max-width:54ch;color:var(--ink-2);
+}
+
+/* Modal footer line — small caps response-time + location note pinned
+   to the bottom of the modal's intro pane. */
+.nr-modal__foot{
+  margin-top:auto;padding-top:18px;border-top:1px solid var(--hair);
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;color:var(--ink-3);
+}
+
+/* Project breadcrumb close link — pushed to the right of the crumbs */
+.nr-project__close{margin-left:auto;color:var(--ink-2);transition:color .25s var(--ease)}
+.nr-project__close:hover{color:var(--ink)}
+
+/* Hero strip meta — eyebrow + year, sits beside the counter on the
+   front-page bottom strip. */
+.nr-hero__counter-meta{margin-left:18px;font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;color:var(--ink-2);text-transform:uppercase}
+
+.nr-about__cta{margin-top:6px}
+/* Awards & Press — magazine credit-roll treatment.
+   Each row is a vertical tombstone (year-eyebrow over title over org)
+   separated by a hairline. Reads as editorial credits, not a spreadsheet. */
+.nr-about__recognition{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:18px;border-top:1px solid var(--hair)}
+.nr-recognition{display:flex;flex-direction:column;gap:12px}
+.nr-recognition .nr-eyebrow{font-size:var(--fs-xs);letter-spacing:var(--tr-caps-wide);color:var(--ink-2);margin-bottom:4px}
+.nr-recognition__list{list-style:none;display:flex;flex-direction:column;gap:0}
+.nr-recognition__item{
+  display:flex;flex-direction:column;
+  padding:11px 0 12px;border-top:1px solid var(--hair-soft);
+  transition:padding-left .25s var(--ease), border-color .25s var(--ease);
+}
+.nr-recognition__item:first-child{border-top:0;padding-top:2px}
+.nr-recognition__item:hover{padding-left:8px;border-color:var(--amber)}
+.nr-recognition__year{
+  font-family:var(--ff-mono);font-size:var(--fs-xs);
+  letter-spacing:var(--tr-caps);text-transform:uppercase;
+  color:var(--ink-3);font-variant-numeric:tabular-nums;
+  display:inline-flex;align-items:center;gap:8px;
+  margin-bottom:4px;
+}
+.nr-recognition__year::after{
+  content:'';width:14px;height:1px;background:var(--ink-4);display:inline-block;
+  transition:width .3s var(--ease), background-color .3s var(--ease);
+}
+.nr-recognition__item:hover .nr-recognition__year::after{
+  width:26px;background:var(--amber);
+}
+.nr-recognition__title{
+  color:var(--ink);font-weight:var(--fw-medium);
+  font-family:var(--ff-display);font-size:var(--fs-lede);
+  line-height:1.3;letter-spacing:-.01em;
+  display:block;
+}
+.nr-recognition__title a{color:inherit;text-decoration:none;display:inline-flex;align-items:baseline;gap:6px}
+.nr-recognition__title a:hover{color:var(--amber)}
+.nr-recognition__org{
+  color:var(--ink-3);font-size:var(--fs-sm);
+  font-family:var(--ff-mono);letter-spacing:var(--tr-caps);
+  text-transform:uppercase;margin-top:4px;display:block;
+}
+@media (max-width: 768px){
+  .nr-about__recognition{grid-template-columns:1fr;gap:24px}
+}
+
+/* =========================================================
+   Clients marquee — horizontal auto-scrolling row of client
+   names. Adapted from the shadcn embla auto-scroll pattern
+   to pure CSS (no JS lib). Sits between Stats and Recognition
+   on the Studio (about) page. Names only — no logos.
+   ========================================================= */
+.nr-clients{
+  position:relative;
+  margin:6px 0 4px;
+  padding:14px 0;
+  border-top:1px solid var(--hair);
+  border-bottom:1px solid var(--hair);
+  overflow:hidden;
+  /* edge fade to suggest the row continues off-screen */
+  -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+          mask-image:linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+.nr-clients__label{
+  position:absolute;left:0;top:14px;z-index:2;
+  background:linear-gradient(90deg, var(--bg) 70%, transparent 100%);
+  padding-right:18px;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.28em;text-transform:uppercase;color:var(--ink-2);
+  display:inline-flex;align-items:center;gap:10px;
+  pointer-events:none;
+}
+.nr-clients__label::before{content:'';width:14px;height:1px;background:var(--amber);display:inline-block}
+.nr-clients__track{
+  display:flex;align-items:center;gap:56px;
+  width:max-content;
+  animation:nrMarquee 42s linear infinite;
+  will-change:transform;
+}
+.nr-clients:hover .nr-clients__track,
+.nr-clients:focus-within .nr-clients__track{animation-play-state:paused}
+.nr-clients__item{
+  font-weight:500;
+  font-size:var(--fs-sm);
+  letter-spacing:.02em;color:var(--ink-2);
+  white-space:nowrap;
+  display:inline-flex;align-items:center;gap:56px;
+  transition:color .25s var(--ease);
+}
+.nr-clients__item:hover{color:var(--ink)}
+.nr-clients__item::after{
+  content:'·';color:var(--amber);font-size:.7em;line-height:1;opacity:.7;
+}
+@keyframes nrMarquee{
+  from{transform:translate3d(0,0,0)}
+  to  {transform:translate3d(-50%,0,0)}
+}
+/* honor reduced-motion (also covered by the global :where rule, but explicit
+   stops the marquee from being a 42s loop disabled to 0.001s loop) */
+@media (prefers-reduced-motion: reduce){
+  .nr-clients__track{animation:none;transform:none}
+}
+@media (max-width: 768px){
+  .nr-clients{padding:10px 0;margin:2px 0}
+  .nr-clients__label{position:relative;top:auto;left:auto;padding-right:0;margin-bottom:8px;background:none}
+  /* font-size stays at var(--fs-sm) — uniform with stats + recognition */
+  .nr-clients__item{gap:32px}
+  .nr-clients__track{gap:32px;animation-duration:30s}
+}
+
+/* =========================================================
+   Contact
+   ========================================================= */
+.nr-contact{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;grid-template-columns:1.2fr 1fr;overflow:hidden;
+}
+.nr-contact__form-wrap{
+  padding:40px 40px 36px var(--pad);
+  border-right:1px solid var(--hair);
+  display:flex;flex-direction:column;gap:22px;overflow:hidden;position:relative;
+}
+.nr-contact__form-wrap::after{
+  content:'§06';position:absolute;right:24px;bottom:24px;
+  font-weight:300;font-size:120px;line-height:1;letter-spacing:-.05em;
+  color:transparent;-webkit-text-stroke:1px var(--ink-5);pointer-events:none;
+}
+.nr-contact__form-wrap > *{position:relative;z-index:1}
+.nr-contact__form-wrap .nr-display{font-size:clamp(40px,5.4vw,86px)}
+.nr-contact__side{padding:40px var(--pad) 36px 40px;display:flex;flex-direction:column;gap:22px;overflow:hidden}
+.nr-contact__info{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair)}
+.nr-contact__info > div{background:var(--bg);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.nr-contact__info dt{font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.nr-contact__info dd{font-size:var(--fs-body);font-weight:500;color:var(--ink)}
+.nr-contact__info a{color:var(--ink);border-bottom:1px solid var(--amber);padding-bottom:1px}
+
+.nr-form{display:flex;flex-direction:column;gap:18px}
+.nr-form label{display:flex;flex-direction:column;gap:8px;position:relative}
+.nr-form .nr-eyebrow::before{display:none} /* hide the amber tick on form labels */
+.nr-form input[type=text],
+.nr-form input[type=email],
+.nr-form input[type=tel],
+.nr-form input[type=url],
+.nr-form textarea,
+.nr-form select{
+  background:transparent;border:0;border-bottom:1px solid var(--hair);
+  color:var(--ink);padding:12px 0;font:inherit;font-size:var(--fs-lede);font-weight:400;outline:0;
+  transition:border-color .3s var(--ease);width:100%;
+}
+.nr-form input::placeholder,.nr-form textarea::placeholder{color:var(--ink-4)}
+.nr-form label::after{content:'';position:absolute;left:0;bottom:0;height:1px;background:var(--amber);width:0;transition:width .35s var(--ease)}
+.nr-form label:focus-within::after{width:100%}
+.nr-form textarea{resize:none;min-height:90px;line-height:1.5}
+.nr-form__chips{display:flex;flex-wrap:wrap;gap:8px;border:0;padding:0;flex-direction:row}
+.nr-form__chips legend{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-bottom:6px;width:100%}
+.nr-form__chips .nr-chip{padding:8px 12px}
+.nr-form__chips .nr-chip:has(input:checked){color:var(--ink)}
+.nr-form__chips .nr-chip:has(input:checked)::before{background:var(--amber);width:6px;height:6px;box-shadow:0 0 0 4px rgba(242,160,61,.14)}
+.nr-form__chips input{position:absolute;opacity:0;pointer-events:none}
+.nr-form__wide{display:flex;flex-direction:column;gap:8px}
+.nr-form__foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:18px;border-top:1px solid var(--hair)}
+
+/* =========================================================
+   Booking
+   ========================================================= */
+.nr-booking{position:relative;overflow:hidden;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.nr-booking__steps{
+  padding:40px 40px 36px var(--pad);
+  border-right:1px solid var(--hair);
+  display:flex;flex-direction:column;gap:26px;overflow:hidden;position:relative;
+}
+.nr-booking__steps::after{
+  content:'§04';position:absolute;right:24px;bottom:24px;
+  font-weight:300;font-size:120px;line-height:1;letter-spacing:-.05em;
+  color:transparent;-webkit-text-stroke:1px var(--ink-5);pointer-events:none;
+}
+.nr-booking__panel{padding:40px var(--pad) 36px 40px;display:flex;flex-direction:column;gap:22px;overflow:hidden}
+.nr-booking__iframe{width:100%;height:100%;border:0;background:var(--bg-2);min-height:380px}
+.nr-booking__info{margin-top:auto}
+
+.nr-steps{list-style:none;display:flex;flex-direction:column;gap:0;position:relative;z-index:1}
+.nr-steps li{display:grid;grid-template-columns:72px 1fr;gap:22px;align-items:start;padding:22px 0;border-top:1px solid var(--hair);position:relative;transition:border-top-color .3s var(--ease)}
+.nr-steps li:hover{border-top-color:var(--amber)}
+.nr-steps li:first-child{border-top:0;padding-top:6px}
+.nr-steps__n{font-weight:300;font-size:48px;line-height:1;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums;display:inline-flex;align-items:baseline;gap:6px}
+.nr-steps__n::after{content:'';width:14px;height:1px;background:var(--ink-4);align-self:center;display:inline-block;transition:background .3s var(--ease),width .3s var(--ease)}
+.nr-steps li:hover .nr-steps__n::after{background:var(--amber);width:24px}
+.nr-steps__t{font-weight:600;font-size:19px;letter-spacing:-.015em;color:var(--ink);display:block;margin-bottom:7px}
+.nr-steps__d{font-size:var(--fs-body);line-height:1.55;color:var(--ink-2);max-width:46ch;display:block}
+
+.nr-quick-form{display:flex;flex-direction:column;gap:18px}
+.nr-quick-form label{display:flex;flex-direction:column;gap:8px;position:relative}
+.nr-quick-form .nr-eyebrow::before{display:none} /* hide the amber tick on form labels */
+.nr-quick-form input,.nr-quick-form textarea{
+  background:transparent;border:0;border-bottom:1px solid var(--hair);
+  color:var(--ink);padding:12px 0;font:inherit;font-size:var(--fs-lede);font-weight:400;outline:0;
+  transition:border-color .3s var(--ease);width:100%;
+}
+.nr-quick-form label::after{content:'';position:absolute;left:0;bottom:0;height:1px;background:var(--amber);width:0;transition:width .35s var(--ease)}
+.nr-quick-form label:focus-within::after{width:100%}
+.nr-quick-form textarea{resize:none;min-height:90px;line-height:1.5}
+
+/* =========================================================
+   Mobile tab bar
+   ========================================================= */
+.nr-tabbar{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:rgba(11,12,16,.95);border-top:1px solid var(--hair);backdrop-filter:blur(10px);
+}
+.nr-tab{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:10px 6px 12px;color:var(--ink-3);
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;
+  transition:color .25s var(--ease);position:relative;
+}
+.nr-tab.is-on{color:var(--ink)}
+.nr-tab.is-on::before{content:'';position:absolute;top:0;left:30%;right:30%;height:1px;background:var(--amber)}
+.nr-tab-glyph svg{display:block}
+@media (max-width:900px){
+  .nr-tabbar{display:grid;grid-template-columns:repeat(4,1fr)}
+}
+
+/* =========================================================
+   Modals
+   ========================================================= */
+.nr-modal{
+  position:fixed;inset:0;z-index:80;
+  display:flex;align-items:center;justify-content:center;padding:32px;
+  background:rgba(11,12,16,.85);backdrop-filter:blur(10px);
+  opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s;
+}
+.nr-modal.is-on, .nr-modal[aria-hidden="false"]{opacity:1;visibility:visible}
+.nr-modal__panel{
+  position:relative;background:var(--bg-2);border:1px solid var(--hair);
+  max-width:920px;width:100%;max-height:90vh;overflow:hidden;
+  display:grid;grid-template-columns:1fr 1fr;
+  transform:translateY(20px);transition:transform .45s var(--ease);
+}
+.nr-modal.is-on .nr-modal__panel,
+.nr-modal[aria-hidden="false"] .nr-modal__panel{transform:translateY(0)}
+.nr-modal__close{
+  position:absolute;top:14px;right:14px;z-index:5;
+  /* darker translucent backdrop variant — sits on top of the modal panel */
+  background:rgba(11,12,16,.5);
+  /* see .nr-icon-btn — shared circular-button rules */
+}
+.nr-modal__intro,.nr-modal__host{padding:32px 28px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.nr-modal__intro{border-right:1px solid var(--hair);background:var(--bg)}
+.nr-modal__intro h2{font-weight:300;font-size:clamp(28px,3vw,40px);line-height:.95;letter-spacing:-.025em;color:var(--ink)}
+.nr-modal__intro h2 em{font-style:normal;font-weight:700}
+.nr-modal__intro p{font-size:var(--fs-body);line-height:1.5;color:var(--ink-2)}
+.nr-modal__intro ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.nr-modal__intro li{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);display:flex;align-items:center;gap:10px}
+.nr-modal__intro li::before{content:'';width:10px;height:1px;background:var(--amber)}
+.nr-modal__host iframe{width:100%;flex:1;border:0;background:var(--bg-2);min-height:380px}
+
+/* cookie notice */
+.nr-cookie{
+  position:fixed;bottom:18px;left:18px;right:18px;max-width:560px;z-index:70;
+  background:var(--bg-2);border:1px solid var(--hair);padding:18px 20px;
+  display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);
+  transform:translateY(120%);transition:transform .45s var(--ease);
+}
+.nr-cookie.is-on{transform:translateY(0)}
+.nr-cookie a{color:var(--ink);border-bottom:1px solid var(--amber);padding-bottom:1px}
+.nr-cookie button{
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;
+  padding:8px 14px;border:1px solid var(--ink-4);background:transparent;color:var(--ink);cursor:pointer;
+  transition:all .25s var(--ease);
+}
+.nr-cookie button:hover{border-color:var(--amber);color:var(--amber)}
+.nr-cookie button.is-primary{background:var(--amber);border-color:var(--amber);color:var(--bg)}
+.nr-cookie button.is-primary:hover{background:transparent;color:var(--amber)}
+
+/* =========================================================
+   FAQ + generic page fallbacks
+   ========================================================= */
+.nr-faq__list{padding:24px var(--pad);overflow-y:auto;display:flex;flex-direction:column;gap:0;height:100%}
+.nr-faq__item{
+  border-bottom:1px solid var(--hair);padding:16px 0;cursor:pointer;
+  display:grid;grid-template-columns:48px 1fr auto;gap:18px;align-items:start;
+  transition:border-color .3s var(--ease);
+}
+.nr-faq__item:hover{border-bottom-color:var(--amber)}
+.nr-faq__n{font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;font-variant-numeric:tabular-nums}
+.nr-faq__q{font-size:var(--fs-lede);font-weight:500;color:var(--ink);line-height:1.4}
+.nr-faq__a{grid-column:2;max-height:0;overflow:hidden;font-size:var(--fs-body);line-height:1.55;color:var(--ink-2);transition:max-height .35s var(--ease),padding .35s var(--ease)}
+.nr-faq__item.is-open .nr-faq__a{max-height:300px;padding-top:10px}
+.nr-faq__toggle{width:32px;height:32px;border:1px solid var(--ink-4);border-radius:50%;color:var(--ink);background:none;cursor:pointer;display:grid;place-items:center;font-size:var(--fs-md);transition:all .25s var(--ease)}
+.nr-faq__item.is-open .nr-faq__toggle{background:var(--amber);border-color:var(--amber);color:var(--bg);transform:rotate(45deg)}
+
+.nr-404{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:18px;padding:var(--pad);
+}
+.nr-404 .nr-display{font-size:clamp(72px,16vw,200px)}
+.nr-404__lede{max-width:520px;color:var(--ink-2);font-size:var(--fs-body);line-height:1.5}
+.nr-404__actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* Site footer — thin attribution bar on text-y pages (hidden on
+   front-page, work archive, and single project where the content
+   already occupies the entire frame). */
+/* Footer bar — fixed at bottom on text-y pages (about / booking / contact /
+   faq). Hidden on home, work, project, and on narrow viewports where the
+   mobile tab bar takes over. Compact mono caps with amber-tick separators
+   and an animated underline-on-hover. */
+.nr-footer{
+  position:fixed;bottom:0;left:0;right:0;z-index:25;pointer-events:none;
+  padding:12px var(--pad) 14px;
+  display:flex;justify-content:space-between;align-items:center;gap:18px;
+  font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:var(--tr-caps);
+  text-transform:uppercase;color:var(--ink-3);
+  background:linear-gradient(180deg, transparent 0%, rgba(11,12,16,.6) 100%);
+}
+.nr-footer > *{pointer-events:auto}
+.nr-footer > span:empty{display:none} /* hide left slot if footer_text is blank */
+.nr-footer__links{
+  display:flex;align-items:center;gap:0;
+  margin-left:auto; /* push right when left text is empty */
+}
+.nr-footer__links a{
+  position:relative;color:var(--ink-3);text-decoration:none;
+  padding:6px 14px;
+  font-weight:var(--fw-medium);
+  transition:color .25s var(--ease);
+}
+/* amber-tick separator between links */
+.nr-footer__links a + a::before{
+  content:'';position:absolute;left:-1px;top:50%;
+  width:3px;height:3px;border-radius:50%;
+  background:var(--ink-4);transform:translateY(-50%);
+  transition:background .25s var(--ease), transform .25s var(--ease);
+}
+.nr-footer__links a:hover + a::before,
+.nr-footer__links a:hover::before{background:var(--amber)}
+/* animated underline on hover */
+.nr-footer__links a::after{
+  content:'';position:absolute;left:14px;right:14px;bottom:2px;
+  height:1px;background:var(--amber);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .3s var(--ease);
+}
+.nr-footer__links a:hover{color:var(--ink)}
+.nr-footer__links a:hover::after{transform:scaleX(1)}
+.nr-footer__links a:focus-visible{
+  color:var(--ink);outline:1px solid var(--amber);outline-offset:2px;
+}
+/* Hide on narrow viewports where the mobile tab bar occupies bottom-0 */
+@media (max-width: 900px){
+  .nr-footer{display:none}
+}
+
+/* Submission status banner — set by admin_post_nr_contact_send
+   redirect (?nr_sent=1|0). Auto-removed after ~5s by inline JS. */
+.nr-status{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:600;
+  background:var(--bg-2);border:1px solid var(--hair);padding:14px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:var(--fs-md);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink);
+}
+.nr-status--ok{border-color:var(--amber)}
+.nr-status--error{border-color:var(--ink-3)}
+
+.nr-page-generic{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  padding:48px var(--pad);overflow-y:auto;
+  display:flex;flex-direction:column;gap:18px;max-width:780px;margin:0 auto;
+}
+.nr-page-generic h1{font-weight:300;font-size:clamp(48px,7vw,108px);letter-spacing:-.045em;line-height:.88;color:var(--ink)}
+.nr-page-generic .nr-prose{font-size:var(--fs-lede);line-height:1.65;color:var(--ink-2)}
+.nr-page-generic .nr-prose h2{font-weight:600;font-size:22px;color:var(--ink);margin-top:24px;margin-bottom:8px}
+.nr-page-generic .nr-prose p{margin-bottom:12px}
+.nr-page-generic .nr-prose a{color:var(--ink);border-bottom:1px solid var(--amber);padding-bottom:1px}
+
+/* =========================================================
+   Visual-effect toggles — body classes from Theme Settings
+   ========================================================= */
+body.nr-no-cursor{cursor:auto}
+body.nr-no-cursor .nr-cur{display:none !important}
+body.nr-no-grain::after{display:none}
+body.nr-no-wipe .nr-wipe{display:none}
+body.nr-no-ken .nr-hero__plate.is-active img{animation:none !important}
+body.nr-no-anchors .nr-about__body::after,
+body.nr-no-anchors .nr-project__body::after,
+body.nr-no-anchors .nr-booking__steps::after,
+body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+/* Ultra-wide displays — bump side padding so content doesn't hug the edges,
+   and let the hero frame breathe more. Below ~1800px the default --pad:40px
+   already feels right. */
+@media (min-width: 1800px){
+  :root{--pad:56px}
+  .nr-hero__frame{margin:48px 72px}
+  .nr-portfolio-rail, .nr-project__rail-track{padding:40px 64px}
+}
+
+@media (max-width: 1200px){
+  :root{--pad:32px}
+  .nr-hero__frame{margin:24px 32px}
+}
+@media (max-width: 900px){
+  :root{--pad:18px;--bar-h:56px;--strip-h:auto}
+  .nr-topbar{grid-template-columns:1fr auto;gap:14px}
+  .nr-menu, .nr-logo::after{display:none}
+  .nr-hamb{display:inline-flex}
+
+  .nr-hero{padding-bottom:64px}
+  .nr-hero__frame{margin:14px}
+  .nr-hero__meta--br{display:none}
+  .nr-hero__meta--tl{top:14px;left:14px;font-size:var(--fs-xs)}
+  .nr-hero__center{left:18px;right:18px;bottom:24px;grid-template-columns:1fr;gap:14px}
+  .nr-hero__title::before{display:none}
+  .nr-hero__bottom{grid-template-columns:1fr;padding:12px var(--pad) 16px;gap:14px}
+  .nr-hero__counter{justify-content:space-between;width:100%}
+  .nr-hero__thumbs{overflow-x:auto;justify-content:flex-start}
+  .nr-hero__nav{justify-content:flex-end}
+
+  .nr-page__head, .nr-page__head--stack{grid-template-columns:1fr;padding:18px var(--pad);gap:14px}
+  .nr-chips{justify-content:flex-start}
+  .nr-portfolio-rail{padding:14px var(--pad)}
+  .nr-card.is-portrait, .nr-card.is-landscape{height:auto;width:72vw;aspect-ratio:4/5}
+
+  .nr-project{grid-template-rows:auto 1fr}
+  .nr-project__layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .nr-project__body{padding:18px;border-right:0;border-bottom:1px solid var(--hair)}
+  .nr-project__rail-track{padding:18px}
+
+  .nr-about{grid-template-columns:1fr;grid-template-rows:36vh 1fr}
+  .nr-about__portrait{border-right:0;border-bottom:1px solid var(--hair)}
+  .nr-about__body{padding:18px;overflow-y:auto}
+  .nr-stats{grid-template-columns:repeat(2,1fr)}
+  .nr-about__recognition{grid-template-columns:1fr;gap:18px}
+
+  .nr-contact{grid-template-columns:1fr;overflow-y:auto}
+  .nr-contact__form-wrap, .nr-contact__side{border-right:0;padding:18px}
+  .nr-contact__form-wrap{border-bottom:1px solid var(--hair)}
+  .nr-contact__info{grid-template-columns:1fr}
+
+  .nr-booking{grid-template-columns:1fr;overflow-y:auto}
+  .nr-booking__steps, .nr-booking__panel{border-right:0;padding:18px}
+  .nr-booking__steps{border-bottom:1px solid var(--hair)}
+
+  .nr-modal{padding:14px}
+  .nr-modal__panel{grid-template-columns:1fr;max-height:94vh;overflow-y:auto}
+  .nr-modal__intro{border-right:0;border-bottom:1px solid var(--hair)}
+}
+
+/* Narrow phones — iPhone SE / older Androids. Below ~480px the
+   page-head + topbar feel cramped at the 900px settings. Tightens
+   horizontal padding, scales down display type, gives the bottom
+   tab bar more breathing room for thumbs. */
+@media (max-width: 480px){
+  :root{--pad:14px;--bar-h:52px}
+  .nr-topbar{padding:0 14px}
+  .nr-logo{font-size:var(--fs-md);letter-spacing:.1em}
+  .nr-book-trigger, .nr-book{padding:7px 12px;font-size:var(--fs-xs);gap:6px}
+  .nr-display--xl{font-size:clamp(44px,12vw,72px)}
+  .nr-display--lg{font-size:clamp(38px,10vw,60px)}
+  .nr-display--md{font-size:clamp(32px,8vw,52px)}
+  .nr-hero__title{font-size:clamp(48px,13vw,84px)}
+  .nr-hero__center{bottom:18px;gap:10px}
+  .nr-hero__frame{margin:10px}
+  .nr-page__head{padding:14px 14px 10px;gap:10px}
+  .nr-card.is-portrait, .nr-card.is-landscape{width:80vw}
+  .nr-tab{font-size:var(--fs-xs);padding:8px 4px 10px}
+  .nr-stats > div{padding:14px 10px 12px}
+  /* .nr-stats__n stays at var(--fs-sm) — uniform with clients + recognition */
+  /* Marquee on phones — slow down a touch, drop the label even closer
+     to the names so it doesn't eat vertical space */
+  .nr-clients{padding:8px 0}
+  .nr-clients__item{gap:24px}
+  .nr-clients__track{gap:24px;animation-duration:26s}
+}
+
+/* Work archive pager — appears under the rail when there's
+   more than one page of projects. Styled as a thin caption
+   strip with count + prev/next icon buttons. */
+.nr-work-pager{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:14px var(--pad);
+  border-top:1px solid var(--hair);
+  font-family:var(--ff-mono);font-size:var(--fs-sm);
+  letter-spacing:var(--tr-caps-wide);text-transform:uppercase;color:var(--ink-2);
+}
+.nr-work-pager__count b{color:var(--ink);font-weight:var(--fw-medium);font-variant-numeric:tabular-nums}
+.nr-work-pager__nav{display:flex;align-items:center;gap:10px}
+
+/* =========================================================
+   Booking-confirmed landing — Catalogue Noir post-booking screen.
+   Set this URL in LatePoint settings → "Redirect after booking".
+   ========================================================= */
+.nr-confirmed{
+  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;place-items:center;padding:var(--pad);
+  overflow-y:auto;
+}
+.nr-confirmed__panel{
+  max-width:680px;display:flex;flex-direction:column;gap:18px;text-align:left;
+}
+.nr-confirmed__body{
+  font-family:var(--ff-display);font-size:var(--fs-lede);line-height:1.5;
+  color:var(--ink-2);max-width:54ch;margin-top:6px;
+}
+.nr-confirmed__meta{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+  margin-top:14px;
+}
+.nr-confirmed__meta > div{
+  padding:14px 18px;border-right:1px solid var(--hair-soft);
+  display:flex;flex-direction:column;gap:4px;
+}
+.nr-confirmed__meta > div:last-child{border-right:0}
+.nr-confirmed__meta dt{
+  font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:var(--tr-caps);
+  text-transform:uppercase;color:var(--ink-3);font-weight:var(--fw-medium);
+}
+.nr-confirmed__meta dd{
+  font-family:var(--ff-display);font-size:var(--fs-lede);font-weight:var(--fw-medium);
+  color:var(--ink);margin:0;
+}
+.nr-confirmed__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+/* =========================================================
+   Lightbox — opens via .nr-project__plate-btn click, consumes
+   data-lightbox-src/-w/-h/-caption attributes. JS wires it up
+   in theme.js. Catalogue Noir styling: registration brackets
+   on a near-full-bleed image, monospace caption with plate
+   index + title + dimensions.
+   ========================================================= */
+.nr-lightbox{
+  position:fixed;inset:0;z-index:9000;
+  display:grid;grid-template-rows:1fr auto;
+  background:rgba(7,8,10,.92);backdrop-filter:blur(14px);
+  opacity:0;visibility:hidden;
+  transition:opacity .35s var(--ease), visibility .35s;
+}
+.nr-lightbox.is-on{opacity:1;visibility:visible}
+.nr-lightbox__stage{
+  position:relative;margin:48px 64px 18px;
+  display:grid;place-items:center;overflow:hidden;
+  border:1px solid var(--hair);
+}
+.nr-lightbox__img{
+  max-width:100%;max-height:100%;
+  width:auto;height:auto;
+  object-fit:contain;display:block;
+  transform:scale(.97);opacity:0;
+  transition:transform .55s var(--ease), opacity .35s var(--ease);
+}
+.nr-lightbox.is-on .nr-lightbox__img{transform:scale(1);opacity:1}
+.nr-lightbox__caption{
+  padding:6px 64px 24px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:baseline;
+  font-family:var(--ff-mono);font-size:var(--fs-sm);
+  letter-spacing:var(--tr-caps-wide);text-transform:uppercase;color:var(--ink-2);
+}
+.nr-lightbox__count{color:var(--ink);font-weight:var(--fw-medium)}
+.nr-lightbox__title{color:var(--ink-2);letter-spacing:.18em;text-align:center}
+.nr-lightbox__dims{color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+
+/* Controls — close X plus prev / next floating at the sides */
+.nr-lightbox__close,
+.nr-lightbox__prev,
+.nr-lightbox__next{
+  position:absolute;z-index:2;
+}
+.nr-lightbox__close{top:18px;right:18px}
+.nr-lightbox__prev{top:50%;left:18px;transform:translateY(-50%)}
+.nr-lightbox__next{top:50%;right:18px;transform:translateY(-50%)}
+
+@media (max-width: 768px){
+  .nr-lightbox__stage{margin:24px 14px 10px}
+  .nr-lightbox__caption{padding:6px 14px 16px;grid-template-columns:1fr;gap:6px;text-align:left}
+  .nr-lightbox__title,.nr-lightbox__dims{text-align:left}
+  .nr-lightbox__prev,.nr-lightbox__next{display:none}
+}
+
+/* =========================================================
+   Print stylesheet — turns a single project page into a
+   magazine-style printable spread. Hides UI chrome, lays out
+   title + meta + plates as a paper composition.
+   Trigger: browser Ctrl/⌘+P on a single-project URL.
+   ========================================================= */
+@media print{
+  /* page setup */
+  @page{margin:18mm 18mm;size:A4 portrait}
+
+  /* baseline reset for print */
+  html,body{
+    background:#fff !important;color:#0B0C10 !important;
+    cursor:auto !important;
+    font-size:11pt;line-height:1.5;
+  }
+  body::before,body::after{display:none !important} /* vignette + grain off */
+
+  /* hide every interactive / decorative element */
+  .nr-topbar, .nr-sidebar, .nr-sidebar-backdrop, .nr-tabbar, .nr-footer,
+  .nr-cur, .nr-wipe, .nr-lightbox, .nr-modal, .nr-cookie, .nr-status,
+  .nr-hero__bottom, .nr-hero__nav, .nr-hero__thumbs, .nr-hero__counter,
+  .nr-project__close, .nr-project__actions,
+  .nr-book-trigger, .nr-btn,
+  .nr-clients,
+  [data-modal], [data-hero-prev], [data-hero-next]{display:none !important}
+
+  /* unfix the single-project layout — let it flow on paper */
+  .nr-project, .nr-project__layout, .nr-project__rail, .nr-project__rail-track{
+    position:static !important;display:block !important;
+    overflow:visible !important;height:auto !important;
+    grid-template-columns:none !important;grid-template-rows:none !important;
+    padding:0 !important;margin:0 !important;border:0 !important;
+  }
+  .nr-project__crumbs{
+    border:0 !important;padding:0 0 6mm !important;
+    font-family:var(--ff-mono);font-size:8pt;letter-spacing:.18em;
+    text-transform:uppercase;color:#666 !important;
+  }
+  .nr-project__crumbs a{color:#666 !important;text-decoration:none}
+
+  /* title block — full bleed at the top */
+  .nr-project__body{
+    page-break-after:avoid;padding:0 0 8mm !important;border:0 !important;
+  }
+  .nr-project__body::after{display:none !important} /* §02·a anchor */
+  .nr-project__title{
+    font-size:36pt !important;line-height:.95 !important;color:#0B0C10 !important;
+    letter-spacing:-.025em;font-weight:300;
+  }
+  .nr-project__title .nr-hero__word.is-em{font-weight:700;color:#000 !important}
+  .nr-project__lede{
+    font-size:10.5pt !important;line-height:1.55 !important;color:#333 !important;
+    max-width:none !important;margin:4mm 0 6mm;
+  }
+  .nr-project__meta{
+    display:grid !important;grid-template-columns:repeat(3, 1fr);gap:0 8mm;
+    border:0 !important;margin:0 0 8mm;page-break-inside:avoid;
+  }
+  .nr-project__meta li{
+    grid-template-columns:1fr !important;border:0 !important;padding:0 0 3mm !important;gap:1mm !important;
+  }
+  .nr-project__meta li > span:first-child{
+    font-family:var(--ff-mono);font-size:7.5pt;letter-spacing:.22em;
+    text-transform:uppercase;color:#888 !important;
+  }
+  .nr-project__meta-v{
+    font-family:var(--ff-display);font-size:11pt;font-weight:500;color:#0B0C10 !important;
+    text-align:left !important;
+  }
+
+  /* plates — flow as a 2-column grid on subsequent pages */
+  .nr-project__rail-track{
+    display:grid !important;
+    grid-template-columns:repeat(2, 1fr);gap:8mm;
+    padding-top:6mm !important;border-top:0.5pt solid #ccc;
+  }
+  .nr-project__plate{
+    width:100% !important;height:auto !important;
+    page-break-inside:avoid;break-inside:avoid;
+    border:0.5pt solid #ccc !important;background:#fff !important;
+  }
+  .nr-project__plate::before, .nr-project__plate::after{display:none !important}
+  .nr-project__plate img{
+    width:100% !important;height:auto !important;
+    filter:none !important;transform:none !important;
+  }
+  .nr-project__plate-btn{padding:0 !important;border:0 !important;background:none !important}
+
+  /* page footer — a discreet attribution at the bottom */
+  .nr-project::after{
+    content:'raveenthiran.com';
+    display:block;text-align:center;padding-top:6mm;
+    font-family:var(--ff-mono);font-size:7.5pt;letter-spacing:.32em;
+    text-transform:uppercase;color:#888;
+  }
+
+  /* honor link colors */
+  a{color:#0B0C10 !important;text-decoration:none}
+  a[href^="http"]::after{
+    content:" (" attr(href) ")";
+    font-family:var(--ff-mono);font-size:7pt;color:#999;
+  }
+}

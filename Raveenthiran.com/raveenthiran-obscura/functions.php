@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.19.0' );
+define( 'NR_THEME_VERSION', '4.19.1' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -37,8 +37,10 @@ add_action( 'after_setup_theme', function () {
  * Enqueue assets
  * ───────────────────────────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
-	// Fonts + theme CSS are inlined in <head> (see nr_inline_css below) to
-	// remove render-blocking requests on mobile — so nothing is enqueued here.
+	// External CSS (Cloudflare gzip/Brotli-compresses these). Inlining was tried
+	// in v4.19.0 but bloated the HTML and worsened FCP, so we load externally.
+	wp_enqueue_style( 'nr-fonts', get_template_directory_uri() . '/assets/css/fonts.css', [], NR_THEME_VERSION );
+	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/theme.css', [ 'nr-fonts' ], NR_THEME_VERSION );
 	// Preload the two above-the-fold weights (Inter Tight 500 body + 700 display em).
 	add_action( 'wp_head', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';
@@ -69,28 +71,6 @@ add_action( 'wp_enqueue_scripts', function () {
 		],
 	] );
 } );
-
-/* ─────────────────────────────────────────────────────────────
- * Inline the theme CSS (fonts + theme.css) into <head>.
- * Removes the render-blocking stylesheet requests that dominate mobile
- * FCP/LCP on Slow-4G. No FOUC — the full styles are present at first
- * paint. Cloudflare Brotli-compresses the HTML, so the inline cost is
- * tiny (~12 KB on the wire). Falls back to an external stylesheet if the
- * files can't be read, so the site is never unstyled.
- * ───────────────────────────────────────────────────────────── */
-add_action( 'wp_head', 'nr_inline_css', 7 );
-function nr_inline_css() {
-	$dir   = get_template_directory();
-	$uri   = get_template_directory_uri();
-	$fonts = @file_get_contents( $dir . '/assets/css/fonts.css' );
-	$theme = @file_get_contents( $dir . '/assets/css/theme.css' );
-	if ( $fonts === false && $theme === false ) {
-		echo '<link rel="stylesheet" href="' . esc_url( $uri . '/assets/css/theme.css?v=' . NR_THEME_VERSION ) . '">' . "\n";
-		return;
-	}
-	$fonts = $fonts ? str_replace( '../fonts/', $uri . '/assets/fonts/', $fonts ) : '';
-	echo "<style id=\"nr-inline-css\">\n" . $fonts . "\n" . (string) $theme . "\n</style>\n";
-}
 
 /* ─────────────────────────────────────────────────────────────
  * Custom Post Types — Projects, Services, Journal, Testimonials

@@ -114,7 +114,7 @@ $lede = get_the_excerpt();
 
 			<div class="nr-project__actions">
 				<a class="nr-btn nr-btn--primary"
-				   href="<?php echo esc_url( add_query_arg( 'service', sanitize_title( $m['cat'] ?: 'editorial' ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>">
+				   href="<?php echo esc_url( add_query_arg( [ 'service' => sanitize_title( $m['cat'] ?: 'editorial' ), 'ref' => get_the_title() ], function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>">
 					<span><?php echo esc_html( nr_opt( 'nr_cta_commission', __( 'Commission similar', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 				</a>
 				<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
@@ -132,6 +132,13 @@ $lede = get_the_excerpt();
 				<?php foreach ( $plates as $i => $p ) :
 					$alt   = sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
 					$large = $p['id'] ? wp_get_attachment_image_url( $p['id'], 'full' ) : $p['url'];
+					// "Shot on" — built from EXIF captured on upload (inc/performance.php).
+					$exif_str = '';
+					if ( $p['id'] && function_exists( 'nr_get_exif' ) ) {
+						$ex   = nr_get_exif( $p['id'] );
+						$bits = array_filter( [ $ex['camera'] ?? '', $ex['focal'] ?? '', $ex['aperture'] ?? '', $ex['shutter'] ?? '', $ex['iso'] ?? '' ] );
+						$exif_str = implode( '  ·  ', $bits );
+					}
 				?>
 					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>">
 						<button type="button" class="nr-project__plate-btn"
@@ -139,6 +146,7 @@ $lede = get_the_excerpt();
 							data-lightbox-w="<?php echo (int) $p['w']; ?>"
 							data-lightbox-h="<?php echo (int) $p['h']; ?>"
 							data-lightbox-caption="<?php echo esc_attr( $alt ); ?>"
+							<?php if ( $exif_str ) : ?>data-lightbox-exif="<?php echo esc_attr( $exif_str ); ?>"<?php endif; ?>
 							aria-label="<?php echo esc_attr( sprintf( __( 'View plate %d full size', 'raveenthiran' ), $i + 1 ) ); ?>">
 							<?php if ( $p['id'] ) :
 								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [

@@ -126,7 +126,17 @@ function nr_schema_markup_extended_render() {
             'locationCreated' => get_field( 'project_location', $post->ID ) ?: $city,
             'dateCreated'     => get_field( 'project_year', $post->ID ) ?: get_the_date( 'Y' ),
         ];
-        if ( ! empty( $images ) ) $schema['image'] = $images;
+        if ( ! empty( $images ) ) {
+            // Richer ImageObject entries (caption + creator) instead of bare URLs.
+            $schema['image'] = array_map( function ( $u ) use ( $name, $site_url ) {
+                return [
+                    '@type'      => 'ImageObject',
+                    'contentUrl' => $u,
+                    'caption'    => get_the_title(),
+                    'creator'    => [ '@type' => 'Person', 'name' => $name, 'url' => $site_url ],
+                ];
+            }, $images );
+        }
         if ( $client = get_field( 'project_client', $post->ID ) ) {
             $schema['contributor'] = [ '@type' => 'Organization', 'name' => $client ];
         }

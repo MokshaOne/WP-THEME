@@ -22,6 +22,7 @@ $avail   = nr_opt( 'nr_avail_text', 'Currently booking · Q3/Q4 2026' );
 // Pre-fill from the calculator (or any deep link).
 $sel  = isset( $_GET['service'] ) ? sanitize_title( wp_unslash( $_GET['service'] ) ) : '';
 $est  = isset( $_GET['est'] ) ? preg_replace( '/[^0-9.]/', '', wp_unslash( $_GET['est'] ) ) : '';
+$ref  = isset( $_GET['ref'] ) ? sanitize_text_field( wp_unslash( $_GET['ref'] ) ) : '';
 
 // Left-panel hero — first featured project, else any project.
 $hero_url = '';
@@ -129,7 +130,7 @@ $steps = [
 				</div>
 
 				<label class="nr-form__wide"><span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Tell me about the project', 'raveenthiran' ); ?></span>
-					<textarea name="notes" rows="4" placeholder="<?php esc_attr_e( 'A few sentences — a place, a person, an hour of the day.', 'raveenthiran' ); ?>"></textarea>
+					<textarea name="notes" rows="4" placeholder="<?php esc_attr_e( 'A few sentences — a place, a person, an hour of the day.', 'raveenthiran' ); ?>"><?php echo $ref ? esc_textarea( sprintf( __( 'Re: %s — I saw this project and would like something in the same spirit.', 'raveenthiran' ), $ref ) ) : ''; ?></textarea>
 				</label>
 
 				<div class="nr-form__foot">

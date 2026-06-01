@@ -45,6 +45,7 @@ $nr_show_footer = $nr_footer_text || $nr_legal['datenschutz'] || $nr_legal['agb'
 		<span class="nr-lightbox__count"></span>
 		<span class="nr-lightbox__title"></span>
 		<span class="nr-lightbox__dims"></span>
+		<span class="nr-lightbox__exif"></span>
 	</figcaption>
 </div>
 

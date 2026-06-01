@@ -373,6 +373,7 @@
     const count = lb.querySelector('.nr-lightbox__count');
     const title = lb.querySelector('.nr-lightbox__title');
     const dims  = lb.querySelector('.nr-lightbox__dims');
+    const exif  = lb.querySelector('.nr-lightbox__exif');
     const closeBtn = lb.querySelector('.nr-lightbox__close');
     const prevBtn  = lb.querySelector('.nr-lightbox__prev');
     const nextBtn  = lb.querySelector('.nr-lightbox__next');
@@ -389,6 +390,7 @@
       count.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(group.length).padStart(2, '0');
       title.textContent = it.caption || '';
       dims.textContent = (it.w && it.h) ? (it.w + ' × ' + it.h) : '';
+      if (exif) exif.textContent = it.exif || '';
       prevBtn.disabled = group.length <= 1;
       nextBtn.disabled = group.length <= 1;
     }
@@ -403,6 +405,7 @@
         w: parseInt(b.dataset.lightboxW || '0', 10),
         h: parseInt(b.dataset.lightboxH || '0', 10),
         caption: b.dataset.lightboxCaption || '',
+        exif: b.dataset.lightboxExif || '',
       }));
       idx = Math.max(0, buttons.indexOf(triggerBtn));
       render();

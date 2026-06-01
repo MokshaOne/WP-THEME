@@ -23,6 +23,7 @@ $nr_show_footer = $nr_footer_text || $nr_legal['datenschutz'] || $nr_legal['agb'
 	<nav class="nr-footer__links">
 		<?php $nr_fe = nr_opt( 'nr_email', '' ); if ( $nr_fe ) : ?><button type="button" class="nr-footer__email" data-copy="<?php echo esc_attr( $nr_fe ); ?>"><?php echo esc_html( $nr_fe ); ?></button><?php endif; ?>
 		<?php if ( $nr_ig ) : ?><a href="<?php echo esc_url( $nr_ig ); ?>" target="_blank" rel="noopener">Instagram</a><?php endif; ?>
+		<?php $nr_pk = nr_opt( 'nr_presskit_url', '' ); if ( $nr_pk ) : ?><a href="<?php echo esc_url( $nr_pk ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Press kit', 'raveenthiran' ); ?></a><?php endif; ?>
 		<?php if ( $nr_legal['datenschutz'] ) : ?><a href="<?php echo esc_url( home_url( '/datenschutz' ) ); ?>"><?php echo esc_html( $nr_legal['datenschutz'] ); ?></a><?php endif; ?>
 		<?php if ( $nr_legal['agb']         ) : ?><a href="<?php echo esc_url( home_url( '/agb' ) ); ?>"        ><?php echo esc_html( $nr_legal['agb'] ); ?></a><?php endif; ?>
 		<?php if ( $nr_legal['impressum']   ) : ?><a href="<?php echo esc_url( home_url( '/impressum' ) ); ?>"  ><?php echo esc_html( $nr_legal['impressum'] ); ?></a><?php endif; ?>

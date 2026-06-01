@@ -41,9 +41,9 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 22. **Store enquiries as a CPT + admin list** (not just email — nothing is logged today). _Conv/Ops_
 23. **Honeypot + simple rate-limit** on the Enquire form. _Conv/Sec_
 24. **Click-to-copy email** with a "copied" toast. _Conv/UX_
-25. **WhatsApp / Signal quick-contact** button. _Conv_
-26. **Instagram — curated grid** — Meta deprecated the Basic Display API (Dec 2024), so auto-feeds no longer work; use an admin-managed image+link grid (or per-post embeds). _Conv_
-27. **Footer CTA** ("Start a project →") on content pages. _Conv_
+25. ✅ **WhatsApp / Signal quick-contact** button. _Conv_
+26. ✅ **Instagram — curated grid** — Meta deprecated the Basic Display API (Dec 2024), so auto-feeds no longer work; use an admin-managed image+link grid (or per-post embeds). _Conv_
+27. ✅ **Footer CTA** ("Start a project →") on content pages. _Conv_
 28. **Auto "Currently booking Q_/Q_"** derived from a date setting. _Conv_
 
 ### UX / polish
@@ -69,12 +69,13 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 ## 🟡 Tier 2 — Medium (41–80)
 
 > **Built in v4.15.0:** #43, #45, #51, #52, #56, #65, #76, #78, #79. The remaining Tier 2 items were **moved to Tier 3** per request (they need a settings UI, a content model, external keys, or carry build risk).
+> **Built in v4.16.0:** Settings-UI fields (WhatsApp #25, Instagram grid #26, footer-CTA #27, press-kit #68, booking link #71), #42 drag-to-reorder projects, #44 bulk feature action. Hamburger hidden on mobile (tab bar covers nav).
 
 ### Ops & scale (your 200-project pain)
 41. **Bulk project importer** — one project per image folder / ZIP / CSV. ★ _Ops_
-42. **Drag-to-reorder projects** (sets `menu_order`) in admin. _Ops_
+42. ✅ **Drag-to-reorder projects** (sets `menu_order`) in admin. _Ops_
 43. ✅ **Auto-map EXIF → project fields** (year/camera) on upload. ★ _Ops_
-44. **Bulk "feature on homepage" toggle + rotation scheduling.** _Ops_
+44. ✅ **Bulk "feature on homepage" toggle + rotation scheduling.** _Ops_
 45. ✅ **Admin dashboard widget** — recent enquiries, counts, quick links. _Ops_
 
 ### Performance / infra
@@ -104,12 +105,12 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 65. ✅ **Instant client-side search** across projects. _Content/UX_
 66. **Video plates** in galleries (mp4 / Vimeo). _Content_
 67. **Before/after retouch slider.** _Content_
-68. **Downloadable press kit / one-pager.** _Content_
+68. ✅ **Downloadable press kit / one-pager.** _Content_
 69. **Dynamic per-project OG share cards** (composited image). _SEO/Content_
 
 ### Conversion
 70. **Quote → branded PDF estimate** emailed to the visitor. _Conv_
-71. **Booking calendar** (Cal.com embed or native slots). _Conv_
+71. ✅ **Booking calendar** (Cal.com embed or native slots). _Conv_
 72. **Testimonials rotation** with client logos + ratings. _Conv_
 73. **Related projects with hover thumbnails.** _Conv/UX_
 

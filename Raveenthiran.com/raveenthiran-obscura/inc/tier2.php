@@ -109,3 +109,61 @@ add_action( 'wp_head', function () {
 	$schema = [ '@context' => 'https://schema.org', '@type' => 'ImageGallery', 'name' => get_the_title(), 'url' => get_permalink(), 'image' => array_values( array_unique( $urls ) ) ];
 	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
 }, 9 );
+
+/* ─────────────────────────────────────────────────────────────
+ * #44 Bulk "feature / unfeature on homepage" action on the Projects list.
+ * ───────────────────────────────────────────────────────────── */
+add_filter( 'bulk_actions-edit-nr_project', function ( $a ) {
+	$a['nr_feature']   = __( '★ Feature on homepage', 'raveenthiran' );
+	$a['nr_unfeature'] = __( 'Unfeature', 'raveenthiran' );
+	return $a;
+} );
+add_filter( 'handle_bulk_actions-edit-nr_project', function ( $redirect, $action, $ids ) {
+	if ( $action === 'nr_feature' || $action === 'nr_unfeature' ) {
+		$val = $action === 'nr_feature' ? '1' : '0';
+		foreach ( $ids as $id ) update_post_meta( $id, 'featured_on_homepage', $val );
+		$redirect = add_query_arg( 'nr_featured', count( $ids ), $redirect );
+	}
+	return $redirect;
+}, 10, 3 );
+
+/* ─────────────────────────────────────────────────────────────
+ * #42 Drag-to-reorder projects in the admin list (writes menu_order).
+ * Front-end queries already order by menu_order, so this controls the
+ * portfolio + hero order visually.
+ * ───────────────────────────────────────────────────────────── */
+add_action( 'pre_get_posts', function ( $q ) {
+	if ( is_admin() && $q->is_main_query() && ( $_GET['post_type'] ?? '' ) === 'nr_project' && empty( $_GET['orderby'] ) ) {
+		$q->set( 'orderby', 'menu_order' );
+		$q->set( 'order', 'ASC' );
+		$q->set( 'posts_per_page', 200 );
+	}
+} );
+add_action( 'admin_enqueue_scripts', function ( $hook ) {
+	if ( $hook === 'edit.php' && ( $_GET['post_type'] ?? '' ) === 'nr_project' ) wp_enqueue_script( 'jquery-ui-sortable' );
+} );
+add_action( 'admin_footer-edit.php', function () {
+	if ( ( $_GET['post_type'] ?? '' ) !== 'nr_project' ) return;
+	$nonce = wp_create_nonce( 'nr_reorder' );
+	?>
+	<style>#the-list tr.ui-sortable-helper{box-shadow:0 6px 18px rgba(0,0,0,.18)}#the-list .check-column{cursor:move}</style>
+	<script>
+	jQuery(function($){
+		if(!$.fn.sortable) return;
+		$('#the-list').sortable({ items:'tr', axis:'y', cursor:'move',
+			helper:function(e,ui){ ui.children().each(function(){ $(this).width($(this).width()); }); return ui; },
+			update:function(){
+				var ids=$('#the-list tr').map(function(){ return this.id.replace('post-',''); }).get();
+				$.post(ajaxurl,{action:'nr_reorder',nonce:'<?php echo esc_js( $nonce ); ?>',order:ids});
+			}
+		});
+	});
+	</script>
+	<?php
+} );
+add_action( 'wp_ajax_nr_reorder', function () {
+	if ( ! current_user_can( 'edit_posts' ) || ! check_ajax_referer( 'nr_reorder', 'nonce', false ) ) wp_send_json_error();
+	$order = array_map( 'intval', (array) ( $_POST['order'] ?? [] ) );
+	foreach ( $order as $i => $id ) { if ( $id ) wp_update_post( [ 'ID' => $id, 'menu_order' => $i ] ); }
+	wp_send_json_success();
+} );

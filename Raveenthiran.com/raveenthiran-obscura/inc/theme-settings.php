@@ -40,6 +40,10 @@ function nr_settings_defaults() {
 		'nr_available'       => '1',
 		'nr_avail_text'      => __( 'Available · 2026', 'raveenthiran' ),
 		'nr_booking_url'     => '',
+		'nr_whatsapp'        => '',
+		'nr_presskit_url'    => '',
+		'nr_footer_cta'      => __( 'Start a project', 'raveenthiran' ),
+		'nr_ig_grid'         => '',
 
 		/* Stats */
 		'nr_stats_proj'      => '142',
@@ -342,7 +346,18 @@ function nr_theme_settings_page() {
 						<td><?php nr_field_text( 'nr_avail_text', 40 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Booking URL', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_booking_url', 60 ); ?>
-							<p class="description"><?php esc_html_e( 'Optional. If set, the booking modal embeds this URL in an iframe. Leave blank to use the inline brief form.', 'raveenthiran' ); ?></p></td></tr>
+							<p class="description"><?php esc_html_e( 'Optional. If set, adds a "Book a time →" button on the Enquire page (e.g. a Cal.com link).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'WhatsApp number', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_whatsapp', 30 ); ?>
+							<p class="description"><?php esc_html_e( 'Optional. Digits only — adds a WhatsApp quick-contact button on the Enquire page.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Press-kit URL', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_presskit_url', 60 ); ?>
+							<p class="description"><?php esc_html_e( 'Optional. Link to a downloadable press kit / one-pager (shown in the footer).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Footer CTA label', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_footer_cta', 30 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Instagram grid', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_ig_grid', 5 ); ?>
+							<p class="description"><?php esc_html_e( 'One image per line: image_url | post_url — a curated grid on the Studio page (Meta\'s API no longer allows auto-feeds).', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 

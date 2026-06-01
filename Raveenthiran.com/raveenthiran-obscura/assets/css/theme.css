@@ -1786,3 +1786,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .nr-sheet__cell:hover .nr-sheet__cap{opacity:1}
 .nr-sheet__empty{color:var(--ink-3);padding:20px}
 @media (max-width:600px){ .nr-sheet__grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))} }
+
+/* Hamburger is redundant on mobile — the bottom tab bar handles primary nav. */
+@media (max-width:900px){ .nr-hamb{display:none} }

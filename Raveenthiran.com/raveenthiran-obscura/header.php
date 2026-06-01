@@ -91,7 +91,6 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 				'portfolio' => [ __( 'Work',      'raveenthiran' ), get_post_type_archive_link( 'nr_project' ) ?: home_url( '/portfolio' ) ],
 				'about'     => [ __( 'Studio',    'raveenthiran' ), $nr_tpl_url( 'page-about.php',   'about' ) ],
 				'journal'   => [ __( 'Journal',   'raveenthiran' ), function_exists( 'nr_journal_url' ) ? nr_journal_url() : home_url( '/journal' ) ],
-				'enquire'   => [ __( 'Enquire',   'raveenthiran' ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ],
 			];
 			foreach ( $items as $key => $it ) {
 				$cls = $nr_current === $key ? ' aria-current="page"' : '';
@@ -130,7 +129,6 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 			[ __( 'Work',     'raveenthiran' ), get_post_type_archive_link( 'nr_project' ) ?: home_url( '/portfolio' ) ],
 			[ __( 'Studio',   'raveenthiran' ), function_exists( 'nr_template_page_url' ) ? nr_template_page_url( 'page-about.php',   'about' )   : home_url( '/about' ) ],
 			[ __( 'Journal',  'raveenthiran' ), function_exists( 'nr_journal_url' ) ? nr_journal_url() : home_url( '/journal' ) ],
-			[ __( 'Enquire',  'raveenthiran' ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ],
 		];
 		foreach ( $mobile_items as $it ) {
 			printf( '<a href="%s">%s</a>', esc_url( $it[1] ), esc_html( $it[0] ) );

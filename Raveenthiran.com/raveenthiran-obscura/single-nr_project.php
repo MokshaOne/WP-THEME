@@ -140,7 +140,16 @@ $lede = get_the_excerpt();
 							data-lightbox-h="<?php echo (int) $p['h']; ?>"
 							data-lightbox-caption="<?php echo esc_attr( $alt ); ?>"
 							aria-label="<?php echo esc_attr( sprintf( __( 'View plate %d full size', 'raveenthiran' ), $i + 1 ) ); ?>">
-							<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
+							<?php if ( $p['id'] ) :
+								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [
+									'alt'      => $alt,
+									'sizes'    => '(max-width:900px) 100vw, 70vw',
+									'loading'  => $i === 0 ? 'eager' : 'lazy',
+									'decoding' => 'async',
+								] );
+							else : ?>
+								<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
+							<?php endif; ?>
 						</button>
 					</figure>
 				<?php endforeach; ?>

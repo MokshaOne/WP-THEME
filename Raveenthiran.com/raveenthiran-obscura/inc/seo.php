@@ -180,31 +180,51 @@ function nr_serve_sitemap() {
         [ 'loc' => home_url( '/' ),          'priority' => '1.0', 'changefreq' => 'weekly' ],
         [ 'loc' => home_url( '/portfolio' ),  'priority' => '0.9', 'changefreq' => 'weekly' ],
         [ 'loc' => home_url( '/about' ),      'priority' => '0.7', 'changefreq' => 'monthly' ],
-        [ 'loc' => home_url( '/booking' ),    'priority' => '0.9', 'changefreq' => 'monthly' ],
-        [ 'loc' => home_url( '/contact' ),    'priority' => '0.7', 'changefreq' => 'monthly' ],
-        [ 'loc' => home_url( '/faq' ),        'priority' => '0.6', 'changefreq' => 'monthly' ],
+        [ 'loc' => home_url( '/enquire' ),    'priority' => '0.9', 'changefreq' => 'monthly' ],
     ];
     $urls = array_merge( $urls, $static );
 
     // Projekte
     $projects = get_posts( [ 'post_type' => 'nr_project', 'posts_per_page' => -1, 'fields' => 'ids' ] );
     foreach ( $projects as $id ) {
+        $imgs = [];
+        if ( has_post_thumbnail( $id ) ) {
+            $u = get_the_post_thumbnail_url( $id, 'nr-hero' );
+            if ( $u ) $imgs[] = $u;
+        }
+        $gallery = function_exists( 'nr_field' ) ? nr_field( 'project_gallery', $id ) : [];
+        if ( is_array( $gallery ) ) {
+            foreach ( $gallery as $g ) {
+                if ( is_array( $g ) && ! empty( $g['url'] ) ) {
+                    $imgs[] = $g['url'];
+                } elseif ( is_numeric( $g ) ) {
+                    $gu = wp_get_attachment_image_url( (int) $g, 'nr-hero' );
+                    if ( $gu ) $imgs[] = $gu;
+                }
+            }
+        }
         $urls[] = [
             'loc'        => get_permalink( $id ),
             'lastmod'    => get_the_modified_date( 'Y-m-d', $id ),
             'priority'   => '0.8',
             'changefreq' => 'monthly',
+            'images'     => array_slice( array_values( array_unique( $imgs ) ), 0, 1000 ),
         ];
     }
 
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
     foreach ( $urls as $url ) {
         echo "  <url>\n";
         echo '    <loc>' . esc_url( $url['loc'] ) . "</loc>\n";
         if ( ! empty( $url['lastmod'] ) ) echo '    <lastmod>' . esc_html( $url['lastmod'] ) . "</lastmod>\n";
         if ( ! empty( $url['changefreq'] ) ) echo '    <changefreq>' . esc_html( $url['changefreq'] ) . "</changefreq>\n";
         if ( ! empty( $url['priority'] ) ) echo '    <priority>' . esc_html( $url['priority'] ) . "</priority>\n";
+        if ( ! empty( $url['images'] ) ) {
+            foreach ( $url['images'] as $img ) {
+                echo '    <image:image><image:loc>' . esc_url( $img ) . "</image:loc></image:image>\n";
+            }
+        }
         echo "  </url>\n";
     }
     echo '</urlset>';

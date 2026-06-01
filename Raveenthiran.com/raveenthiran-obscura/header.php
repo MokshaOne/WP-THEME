@@ -31,8 +31,6 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta name="theme-color" content="#0B0C10">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<style>
 	:root{
 		--amber:<?php echo esc_attr( $nr_accent ); ?>;

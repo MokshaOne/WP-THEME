@@ -39,6 +39,7 @@ if ( $q->have_posts() ) {
 			'client'   => $m['client'] ?: '—',
 			'loc'      => $m['loc'],
 			'thumb'    => has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'nr-hero' ) : '',
+			'thumb_id' => has_post_thumbnail() ? (int) get_post_thumbnail_id( get_the_ID() ) : 0,
 			'label'    => strtolower( wp_strip_all_tags( get_the_title() ) ),
 			'edition'  => function_exists( 'nr_field' ) ? ( nr_field( 'project_edition' ) ?: '' ) : '',
 		];
@@ -58,7 +59,7 @@ if ( $q->have_posts() ) {
 			'id' => 0, 'title' => $s[0], 'url' => '#',
 			'cat' => $s[1], 'yr' => $s[2], 'client' => $s[3],
 			'loc' => nr_opt( 'nr_location', 'Wien' ),
-			'thumb' => '', 'label' => strtolower( $s[0] ),
+			'thumb' => '', 'thumb_id' => 0, 'label' => strtolower( $s[0] ),
 			'edition' => '',
 		];
 	}
@@ -78,7 +79,15 @@ $first        = $slides[0] ?? [];
 
 		<?php foreach ( $slides as $i => $s ) : ?>
 			<div class="nr-hero__plate<?php echo $i === 0 ? ' is-active' : ''; ?>" data-slide="<?php echo (int) $i; ?>" aria-hidden="<?php echo $i === 0 ? 'false' : 'true'; ?>">
-				<?php if ( $s['thumb'] ) : ?>
+				<?php if ( $s['thumb_id'] ) :
+					echo wp_get_attachment_image( $s['thumb_id'], 'nr-hero', false, [
+						'alt'           => $s['title'],
+						'sizes'         => '100vw',
+						'loading'       => $i === 0 ? 'eager' : 'lazy',
+						'decoding'      => 'async',
+						'fetchpriority' => $i === 0 ? 'high' : 'auto',
+					] );
+				elseif ( $s['thumb'] ) : ?>
 					<img src="<?php echo esc_url( $s['thumb'] ); ?>" alt="<?php echo esc_attr( $s['title'] ); ?>" width="2400" height="1600" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>"<?php echo $i === 0 ? ' fetchpriority="high"' : ''; ?> decoding="async">
 				<?php elseif ( function_exists( 'nr_placeholder' ) ) : ?>
 					<?php echo nr_placeholder( $s['label'], true, 'auto' ); ?>

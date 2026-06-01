@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.2.1' );
+define( 'NR_THEME_VERSION', '4.3.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -37,20 +37,19 @@ add_action( 'after_setup_theme', function () {
  * Enqueue assets
  * ───────────────────────────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
+	// Self-hosted fonts (latin subset) — no external requests, no render-block.
 	wp_enqueue_style(
 		'nr-fonts',
-		'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap',
+		get_template_directory_uri() . '/assets/css/fonts.css',
 		[],
-		null
+		NR_THEME_VERSION
 	);
-	// Preconnect to Google's font CDNs — saves ~100-200ms on first byte for fonts.
+	// Preload the two above-the-fold weights (Inter Tight 500 body + 700 display em)
+	// so first paint isn't blocked on font discovery — improves LCP.
 	add_action( 'wp_head', function () {
-		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-		// Preload the two weights used above the fold (Inter Tight 500 body,
-		// Inter Tight 700 display em). Google Fonts redirects these URLs, but
-		// the preload still warms the connection + improves LCP for first paint.
-		echo '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700&display=swap">' . "\n";
+		$u = get_template_directory_uri() . '/assets/fonts/';
+		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
+		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-700.woff2' ) . '">' . "\n";
 	}, 1 );
 
 	wp_enqueue_style(

@@ -85,8 +85,16 @@ Real issues found reading the `Theme-folder` branch — these are the gap, made 
 7. **Placeholder/sample data baked into templates.** `front-page.php` and
    `archive-nr_project.php` ship hardcoded "Nachtdienst / Naschmarkt" samples. Fine as
    empty-state, but a tell that the *real* hero content isn't driving the design yet.
+8. **Hero images are double-cropped — original composition is lost.** The front-page hero is
+   cropped *twice*: (a) on upload, `add_image_size('nr-hero', 2400, 1600, true)` — that
+   `true` **hard-crops every photo to 3:2**, chopping portraits/squares; (b) in CSS,
+   `.nr-hero__plate img{ object-fit:cover }` crops *again* to fill the frame. The result: the
+   displayed picture is not shown in its true crop ("not in frame"). **Fix = serve an
+   uncropped source + `object-fit:contain` (or size the frame to each image's real aspect
+   ratio).** See Phase 4 task. For a photography site, showing the photographer's *actual*
+   composition is not optional — it's the product.
 
-None of these are embarrassing. #1 is the league change; #2–#4 are quick perf wins.
+None of these are embarrassing. #1 is the league change; #2–#4 and #8 are quick wins.
 
 ---
 
@@ -178,6 +186,12 @@ without re-platforming.
 - [ ] **Self-host fonts** (woff2, Latin subset, `font-display:swap`, preload 2 weights).
 - [ ] **`srcset` + `sizes` on hero and project plates** (fix finding #2). Serve **AVIF**, WebP
       fallback.
+- [ ] **Show hero images in their original crop** (fix finding #8). Stop force-cropping: change
+      the hero size to a soft fit — `add_image_size('nr-hero', 2400, 1600, false)` (or serve
+      `full`) — and set `.nr-hero__plate img{ object-fit:contain }`, letterboxing against the
+      near-black canvas. Optionally drive the frame's `aspect-ratio` from each image's real
+      dimensions so portrait heroes get a portrait frame. The photographer's composition must
+      survive to the screen intact.
 - [ ] Inline **critical CSS**; defer the rest. Defer/async all non-critical JS.
 - [ ] Put **Cloudflare** in front; full-page edge cache (WP needs a cache plugin; headless
       gets it free).

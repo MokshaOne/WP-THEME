@@ -577,3 +577,21 @@
     plates[i].classList.add('is-active'); plates[i].setAttribute('aria-hidden', 'false');
   }, 4500);
 })();
+
+
+/* =========================================================
+   #19 Light / dark theme toggle
+   ========================================================= */
+(function () {
+  var btns = document.querySelectorAll('[data-theme-toggle]');
+  if (!btns.length) return;
+  function set(light) {
+    document.documentElement.classList.toggle('nr-light', light);
+    try { localStorage.nrTheme = light ? 'light' : 'dark'; } catch (e) {}
+  }
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      set(!document.documentElement.classList.contains('nr-light'));
+    });
+  });
+})();

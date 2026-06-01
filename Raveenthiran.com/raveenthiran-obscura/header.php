@@ -45,6 +45,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 		--hair-soft:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.06);
 	}
 	</style>
+	<script>try{if(localStorage.nrTheme==='light')document.documentElement.classList.add('nr-light');}catch(e){}</script>
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class( 'nr nr-page-' . esc_attr( $nr_current ?: 'default' ) ); ?>>
@@ -108,6 +109,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 			</span>
 		<?php endif; ?>
 
+		<button type="button" class="nr-theme-toggle" data-theme-toggle aria-label="<?php esc_attr_e( 'Toggle light / dark', 'raveenthiran' ); ?>"><span class="nr-theme-toggle__dot" aria-hidden="true"></span></button>
 		<a class="nr-book-trigger" href="<?php echo esc_url( function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : $nr_booking_url ); ?>">
 			<span><?php echo esc_html( $nr_book_label ); ?> →</span>
 		</a>

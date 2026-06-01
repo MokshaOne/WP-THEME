@@ -17,12 +17,12 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 2. **Prefetch a project page on card hover / touchstart** — clicks feel instant. _Perf/UX_
 3. **Preload the LCP image on About & Enquire** (like front-page already does). _Perf_
 4. **Explicit width/height on every `<img>`** to eliminate layout shift. _Perf_
-5. **Minify the shipped `theme.css` / `theme.js`** (build step). _Perf_
+5. **Minify the shipped `theme.css` / `theme.js`** (build step). _Perf_ → **moved to Tier 3** (build-time / breakage risk)
 6. **`content-visibility:auto`** on offscreen rail items. _Perf_
-7. **Far-future cache headers** for `/assets` via `.htaccess`. _Perf_
+7. **Far-future cache headers** for `/assets` via `.htaccess`. _Perf_ → **moved to Tier 3** (build-time / breakage risk)
 8. **Audit `loading`/`decoding`/`fetchpriority`** across all templates. _Perf_
 9. **Drop any genuinely-unused font weight** after a usage check. _Perf_
-10. **Strip dead CSS selectors** (post-refactor sweep). _Perf_
+10. **Strip dead CSS selectors** (post-refactor sweep). _Perf_ → **moved to Tier 3** (build-time / breakage risk)
 
 ### SEO
 11. **Related projects (same category)** block on the single-project page. _SEO/UX_

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.18.0' );
+define( 'NR_THEME_VERSION', '4.18.1' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -58,9 +58,6 @@ add_action( 'wp_enqueue_scripts', function () {
 		[ 'nr-fonts' ],
 		NR_THEME_VERSION
 	);
-
-	// Theme stylesheet (header only — actual CSS lives in assets/css/theme.css)
-	wp_enqueue_style( 'nr-style', get_stylesheet_uri(), [], NR_THEME_VERSION );
 
 	wp_enqueue_script(
 		'nr-theme',

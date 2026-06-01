@@ -853,11 +853,6 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-admin-hint a{color:var(--ink-2);border-bottom:1px solid var(--amber);padding-bottom:1px}
 .nr-admin-hint a:hover{color:var(--ink)}
 
-/* Contact-page intro paragraph — sits below the title in the form pane. */
-.nr-contact__intro{
-  font-size:var(--fs-body);line-height:1.55;
-  max-width:54ch;color:var(--ink-2);
-}
 
 /* Modal footer line — small caps response-time + location note pinned
    to the bottom of the modal's intro pane. */
@@ -983,31 +978,6 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   .nr-clients__track{gap:32px;animation-duration:30s}
 }
 
-/* =========================================================
-   Contact
-   ========================================================= */
-.nr-contact{
-  position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
-  display:grid;grid-template-columns:1.2fr 1fr;overflow:hidden;
-}
-.nr-contact__form-wrap{
-  padding:40px 40px 36px var(--pad);
-  border-right:1px solid var(--hair);
-  display:flex;flex-direction:column;gap:22px;overflow:hidden;position:relative;
-}
-.nr-contact__form-wrap::after{
-  content:'§06';position:absolute;right:24px;bottom:24px;
-  font-weight:300;font-size:120px;line-height:1;letter-spacing:-.05em;
-  color:transparent;-webkit-text-stroke:1px var(--ink-5);pointer-events:none;
-}
-.nr-contact__form-wrap > *{position:relative;z-index:1}
-.nr-contact__form-wrap .nr-display{font-size:clamp(40px,5.4vw,86px)}
-.nr-contact__side{padding:40px var(--pad) 36px 40px;display:flex;flex-direction:column;gap:22px;overflow:hidden}
-.nr-contact__info{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair)}
-.nr-contact__info > div{background:var(--bg);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
-.nr-contact__info dt{font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
-.nr-contact__info dd{font-size:var(--fs-body);font-weight:500;color:var(--ink)}
-.nr-contact__info a{color:var(--ink);border-bottom:1px solid var(--amber);padding-bottom:1px}
 
 .nr-form{display:flex;flex-direction:column;gap:18px}
 .nr-form label{display:flex;flex-direction:column;gap:8px;position:relative}
@@ -1035,23 +1005,6 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-form__wide{display:flex;flex-direction:column;gap:8px}
 .nr-form__foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:18px;border-top:1px solid var(--hair)}
 
-/* =========================================================
-   Booking
-   ========================================================= */
-.nr-booking{position:relative;overflow:hidden;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:0}
-.nr-booking__steps{
-  padding:40px 40px 36px var(--pad);
-  border-right:1px solid var(--hair);
-  display:flex;flex-direction:column;gap:26px;overflow:hidden;position:relative;
-}
-.nr-booking__steps::after{
-  content:'§04';position:absolute;right:24px;bottom:24px;
-  font-weight:300;font-size:120px;line-height:1;letter-spacing:-.05em;
-  color:transparent;-webkit-text-stroke:1px var(--ink-5);pointer-events:none;
-}
-.nr-booking__panel{padding:40px var(--pad) 36px 40px;display:flex;flex-direction:column;gap:22px;overflow:hidden}
-.nr-booking__iframe{width:100%;height:100%;border:0;background:var(--bg-2);min-height:380px}
-.nr-booking__info{margin-top:auto}
 
 .nr-steps{list-style:none;display:flex;flex-direction:column;gap:0;position:relative;z-index:1}
 .nr-steps li{display:grid;grid-template-columns:72px 1fr;gap:22px;align-items:start;padding:22px 0;border-top:1px solid var(--hair);position:relative;transition:border-top-color .3s var(--ease)}
@@ -1063,17 +1016,6 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-steps__t{font-weight:600;font-size:19px;letter-spacing:-.015em;color:var(--ink);display:block;margin-bottom:7px}
 .nr-steps__d{font-size:var(--fs-body);line-height:1.55;color:var(--ink-2);max-width:46ch;display:block}
 
-.nr-quick-form{display:flex;flex-direction:column;gap:18px}
-.nr-quick-form label{display:flex;flex-direction:column;gap:8px;position:relative}
-.nr-quick-form .nr-eyebrow::before{display:none} /* hide the amber tick on form labels */
-.nr-quick-form input,.nr-quick-form textarea{
-  background:transparent;border:0;border-bottom:1px solid var(--hair);
-  color:var(--ink);padding:12px 0;font:inherit;font-size:var(--fs-lede);font-weight:400;outline:0;
-  transition:border-color .3s var(--ease);width:100%;
-}
-.nr-quick-form label::after{content:'';position:absolute;left:0;bottom:0;height:1px;background:var(--amber);width:0;transition:width .35s var(--ease)}
-.nr-quick-form label:focus-within::after{width:100%}
-.nr-quick-form textarea{resize:none;min-height:90px;line-height:1.5}
 
 /* =========================================================
    Mobile tab bar
@@ -1119,15 +1061,6 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   background:rgba(11,12,16,.5);
   /* see .nr-icon-btn — shared circular-button rules */
 }
-.nr-modal__intro,.nr-modal__host{padding:32px 28px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
-.nr-modal__intro{border-right:1px solid var(--hair);background:var(--bg)}
-.nr-modal__intro h2{font-weight:300;font-size:clamp(28px,3vw,40px);line-height:.95;letter-spacing:-.025em;color:var(--ink)}
-.nr-modal__intro h2 em{font-style:normal;font-weight:700}
-.nr-modal__intro p{font-size:var(--fs-body);line-height:1.5;color:var(--ink-2)}
-.nr-modal__intro ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.nr-modal__intro li{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);display:flex;align-items:center;gap:10px}
-.nr-modal__intro li::before{content:'';width:10px;height:1px;background:var(--amber)}
-.nr-modal__host iframe{width:100%;flex:1;border:0;background:var(--bg-2);min-height:380px}
 
 /* cookie notice */
 .nr-cookie{
@@ -1258,9 +1191,7 @@ body.nr-no-grain::after{display:none}
 body.nr-no-wipe .nr-wipe{display:none}
 body.nr-no-ken .nr-hero__plate.is-active img{animation:none !important}
 body.nr-no-anchors .nr-about__body::after,
-body.nr-no-anchors .nr-project__body::after,
-body.nr-no-anchors .nr-booking__steps::after,
-body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
+body.nr-no-anchors .nr-project__body::after{display:none}
 
 /* =========================================================
    Responsive
@@ -1311,18 +1242,9 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
   .nr-stats{grid-template-columns:repeat(2,1fr)}
   .nr-about__recognition{grid-template-columns:1fr;gap:18px}
 
-  .nr-contact{grid-template-columns:1fr;overflow-y:auto}
-  .nr-contact__form-wrap, .nr-contact__side{border-right:0;padding:18px}
-  .nr-contact__form-wrap{border-bottom:1px solid var(--hair)}
-  .nr-contact__info{grid-template-columns:1fr}
-
-  .nr-booking{grid-template-columns:1fr;overflow-y:auto}
-  .nr-booking__steps, .nr-booking__panel{border-right:0;padding:18px}
-  .nr-booking__steps{border-bottom:1px solid var(--hair)}
 
   .nr-modal{padding:14px}
   .nr-modal__panel{grid-template-columns:1fr;max-height:94vh;overflow-y:auto}
-  .nr-modal__intro{border-right:0;border-bottom:1px solid var(--hair)}
 }
 
 /* Narrow phones — iPhone SE / older Androids. Below ~480px the

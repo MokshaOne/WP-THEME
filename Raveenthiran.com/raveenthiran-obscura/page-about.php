@@ -4,6 +4,14 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 $nr_current = 'about';
+add_action( 'wp_head', function () {
+	$id = get_post_thumbnail_id( get_queried_object_id() );
+	if ( ! $id ) return;
+	$src = wp_get_attachment_image_url( $id, 'nr-card' );
+	if ( ! $src ) return;
+	$ss = wp_get_attachment_image_srcset( $id, 'nr-card' );
+	printf( '<link rel="preload" as="image" href="%s"%s fetchpriority="high">' . "\n", esc_url( $src ), $ss ? ' imagesrcset="' . esc_attr( $ss ) . '"' : '' );
+}, 2 );
 get_header();
 the_post();
 
@@ -25,7 +33,7 @@ $stats = [
 			<?php echo nr_placeholder( 'self portrait', true, 'auto' ); ?>
 		<?php endif; ?>
 		<div class="nr-about__portrait-foot">
-			<span>Studio · <?php echo esc_html( nr_opt( 'nr_location', 'Wien' ) ); ?> · <?php echo esc_html( date_i18n( 'Y' ) ); ?></span>
+			<span>Studio · <a href="<?php echo esc_url( 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( nr_opt( 'nr_location', 'Wien' ) ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( nr_opt( 'nr_location', 'Wien' ) ); ?></a> · <?php echo esc_html( date_i18n( 'Y' ) ); ?></span>
 			<span><?php esc_html_e( 'Self portrait', 'raveenthiran' ); ?></span>
 		</div>
 	</div>
@@ -243,6 +251,7 @@ $stats = [
 				</p>
 			<?php endif; ?>
 		</section>
+		<?php if ( function_exists( 'nr_instagram_grid' ) ) nr_instagram_grid(); ?>
 	</div>
 </section>
 

@@ -119,6 +119,13 @@ $lede = get_the_excerpt();
 				</a>
 				<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
 			</div>
+
+				<?php $nr_rel = function_exists( 'nr_related_projects' ) ? nr_related_projects( get_the_ID(), 3 ) : []; if ( $nr_rel ) : ?>
+				<nav class="nr-project__related" aria-label="<?php esc_attr_e( 'Related projects', 'raveenthiran' ); ?>">
+					<span class="nr-eyebrow nr-eyebrow--xs"><?php esc_html_e( 'More work', 'raveenthiran' ); ?></span>
+					<span class="nr-project__related-links"><?php foreach ( $nr_rel as $rp ) printf( '<a href="%s">%s</a>', esc_url( get_permalink( $rp ) ), esc_html( get_the_title( $rp ) ) ); ?></span>
+				</nav>
+				<?php endif; ?>
 		</aside>
 
 		<?php if ( ! empty( $plates ) ) : ?>

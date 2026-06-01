@@ -77,8 +77,14 @@ function nr_schema_markup_extended_render() {
             if ( $oh ) $schema['@graph'][0]['openingHours'] = $oh;
         }
 
-        // Instagram sameAs
-        if ( $instagram && is_string( $instagram ) ) $schema['@graph'][0]['sameAs'] = [ $instagram ];
+        // #18 — sameAs from every configured social profile.
+        $sameas = array_values( array_filter( [
+            is_string( $instagram ) ? $instagram : '',
+            (string) nr_opt( 'nr_behance', '' ),
+            (string) nr_opt( 'nr_vimeo', '' ),
+            (string) nr_opt( 'nr_linkedin', '' ),
+        ] ) );
+        if ( $sameas ) $schema['@graph'][0]['sameAs'] = $sameas;
 
         // Hero-Bild
         $hero = get_field( 'hero_image', 'option' );
@@ -187,7 +193,7 @@ function nr_serve_sitemap() {
 
     // Statische Seiten
     $static = [
-        [ 'loc' => home_url( '/' ),          'priority' => '1.0', 'changefreq' => 'weekly' ],
+        [ 'loc' => home_url( '/' ),          'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => date_i18n( 'Y-m-d' ) ],
         [ 'loc' => home_url( '/portfolio' ),  'priority' => '0.9', 'changefreq' => 'weekly' ],
         [ 'loc' => home_url( '/about' ),      'priority' => '0.7', 'changefreq' => 'monthly' ],
         [ 'loc' => home_url( '/enquire' ),    'priority' => '0.9', 'changefreq' => 'monthly' ],
@@ -305,6 +311,8 @@ function nr_social_meta() {
 
 	echo "\n<!-- nr social meta -->\n";
 	printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $canonical ) );
+	printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) ); // #12
+	if ( is_paged() ) echo '<meta name="robots" content="noindex,follow">' . "\n"; // #19
 
 	// Open Graph
 	printf( '<meta property="og:type" content="%s">' . "\n", esc_attr( $type ) );
@@ -317,6 +325,7 @@ function nr_social_meta() {
 		printf( '<meta property="og:image" content="%s">' . "\n", esc_url( $image ) );
 		echo '<meta property="og:image:width" content="2400">' . "\n";
 		echo '<meta property="og:image:height" content="1600">' . "\n";
+		printf( '<meta property="og:image:alt" content="%s">' . "\n", esc_attr( $title ) ); // #15
 	}
 
 	// Twitter

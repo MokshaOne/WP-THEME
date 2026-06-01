@@ -11,6 +11,16 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 $nr_current = 'enquire';
+add_action( 'wp_head', function () {
+	$q = new WP_Query( [ 'post_type' => 'nr_project', 'posts_per_page' => 1, 'orderby' => 'date', 'order' => 'DESC', 'fields' => 'ids', 'no_found_rows' => true ] );
+	if ( $q->have_posts() ) {
+		$id = (int) get_post_thumbnail_id( $q->posts[0] );
+		$src = $id ? wp_get_attachment_image_url( $id, 'nr-hero' ) : '';
+		if ( $src ) { $ss = wp_get_attachment_image_srcset( $id, 'nr-hero' );
+			printf( '<link rel="preload" as="image" href="%s"%s imagesizes="(max-width:900px) 100vw, 45vw" fetchpriority="high">' . "\n", esc_url( $src ), $ss ? ' imagesrcset="' . esc_attr( $ss ) . '"' : '' ); }
+	}
+	wp_reset_postdata();
+}, 2 );
 get_header();
 
 $quote   = function_exists( 'nr_quote_data' ) ? nr_quote_data() : [ 'types' => [], 'currency' => '€' ];
@@ -70,6 +80,7 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 			<form class="nr-form nr-enquire__form" data-enquire-form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="nr_contact_send">
 				<?php wp_nonce_field( 'nr_contact', '_nr_nonce' ); ?>
+				<input type="text" name="nr_company" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">
 
 				<div class="nr-form__row">
 					<label><span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Name', 'raveenthiran' ); ?></span>
@@ -109,6 +120,7 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 
 				<div class="nr-form__foot">
 					<span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Typical response · < 24h', 'raveenthiran' ); ?></span>
+					<?php $nr_wa = nr_opt( 'nr_whatsapp', '' ); if ( $nr_wa ) : ?><a class=\"nr-btn nr-btn--ghost\" href=\"https://wa.me/<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $nr_wa ) ); ?>\" target=\"_blank\" rel=\"noopener\"><span><?php esc_html_e( 'WhatsApp', 'raveenthiran' ); ?></span></a><?php endif; ?>
 					<button type="submit" class="nr-btn nr-btn--primary">
 						<span><?php echo esc_html( nr_opt( 'nr_cta_send', __( 'Send enquiry', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 					</button>

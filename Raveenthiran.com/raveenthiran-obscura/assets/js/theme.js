@@ -579,3 +579,38 @@
 })();
 
 
+
+
+/* =========================================================
+   Tier 1 — prefetch, click-to-copy, tab-title, keyboard rails, LQIP sweep
+   ========================================================= */
+(function () {
+  /* #2 prefetch a project page on hover / touch */
+  var pf = {};
+  function prefetch(url){ if(!url||pf[url])return; pf[url]=1; var l=document.createElement('link'); l.rel='prefetch'; l.href=url; document.head.appendChild(l); }
+  document.body.addEventListener('pointerover', function(e){ var a=e.target.closest('.nr-card[href]'); if(a&&a.href) prefetch(a.href); }, {passive:true});
+  document.body.addEventListener('touchstart', function(e){ var a=e.target.closest('.nr-card[href]'); if(a&&a.href) prefetch(a.href); }, {passive:true});
+
+  /* #24 click-to-copy + toast */
+  function toast(msg){ var t=document.createElement('div'); t.className='nr-toast'; t.textContent=msg; document.body.appendChild(t); requestAnimationFrame(function(){ t.classList.add('is-on'); }); setTimeout(function(){ t.classList.remove('is-on'); setTimeout(function(){ t.remove(); },300); },1800); }
+  document.body.addEventListener('click', function(e){ var b=e.target.closest('[data-copy]'); if(!b)return; e.preventDefault(); var v=b.getAttribute('data-copy'); if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(v).then(function(){toast('Copied — '+v);}).catch(function(){window.location.href='mailto:'+v;}); } else { window.location.href='mailto:'+v; } });
+
+  /* #31 tab-away title nudge */
+  var realTitle=document.title;
+  document.addEventListener('visibilitychange', function(){ document.title = document.hidden ? '↩ Come back —' : realTitle; });
+
+  /* #33/#35 keyboard rail control */
+  var railSel='[data-h-rail], .nr-project__rail-track, .nr-portfolio-rail';
+  document.addEventListener('keydown', function(e){
+    if(['ArrowLeft','ArrowRight','Home','End'].indexOf(e.key)<0) return;
+    if(/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')) return;
+    var rail=document.querySelector(railSel+':hover') || (document.activeElement&&document.activeElement.closest&&document.activeElement.closest(railSel));
+    if(!rail||rail.scrollWidth<=rail.clientWidth) return;
+    if(e.key==='Home') rail.scrollTo({left:0,behavior:'smooth'});
+    else if(e.key==='End') rail.scrollTo({left:rail.scrollWidth,behavior:'smooth'});
+    else rail.scrollBy({left:(e.key==='ArrowRight'?1:-1)*Math.round(rail.clientWidth*0.8),behavior:'smooth'});
+  });
+
+  /* #1 LQIP — clear the blur once cached images are already complete */
+  window.addEventListener('load', function(){ document.querySelectorAll('img.nr-lqip').forEach(function(i){ if(i.complete) i.classList.add('nr-lqip--done'); }); });
+})();

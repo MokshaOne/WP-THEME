@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.13.1' );
+define( 'NR_THEME_VERSION', '4.14.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -252,6 +252,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'seo.php',
 		'theme-settings.php',
 		'quote.php',
+		'tier1.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;
@@ -277,13 +278,28 @@ function nr_handle_contact_send() {
 		wp_safe_redirect( add_query_arg( 'nr_sent', '0', wp_get_referer() ?: home_url( '/' ) ) );
 		exit;
 	}
+	// #23 — honeypot: bots fill the hidden "company" field; humans never see it.
+	if ( ! empty( $_POST['nr_company'] ) ) {
+		wp_safe_redirect( add_query_arg( 'nr_sent', '1', wp_get_referer() ?: home_url( '/' ) ) );
+		exit;
+	}
+	// #23 — basic rate-limit: one submission per IP per 30s.
+	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	$rk = 'nr_rl_' . md5( $ip );
+	if ( $ip && get_transient( $rk ) ) {
+		wp_safe_redirect( add_query_arg( 'nr_sent', '1', wp_get_referer() ?: home_url( '/' ) ) );
+		exit;
+	}
+	if ( $ip ) set_transient( $rk, 1, 30 );
+
 	$name    = sanitize_text_field( wp_unslash( $_POST['name']    ?? '' ) );
 	$email   = sanitize_email( wp_unslash( $_POST['email']   ?? '' ) );
 	$notes   = sanitize_textarea_field( wp_unslash( $_POST['notes']   ?? '' ) );
 	$type    = sanitize_text_field( wp_unslash( $_POST['project_type']   ?? '' ) );
 	$date    = sanitize_text_field( wp_unslash( $_POST['preferred_date'] ?? '' ) );
 	$est     = sanitize_text_field( wp_unslash( $_POST['estimate']       ?? '' ) );
-	$subject = sprintf( '[%s] New enquiry from %s', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ), $name ?: $email );
+	$site    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$subject = sprintf( '[%s] New enquiry from %s', $site, $name ?: $email );
 	$to      = nr_opt( 'nr_email', get_option( 'admin_email' ) );
 	$lines   = [ "Name: {$name}", "Email: {$email}" ];
 	if ( $type ) $lines[] = "Project type: {$type}";
@@ -293,6 +309,35 @@ function nr_handle_contact_send() {
 	$headers = [ 'Content-Type: text/plain; charset=UTF-8' ];
 	if ( $email ) $headers[] = 'Reply-To: ' . $email;
 	$ok = wp_mail( $to, $subject, $body, $headers );
+
+	// #22 — log the enquiry as a private CPT entry.
+	if ( post_type_exists( 'nr_enquiry' ) ) {
+		$eid = wp_insert_post( [
+			'post_type'   => 'nr_enquiry',
+			'post_status' => 'publish',
+			'post_title'  => $name ?: $email ?: __( 'Enquiry', 'raveenthiran' ),
+			'post_content'=> $notes,
+		] );
+		if ( $eid && ! is_wp_error( $eid ) ) {
+			update_post_meta( $eid, '_nr_email', $email );
+			update_post_meta( $eid, '_nr_type',  $type );
+			update_post_meta( $eid, '_nr_est',   $est );
+			update_post_meta( $eid, '_nr_date',  $date );
+		}
+	}
+
+	// #21 — branded auto-reply to the enquirer so they know it landed.
+	if ( $email && is_email( $email ) ) {
+		$from   = nr_opt( 'nr_email', get_option( 'admin_email' ) );
+		$ack_s  = sprintf( __( 'Thank you — %s', 'raveenthiran' ), $site );
+		$ack_b  = sprintf(
+			/* translators: 1: name, 2: studio/site name */
+			__( "Hi %1\$s,\n\nThank you for reaching out — your enquiry has arrived and I'll reply personally within 24 hours.\n\nIf anything is urgent before then, just reply to this email.\n\n— %2\$s", 'raveenthiran' ),
+			$name ?: __( 'there', 'raveenthiran' ), $site
+		);
+		wp_mail( $email, $ack_s, $ack_b, [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $from ] );
+	}
+
 	wp_safe_redirect( add_query_arg( 'nr_sent', $ok ? '1' : '0', wp_get_referer() ?: home_url( '/' ) ) );
 	exit;
 }

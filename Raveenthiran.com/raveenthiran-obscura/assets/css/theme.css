@@ -1729,3 +1729,7 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
   .nr-preloader{display:none}
   .nr-rise{animation:none}
 }
+
+
+/* Tier 3 — rail momentum skew helper */
+.nr-portfolio-rail,.nr-project__rail-track{will-change:transform;transform-origin:center center}

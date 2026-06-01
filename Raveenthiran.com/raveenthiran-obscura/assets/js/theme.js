@@ -639,3 +639,28 @@
     });
   }
 })();
+
+
+/* =========================================================
+   Tier 3 — horizontal rail momentum skew (subtle GPU lean)
+   Rails lean into fast swipes/scrolls, then settle. Library-free,
+   GPU transform only, disabled for reduced-motion.
+   ========================================================= */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+    var last = rail.scrollLeft, skew = 0, raf = null;
+    function decay() {
+      skew *= 0.86;
+      rail.style.transform = 'skewX(' + skew.toFixed(2) + 'deg)';
+      if (Math.abs(skew) > 0.05) { raf = requestAnimationFrame(decay); }
+      else { rail.style.transform = ''; raf = null; }
+    }
+    rail.addEventListener('scroll', function () {
+      if (rail.scrollWidth <= rail.clientWidth) return;
+      var v = rail.scrollLeft - last; last = rail.scrollLeft;
+      skew = Math.max(-4, Math.min(4, v * 0.12));
+      if (!raf) raf = requestAnimationFrame(decay);
+    }, { passive: true });
+  });
+})();

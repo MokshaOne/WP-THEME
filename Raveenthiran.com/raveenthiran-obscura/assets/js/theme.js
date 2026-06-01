@@ -614,3 +614,95 @@
   /* #1 LQIP — clear the blur once cached images are already complete */
   window.addEventListener('load', function(){ document.querySelectorAll('img.nr-lqip').forEach(function(i){ if(i.complete) i.classList.add('nr-lqip--done'); }); });
 })();
+
+
+/* =========================================================
+   Tier 2 — command palette (#51) + contact-sheet index (#52,#65),
+   both fed by /projects.json (#14), and hero pointer parallax (#56).
+   ========================================================= */
+(function () {
+  'use strict';
+  var home = ( window.NR && NR.home ) ? NR.home : '/';
+  var data = null, loading = null;
+  function load(){
+    if ( data ) return Promise.resolve( data );
+    if ( ! loading ) loading = fetch( home + 'projects.json', { credentials:'same-origin' } )
+      .then(function(r){ return r.ok ? r.json() : { projects: [] }; })
+      .then(function(j){ data = ( j && j.projects ) || []; return data; })
+      .catch(function(){ data = []; return data; });
+    return loading;
+  }
+  var pages = [
+    { title:'Showcase', url:home },
+    { title:'Work', url:home + 'portfolio/' },
+    { title:'Studio', url:home + 'about/' },
+    { title:'Enquire', url:home + 'enquire/' }
+  ];
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);}); }
+
+  /* command palette */
+  var pal=null, palInput, palList, palItems=[], palIdx=0;
+  function buildPalette(){
+    pal=document.createElement('div'); pal.className='nr-cmd'; pal.setAttribute('aria-hidden','true');
+    pal.innerHTML='<div class="nr-cmd__panel" role="dialog" aria-modal="true" aria-label="Search">'
+      +'<input class="nr-cmd__input" type="text" placeholder="Search projects, pages…" aria-label="Search">'
+      +'<ul class="nr-cmd__list"></ul>'
+      +'<div class="nr-cmd__hint"><span>&uarr;&darr; navigate</span><span>&crarr; open</span><span>esc close</span></div></div>';
+    document.body.appendChild(pal);
+    palInput=pal.querySelector('.nr-cmd__input'); palList=pal.querySelector('.nr-cmd__list');
+    pal.addEventListener('click',function(e){ if(e.target===pal) closePalette(); });
+    palInput.addEventListener('input',renderPalette);
+    palInput.addEventListener('keydown',function(e){
+      if(e.key==='ArrowDown'){ e.preventDefault(); palIdx=Math.min(palIdx+1,palItems.length-1); markPal(); }
+      else if(e.key==='ArrowUp'){ e.preventDefault(); palIdx=Math.max(palIdx-1,0); markPal(); }
+      else if(e.key==='Enter'){ e.preventDefault(); go(palItems[palIdx]); }
+    });
+  }
+  function go(it){ if(!it) return; if(it.action) it.action(); else if(it.url) window.location.href=it.url; }
+  function openPalette(){ if(!pal) buildPalette(); load().then(renderPalette); pal.classList.add('is-on'); pal.setAttribute('aria-hidden','false'); document.body.classList.add('is-modal-open'); setTimeout(function(){ palInput.value=''; palInput.focus(); },20); }
+  function closePalette(){ if(!pal) return; pal.classList.remove('is-on'); pal.setAttribute('aria-hidden','true'); document.body.classList.remove('is-modal-open'); }
+  function renderPalette(){
+    var q=(palInput.value||'').toLowerCase().trim(), items=[];
+    items.push({ title:'▦  All projects — contact sheet', action:function(){ closePalette(); openSheet(); } });
+    pages.forEach(function(p){ if(!q||p.title.toLowerCase().indexOf(q)>=0) items.push(p); });
+    (data||[]).forEach(function(p){ if(!q||(p.title||'').toLowerCase().indexOf(q)>=0) items.push({ title:p.title, sub:p.year, url:p.url }); });
+    palItems=items.slice(0,40); palIdx=0;
+    palList.innerHTML=palItems.map(function(it,i){ return '<li class="nr-cmd__item'+(i===0?' is-sel':'')+'" data-i="'+i+'">'+esc(it.title)+(it.sub?'<span class="nr-cmd__sub">'+esc(String(it.sub))+'</span>':'')+'</li>'; }).join('');
+    Array.prototype.forEach.call(palList.children,function(li){ li.addEventListener('click',function(){ go(palItems[+li.dataset.i]); }); });
+  }
+  function markPal(){ Array.prototype.forEach.call(palList.children,function(li,i){ li.classList.toggle('is-sel',i===palIdx); if(i===palIdx) li.scrollIntoView({block:'nearest'}); }); }
+
+  /* contact-sheet index */
+  var sheet=null, sheetGrid, sheetInput;
+  function buildSheet(){
+    sheet=document.createElement('div'); sheet.className='nr-sheet'; sheet.setAttribute('aria-hidden','true');
+    sheet.innerHTML='<div class="nr-sheet__bar"><span class="nr-eyebrow">Index</span><input class="nr-sheet__input" type="text" placeholder="Filter…" aria-label="Filter projects"><button class="nr-sheet__close" aria-label="Close">✕</button></div><div class="nr-sheet__grid"></div>';
+    document.body.appendChild(sheet);
+    sheetGrid=sheet.querySelector('.nr-sheet__grid'); sheetInput=sheet.querySelector('.nr-sheet__input');
+    sheet.querySelector('.nr-sheet__close').addEventListener('click',closeSheet);
+    sheetInput.addEventListener('input',renderSheet);
+  }
+  function openSheet(){ if(!sheet) buildSheet(); load().then(renderSheet); sheet.classList.add('is-on'); sheet.setAttribute('aria-hidden','false'); document.body.classList.add('is-modal-open'); setTimeout(function(){ sheetInput.focus(); },20); }
+  function closeSheet(){ if(!sheet) return; sheet.classList.remove('is-on'); sheet.setAttribute('aria-hidden','true'); document.body.classList.remove('is-modal-open'); }
+  function renderSheet(){
+    var q=(sheetInput.value||'').toLowerCase().trim();
+    var list=(data||[]).filter(function(p){ return !q||(p.title||'').toLowerCase().indexOf(q)>=0; });
+    sheetGrid.innerHTML=list.map(function(p){ return '<a class="nr-sheet__cell" href="'+encodeURI(p.url)+'">'+(p.image?'<img src="'+encodeURI(p.image)+'" alt="" loading="lazy" decoding="async">':'')+'<span class="nr-sheet__cap">'+esc(p.title)+'</span></a>'; }).join('') || '<p class="nr-sheet__empty">No projects yet.</p>';
+  }
+
+  document.addEventListener('keydown',function(e){
+    if((e.metaKey||e.ctrlKey)&&(e.key==='k'||e.key==='K')){ e.preventDefault(); (pal&&pal.classList.contains('is-on'))?closePalette():openPalette(); }
+    else if(e.key==='Escape'){ closePalette(); closeSheet(); }
+  });
+
+  /* #56 hero pointer parallax (subtle; desktop, motion-on) */
+  if ( window.matchMedia('(hover:hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ) {
+    var frame=document.querySelector('.nr-hero__frame');
+    if (frame) {
+      window.addEventListener('mousemove', function(e){
+        var dx=(e.clientX/window.innerWidth-0.5), dy=(e.clientY/window.innerHeight-0.5);
+        frame.style.transform='translate3d('+(dx*-8).toFixed(1)+'px,'+(dy*-8).toFixed(1)+'px,0)';
+      }, { passive:true });
+    }
+  }
+})();

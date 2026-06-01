@@ -68,12 +68,14 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 
 ## 🟡 Tier 2 — Medium (41–80)
 
+> **Built in v4.15.0:** #43, #45, #51, #52, #56, #65, #76, #78, #79. The remaining Tier 2 items were **moved to Tier 3** per request (they need a settings UI, a content model, external keys, or carry build risk).
+
 ### Ops & scale (your 200-project pain)
 41. **Bulk project importer** — one project per image folder / ZIP / CSV. ★ _Ops_
 42. **Drag-to-reorder projects** (sets `menu_order`) in admin. _Ops_
-43. **Auto-map EXIF → project fields** (year/camera) on upload. ★ _Ops_
+43. ✅ **Auto-map EXIF → project fields** (year/camera) on upload. ★ _Ops_
 44. **Bulk "feature on homepage" toggle + rotation scheduling.** _Ops_
-45. **Admin dashboard widget** — recent enquiries, counts, quick links. _Ops_
+45. ✅ **Admin dashboard widget** — recent enquiries, counts, quick links. _Ops_
 
 ### Performance / infra
 46. **PWA / service-worker shell precache** — near-instant repeat navigation, works offline. _Perf_
@@ -83,12 +85,12 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 50. **Virtualized rendering** for very long galleries. _Perf_
 
 ### Awwwards-edge (no WebGL)
-51. **Command palette (⌘K)** to jump to any project/page. _Awww/UX_
-52. **"Contact sheet" index overlay** — all projects in a darkroom grid (your *Catalogue Noir* concept). _Awww_
+51. ✅ **Command palette (⌘K)** to jump to any project/page. _Awww/UX_
+52. ✅ **"Contact sheet" index overlay** — all projects in a darkroom grid (your *Catalogue Noir* concept). _Awww_
 53. **Cursor-peek image preview** on nav hover. _Awww_
 54. **True line-split heading reveals** (SplitText-style masks). _Awww_
 55. **Shared-element morph via named view-transitions.** _Awww_
-56. **Pointer/scroll parallax depth layers** on the hero. _Awww_
+56. ✅ **Pointer/scroll parallax depth layers** on the hero. _Awww_
 57. **Custom easing system + refined magnetic interactions.** _Awww_
 58. **Opt-in sound design** (hover ticks, slide whoosh) + mute toggle. _Awww_
 59. **Animated / generative favicon or logo mark.** _Awww_
@@ -99,7 +101,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 62. **Map archive view** of project locations. _Content_
 63. **Series / collections** grouping of projects. _Content_
 64. **Tag / keyword taxonomy + multi-filter.** _Content_
-65. **Instant client-side search** across projects. _Content/UX_
+65. ✅ **Instant client-side search** across projects. _Content/UX_
 66. **Video plates** in galleries (mp4 / Vimeo). _Content_
 67. **Before/after retouch slider.** _Content_
 68. **Downloadable press kit / one-pager.** _Content_
@@ -114,12 +116,12 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 ### Security / compliance
 74. **Turnstile / hCaptcha** on forms. _Sec_
 75. **Consent-gated analytics** (GDPR). _Sec_
-76. **Limit login attempts / login hardening.** _Sec_
+76. ✅ **Limit login attempts / login hardening.** _Sec_
 77. **Two-factor auth for admin.** _Sec_
 
 ### SEO advanced
-78. **Review / AggregateRating schema** from testimonials. _SEO_
-79. **ImageGallery schema** per project. _SEO_
+78. ✅ **Review / AggregateRating schema** from testimonials. _SEO_
+79. ✅ **ImageGallery schema** per project. _SEO_
 80. **Automated internal-linking** between related projects. _SEO_
 
 ---

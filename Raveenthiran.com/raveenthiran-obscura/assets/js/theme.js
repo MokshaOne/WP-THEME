@@ -263,6 +263,14 @@
       if (e.key === 'ArrowRight') go(cur + 1);
     });
 
+    // Touch swipe (mobile) — swipe left/right to change slide.
+    let hsx = 0, hsy = 0;
+    hero.addEventListener('touchstart', (e) => { hsx = e.changedTouches[0].clientX; hsy = e.changedTouches[0].clientY; }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - hsx, dy = e.changedTouches[0].clientY - hsy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) go(cur + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
     const heroAuto = (window.NR && window.NR.hero) ? !!window.NR.hero.auto : true;
     const heroInterval = (window.NR && window.NR.hero) ? (window.NR.hero.interval || 9000) : 9000;
     let auto = heroAuto ? setInterval(() => go(cur + 1), heroInterval) : null;
@@ -416,6 +424,14 @@
     prevBtn.addEventListener('click', () => step(-1));
     nextBtn.addEventListener('click', () => step(1));
     lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+
+    // Touch swipe (mobile) — swipe between plates in the lightbox.
+    let lsx = 0, lsy = 0;
+    lb.addEventListener('touchstart', (e) => { lsx = e.changedTouches[0].clientX; lsy = e.changedTouches[0].clientY; }, { passive: true });
+    lb.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - lsx, dy = e.changedTouches[0].clientY - lsy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
+    }, { passive: true });
 
     // Keyboard — Esc closes, ←/→ navigate, Tab cycles inside the lightbox.
     window.addEventListener('keydown', (e) => {

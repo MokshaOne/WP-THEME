@@ -1589,13 +1589,6 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 .nr-enquire__price-link{background:none;border:0;color:var(--ink-2);font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid var(--hair);padding:0 0 2px}
 .nr-enquire__price-link:hover{color:var(--amber);border-color:var(--amber)}
 .nr-form__foot{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-@media(max-width:900px){
-  .nr-enquire{position:static;inset:auto}
-  .nr-enquire__split{grid-template-columns:1fr;height:auto}
-  .nr-enquire__aside{border-right:0;border-bottom:1px solid var(--hair)}
-  .nr-enquire__frame{height:34vh}
-  .nr-form__row{grid-template-columns:1fr}
-}
 
 /* =========================================================
    Price-check popover — interactive estimate calculator
@@ -1663,3 +1656,57 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 .nr-enquire__faq{margin-top:6px;padding-top:20px;border-top:1px solid var(--hair);display:flex;flex-direction:column;gap:12px}
 .nr-faq__list--compact{padding:0;height:auto;overflow:visible}
 .nr-faq__list--compact .nr-faq__a{font-size:14px}
+
+
+/* =========================================================
+   MOBILE — unified scroll model (<=900px)
+   Desktop is a fixed single-screen layout. On phones every template
+   switches to a normal scrolling document so they all reflow the same
+   way, nothing is clipped, and horizontal rails stay swipeable.
+   ========================================================= */
+@media (max-width:900px){
+  html,body{height:auto;overflow-x:hidden;overflow-y:auto}
+  body{padding-bottom:68px}                 /* clear the fixed bottom tab bar */
+  body.is-modal-open{overflow:hidden}
+
+  .nr-topbar{position:sticky;top:0;background:rgba(11,12,16,.96);backdrop-filter:blur(8px)}
+
+  /* every template shell: static, auto-height, single column, no inner clip */
+  .nr-fullscreen,.nr-hero,.nr-project,.nr-about,.nr-contact,.nr-booking,
+  .nr-confirmed,.nr-enquire,.nr-faq{
+    position:static;inset:auto;top:auto;height:auto;min-height:0;
+    display:block;overflow:visible;
+    grid-template-columns:none;grid-template-rows:none;
+  }
+
+  /* HERO — keep a real stage (absolute crossfade slider); swipe enabled in JS */
+  .nr-hero__frame{position:relative;height:62vh;height:62svh;min-height:340px;margin:12px}
+  .nr-hero__plate img{object-fit:cover}
+  .nr-hero__bottom{position:static}
+
+  /* PROJECT — meta on top, plates as a horizontal swipe rail */
+  .nr-project__layout{display:block;height:auto}
+  .nr-project__body{border-right:0;border-bottom:1px solid var(--hair)}
+  .nr-project__rail{height:auto}
+  .nr-project__rail-track{position:static;height:auto;padding:16px var(--pad);overflow-x:auto;overflow-y:hidden}
+  .nr-project__plate{height:auto;width:80vw}
+  .nr-project__counter{position:static;display:inline-flex;margin:8px var(--pad) 0}
+
+  /* ABOUT / CONTACT / BOOKING / ENQUIRE — stacked, media capped */
+  .nr-about__portrait{height:46vh;border-right:0;border-bottom:1px solid var(--hair)}
+  .nr-about__body,.nr-contact__form-wrap,.nr-contact__side,
+  .nr-booking__steps,.nr-booking__panel,.nr-enquire__main,.nr-enquire__aside-body{height:auto;overflow:visible}
+  .nr-contact__form-wrap,.nr-booking__steps,.nr-enquire__aside{border-right:0;border-bottom:1px solid var(--hair)}
+  .nr-enquire__split{display:block}
+  .nr-enquire__frame{height:40vh}
+  .nr-form__row{grid-template-columns:1fr}
+  .nr-confirmed{display:block;padding:32px var(--pad)}
+
+  /* PORTFOLIO archive — horizontal swipe rail of cards */
+  .nr-portfolio-rail{overflow-x:auto;overflow-y:hidden}
+
+  /* momentum + snap on every horizontal rail */
+  [data-h-rail],.nr-project__rail-track,.nr-hero__thumbs,.nr-portfolio-rail{
+    -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;overscroll-behavior-x:contain;
+  }
+}

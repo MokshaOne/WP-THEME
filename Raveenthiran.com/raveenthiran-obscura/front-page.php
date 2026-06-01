@@ -6,6 +6,29 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 $nr_current = 'home';
+
+// Preload the LCP hero image (first featured project) with a responsive
+// imagesrcset, so the browser fetches the right-sized hero early — the single
+// biggest lever on mobile Largest Contentful Paint.
+$nr_lcp_q = new WP_Query( [ 'post_type' => 'nr_project', 'posts_per_page' => 1, 'meta_key' => 'featured_on_homepage', 'meta_value' => '1', 'fields' => 'ids', 'no_found_rows' => true ] );
+if ( ! $nr_lcp_q->have_posts() ) {
+	$nr_lcp_q = new WP_Query( [ 'post_type' => 'nr_project', 'posts_per_page' => 1, 'fields' => 'ids', 'no_found_rows' => true ] );
+}
+$nr_lcp_id = $nr_lcp_q->have_posts() ? (int) get_post_thumbnail_id( $nr_lcp_q->posts[0] ) : 0;
+wp_reset_postdata();
+if ( $nr_lcp_id ) {
+	add_action( 'wp_head', function () use ( $nr_lcp_id ) {
+		$src = wp_get_attachment_image_url( $nr_lcp_id, 'nr-hero' );
+		if ( ! $src ) return;
+		$srcset = wp_get_attachment_image_srcset( $nr_lcp_id, 'nr-hero' );
+		printf(
+			'<link rel="preload" as="image" href="%s"%s imagesizes="100vw" fetchpriority="high">' . "\n",
+			esc_url( $src ),
+			$srcset ? ' imagesrcset="' . esc_attr( $srcset ) . '"' : ''
+		);
+	}, 2 );
+}
+
 get_header();
 
 $nr_hero_max = max( 1, min( 24, (int) nr_opt( 'nr_hero_max', 6 ) ) );

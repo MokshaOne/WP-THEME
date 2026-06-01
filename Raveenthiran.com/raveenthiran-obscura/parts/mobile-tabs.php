@@ -14,8 +14,8 @@ $icons = [
 $tabs = [
 	[ 'home',      nr_opt( 'nr_tab_1_label', __( 'Home',  'raveenthiran' ) ), home_url( '/' ),                                                              $icons['home']      ],
 	[ 'portfolio', nr_opt( 'nr_tab_2_label', __( 'Work',  'raveenthiran' ) ), get_post_type_archive_link( 'nr_project' ) ?: home_url( '/portfolio' ),       $icons['portfolio'] ],
-	[ 'about',     nr_opt( 'nr_tab_3_label', __( 'Studio',  'raveenthiran' ) ), function_exists( 'nr_template_page_url' ) ? nr_template_page_url( 'page-about.php', 'about' ) : home_url( '/about' ), $icons['studio']  ],
-	[ 'enquire',   nr_opt( 'nr_tab_4_label', __( 'Enquire', 'raveenthiran' ) ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ), $icons['enquire'] ],
+	[ 'about',     nr_opt( 'nr_tab_studio_label',  __( 'Studio',  'raveenthiran' ) ), function_exists( 'nr_template_page_url' ) ? nr_template_page_url( 'page-about.php', 'about' ) : home_url( '/about' ), $icons['studio']  ],
+	[ 'enquire',   nr_opt( 'nr_tab_enquire_label', __( 'Enquire', 'raveenthiran' ) ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ), $icons['enquire'] ],
 ];
 
 $current = $nr_current ?? '';

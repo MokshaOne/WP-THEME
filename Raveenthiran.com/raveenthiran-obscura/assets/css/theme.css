@@ -1710,3 +1710,22 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
     -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;overscroll-behavior-x:contain;
   }
 }
+
+
+/* =========================================================
+   Tier 2 motion — intro preloader + scroll reveals (library-free)
+   ========================================================= */
+.nr-preloader{position:fixed;inset:0;z-index:1000;background:var(--bg);display:grid;place-items:center;transition:opacity .6s var(--ease),visibility .6s}
+.nr-preloader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+.nr-preloader__inner{display:flex;flex-direction:column;align-items:center;gap:16px}
+.nr-preloader__mark{font-weight:700;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-2)}
+.nr-preloader__count{font-family:var(--ff-mono,ui-monospace,monospace);font-weight:300;font-size:clamp(56px,12vw,120px);line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.nr-preloader__count::after{content:'%';font-size:.28em;color:var(--ink-3);margin-left:.14em;vertical-align:super}
+.nr-preloader__bar{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--amber);transition:width .18s linear}
+
+@keyframes nrRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.nr-rise{animation:nrRise .7s var(--ease) both}
+@media (prefers-reduced-motion: reduce){
+  .nr-preloader{display:none}
+  .nr-rise{animation:none}
+}

@@ -50,6 +50,15 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 <body <?php body_class( 'nr nr-page-' . esc_attr( $nr_current ?: 'default' ) ); ?>>
 <?php wp_body_open(); ?>
 
+<?php /* ── intro preloader (once per session; skipped for reduced-motion) ─── */ ?>
+<div class="nr-preloader" aria-hidden="true">
+	<div class="nr-preloader__inner">
+		<span class="nr-preloader__mark"><?php echo esc_html( $nr_logo_text ); ?></span>
+		<span class="nr-preloader__count">0</span>
+	</div>
+	<span class="nr-preloader__bar"></span>
+</div>
+
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'raveenthiran' ); ?></a>
 
 <?php /* ── custom cursor (desktop only) ─────────────────────── */ ?>

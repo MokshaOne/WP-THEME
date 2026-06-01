@@ -33,11 +33,16 @@
   const cur = $('.nr-cur');
   const curLbl = cur && cur.querySelector('.nr-cur__lbl');
   if (cur && window.matchMedia('(hover:hover)').matches) {
-    window.addEventListener('mousemove', (e) => {
-      cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-    });
+    // Smooth (lerp) follow instead of snapping to the pointer.
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2, cx = mx, cy = my;
+    window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
     document.addEventListener('mouseenter', () => cur.style.opacity = '1');
     document.addEventListener('mouseleave', () => cur.style.opacity = '0');
+    (function follow() {
+      cx += (mx - cx) * 0.18; cy += (my - cy) * 0.18;
+      cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+      requestAnimationFrame(follow);
+    })();
 
     const linkSelector = 'a, button, .nr-chip, .nr-card, .nr-project__plate, .nr-hero__thumb, [data-modal], [data-hero-prev], [data-hero-next]';
     document.body.addEventListener('mouseover', (e) => {
@@ -56,6 +61,15 @@
     });
     document.body.addEventListener('mouseout', (e) => {
       if (e.target.closest(linkSelector)) cur.classList.remove('is-on-link');
+    });
+
+    // Magnetic buttons — the element eases toward the pointer while hovered.
+    document.querySelectorAll('.nr-btn, .nr-book-trigger, .nr-icon-btn, .nr-hero__arrow, [data-magnetic]').forEach((btn) => {
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        btn.style.transform = `translate(${(e.clientX - (r.left + r.width / 2)) * 0.22}px, ${(e.clientY - (r.top + r.height / 2)) * 0.28}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
     });
   }
 
@@ -578,4 +592,50 @@
       }
     });
   });
+})();
+
+
+/* =========================================================
+   Tier 2 motion — intro preloader + scroll reveals (library-free)
+   ========================================================= */
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  (function preloader(){
+    var pl = document.querySelector('.nr-preloader');
+    if (!pl) return;
+    function done(){ document.documentElement.classList.add('nr-ready'); }
+    if (reduce || sessionStorage.getItem('nr_seen')) {
+      if (pl.parentNode) pl.parentNode.removeChild(pl);
+      done(); return;
+    }
+    var countEl = pl.querySelector('.nr-preloader__count');
+    var bar = pl.querySelector('.nr-preloader__bar');
+    var p = 0;
+    var t = setInterval(function(){
+      p = Math.min(100, p + Math.random() * 16 + 5);
+      if (countEl) countEl.textContent = Math.round(p);
+      if (bar) bar.style.width = p + '%';
+      if (p >= 100) {
+        clearInterval(t);
+        sessionStorage.setItem('nr_seen', '1');
+        setTimeout(function(){
+          pl.classList.add('is-done'); done();
+          setTimeout(function(){ if (pl.parentNode) pl.parentNode.removeChild(pl); }, 700);
+        }, 220);
+      }
+    }, 95);
+  })();
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (ents, ob) {
+      ents.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('nr-rise'); ob.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.nr-card, .nr-faq__item, .nr-steps li').forEach(function (el, i) {
+      el.style.animationDelay = ((i % 6) * 70) + 'ms';
+      io.observe(el);
+    });
+  }
 })();

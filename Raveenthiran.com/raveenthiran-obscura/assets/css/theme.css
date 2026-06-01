@@ -777,7 +777,6 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-project__plate.is-landscape{aspect-ratio:5/4}
 .nr-project__plate img{width:100%;height:100%;object-fit:cover;filter:contrast(1.04) saturate(.95) brightness(.82);transition:filter .45s var(--ease),transform .9s var(--ease)}
 .nr-project__plate:hover img{filter:contrast(1.08) saturate(1.02) brightness(.98);transform:scale(1.04)}
-.nr-project__plate-btn{position:relative;width:100%;height:100%;background:none;border:0;padding:0;cursor:pointer}
 
 /* =========================================================
    About / Studio
@@ -1402,60 +1401,6 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 }
 .nr-confirmed__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 
-/* =========================================================
-   Lightbox — opens via .nr-project__plate-btn click, consumes
-   data-lightbox-src/-w/-h/-caption attributes. JS wires it up
-   in theme.js. Catalogue Noir styling: registration brackets
-   on a near-full-bleed image, monospace caption with plate
-   index + title + dimensions.
-   ========================================================= */
-.nr-lightbox{
-  position:fixed;inset:0;z-index:9000;
-  display:grid;grid-template-rows:1fr auto;
-  background:rgba(7,8,10,.92);backdrop-filter:blur(14px);
-  opacity:0;visibility:hidden;
-  transition:opacity .35s var(--ease), visibility .35s;
-}
-.nr-lightbox.is-on{opacity:1;visibility:visible}
-.nr-lightbox__stage{
-  position:relative;margin:48px 64px 18px;
-  display:grid;place-items:center;overflow:hidden;
-  border:1px solid var(--hair);
-}
-.nr-lightbox__img{
-  max-width:100%;max-height:100%;
-  width:auto;height:auto;
-  object-fit:contain;display:block;
-  transform:scale(.97);opacity:0;
-  transition:transform .55s var(--ease), opacity .35s var(--ease);
-}
-.nr-lightbox.is-on .nr-lightbox__img{transform:scale(1);opacity:1}
-.nr-lightbox__caption{
-  padding:6px 64px 24px;
-  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:baseline;
-  font-family:var(--ff-mono);font-size:var(--fs-sm);
-  letter-spacing:var(--tr-caps-wide);text-transform:uppercase;color:var(--ink-2);
-}
-.nr-lightbox__count{color:var(--ink);font-weight:var(--fw-medium)}
-.nr-lightbox__title{color:var(--ink-2);letter-spacing:.18em;text-align:center}
-.nr-lightbox__dims{color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
-
-/* Controls — close X plus prev / next floating at the sides */
-.nr-lightbox__close,
-.nr-lightbox__prev,
-.nr-lightbox__next{
-  position:absolute;z-index:2;
-}
-.nr-lightbox__close{top:18px;right:18px}
-.nr-lightbox__prev{top:50%;left:18px;transform:translateY(-50%)}
-.nr-lightbox__next{top:50%;right:18px;transform:translateY(-50%)}
-
-@media (max-width: 768px){
-  .nr-lightbox__stage{margin:24px 14px 10px}
-  .nr-lightbox__caption{padding:6px 14px 16px;grid-template-columns:1fr;gap:6px;text-align:left}
-  .nr-lightbox__title,.nr-lightbox__dims{text-align:left}
-  .nr-lightbox__prev,.nr-lightbox__next{display:none}
-}
 
 /* =========================================================
    Print stylesheet — turns a single project page into a
@@ -1477,7 +1422,7 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 
   /* hide every interactive / decorative element */
   .nr-topbar, .nr-sidebar, .nr-sidebar-backdrop, .nr-tabbar, .nr-footer,
-  .nr-cur, .nr-wipe, .nr-lightbox, .nr-modal, .nr-cookie, .nr-status,
+  .nr-cur, .nr-wipe, .nr-modal, .nr-cookie, .nr-status,
   .nr-hero__bottom, .nr-hero__nav, .nr-hero__thumbs, .nr-hero__counter,
   .nr-project__close, .nr-project__actions,
   .nr-book-trigger, .nr-btn,
@@ -1544,7 +1489,6 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
     width:100% !important;height:auto !important;
     filter:none !important;transform:none !important;
   }
-  .nr-project__plate-btn{padding:0 !important;border:0 !important;background:none !important}
 
   /* page footer — a discreet attribution at the bottom */
   .nr-project::after{
@@ -1735,6 +1679,12 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 .nr-portfolio-rail,.nr-project__rail-track{will-change:transform;transform-origin:center center}
 
 
-/* EXIF "shot on" line in the lightbox caption */
-.nr-lightbox__exif{display:block;margin-top:6px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
-.nr-lightbox__exif:empty{display:none}
+/* EXIF "shot on" line — plate hover caption + Enquire showcase crossfade */
+.nr-project__plate{position:relative}
+.nr-plate-cap{position:absolute;left:0;right:0;bottom:0;margin:0;padding:10px 14px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);background:linear-gradient(180deg,transparent,rgba(11,12,16,.85));opacity:0;transition:opacity .3s var(--ease);pointer-events:none}
+.nr-project__plate:hover .nr-plate-cap{opacity:1}
+@media (max-width:900px){.nr-plate-cap{opacity:1}}
+
+.nr-enquire__plate{position:absolute;inset:0;opacity:0;transition:opacity 1.1s var(--ease)}
+.nr-enquire__plate.is-active{opacity:1}
+.nr-enquire__plate img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.9) brightness(.7)}

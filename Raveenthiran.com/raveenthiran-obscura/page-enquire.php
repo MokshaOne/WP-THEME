@@ -24,14 +24,12 @@ $sel  = isset( $_GET['service'] ) ? sanitize_title( wp_unslash( $_GET['service']
 $est  = isset( $_GET['est'] ) ? preg_replace( '/[^0-9.]/', '', wp_unslash( $_GET['est'] ) ) : '';
 $ref  = isset( $_GET['ref'] ) ? sanitize_text_field( wp_unslash( $_GET['ref'] ) ) : '';
 
-// Left-panel hero — first featured project, else any project.
-$hero_url = '';
-$hq = new WP_Query( [ 'post_type' => 'nr_project', 'posts_per_page' => 1, 'meta_key' => 'featured_on_homepage', 'meta_value' => '1', 'fields' => 'ids' ] );
-if ( ! $hq->have_posts() ) {
-	$hq = new WP_Query( [ 'post_type' => 'nr_project', 'posts_per_page' => 1, 'fields' => 'ids' ] );
-}
-if ( $hq->have_posts() ) {
-	$hero_url = get_the_post_thumbnail_url( $hq->posts[0], 'nr-hero' );
+// Left-panel showcase — latest 6 projects, images only (no titles/meta),
+// crossfaded like the home hero.
+$aside_ids = [];
+$hq = new WP_Query( [ 'post_type' => 'nr_project', 'posts_per_page' => 6, 'orderby' => 'date', 'order' => 'DESC', 'fields' => 'ids', 'no_found_rows' => true ] );
+foreach ( $hq->posts as $pid ) {
+	if ( has_post_thumbnail( $pid ) ) $aside_ids[] = (int) get_post_thumbnail_id( $pid );
 }
 wp_reset_postdata();
 
@@ -52,11 +50,15 @@ $steps = [
 
 		<!-- LEFT · atmosphere -->
 		<aside class="nr-enquire__aside">
-			<div class="nr-enquire__frame">
+			<div class="nr-enquire__frame" data-enquire-slider>
 				<span class="nr-reg tl"></span><span class="nr-reg tr"></span>
 				<span class="nr-reg bl"></span><span class="nr-reg br"></span>
-				<?php if ( $hero_url ) : ?>
-					<img src="<?php echo esc_url( $hero_url ); ?>" alt="" decoding="async" loading="lazy">
+				<?php if ( $aside_ids ) : ?>
+					<?php foreach ( $aside_ids as $k => $aid ) : ?>
+						<div class="nr-enquire__plate<?php echo $k === 0 ? ' is-active' : ''; ?>" aria-hidden="<?php echo $k === 0 ? 'false' : 'true'; ?>">
+							<?php echo wp_get_attachment_image( $aid, 'nr-hero', false, [ 'alt' => '', 'sizes' => '(max-width:900px) 100vw, 45vw', 'loading' => $k === 0 ? 'eager' : 'lazy', 'decoding' => 'async' ] ); ?>
+						</div>
+					<?php endforeach; ?>
 				<?php elseif ( function_exists( 'nr_placeholder' ) ) : ?>
 					<?php echo nr_placeholder( 'studio', true, 'auto' ); ?>
 				<?php endif; ?>

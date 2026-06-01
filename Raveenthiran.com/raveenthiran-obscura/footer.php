@@ -31,23 +31,6 @@ $nr_show_footer = $nr_footer_text || $nr_legal['datenschutz'] || $nr_legal['agb'
 <?php /* ── page-transition amber wipe ──────────────────────── */ ?>
 <div class="nr-wipe" aria-hidden="true"></div>
 
-<?php /* ── lightbox overlay (consumed by .nr-project__plate-btn) ─── */ ?>
-<div id="nr-lightbox" class="nr-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="nr-lightbox-caption">
-	<button type="button" class="nr-lightbox__close nr-icon-btn" aria-label="<?php esc_attr_e( 'Close', 'raveenthiran' ); ?>">✕</button>
-	<button type="button" class="nr-lightbox__prev nr-icon-btn nr-icon-btn--fill" aria-label="<?php esc_attr_e( 'Previous plate', 'raveenthiran' ); ?>">←</button>
-	<button type="button" class="nr-lightbox__next nr-icon-btn nr-icon-btn--fill" aria-label="<?php esc_attr_e( 'Next plate', 'raveenthiran' ); ?>">→</button>
-	<figure class="nr-lightbox__stage">
-		<span class="nr-reg tl"></span><span class="nr-reg tr"></span>
-		<span class="nr-reg bl"></span><span class="nr-reg br"></span>
-		<img class="nr-lightbox__img" src="" alt="" decoding="async">
-	</figure>
-	<figcaption class="nr-lightbox__caption" id="nr-lightbox-caption">
-		<span class="nr-lightbox__count"></span>
-		<span class="nr-lightbox__title"></span>
-		<span class="nr-lightbox__dims"></span>
-		<span class="nr-lightbox__exif"></span>
-	</figcaption>
-</div>
 
 <?php /* ── mobile bottom tab bar ───────────────────────────── */ ?>
 <?php get_template_part( 'parts/mobile-tabs' ); ?>

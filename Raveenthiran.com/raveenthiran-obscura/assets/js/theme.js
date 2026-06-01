@@ -8,7 +8,6 @@
    - mobile sidebar open/close
    - clock
    - page-transition amber wipe
-   - plate lightbox
    - FAQ accordion
    ============================================================ */
 (function () {
@@ -44,14 +43,14 @@
       requestAnimationFrame(follow);
     })();
 
-    const linkSelector = 'a, button, .nr-chip, .nr-card, .nr-project__plate, .nr-hero__thumb, [data-modal], [data-hero-prev], [data-hero-next]';
+    const linkSelector = 'a, button, .nr-chip, .nr-card, .nr-hero__thumb, [data-modal], [data-hero-prev], [data-hero-next]';
     document.body.addEventListener('mouseover', (e) => {
       const t = e.target.closest(linkSelector);
       if (t) {
         cur.classList.add('is-on-link');
         if (curLbl) {
           const lbl = t.dataset.curLabel ||
-            (t.classList.contains('nr-card') || t.classList.contains('nr-project__plate') ? 'view' :
+            (t.classList.contains('nr-card') ? 'view' :
              t.classList.contains('nr-hero__thumb') ? '' :
              t.tagName === 'BUTTON' && t.type === 'submit' ? 'send' :
              'go');
@@ -361,112 +360,6 @@
     compute();
   })();
 
-  /* ---------- plate lightbox ----------
-     Consumes data-lightbox-src/-w/-h/-caption on .nr-project__plate-btn.
-     Builds a grouped list (same data-lightbox-group on the parent rail)
-     so left / right arrows step through plates inside one project. */
-  (function lightbox() {
-    const lb = document.getElementById('nr-lightbox');
-    if (!lb) return;
-
-    const img   = lb.querySelector('.nr-lightbox__img');
-    const count = lb.querySelector('.nr-lightbox__count');
-    const title = lb.querySelector('.nr-lightbox__title');
-    const dims  = lb.querySelector('.nr-lightbox__dims');
-    const exif  = lb.querySelector('.nr-lightbox__exif');
-    const closeBtn = lb.querySelector('.nr-lightbox__close');
-    const prevBtn  = lb.querySelector('.nr-lightbox__prev');
-    const nextBtn  = lb.querySelector('.nr-lightbox__next');
-
-    let group = [];     // array of {src, w, h, caption}
-    let idx = 0;
-    let lastFocus = null;
-
-    function render() {
-      if (!group.length) return;
-      const it = group[idx];
-      img.src = it.src;
-      img.alt = it.caption || '';
-      count.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(group.length).padStart(2, '0');
-      title.textContent = it.caption || '';
-      dims.textContent = (it.w && it.h) ? (it.w + ' × ' + it.h) : '';
-      if (exif) exif.textContent = it.exif || '';
-      prevBtn.disabled = group.length <= 1;
-      nextBtn.disabled = group.length <= 1;
-    }
-
-    function open(triggerBtn) {
-      lastFocus = document.activeElement;
-      // Build group from siblings inside the same data-lightbox-group container.
-      const groupRoot = triggerBtn.closest('[data-lightbox-group]') || triggerBtn.parentElement;
-      const buttons = Array.from(groupRoot.querySelectorAll('[data-lightbox-src]'));
-      group = buttons.map(b => ({
-        src: b.dataset.lightboxSrc,
-        w: parseInt(b.dataset.lightboxW || '0', 10),
-        h: parseInt(b.dataset.lightboxH || '0', 10),
-        caption: b.dataset.lightboxCaption || '',
-        exif: b.dataset.lightboxExif || '',
-      }));
-      idx = Math.max(0, buttons.indexOf(triggerBtn));
-      render();
-      lb.classList.add('is-on');
-      lb.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('is-modal-open');
-      // Focus the close button so Esc + keyboard works immediately
-      requestAnimationFrame(() => closeBtn.focus());
-    }
-
-    function close() {
-      lb.classList.remove('is-on');
-      lb.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('is-modal-open');
-      img.src = '';
-      group = [];
-      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-    }
-
-    function step(d) {
-      if (group.length <= 1) return;
-      idx = (idx + d + group.length) % group.length;
-      render();
-    }
-
-    // Open when any plate-btn is clicked
-    document.body.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-lightbox-src]');
-      if (btn) { e.preventDefault(); open(btn); }
-    });
-    // Close handlers
-    closeBtn.addEventListener('click', close);
-    prevBtn.addEventListener('click', () => step(-1));
-    nextBtn.addEventListener('click', () => step(1));
-    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
-
-    // Touch swipe (mobile) — swipe between plates in the lightbox.
-    let lsx = 0, lsy = 0;
-    lb.addEventListener('touchstart', (e) => { lsx = e.changedTouches[0].clientX; lsy = e.changedTouches[0].clientY; }, { passive: true });
-    lb.addEventListener('touchend', (e) => {
-      const dx = e.changedTouches[0].clientX - lsx, dy = e.changedTouches[0].clientY - lsy;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
-    }, { passive: true });
-
-    // Keyboard — Esc closes, ←/→ navigate, Tab cycles inside the lightbox.
-    window.addEventListener('keydown', (e) => {
-      if (!lb.classList.contains('is-on')) return;
-      if (e.key === 'Escape')     { e.preventDefault(); close(); }
-      else if (e.key === 'ArrowLeft')  { e.preventDefault(); step(-1); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
-      else if (e.key === 'Tab') {
-        // Focus trap — three buttons cycle
-        const focusables = [closeBtn, prevBtn, nextBtn];
-        const i = focusables.indexOf(document.activeElement);
-        if (i === -1) { e.preventDefault(); closeBtn.focus(); return; }
-        e.preventDefault();
-        const dir = e.shiftKey ? -1 : 1;
-        focusables[(i + dir + focusables.length) % focusables.length].focus();
-      }
-    });
-  })();
 
   /* ---------- page-transition amber wipe ---------- */
   if (!document.querySelector('.nr-wipe')) {
@@ -666,4 +559,21 @@
       if (!raf) raf = requestAnimationFrame(decay);
     }, { passive: true });
   });
+})();
+
+
+/* =========================================================
+   Enquire aside — image-only crossfade (latest projects)
+   ========================================================= */
+(function () {
+  var box = document.querySelector('[data-enquire-slider]');
+  if (!box) return;
+  var plates = box.querySelectorAll('.nr-enquire__plate');
+  if (plates.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var i = 0;
+  setInterval(function () {
+    plates[i].classList.remove('is-active'); plates[i].setAttribute('aria-hidden', 'true');
+    i = (i + 1) % plates.length;
+    plates[i].classList.add('is-active'); plates[i].setAttribute('aria-hidden', 'false');
+  }, 4500);
 })();

@@ -122,7 +122,7 @@ $lede = get_the_excerpt();
 		</aside>
 
 		<?php if ( ! empty( $plates ) ) : ?>
-		<div class="nr-project__rail" role="region" aria-label="<?php esc_attr_e( 'Project plates', 'raveenthiran' ); ?>" data-h-rail data-lightbox-group="project">
+		<div class="nr-project__rail" role="region" aria-label="<?php esc_attr_e( 'Project plates', 'raveenthiran' ); ?>" data-h-rail>
 			<div class="nr-project__counter" aria-live="polite" data-plate-counter>
 				<span class="nr-project__counter-cur" data-plate-cur>01</span>
 				<span class="nr-project__counter-sep">/</span>
@@ -131,7 +131,6 @@ $lede = get_the_excerpt();
 			<div class="nr-project__rail-track">
 				<?php foreach ( $plates as $i => $p ) :
 					$alt   = sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
-					$large = $p['id'] ? wp_get_attachment_image_url( $p['id'], 'full' ) : $p['url'];
 					// "Shot on" — built from EXIF captured on upload (inc/performance.php).
 					$exif_str = '';
 					if ( $p['id'] && function_exists( 'nr_get_exif' ) ) {
@@ -141,13 +140,6 @@ $lede = get_the_excerpt();
 					}
 				?>
 					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>">
-						<button type="button" class="nr-project__plate-btn"
-							data-lightbox-src="<?php echo esc_url( $large ?: $p['url'] ); ?>"
-							data-lightbox-w="<?php echo (int) $p['w']; ?>"
-							data-lightbox-h="<?php echo (int) $p['h']; ?>"
-							data-lightbox-caption="<?php echo esc_attr( $alt ); ?>"
-							<?php if ( $exif_str ) : ?>data-lightbox-exif="<?php echo esc_attr( $exif_str ); ?>"<?php endif; ?>
-							aria-label="<?php echo esc_attr( sprintf( __( 'View plate %d full size', 'raveenthiran' ), $i + 1 ) ); ?>">
 							<?php if ( $p['id'] ) :
 								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [
 									'alt'      => $alt,
@@ -158,7 +150,7 @@ $lede = get_the_excerpt();
 							else : ?>
 								<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
 							<?php endif; ?>
-						</button>
+						<?php if ( $exif_str ) : ?><figcaption class="nr-plate-cap"><?php echo esc_html( $exif_str ); ?></figcaption><?php endif; ?>
 					</figure>
 				<?php endforeach; ?>
 			</div>

@@ -1721,27 +1721,4 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
   ::view-transition-new(root){ animation: nrVtIn .42s var(--ease) both; }
 }
 
-/* =========================================================
-   #19 Light / dark theme. Dark is default; .nr-light flips the tokens.
-   Applied to <html> early (header inline script) to avoid a flash.
-   ========================================================= */
-html.nr-light{
-  --bg:#EDEAE3; --bg-2:#E4DFD6;
-  --ink:#16140F; --ink-2:rgba(22,20,15,.64); --ink-3:rgba(22,20,15,.42);
-  --ink-4:rgba(22,20,15,.14); --ink-5:rgba(22,20,15,.06);
-  --hair:rgba(22,20,15,.16); --hair-soft:rgba(22,20,15,.07);
-}
-html.nr-light .nr-hero__plate img,
-html.nr-light .nr-enquire__plate img,
-html.nr-light .nr-card img,
-html.nr-light .nr-project__plate img{filter:contrast(1.02) saturate(.96) brightness(.99)}
-html.nr-light .nr-topbar{background:linear-gradient(180deg,rgba(237,234,227,.96) 0%,rgba(237,234,227,.7) 70%,transparent 100%)}
 
-.nr-theme-toggle{width:30px;height:30px;border:1px solid var(--hair);border-radius:50%;background:none;cursor:pointer;display:inline-grid;place-items:center;flex:0 0 auto;transition:border-color .25s var(--ease)}
-.nr-theme-toggle:hover{border-color:var(--amber)}
-.nr-theme-toggle__dot{width:13px;height:13px;border-radius:50%;border:1px solid var(--ink);background:linear-gradient(90deg,var(--ink) 0 50%,transparent 50% 100%)}
-@media (max-width:900px){ .nr-theme-toggle{display:none} }
-
-.nr-sidebar__theme{display:inline-flex;align-items:center;gap:8px;background:none;border:0;color:var(--ink-2);font:inherit;cursor:pointer;padding:8px 0;letter-spacing:.04em}
-.nr-sidebar__theme::before{content:'◐';color:var(--amber)}
-.nr-sidebar__theme:hover{color:var(--ink)}

@@ -81,7 +81,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 45. ✅ **Admin dashboard widget** — recent enquiries, counts, quick links. _Ops_
 
 ### Performance / infra
-46. **PWA / service-worker shell precache** — near-instant repeat navigation, works offline. _Perf_
+46. **PWA / service-worker shell precache** — near-instant repeat navigation, works offline. _Perf_ ✅ v4.21.0
 47. **Critical-CSS inline + async** the main stylesheet (mobile FCP). _Perf_
 48. **Cloudflare front + full-page edge cache** rules for easyname. _Perf_
 49. **`<picture>` AVIF→WebP→JPEG** wiring (if not already plugin-handled). _Perf_
@@ -106,7 +106,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 64. **Tag / keyword taxonomy + multi-filter.** _Content_
 65. ✅ **Instant client-side search** across projects. _Content/UX_
 66. **Video plates** in galleries (mp4 / Vimeo). _Content_
-67. **Before/after retouch slider.** _Content_
+67. **Before/after retouch slider.** _Content_ ✅ v4.21.0 — [nr_compare before="" after=""] shortcode
 68. ✅ **Downloadable press kit / one-pager.** _Content_
 69. **Dynamic per-project OG share cards** (composited image). _SEO/Content_
 
@@ -117,7 +117,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 73. ✅ **Related projects with hover thumbnails.** _Conv/UX_
 
 ### Security / compliance
-74. **Turnstile / hCaptcha** on forms. _Sec_
+74. **Turnstile / hCaptcha** on forms. _Sec_ ✅ v4.21.0 — Cloudflare Turnstile, Theme Settings → § Security
 75. ✅ **Consent-gated analytics** (GDPR). _Sec_
 76. ✅ **Limit login attempts / login hardening.** _Sec_
 77. **Two-factor auth for admin.** _Sec_

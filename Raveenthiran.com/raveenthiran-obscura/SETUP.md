@@ -27,6 +27,12 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
 - **Menus** are optional — without one the theme shows: Showcase · Work · Studio · Journal (+ the Book-a-shoot button).
 - **Regenerate Thumbnails** (plugin) once if you have existing images, so the uncropped hero + responsive sizes apply.
 
-## 5. Performance (optional, recommended)
+## 5. Spam shield, app install & retouch slider (new in 4.21)
+- **Turnstile (spam protection)** — at **Cloudflare → Turnstile** create a widget for the domain, then paste the **Site key + Secret key** into **Theme Settings → § Security**. The Enquire form then shows a no-puzzle checkbox and verifies submissions server-side. Leave blank to keep the form as-is (honeypot + rate-limit still run).
+- **Installable / offline (PWA)** — works automatically. Set a **Site Icon** (Customizer → Site Identity) so phones can "Add to Home Screen" with a proper icon; the site then loads an offline cached shell on flaky connections.
+- **Before / after slider** — in any Journal post or page, drop the shortcode:
+  `[nr_compare before="123" after="456"]` (media-library image IDs) — optional `before_label="Film" after_label="Graded" start="50"`.
+
+## 6. Performance (optional, recommended)
 - Paste the snippet in **`htaccess-snippet.txt`** into your site's root `.htaccess` (gzip + far-future caching for assets/fonts). This also covers minification's goal (smaller transfer) safely.
 - Put **Cloudflare** (free) in front of the domain for edge caching / lower TTFB.

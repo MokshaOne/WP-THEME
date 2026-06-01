@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.20.0' );
+define( 'NR_THEME_VERSION', '4.21.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -242,6 +242,9 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'tier2.php',
 		'medium.php',
 		'importer.php',
+		'security.php',
+		'pwa.php',
+		'compare.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;
@@ -280,6 +283,12 @@ function nr_handle_contact_send() {
 		exit;
 	}
 	if ( $ip ) set_transient( $rk, 1, 30 );
+
+	// #74 — Cloudflare Turnstile (only enforced when keys are configured).
+	if ( function_exists( 'nr_turnstile_passes' ) && ! nr_turnstile_passes() ) {
+		wp_safe_redirect( add_query_arg( 'nr_sent', '0', wp_get_referer() ?: home_url( '/' ) ) );
+		exit;
+	}
 
 	$name    = sanitize_text_field( wp_unslash( $_POST['name']    ?? '' ) );
 	$email   = sanitize_email( wp_unslash( $_POST['email']   ?? '' ) );

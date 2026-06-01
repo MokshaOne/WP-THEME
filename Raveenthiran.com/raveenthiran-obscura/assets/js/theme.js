@@ -750,3 +750,45 @@
     });
   }
 })();
+
+/* #67 — before / after compare slider (drag the handle / use the range) */
+(function () {
+  var wraps = document.querySelectorAll('[data-compare]');
+  if (!wraps.length) return;
+  wraps.forEach(function (wrap) {
+    var clip   = wrap.querySelector('[data-compare-clip]');
+    var range  = wrap.querySelector('[data-compare-range]');
+    var handle = wrap.querySelector('.nr-compare__handle');
+    if (!clip || !range) return;
+
+    function set(pct) {
+      pct = Math.max(0, Math.min(100, pct));
+      wrap.style.setProperty('--nr-compare-start', pct + '%');
+      clip.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+      if (handle) handle.style.left = pct + '%';
+      range.value = pct;
+    }
+    set(parseFloat(range.value) || 50);
+
+    range.addEventListener('input', function () { set(parseFloat(range.value)); });
+
+    function fromEvent(clientX) {
+      var r = wrap.getBoundingClientRect();
+      if (!r.width) return;
+      set(((clientX - r.left) / r.width) * 100);
+    }
+    var dragging = false;
+    function down(e) { dragging = true; fromEvent((e.touches ? e.touches[0] : e).clientX); }
+    function move(e) { if (dragging) fromEvent((e.touches ? e.touches[0] : e).clientX); }
+    function up()   { dragging = false; }
+    if (handle) {
+      handle.addEventListener('mousedown', down);
+      handle.addEventListener('touchstart', down, { passive: true });
+    }
+    wrap.addEventListener('mousedown', down);
+    window.addEventListener('mousemove', move, { passive: true });
+    window.addEventListener('touchmove', move, { passive: true });
+    window.addEventListener('mouseup', up);
+    window.addEventListener('touchend', up);
+  });
+})();

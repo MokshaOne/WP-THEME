@@ -118,10 +118,12 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 					<textarea name="notes" rows="4" placeholder="<?php esc_attr_e( 'A few sentences — a place, a person, an hour of the day.', 'raveenthiran' ); ?>"><?php echo $ref ? esc_textarea( sprintf( __( 'Re: %s — I saw this project and would like something in the same spirit.', 'raveenthiran' ), $ref ) ) : ''; ?></textarea>
 				</label>
 
+				<?php if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field(); ?>
+
 				<div class="nr-form__foot">
 					<span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Typical response · < 24h', 'raveenthiran' ); ?></span>
 					<?php $nr_bk = nr_opt( 'nr_booking_url', '' ); if ( $nr_bk ) : ?><a class="nr-btn nr-btn--ghost" href="<?php echo esc_url( $nr_bk ); ?>" target="_blank" rel="noopener"><span><?php esc_html_e( 'Book a time', 'raveenthiran' ); ?></span> <span>&rarr;</span></a><?php endif; ?>
-						<?php $nr_wa = nr_opt( 'nr_whatsapp', '' ); if ( $nr_wa ) : ?><a class=\"nr-btn nr-btn--ghost\" href=\"https://wa.me/<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $nr_wa ) ); ?>\" target=\"_blank\" rel=\"noopener\"><span><?php esc_html_e( 'WhatsApp', 'raveenthiran' ); ?></span></a><?php endif; ?>
+						<?php $nr_wa = nr_opt( 'nr_whatsapp', '' ); if ( $nr_wa ) : ?><a class="nr-btn nr-btn--ghost" href="https://wa.me/<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $nr_wa ) ); ?>" target="_blank" rel="noopener"><span><?php esc_html_e( 'WhatsApp', 'raveenthiran' ); ?></span></a><?php endif; ?>
 					<button type="submit" class="nr-btn nr-btn--primary">
 						<span><?php echo esc_html( nr_opt( 'nr_cta_send', __( 'Send enquiry', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 					</button>

@@ -99,6 +99,10 @@ function nr_settings_defaults() {
 		'nr_verify_yandex'       => '',
 		'nr_tracking_script'     => '',
 
+		/* Security — Cloudflare Turnstile (#74) */
+		'nr_turnstile_site'      => '',
+		'nr_turnstile_secret'    => '',
+
 		/* Visual effects (toggles — string "1"|"0") */
 		'nr_fx_cursor'       => '1',
 		'nr_fx_grain'        => '1',
@@ -584,6 +588,19 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Tracking script', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_textarea( 'nr_tracking_script', 6 ); ?>
 							<p class="description"><?php esc_html_e( 'Paste your full Plausible / Fathom / GA4 / Cloudflare script(s) — including the <script> tags. Injected into <head>. Logged-in admins are not tracked.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Security</h2></summary>
+				<p class="description" style="max-width:780px"><?php esc_html_e( 'Cloudflare Turnstile — a free, privacy-friendly spam shield for the Enquire form (no puzzles for visitors). Create a widget at Cloudflare → Turnstile, then paste the two keys here. Leave blank to disable; the honeypot + rate-limit still run regardless.', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Turnstile Site key', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_turnstile_site', 50 ); ?>
+							<p class="description"><?php esc_html_e( 'Public key (starts with 0x…). Safe to expose — it renders in the page.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Turnstile Secret key', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_turnstile_secret', 50 ); ?>
+							<p class="description"><?php esc_html_e( 'Private key — used server-side to verify submissions. Keep it secret.', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 

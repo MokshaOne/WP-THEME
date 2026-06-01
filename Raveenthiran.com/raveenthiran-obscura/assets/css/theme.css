@@ -1633,3 +1633,9 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 .nr-btn--ghost{background:transparent}
 .nr-form__chips .nr-chip.is-on{border-color:var(--amber);color:var(--ink)}
 @media(max-width:560px){.nr-quote__types{grid-template-columns:1fr}}
+
+
+/* Enquire — merged FAQ accordion (compact, collapsed by default) */
+.nr-enquire__faq{margin-top:6px;padding-top:20px;border-top:1px solid var(--hair);display:flex;flex-direction:column;gap:12px}
+.nr-faq__list--compact{padding:0;height:auto;overflow:visible}
+.nr-faq__list--compact .nr-faq__a{font-size:14px}

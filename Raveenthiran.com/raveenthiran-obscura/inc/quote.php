@@ -93,6 +93,33 @@ function nr_quote_data() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+ * FAQ items — merged into the Enquire page (no standalone FAQ page).
+ * Reads an ACF `faq_items` repeater (question/answer) on the Enquire
+ * page if present, otherwise returns sensible defaults.
+ * ───────────────────────────────────────────────────────────── */
+function nr_faq_items() {
+	$rows = function_exists( 'get_field' ) ? get_field( 'faq_items', nr_enquire_page_id() ?: false ) : null;
+	$out  = [];
+	if ( is_array( $rows ) ) {
+		foreach ( $rows as $r ) {
+			$qn = trim( (string) ( $r['question'] ?? '' ) );
+			$an = trim( (string) ( $r['answer'] ?? '' ) );
+			if ( $qn && $an ) $out[] = [ 'q' => $qn, 'a' => $an ];
+		}
+	}
+	if ( $out ) return $out;
+
+	return [
+		[ 'q' => __( 'How far in advance should I book?', 'raveenthiran' ),         'a' => __( 'For portrait sessions I recommend booking 2–4 weeks in advance. Editorial commissions and weddings require a minimum of 6–8 weeks, depending on the scope and travel involved.', 'raveenthiran' ) ],
+		[ 'q' => __( 'Do you travel for shoots?', 'raveenthiran' ),                 'a' => __( 'Yes. I am based in Vienna but regularly work across Europe and beyond. Travel costs are invoiced separately at cost. For international projects, a travel day rate applies.', 'raveenthiran' ) ],
+		[ 'q' => __( 'What is your editing style?', 'raveenthiran' ),               'a' => __( 'I work in a quiet, analogue-feeling style — warm shadows, restrained contrast, a sense of stillness. I do not over-retouch. The aim is that the photographs still look like photographs.', 'raveenthiran' ) ],
+		[ 'q' => __( 'How are images delivered?', 'raveenthiran' ),                 'a' => __( 'Selects are delivered via a private online gallery within 5–7 business days, as high-resolution JPEGs. Print-ready TIFFs and RAW files are available on request.', 'raveenthiran' ) ],
+		[ 'q' => __( 'Can I use the images for commercial purposes?', 'raveenthiran' ), 'a' => __( 'Usage rights are specified in the contract. Personal sessions include personal use; editorial commissions include publication rights for the agreed outlet. Broader commercial licensing is available separately.', 'raveenthiran' ) ],
+		[ 'q' => __( 'What if I need to reschedule?', 'raveenthiran' ),             'a' => __( 'Rescheduling is possible without penalty up to 7 days before the shoot date. Cancellations within 48 hours of the session are subject to the full session fee.', 'raveenthiran' ) ],
+	];
+}
+
+/* ─────────────────────────────────────────────────────────────
  * Enquire page resolution.
  * ───────────────────────────────────────────────────────────── */
 function nr_enquire_page_id() {
@@ -128,8 +155,8 @@ add_action( 'template_redirect', function () {
 
 	$tpl = (string) get_page_template_slug( get_queried_object_id() );
 	$is_legacy =
-		   in_array( $tpl, [ 'page-booking.php', 'page-contact.php' ], true )
-		|| is_page( [ 'booking', 'contact' ] );
+		   in_array( $tpl, [ 'page-booking.php', 'page-contact.php', 'page-faq.php' ], true )
+		|| is_page( [ 'booking', 'contact', 'faq' ] );
 	if ( ! $is_legacy ) return;
 
 	$enq = nr_enquire_page_id();

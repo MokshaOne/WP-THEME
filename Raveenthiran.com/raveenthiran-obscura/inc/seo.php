@@ -134,24 +134,22 @@ function nr_schema_markup_extended_render() {
         echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
     }
 
-    // FAQPage Schema
-    if ( is_page( 'faq' ) ) {
-        $faqs = get_field( 'faq_items', get_the_ID() );
-        if ( is_array( $faqs ) && ! empty( $faqs ) ) {
-            $entities = [];
-            foreach ( $faqs as $item ) {
-                if ( is_array( $item ) && ! empty( $item['question'] ) && ! empty( $item['answer'] ) ) {
-                    $entities[] = [
-                        '@type'          => 'Question',
-                        'name'           => $item['question'],
-                        'acceptedAnswer' => [ '@type' => 'Answer', 'text' => $item['answer'] ],
-                    ];
-                }
+    // FAQPage Schema — FAQ now lives on the merged Enquire page.
+    $is_enquire = ( is_page() && get_page_template_slug( get_queried_object_id() ) === 'page-enquire.php' ) || is_page( 'enquire' );
+    if ( $is_enquire && function_exists( 'nr_faq_items' ) ) {
+        $entities = [];
+        foreach ( nr_faq_items() as $item ) {
+            if ( ! empty( $item['q'] ) && ! empty( $item['a'] ) ) {
+                $entities[] = [
+                    '@type'          => 'Question',
+                    'name'           => $item['q'],
+                    'acceptedAnswer' => [ '@type' => 'Answer', 'text' => $item['a'] ],
+                ];
             }
-            if ( $entities ) {
-                $schema = [ '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $entities ];
-                echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
-            }
+        }
+        if ( $entities ) {
+            $schema = [ '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $entities ];
+            echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
         }
     }
 

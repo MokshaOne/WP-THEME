@@ -139,6 +139,22 @@ $steps = [
 					</button>
 				</div>
 			</form>
+
+			<section class="nr-enquire__faq" id="faq">
+				<span class="nr-eyebrow nr-eyebrow--plain"><?php echo esc_html( nr_opt( 'nr_faq_eyebrow', __( 'FAQ · §05', 'raveenthiran' ) ) ); ?></span>
+				<div class="nr-faq__list nr-faq__list--compact">
+					<?php foreach ( ( function_exists( 'nr_faq_items' ) ? nr_faq_items() : [] ) as $i => $f ) : ?>
+						<div class="nr-faq__item">
+							<span class="nr-faq__n"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+							<div>
+								<div class="nr-faq__q"><?php echo esc_html( $f['q'] ); ?></div>
+								<div class="nr-faq__a"><?php echo esc_html( $f['a'] ); ?></div>
+							</div>
+							<button type="button" class="nr-faq__toggle" aria-label="<?php esc_attr_e( 'Toggle answer', 'raveenthiran' ); ?>">+</button>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			</section>
 		</div>
 	</div>
 </section>

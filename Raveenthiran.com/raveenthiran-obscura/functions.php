@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.9.0' );
+define( 'NR_THEME_VERSION', '4.10.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -138,12 +138,16 @@ function nr_recognition_list( $option_key ) {
 		$line = trim( $line );
 		if ( $line === '' ) continue;
 		$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
-		$out[] = [
+		$row = [
 			'year' => $parts[0] ?? '',
 			'title' => $parts[1] ?? '',
 			'org'   => $parts[2] ?? '',
 			'url'   => $parts[3] ?? '',
 		];
+		// Skip ghost rows (blank / punctuation-only lines) so an empty
+		// Awards or Press list hides cleanly instead of showing a stray dash.
+		if ( $row['year'] === '' && $row['title'] === '' && $row['org'] === '' ) continue;
+		$out[] = $row;
 	}
 	return $out;
 }

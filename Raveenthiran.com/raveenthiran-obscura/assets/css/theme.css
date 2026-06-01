@@ -1682,3 +1682,10 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 .nr-enquire__plate{position:absolute;inset:0;opacity:0;transition:opacity 1.1s var(--ease)}
 .nr-enquire__plate.is-active{opacity:1}
 .nr-enquire__plate img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.9) brightness(.7)}
+
+/* Testimonials — "Words" block on the About page */
+.nr-voices{margin-top:6px}
+.nr-voices__list{list-style:none;display:flex;flex-direction:column;gap:18px;margin:10px 0 0;padding:0}
+.nr-voices__item{border-left:1px solid var(--amber);padding-left:16px}
+.nr-voices__item blockquote{margin:0;font-size:var(--fs-lede);line-height:1.5;color:var(--ink);font-weight:300}
+.nr-voices__item cite{display:block;margin-top:8px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-style:normal}

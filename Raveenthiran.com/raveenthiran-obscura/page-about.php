@@ -201,6 +201,48 @@ $stats = [
 				?>
 			</p>
 		<?php endif; ?>
+
+		<?php
+		/* Testimonials — pulled from the nr_testimonial CPT (title = source,
+		   content = the quote). Sample fallback so the section shows on a
+		   fresh install; replaced as soon as real testimonials are added. */
+		$voices = [];
+		$nr_tq = new WP_Query( [ 'post_type' => 'nr_testimonial', 'posts_per_page' => 4, 'no_found_rows' => true ] );
+		while ( $nr_tq->have_posts() ) { $nr_tq->the_post();
+			$q = trim( wp_strip_all_tags( get_the_content() ) );
+			if ( $q !== '' ) $voices[] = [ 'quote' => $q, 'cite' => get_the_title() ];
+		}
+		wp_reset_postdata();
+		$nr_voices_sample = empty( $voices );
+		if ( $nr_voices_sample ) {
+			$voices = [
+				[ 'quote' => 'Calm on set, exact in the edit. The pictures still feel like the room felt.', 'cite' => 'Art Director · SZ Magazin' ],
+				[ 'quote' => 'We booked one shoot and rebooked before the gallery even landed.',            'cite' => 'Brand Lead · Hotel Sacher' ],
+			];
+		}
+		?>
+		<section class="nr-voices" aria-label="<?php esc_attr_e( 'What clients say', 'raveenthiran' ); ?>">
+			<span class="nr-eyebrow nr-eyebrow--xs"><?php esc_html_e( 'Words', 'raveenthiran' ); ?></span>
+			<ul class="nr-voices__list">
+				<?php foreach ( $voices as $v ) : ?>
+					<li class="nr-voices__item">
+						<blockquote><?php echo esc_html( $v['quote'] ); ?></blockquote>
+						<?php if ( $v['cite'] ) : ?><cite><?php echo esc_html( $v['cite'] ); ?></cite><?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<?php if ( $nr_voices_sample && current_user_can( 'edit_posts' ) ) : ?>
+				<p class="nr-admin-hint">
+					<?php
+					printf(
+						/* translators: %s: add-testimonial link */
+						esc_html__( 'Showing sample testimonials. Add real ones under %s.', 'raveenthiran' ),
+						'<a href="' . esc_url( admin_url( 'edit.php?post_type=nr_testimonial' ) ) . '">' . esc_html__( 'Testimonials', 'raveenthiran' ) . '</a>'
+					);
+					?>
+				</p>
+			<?php endif; ?>
+		</section>
 	</div>
 </section>
 

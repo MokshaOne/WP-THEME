@@ -150,6 +150,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 			if ( $url ) printf( '<a href="%s" target="_blank" rel="noopener">%s ↗</a>', esc_url( $url ), esc_html( $label ) );
 		}
 		?>
+		<button type="button" class="nr-sidebar__theme" data-theme-toggle><?php esc_html_e( 'Light / Dark', 'raveenthiran' ); ?></button>
 	</div>
 </aside>
 

@@ -1741,3 +1741,7 @@ html.nr-light .nr-topbar{background:linear-gradient(180deg,rgba(237,234,227,.96)
 .nr-theme-toggle:hover{border-color:var(--amber)}
 .nr-theme-toggle__dot{width:13px;height:13px;border-radius:50%;border:1px solid var(--ink);background:linear-gradient(90deg,var(--ink) 0 50%,transparent 50% 100%)}
 @media (max-width:900px){ .nr-theme-toggle{display:none} }
+
+.nr-sidebar__theme{display:inline-flex;align-items:center;gap:8px;background:none;border:0;color:var(--ink-2);font:inherit;cursor:pointer;padding:8px 0;letter-spacing:.04em}
+.nr-sidebar__theme::before{content:'◐';color:var(--amber)}
+.nr-sidebar__theme:hover{color:var(--ink)}

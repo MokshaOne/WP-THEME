@@ -1789,3 +1789,52 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 
 /* Hamburger is redundant on mobile — the bottom tab bar handles primary nav. */
 @media (max-width:900px){ .nr-hamb{display:none} }
+
+/* =========================================================
+   Medium batch — Journal (#60), year filter (#61), testimonials
+   rotation (#72), related hover-preview (#73)
+   ========================================================= */
+/* Journal pages scroll naturally (override the no-scroll model just here) */
+body.nr-page-journal{height:auto;overflow-x:hidden;overflow-y:auto}
+body.nr-page-journal .nr-page{position:relative;min-height:0}
+
+.nr-journal-archive,.nr-journal-single{padding:clamp(20px,4vw,56px) var(--pad) 80px;max-width:1100px;margin:0 auto}
+.nr-journal__list{display:flex;flex-direction:column;gap:0;margin-top:24px}
+.nr-journal__entry{display:grid;grid-template-columns:200px 1fr;gap:28px;padding:28px 0;border-top:1px solid var(--hair);align-items:center}
+.nr-journal__entry:hover .nr-journal__entry-title{color:var(--amber)}
+.nr-journal__media{aspect-ratio:4/5;overflow:hidden;background:var(--bg-2)}
+.nr-journal__media img{width:100%;height:100%;object-fit:cover;filter:contrast(1.04) saturate(.92) brightness(.82);transition:transform .6s var(--ease)}
+.nr-journal__entry:hover .nr-journal__media img{transform:scale(1.04)}
+.nr-journal__date{font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.nr-journal__entry-title{font-weight:300;font-size:clamp(22px,3vw,34px);line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:8px 0 10px;transition:color .25s var(--ease)}
+.nr-journal__excerpt{color:var(--ink-2);line-height:1.55;max-width:60ch}
+.nr-journal__more{display:inline-block;margin-top:10px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.nr-journal__empty{color:var(--ink-3);padding:40px 0}
+
+.nr-journal__article{max-width:760px;margin:0 auto}
+.nr-journal__back{font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.nr-journal__article-head{display:flex;flex-direction:column;gap:12px;margin:18px 0 26px}
+.nr-journal__lede{color:var(--ink-2);font-size:var(--fs-lede);line-height:1.5;max-width:54ch}
+.nr-journal__cover{margin:0 0 28px;overflow:hidden}
+.nr-journal__cover img{width:100%;height:auto;display:block}
+.nr-journal__body{color:var(--ink-2);line-height:1.7;font-size:17px}
+.nr-journal__body h2,.nr-journal__body h3{color:var(--ink);margin:1.6em 0 .5em;font-weight:500}
+.nr-journal__body p{margin:0 0 1.1em}
+.nr-journal__body img{max-width:100%;height:auto;margin:1.4em 0}
+.nr-journal__body a{color:var(--ink);border-bottom:1px solid var(--amber)}
+.nr-journal__article-foot{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px;padding-top:24px;border-top:1px solid var(--hair)}
+@media (max-width:700px){ .nr-journal__entry{grid-template-columns:1fr;gap:14px} .nr-journal__media{aspect-ratio:16/10} }
+
+/* #61 year chips — small divider before them */
+.nr-chip--year:first-of-type{margin-left:14px;border-left:1px solid var(--hair);padding-left:18px}
+.nr-chip--year{font-variant-numeric:tabular-nums}
+
+/* #72 testimonials rotation */
+.nr-voices--rotate{position:relative}
+.nr-voices--rotate .nr-voices__item{position:absolute;left:0;right:0;top:0;opacity:0;transition:opacity .8s var(--ease)}
+.nr-voices--rotate .nr-voices__item.is-active{opacity:1}
+
+/* #73 related hover preview */
+.nr-relprev{position:fixed;top:0;left:0;width:120px;height:150px;z-index:1200;pointer-events:none;overflow:hidden;border:1px solid var(--hair);opacity:0;transition:opacity .2s var(--ease)}
+.nr-relprev.is-on{opacity:1}
+.nr-relprev img{width:100%;height:100%;object-fit:cover}

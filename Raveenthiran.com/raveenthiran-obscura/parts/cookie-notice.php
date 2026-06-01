@@ -24,11 +24,11 @@ $policy_url = home_url( '/datenschutz' );
 	// reveal after the page has settled
 	requestAnimationFrame(function(){ setTimeout(function(){ el.classList.add('is-on'); }, 400); });
 	document.getElementById('nr-cookie-accept').addEventListener('click', function(){
-		localStorage.setItem('nr_cookie_consent','accepted'); el.classList.remove('is-on');
+		localStorage.setItem('nr_cookie_consent','accepted'); document.cookie='nr_consent=accepted;path=/;max-age=15552000;samesite=lax'; el.classList.remove('is-on');
 		setTimeout(function(){ el.remove(); }, 500);
 	});
 	document.getElementById('nr-cookie-decline').addEventListener('click', function(){
-		localStorage.setItem('nr_cookie_consent','declined'); el.classList.remove('is-on');
+		localStorage.setItem('nr_cookie_consent','declined'); document.cookie='nr_consent=declined;path=/;max-age=15552000;samesite=lax'; el.classList.remove('is-on');
 		setTimeout(function(){ el.remove(); }, 500);
 	});
 })();

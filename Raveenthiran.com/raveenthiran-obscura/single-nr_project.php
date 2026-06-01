@@ -123,7 +123,7 @@ $lede = get_the_excerpt();
 				<?php $nr_rel = function_exists( 'nr_related_projects' ) ? nr_related_projects( get_the_ID(), 3 ) : []; if ( $nr_rel ) : ?>
 				<nav class="nr-project__related" aria-label="<?php esc_attr_e( 'Related projects', 'raveenthiran' ); ?>">
 					<span class="nr-eyebrow nr-eyebrow--xs"><?php esc_html_e( 'More work', 'raveenthiran' ); ?></span>
-					<span class="nr-project__related-links"><?php foreach ( $nr_rel as $rp ) printf( '<a href="%s">%s</a>', esc_url( get_permalink( $rp ) ), esc_html( get_the_title( $rp ) ) ); ?></span>
+					<span class="nr-project__related-links"><?php foreach ( $nr_rel as $rp ) printf( '<a href="%s" data-thumb="%s">%s</a>', esc_url( get_permalink( $rp ) ), esc_url( (string) get_the_post_thumbnail_url( $rp, 'nr-thumb' ) ), esc_html( get_the_title( $rp ) ) ); ?></span>
 				</nav>
 				<?php endif; ?>
 		</aside>

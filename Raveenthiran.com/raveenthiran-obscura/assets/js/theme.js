@@ -706,3 +706,47 @@
     }
   }
 })();
+
+
+/* =========================================================
+   Medium batch — #72 testimonials rotation, #73 related hover-preview
+   ========================================================= */
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* #72 — rotate testimonials one at a time */
+  var vc = document.querySelector('.nr-voices__list');
+  if (vc) {
+    var items = vc.querySelectorAll('.nr-voices__item');
+    if (items.length > 1 && !reduce) {
+      var max = 0;
+      items.forEach(function (it) { max = Math.max(max, it.offsetHeight); });
+      vc.style.minHeight = max + 'px';
+      vc.classList.add('nr-voices--rotate');
+      var vi = 0; items[0].classList.add('is-active');
+      setInterval(function () {
+        items[vi].classList.remove('is-active');
+        vi = (vi + 1) % items.length;
+        items[vi].classList.add('is-active');
+      }, 5200);
+    }
+  }
+
+  /* #73 — floating thumbnail preview on related-project links */
+  if (window.matchMedia('(hover:hover)').matches) {
+    var prev = null;
+    document.body.addEventListener('mouseover', function (e) {
+      var a = e.target.closest('.nr-project__related-links a[data-thumb]');
+      if (!a || !a.getAttribute('data-thumb')) return;
+      if (!prev) { prev = document.createElement('div'); prev.className = 'nr-relprev'; prev.innerHTML = '<img alt="">'; document.body.appendChild(prev); }
+      prev.querySelector('img').src = a.getAttribute('data-thumb');
+      prev.classList.add('is-on');
+    });
+    document.body.addEventListener('mousemove', function (e) {
+      if (prev && prev.classList.contains('is-on')) prev.style.transform = 'translate(' + (e.clientX + 18) + 'px,' + (e.clientY - 60) + 'px)';
+    }, { passive: true });
+    document.body.addEventListener('mouseout', function (e) {
+      if (prev && e.target.closest('.nr-project__related-links a[data-thumb]')) prev.classList.remove('is-on');
+    });
+  }
+})();

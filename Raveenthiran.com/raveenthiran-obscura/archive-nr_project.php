@@ -36,6 +36,9 @@ $nr_card_orient = function ( $post_id ) {
 			<?php foreach ( $cats as $c ) : ?>
 				<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
 			<?php endforeach; ?>
+			<?php $nr_years = function_exists( 'nr_project_years' ) ? nr_project_years() : []; foreach ( $nr_years as $yy ) : ?>
+				<button type="button" class="nr-chip nr-chip--year" data-filter="year-<?php echo esc_attr( $yy ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $yy ); ?></button>
+			<?php endforeach; ?>
 		</div>
 	</div>
 
@@ -63,7 +66,7 @@ $nr_card_orient = function ( $post_id ) {
 				if ( ! $plate_count && has_post_thumbnail() ) $plate_count = 1;
 				$plate_label = sprintf( _n( '%d plate', '%d plates', $plate_count, 'raveenthiran' ), $plate_count );
 				?>
-				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $terms ?: [] ) ); ?>" style="--i:<?php echo (int) $i; ?>">
+				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $terms ?: [] ) . ' year-' . $m['yr'] ); ?>" style="--i:<?php echo (int) $i; ?>">
 					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
 					<div class="nr-card__shade"></div>
 					<div class="nr-card__head"><span><?php echo esc_html( $plate_label ); ?></span><span><?php echo esc_html( $m['yr'] ); ?></span></div>

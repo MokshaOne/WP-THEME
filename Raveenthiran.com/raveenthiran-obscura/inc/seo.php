@@ -387,6 +387,7 @@ add_action( 'wp_head', 'nr_inject_tracking_script', 100 );
 
 function nr_inject_tracking_script() {
 	if ( is_admin() || is_user_logged_in() ) return; // don't track admins
+	if ( ( $_COOKIE['nr_consent'] ?? '' ) !== 'accepted' ) return; // #75 consent-gated
 	$script = (string) get_option( 'nr_tracking_script', '' );
 	if ( trim( $script ) === '' ) return;
 	echo "\n<!-- nr tracking -->\n" . $script . "\n";

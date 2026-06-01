@@ -68,6 +68,8 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 
 ## 🟡 Tier 2 — Medium (41–80)
 
+> **Built in v4.17.0:** #60 Journal/blog, #61 year/timeline filter, #72 testimonials rotation, #73 related hover-preview, #75 consent-gated analytics.
+
 > **Built in v4.15.0:** #43, #45, #51, #52, #56, #65, #76, #78, #79. The remaining Tier 2 items were **moved to Tier 3** per request (they need a settings UI, a content model, external keys, or carry build risk).
 > **Built in v4.16.0:** Settings-UI fields (WhatsApp #25, Instagram grid #26, footer-CTA #27, press-kit #68, booking link #71), #42 drag-to-reorder projects, #44 bulk feature action. Hamburger hidden on mobile (tab bar covers nav).
 
@@ -97,8 +99,8 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 59. **Animated / generative favicon or logo mark.** _Awww_
 
 ### Content / features
-60. **Journal / blog** CPT + archive + single. _Content_
-61. **Timeline ("by year") archive view.** _Content_
+60. ✅ **Journal / blog** CPT + archive + single. _Content_
+61. ✅ **Timeline ("by year") archive view.** _Content_
 62. **Map archive view** of project locations. _Content_
 63. **Series / collections** grouping of projects. _Content_
 64. **Tag / keyword taxonomy + multi-filter.** _Content_
@@ -111,12 +113,12 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 ### Conversion
 70. **Quote → branded PDF estimate** emailed to the visitor. _Conv_
 71. ✅ **Booking calendar** (Cal.com embed or native slots). _Conv_
-72. **Testimonials rotation** with client logos + ratings. _Conv_
-73. **Related projects with hover thumbnails.** _Conv/UX_
+72. ✅ **Testimonials rotation** with client logos + ratings. _Conv_
+73. ✅ **Related projects with hover thumbnails.** _Conv/UX_
 
 ### Security / compliance
 74. **Turnstile / hCaptcha** on forms. _Sec_
-75. **Consent-gated analytics** (GDPR). _Sec_
+75. ✅ **Consent-gated analytics** (GDPR). _Sec_
 76. ✅ **Limit login attempts / login hardening.** _Sec_
 77. **Two-factor auth for admin.** _Sec_
 

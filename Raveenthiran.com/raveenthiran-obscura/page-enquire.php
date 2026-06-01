@@ -15,9 +15,6 @@ get_header();
 
 $quote   = function_exists( 'nr_quote_data' ) ? nr_quote_data() : [ 'types' => [], 'currency' => '€' ];
 $cur     = $quote['currency'];
-$email   = nr_opt( 'nr_email', 'studio@raveenthiran.at' );
-$loc     = nr_opt( 'nr_studio', 'Gumpendorfer Str. 81, 1060 Wien' );
-$avail   = nr_opt( 'nr_avail_text', 'Currently booking · Q3/Q4 2026' );
 
 // Pre-fill from the calculator (or any deep link).
 $sel  = isset( $_GET['service'] ) ? sanitize_title( wp_unslash( $_GET['service'] ) ) : '';
@@ -39,11 +36,6 @@ foreach ( $quote['types'] as $t ) $chips[] = [ 'slug' => $t['slug'], 'label' => 
 $chips[] = [ 'slug' => 'other', 'label' => __( 'Other', 'raveenthiran' ) ];
 $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 
-$steps = [
-	[ '01', nr_opt( 'nr_step_1_t', __( 'Signal', 'raveenthiran' ) ),         nr_opt( 'nr_step_1_d', __( 'Send your project details and a preferred window.', 'raveenthiran' ) ) ],
-	[ '02', nr_opt( 'nr_step_2_t', __( 'Briefing', 'raveenthiran' ) ),       nr_opt( 'nr_step_2_d', __( 'A short call to align on vision, location, and logistics.', 'raveenthiran' ) ) ],
-	[ '03', nr_opt( 'nr_step_3_t', __( 'Shoot & deliver', 'raveenthiran' ) ), nr_opt( 'nr_step_3_d', __( 'We meet, we create. Edits delivered within 5–7 days.', 'raveenthiran' ) ) ],
-];
 ?>
 <section class="nr-page nr-fullscreen nr-enquire">
 	<div class="nr-enquire__split">
@@ -65,26 +57,6 @@ $steps = [
 				<div class="nr-enquire__frame-grad"></div>
 			</div>
 
-			<div class="nr-enquire__aside-body">
-				<span class="nr-eyebrow"><?php echo esc_html( $avail ); ?></span>
-				<ol class="nr-steps">
-					<?php foreach ( $steps as $s ) : ?>
-						<li>
-							<span class="nr-steps__n"><?php echo esc_html( $s[0] ); ?></span>
-							<div>
-								<span class="nr-steps__t"><?php echo esc_html( $s[1] ); ?></span>
-								<span class="nr-steps__d"><?php echo esc_html( $s[2] ); ?></span>
-							</div>
-						</li>
-					<?php endforeach; ?>
-				</ol>
-				<dl class="nr-enquire__facts">
-					<div><dt><?php esc_html_e( 'Email', 'raveenthiran' ); ?></dt><dd><a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></dd></div>
-					<div><dt><?php esc_html_e( 'Response', 'raveenthiran' ); ?></dt><dd>&lt; 24h</dd></div>
-					<div><dt><?php esc_html_e( 'Studio', 'raveenthiran' ); ?></dt><dd><?php echo esc_html( $loc ); ?></dd></div>
-					<div><dt><?php esc_html_e( 'Travel', 'raveenthiran' ); ?></dt><dd><?php esc_html_e( 'Available worldwide', 'raveenthiran' ); ?></dd></div>
-				</dl>
-			</div>
 		</aside>
 
 		<!-- RIGHT · the unified form -->

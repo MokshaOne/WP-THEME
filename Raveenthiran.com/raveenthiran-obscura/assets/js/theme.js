@@ -529,7 +529,7 @@
         if (en.isIntersecting) { en.target.classList.add('nr-rise'); ob.unobserve(en.target); }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('.nr-card, .nr-faq__item, .nr-steps li').forEach(function (el, i) {
+    document.querySelectorAll('.nr-card, .nr-faq__item, .nr-steps li, .nr-display, .nr-page__head-text > *').forEach(function (el, i) {
       el.style.animationDelay = ((i % 6) * 70) + 'ms';
       io.observe(el);
     });

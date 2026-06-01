@@ -1689,3 +1689,22 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
 .nr-voices__item{border-left:1px solid var(--amber);padding-left:16px}
 .nr-voices__item blockquote{margin:0;font-size:var(--fs-lede);line-height:1.5;color:var(--ink);font-weight:300}
 .nr-voices__item cite{display:block;margin-top:8px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-style:normal}
+
+/* =========================================================
+   Cinematic intro + kinetic headings (v4.11)
+   ========================================================= */
+.nr-preloader__mark{opacity:0;transform:translateY(10px);animation:nrPreIn .9s var(--ease) .10s both}
+.nr-preloader__count{opacity:0;animation:nrPreIn .9s var(--ease) .28s both}
+@keyframes nrPreIn{to{opacity:1;transform:none}}
+
+/* kinetic hero title — words rise + stagger (replays on each slide change) */
+.nr-hero__title .nr-hero__word{display:inline-block;animation:nrRise .66s var(--ease) both}
+.nr-hero__title .nr-hero__word:nth-child(1){animation-delay:.02s}
+.nr-hero__title .nr-hero__word:nth-child(2){animation-delay:.10s}
+.nr-hero__title .nr-hero__word:nth-child(3){animation-delay:.18s}
+.nr-hero__title .nr-hero__word:nth-child(4){animation-delay:.26s}
+.nr-hero__title .nr-hero__word:nth-child(n+5){animation-delay:.32s}
+
+@media (prefers-reduced-motion: reduce){
+  .nr-preloader__mark,.nr-preloader__count,.nr-hero__title .nr-hero__word{animation:none;opacity:1;transform:none}
+}

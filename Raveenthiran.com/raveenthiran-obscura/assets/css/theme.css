@@ -1561,3 +1561,75 @@ body.nr-no-anchors .nr-contact__form-wrap::after{display:none}
     font-family:var(--ff-mono);font-size:7pt;color:#999;
   }
 }
+
+
+/* =========================================================
+   Enquire — merged Booking + Contact splitscreen (v4.1.0)
+   ========================================================= */
+.nr-enquire{position:fixed;inset:var(--bar-h) 0 0 0;overflow:hidden}
+.nr-enquire__split{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);height:100%}
+.nr-enquire__aside{position:relative;display:flex;flex-direction:column;border-right:1px solid var(--hair);min-height:0}
+.nr-enquire__frame{position:relative;flex:1 1 auto;min-height:0;overflow:hidden}
+.nr-enquire__frame img,.nr-enquire__frame .nr-ph{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.9) brightness(.7)}
+.nr-enquire__frame-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,12,16,.1),rgba(11,12,16,.85))}
+.nr-enquire__aside-body{position:relative;padding:clamp(20px,3vw,var(--pad));display:flex;flex-direction:column;gap:18px;background:var(--bg)}
+.nr-enquire__facts{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin:0}
+.nr-enquire__facts dt{font-family:var(--ff-mono,ui-monospace,monospace);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.nr-enquire__facts dd{margin:2px 0 0;color:var(--ink);font-size:14px}
+.nr-enquire__facts a{color:var(--ink)}
+.nr-enquire__main{position:relative;padding:clamp(20px,3.4vw,56px);overflow-y:auto;display:flex;flex-direction:column;gap:22px}
+.nr-enquire__lede{color:var(--ink-2);max-width:46ch;line-height:1.5}
+.nr-enquire__form{display:flex;flex-direction:column;gap:18px}
+.nr-form__row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.nr-form__row label,.nr-form__wide{display:flex;flex-direction:column;gap:6px}
+.nr-enquire__form input[type=text],.nr-enquire__form input[type=email],.nr-enquire__form input[type=date],.nr-enquire__form textarea{background:transparent;border:1px solid var(--hair);color:var(--ink);padding:11px 12px;font:inherit;width:100%}
+.nr-enquire__form input:focus,.nr-enquire__form textarea:focus{outline:none;border-color:var(--amber)}
+.nr-enquire__estimate{display:flex;align-items:baseline;gap:12px}
+.nr-enquire__estimate output{font-family:var(--ff-mono,ui-monospace,monospace);font-size:18px;color:var(--amber)}
+.nr-enquire__price-link{background:none;border:0;color:var(--ink-2);font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid var(--hair);padding:0 0 2px}
+.nr-enquire__price-link:hover{color:var(--amber);border-color:var(--amber)}
+.nr-form__foot{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:900px){
+  .nr-enquire{position:static;inset:auto}
+  .nr-enquire__split{grid-template-columns:1fr;height:auto}
+  .nr-enquire__aside{border-right:0;border-bottom:1px solid var(--hair)}
+  .nr-enquire__frame{height:34vh}
+  .nr-form__row{grid-template-columns:1fr}
+}
+
+/* =========================================================
+   Price-check popover — interactive estimate calculator
+   ========================================================= */
+.nr-quote__panel{max-width:560px;width:min(94vw,560px)}
+.nr-quote__head{margin-bottom:18px}
+.nr-quote__head p{color:var(--ink-2);margin-top:8px;line-height:1.5;font-size:14px}
+.nr-quote__form{display:flex;flex-direction:column;gap:18px}
+.nr-quote__group{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.nr-quote__types{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.nr-quote__type{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border:1px solid var(--hair);cursor:pointer;transition:border-color .25s,background .25s}
+.nr-quote__type:hover{border-color:var(--ink-3)}
+.nr-quote__type.is-on{border-color:var(--amber);background:rgba(242,160,61,.08)}
+.nr-quote__type-name{color:var(--ink);font-size:14px}
+.nr-quote__type-meta{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;color:var(--ink-2);letter-spacing:.06em}
+.nr-quote__extras{display:flex;flex-direction:column;gap:2px}
+.nr-quote__extra{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hair);cursor:pointer;font-size:14px;color:var(--ink-2)}
+.nr-quote__extra--wide{border-bottom:1px solid var(--hair)}
+.nr-quote__extra-box{width:15px;height:15px;border:1px solid var(--ink-3);flex:0 0 auto;position:relative;transition:all .2s}
+.nr-quote__extra input{position:absolute;opacity:0;width:0;height:0}
+.nr-quote__extra input:checked + .nr-quote__extra-box{background:var(--amber);border-color:var(--amber)}
+.nr-quote__extra input:checked + .nr-quote__extra-box::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.nr-quote__extra input:checked ~ .nr-quote__extra-name{color:var(--ink)}
+.nr-quote__extra-name{flex:1 1 auto}
+.nr-quote__extra-price{font-family:var(--ff-mono,ui-monospace,monospace);font-size:12px;color:var(--ink-2)}
+.nr-quote__travel{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:8px}
+.nr-quote__travel-input{display:flex;align-items:center;gap:8px}
+.nr-quote__travel-input input{width:86px;background:transparent;border:1px solid var(--hair);color:var(--ink);padding:6px 8px;font-family:var(--ff-mono,ui-monospace,monospace)}
+.nr-quote__travel-unit{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;color:var(--ink-3)}
+.nr-quote__total{border-top:1px solid var(--hair);padding-top:14px}
+.nr-quote__total-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.nr-quote__sum{font-family:var(--ff-mono,ui-monospace,monospace);font-size:28px;color:var(--amber);font-variant-numeric:tabular-nums}
+.nr-quote__note{margin:8px 0 0;font-size:12px;color:var(--ink-3);min-height:1em;letter-spacing:.04em}
+.nr-quote__actions{display:flex;flex-direction:column;gap:8px}
+.nr-btn--ghost{background:transparent}
+.nr-form__chips .nr-chip.is-on{border-color:var(--amber);color:var(--ink)}
+@media(max-width:560px){.nr-quote__types{grid-template-columns:1fr}}

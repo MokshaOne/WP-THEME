@@ -54,6 +54,7 @@ $nr_show_footer = $nr_footer_text || $nr_legal['datenschutz'] || $nr_legal['agb'
 <?php /* ── global feature parts ─────────────────────────────── */ ?>
 <?php get_template_part( 'parts/cookie-notice' ); ?>
 <?php get_template_part( 'parts/inquiry-modal' ); ?>
+<?php get_template_part( 'parts/quote-popover' ); ?>
 
 <?php
 /* form submission status banner — set by admin_post_nr_contact_send redirect */

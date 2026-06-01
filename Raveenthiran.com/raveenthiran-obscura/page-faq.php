@@ -39,7 +39,7 @@ $faqs = [
 			<span class="nr-eyebrow"><?php echo esc_html( nr_opt( 'nr_faq_eyebrow', __( 'FAQ · §05', 'raveenthiran' ) ) ); ?></span>
 			<h1 class="nr-display nr-display--lg"><?php echo wp_kses( nr_opt( 'nr_faq_title', __( 'Common <em>questions.</em>', 'raveenthiran' ) ), [ 'em' => [], 'br' => [], 'strong' => [], 'b' => [] ] ); ?></h1>
 		</div>
-		<a class="nr-btn nr-btn--primary nr-book-trigger" href="<?php echo esc_url( nr_opt( 'nr_booking_url', home_url( '/booking' ) ) ); ?>" data-modal="nr-booking">
+		<a class="nr-btn nr-btn--primary nr-book-trigger" href="<?php echo esc_url( function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ); ?>">
 			<span><?php echo esc_html( nr_opt( 'nr_book_label', __( 'Book a shoot', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 		</a>
 	</div>

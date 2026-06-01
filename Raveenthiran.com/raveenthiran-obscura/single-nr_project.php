@@ -113,10 +113,8 @@ $lede = get_the_excerpt();
 			</ul>
 
 			<div class="nr-project__actions">
-				<a class="nr-btn nr-btn--primary nr-book-trigger"
-				   data-modal="nr-booking"
-				   data-service="<?php echo esc_attr( sanitize_title( $m['cat'] ?: 'editorial' ) ); ?>"
-				   href="<?php echo esc_url( nr_opt( 'nr_booking_url', home_url( '/booking' ) ) ); ?>">
+				<a class="nr-btn nr-btn--primary"
+				   href="<?php echo esc_url( add_query_arg( 'service', sanitize_title( $m['cat'] ?: 'editorial' ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>">
 					<span><?php echo esc_html( nr_opt( 'nr_cta_commission', __( 'Commission similar', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 				</a>
 				<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>

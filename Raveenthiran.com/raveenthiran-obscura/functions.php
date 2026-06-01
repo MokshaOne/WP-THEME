@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.0.0' );
+define( 'NR_THEME_VERSION', '4.1.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -248,6 +248,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'performance.php',
 		'seo.php',
 		'theme-settings.php',
+		'quote.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;
@@ -261,8 +262,8 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 }
 
 /* ─────────────────────────────────────────────────────────────
- * Front-end form handler — page-contact.php / page-booking.php /
- * parts/inquiry-modal.php all POST here. Forwards the message to
+ * Front-end form handler — page-enquire.php / parts/inquiry-modal.php
+ * all POST here. Forwards the message to
  * the studio email and redirects back with a status query arg.
  * Hooks: admin_post_nr_contact_send (logged-out users use the
  * _nopriv variant).
@@ -276,9 +277,16 @@ function nr_handle_contact_send() {
 	$name    = sanitize_text_field( wp_unslash( $_POST['name']    ?? '' ) );
 	$email   = sanitize_email( wp_unslash( $_POST['email']   ?? '' ) );
 	$notes   = sanitize_textarea_field( wp_unslash( $_POST['notes']   ?? '' ) );
+	$type    = sanitize_text_field( wp_unslash( $_POST['project_type']   ?? '' ) );
+	$date    = sanitize_text_field( wp_unslash( $_POST['preferred_date'] ?? '' ) );
+	$est     = sanitize_text_field( wp_unslash( $_POST['estimate']       ?? '' ) );
 	$subject = sprintf( '[%s] New enquiry from %s', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ), $name ?: $email );
 	$to      = nr_opt( 'nr_email', get_option( 'admin_email' ) );
-	$body    = "Name: {$name}\nEmail: {$email}\n\n{$notes}";
+	$lines   = [ "Name: {$name}", "Email: {$email}" ];
+	if ( $type ) $lines[] = "Project type: {$type}";
+	if ( $date ) $lines[] = "Preferred date: {$date}";
+	if ( $est )  $lines[] = "Estimate: {$est}";
+	$body    = implode( "\n", $lines ) . "\n\n{$notes}";
 	$headers = [ 'Content-Type: text/plain; charset=UTF-8' ];
 	if ( $email ) $headers[] = 'Reply-To: ' . $email;
 	$ok = wp_mail( $to, $subject, $body, $headers );

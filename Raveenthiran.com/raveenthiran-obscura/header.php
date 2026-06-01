@@ -83,8 +83,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 				'home'      => [ __( 'Showcase',  'raveenthiran' ), home_url( '/' ) ],
 				'portfolio' => [ __( 'Work',      'raveenthiran' ), get_post_type_archive_link( 'nr_project' ) ?: home_url( '/portfolio' ) ],
 				'about'     => [ __( 'Studio',    'raveenthiran' ), $nr_tpl_url( 'page-about.php',   'about' ) ],
-				'booking'   => [ __( 'Booking',   'raveenthiran' ), $nr_tpl_url( 'page-booking.php', 'booking' ) ],
-				'contact'   => [ __( 'Hello',     'raveenthiran' ), $nr_tpl_url( 'page-contact.php', 'contact' ) ],
+				'enquire'   => [ __( 'Enquire',   'raveenthiran' ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ],
 			];
 			foreach ( $items as $key => $it ) {
 				$cls = $nr_current === $key ? ' aria-current="page"' : '';
@@ -102,7 +101,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 			</span>
 		<?php endif; ?>
 
-		<a class="nr-book-trigger" href="<?php echo esc_url( $nr_booking_url ); ?>" data-modal="nr-booking">
+		<a class="nr-book-trigger" href="<?php echo esc_url( function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : $nr_booking_url ); ?>">
 			<span><?php echo esc_html( $nr_book_label ); ?> →</span>
 		</a>
 
@@ -122,8 +121,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 			[ __( 'Showcase', 'raveenthiran' ), home_url( '/' ) ],
 			[ __( 'Work',     'raveenthiran' ), get_post_type_archive_link( 'nr_project' ) ?: home_url( '/portfolio' ) ],
 			[ __( 'Studio',   'raveenthiran' ), function_exists( 'nr_template_page_url' ) ? nr_template_page_url( 'page-about.php',   'about' )   : home_url( '/about' ) ],
-			[ __( 'Booking',  'raveenthiran' ), function_exists( 'nr_template_page_url' ) ? nr_template_page_url( 'page-booking.php', 'booking' ) : home_url( '/booking' ) ],
-			[ __( 'Hello',    'raveenthiran' ), function_exists( 'nr_template_page_url' ) ? nr_template_page_url( 'page-contact.php', 'contact' ) : home_url( '/contact' ) ],
+			[ __( 'Enquire',  'raveenthiran' ), function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ],
 		];
 		foreach ( $mobile_items as $it ) {
 			printf( '<a href="%s">%s</a>', esc_url( $it[1] ), esc_html( $it[0] ) );
@@ -145,8 +143,5 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 		?>
 	</div>
 </aside>
-
-<?php /* ── booking modal ─────────────────────────────────────── */ ?>
-<?php get_template_part( 'parts/booking-modal' ); ?>
 
 <main id="main" class="nr-main">

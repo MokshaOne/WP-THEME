@@ -475,3 +475,91 @@
     $$('img[data-src]').forEach(img => io.observe(img));
   }
 })();
+
+
+/* =========================================================
+   Enquire price calculator + form chip state (v4.1.0)
+   ========================================================= */
+(function () {
+  function ready(fn){ if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function () {
+
+    // form chips (project type) — reflect checked state visually
+    document.querySelectorAll('.nr-form__chips').forEach(function (fs) {
+      fs.addEventListener('change', function () {
+        fs.querySelectorAll('.nr-chip').forEach(function (c) {
+          var r = c.querySelector('input');
+          c.classList.toggle('is-on', !!(r && r.checked));
+        });
+      });
+    });
+
+    var form = document.querySelector('[data-quote-form]');
+    if (!form) return;
+    var cur = form.getAttribute('data-currency') || '€';
+    var enquireUrl = form.getAttribute('data-enquire-url') || '';
+    var sumEl = form.querySelector('[data-quote-sum]');
+    var noteEl = form.querySelector('[data-quote-breakdown]');
+
+    function fmt(n){ return cur + Math.round(n).toLocaleString(); }
+
+    function compute(){
+      var typeInput = form.querySelector('input[name="nr_q_type"]:checked');
+      var base = typeInput ? (parseFloat(typeInput.getAttribute('data-base')) || 0) : 0;
+      var total = base, parts = [];
+      if (typeInput) parts.push((typeInput.getAttribute('data-label') || '') + ' ' + fmt(base));
+      var extras = form.querySelectorAll('input[name="nr_q_extra"]:checked');
+      extras.forEach(function (x) { total += parseFloat(x.getAttribute('data-price')) || 0; });
+      if (extras.length) parts.push(extras.length + (extras.length > 1 ? ' add-ons' : ' add-on'));
+      var lic = form.querySelector('input[name="nr_q_license"]');
+      if (lic && lic.checked) { total += parseFloat(lic.getAttribute('data-price')) || 0; parts.push('license'); }
+      var km = form.querySelector('input[name="nr_q_km"]');
+      if (km && parseFloat(km.value) > 0) {
+        total += parseFloat(km.value) * (parseFloat(km.getAttribute('data-per-km')) || 0);
+        parts.push(Math.round(parseFloat(km.value)) + ' km');
+      }
+      if (sumEl) sumEl.textContent = fmt(total);
+      if (noteEl) noteEl.textContent = parts.join('  ·  ');
+      return total;
+    }
+
+    form.addEventListener('change', function (e) {
+      if (e.target.name === 'nr_q_type') {
+        form.querySelectorAll('.nr-quote__type').forEach(function (l) { l.classList.remove('is-on'); });
+        var lab = e.target.closest('.nr-quote__type'); if (lab) lab.classList.add('is-on');
+      }
+      compute();
+    });
+    form.addEventListener('input', function (e) { if (e.target.name === 'nr_q_km') compute(); });
+    compute();
+
+    var applyBtn = form.querySelector('[data-quote-apply]');
+    if (applyBtn) applyBtn.addEventListener('click', function () {
+      var typeInput = form.querySelector('input[name="nr_q_type"]:checked');
+      var slug = typeInput ? typeInput.value : '';
+      var total = compute();
+      var ef = document.querySelector('[data-enquire-form]');
+      if (ef) {
+        if (slug) {
+          var chip = ef.querySelector('.nr-chip[data-chip="' + slug + '"]');
+          if (chip) {
+            ef.querySelectorAll('.nr-chip').forEach(function (c) {
+              c.classList.remove('is-on');
+              var r = c.querySelector('input'); if (r) r.checked = false;
+            });
+            chip.classList.add('is-on');
+            var radio = chip.querySelector('input'); if (radio) radio.checked = true;
+          }
+        }
+        var out = ef.querySelector('[data-enquire-estimate]'); if (out) out.textContent = fmt(total);
+        var hidden = ef.querySelector('[data-enquire-estimate-input]'); if (hidden) hidden.value = cur + Math.round(total);
+        var modal = form.closest('.nr-modal');
+        var close = modal && modal.querySelector('[data-modal-close]'); if (close) close.click();
+        ef.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (enquireUrl) {
+        var sep = enquireUrl.indexOf('?') > -1 ? '&' : '?';
+        window.location.href = enquireUrl + sep + 'service=' + encodeURIComponent(slug) + '&est=' + Math.round(total);
+      }
+    });
+  });
+})();

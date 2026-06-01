@@ -42,7 +42,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 23. **Honeypot + simple rate-limit** on the Enquire form. _Conv/Sec_
 24. **Click-to-copy email** with a "copied" toast. _Conv/UX_
 25. **WhatsApp / Signal quick-contact** button. _Conv_
-26. **Instagram feed** — `instagram_access_token`/`show_feed`/`post_count` ACF fields are defined but **unused** (dead scaffolding). ★ _Conv_
+26. **Instagram — curated grid** — Meta deprecated the Basic Display API (Dec 2024), so auto-feeds no longer work; use an admin-managed image+link grid (or per-post embeds). _Conv_
 27. **Footer CTA** ("Start a project →") on content pages. _Conv_
 28. **Auto "Currently booking Q_/Q_"** derived from a date setting. _Conv_
 
@@ -150,4 +150,4 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 ---
 
 ## Recommended next 5 (safe, high-impact, no WebGL)
-**#21 auto-reply** · **#26 Instagram (dormant code)** · **#1 LQIP on cards (dormant code)** · **#2 prefetch-on-hover** · **#52 contact-sheet index** (your one signature move).
+**#21 auto-reply** · **#1 LQIP on cards (dormant code)** · **#2 prefetch-on-hover** · **#13 EXIF in schema (dormant code)** · **#52 contact-sheet index** (your one signature move).

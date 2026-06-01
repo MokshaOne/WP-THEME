@@ -205,20 +205,8 @@ function nr_register_feature_acf_fields() {
         ],
     ] );
 
-    /* =========================================================
-       INSTAGRAM FEED (Site Settings)
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_instagram_config',
-        'title'    => 'Instagram Feed',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_ig_access_token', 'label' => 'Instagram Access Token', 'name' => 'instagram_access_token', 'type' => 'text',
-              'instructions' => 'From Instagram Basic Display API. Refreshes automatically every 60 days.' ],
-            [ 'key' => 'field_ig_show_feed',    'label' => 'Show Feed on Homepage',  'name' => 'instagram_show_feed',    'type' => 'true_false', 'default_value' => 1, 'ui' => 1 ],
-            [ 'key' => 'field_ig_post_count',   'label' => 'Number of Posts',        'name' => 'instagram_post_count',  'type' => 'number', 'default_value' => 9 ],
-        ],
-    ] );
+    /* Instagram Basic Display API was deprecated by Meta (Dec 2024), so the
+       auto-feed fields were removed. Use a manually-curated grid instead. */
 
     /* =========================================================
        LOCAL SEO (Site Settings)

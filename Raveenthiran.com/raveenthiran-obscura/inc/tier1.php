@@ -148,6 +148,12 @@ function nr_instagram_grid() {
  * #27 Footer CTA — printed by footer.php on content pages.
  * ───────────────────────────────────────────────────────────── */
 function nr_footer_cta() {
+	// Don't print a "Start a project" CTA on the Enquire page itself — it would
+	// just be a self-link sitting over the slider.
+	if ( is_page_template( 'page-enquire.php' )
+		|| ( function_exists( 'nr_enquire_page_id' ) && nr_enquire_page_id() && is_page( nr_enquire_page_id() ) ) ) {
+		return;
+	}
 	$url = function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' );
 	printf(
 		'<a class="nr-footer__cta nr-btn nr-btn--primary" href="%s"><span>%s</span> <span>→</span></a>',

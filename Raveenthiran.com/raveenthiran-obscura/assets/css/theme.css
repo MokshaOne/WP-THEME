@@ -1124,6 +1124,9 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 }
 .nr-footer > *{pointer-events:auto}
 .nr-footer > span:empty{display:none} /* hide left slot if footer_text is blank */
+/* The Studio page is a fixed two-column layout with its own portrait caption
+   pinned bottom-left; the global fixed footer would overlap it, so hide it. */
+body.nr-page-about .nr-footer{display:none}
 .nr-footer__links{
   display:flex;align-items:center;gap:0;
   margin-left:auto; /* push right when left text is empty */

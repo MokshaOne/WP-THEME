@@ -91,17 +91,17 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 51. ✅ **Command palette (⌘K)** to jump to any project/page. _Awww/UX_
 52. ✅ **"Contact sheet" index overlay** — all projects in a darkroom grid (your *Catalogue Noir* concept). _Awww_
 53. **Cursor-peek image preview** on nav hover. _Awww_
-54. **True line-split heading reveals** (SplitText-style masks). _Awww_
+54. **True line-split heading reveals** (SplitText-style masks). _Awww_ ✅ v4.25.0 — opt-in (Theme Settings → Line-reveal headings)
 55. **Shared-element morph via named view-transitions.** _Awww_ ✅ v4.24.0 — opt-in card→project morph (Theme Settings → Shared-element page morph)
 56. ✅ **Pointer/scroll parallax depth layers** on the hero. _Awww_
 57. **Custom easing system + refined magnetic interactions.** _Awww_
-58. **Opt-in sound design** (hover ticks, slide whoosh) + mute toggle. _Awww_
-59. **Animated / generative favicon or logo mark.** _Awww_
+58. **Opt-in sound design** (hover ticks, slide whoosh) + mute toggle. _Awww_ ✅ v4.25.0 — opt-in, starts muted (Theme Settings → Interface sound)
+59. **Animated / generative favicon or logo mark.** _Awww_ ✅ v4.25.0 — opt-in runtime monogram favicon (Theme Settings → Generative favicon)
 
 ### Content / features
 60. ✅ **Journal / blog** CPT + archive + single. _Content_
 61. ✅ **Timeline ("by year") archive view.** _Content_
-62. **Map archive view** of project locations. _Content_
+62. **Map archive view** of project locations. _Content_ ✅ v4.25.0 — [nr_map] shortcode + per-project coords (Leaflet/OSM)
 63. **Series / collections** grouping of projects. _Content_ ✅ v4.24.0 — nr_project_series taxonomy + "More from this series" nav
 64. **Tag / keyword taxonomy + multi-filter.** _Content_ ✅ v4.23.0 — nr_project_tag taxonomy + multi-select chips (AND with category)
 65. ✅ **Instant client-side search** across projects. _Content/UX_
@@ -125,15 +125,15 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 ### SEO advanced
 78. ✅ **Review / AggregateRating schema** from testimonials. _SEO_
 79. ✅ **ImageGallery schema** per project. _SEO_
-80. **Automated internal-linking** between related projects. _SEO_
+80. **Automated internal-linking** between related projects. _SEO_ ✅ v4.25.0 — opt-in DOM-safe the_content linker (Theme Settings → Auto internal linking)
 
 ---
 
 ## 🔴 Tier 3 — Hard (81–100)
 
 81. **WebGL image transitions** (displacement / morph between projects) — the Awwwards lever. _Awww_ ✅ v4.22.0 — opt-in shader dissolve on the hero (Theme Settings → WebGL hero transitions)
-82. **Full shared-element page-morph choreography.** _Awww_
-83. **WebGL hover-distortion grid.** _Awww_
+82. **Full shared-element page-morph choreography.** _Awww_ ✅ v4.25.0 — scale/fade root choreography on the #55 morph
+83. **WebGL hover-distortion grid.** _Awww_ ✅ v4.25.0 — opt-in SVG displacement on card hover (Theme Settings → Card hover distortion)
 84. **Headless WordPress + Next.js / R3F front-end** (re-platform; keeps WP admin). _Architecture_
 85. **R3F immersive 3D project mode.** _Awww_
 86. **Scroll-scrubbed video hero.** _Awww_

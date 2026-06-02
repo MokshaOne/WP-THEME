@@ -111,6 +111,11 @@ function nr_settings_defaults() {
 		'nr_fx_anchors'      => '1',
 		'nr_fx_webgl'        => '0',
 		'nr_fx_viewtrans'    => '0',
+		'nr_fx_distort'      => '0',
+		'nr_fx_lines'        => '0',
+		'nr_fx_sound'        => '0',
+		'nr_fx_favicon'      => '0',
+		'nr_fx_interlink'    => '0',
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -635,6 +640,20 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Shared-element page morph', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_viewtrans', __( 'Morph a portfolio card into the project hero on navigation (View Transitions)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Uses the browser View Transitions API for an Awwwards-style card→page morph; browsers without support simply navigate normally. Try it on, click a project from the portfolio.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Card hover distortion', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_distort', __( 'Liquid SVG displacement on portfolio card images on hover (desktop, motion-on)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. A subtle ripple as the cursor enters a card. Pure SVG filter — no effect where unsupported.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Line-reveal headings', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_lines', __( 'Display headings rise line-by-line behind a mask as they enter (motion-on)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Headings still show normally when off or unsupported.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Auto internal linking', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_interlink', __( 'Auto-link the first mention of another project\'s title inside project text (SEO)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Links the first occurrence per project only; never touches headings or existing links.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Interface sound', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_sound', __( 'Tiny hover/click ticks with a mute control (off until the visitor opts in)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. When on, a small speaker toggle appears; sound only plays after the visitor unmutes (browsers block autoplay audio anyway).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Generative favicon', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_favicon', __( 'Draw an accent-colored monogram favicon at runtime (used when no Site Icon is set)', 'raveenthiran' ) ); ?></td></tr>
 				</table>
 			</details>
 
@@ -747,6 +766,10 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_ken',     '1' ) !== '1' ) $classes[] = 'nr-no-ken';
 	if ( get_option( 'nr_fx_anchors', '1' ) !== '1' ) $classes[] = 'nr-no-anchors';
 	if ( get_option( 'nr_fx_webgl',   '0' ) === '1' ) $classes[] = 'nr-has-webgl';
+	if ( get_option( 'nr_fx_distort', '0' ) === '1' ) $classes[] = 'nr-has-distort';
+	if ( get_option( 'nr_fx_lines',   '0' ) === '1' ) $classes[] = 'nr-has-lines';
+	if ( get_option( 'nr_fx_sound',   '0' ) === '1' ) $classes[] = 'nr-has-sound';
+	if ( get_option( 'nr_fx_favicon', '0' ) === '1' ) $classes[] = 'nr-has-favicon';
 	$mode = get_option( 'nr_color_mode', 'dark' );
 	if ( $mode === 'light' )  $classes[] = 'nr-light';
 	if ( $mode === 'system' ) $classes[] = 'nr-mode-system';

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.24.0' );
+define( 'NR_THEME_VERSION', '4.25.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -88,8 +88,16 @@ add_action( 'wp_enqueue_scripts', function () {
  * matching view-transition-name on the card + hero is set in the templates. */
 add_action( 'wp_head', function () {
 	if ( nr_opt( 'nr_fx_viewtrans', '0' ) !== '1' ) return;
-	echo "<style id=\"nr-vt\">@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}"
-		. "::view-transition-group(*){animation-duration:.42s;animation-timing-function:cubic-bezier(.7,0,.2,1)}}</style>\n";
+	// #55 morph + #82 choreography: the shared image morphs while the rest of
+	// the page does a subtle scale/fade cross-dissolve.
+	echo "<style id=\"nr-vt\">@media (prefers-reduced-motion: no-preference){"
+		. "@view-transition{navigation:auto}"
+		. "::view-transition-group(*){animation-duration:.5s;animation-timing-function:cubic-bezier(.7,0,.2,1)}"
+		. "::view-transition-old(root){animation:nr-vt-out .4s both}"
+		. "::view-transition-new(root){animation:nr-vt-in .5s both}"
+		. "@keyframes nr-vt-out{to{opacity:0;transform:scale(.985)}}"
+		. "@keyframes nr-vt-in{from{opacity:0;transform:scale(1.014)}}"
+		. "}</style>\n";
 }, 3 );
 
 /* ─────────────────────────────────────────────────────────────
@@ -283,6 +291,8 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'og-cards.php',
 		'pdf.php',
 		'series.php',
+		'interlink.php',
+		'map.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;

@@ -39,6 +39,13 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
 - **Dynamic share cards (new in 4.24)** — each project automatically gets a composited **1200×630 Open Graph card** (photo + title + category·year) at `/nr-og/<id>.jpg`, used for `og:image`. Needs the **GD** PHP extension (standard on easyname); falls back to the plain featured image if GD is unavailable. Cards are cached and refresh when you edit the project.
 - **PDF estimate (new in 4.24)** — when a visitor submits the Enquire form with a calculated price, a **branded one-page PDF estimate** is attached to their auto-reply email. No plugin/library needed.
 - **Shared-element morph (new in 4.24)** — optional. **Theme Settings → § Visual effects → Shared-element page morph**. Off by default; when on, clicking a portfolio card morphs it into the project hero (View Transitions API; browsers without support just navigate normally).
+- **More opt-in effects (new in 4.25)** — all **off by default** under **Theme Settings → § Visual effects** (flip on, reload, judge live; each falls back cleanly):
+  - **Card hover distortion** — liquid SVG ripple on portfolio images on hover.
+  - **Line-reveal headings** — display headings rise line-by-line behind a mask.
+  - **Interface sound** — a tiny mute toggle appears; ticks play only after the visitor unmutes.
+  - **Generative favicon** — draws an accent monogram favicon when no Site Icon is set.
+  - **Auto internal linking** — links the first mention of another project's title inside project text (SEO).
+- **Map of project locations (new in 4.25)** — add coordinates in the **"Location (map)"** box on each project, then place the shortcode **`[nr_map]`** on any page (e.g. a "Map" page) for a dark Leaflet/OpenStreetMap with a pin per project. `[nr_map height="600"]` to set the height.
 
 ## 6. Performance (optional, recommended)
 - Paste the snippet in **`htaccess-snippet.txt`** into your site's root `.htaccess` (gzip + far-future caching for assets/fonts). This also covers minification's goal (smaller transfer) safely.

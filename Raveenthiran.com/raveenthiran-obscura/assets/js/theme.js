@@ -557,7 +557,11 @@
         if (en.isIntersecting) { en.target.classList.add('nr-rise'); ob.unobserve(en.target); }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('.nr-card, .nr-faq__item, .nr-steps li, .nr-display, .nr-page__head-text > *').forEach(function (el, i) {
+    // #54 — when line-reveal is on, that effect owns .nr-display (avoid double anim).
+    var riseSel = document.body.classList.contains('nr-has-lines')
+      ? '.nr-card, .nr-faq__item, .nr-steps li, .nr-page__head-text > *'
+      : '.nr-card, .nr-faq__item, .nr-steps li, .nr-display, .nr-page__head-text > *';
+    document.querySelectorAll(riseSel).forEach(function (el, i) {
       el.style.animationDelay = ((i % 6) * 70) + 'ms';
       io.observe(el);
     });
@@ -819,4 +823,151 @@
     window.addEventListener('mouseup', up);
     window.addEventListener('touchend', up);
   });
+})();
+
+/* #54 — line-reveal display headings (opt-in: body.nr-has-lines, motion-on) */
+(function () {
+  if (!document.body.classList.contains('nr-has-lines')) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+
+  function collect(node, em, out) {
+    Array.prototype.forEach.call(node.childNodes, function (n) {
+      if (n.nodeType === 3) {
+        n.textContent.split(/\s+/).forEach(function (w) { if (w !== '') out.push({ w: w, em: em }); });
+      } else if (n.nodeType === 1) {
+        collect(n, em || /^(EM|STRONG|B|I)$/.test(n.tagName), out);
+      }
+    });
+  }
+
+  var io = new IntersectionObserver(function (ents, ob) {
+    ents.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); ob.unobserve(en.target); } });
+  }, { threshold: 0.2, rootMargin: '0px 0px -6% 0px' });
+
+  document.querySelectorAll('.nr-display').forEach(function (el) {
+    var original = el.innerHTML;
+    try {
+      var words = []; collect(el, false, words);
+      if (!words.length) return;
+      // 1) lay words out inline to measure line breaks
+      el.innerHTML = '';
+      var spans = words.map(function (o) {
+        var s = document.createElement('span');
+        s.className = 'nr-w' + (o.em ? ' is-em' : '');
+        s.textContent = o.w;
+        el.appendChild(s); el.appendChild(document.createTextNode(' '));
+        return s;
+      });
+      // 2) group by vertical position into lines
+      var lines = [], cur = [], top = null;
+      spans.forEach(function (s) {
+        if (top === null || Math.abs(s.offsetTop - top) > 2) { if (cur.length) lines.push(cur); cur = []; top = s.offsetTop; }
+        cur.push(s);
+      });
+      if (cur.length) lines.push(cur);
+      // 3) wrap each line in a clip mask
+      el.innerHTML = '';
+      lines.forEach(function (ln, li) {
+        var L = document.createElement('span'); L.className = 'nr-line';
+        var I = document.createElement('span'); I.className = 'nr-line__i'; I.style.transitionDelay = (li * 0.07) + 's';
+        ln.forEach(function (s, wi) { I.appendChild(s); if (wi < ln.length - 1) I.appendChild(document.createTextNode(' ')); });
+        L.appendChild(I); el.appendChild(L); el.appendChild(document.createTextNode(' '));
+      });
+      el.classList.add('nr-rl');
+      io.observe(el);
+    } catch (e) { el.innerHTML = original; }
+  });
+})();
+
+/* #83 — card hover distortion (opt-in: body.nr-has-distort; SVG displacement) */
+(function () {
+  if (!document.body.classList.contains('nr-has-distort')) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!(window.matchMedia && window.matchMedia('(hover:hover)').matches)) return;
+
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
+  svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+  svg.innerHTML =
+    '<filter id="nr-distort" x="-20%" y="-20%" width="140%" height="140%">' +
+    '<feTurbulence id="nr-distort-turb" type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="3" result="n"/>' +
+    '<feDisplacementMap id="nr-distort-map" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/>' +
+    '</filter>';
+  document.body.appendChild(svg);
+  var map = document.getElementById('nr-distort-map');
+  if (!map) return;
+
+  var active = null, scale = 0, target = 0, raf = null, seed = 3;
+  function loop() {
+    scale += (target - scale) * 0.18;
+    if (Math.abs(target - scale) < 0.15 && target === 0) { scale = 0; map.setAttribute('scale', '0'); raf = null; return; }
+    map.setAttribute('scale', scale.toFixed(2));
+    raf = requestAnimationFrame(loop);
+  }
+  function start(t) { target = t; if (!raf) raf = requestAnimationFrame(loop); }
+
+  document.querySelectorAll('.nr-card img').forEach(function (img) {
+    var card = img.closest('.nr-card');
+    if (!card) return;
+    card.addEventListener('mouseenter', function () {
+      if (active && active !== img) active.classList.remove('is-distort');
+      active = img; img.classList.add('is-distort'); start(16);
+    });
+    card.addEventListener('mouseleave', function () { start(0); setTimeout(function () { img.classList.remove('is-distort'); }, 260); });
+  });
+})();
+
+/* #58 — opt-in interface sound with a mute toggle (body.nr-has-sound) */
+(function () {
+  if (!document.body.classList.contains('nr-has-sound')) return;
+  var muted = localStorage.getItem('nr_sound') !== 'on'; // starts muted
+  var ctx = null;
+  function tone(freq, vol, dur) {
+    if (muted) return;
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+      o.type = 'sine'; o.frequency.value = freq; o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + (dur || 0.09));
+      o.start(t); o.stop(t + (dur || 0.1));
+    } catch (e) {}
+  }
+  var btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'nr-sound'; btn.setAttribute('aria-label', 'Toggle interface sound');
+  function paint() { btn.classList.toggle('is-on', !muted); btn.textContent = muted ? '🔇' : '🔊'; btn.setAttribute('aria-pressed', String(!muted)); }
+  paint();
+  btn.addEventListener('click', function () {
+    muted = !muted; localStorage.setItem('nr_sound', muted ? 'off' : 'on');
+    if (!muted) { try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} tone(880, 0.05, 0.12); }
+    paint();
+  });
+  document.body.appendChild(btn);
+  document.body.addEventListener('pointerover', function (e) { if (e.target.closest('a,button,.nr-card,.nr-chip,.nr-hero__thumb')) tone(620, 0.012, 0.06); }, { passive: true });
+  document.body.addEventListener('click', function (e) { if (e.target.closest('a,button')) tone(880, 0.03, 0.1); }, true);
+})();
+
+/* #59 — generative monogram favicon (opt-in: body.nr-has-favicon) */
+(function () {
+  if (!document.body.classList.contains('nr-has-favicon')) return;
+  try {
+    var cs = getComputedStyle(document.documentElement);
+    var accent = (cs.getPropertyValue('--amber') || '#F2A03D').trim();
+    var bg = (cs.getPropertyValue('--bg') || '#0B0C10').trim();
+    var logo = document.querySelector('.nr-logo');
+    var mark = ((logo && logo.textContent) || 'R').trim().charAt(0).toUpperCase();
+    var c = document.createElement('canvas'); c.width = c.height = 64;
+    var x = c.getContext('2d');
+    x.fillStyle = bg; x.fillRect(0, 0, 64, 64);
+    x.fillStyle = accent; x.beginPath(); x.arc(32, 32, 27, 0, Math.PI * 2); x.fill();
+    x.fillStyle = bg; x.font = '700 36px "Inter Tight", system-ui, sans-serif';
+    x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(mark, 32, 36);
+    var href = c.toDataURL('image/png');
+    var link = document.querySelector("link[rel~='icon']");
+    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+    link.type = 'image/png'; link.href = href;
+  } catch (e) {}
 })();

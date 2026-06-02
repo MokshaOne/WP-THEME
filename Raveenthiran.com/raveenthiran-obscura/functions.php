@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.22.0' );
+define( 'NR_THEME_VERSION', '4.23.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -104,6 +104,21 @@ add_action( 'init', function () {
 		'hierarchical' => true,
 		'rewrite'      => [ 'slug' => 'category' ],
 		'show_in_rest' => true,
+	] );
+
+	// #64 — keyword tags: a flat taxonomy for cross-cutting filters (location,
+	// subject, technique…) that AND with categories on the portfolio archive.
+	register_taxonomy( 'nr_project_tag', 'nr_project', [
+		'labels'       => [
+			'name'          => __( 'Tags', 'raveenthiran' ),
+			'singular_name' => __( 'Tag', 'raveenthiran' ),
+			'add_new_item'  => __( 'Add tag', 'raveenthiran' ),
+			'menu_name'     => __( 'Tags', 'raveenthiran' ),
+		],
+		'hierarchical' => false,
+		'rewrite'      => [ 'slug' => 'tag' ],
+		'show_in_rest' => true,
+		'show_admin_column' => true,
 	] );
 
 	register_post_type( 'nr_testimonial', [

@@ -47,7 +47,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 28. **Auto "Currently booking Q_/Q_"** derived from a date setting. _Conv_
 
 ### UX / polish
-29. **404 page with random project suggestions.** _UX_
+29. **404 page with random project suggestions.** _UX_ ✅ v4.23.0 — random project suggestions on 404
 30. **Loading skeletons on the rails.** _UX_
 31. **Tab-away title message** ("Come back —") when the tab is inactive. _UX/Awww_
 32. **Studio address → maps link + copy button.** _UX_
@@ -103,9 +103,9 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 61. ✅ **Timeline ("by year") archive view.** _Content_
 62. **Map archive view** of project locations. _Content_
 63. **Series / collections** grouping of projects. _Content_
-64. **Tag / keyword taxonomy + multi-filter.** _Content_
+64. **Tag / keyword taxonomy + multi-filter.** _Content_ ✅ v4.23.0 — nr_project_tag taxonomy + multi-select chips (AND with category)
 65. ✅ **Instant client-side search** across projects. _Content/UX_
-66. **Video plates** in galleries (mp4 / Vimeo). _Content_
+66. **Video plates** in galleries (mp4 / Vimeo). _Content_ ✅ v4.23.0 — video attachments in the gallery render as autoplay loops
 67. **Before/after retouch slider.** _Content_ ✅ v4.21.0 — [nr_compare before="" after=""] shortcode
 68. ✅ **Downloadable press kit / one-pager.** _Content_
 69. **Dynamic per-project OG share cards** (composited image). _SEO/Content_

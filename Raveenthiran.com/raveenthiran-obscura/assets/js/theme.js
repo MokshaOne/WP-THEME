@@ -298,24 +298,49 @@
     }
   }
 
-  /* ---------- portfolio filter chips ---------- */
-  $$('[data-filter]').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const group = chip.parentElement;
-      if (!group) return;
-      group.querySelectorAll('.nr-chip').forEach(c => { c.classList.remove('is-on'); c.setAttribute('aria-selected', 'false'); });
-      chip.classList.add('is-on');
-      chip.setAttribute('aria-selected', 'true');
-      const f = chip.dataset.filter;
-      $$('[data-portfolio] .nr-card, [data-cats]').forEach(card => {
-        const cats = (card.dataset.cats || '').split(/\s+/);
-        const show = f === 'all' || cats.indexOf(f) !== -1;
-        card.style.display = show ? '' : 'none';
+  /* ---------- portfolio filter chips (#64 multi-filter) ----------
+     "main" group = category/year, single-select (radio).
+     "tags" group = keywords, multi-select (toggle). A card shows when it
+     matches the main filter AND every active tag. */
+  (function () {
+    var chips = $$('[data-filter]');
+    if (!chips.length) return;
+    var mainFilter = 'all';
+    var tagSet = [];
+
+    function apply() {
+      $$('[data-portfolio] .nr-card, [data-cats]').forEach(function (card) {
+        var cats = (card.dataset.cats || '').split(/\s+/);
+        var okMain = mainFilter === 'all' || cats.indexOf(mainFilter) !== -1;
+        var okTags = tagSet.every(function (t) { return cats.indexOf(t) !== -1; });
+        card.style.display = (okMain && okTags) ? '' : 'none';
       });
-      const rail = $('[data-portfolio]');
+      var rail = $('[data-portfolio]');
       if (rail) rail.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var groupEl = chip.closest('[data-group]');
+        var group = groupEl ? groupEl.getAttribute('data-group') : 'main';
+
+        if (group === 'tags') {
+          var f = chip.dataset.filter;
+          var on = chip.classList.toggle('is-on');
+          chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+          tagSet = tagSet.filter(function (t) { return t !== f; });
+          if (on) tagSet.push(f);
+        } else {
+          var siblings = groupEl ? groupEl.querySelectorAll('.nr-chip') : [];
+          siblings.forEach(function (c) { c.classList.remove('is-on'); c.setAttribute('aria-selected', 'false'); });
+          chip.classList.add('is-on');
+          chip.setAttribute('aria-selected', 'true');
+          mainFilter = chip.dataset.filter;
+        }
+        apply();
+      });
     });
-  });
+  })();
 
   /* ---------- horizontal rails — arrow keys + drag ---------- */
   $$('[data-h-rail]').forEach(rail => {

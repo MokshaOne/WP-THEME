@@ -23,6 +23,31 @@ foreach ( $gallery as $g ) {
 	} elseif ( is_numeric( $g ) ) {
 		$id = (int) $g;
 	}
+	// #66 — a video attachment in the gallery renders as a muted autoplay plate.
+	$is_video = $id && wp_attachment_is( 'video', $id );
+	if ( $is_video ) {
+		$meta  = wp_get_attachment_metadata( $id );
+		$url   = wp_get_attachment_url( $id ) ?: $url;
+		$w     = $w ?: (int) ( $meta['width']  ?? 0 );
+		$h     = $h ?: (int) ( $meta['height'] ?? 0 );
+		$poster = (string) get_the_post_thumbnail_url( $id, 'nr-hero' );
+		if ( ! $poster ) {
+			$pimg = get_post_meta( $id, '_thumbnail_id', true );
+			if ( $pimg ) $poster = (string) wp_get_attachment_image_url( (int) $pimg, 'nr-hero' );
+		}
+		if ( ! $url ) continue;
+		$plates[] = [
+			'id'     => $id,
+			'type'   => 'video',
+			'url'    => $url,
+			'mime'   => get_post_mime_type( $id ) ?: 'video/mp4',
+			'poster' => $poster,
+			'w'      => $w,
+			'h'      => $h,
+			'orient' => ( $h > $w ) ? 'portrait' : 'landscape',
+		];
+		continue;
+	}
 	if ( $id && ( ! $url || ! $w || ! $h ) ) {
 		$src  = wp_get_attachment_image_src( $id, 'nr-hero' );
 		$meta = wp_get_attachment_metadata( $id );
@@ -39,6 +64,7 @@ foreach ( $gallery as $g ) {
 	if ( ! $url ) continue;
 	$plates[] = [
 		'id'     => $id,
+		'type'   => 'image',
 		'url'    => $url,
 		'w'      => $w,
 		'h'      => $h,
@@ -147,7 +173,14 @@ $lede = get_the_excerpt();
 					}
 				?>
 					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>">
-							<?php if ( $p['id'] ) :
+							<?php if ( ( $p['type'] ?? '' ) === 'video' ) : ?>
+								<div class="nr-plate-video">
+									<span class="nr-plate-video__badge"><?php esc_html_e( 'Motion', 'raveenthiran' ); ?></span>
+									<video <?php echo $p['poster'] ? 'poster="' . esc_url( $p['poster'] ) . '"' : ''; ?> autoplay muted loop playsinline preload="metadata"<?php echo $p['w'] && $p['h'] ? ' width="' . (int) $p['w'] . '" height="' . (int) $p['h'] . '"' : ''; ?>>
+										<source src="<?php echo esc_url( $p['url'] ); ?>" type="<?php echo esc_attr( $p['mime'] ); ?>">
+									</video>
+								</div>
+							<?php elseif ( $p['id'] ) :
 								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [
 									'alt'      => $alt,
 									'sizes'    => '(max-width:900px) 100vw, 70vw',

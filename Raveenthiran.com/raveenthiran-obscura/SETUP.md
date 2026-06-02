@@ -33,6 +33,8 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
 - **WebGL hero transitions (new in 4.22)** — **Theme Settings → § Visual effects → WebGL hero transitions**. Off by default. When on, the homepage hero dissolves between slides with a shader "melt" (desktop only; auto-falls back to the normal crossfade on mobile, reduced-motion, or unsupported devices). Toggle it, reload the homepage, and judge it live — nothing else changes.
 - **Before / after slider** — in any Journal post or page, drop the shortcode:
   `[nr_compare before="123" after="456"]` (media-library image IDs) — optional `before_label="Film" after_label="Graded" start="50"`.
+- **Keyword tags (new in 4.23)** — Projects now have a **Tags** taxonomy alongside Categories. Add tags (e.g. *Vienna, night, 35mm*) to projects; they appear as a second chip row on `/portfolio` that **combines** with the category/year filter (pick a category, then narrow by one or more tags).
+- **Video plates (new in 4.23)** — add an **mp4/webm video** straight into a project's **Gallery** field; it renders inline as a muted, looping autoplay plate (with a "Motion" badge). Set a featured image on the video attachment for a poster frame.
 
 ## 6. Performance (optional, recommended)
 - Paste the snippet in **`htaccess-snippet.txt`** into your site's root `.htaccess` (gzip + far-future caching for assets/fonts). This also covers minification's goal (smaller transfer) safely.

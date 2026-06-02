@@ -1784,3 +1784,16 @@ body.nr-page-journal .nr-page{position:relative;min-height:0}
 .nr-gl-on .nr-hero__plate{opacity:0!important;visibility:hidden!important;animation:none!important}
 .nr-gl-on .nr-hero__plate img{animation:none!important}
 @media (max-width:900px){.nr-hero__gl{display:none}.nr-gl-on .nr-hero__plate{opacity:1!important;visibility:visible!important}}
+
+/* #64 — keyword tag chips (multi-select row under the category filter) */
+.nr-chips--tags{margin-top:12px;gap:8px 10px;opacity:.92}
+.nr-chips--tags::before{content:'#';color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);align-self:center;margin-right:2px}
+.nr-chip--tag{font-size:var(--fs-sm);padding:6px 12px;border:1px solid var(--hair);border-radius:999px}
+.nr-chip--tag::before,.nr-chip--tag::after{display:none}
+.nr-chip--tag:hover{border-color:var(--ink-3)}
+.nr-chip--tag.is-on{color:var(--bg);background:var(--amber);border-color:var(--amber)}
+
+/* #66 — video plates in project galleries */
+.nr-project__plate video{width:100%;height:auto;display:block;object-fit:contain;background:#0B0C10}
+.nr-project__plate .nr-plate-video{position:relative}
+.nr-project__plate .nr-plate-video__badge{position:absolute;top:12px;left:12px;z-index:2;font:500 10px/1 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);background:rgba(11,12,16,.6);padding:5px 8px;border-radius:2px;backdrop-filter:blur(4px)}

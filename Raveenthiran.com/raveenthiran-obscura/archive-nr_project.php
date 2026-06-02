@@ -31,7 +31,7 @@ $nr_card_orient = function ( $post_id ) {
 			<h1 class="nr-display nr-display--lg"><?php echo wp_kses( nr_opt( 'nr_work_title', __( 'The complete <em>portfolio.</em>', 'raveenthiran' ) ), [ 'em' => [], 'br' => [], 'strong' => [], 'b' => [] ] ); ?></h1>
 		</div>
 
-		<div class="nr-chips nr-chips--center" role="tablist" aria-label="<?php esc_attr_e( 'Filter by category', 'raveenthiran' ); ?>">
+		<div class="nr-chips nr-chips--center" data-group="main" role="tablist" aria-label="<?php esc_attr_e( 'Filter by category', 'raveenthiran' ); ?>">
 			<button type="button" class="nr-chip is-on" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'raveenthiran' ); ?></button>
 			<?php foreach ( $cats as $c ) : ?>
 				<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
@@ -40,6 +40,17 @@ $nr_card_orient = function ( $post_id ) {
 				<button type="button" class="nr-chip nr-chip--year" data-filter="year-<?php echo esc_attr( $yy ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $yy ); ?></button>
 			<?php endforeach; ?>
 		</div>
+
+		<?php
+		// #64 — keyword tags: multi-select chips that AND with the category/year above.
+		$nr_tags = get_terms( [ 'taxonomy' => 'nr_project_tag', 'hide_empty' => true ] );
+		if ( ! is_wp_error( $nr_tags ) && $nr_tags ) : ?>
+			<div class="nr-chips nr-chips--center nr-chips--tags" data-group="tags" aria-label="<?php esc_attr_e( 'Filter by keyword (combine freely)', 'raveenthiran' ); ?>">
+				<?php foreach ( $nr_tags as $t ) : ?>
+					<button type="button" class="nr-chip nr-chip--tag" data-filter="tag-<?php echo esc_attr( $t->slug ); ?>" aria-pressed="false"><?php echo esc_html( $t->name ); ?></button>
+				<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
 	</div>
 
 	<div class="nr-portfolio-rail" data-portfolio data-h-rail>
@@ -60,13 +71,15 @@ $nr_card_orient = function ( $post_id ) {
 			$i = 0;
 			while ( $pq->have_posts() ) : $pq->the_post(); $m = nr_project_meta();
 				$terms  = wp_get_post_terms( get_the_ID(), 'nr_project_cat', [ 'fields' => 'slugs' ] );
+				$tags   = wp_get_post_terms( get_the_ID(), 'nr_project_tag', [ 'fields' => 'slugs' ] );
+				$tag_tokens = is_array( $tags ) ? array_map( function ( $s ) { return 'tag-' . $s; }, $tags ) : [];
 				$orient = $nr_card_orient( get_the_ID() );
 				$gallery = nr_field( 'project_gallery', get_the_ID() );
 				$plate_count = is_array( $gallery ) ? count( $gallery ) : 0;
 				if ( ! $plate_count && has_post_thumbnail() ) $plate_count = 1;
 				$plate_label = sprintf( _n( '%d plate', '%d plates', $plate_count, 'raveenthiran' ), $plate_count );
 				?>
-				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $terms ?: [] ) . ' year-' . $m['yr'] ); ?>" style="--i:<?php echo (int) $i; ?>">
+				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( trim( implode( ' ', $terms ?: [] ) . ' year-' . $m['yr'] . ' ' . implode( ' ', $tag_tokens ) ) ); ?>" style="--i:<?php echo (int) $i; ?>">
 					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
 					<div class="nr-card__shade"></div>
 					<div class="nr-card__head"><span><?php echo esc_html( $plate_label ); ?></span><span><?php echo esc_html( $m['yr'] ); ?></span></div>

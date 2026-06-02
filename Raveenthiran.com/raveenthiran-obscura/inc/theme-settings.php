@@ -110,6 +110,7 @@ function nr_settings_defaults() {
 		'nr_fx_ken'          => '1',
 		'nr_fx_anchors'      => '1',
 		'nr_fx_webgl'        => '0',
+		'nr_fx_viewtrans'    => '0',
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -631,6 +632,9 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'WebGL hero transitions', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_webgl', __( 'Shader-based displacement dissolve between hero slides (desktop, motion-on)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Adds a lightweight WebGL canvas over the homepage hero for a premium "melt" transition. Falls back to the normal crossfade on older devices, reduced-motion, or if WebGL is unavailable — so it is always safe to leave on.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Shared-element page morph', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_viewtrans', __( 'Morph a portfolio card into the project hero on navigation (View Transitions)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Uses the browser View Transitions API for an Awwwards-style card→page morph; browsers without support simply navigate normally. Try it on, click a project from the portfolio.', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 

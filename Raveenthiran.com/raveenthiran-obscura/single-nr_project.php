@@ -130,6 +130,9 @@ $lede = get_the_excerpt();
 				];
 				$format = function_exists( 'nr_field' ) ? nr_field( 'project_format' ) : '';
 				if ( $format ) $rows[] = [ nr_opt( 'nr_meta_format', __( 'Format', 'raveenthiran' ) ), $format ];
+				// #63 — series / collection
+				$nr_series = function_exists( 'nr_project_series' ) ? nr_project_series( get_the_ID() ) : null;
+				if ( $nr_series ) $rows[] = [ __( 'Series', 'raveenthiran' ), $nr_series->name ];
 				foreach ( $rows as $r ) : ?>
 					<li>
 						<span><?php echo esc_html( $r[0] ); ?></span>
@@ -146,7 +149,17 @@ $lede = get_the_excerpt();
 				<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
 			</div>
 
-				<?php $nr_rel = function_exists( 'nr_related_projects' ) ? nr_related_projects( get_the_ID(), 3 ) : []; if ( $nr_rel ) : ?>
+				<?php
+					// #63 — "More from this series" (shown when the project belongs to one).
+					$nr_sib = function_exists( 'nr_series_siblings' ) ? nr_series_siblings( get_the_ID(), 4 ) : [];
+					if ( $nr_sib && $nr_series ) : ?>
+					<nav class="nr-project__related nr-project__series" aria-label="<?php esc_attr_e( 'More from this series', 'raveenthiran' ); ?>">
+						<span class="nr-eyebrow nr-eyebrow--xs"><?php printf( esc_html__( 'Series · %s', 'raveenthiran' ), esc_html( $nr_series->name ) ); ?></span>
+						<span class="nr-project__related-links"><?php foreach ( $nr_sib as $sp ) printf( '<a href="%s" data-thumb="%s">%s</a>', esc_url( get_permalink( $sp ) ), esc_url( (string) get_the_post_thumbnail_url( $sp, 'nr-thumb' ) ), esc_html( get_the_title( $sp ) ) ); ?></span>
+					</nav>
+					<?php endif; ?>
+
+					<?php $nr_rel = function_exists( 'nr_related_projects' ) ? nr_related_projects( get_the_ID(), 3 ) : []; if ( $nr_rel ) : ?>
 				<nav class="nr-project__related" aria-label="<?php esc_attr_e( 'Related projects', 'raveenthiran' ); ?>">
 					<span class="nr-eyebrow nr-eyebrow--xs"><?php esc_html_e( 'More work', 'raveenthiran' ); ?></span>
 					<span class="nr-project__related-links"><?php foreach ( $nr_rel as $rp ) printf( '<a href="%s" data-thumb="%s">%s</a>', esc_url( get_permalink( $rp ) ), esc_url( (string) get_the_post_thumbnail_url( $rp, 'nr-thumb' ) ), esc_html( get_the_title( $rp ) ) ); ?></span>
@@ -172,7 +185,7 @@ $lede = get_the_excerpt();
 						$exif_str = implode( '  ·  ', $bits );
 					}
 				?>
-					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>">
+					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>"<?php echo $i === 0 ? ' style="view-transition-name:vt-project-' . (int) get_the_ID() . '"' : ''; ?>>
 							<?php if ( ( $p['type'] ?? '' ) === 'video' ) : ?>
 								<div class="nr-plate-video">
 									<span class="nr-plate-video__badge"><?php esc_html_e( 'Motion', 'raveenthiran' ); ?></span>

@@ -321,10 +321,16 @@ function nr_social_meta() {
 	printf( '<meta property="og:description" content="%s">' . "\n", esc_attr( $desc ) );
 	printf( '<meta property="og:url" content="%s">' . "\n", esc_url( $canonical ) );
 	printf( '<meta property="og:locale" content="%s">' . "\n", esc_attr( $locale ) );
+	// #69 — prefer a composited 1200x630 share card for single projects.
+	$og_w = 2400; $og_h = 1600;
+	if ( is_singular( 'nr_project' ) && function_exists( 'nr_og_card_url' ) ) {
+		$card = nr_og_card_url( get_queried_object_id() );
+		if ( $card ) { $image = $card; $og_w = 1200; $og_h = 630; }
+	}
 	if ( $image ) {
 		printf( '<meta property="og:image" content="%s">' . "\n", esc_url( $image ) );
-		echo '<meta property="og:image:width" content="2400">' . "\n";
-		echo '<meta property="og:image:height" content="1600">' . "\n";
+		printf( '<meta property="og:image:width" content="%d">' . "\n", $og_w );
+		printf( '<meta property="og:image:height" content="%d">' . "\n", $og_h );
 		printf( '<meta property="og:image:alt" content="%s">' . "\n", esc_attr( $title ) ); // #15
 	}
 

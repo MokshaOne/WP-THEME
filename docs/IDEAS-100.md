@@ -92,7 +92,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 52. ✅ **"Contact sheet" index overlay** — all projects in a darkroom grid (your *Catalogue Noir* concept). _Awww_
 53. **Cursor-peek image preview** on nav hover. _Awww_
 54. **True line-split heading reveals** (SplitText-style masks). _Awww_
-55. **Shared-element morph via named view-transitions.** _Awww_
+55. **Shared-element morph via named view-transitions.** _Awww_ ✅ v4.24.0 — opt-in card→project morph (Theme Settings → Shared-element page morph)
 56. ✅ **Pointer/scroll parallax depth layers** on the hero. _Awww_
 57. **Custom easing system + refined magnetic interactions.** _Awww_
 58. **Opt-in sound design** (hover ticks, slide whoosh) + mute toggle. _Awww_
@@ -102,16 +102,16 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 60. ✅ **Journal / blog** CPT + archive + single. _Content_
 61. ✅ **Timeline ("by year") archive view.** _Content_
 62. **Map archive view** of project locations. _Content_
-63. **Series / collections** grouping of projects. _Content_
+63. **Series / collections** grouping of projects. _Content_ ✅ v4.24.0 — nr_project_series taxonomy + "More from this series" nav
 64. **Tag / keyword taxonomy + multi-filter.** _Content_ ✅ v4.23.0 — nr_project_tag taxonomy + multi-select chips (AND with category)
 65. ✅ **Instant client-side search** across projects. _Content/UX_
 66. **Video plates** in galleries (mp4 / Vimeo). _Content_ ✅ v4.23.0 — video attachments in the gallery render as autoplay loops
 67. **Before/after retouch slider.** _Content_ ✅ v4.21.0 — [nr_compare before="" after=""] shortcode
 68. ✅ **Downloadable press kit / one-pager.** _Content_
-69. **Dynamic per-project OG share cards** (composited image). _SEO/Content_
+69. **Dynamic per-project OG share cards** (composited image). _SEO/Content_ ✅ v4.24.0 — composited 1200×630 card at /nr-og/<id>.jpg (GD, cached)
 
 ### Conversion
-70. **Quote → branded PDF estimate** emailed to the visitor. _Conv_
+70. **Quote → branded PDF estimate** emailed to the visitor. _Conv_ ✅ v4.24.0 — dependency-free PDF attached to the auto-reply when an estimate is present
 71. ✅ **Booking calendar** (Cal.com embed or native slots). _Conv_
 72. ✅ **Testimonials rotation** with client logos + ratings. _Conv_
 73. ✅ **Related projects with hover thumbnails.** _Conv/UX_

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.23.0' );
+define( 'NR_THEME_VERSION', '4.24.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -82,6 +82,15 @@ add_action( 'wp_enqueue_scripts', function () {
 		],
 	] );
 } );
+
+/* #55 — activate cross-document View Transitions when the toggle is on.
+ * Emitted on every page so the morph works both leaving and arriving; the
+ * matching view-transition-name on the card + hero is set in the templates. */
+add_action( 'wp_head', function () {
+	if ( nr_opt( 'nr_fx_viewtrans', '0' ) !== '1' ) return;
+	echo "<style id=\"nr-vt\">@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}"
+		. "::view-transition-group(*){animation-duration:.42s;animation-timing-function:cubic-bezier(.7,0,.2,1)}}</style>\n";
+}, 3 );
 
 /* ─────────────────────────────────────────────────────────────
  * Custom Post Types — Projects, Services, Journal, Testimonials
@@ -271,6 +280,9 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'security.php',
 		'pwa.php',
 		'compare.php',
+		'og-cards.php',
+		'pdf.php',
+		'series.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;
@@ -354,12 +366,28 @@ function nr_handle_contact_send() {
 	if ( $email && is_email( $email ) ) {
 		$from   = nr_opt( 'nr_email', get_option( 'admin_email' ) );
 		$ack_s  = sprintf( __( 'Thank you — %s', 'raveenthiran' ), $site );
+
+		// #70 — attach a branded PDF estimate when the brief carried a number.
+		$pdf_path = '';
+		if ( $est && function_exists( 'nr_quote_pdf_file' ) ) {
+			$pdf_path = nr_quote_pdf_file( [
+				'name'     => $name,
+				'type'     => $type,
+				'date'     => $date,
+				'estimate' => $est,
+			] );
+		}
+		$est_note = $pdf_path ? __( "\n\nI've attached a non-binding estimate as a PDF for your records.", 'raveenthiran' ) : '';
+
 		$ack_b  = sprintf(
-			/* translators: 1: name, 2: studio/site name */
-			__( "Hi %1\$s,\n\nThank you for reaching out — your enquiry has arrived and I'll reply personally within 24 hours.\n\nIf anything is urgent before then, just reply to this email.\n\n— %2\$s", 'raveenthiran' ),
-			$name ?: __( 'there', 'raveenthiran' ), $site
+			/* translators: 1: name, 2: studio/site name, 3: optional estimate note */
+			__( "Hi %1\$s,\n\nThank you for reaching out — your enquiry has arrived and I'll reply personally within 24 hours.%3\$s\n\nIf anything is urgent before then, just reply to this email.\n\n— %2\$s", 'raveenthiran' ),
+			$name ?: __( 'there', 'raveenthiran' ), $site, $est_note
 		);
-		wp_mail( $email, $ack_s, $ack_b, [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $from ] );
+		$ack_headers = [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $from ];
+		$ack_attach  = $pdf_path ? [ $pdf_path ] : [];
+		wp_mail( $email, $ack_s, $ack_b, $ack_headers, $ack_attach );
+		if ( $pdf_path ) @unlink( $pdf_path );
 	}
 
 	wp_safe_redirect( add_query_arg( 'nr_sent', $ok ? '1' : '0', wp_get_referer() ?: home_url( '/' ) ) );

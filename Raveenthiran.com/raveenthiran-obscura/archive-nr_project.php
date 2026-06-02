@@ -79,7 +79,7 @@ $nr_card_orient = function ( $post_id ) {
 				if ( ! $plate_count && has_post_thumbnail() ) $plate_count = 1;
 				$plate_label = sprintf( _n( '%d plate', '%d plates', $plate_count, 'raveenthiran' ), $plate_count );
 				?>
-				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( trim( implode( ' ', $terms ?: [] ) . ' year-' . $m['yr'] . ' ' . implode( ' ', $tag_tokens ) ) ); ?>" style="--i:<?php echo (int) $i; ?>">
+				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( trim( implode( ' ', $terms ?: [] ) . ' year-' . $m['yr'] . ' ' . implode( ' ', $tag_tokens ) ) ); ?>" style="--i:<?php echo (int) $i; ?>;view-transition-name:vt-project-<?php the_ID(); ?>">
 					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
 					<div class="nr-card__shade"></div>
 					<div class="nr-card__head"><span><?php echo esc_html( $plate_label ); ?></span><span><?php echo esc_html( $m['yr'] ); ?></span></div>

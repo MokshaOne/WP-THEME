@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.21.0' );
+define( 'NR_THEME_VERSION', '4.22.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -55,6 +55,17 @@ add_action( 'wp_enqueue_scripts', function () {
 		NR_THEME_VERSION,
 		true
 	);
+
+	// #1 — optional WebGL hero transitions (off unless enabled in Theme Settings).
+	if ( is_front_page() && nr_opt( 'nr_fx_webgl', '0' ) === '1' ) {
+		wp_enqueue_script(
+			'nr-webgl-hero',
+			get_template_directory_uri() . '/assets/js/webgl-hero.js',
+			[ 'nr-theme' ],
+			NR_THEME_VERSION,
+			true
+		);
+	}
 
 	wp_localize_script( 'nr-theme', 'NR', [
 		'home'     => home_url( '/' ),

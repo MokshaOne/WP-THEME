@@ -233,6 +233,9 @@
       if (i === cur) return;
       locked = true;
 
+      // #1 — let an optional WebGL layer drive the visual transition.
+      hero.dispatchEvent(new CustomEvent('nr:hero', { detail: { from: cur, to: i } }));
+
       setTimeout(() => {
         plates.forEach((p, k) => p.classList.toggle('is-active', k === i));
         plates.forEach((p, k) => p.setAttribute('aria-hidden', k === i ? 'false' : 'true'));

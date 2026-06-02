@@ -131,7 +131,7 @@ For **raveenthiran.com** (Obscura theme · WordPress on easyname · ~200 project
 
 ## 🔴 Tier 3 — Hard (81–100)
 
-81. **WebGL image transitions** (displacement / morph between projects) — the Awwwards lever. _Awww_
+81. **WebGL image transitions** (displacement / morph between projects) — the Awwwards lever. _Awww_ ✅ v4.22.0 — opt-in shader dissolve on the hero (Theme Settings → WebGL hero transitions)
 82. **Full shared-element page-morph choreography.** _Awww_
 83. **WebGL hover-distortion grid.** _Awww_
 84. **Headless WordPress + Next.js / R3F front-end** (re-platform; keeps WP admin). _Architecture_

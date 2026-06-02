@@ -30,6 +30,7 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
 ## 5. Spam shield, app install & retouch slider (new in 4.21)
 - **Turnstile (spam protection)** — at **Cloudflare → Turnstile** create a widget for the domain, then paste the **Site key + Secret key** into **Theme Settings → § Security**. The Enquire form then shows a no-puzzle checkbox and verifies submissions server-side. Leave blank to keep the form as-is (honeypot + rate-limit still run).
 - **Installable / offline (PWA)** — works automatically. Set a **Site Icon** (Customizer → Site Identity) so phones can "Add to Home Screen" with a proper icon; the site then loads an offline cached shell on flaky connections.
+- **WebGL hero transitions (new in 4.22)** — **Theme Settings → § Visual effects → WebGL hero transitions**. Off by default. When on, the homepage hero dissolves between slides with a shader "melt" (desktop only; auto-falls back to the normal crossfade on mobile, reduced-motion, or unsupported devices). Toggle it, reload the homepage, and judge it live — nothing else changes.
 - **Before / after slider** — in any Journal post or page, drop the shortcode:
   `[nr_compare before="123" after="456"]` (media-library image IDs) — optional `before_label="Film" after_label="Graded" start="50"`.
 

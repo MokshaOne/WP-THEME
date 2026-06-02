@@ -109,6 +109,7 @@ function nr_settings_defaults() {
 		'nr_fx_wipe'         => '1',
 		'nr_fx_ken'          => '1',
 		'nr_fx_anchors'      => '1',
+		'nr_fx_webgl'        => '0',
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -627,6 +628,9 @@ function nr_theme_settings_page() {
 						<td><?php nr_field_toggle( 'nr_fx_ken', __( 'Slow scale on the active hero image', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Section anchors', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_anchors', __( 'Big faded §-numerals in corner of sub-pages', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'WebGL hero transitions', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_webgl', __( 'Shader-based displacement dissolve between hero slides (desktop, motion-on)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Adds a lightweight WebGL canvas over the homepage hero for a premium "melt" transition. Falls back to the normal crossfade on older devices, reduced-motion, or if WebGL is unavailable — so it is always safe to leave on.', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 
@@ -738,6 +742,7 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_wipe',    '1' ) !== '1' ) $classes[] = 'nr-no-wipe';
 	if ( get_option( 'nr_fx_ken',     '1' ) !== '1' ) $classes[] = 'nr-no-ken';
 	if ( get_option( 'nr_fx_anchors', '1' ) !== '1' ) $classes[] = 'nr-no-anchors';
+	if ( get_option( 'nr_fx_webgl',   '0' ) === '1' ) $classes[] = 'nr-has-webgl';
 	$mode = get_option( 'nr_color_mode', 'dark' );
 	if ( $mode === 'light' )  $classes[] = 'nr-light';
 	if ( $mode === 'system' ) $classes[] = 'nr-mode-system';

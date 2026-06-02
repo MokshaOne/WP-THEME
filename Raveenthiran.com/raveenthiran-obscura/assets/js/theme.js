@@ -570,26 +570,43 @@
 
 
 /* =========================================================
-   Tier 3 — horizontal rail momentum skew (subtle GPU lean)
-   Rails lean into fast swipes/scrolls, then settle. Library-free,
-   GPU transform only, disabled for reduced-motion.
+   Horizontal rail navigation — visible prev/next arrows.
+   Desktop only (touch keeps swipe). Replaces the old skew "lean"
+   so plates no longer tilt while scrolling.
    ========================================================= */
 (function () {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!(window.matchMedia && window.matchMedia('(hover:hover)').matches)) return;
   document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
-    var last = rail.scrollLeft, skew = 0, raf = null;
-    function decay() {
-      skew *= 0.86;
-      rail.style.transform = 'skewX(' + skew.toFixed(2) + 'deg)';
-      if (Math.abs(skew) > 0.05) { raf = requestAnimationFrame(decay); }
-      else { rail.style.transform = ''; raf = null; }
+    var host = rail.parentElement;
+    if (!host) return;
+
+    var prev = document.createElement('button');
+    var next = document.createElement('button');
+    prev.type = next.type = 'button';
+    prev.className = 'nr-rail-arrow nr-rail-arrow--prev';
+    next.className = 'nr-rail-arrow nr-rail-arrow--next';
+    prev.setAttribute('aria-label', 'Scroll left');
+    next.setAttribute('aria-label', 'Scroll right');
+    prev.innerHTML = '<span>←</span>';
+    next.innerHTML = '<span>→</span>';
+    host.appendChild(prev);
+    host.appendChild(next);
+
+    function step() { return Math.max(240, Math.round(rail.clientWidth * 0.85)); }
+    prev.addEventListener('click', function () { rail.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { rail.scrollBy({ left: step(), behavior: 'smooth' }); });
+
+    function update() {
+      var overflow = rail.scrollWidth > rail.clientWidth + 4;
+      host.classList.toggle('nr-has-rail-nav', overflow);
+      prev.classList.toggle('is-disabled', rail.scrollLeft <= 2);
+      next.classList.toggle('is-disabled', rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 2);
     }
-    rail.addEventListener('scroll', function () {
-      if (rail.scrollWidth <= rail.clientWidth) return;
-      var v = rail.scrollLeft - last; last = rail.scrollLeft;
-      skew = Math.max(-4, Math.min(4, v * 0.12));
-      if (!raf) raf = requestAnimationFrame(decay);
-    }, { passive: true });
+    rail.addEventListener('scroll', function () { requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', function () { requestAnimationFrame(update); }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+    setTimeout(update, 80);
+    update();
   });
 })();
 

@@ -21,10 +21,19 @@ if ( $nr_lcp_id ) {
 		$src = wp_get_attachment_image_url( $nr_lcp_id, 'nr-hero' );
 		if ( ! $src ) return;
 		$srcset = wp_get_attachment_image_srcset( $nr_lcp_id, 'nr-hero' );
+		// Prefer WebP twins so the preload matches the <picture> actually rendered.
+		$type = '';
+		if ( function_exists( 'nr_webp_swap_srcset' ) ) {
+			$w_set = $srcset ? nr_webp_swap_srcset( $srcset ) : '';
+			$w_src = function_exists( 'nr_webp_twin_url' ) ? nr_webp_twin_url( $src ) : '';
+			if ( $w_set ) { $srcset = $w_set; $type = ' type="image/webp"'; if ( $w_src ) $src = $w_src; }
+			elseif ( $w_src ) { $src = $w_src; $type = ' type="image/webp"'; }
+		}
 		printf(
-			'<link rel="preload" as="image" href="%s"%s imagesizes="(max-width:900px) 96vw, 46vw" fetchpriority="high">' . "\n",
+			'<link rel="preload" as="image" href="%s"%s imagesizes="(max-width:900px) 96vw, 46vw"%s fetchpriority="high">' . "\n",
 			esc_url( $src ),
-			$srcset ? ' imagesrcset="' . esc_attr( $srcset ) . '"' : ''
+			$srcset ? ' imagesrcset="' . esc_attr( $srcset ) . '"' : '',
+			$type
 		);
 	}, 2 );
 }

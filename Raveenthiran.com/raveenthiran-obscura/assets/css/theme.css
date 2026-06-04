@@ -1840,3 +1840,6 @@ body.nr-page-journal .nr-page{position:relative;min-height:0}
 .nr-rail-arrow:hover{border-color:var(--amber);background:rgba(11,12,16,.82);transform:translateY(-50%) scale(1.06)}
 .nr-rail-arrow.is-disabled{opacity:0;pointer-events:none}
 @media (max-width:900px){.nr-rail-arrow{display:none!important}}
+
+/* WebP <picture> wrappers must not affect layout — the inner <img> keeps its box */
+picture{display:contents}

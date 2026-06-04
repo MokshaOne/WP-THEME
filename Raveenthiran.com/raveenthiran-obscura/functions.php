@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.28.0' );
+define( 'NR_THEME_VERSION', '4.29.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -37,10 +37,9 @@ add_action( 'after_setup_theme', function () {
  * Enqueue assets
  * ───────────────────────────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
-	// External CSS (Cloudflare gzip/Brotli-compresses these). Inlining was tried
-	// in v4.19.0 but bloated the HTML and worsened FCP, so we load externally.
-	wp_enqueue_style( 'nr-fonts', get_template_directory_uri() . '/assets/css/fonts.css', [], NR_THEME_VERSION );
-	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/theme.css', [ 'nr-fonts' ], NR_THEME_VERSION );
+	// fonts.css (~2.5KB of @font-face) is inlined into <head> below to drop a
+	// render-blocking request; only the main stylesheet loads externally.
+	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/theme.css', [], NR_THEME_VERSION );
 	// Preload the two above-the-fold weights (Inter Tight 500 body + 700 display em).
 	add_action( 'wp_head', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';
@@ -82,6 +81,31 @@ add_action( 'wp_enqueue_scripts', function () {
 		],
 	] );
 } );
+
+/* Inline the small fonts.css (@font-face only) so it isn't a render-blocking
+ * request. Relative font URLs are rewritten to absolute since the CSS now
+ * lives in the document, not in /assets/css/. */
+add_action( 'wp_head', function () {
+	$file = get_template_directory() . '/assets/css/fonts.css';
+	if ( ! is_readable( $file ) ) {
+		// Fallback: enqueue externally if the file can't be read.
+		wp_enqueue_style( 'nr-fonts', get_template_directory_uri() . '/assets/css/fonts.css', [], NR_THEME_VERSION );
+		return;
+	}
+	$css = (string) file_get_contents( $file );
+	$css = str_replace( '../fonts/', get_template_directory_uri() . '/assets/fonts/', $css );
+	echo "<style id=\"nr-fonts\">" . $css . "</style>\n";
+}, 2 );
+
+/* Optional: load the main stylesheet non-render-blocking (preload + onload).
+ * Off by default — it shaves the render-blocking time but can cause a brief
+ * flash of unstyled content, so it's a Theme Settings opt-in. */
+add_filter( 'style_loader_tag', function ( $tag, $handle, $href, $media ) {
+	if ( $handle !== 'nr-theme' || is_admin() ) return $tag;
+	if ( ! function_exists( 'nr_opt' ) || nr_opt( 'nr_perf_async_css', '0' ) !== '1' ) return $tag;
+	return '<link rel="preload" as="style" href="' . esc_url( $href ) . '" onload="this.onload=null;this.rel=\'stylesheet\'">'
+		. '<noscript><link rel="stylesheet" href="' . esc_url( $href ) . '"></noscript>' . "\n";
+}, 10, 4 );
 
 /* #55 — activate cross-document View Transitions when the toggle is on.
  * Emitted on every page so the morph works both leaving and arriving; the

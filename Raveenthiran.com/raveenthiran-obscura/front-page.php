@@ -22,7 +22,7 @@ if ( $nr_lcp_id ) {
 		if ( ! $src ) return;
 		$srcset = wp_get_attachment_image_srcset( $nr_lcp_id, 'nr-hero' );
 		printf(
-			'<link rel="preload" as="image" href="%s"%s imagesizes="100vw" fetchpriority="high">' . "\n",
+			'<link rel="preload" as="image" href="%s"%s imagesizes="(max-width:900px) 96vw, 46vw" fetchpriority="high">' . "\n",
 			esc_url( $src ),
 			$srcset ? ' imagesrcset="' . esc_attr( $srcset ) . '"' : ''
 		);
@@ -105,7 +105,7 @@ $first        = $slides[0] ?? [];
 				<?php if ( $s['thumb_id'] ) :
 					echo wp_get_attachment_image( $s['thumb_id'], 'nr-hero', false, [
 						'alt'           => $s['title'],
-						'sizes'         => '100vw',
+						'sizes'         => '(max-width:900px) 96vw, 46vw',
 						'loading'       => $i === 0 ? 'eager' : 'lazy',
 						'decoding'      => 'async',
 						'fetchpriority' => $i === 0 ? 'high' : 'auto',

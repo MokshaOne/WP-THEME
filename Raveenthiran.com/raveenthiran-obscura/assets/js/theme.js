@@ -988,3 +988,13 @@
     link.type = 'image/png'; link.href = href;
   } catch (e) {}
 })();
+
+/* Attribution — record the external referrer host on the enquiry form */
+(function () {
+  var f = document.querySelector('[data-nr-referrer]');
+  if (!f) return;
+  try {
+    var r = document.referrer || '';
+    if (r) { var u = new URL(r); if (u.host !== location.host) f.value = u.host; }
+  } catch (e) {}
+})();

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.27.1' );
+define( 'NR_THEME_VERSION', '4.28.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -294,6 +294,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'interlink.php',
 		'map.php',
 		'smtp.php',
+		'insights.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;
@@ -345,6 +346,10 @@ function nr_handle_contact_send() {
 	$type    = sanitize_text_field( wp_unslash( $_POST['project_type']   ?? '' ) );
 	$date    = sanitize_text_field( wp_unslash( $_POST['preferred_date'] ?? '' ) );
 	$est     = sanitize_text_field( wp_unslash( $_POST['estimate']       ?? '' ) );
+	// Attribution — which project / source drove the enquiry.
+	$ref_in   = sanitize_text_field( wp_unslash( $_POST['nr_ref']      ?? '' ) );
+	$service  = sanitize_text_field( wp_unslash( $_POST['nr_service']  ?? '' ) );
+	$referrer = esc_url_raw( wp_unslash( $_POST['nr_referrer']        ?? '' ) );
 	$site    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	$subject = sprintf( '[%s] New enquiry from %s', $site, $name ?: $email );
 	$to      = nr_opt( 'nr_email', get_option( 'admin_email' ) );
@@ -370,6 +375,9 @@ function nr_handle_contact_send() {
 			update_post_meta( $eid, '_nr_type',  $type );
 			update_post_meta( $eid, '_nr_est',   $est );
 			update_post_meta( $eid, '_nr_date',  $date );
+			if ( $ref_in )   update_post_meta( $eid, '_nr_ref',      $ref_in );
+			if ( $service )  update_post_meta( $eid, '_nr_service',  $service );
+			if ( $referrer ) update_post_meta( $eid, '_nr_referrer', $referrer );
 		}
 	}
 

@@ -81,6 +81,10 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 				<input type="hidden" name="action" value="nr_contact_send">
 				<?php wp_nonce_field( 'nr_contact', '_nr_nonce' ); ?>
 				<input type="text" name="nr_company" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">
+				<?php /* attribution — which project / source drove this enquiry */ ?>
+				<input type="hidden" name="nr_ref" value="<?php echo esc_attr( $ref ); ?>">
+				<input type="hidden" name="nr_service" value="<?php echo esc_attr( $sel ); ?>">
+				<input type="hidden" name="nr_referrer" value="" data-nr-referrer>
 
 				<div class="nr-form__row">
 					<label><span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Name', 'raveenthiran' ); ?></span>

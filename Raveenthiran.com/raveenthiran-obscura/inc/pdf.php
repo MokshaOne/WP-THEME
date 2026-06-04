@@ -75,11 +75,12 @@ function nr_quote_pdf_file( $args ) {
 	$bytes = $pdf->output();
 	if ( ! $bytes ) return '';
 
-	$tmp = wp_tempnam( 'nr-estimate.pdf' );
-	if ( ! $tmp ) return '';
-	$path = $tmp . '.pdf';
-	if ( ! @rename( $tmp, $path ) ) { $path = $tmp; }
-	if ( @file_put_contents( $path, $bytes ) === false ) { @unlink( $path ); return ''; }
+	// Clean, professional attachment filename (the client sees this).
+	$slug = sanitize_file_name( wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
+	$dir  = trailingslashit( get_temp_dir() );
+	$name = wp_unique_filename( $dir, 'Estimate-' . ( $slug ?: 'Studio' ) . '.pdf' );
+	$path = $dir . $name;
+	if ( @file_put_contents( $path, $bytes ) === false ) return '';
 	return $path;
 }
 
@@ -110,9 +111,16 @@ class NR_PDF {
 
 	private function esc( $s ) {
 		$s = wp_specialchars_decode( (string) $s, ENT_QUOTES );
-		// PDF WinAnsi: keep it ASCII-safe; translate common accents conservatively.
-		$s = remove_accents( $s );
-		return str_replace( [ '\\', '(', ')' ], [ '\\\\', '\\(', '\\)' ], $s );
+		// Encode to Windows-1252 so the standard Helvetica/WinAnsi font renders
+		// €, ä/ö/ü and accents correctly instead of mangling them.
+		if ( function_exists( 'mb_convert_encoding' ) ) {
+			$s = @mb_convert_encoding( $s, 'Windows-1252', 'UTF-8' );
+		} elseif ( function_exists( 'iconv' ) ) {
+			$s = @iconv( 'UTF-8', 'Windows-1252//TRANSLIT//IGNORE', $s );
+		} else {
+			$s = remove_accents( $s );
+		}
+		return str_replace( [ '\\', '(', ')' ], [ '\\\\', '\\(', '\\)' ], (string) $s );
 	}
 
 	public function text( $x, $y, $str, $weight = '', $size = 12, $rgb = [ 0, 0, 0 ], $align = 'left' ) {

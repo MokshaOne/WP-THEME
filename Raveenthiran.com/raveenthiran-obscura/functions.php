@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.26.0' );
+define( 'NR_THEME_VERSION', '4.27.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -293,6 +293,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'series.php',
 		'interlink.php',
 		'map.php',
+		'smtp.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;

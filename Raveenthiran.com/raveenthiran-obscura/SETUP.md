@@ -47,6 +47,15 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
   - **Auto internal linking** — links the first mention of another project's title inside project text (SEO).
 - **Map of project locations (new in 4.25)** — add coordinates in the **"Location (map)"** box on each project, then place the shortcode **`[nr_map]`** on any page (e.g. a "Map" page) for a dark Leaflet/OpenStreetMap with a pin per project. `[nr_map height="600"]` to set the height.
 
-## 6. Performance (optional, recommended)
+## 6. Email delivery — Google Workspace SMTP (new in 4.27)
+So enquiries + auto-replies arrive instead of going to spam. **Theme Settings → § Mail (SMTP)**:
+1. In the **real mailbox** (the account you log into, e.g. `hq@m1o.at`): enable **2-Step Verification**, then **Google Account → Security → App passwords** → create a 16-char password.
+2. Make sure the From address is verified: that account's Gmail → **Settings → Accounts → Send mail as** must list e.g. `office@raveenthiran.com`.
+3. Fill in: **Enable SMTP** ✓ · Host `smtp.gmail.com` · Port `587` / STARTTLS · **Username** = `hq@m1o.at` (the real mailbox, *not* the alias) · **App Password** · **From** = `office@raveenthiran.com` · From name = studio.
+   - More secure option: put the password in `wp-config.php` as `define('NR_SMTP_PASS','xxxx');` and leave the field blank.
+4. Click **"Send a test email to me"** to verify.
+5. **DNS (in Cloudflare for raveenthiran.com)** for deliverability: SPF `v=spf1 include:_spf.google.com ~all`; DKIM from Admin console (Apps → Gmail → Authenticate email); DMARC on `_dmarc`: `v=DMARC1; p=none; rua=mailto:office@raveenthiran.com`.
+
+## 7. Performance (optional, recommended)
 - Paste the snippet in **`htaccess-snippet.txt`** into your site's root `.htaccess` (gzip + far-future caching for assets/fonts). This also covers minification's goal (smaller transfer) safely.
 - Put **Cloudflare** (free) in front of the domain for edge caching / lower TTFB.

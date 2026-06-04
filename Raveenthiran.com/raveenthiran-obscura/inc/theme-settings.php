@@ -103,6 +103,16 @@ function nr_settings_defaults() {
 		'nr_turnstile_site'      => '',
 		'nr_turnstile_secret'    => '',
 
+		/* Mail — SMTP (Google Workspace etc.). Password is stored separately
+		   as nr_smtp_pass (registered in inc/smtp.php) so it isn't kses-filtered. */
+		'nr_smtp_enable'     => '0',
+		'nr_smtp_host'       => 'smtp.gmail.com',
+		'nr_smtp_port'       => '587',
+		'nr_smtp_secure'     => 'tls',
+		'nr_smtp_user'       => '',
+		'nr_smtp_from'       => '',
+		'nr_smtp_fromname'   => '',
+
 		/* Visual effects (toggles — string "1"|"0") */
 		'nr_fx_cursor'       => '1',
 		'nr_fx_grain'        => '1',
@@ -277,7 +287,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -609,6 +619,53 @@ function nr_theme_settings_page() {
 						<td><?php nr_field_text( 'nr_turnstile_secret', 50 ); ?>
 							<p class="description"><?php esc_html_e( 'Private key — used server-side to verify submissions. Keep it secret.', 'raveenthiran' ); ?></p></td></tr>
 				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Mail (SMTP)</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'Send site email through an authenticated SMTP server (e.g. Google Workspace) so enquiries and auto-replies actually arrive instead of landing in spam. With Google: Username = the real mailbox you log in to (e.g. hq@m1o.at), Password = a 16-char App Password, From = a verified “Send mail as” address (e.g. office@raveenthiran.com).', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Enable SMTP', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_smtp_enable', __( 'Route wp_mail() through the SMTP server below', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Host', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_smtp_host', 40 ); ?>
+							<p class="description"><?php esc_html_e( 'Google Workspace: smtp.gmail.com', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Port', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_smtp_port', 8 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Encryption', 'raveenthiran' ); ?></label></th>
+						<td>
+							<?php $sec = get_option( 'nr_smtp_secure', 'tls' ); ?>
+							<select name="nr_smtp_secure">
+								<option value="tls" <?php selected( $sec, 'tls' ); ?>><?php esc_html_e( 'STARTTLS (port 587)', 'raveenthiran' ); ?></option>
+								<option value="ssl" <?php selected( $sec, 'ssl' ); ?>><?php esc_html_e( 'SSL/TLS (port 465)', 'raveenthiran' ); ?></option>
+							</select>
+						</td></tr>
+					<tr><th><label><?php esc_html_e( 'Username (real mailbox)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_smtp_user', 40 ); ?>
+							<p class="description"><?php esc_html_e( 'The account you authenticate with — NOT the alias. e.g. hq@m1o.at', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'App Password', 'raveenthiran' ); ?></label></th>
+						<td>
+							<input type="password" name="nr_smtp_pass" value="" autocomplete="new-password"
+								placeholder="<?php echo get_option( 'nr_smtp_pass' ) ? esc_attr__( '•••••••• (saved — leave blank to keep)', 'raveenthiran' ) : esc_attr__( '16-char Google App Password', 'raveenthiran' ); ?>"
+								class="regular-text" size="40">
+							<p class="description"><?php esc_html_e( 'Google Account → Security → 2-Step Verification → App passwords. Or define NR_SMTP_PASS in wp-config.php to keep it out of the database.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'From address', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_smtp_from', 40 ); ?>
+							<p class="description"><?php esc_html_e( 'Must be a verified “Send mail as” address on the account. e.g. office@raveenthiran.com', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'From name', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_smtp_fromname', 40 ); ?></td></tr>
+				</table>
+				<p>
+					<?php $test_url = wp_nonce_url( admin_url( 'admin-post.php?action=nr_smtp_test' ), 'nr_smtp_test' ); ?>
+					<a href="<?php echo esc_url( $test_url ); ?>" class="button"><?php esc_html_e( 'Send a test email to me', 'raveenthiran' ); ?></a>
+					<span class="description"><?php printf( esc_html__( 'Saves nothing — sends a test to %s using the saved settings.', 'raveenthiran' ), esc_html( wp_get_current_user()->user_email ) ); ?></span>
+					<?php if ( isset( $_GET['nr_smtp_test'] ) ) :
+						$okt = $_GET['nr_smtp_test'] === '1'; ?>
+						<span style="margin-left:8px;font-weight:600;color:<?php echo $okt ? '#2a7' : '#c33'; ?>">
+							<?php echo $okt ? esc_html__( '✓ Test email sent.', 'raveenthiran' ) : esc_html__( '✗ Send failed — check host/user/password.', 'raveenthiran' ); ?>
+						</span>
+					<?php endif; ?>
+				</p>
 			</details>
 
 			<details open class="nr-settings__group">

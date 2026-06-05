@@ -61,10 +61,10 @@ function vpg_render_setup_page() {
     <div class="wrap">
         <h1>VPG v2 · <?php esc_html_e( 'Setup wizard', 'vpg-v2' ); ?></h1>
         <?php if ( ! empty( $_GET['vpg_setup'] ) && $_GET['vpg_setup'] === 'done' ) : ?>
-            <div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Setup complete · 15 pages + 5 menus created.', 'vpg-v2' ); ?></p></div>
+            <div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Setup complete · 17 pages + 5 menus created. Front page = Home, Journal = the posts page.', 'vpg-v2' ); ?></p></div>
         <?php endif; ?>
 
-        <p style="max-width:720px;line-height:1.6"><?php esc_html_e( 'This creates the 15 site pages (About, Contact, Join, etc.) with the correct page templates assigned, plus 5 nav menus (Primary + 4 footer columns) wired to their theme locations.', 'vpg-v2' ); ?></p>
+        <p style="max-width:720px;line-height:1.6"><?php esc_html_e( 'This creates the 17 site pages (Home, Journal, About, Contact, Join, etc.) with the correct page templates assigned, sets Home as the front page and Journal as the posts page, plus 5 nav menus (Primary + 4 footer columns) wired to their theme locations.', 'vpg-v2' ); ?></p>
 
         <p style="max-width:720px;line-height:1.6"><strong><?php esc_html_e( 'Idempotent · safe to re-run.', 'vpg-v2' ); ?></strong> <?php esc_html_e( 'Existing pages with the same slug are left in place — only missing ones are created. Menus are wiped and rebuilt from the canonical list.', 'vpg-v2' ); ?></p>
 
@@ -237,6 +237,16 @@ function vpg_run_setup_wizard() {
     // 1 · pages
     $pages = vpg_seed_pages();
 
+    // 1b · front page = Home (front-page.php renders it); Journal = the posts page
+    //      so native posts list at /journal/ and the "Journal" nav item resolves.
+    if ( ! empty( $pages['home'] ) ) {
+        update_option( 'show_on_front', 'page' );
+        update_option( 'page_on_front', (int) $pages['home'] );
+    }
+    if ( ! empty( $pages['journal'] ) ) {
+        update_option( 'page_for_posts', (int) $pages['journal'] );
+    }
+
     // 2 · menus (always wipe + rebuild for clean state)
     vpg_seed_menus( $pages );
 
@@ -250,6 +260,8 @@ function vpg_run_setup_wizard() {
 function vpg_seed_pages() {
 
     $defs = [
+        'home'       => [ 'Home',          '',                              'Vienna Photo Group — the quiet magazine for photographers who look.' ],
+        'journal'    => [ 'Journal',       '',                              'The VPG journal — essays, field notes, portfolios and gear writing.' ],
         'about'      => [ 'About',         'templates/page-about.php',      'A quiet magazine for photographers.' ],
         'contact'    => [ 'Contact',       'templates/page-contact.php',    'Send a message — editorial enquiries, submissions, member support.' ],
         'join'       => [ 'Join VPG',      'templates/page-join.php',       'Become a member · €60 per year.' ],
@@ -317,14 +329,14 @@ function vpg_seed_menus( $pages ) {
         'vpg-primary' => [
             'name'     => 'VPG · Primary',
             'location' => 'primary',
-            // Studios + Shops live as filter views of "The Map" — keep primary nav lean.
+            // Gallery IA · lean five. Events, Studios, Shops, Buying guide and
+            // Tutorials remain reachable from the footer "Explore" column.
             'items'    => [
-                [ 'custom', 'Home', home_url('/') ],
-                [ 'cpt',    'Magazine',     'magazine' ],
-                [ 'cpt',    'Events',       'events' ],
-                [ 'cpt',    'The Map',      'locations' ],
-                [ 'cpt',    'Buying guide', 'buying-guide' ],
-                [ 'page',   'About',        'about' ],
+                [ 'custom', 'Home',     home_url('/') ],
+                [ 'cpt',    'Magazine', 'magazine' ],
+                [ 'cpt',    'The Map',  'locations' ],
+                [ 'page',   'Journal',  'journal' ],
+                [ 'page',   'About',    'about' ],
             ],
         ],
         'vpg-explore' => [

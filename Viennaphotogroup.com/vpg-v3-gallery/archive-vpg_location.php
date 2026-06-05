@@ -76,6 +76,16 @@ if ( $filter_district ) {
 foreach ( $pins_filtered as $p ) { if ( isset( $counts[ $p['type'] ] ) ) $counts[ $p['type'] ]++; }
 $total_pins = count( $pins_filtered );
 
+/* The map markers must honour the active TYPE too (the toolbar links reload
+   with ?type=…). Counts above stay across all types so the toolbar tallies are
+   right; $map_pins is what actually renders on the map. */
+$map_pins = $pins_filtered;
+if ( $type_filter !== 'all' ) {
+    $map_pins = array_values( array_filter( $pins_filtered, function ( $p ) use ( $type_filter ) {
+        return isset( $p['type'] ) && $p['type'] === $type_filter;
+    } ) );
+}
+
 /* ─── Districts list ─── */
 $districts = get_transient( 'vpg_location_districts' );
 if ( false === $districts ) {
@@ -138,7 +148,7 @@ $h = $hero_copy[ $type_filter ];
         <a href="<?php echo esc_url( $mk_url( 'shop' ) ); ?>"     class="<?php if ( $type_filter === 'shop' )     echo 'is-active'; ?>"><button type="button" data-type="shop"><?php esc_html_e( 'Shops', 'vpg-v2' ); ?> · <?php echo (int) $counts['shop']; ?></button></a>
       </div>
 
-      <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $pins_filtered ) ); ?>"></div>
+      <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $map_pins ) ); ?>"></div>
     </div>
   </section>
 

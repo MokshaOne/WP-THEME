@@ -14,7 +14,8 @@ $nr_name = nr_opt( 'nr_legal_name', '' ) ?: wp_specialchars_decode( get_bloginfo
 			<span class="nr-legal__eyebrow"><?php esc_html_e( '§ Rechtliches · Geschäftsbedingungen', 'raveenthiran' ); ?></span>
 			<h1><?php esc_html_e( 'Allgemeine Geschäftsbedingungen', 'raveenthiran' ); ?></h1>
 
-			<?php if ( have_posts() ) : the_post(); the_content(); else : ?>
+			<?php if ( have_posts() ) the_post(); ?>
+			<?php if ( trim( get_the_content() ) !== '' ) : the_content(); else : ?>
 
 			<p class="nr-legal__lede"><?php printf( esc_html__( 'Diese Bedingungen regeln die fotografischen Leistungen von %s (im Folgenden „der Fotograf") gegenüber Auftraggebern.', 'raveenthiran' ), '<strong>' . esc_html( $nr_name ) . '</strong>' ); ?></p>
 

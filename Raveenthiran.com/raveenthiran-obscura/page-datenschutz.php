@@ -17,7 +17,8 @@ $nr_email = nr_opt( 'nr_email', '' );
 			<span class="nr-legal__eyebrow"><?php esc_html_e( '§ Rechtliches · DSGVO', 'raveenthiran' ); ?></span>
 			<h1><?php esc_html_e( 'Datenschutz', 'raveenthiran' ); ?></h1>
 
-			<?php if ( have_posts() ) : the_post(); the_content(); else : ?>
+			<?php if ( have_posts() ) the_post(); ?>
+			<?php if ( trim( get_the_content() ) !== '' ) : the_content(); else : ?>
 
 			<p class="nr-legal__lede"><?php esc_html_e( 'Der Schutz Ihrer personenbezogenen Daten ist uns wichtig. Diese Erklärung informiert Sie gemäß der Datenschutz-Grundverordnung (DSGVO) und dem österreichischen Datenschutzgesetz (DSG) über Art, Umfang und Zweck der Verarbeitung.', 'raveenthiran' ); ?></p>
 

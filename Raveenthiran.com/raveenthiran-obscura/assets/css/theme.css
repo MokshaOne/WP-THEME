@@ -1719,36 +1719,47 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
    Medium batch — Journal (#60), year filter (#61), testimonials
    rotation (#72), related hover-preview (#73)
    ========================================================= */
-/* Journal pages scroll naturally (override the no-scroll model just here) */
-body.nr-page-journal{height:auto;overflow-x:hidden;overflow-y:auto}
-body.nr-page-journal .nr-page{position:relative;min-height:0}
+/* ── Journal — horizontal card rail (mirrors portfolio) + fixed single post ── */
+.nr-card--journal .nr-card__excerpt{font-size:var(--fs-sm);line-height:1.5;color:var(--ink-2);max-width:34ch;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+@media (max-width:900px){.nr-card--journal .nr-card__excerpt{display:none}}
 
-.nr-journal-archive,.nr-journal-single{padding:clamp(20px,4vw,56px) var(--pad) 80px;max-width:1100px;margin:0 auto}
-.nr-journal__list{display:flex;flex-direction:column;gap:0;margin-top:24px}
-.nr-journal__entry{display:grid;grid-template-columns:200px 1fr;gap:28px;padding:28px 0;border-top:1px solid var(--hair);align-items:center}
-.nr-journal__entry:hover .nr-journal__entry-title{color:var(--amber)}
-.nr-journal__media{aspect-ratio:4/5;overflow:hidden;background:var(--bg-2)}
-.nr-journal__media img{width:100%;height:100%;object-fit:cover;filter:contrast(1.04) saturate(.92) brightness(.82);transition:transform .6s var(--ease)}
-.nr-journal__entry:hover .nr-journal__media img{transform:scale(1.04)}
-.nr-journal__date{font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
-.nr-journal__entry-title{font-weight:300;font-size:clamp(22px,3vw,34px);line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin:8px 0 10px;transition:color .25s var(--ease)}
-.nr-journal__excerpt{color:var(--ink-2);line-height:1.55;max-width:60ch}
-.nr-journal__more{display:inline-block;margin-top:10px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+/* single journal post — fixed two-pane, like the project / about pages */
+.nr-jpost{position:fixed;top:var(--bar-h);right:0;bottom:0;left:0;
+  display:grid;grid-template-columns:minmax(360px,44%) 1fr;overflow:hidden}
+.nr-jpost__media{position:relative;border-right:1px solid var(--hair);overflow:hidden;background:var(--bg-2)}
+.nr-jpost__media img{width:100%;height:100%;object-fit:cover;filter:contrast(1.04) saturate(.9) brightness(.8)}
+.nr-jpost__media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,12,16,.92));pointer-events:none}
+.nr-jpost__media-foot{position:absolute;left:28px;right:28px;bottom:22px;display:flex;justify-content:space-between;gap:18px;
+  font-family:var(--ff-mono);font-size:var(--fs-sm);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);z-index:2}
+.nr-jpost__body{padding:44px var(--pad) 40px 40px;overflow-y:auto;overflow-x:hidden;min-width:0;
+  scrollbar-width:thin;scrollbar-color:var(--ink-4) transparent}
+.nr-jpost__body::-webkit-scrollbar{width:6px}
+.nr-jpost__body::-webkit-scrollbar-thumb{background:var(--ink-4)}
+.nr-jpost__inner{max-width:680px}
+.nr-jpost__back{display:inline-flex;gap:8px;font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:20px}
+.nr-jpost__back:hover{color:var(--amber)}
+.nr-jpost h1{font-weight:300;font-size:clamp(32px,4.2vw,58px);line-height:.99;letter-spacing:-.03em;color:var(--ink);margin:6px 0 14px}
+.nr-jpost h1 em{font-style:normal;font-weight:700}
+.nr-jpost__lede{color:var(--ink-2);font-size:var(--fs-md);line-height:1.6;margin:0 0 22px;padding-bottom:22px;border-bottom:1px solid var(--hair)}
+.nr-jpost__prose h2{font-weight:600;font-size:clamp(18px,2vw,22px);color:var(--ink);margin:30px 0 8px}
+.nr-jpost__prose h3{font-weight:600;font-size:var(--fs-md);color:var(--ink);margin:20px 0 6px}
+.nr-jpost__prose p,.nr-jpost__prose li{color:var(--ink-2);font-size:var(--fs-md);line-height:1.72}
+.nr-jpost__prose p{margin:0 0 14px}
+.nr-jpost__prose strong{color:var(--ink);font-weight:600}
+.nr-jpost__prose a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--amber);transition:color .2s}
+.nr-jpost__prose a:hover{color:var(--amber)}
+.nr-jpost__prose img{max-width:100%;height:auto;margin:18px 0;border-radius:2px}
+.nr-jpost__prose ul{list-style:none;padding:0;margin:0 0 16px}
+.nr-jpost__prose ul li{position:relative;padding-left:20px;margin:0 0 8px}
+.nr-jpost__prose ul li::before{content:'\2014';position:absolute;left:0;color:var(--amber)}
+.nr-jpost__foot{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px;padding-top:24px;border-top:1px solid var(--hair)}
 .nr-journal__empty{color:var(--ink-3);padding:40px 0}
-
-.nr-journal__article{max-width:760px;margin:0 auto}
-.nr-journal__back{font-family:var(--ff-mono,ui-monospace,monospace);font-size:var(--fs-xs);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
-.nr-journal__article-head{display:flex;flex-direction:column;gap:12px;margin:18px 0 26px}
-.nr-journal__lede{color:var(--ink-2);font-size:var(--fs-lede);line-height:1.5;max-width:54ch}
-.nr-journal__cover{margin:0 0 28px;overflow:hidden}
-.nr-journal__cover img{width:100%;height:auto;display:block}
-.nr-journal__body{color:var(--ink-2);line-height:1.7;font-size:17px}
-.nr-journal__body h2,.nr-journal__body h3{color:var(--ink);margin:1.6em 0 .5em;font-weight:500}
-.nr-journal__body p{margin:0 0 1.1em}
-.nr-journal__body img{max-width:100%;height:auto;margin:1.4em 0}
-.nr-journal__body a{color:var(--ink);border-bottom:1px solid var(--amber)}
-.nr-journal__article-foot{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px;padding-top:24px;border-top:1px solid var(--hair)}
-@media (max-width:700px){ .nr-journal__entry{grid-template-columns:1fr;gap:14px} .nr-journal__media{aspect-ratio:16/10} }
+@media (max-width:900px){
+  .nr-jpost{position:static;display:block;height:auto}
+  .nr-jpost__media{height:52vh}
+  .nr-jpost__body{padding:28px var(--pad) 64px;overflow:visible}
+}
 
 /* #61 year chips — small divider before them */
 .nr-chip--year:first-of-type{margin-left:14px;border-left:1px solid var(--hair);padding-left:18px}

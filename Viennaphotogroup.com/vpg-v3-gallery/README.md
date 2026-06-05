@@ -23,19 +23,37 @@ the presentation:
 Nothing from v2 was removed — every CPT, the Leaflet map, member dashboards,
 submission flows, the magazine PDF generator and the PWA all still work.
 
-## Still on the v2 structure (re-themed, not yet rebuilt to exact Gallery)
+## Coverage — the whole theme is now exact Gallery
 
-These render on-brand via the token remap, but their **markup** is still v2 — a
-good next pass would rebuild them to the exact prototype layouts:
+Every template has been rebuilt to the Gallery `g-` system:
 
-- CPT archives: `archive-vpg_{magazine,location,event,review,tutorial,studio,shop}.php`
-  (the location archive carries the live Leaflet map — re-skin carefully).
-- CPT singles: `single-vpg_*.php`.
-- Page templates: `templates/page-*.php` (about, join, contact, team, faq,
-  dashboard, membership, submit, map-guide, legal pages…).
+- **Signature screens:** `header.php`, `footer.php`, `front-page.php`,
+  `index.php`, `single.php`, `page.php`, `search.php`, `404.php`.
+- **CPT archives:** magazine (cover lead + back-issue grid), location/map
+  (`g-phero` + Gallery cards over the **live Leaflet map** — the map, filter
+  toolbar and `#vpg-map[data-pins]` hooks are preserved), event, review,
+  tutorial. (shop/studio archives stay 301 redirects to the unified map.)
+- **CPT singles:** event, review, tutorial, location, studio, shop (the three
+  place types keep their single-pin `#vpg-map`).
+- **Page templates (all 15):** about, team, faq, contact, membership, join,
+  submit, newsletter, login, dashboard, imprint, privacy, terms, archive,
+  map-guide. All forms keep their `method`/`action`, `wp_nonce_field`, hidden
+  `action` field and every field `name`; dashboard gating, member queries,
+  `wp_login_form()` and the map-guide map hooks are intact.
 
-The prototype pages in `/prototype` (magazine, map, journal, about, join) are the
-design targets for that pass.
+Every theme PHP file passes `php -l`.
+
+### One documented exception
+
+`single-vpg_magazine.php` (the issue **reader**) keeps its bespoke layout. It is
+tied to the page-scoped `assets/css/pages/magazine.css` and the sticky table-of-
+contents JS (`#vpg-mag-toc`, `#vpg-mag-sticky-toc`, `.vpg-mag-article[id]`,
+`data-vpg-sticky`). It re-themes on-brand through the token remap (white / red /
+Archivo) and its action buttons were swapped to `g-btn`. Rebuilding it fully to
+`g-` markup would mean porting that scoped CSS + retargeting the JS — a deliberate
+follow-up, kept out of this pass to avoid breaking the reader.
+
+The static prototype pages in `/prototype` remain the design reference.
 
 ## Install
 

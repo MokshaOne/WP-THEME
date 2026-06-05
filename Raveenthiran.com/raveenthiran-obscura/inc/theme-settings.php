@@ -33,6 +33,9 @@ function nr_settings_defaults() {
 		'nr_coords'          => '48.20°N · 16.36°E',
 		'nr_email'           => 'studio@raveenthiran.at',
 		'nr_phone'           => '+43 1 555 0142',
+		'nr_legal_name'      => '',
+		'nr_uid'             => '',
+		'nr_gewerbe'         => 'Berufsfotografie (freies Gewerbe)',
 		'nr_instagram'       => '',
 		'nr_behance'         => '',
 		'nr_vimeo'           => '',
@@ -356,6 +359,14 @@ function nr_theme_settings_page() {
 						<td><?php nr_field_text( 'nr_email', 40 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Phone', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_phone', 30 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Legal name (Impressum)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_legal_name', 40 ); ?>
+							<p class="description"><?php esc_html_e( 'Full legal/registered name if different from the site title. Used in Impressum, Datenschutz, AGB.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'VAT / USt-IdNr (UID)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_uid', 24 ); ?>
+							<p class="description"><?php esc_html_e( 'e.g. ATU12345678. Leave blank to show “auf Anfrage”.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Trade / Gewerbe', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_gewerbe', 40 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Instagram URL', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_instagram', 60 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Behance URL', 'raveenthiran' ); ?></label></th>

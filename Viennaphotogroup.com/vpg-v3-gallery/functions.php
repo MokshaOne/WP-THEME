@@ -14,12 +14,17 @@ if ( file_exists( VPG_V2_DIR . '/vendor/autoload.php' ) ) {
     require_once VPG_V2_DIR . '/vendor/autoload.php';
 }
 
+// ── ACF polyfill · MUST load first so get_field() exists everywhere ──
+require_once VPG_V2_DIR . '/inc/acf-polyfill.php';
+
 // ── Core infrastructure ─────────────────────────────────────
 require_once VPG_V2_DIR . '/inc/theme-setup.php';
 require_once VPG_V2_DIR . '/inc/enqueue.php';
 require_once VPG_V2_DIR . '/inc/helpers.php';
 require_once VPG_V2_DIR . '/inc/cpts.php';
+require_once VPG_V2_DIR . '/inc/acf-fields.php';      // CPT field groups (ACF + native fallback)
 require_once VPG_V2_DIR . '/inc/customizer.php';
+require_once VPG_V2_DIR . '/inc/admin-panel.php';     // "Vienna Photo Group" admin hub
 require_once VPG_V2_DIR . '/inc/security.php';
 
 // ── Magazine workflow ───────────────────────────────────────

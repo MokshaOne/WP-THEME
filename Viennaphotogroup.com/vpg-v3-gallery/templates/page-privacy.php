@@ -6,19 +6,19 @@ $id = vpg_identity();
 ?>
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip"><span class="vpg-chip__dot"></span> Legal</span>
-    <h1>Privacy <em>policy</em>.</h1>
-    <p class="vpg-lede">How VPG handles personal data, cookies, submissions and analytics · written plainly · GDPR-aligned.</p>
-</header>
+<section class="g-phero">
+    <div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:16px">● Legal</p>
+        <h1 class="g-display g-phero__title">Privacy <em>policy</em>.</h1>
+        <p class="g-lede g-phero__lede">How VPG handles personal data, cookies, submissions and analytics · written plainly · GDPR-aligned.</p>
+    </div>
+</section>
 
-<span class="vpg-asterism vpg-asterism--mark"></span>
+<section class="g-section g-section--tight">
+    <div class="g-wrap">
+        <div class="g-prose">
 
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap--prose">
-        <div class="vpg-prose">
-
-            <p style="font-style:italic;color:var(--vpg-muted)">Last updated: <?php echo esc_html( wp_date( 'F Y' ) ); ?> · plain-language summary, then the detail below.</p>
+            <p style="font-style:italic;color:var(--g-mid)">Last updated: <?php echo esc_html( wp_date( 'F Y' ) ); ?> · plain-language summary, then the detail below.</p>
 
             <h2>The short version</h2>
             <ul>

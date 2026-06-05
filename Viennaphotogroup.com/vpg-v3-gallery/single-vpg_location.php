@@ -1,5 +1,5 @@
 <?php
-/** VPG v2 · single · Location */
+/** VPG v3 · single · Location (Gallery). */
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 ?>
@@ -9,26 +9,33 @@ get_header();
     $meta = 'location_district' ? vpg_field( 'location_district' ) : '';
 ?>
 
-    <header class="vpg-page-hero">
-        <span class="vpg-chip vpg-chip--loc"><span class="vpg-chip__dot"></span> Location</span>
-        <h1><?php the_title(); ?></h1>
-        <?php if ( get_the_excerpt() ) : ?><p class="vpg-lede"><?php echo esc_html( get_the_excerpt() ); ?></p><?php endif; ?>
-        <?php if ( $meta ) : ?>
-            <p class="vpg-caps" style="margin-top:1.5rem">District · <?php echo esc_html( $meta ); ?></p>
-        <?php endif; ?>
-
-    </header>
+    <section class="g-phero">
+      <div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:16px"><?php esc_html_e( 'Location', 'vpg-v2' ); ?><?php if ( $meta ) echo ' · ' . esc_html( $meta ); ?></p>
+        <h1 class="g-display g-phero__title" style="max-width:20ch"><?php the_title(); ?></h1>
+        <?php if ( get_the_excerpt() ) : ?><p class="g-lede g-phero__lede"><?php echo esc_html( get_the_excerpt() ); ?></p><?php endif; ?>
+      </div>
+    </section>
 
     <?php if ( has_post_thumbnail() ) : ?>
-        <figure style="max-width:var(--vpg-max-magazine);margin:2rem auto;padding:0 var(--vpg-sp-5)">
-            <?php the_post_thumbnail( 'vpg-hero', [ 'style' => 'width:100%;border-radius:var(--vpg-radius-lg)' ] ); ?>
-        </figure>
+      <figure class="g-wrap" style="margin:clamp(24px,4vw,48px) auto">
+        <div class="g-fig g-fig--3x2"><?php the_post_thumbnail( 'large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?></div>
+      </figure>
     <?php endif; ?>
 
-    <section class="vpg-section vpg-section--tight">
-        <div class="vpg-wrap--prose">
-            <div class="vpg-prose"><?php the_content(); ?></div>
+    <section class="g-section">
+      <div class="g-wrap">
+        <div class="g-twocol">
+          <div class="g-prose"><?php the_content(); ?></div>
+          <aside>
+            <dl class="g-phero__aside">
+              <dt><?php esc_html_e( 'District', 'vpg-v2' ); ?></dt>
+              <dd><?php echo $meta ? esc_html( $meta ) : '—'; ?></dd>
+            </dl>
+            <a class="g-link" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_location' ) ); ?>" style="margin-top:18px"><?php esc_html_e( 'All locations', 'vpg-v2' ); ?> <span class="a">→</span></a>
+          </aside>
         </div>
+      </div>
     </section>
 
         <?php
@@ -36,17 +43,17 @@ get_header();
         if ( $coords ) :
             $pin = [ [ 'lat' => $coords[0], 'lng' => $coords[1], 'title' => get_the_title(), 'url' => '', 'lede' => '' ] ];
         ?>
-            <section class="vpg-section vpg-section--tight">
-                <div class="vpg-wrap">
-                    <div class="vpg-section-head"><div><p class="vpg-caps">— <?php esc_html_e( 'Where', 'vpg-v2' ); ?></p><h2><?php esc_html_e( 'On the', 'vpg-v2' ); ?> <em><?php esc_html_e( 'map', 'vpg-v2' ); ?></em></h2></div></div>
+            <section class="g-section g-section--tight">
+                <div class="g-wrap">
+                    <div class="g-head"><div><span class="g-kicker"><?php esc_html_e( 'Where', 'vpg-v2' ); ?></span><h2 class="g-head__t"><?php esc_html_e( 'On the', 'vpg-v2' ); ?> <em><?php esc_html_e( 'map', 'vpg-v2' ); ?></em></h2></div></div>
                     <div id="vpg-map" class="vpg-map" data-pins="<?php echo esc_attr( wp_json_encode( $pin ) ); ?>" style="height:420px"></div>
                 </div>
             </section>
         <?php endif; ?>
 
-    <section class="vpg-section vpg-section--surface vpg-section--tight" style="text-align:center">
-        <div class="vpg-wrap--narrow">
-            <a class="vpg-btn vpg-btn--ghost" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_location' ) ); ?>"><?php esc_html_e( 'All locations', 'vpg-v2' ); ?> →</a>
+    <section class="g-section g-section--alt" style="text-align:center">
+        <div class="g-wrap">
+            <a class="g-btn g-btn--red" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_location' ) ); ?>"><?php esc_html_e( 'All locations', 'vpg-v2' ); ?> <span class="a">→</span></a>
         </div>
     </section>
 

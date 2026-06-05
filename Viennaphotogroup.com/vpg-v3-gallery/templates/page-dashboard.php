@@ -7,17 +7,33 @@ get_header();
 
 <?php if ( ! is_user_logged_in() ) : ?>
 
-    <header class="vpg-page-hero">
-        <span class="vpg-chip"><span class="vpg-chip__dot"></span> Members area</span>
-        <h1>Members <em>only</em>.</h1>
-        <p class="vpg-lede">Sign in to access your dashboard, submissions and member-only resources.</p>
-    </header>
-    <section class="vpg-section vpg-section--tight" style="text-align:center">
-        <div class="vpg-wrap--narrow">
-            <a class="vpg-btn vpg-btn--accent vpg-btn--lg" href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>">Log in <span class="vpg-btn__arrow">→</span></a>
-            <p style="margin-top:1.5rem;color:var(--vpg-muted)">Not a member? <a href="<?php echo esc_url( home_url('/membership/') ); ?>">Join the wait-list →</a></p>
+  <section class="g-phero">
+    <div class="g-wrap">
+      <div class="g-phero__grid">
+        <div>
+          <p class="g-kicker" style="margin-bottom:18px">● <?php esc_html_e( 'Members area', 'vpg-v2' ); ?></p>
+          <h1 class="g-display g-phero__title"><?php echo wp_kses_post( __( 'Members <em>only</em>.', 'vpg-v2' ) ); ?></h1>
+          <p class="g-lede g-phero__lede"><?php esc_html_e( 'Sign in to access your dashboard, submissions and member-only resources.', 'vpg-v2' ); ?></p>
         </div>
-    </section>
+        <dl class="g-phero__aside">
+          <dt><?php esc_html_e( 'Reader access', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Free · no signup needed', 'vpg-v2' ); ?></dd>
+          <dt><?php esc_html_e( 'Not a member?', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/membership/' ) ); ?>"><?php esc_html_e( 'Join the wait-list', 'vpg-v2' ); ?></a></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="g-section--dark g-section">
+    <div class="g-wrap" style="text-align:center">
+      <span class="g-kicker"><?php esc_html_e( 'Members only', 'vpg-v2' ); ?></span>
+      <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'Please <em>log in</em>.', 'vpg-v2' ) ); ?></h2>
+      <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Your dashboard, submissions and member-only resources live behind the door.', 'vpg-v2' ); ?></p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>"><?php esc_html_e( 'Log in', 'vpg-v2' ); ?> <span class="a">→</span></a>
+        <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( home_url( '/membership/' ) ); ?>"><?php esc_html_e( 'Join the wait-list', 'vpg-v2' ); ?></a>
+      </div>
+    </div>
+  </section>
 
 <?php else :
     $u         = wp_get_current_user();
@@ -42,122 +58,136 @@ get_header();
     ] );
 ?>
 
-    <header class="vpg-page-hero" style="padding-bottom:var(--vpg-sp-5)">
-        <span class="vpg-chip vpg-chip--member"><span class="vpg-chip__dot"></span> <?php echo esc_html( ucfirst( $tier ) ); ?></span>
-        <h1>Welcome, <em><?php echo esc_html( $u->display_name ); ?></em>.</h1>
-        <p class="vpg-caps" style="margin-top:1rem">— Member since <?php echo esc_html( $member_since ); ?></p>
-    </header>
-
-    <span class="vpg-asterism vpg-asterism--mark"></span>
-
-    <!-- Quick stats row -->
-    <section class="vpg-section vpg-section--tight">
-        <div class="vpg-wrap">
-            <div class="vpg-stats">
-                <div class="vpg-stat">
-                    <div class="vpg-stat__num"><?php echo (int) $published->found_posts; ?></div>
-                    <div class="vpg-stat__label">Published</div>
-                </div>
-                <div class="vpg-stat">
-                    <div class="vpg-stat__num"><em><?php echo (int) $pending->found_posts; ?></em></div>
-                    <div class="vpg-stat__label">In review</div>
-                </div>
-                <div class="vpg-stat">
-                    <div class="vpg-stat__num"><?php echo count( $bookmarks ); ?></div>
-                    <div class="vpg-stat__label">Bookmarks</div>
-                </div>
-                <div class="vpg-stat">
-                    <div class="vpg-stat__num"><em><?php echo esc_html( ucfirst( $tier ) ); ?></em></div>
-                    <div class="vpg-stat__label">Tier</div>
-                </div>
-            </div>
+  <section class="g-phero">
+    <div class="g-wrap">
+      <div class="g-phero__grid">
+        <div>
+          <p class="g-kicker" style="margin-bottom:18px">● <?php echo esc_html( ucfirst( $tier ) ); ?></p>
+          <h1 class="g-display g-phero__title"><?php printf( wp_kses_post( __( 'Welcome, <em>%s</em>.', 'vpg-v2' ) ), esc_html( $u->display_name ) ); ?></h1>
+          <p class="g-lede g-phero__lede"><?php printf( esc_html__( 'Member since %s.', 'vpg-v2' ), esc_html( $member_since ) ); ?></p>
         </div>
-    </section>
+        <dl class="g-phero__aside">
+          <dt><?php esc_html_e( 'Tier', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( ucfirst( $tier ) ); ?></dd>
+          <dt><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'View public page', 'vpg-v2' ); ?></a></dd>
+          <dt><?php esc_html_e( 'Session', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>"><?php esc_html_e( 'Log out', 'vpg-v2' ); ?></a></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
 
-    <!-- Quick actions -->
-    <section class="vpg-section vpg-section--tight">
-        <div class="vpg-wrap">
-            <div class="vpg-section-head">
-                <div>
-                    <p class="vpg-caps">— Quick actions</p>
-                    <h2>Feed the <em>matrix</em>.</h2>
-                </div>
-                <div class="vpg-section-head__meta"><a href="<?php echo esc_url( home_url('/members/' . $u->user_login . '/') ); ?>">Your public profile →</a></div>
-            </div>
-
-            <div class="vpg-grid vpg-grid--3">
-                <a class="vpg-card" href="<?php echo esc_url( home_url('/submit/') ); ?>">
-                    <span class="vpg-chip vpg-chip--loc"><span class="vpg-chip__dot"></span> Submit</span>
-                    <h3 style="margin-top:.8rem">Add a location</h3>
-                    <p class="vpg-card__lede">Pin a new shooting spot on the map. Coordinates auto-detected from address.</p>
-                </a>
-                <a class="vpg-card" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>">
-                    <span class="vpg-chip vpg-chip--mag"><span class="vpg-chip__dot"></span> Magazine</span>
-                    <h3 style="margin-top:.8rem">Latest issue</h3>
-                    <p class="vpg-card__lede">PDF download available for your tier · forever-keepable.</p>
-                </a>
-                <a class="vpg-card" href="<?php echo esc_url( get_edit_user_link() ); ?>">
-                    <span class="vpg-chip vpg-chip--member"><span class="vpg-chip__dot"></span> Profile</span>
-                    <h3 style="margin-top:.8rem">Edit profile</h3>
-                    <p class="vpg-card__lede">Bio, social links, avatar · shown on your public member page.</p>
-                </a>
-            </div>
+  <!-- Quick stats row -->
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-stats">
+        <div class="g-stat">
+          <div class="g-stat__n"><?php echo (int) $published->found_posts; ?></div>
+          <div class="g-stat__l"><?php esc_html_e( 'Published', 'vpg-v2' ); ?></div>
         </div>
-    </section>
-
-    <!-- Submissions in review -->
-    <?php if ( $pending->have_posts() ) : ?>
-    <section class="vpg-section vpg-section--surface vpg-section--tight">
-        <div class="vpg-wrap">
-            <div class="vpg-section-head">
-                <div>
-                    <p class="vpg-caps">— In editorial review</p>
-                    <h2><?php echo (int) $pending->found_posts; ?> <em>pending</em></h2>
-                </div>
-                <div class="vpg-section-head__meta">72h turnaround</div>
-            </div>
-            <ul style="list-style:none;padding:0;margin:0">
-                <?php while ( $pending->have_posts() ) : $pending->the_post(); ?>
-                    <li style="display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:baseline;padding:1rem 0;border-bottom:1px solid var(--vpg-rule)">
-                        <?php vpg_chip( get_post_type() ); ?>
-                        <span><strong><?php the_title(); ?></strong><br><small style="color:var(--vpg-muted)"><?php echo esc_html( get_the_date( 'M j, Y · H:i' ) ); ?></small></span>
-                        <span class="vpg-caps" style="color:var(--vpg-warning)">⌛ Reviewing</span>
-                    </li>
-                <?php endwhile; wp_reset_postdata(); ?>
-            </ul>
+        <div class="g-stat">
+          <div class="g-stat__n"><em><?php echo (int) $pending->found_posts; ?></em></div>
+          <div class="g-stat__l"><?php esc_html_e( 'In review', 'vpg-v2' ); ?></div>
         </div>
-    </section>
-    <?php endif; ?>
-
-    <!-- Recently published -->
-    <?php if ( $published->have_posts() ) : ?>
-    <section class="vpg-section vpg-section--tight">
-        <div class="vpg-wrap">
-            <div class="vpg-section-head">
-                <div>
-                    <p class="vpg-caps">— Your published work</p>
-                    <h2><?php echo (int) $published->found_posts; ?> <em>live</em></h2>
-                </div>
-                <div class="vpg-section-head__meta"><a href="<?php echo esc_url( home_url('/members/' . $u->user_login . '/') ); ?>">All on your profile →</a></div>
-            </div>
-            <div class="vpg-grid vpg-grid--auto">
-                <?php while ( $published->have_posts() ) : $published->the_post(); ?>
-                    <article class="vpg-card">
-                        <a href="<?php the_permalink(); ?>">
-                            <?php vpg_chip( get_post_type() ); ?>
-                            <h3 style="margin-top:.8rem"><?php the_title(); ?></h3>
-                            <p class="vpg-card__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18 ) ); ?></p>
-                        </a>
-                    </article>
-                <?php endwhile; wp_reset_postdata(); ?>
-            </div>
+        <div class="g-stat">
+          <div class="g-stat__n"><?php echo count( $bookmarks ); ?></div>
+          <div class="g-stat__l"><?php esc_html_e( 'Bookmarks', 'vpg-v2' ); ?></div>
         </div>
-    </section>
-    <?php endif; ?>
+        <div class="g-stat">
+          <div class="g-stat__n"><em><?php echo esc_html( ucfirst( $tier ) ); ?></em></div>
+          <div class="g-stat__l"><?php esc_html_e( 'Tier', 'vpg-v2' ); ?></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section class="vpg-section vpg-section--tight" style="text-align:center;padding-bottom:var(--vpg-sp-10)">
-        <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="vpg-caps" style="text-decoration:underline;color:var(--vpg-muted)">→ Log out</a>
-    </section>
+  <!-- Quick actions -->
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Quick actions', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'Feed the <em>matrix</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+        <div class="g-meta"><a class="g-link" href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'Your public profile', 'vpg-v2' ); ?> <span class="a">→</span></a></div>
+      </div>
+
+      <div class="g-grid3">
+        <a class="g-card" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>">
+          <span class="g-cat"><?php esc_html_e( 'Submit', 'vpg-v2' ); ?></span>
+          <h3 class="g-card__title"><?php esc_html_e( 'Add a location', 'vpg-v2' ); ?></h3>
+          <p class="g-row__lede"><?php esc_html_e( 'Pin a new shooting spot on the map. Coordinates auto-detected from address.', 'vpg-v2' ); ?></p>
+        </a>
+        <a class="g-card" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>">
+          <span class="g-cat"><?php esc_html_e( 'Magazine', 'vpg-v2' ); ?></span>
+          <h3 class="g-card__title"><?php esc_html_e( 'Latest issue', 'vpg-v2' ); ?></h3>
+          <p class="g-row__lede"><?php esc_html_e( 'PDF download available for your tier · forever-keepable.', 'vpg-v2' ); ?></p>
+        </a>
+        <a class="g-card" href="<?php echo esc_url( get_edit_user_link() ); ?>">
+          <span class="g-cat"><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></span>
+          <h3 class="g-card__title"><?php esc_html_e( 'Edit profile', 'vpg-v2' ); ?></h3>
+          <p class="g-row__lede"><?php esc_html_e( 'Bio, social links, avatar · shown on your public member page.', 'vpg-v2' ); ?></p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Submissions in review -->
+  <?php if ( $pending->have_posts() ) : ?>
+  <section class="g-section g-section--alt g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'In editorial review', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo (int) $pending->found_posts; ?> <em><?php esc_html_e( 'pending', 'vpg-v2' ); ?></em></h2>
+        </div>
+        <div class="g-meta"><?php esc_html_e( '72h turnaround', 'vpg-v2' ); ?></div>
+      </div>
+      <div class="g-list">
+        <?php while ( $pending->have_posts() ) : $pending->the_post(); ?>
+          <div class="g-row" style="grid-template-columns:auto 1fr auto">
+            <?php vpg_chip( get_post_type() ); ?>
+            <div>
+              <h3 class="g-row__title" style="margin:0"><?php the_title(); ?></h3>
+              <div class="g-byline"><span><?php echo esc_html( get_the_date( 'M j, Y · H:i' ) ); ?></span></div>
+            </div>
+            <span class="g-row__when" style="color:var(--g-red)"><?php esc_html_e( '⌛ Reviewing', 'vpg-v2' ); ?></span>
+          </div>
+        <?php endwhile; wp_reset_postdata(); ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <!-- Recently published -->
+  <?php if ( $published->have_posts() ) : ?>
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Your published work', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo (int) $published->found_posts; ?> <em><?php esc_html_e( 'live', 'vpg-v2' ); ?></em></h2>
+        </div>
+        <div class="g-meta"><a class="g-link" href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'All on your profile', 'vpg-v2' ); ?> <span class="a">→</span></a></div>
+      </div>
+      <div class="g-grid3">
+        <?php while ( $published->have_posts() ) : $published->the_post(); ?>
+          <a class="g-card" href="<?php the_permalink(); ?>">
+            <?php vpg_chip( get_post_type() ); ?>
+            <h3 class="g-card__title"><?php the_title(); ?></h3>
+            <p class="g-row__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18 ) ); ?></p>
+          </a>
+        <?php endwhile; wp_reset_postdata(); ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <section class="g-section--dark g-section">
+    <div class="g-wrap" style="text-align:center">
+      <span class="g-kicker"><?php esc_html_e( 'Done for now?', 'vpg-v2' ); ?></span>
+      <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:14ch"><?php echo wp_kses_post( __( 'See you <em>soon</em>.', 'vpg-v2' ) ); ?></h2>
+      <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>"><?php esc_html_e( 'Log out', 'vpg-v2' ); ?> <span class="a">→</span></a>
+    </div>
+  </section>
 
 <?php endif; ?>
 

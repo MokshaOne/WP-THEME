@@ -5,13 +5,13 @@ get_header();
 ?>
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip"><span class="vpg-chip__dot"></span> Archive</span>
-    <h1>Everything we have <em>published</em>.</h1>
-    <p class="vpg-lede">Every magazine issue, every location, every review · the full index on one page.</p>
-</header>
-
-<span class="vpg-asterism vpg-asterism--mark"></span>
+<section class="g-phero">
+    <div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:16px">● Archive</p>
+        <h1 class="g-display g-phero__title">Everything we have <em>published</em>.</h1>
+        <p class="g-lede g-phero__lede">Every magazine issue, every location, every review · the full index on one page.</p>
+    </div>
+</section>
 
 <?php
 $sections = [
@@ -24,33 +24,32 @@ $sections = [
     [ 'vpg_tutorial', 'Tutorials',       'tut',     'Member-written, skill-tagged' ],
 ];
 
-foreach ( $sections as $sec ) :
+foreach ( $sections as $i => $sec ) :
     list( $type, $label, $cls, $desc ) = $sec;
     $items = get_posts( [ 'post_type' => $type, 'posts_per_page' => -1, 'orderby' => 'date', 'order' => 'DESC' ] );
     if ( ! $items ) continue;
 ?>
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap">
-        <div class="vpg-section-head">
+<section class="g-section <?php echo ( $i % 2 ) ? 'g-section--alt' : 'g-section--tight'; ?>">
+    <div class="g-wrap">
+        <div class="g-head">
             <div>
-                <p class="vpg-caps">— <span class="vpg-chip vpg-chip--<?php echo esc_attr( $cls ); ?>" style="margin-left:.4rem"><span class="vpg-chip__dot"></span> <?php echo esc_html( $label ); ?></span></p>
-                <h2 style="margin-top:.4rem"><?php printf( esc_html( _n( '%d entry', '%d entries', count( $items ), 'vpg-v2' ) ), count( $items ) ); ?></h2>
-                <p class="vpg-card__lede" style="margin-top:.6rem"><?php echo esc_html( $desc ); ?></p>
+                <span class="g-kicker"><?php echo esc_html( $label ); ?></span>
+                <h2 class="g-head__t"><?php printf( esc_html( _n( '%d entry', '%d entries', count( $items ), 'vpg-v2' ) ), count( $items ) ); ?></h2>
+                <p class="g-lede" style="margin-top:.6rem"><?php echo esc_html( $desc ); ?></p>
             </div>
-            <div class="vpg-section-head__meta"><a href="<?php echo esc_url( get_post_type_archive_link( $type ) ); ?>">View archive →</a></div>
+            <a class="g-link" href="<?php echo esc_url( get_post_type_archive_link( $type ) ); ?>">View archive <span class="a">→</span></a>
         </div>
 
-        <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.4rem">
+        <div class="g-list">
             <?php foreach ( $items as $it ) : ?>
-                <li><a style="display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:.5rem 0;border-bottom:1px solid var(--vpg-rule);text-decoration:none;align-items:baseline" href="<?php echo esc_url( get_permalink( $it ) ); ?>">
-                    <span style="font-family:var(--vpg-font-mono);font-size:var(--vpg-fs-xs);letter-spacing:.12em;color:var(--vpg-muted)"><?php echo esc_html( get_the_date( 'Y', $it ) ); ?></span>
-                    <span><?php echo esc_html( get_the_title( $it ) ); ?></span>
-                </a></li>
+                <a class="g-row" href="<?php echo esc_url( get_permalink( $it ) ); ?>">
+                    <span class="g-row__when"><?php echo esc_html( get_the_date( 'Y', $it ) ); ?></span>
+                    <h3 class="g-row__title"><?php echo esc_html( get_the_title( $it ) ); ?></h3>
+                </a>
             <?php endforeach; ?>
-        </ul>
+        </div>
     </div>
 </section>
-<span class="vpg-asterism vpg-asterism--break"></span>
 <?php endforeach; ?>
 
 </main>

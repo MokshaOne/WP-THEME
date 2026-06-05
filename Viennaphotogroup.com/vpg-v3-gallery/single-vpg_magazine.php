@@ -40,7 +40,7 @@ $is_print  = ! empty( $_GET['vpg_print'] );
         <?php endif; ?>
         <?php if ( $pdf_url ) : ?>
             <p style="margin-top:var(--vpg-sp-6)">
-                <a class="vpg-btn vpg-btn--accent" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Download PDF', 'vpg-v2' ); ?> ↓</a>
+                <a class="g-btn g-btn--red" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Download PDF', 'vpg-v2' ); ?> ↓</a>
             </p>
         <?php endif; ?>
     </div>
@@ -151,9 +151,9 @@ $is_print  = ! empty( $_GET['vpg_print'] );
             );
         ?></p>
         <?php if ( $pdf_url ) : ?>
-            <a class="vpg-btn" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Download this issue', 'vpg-v2' ); ?> ↓</a>
+            <a class="g-btn g-btn--red" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Download this issue', 'vpg-v2' ); ?> ↓</a>
         <?php endif; ?>
-        <a class="vpg-btn vpg-btn--ghost" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>"><?php esc_html_e( 'All issues', 'vpg-v2' ); ?> →</a>
+        <a class="g-btn g-btn--ghost" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>"><?php esc_html_e( 'All issues', 'vpg-v2' ); ?> →</a>
     </div>
 </section>
 

@@ -6,17 +6,17 @@ $id = vpg_identity();
 ?>
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip"><span class="vpg-chip__dot"></span> Legal</span>
-    <h1>Imprint</h1>
-    <p class="vpg-lede">Information per § 5 ECG &amp; § 24 MedienG (Austria).</p>
-</header>
+<section class="g-phero">
+    <div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:16px">● Legal</p>
+        <h1 class="g-display g-phero__title"><em>Imprint</em>.</h1>
+        <p class="g-lede g-phero__lede">Information per § 5 ECG &amp; § 24 MedienG (Austria).</p>
+    </div>
+</section>
 
-<span class="vpg-asterism vpg-asterism--mark"></span>
-
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap--prose">
-        <div class="vpg-prose">
+<section class="g-section g-section--tight">
+    <div class="g-wrap">
+        <div class="g-prose">
 
             <h2>Diensteanbieter / Media owner</h2>
             <p>

@@ -6,19 +6,19 @@ $id = vpg_identity();
 ?>
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip"><span class="vpg-chip__dot"></span> Legal</span>
-    <h1>Terms of <em>service</em>.</h1>
-    <p class="vpg-lede">Membership rules, content rights, editorial policy. Written plainly · effective on signup.</p>
-</header>
+<section class="g-phero">
+    <div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:16px">● Legal</p>
+        <h1 class="g-display g-phero__title">Terms of <em>service</em>.</h1>
+        <p class="g-lede g-phero__lede">Membership rules, content rights, editorial policy. Written plainly · effective on signup.</p>
+    </div>
+</section>
 
-<span class="vpg-asterism vpg-asterism--mark"></span>
+<section class="g-section g-section--tight">
+    <div class="g-wrap">
+        <div class="g-prose">
 
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap--prose">
-        <div class="vpg-prose">
-
-            <p style="font-style:italic;color:var(--vpg-muted)">Last updated: <?php echo esc_html( wp_date( 'F Y' ) ); ?></p>
+            <p style="font-style:italic;color:var(--g-mid)">Last updated: <?php echo esc_html( wp_date( 'F Y' ) ); ?></p>
 
             <h2>1 · Who runs this</h2>
             <p>Vienna Photo Group (VPG) is operated by the editorial circle, co-produced by Raveenthiran &times; on1.agency. Contact: <a href="mailto:<?php echo esc_attr( $id['email'] ); ?>"><?php echo esc_html( $id['email'] ); ?></a>. Full imprint at <a href="<?php echo esc_url( home_url('/imprint/') ); ?>">/imprint/</a>.</p>

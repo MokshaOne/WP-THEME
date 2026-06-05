@@ -34,14 +34,16 @@ $total = count( $pins );
 
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip vpg-chip--loc"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Map', 'vpg-v2' ); ?></span>
-    <h1><?php esc_html_e( 'Vienna,', 'vpg-v2' ); ?> <em><?php esc_html_e( 'pinned', 'vpg-v2' ); ?></em>.</h1>
-    <p class="vpg-lede"><?php esc_html_e( 'The full interactive map. Locations, studios and shops on one canvas — toggle any layer.', 'vpg-v2' ); ?></p>
-</header>
+<section class="g-phero">
+    <div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:16px">● <?php esc_html_e( 'Map', 'vpg-v2' ); ?></p>
+        <h1 class="g-display g-phero__title"><?php esc_html_e( 'Vienna,', 'vpg-v2' ); ?> <em><?php esc_html_e( 'pinned', 'vpg-v2' ); ?></em>.</h1>
+        <p class="g-lede g-phero__lede"><?php esc_html_e( 'The full interactive map. Locations, studios and shops on one canvas — toggle any layer.', 'vpg-v2' ); ?></p>
+    </div>
+</section>
 
-<section class="vpg-section vpg-section--tight vpg-section--map">
-    <div class="vpg-wrap">
+<section class="g-section g-section--tight">
+    <div class="g-wrap">
 
         <div class="vpg-map-filter" data-target="#vpg-map" role="toolbar" aria-label="<?php esc_attr_e( 'Filter map markers', 'vpg-v2' ); ?>">
             <span class="vpg-map-filter__label">— <?php esc_html_e( 'Show', 'vpg-v2' ); ?></span>

@@ -1,10 +1,8 @@
 <?php
 /**
- * VPG v2 — magazine archive · cover wall.
- *
- * Renders all published issues as a grid of covers. The most recent issue
- * gets the oversized featured slot at top-left. Each card shows issue number,
- * date, title, lede, and a PDF-download arrow when available.
+ * VPG v3 — magazine archive · "Gallery" cover wall.
+ * Current issue gets the lead block (cover + lede); the rest tile as a
+ * back-issue grid. Query, issue meta and pagination are unchanged from v2.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
@@ -12,7 +10,7 @@ get_header();
 $paged  = max( 1, get_query_var( 'paged' ) );
 $issues = new WP_Query( [
     'post_type'      => 'vpg_magazine',
-    'posts_per_page' => 12,
+    'posts_per_page' => 13,
     'post_status'    => 'publish',
     'paged'          => $paged,
     'orderby'        => 'date',
@@ -23,58 +21,93 @@ $total = (int) $issues->found_posts;
 
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip vpg-chip--mag"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Magazine', 'vpg-v2' ); ?></span>
-    <h1><?php esc_html_e( 'Every', 'vpg-v2' ); ?> <em><?php esc_html_e( 'issue', 'vpg-v2' ); ?></em>.</h1>
-    <p class="vpg-lede"><?php esc_html_e( 'The monthly Vienna Photo Group magazine. Members get every issue as a print-ready PDF, free, forever-keepable. Older issues are open-access here.', 'vpg-v2' ); ?></p>
-    <p class="vpg-caps" style="margin-top:1.5rem"><?php printf( esc_html( _n( '%d issue published', '%d issues published', $total, 'vpg-v2' ) ), $total ); ?></p>
-</header>
-
-<span class="vpg-asterism vpg-asterism--mark"></span>
-
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap">
-        <?php if ( $issues->have_posts() ) : ?>
-            <div class="vpg-mag-wall">
-                <?php $idx = 0; while ( $issues->have_posts() ) : $issues->the_post(); $idx++;
-                    $issue_no = get_post_meta( get_the_ID(), '_vpg_issue_number', true );
-                    $issue_dt = get_post_meta( get_the_ID(), '_vpg_issue_date', true );
-                    $pdf_url  = get_post_meta( get_the_ID(), '_vpg_pdf_url', true );
-                ?>
-                    <article class="vpg-card vpg-mag-cover-card<?php echo $idx === 1 ? ' vpg-mag-cover-card--lead vpg-card--featured' : ''; ?>">
-                        <a href="<?php the_permalink(); ?>">
-                            <div class="vpg-card__media vpg-card__media--cover <?php echo has_post_thumbnail() ? '' : 'vpg-card__media--placeholder'; ?>">
-                                <?php if ( has_post_thumbnail() ) the_post_thumbnail( 'vpg-cover' ); ?>
-                                <?php if ( $idx === 1 ) : ?>
-                                    <span style="position:absolute;top:.8rem;left:.8rem;background:var(--vpg-accent);color:var(--vpg-bg);padding:.3rem .7rem;border-radius:999px;font-family:var(--vpg-font-mono);font-size:var(--vpg-fs-xs);letter-spacing:.2em;text-transform:uppercase"><?php esc_html_e( 'Current', 'vpg-v2' ); ?></span>
-                                <?php endif; ?>
-                            </div>
-                            <p class="vpg-card__meta">
-                                <?php echo esc_html( $issue_no ?: get_the_date( 'F Y' ) ); ?>
-                                <?php if ( $issue_dt ) echo ' · ' . esc_html( $issue_dt ); ?>
-                            </p>
-                            <h3><?php the_title(); ?></h3>
-                            <p class="vpg-card__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), $idx === 1 ? 32 : 18 ) ); ?></p>
-                        </a>
-                        <?php if ( $pdf_url ) : ?>
-                            <p style="margin-top:1rem"><a class="vpg-btn vpg-btn--ghost vpg-btn--sm" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank">PDF ↓</a></p>
-                        <?php endif; ?>
-                    </article>
-                <?php endwhile; ?>
-            </div>
-
-            <nav class="vpg-pagination" style="margin-top:4rem;text-align:center">
-                <?php the_posts_pagination( [ 'prev_text' => '← Previous', 'next_text' => 'Next →', 'mid_size' => 2 ] ); ?>
-            </nav>
-        <?php else : ?>
-            <div class="vpg-quote" style="margin:6rem auto">
-                <span class="vpg-asterism vpg-asterism--mark"></span>
-                <blockquote><?php esc_html_e( 'The first issue is being assembled.', 'vpg-v2' ); ?></blockquote>
-                <cite><?php esc_html_e( 'Subscribe to be notified when it ships.', 'vpg-v2' ); ?></cite>
-            </div>
-        <?php endif; ?>
+  <section class="g-phero">
+    <div class="g-wrap">
+      <div class="g-phero__grid">
+        <div>
+          <p class="g-kicker" style="margin-bottom:18px">● <?php esc_html_e( 'The Magazine', 'vpg-v2' ); ?></p>
+          <h1 class="g-display g-phero__title"><?php echo wp_kses_post( __( 'Every <em>issue</em>.', 'vpg-v2' ) ); ?></h1>
+          <p class="g-lede g-phero__lede"><?php esc_html_e( 'The monthly Vienna Photo Group magazine. Members get every issue as a print-ready PDF, free, forever-keepable. Older issues are open-access here.', 'vpg-v2' ); ?></p>
+        </div>
+        <dl class="g-phero__aside">
+          <dt><?php esc_html_e( 'Published', 'vpg-v2' ); ?></dt><dd><?php printf( esc_html( _n( '%d issue', '%d issues', $total, 'vpg-v2' ) ), $total ); ?></dd>
+          <dt><?php esc_html_e( 'Cadence', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Monthly', 'vpg-v2' ); ?></dd>
+          <dt><?php esc_html_e( 'Formats', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'PDF for members · print 2× a year', 'vpg-v2' ); ?></dd>
+        </dl>
+      </div>
     </div>
-</section>
+  </section>
+
+  <?php if ( $issues->have_posts() ) : ?>
+
+    <?php
+    // ── Lead: the most recent issue (only on page 1) ──
+    if ( $paged === 1 ) :
+        $issues->the_post();
+        $lead_no  = get_post_meta( get_the_ID(), '_vpg_issue_number', true );
+        $lead_dt  = get_post_meta( get_the_ID(), '_vpg_issue_date', true );
+        $lead_pdf = get_post_meta( get_the_ID(), '_vpg_pdf_url', true );
+    ?>
+    <section class="g-section">
+      <div class="g-wrap">
+        <div class="g-head">
+          <div>
+            <span class="g-kicker"><?php esc_html_e( 'Current issue', 'vpg-v2' ); ?> · <?php echo esc_html( get_the_date( 'F Y' ) ); ?></span>
+            <h2 class="g-head__t"><?php echo esc_html( get_the_title() ); ?></h2>
+          </div>
+          <?php if ( $lead_pdf ) : ?><a class="g-link" href="<?php echo esc_url( $lead_pdf ); ?>" target="_blank" rel="noopener">PDF <span class="a">↓</span></a><?php endif; ?>
+        </div>
+        <div class="g-issue">
+          <div class="g-issue__cover">
+            <a class="g-fig" href="<?php the_permalink(); ?>" style="display:block;aspect-ratio:3/4">
+              <?php if ( has_post_thumbnail() ) the_post_thumbnail( 'large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?>
+            </a>
+            <p class="g-meta g-issue__cap"><?php echo esc_html( ( $lead_no ?: __( 'Issue', 'vpg-v2' ) ) . ( $lead_dt ? ' · ' . $lead_dt : '' ) ); ?></p>
+          </div>
+          <div>
+            <p class="g-lede" style="margin-bottom:28px"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 48 ) ); ?></p>
+            <div class="g-hero__row">
+              <a class="g-btn g-btn--lg g-btn--red" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Read this issue', 'vpg-v2' ); ?> <span class="a">→</span></a>
+              <a class="g-link" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Members read all', 'vpg-v2' ); ?> <span class="a">→</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- ── Back issues ── -->
+    <section class="g-section g-section--alt">
+      <div class="g-wrap">
+        <div class="g-head">
+          <div>
+            <span class="g-kicker"><?php esc_html_e( 'The archive', 'vpg-v2' ); ?></span>
+            <h2 class="g-head__t"><?php echo wp_kses_post( __( 'Back <em>issues</em>.', 'vpg-v2' ) ); ?></h2>
+          </div>
+        </div>
+        <div class="g-issuegrid">
+          <?php while ( $issues->have_posts() ) : $issues->the_post();
+            $issue_no = get_post_meta( get_the_ID(), '_vpg_issue_number', true );
+          ?>
+            <a class="g-issuecard" href="<?php the_permalink(); ?>">
+              <div class="g-fig"><?php if ( has_post_thumbnail() ) the_post_thumbnail( 'medium_large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?></div>
+              <div class="g-issuecard__t"><?php echo esc_html( ( $issue_no ? $issue_no . ' — ' : '' ) . get_the_title() ); ?></div>
+              <div class="g-issuecard__d"><?php echo esc_html( get_the_date( 'F Y' ) ); ?></div>
+            </a>
+          <?php endwhile; ?>
+        </div>
+
+        <div style="text-align:center;margin-top:clamp(36px,5vw,56px)">
+          <?php the_posts_pagination( [ 'prev_text' => __( '← Previous', 'vpg-v2' ), 'next_text' => __( 'Next →', 'vpg-v2' ), 'mid_size' => 2 ] ); ?>
+        </div>
+      </div>
+    </section>
+
+  <?php else : ?>
+    <section class="g-section">
+      <div class="g-wrap"><p class="g-lede"><?php esc_html_e( 'The first issue is being assembled. Subscribe to be notified when it ships.', 'vpg-v2' ); ?></p></div>
+    </section>
+  <?php endif; ?>
 
 </main>
 

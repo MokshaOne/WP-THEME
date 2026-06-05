@@ -6,69 +6,77 @@ $id = vpg_identity();
 ?>
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip"><span class="vpg-chip__dot"></span> Contact</span>
-    <h1>Send a <em>message</em>.</h1>
-    <p class="vpg-lede">Editorial enquiries, submissions, press, partnerships — one inbox, one editor reading every message.</p>
-</header>
-
-<span class="vpg-asterism vpg-asterism--mark"></span>
-
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap">
-        <div class="vpg-split vpg-split--narrow">
-
-            <form class="vpg-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-                <?php wp_nonce_field( 'vpg_contact' ); ?>
-                <input type="hidden" name="action" value="vpg_contact">
-                <label><span>Your name</span><input type="text" name="name" required></label>
-                <label><span>Email</span><input type="email" name="email" required></label>
-                <label><span>Topic</span>
-                    <select name="topic">
-                        <option>Editorial enquiry</option>
-                        <option>Location submission</option>
-                        <option>Studio / shop listing</option>
-                        <option>Membership question</option>
-                        <option>Press / interview</option>
-                        <option>Partnership</option>
-                        <option>Bug / typo report</option>
-                        <option>Other</option>
-                    </select>
-                </label>
-                <label><span>Message</span><textarea name="message" rows="6" required placeholder="Be specific. We read everything."></textarea></label>
-                <p><button type="submit" class="vpg-btn vpg-btn--lg">Send message <span class="vpg-btn__arrow">→</span></button></p>
-                <p class="vpg-form__hint">By submitting you agree to our <a href="<?php echo esc_url( home_url('/privacy/') ); ?>">privacy policy</a>. We never share your email.</p>
-            </form>
-
-            <aside style="display:flex;flex-direction:column;gap:var(--vpg-sp-5)">
-                <article class="vpg-card">
-                    <p class="vpg-caps">— Direct</p>
-                    <h3 style="margin-top:.4rem"><a href="mailto:<?php echo esc_attr( $id['email'] ); ?>"><?php echo esc_html( $id['email'] ); ?></a></h3>
-                    <p class="vpg-card__lede">For URLs, attachments, longer threads — direct email is the cleanest path.</p>
-                </article>
-                <article class="vpg-card">
-                    <p class="vpg-caps">— Response</p>
-                    <h3 style="margin-top:.4rem">Within 72 hours</h3>
-                    <p class="vpg-card__lede">One editor reads every message. We answer in the order received · weekday mornings, Vienna time.</p>
-                </article>
-                <article class="vpg-card">
-                    <p class="vpg-caps">— Location</p>
-                    <h3 style="margin-top:.4rem"><?php echo esc_html( $id['location'] ); ?></h3>
-                    <p class="vpg-card__lede">We do not maintain a public street office. Meetings by appointment for editorial collaborations only.</p>
-                </article>
-            </aside>
+  <section class="g-phero">
+    <div class="g-wrap">
+      <div class="g-phero__grid">
+        <div>
+          <p class="g-kicker" style="margin-bottom:18px">● <?php esc_html_e( 'Contact', 'vpg-v2' ); ?></p>
+          <h1 class="g-display g-phero__title"><?php echo wp_kses_post( __( 'Send a <em>message</em>.', 'vpg-v2' ) ); ?></h1>
+          <p class="g-lede g-phero__lede"><?php esc_html_e( 'Editorial enquiries, submissions, press, partnerships — one inbox, one editor reading every message.', 'vpg-v2' ); ?></p>
         </div>
+        <dl class="g-phero__aside">
+          <dt><?php esc_html_e( 'Direct', 'vpg-v2' ); ?></dt><dd><a href="mailto:<?php echo esc_attr( $id['email'] ); ?>"><?php echo esc_html( $id['email'] ); ?></a></dd>
+          <dt><?php esc_html_e( 'Response', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Within 72 hours', 'vpg-v2' ); ?></dd>
+          <dt><?php esc_html_e( 'Location', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $id['location'] ); ?></dd>
+        </dl>
+      </div>
     </div>
-</section>
+  </section>
 
-<section class="vpg-section vpg-section--surface vpg-section--tight">
-    <div class="vpg-wrap--narrow" style="text-align:center">
-        <p class="vpg-caps">— Members</p>
-        <h2 style="font-size:var(--vpg-fs-h3);margin:1rem 0 1.5rem">Want to <em>submit</em> a location or studio?</h2>
-        <p style="margin-bottom:2rem;color:var(--vpg-ink-mid)">Use the member submission flow · faster review · auto-mapped · proper data capture.</p>
-        <a class="vpg-btn vpg-btn--accent" href="<?php echo esc_url( home_url('/submit/') ); ?>">Open submission form <span class="vpg-btn__arrow">→</span></a>
+  <section class="g-section">
+    <div class="g-wrap">
+      <div class="g-twocol">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Get in touch', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t" style="margin:14px 0 22px"><?php echo wp_kses_post( __( 'Write to the <em>desk</em>.', 'vpg-v2' ) ); ?></h2>
+
+          <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+            <?php wp_nonce_field( 'vpg_contact' ); ?>
+            <input type="hidden" name="action" value="vpg_contact">
+            <div class="g-field--row">
+              <div class="g-field"><label for="vpg-name"><?php esc_html_e( 'Your name', 'vpg-v2' ); ?></label><input class="g-input" id="vpg-name" type="text" name="name" required></div>
+              <div class="g-field"><label for="vpg-email"><?php esc_html_e( 'Email', 'vpg-v2' ); ?></label><input class="g-input" id="vpg-email" type="email" name="email" required></div>
+            </div>
+            <div class="g-field">
+              <label for="vpg-topic"><?php esc_html_e( 'Topic', 'vpg-v2' ); ?></label>
+              <select class="g-select" id="vpg-topic" name="topic">
+                <option>Editorial enquiry</option>
+                <option>Location submission</option>
+                <option>Studio / shop listing</option>
+                <option>Membership question</option>
+                <option>Press / interview</option>
+                <option>Partnership</option>
+                <option>Bug / typo report</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="g-field"><label for="vpg-message"><?php esc_html_e( 'Message', 'vpg-v2' ); ?></label><textarea class="g-textarea" id="vpg-message" name="message" rows="6" required placeholder="<?php esc_attr_e( 'Be specific. We read everything.', 'vpg-v2' ); ?>"></textarea></div>
+            <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Send message', 'vpg-v2' ); ?> <span class="a">→</span></button>
+            <p class="g-form__note"><?php printf( wp_kses_post( __( 'By submitting you agree to our <a href="%s">privacy policy</a>. We never share your email.', 'vpg-v2' ) ), esc_url( home_url('/privacy/') ) ); ?></p>
+          </form>
+        </div>
+        <aside>
+          <p class="g-pull"><?php echo wp_kses_post( __( 'One editor reads every <em>message</em>. We answer in the order received.', 'vpg-v2' ) ); ?></p>
+          <dl class="g-phero__aside" style="margin-top:28px">
+            <dt><?php esc_html_e( 'Direct', 'vpg-v2' ); ?></dt><dd><a href="mailto:<?php echo esc_attr( $id['email'] ); ?>"><?php echo esc_html( $id['email'] ); ?></a> · <?php esc_html_e( 'cleanest path for URLs, attachments, longer threads.', 'vpg-v2' ); ?></dd>
+            <dt><?php esc_html_e( 'Response', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Within 72 hours · weekday mornings, Vienna time.', 'vpg-v2' ); ?></dd>
+            <dt><?php esc_html_e( 'Location', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $id['location'] ); ?> · <?php esc_html_e( 'meetings by appointment only.', 'vpg-v2' ); ?></dd>
+          </dl>
+        </aside>
+      </div>
     </div>
-</section>
+  </section>
+
+  <section class="g-section--dark g-section">
+    <div class="g-wrap" style="text-align:center">
+      <span class="g-kicker"><?php esc_html_e( 'Members', 'vpg-v2' ); ?></span>
+      <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:18ch"><?php echo wp_kses_post( __( 'Want to <em>submit</em> a location or studio?', 'vpg-v2' ) ); ?></h2>
+      <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Use the member submission flow · faster review · auto-mapped · proper data capture.', 'vpg-v2' ); ?></p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url('/submit/') ); ?>"><?php esc_html_e( 'Open submission form', 'vpg-v2' ); ?> <span class="a">→</span></a>
+      </div>
+    </div>
+  </section>
 
 </main>
 <?php get_footer();

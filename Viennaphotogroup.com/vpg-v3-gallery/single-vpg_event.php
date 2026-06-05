@@ -1,5 +1,5 @@
 <?php
-/** VPG v2 · single · Event */
+/** VPG v2 · single · Event (Gallery) */
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 ?>
@@ -9,34 +9,45 @@ get_header();
     $meta = '_vpg_event_date' ? vpg_field( '_vpg_event_date' ) : '';
 ?>
 
-    <header class="vpg-page-hero">
-        <span class="vpg-chip vpg-chip--event"><span class="vpg-chip__dot"></span> Event</span>
-        <h1><?php the_title(); ?></h1>
-        <?php if ( get_the_excerpt() ) : ?><p class="vpg-lede"><?php echo esc_html( get_the_excerpt() ); ?></p><?php endif; ?>
-        <?php if ( $meta ) : ?>
-            <p class="vpg-caps" style="margin-top:1.5rem">Date · <?php echo esc_html( $meta ); ?></p>
-        <?php endif; ?>
-
-    </header>
-
-    <?php if ( has_post_thumbnail() ) : ?>
-        <figure style="max-width:var(--vpg-max-magazine);margin:2rem auto;padding:0 var(--vpg-sp-5)">
-            <?php the_post_thumbnail( 'vpg-hero', [ 'style' => 'width:100%;border-radius:var(--vpg-radius-lg)' ] ); ?>
-        </figure>
-    <?php endif; ?>
-
-    <section class="vpg-section vpg-section--tight">
-        <div class="vpg-wrap--prose">
-            <div class="vpg-prose"><?php the_content(); ?></div>
+    <section class="g-phero">
+      <div class="g-wrap">
+        <div class="g-phero__grid">
+          <div>
+            <p class="g-kicker" style="margin-bottom:16px">Event</p>
+            <h1 class="g-display g-phero__title" style="max-width:20ch"><?php the_title(); ?></h1>
+            <?php if ( get_the_excerpt() ) : ?>
+              <p class="g-lede g-phero__lede"><?php echo esc_html( get_the_excerpt() ); ?></p>
+            <?php endif; ?>
+            <div class="g-byline" style="margin-top:20px">
+              <span><?php echo esc_html( get_the_author() ); ?></span><span>·</span>
+              <span><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></span>
+            </div>
+          </div>
+          <?php if ( $meta ) : ?>
+            <dl class="g-phero__aside">
+              <dt>Date</dt><dd><?php echo esc_html( $meta ); ?></dd>
+            </dl>
+          <?php endif; ?>
         </div>
+      </div>
     </section>
 
+    <?php if ( has_post_thumbnail() ) : ?>
+      <figure class="g-wrap" style="margin:clamp(24px,4vw,48px) auto">
+        <div class="g-fig g-fig--3x2"><?php the_post_thumbnail( 'large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?></div>
+      </figure>
+    <?php endif; ?>
 
+    <section class="g-section" style="padding-top:clamp(32px,4vw,56px)">
+      <div class="g-wrap">
+        <div class="g-prose" style="margin:0 auto"><?php the_content(); ?></div>
+      </div>
+    </section>
 
-    <section class="vpg-section vpg-section--surface vpg-section--tight" style="text-align:center">
-        <div class="vpg-wrap--narrow">
-            <a class="vpg-btn vpg-btn--ghost" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_event' ) ); ?>"><?php esc_html_e( 'All events', 'vpg-v2' ); ?> →</a>
-        </div>
+    <section class="g-section g-section--dark" style="text-align:center">
+      <div class="g-wrap">
+        <a class="g-btn g-btn--red g-btn--lg" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_event' ) ); ?>"><?php esc_html_e( 'All events', 'vpg-v2' ); ?> <span class="a">&rarr;</span></a>
+      </div>
     </section>
 
 <?php endwhile; ?>

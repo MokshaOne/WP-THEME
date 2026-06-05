@@ -10,57 +10,58 @@ $total = (int) $q->found_posts;
 
 <main id="vpg-main">
 
-<header class="vpg-page-hero">
-    <span class="vpg-chip vpg-chip--tut"><span class="vpg-chip__dot"></span> Tutorials</span>
-    <h1>How-to, <em>in practice</em>.</h1>
-    <p class="vpg-lede">Tutorials by members, for members. Lighting, develop, scan, archive, print. Beginner to ambient-expert.</p>
-    <p class="vpg-caps" style="margin-top:1.5rem"><?php printf( esc_html__( '%d entries', 'vpg-v2' ), $total ); ?> · Member-written · skill series</p>
-</header>
+  <section class="g-phero">
+    <div class="g-wrap">
+      <div class="g-phero__grid">
+        <div>
+          <p class="g-kicker" style="margin-bottom:18px">● <?php esc_html_e( 'Tutorials', 'vpg-v2' ); ?></p>
+          <h1 class="g-display g-phero__title"><?php echo wp_kses_post( __( 'How-to, <em>in practice</em>.', 'vpg-v2' ) ); ?></h1>
+          <p class="g-lede g-phero__lede"><?php esc_html_e( 'Tutorials by members, for members. Lighting, develop, scan, archive, print. Beginner to ambient-expert.', 'vpg-v2' ); ?></p>
+        </div>
+        <dl class="g-phero__aside">
+          <dt><?php esc_html_e( 'Published', 'vpg-v2' ); ?></dt><dd><?php printf( esc_html__( '%d entries', 'vpg-v2' ), $total ); ?></dd>
+          <dt><?php esc_html_e( 'Written by', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Members', 'vpg-v2' ); ?></dd>
+          <dt><?php esc_html_e( 'Range', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Beginner to ambient-expert', 'vpg-v2' ); ?></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
 
-<span class="vpg-asterism vpg-asterism--mark"></span>
+  <section class="g-section g-section--alt">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Member-written', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'The <em>skill</em> series.', 'vpg-v2' ) ); ?></h2>
+        </div>
+      </div>
 
-<section class="vpg-section vpg-section--tight">
-    <div class="vpg-wrap">
+      <?php if ( $q->have_posts() ) : ?>
+        <div class="g-grid3">
+          <?php while ( $q->have_posts() ) : $q->the_post();
+            $meta_val = vpg_field( 'tutorial_minutes' );
+          ?>
+            <a class="g-card" href="<?php the_permalink(); ?>">
+              <div class="g-fig g-fig--4x3"><?php if ( has_post_thumbnail() ) the_post_thumbnail( 'large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?></div>
+              <span class="g-cat"><?php esc_html_e( 'Tutorials', 'vpg-v2' ); ?></span>
+              <h3 class="g-card__title"><?php the_title(); ?></h3>
+              <div class="g-byline">
+                <span><?php echo $meta_val ? esc_html( 'Min read · ' . $meta_val ) : esc_html( get_the_date( 'M Y' ) ); ?></span>
+              </div>
+            </a>
+          <?php endwhile; ?>
+        </div>
 
-        <?php if ( $q->have_posts() ) : ?>
-            <div class="vpg-grid vpg-grid--auto">
-                <?php while ( $q->have_posts() ) : $q->the_post();
-                    $thumb = get_the_post_thumbnail_url( get_the_ID(), 'vpg-card' );
-                    $meta_val = vpg_field( 'tutorial_minutes' );
-                ?>
-                    <article class="vpg-card">
-                        <a href="<?php the_permalink(); ?>">
-                            <div class="vpg-card__media vpg-card__media--landscape <?php echo $thumb ? '' : 'vpg-card__media--placeholder'; ?>">
-                                <?php if ( $thumb ) : ?><img src="<?php echo esc_url( $thumb ); ?>" alt="" loading="lazy"><?php endif; ?>
-                            </div>
-                            <span class="vpg-chip vpg-chip--tut" style="margin-bottom:.8rem"><span class="vpg-chip__dot"></span> Tutorials</span>
-                            <h3><?php the_title(); ?></h3>
-                            <?php if ( has_excerpt() ) : ?>
-                                <p class="vpg-card__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 22 ) ); ?></p>
-                            <?php endif; ?>
-                            <div class="vpg-card__meta" style="display:flex;justify-content:space-between;margin-top:1.2rem;border-top:1px solid var(--vpg-rule);padding-top:1rem">
-                                <span><?php echo $meta_val ? esc_html( 'Min read · ' . $meta_val ) : esc_html( get_the_date( 'M Y' ) ); ?></span>
-                                <span style="font-family:var(--vpg-font-display);color:var(--vpg-accent);font-size:var(--vpg-fs-lg)">→</span>
-                            </div>
-                        </a>
-                    </article>
-                <?php endwhile; ?>
-            </div>
+        <div style="text-align:center;margin-top:clamp(36px,5vw,56px)">
+          <?php the_posts_pagination( [ 'prev_text' => '← Previous', 'next_text' => 'Next →', 'mid_size' => 2 ] ); ?>
+        </div>
 
-            <nav class="vpg-pagination" style="margin-top:4rem;text-align:center">
-                <?php the_posts_pagination( [ 'prev_text' => '← Previous', 'next_text' => 'Next →', 'mid_size' => 2 ] ); ?>
-            </nav>
-
-        <?php else : ?>
-            <div class="vpg-quote" style="margin:6rem auto">
-                <span class="vpg-asterism vpg-asterism--mark"></span>
-                <blockquote>Tutorials in the pipeline.</blockquote>
-                <cite><?php esc_html_e( 'Members can submit from the dashboard.', 'vpg-v2' ); ?></cite>
-            </div>
-        <?php endif; ?>
+      <?php else : ?>
+        <p class="g-lede"><?php esc_html_e( 'Tutorials in the pipeline. Members can submit from the dashboard.', 'vpg-v2' ); ?></p>
+      <?php endif; ?>
 
     </div>
-</section>
+  </section>
 
 </main>
 

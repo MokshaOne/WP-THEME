@@ -1,0 +1,11 @@
+/* VPG v2 · pages/forms.css · contact/join/login/submit shared styles */
+.vpg-form { width: 100%; max-width: 540px; margin: 0 auto; }
+.vpg-form > p > button.vpg-btn { width: 100%; justify-content: center; padding: var(--vpg-sp-4) var(--vpg-sp-6); font-size: var(--vpg-fs-base); }
+#vpg-loginform { display: flex; flex-direction: column; gap: var(--vpg-sp-4); max-width: 420px; margin: 0 auto; }
+#vpg-loginform label { display: flex; flex-direction: column; gap: var(--vpg-sp-2); font-family: var(--vpg-font-mono); font-size: var(--vpg-fs-xs); letter-spacing: var(--vpg-tr-caps); text-transform: uppercase; color: var(--vpg-muted); }
+#vpg-loginform .input { background: var(--vpg-card); border: 1px solid var(--vpg-rule-strong); padding: var(--vpg-sp-3) var(--vpg-sp-4); border-radius: var(--vpg-radius); font-size: var(--vpg-fs-base); }
+#vpg-loginform .input:focus { outline: none; border-color: var(--vpg-accent); }
+#vpg-loginform .button-primary, #vpg-loginform input[type="submit"] {
+    background: var(--vpg-ink); color: var(--vpg-bg); border: none; padding: var(--vpg-sp-4) var(--vpg-sp-6); border-radius: var(--vpg-radius-pill); font: var(--vpg-fs-base) var(--vpg-font-body); font-weight: var(--vpg-fw-medium); cursor: pointer; transition: background var(--vpg-t-fast);
+}
+#vpg-loginform .button-primary:hover, #vpg-loginform input[type="submit"]:hover { background: var(--vpg-accent); }

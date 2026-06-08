@@ -1,9 +1,17 @@
 {
     "name": "mokshaone/wp-theme",
     "description": "WordPress theme collection — multi-site monorepo",
+    "description": "WordPress theme collection",
+    "description": "WordPress theme collection — multi-site monorepo",
+
     "type": "project",
     "license": "GPL-2.0-or-later",
     "require": {
         "php": ">=8.0"
+
+    },
+    "config": {
+        "sort-packages": true
+
     }
 }

@@ -1,0 +1,14 @@
+{
+    "name": "vpg/v2-coop",
+    "description": "Vienna Photo Group · v2 · server-side PDF generation via mPDF",
+    "type": "wordpress-theme",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.0",
+        "mpdf/mpdf": "^8.2"
+    },
+    "config": {
+        "vendor-dir": "vendor",
+        "optimize-autoloader": true
+    }
+}

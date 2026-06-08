@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>on1.agency — Hero 2: Bold Split</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        bg:      '#0A0A0A',
+        bg2:     '#111111',
+        bg3:     '#161616',
+        bgcard:  '#131313',
+        fg:      '#FFFFFF',
+        mute:    'rgba(255,255,255,0.58)',
+        faint:   'rgba(255,255,255,0.32)',
+        rule:    'rgba(255,255,255,0.08)',
+        rule2:   'rgba(255,255,255,0.16)',
+        accent:  '#FF1F8C',
+        accentd: '#C8095F',
+        accentl: '#FF6BB0',
+        warm:    '#FF7A3D',
+      },
+      fontFamily: {
+        serif: ["'Instrument Serif'", "'Times New Roman'", 'serif'],
+        sans:  ["'Inter'", 'system-ui', '-apple-system', 'sans-serif'],
+      },
+    },
+  },
+}
+</script>
+<style>
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  ::selection { background: #FF1F8C; color: #0A0A0A; }
+
+  .animate-in { animation: fadeUp 0.7s ease-out both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.25s; }
+  .delay-3 { animation-delay: 0.4s; }
+  .delay-4 { animation-delay: 0.55s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes reveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+  .img-reveal { animation: reveal 1.2s cubic-bezier(0.77, 0, 0.18, 1) 0.3s both; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.85rem 1.3rem 0.85rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.03em;
+    transition: all 0.25s; cursor: pointer;
+  }
+  .pill:hover { border-color: #FF1F8C; color: #FF1F8C; }
+  .pill--accent { background: #FF1F8C; border-color: #FF1F8C; color: #0A0A0A; }
+  .pill--accent:hover { background: #C8095F; border-color: #C8095F; color: #FFFFFF; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: #FF1F8C; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 0.6em;
+  }
+  .eyebrow::before { content: ''; width: 18px; height: 1px; background: #FF1F8C; }
+
+  .marquee-track {
+    display: flex; gap: 3rem; width: max-content;
+    animation: scroll 25s linear infinite;
+  }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .grid-line {
+    position: absolute;
+    background: rgba(255,255,255,0.04);
+  }
+  .grid-line--v { width: 1px; top: 0; bottom: 0; }
+  .grid-line--h { height: 1px; left: 0; right: 0; }
+</style>
+</head>
+<body class="bg-bg text-fg font-sans leading-relaxed overflow-x-hidden">
+
+<!-- NAV -->
+<nav class="sticky top-0 z-50 grid grid-cols-[auto_1fr_auto] items-center gap-8 px-[clamp(1.5rem,4vw,4rem)] py-5 bg-bg/70 backdrop-blur-xl border-b border-rule">
+  <a href="#" class="text-sm font-semibold tracking-[0.28em] uppercase">on1.agency <sup class="text-[0.55em] text-mute font-normal">&reg;</sup></a>
+  <ul class="hidden md:flex gap-9 justify-center list-none m-0 p-0">
+    <li><a href="#" class="text-[13px] tracking-wider font-medium hover:text-accent transition-colors">Work<sup class="text-accent ml-0.5 text-[0.7em]">14</sup></a></li>
+    <li><a href="#" class="text-[13px] tracking-wider font-medium hover:text-accent transition-colors">Practice</a></li>
+    <li><a href="#" class="text-[13px] tracking-wider font-medium hover:text-accent transition-colors">Pricing</a></li>
+    <li><a href="#" class="text-[13px] tracking-wider font-medium hover:text-accent transition-colors">FAQ</a></li>
+  </ul>
+  <div class="hidden md:flex items-center gap-3">
+    <a href="#" class="pill pill--accent">Let's talk <span>&#8599;</span></a>
+  </div>
+</nav>
+
+<!-- HERO 2: Bold Split Screen -->
+<header class="relative min-h-screen grid lg:grid-cols-2">
+  <!-- Decorative grid lines -->
+  <div class="grid-line grid-line--v" style="left:25%"></div>
+  <div class="grid-line grid-line--v" style="left:50%"></div>
+  <div class="grid-line grid-line--v" style="left:75%"></div>
+  <div class="grid-line grid-line--h" style="top:33%"></div>
+  <div class="grid-line grid-line--h" style="top:66%"></div>
+
+  <!-- Left: Full-bleed image -->
+  <div class="relative min-h-[50vh] lg:min-h-screen overflow-hidden">
+    <div class="img-reveal absolute inset-0">
+      <img
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&h=1600&fit=crop&q=80"
+        alt="Creative workspace with design tools"
+        class="w-full h-full object-cover"
+      >
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-bg/90 lg:to-bg"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent lg:hidden"></div>
+
+    <!-- Floating stat cards -->
+    <div class="absolute bottom-8 left-8 right-8 lg:right-auto flex gap-4 animate-in delay-4">
+      <div class="px-4 py-3 rounded-2xl bg-bg/80 backdrop-blur-md border border-rule">
+        <div class="text-2xl font-bold"><span class="text-accent">14</span>+</div>
+        <div class="text-[11px] text-mute uppercase tracking-wider">Sites shipped</div>
+      </div>
+      <div class="px-4 py-3 rounded-2xl bg-bg/80 backdrop-blur-md border border-rule">
+        <div class="text-2xl font-bold"><span class="text-accent">72</span>h</div>
+        <div class="text-[11px] text-mute uppercase tracking-wider">Reply window</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Content -->
+  <div class="flex flex-col justify-center px-8 lg:px-16 xl:px-24 py-16 lg:py-0 relative">
+    <div class="max-w-lg">
+      <div class="animate-in">
+        <span class="eyebrow">Digital atelier &middot; Wien</span>
+      </div>
+
+      <h1 class="mt-8 animate-in delay-1">
+        <span class="block text-6xl sm:text-7xl xl:text-8xl font-bold tracking-tighter leading-[0.88]">
+          where
+        </span>
+        <span class="block text-6xl sm:text-7xl xl:text-8xl font-bold tracking-tighter leading-[0.88] bg-gradient-to-r from-accent to-accentl bg-clip-text text-transparent">
+          <em class="font-serif italic font-normal">craft</em>
+        </span>
+        <span class="block text-6xl sm:text-7xl xl:text-8xl font-bold tracking-tighter leading-[0.88]">
+          meets
+        </span>
+        <span class="block text-6xl sm:text-7xl xl:text-8xl font-bold tracking-tighter leading-[0.88]">
+          code<em class="font-serif italic font-normal text-accent">.</em>
+        </span>
+      </h1>
+
+      <p class="mt-8 text-mute text-lg leading-relaxed animate-in delay-2">
+        A one-person digital atelier in Wien &mdash; building editorial WordPress sites and design systems for studios who want to look like themselves.
+      </p>
+
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 animate-in delay-3">
+        <a href="#" class="pill pill--accent text-base">
+          Start a project <span>&#8599;</span>
+        </a>
+        <a href="#" class="pill text-base">
+          View work <span>&rarr;</span>
+        </a>
+      </div>
+
+      <div class="mt-10 animate-in delay-4 flex items-center gap-6">
+        <div class="flex -space-x-3">
+          <div class="w-10 h-10 rounded-full border-2 border-bg bg-bg3 flex items-center justify-center text-[10px] font-semibold text-accent">MR</div>
+          <div class="w-10 h-10 rounded-full border-2 border-bg bg-bg3 flex items-center justify-center text-[10px] font-semibold text-accent">TK</div>
+          <div class="w-10 h-10 rounded-full border-2 border-bg bg-bg3 flex items-center justify-center text-[10px] font-semibold text-accent">JF</div>
+        </div>
+        <div class="text-sm">
+          <span class="text-fg font-medium">Trusted by studios</span><br>
+          <span class="text-mute text-xs">across Wien &amp; Europe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MARQUEE / Client trust bar -->
+<div class="border-y border-rule py-6 overflow-hidden bg-bg2/50">
+  <div class="marquee-track">
+    <span class="text-mute text-sm tracking-[0.15em] uppercase whitespace-nowrap">Studio Wien &middot; Atelier Neun &middot; VPG &middot; JRPOETRY &middot; M1O Hub &middot; Raveenthiran.com &middot; on1.agency &middot;</span>
+    <span class="text-mute text-sm tracking-[0.15em] uppercase whitespace-nowrap">Studio Wien &middot; Atelier Neun &middot; VPG &middot; JRPOETRY &middot; M1O Hub &middot; Raveenthiran.com &middot; on1.agency &middot;</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="py-24">
+  <div class="max-w-[1280px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <header class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-16">
+      <div>
+        <span class="eyebrow">What we do</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter mt-4">empowering studios to <em class="font-serif italic font-normal">look like themselves</em>.</h2>
+      </div>
+      <p class="text-mute max-w-sm text-sm leading-relaxed">Four core services. Strategy is always included.</p>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="group relative overflow-hidden rounded-3xl border border-rule p-8 bg-bgcard hover:border-accent/30 transition-all hover:-translate-y-1">
+        <div class="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-accent/5 group-hover:bg-accent/10 transition-all"></div>
+        <div class="relative">
+          <span class="text-4xl font-bold text-accent/20 font-serif italic">01</span>
+          <h3 class="text-xl font-bold mt-2">Editorial <em class="font-serif italic font-normal">WordPress</em> themes</h3>
+          <p class="text-mute text-sm mt-3 leading-relaxed">Built like a printed monograph. ACF Pro-driven, type-led, custom CPTs. No page builders, no plugin sprawl.</p>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-accent font-semibold">from &#8364; 6.800</span>
+            <span class="text-accent opacity-0 group-hover:opacity-100 transition-opacity">&#8599;</span>
+          </div>
+        </div>
+      </div>
+      <div class="group relative overflow-hidden rounded-3xl border border-rule p-8 bg-bgcard hover:border-accent/30 transition-all hover:-translate-y-1">
+        <div class="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-accent/5 group-hover:bg-accent/10 transition-all"></div>
+        <div class="relative">
+          <span class="text-4xl font-bold text-accent/20 font-serif italic">02</span>
+          <h3 class="text-xl font-bold mt-2">Design <em class="font-serif italic font-normal">systems</em> &amp; tokens</h3>
+          <p class="text-mute text-sm mt-3 leading-relaxed">Palette, type, components, documentation. For when the next site, deck and pitch should look like the same studio.</p>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-accent font-semibold">from &#8364; 3.200</span>
+            <span class="text-accent opacity-0 group-hover:opacity-100 transition-opacity">&#8599;</span>
+          </div>
+        </div>
+      </div>
+      <div class="group relative overflow-hidden rounded-3xl border border-rule p-8 bg-bgcard hover:border-accent/30 transition-all hover:-translate-y-1">
+        <div class="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-accent/5 group-hover:bg-accent/10 transition-all"></div>
+        <div class="relative">
+          <span class="text-4xl font-bold text-accent/20 font-serif italic">03</span>
+          <h3 class="text-xl font-bold mt-2">Identity <em class="font-serif italic font-normal">refresh</em> for studios</h3>
+          <p class="text-mute text-sm mt-3 leading-relaxed">Wordmark, voice, site, email. Quiet identity work for studios who want to look more like themselves.</p>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-accent font-semibold">from &#8364; 4.500</span>
+            <span class="text-accent opacity-0 group-hover:opacity-100 transition-opacity">&#8599;</span>
+          </div>
+        </div>
+      </div>
+      <div class="group relative overflow-hidden rounded-3xl border border-rule p-8 bg-bgcard hover:border-accent/30 transition-all hover:-translate-y-1">
+        <div class="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-accent/5 group-hover:bg-accent/10 transition-all"></div>
+        <div class="relative">
+          <span class="text-4xl font-bold text-accent/20 font-serif italic">04</span>
+          <h3 class="text-xl font-bold mt-2"><em class="font-serif italic font-normal">Audits</em> &amp; second opinions</h3>
+          <p class="text-mute text-sm mt-3 leading-relaxed">Senior eyes on a site that's almost-but-not-quite right. Two weeks, written report, no bullshit.</p>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-accent font-semibold">from &#8364; 1.800</span>
+            <span class="text-accent opacity-0 group-hover:opacity-100 transition-opacity">&#8599;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIEF CTA -->
+<section class="py-32 text-center">
+  <div class="max-w-[700px] mx-auto px-6">
+    <span class="eyebrow" style="justify-content:center;">Send a signal</span>
+    <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mt-6 leading-tight">
+      tell us what you're<br><em class="font-serif italic font-normal">actually</em> doing.
+    </h2>
+    <p class="text-mute mt-6 max-w-lg mx-auto">Five questions. One reply within 72 hours. No automated funnels. Just a conversation.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+      <a href="mailto:hello@on1.agency" class="pill pill--accent text-base">Send brief <span>&#8599;</span></a>
+      <a href="#" class="pill text-base">Book a call <span>&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-rule py-16">
+  <div class="max-w-[1280px] mx-auto px-[clamp(1.5rem,4vw,4rem)]">
+    <div class="grid md:grid-cols-4 gap-10">
+      <div>
+        <h3 class="text-2xl font-bold">on<em class="font-serif italic">1</em>.agency <sup class="text-xs text-mute">&reg;</sup></h3>
+        <p class="text-mute text-sm mt-3 leading-relaxed">A one-person digital atelier.<br>Wien, Austria.<br><em class="font-serif italic">Working slowly, on purpose.</em></p>
+      </div>
+      <div>
+        <h6 class="text-xs tracking-[0.2em] uppercase text-mute font-semibold mb-4">Studio</h6>
+        <ul class="space-y-2 text-sm text-mute"><li><a href="#" class="hover:text-accent transition-colors">About</a></li><li><a href="#" class="hover:text-accent transition-colors">Work</a></li><li><a href="#" class="hover:text-accent transition-colors">Process</a></li></ul>
+      </div>
+      <div>
+        <h6 class="text-xs tracking-[0.2em] uppercase text-mute font-semibold mb-4">Contact</h6>
+        <ul class="space-y-2 text-sm text-mute"><li><a href="mailto:hello@on1.agency" class="hover:text-accent transition-colors">hello@on1.agency</a></li><li><a href="#" class="hover:text-accent transition-colors">Send a brief</a></li></ul>
+      </div>
+      <div>
+        <h6 class="text-xs tracking-[0.2em] uppercase text-mute font-semibold mb-4">Sister projects</h6>
+        <ul class="space-y-2 text-sm text-mute"><li><a href="#" class="hover:text-accent transition-colors">m1o.at</a></li><li><a href="#" class="hover:text-accent transition-colors">raveenthiran.com</a></li><li><a href="#" class="hover:text-accent transition-colors">VPG</a></li></ul>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-rule text-xs text-faint">
+      <span>Set in <em class="font-serif italic">Instrument Serif</em> &amp; Inter</span>
+      <span>&copy; MMXXVI &middot; on1.agency</span>
+      <span>Built in Wien &middot; v4</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

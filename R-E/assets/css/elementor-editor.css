@@ -1,0 +1,8 @@
+/* Editor-only styles for Elementor panel */
+.elementor-panel .elementor-element .icon .r-e-icon::before {
+    content: 'RE';
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: #F2A03D;
+}

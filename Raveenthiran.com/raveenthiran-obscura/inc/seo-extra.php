@@ -236,7 +236,9 @@ function nr_render_image_sitemap() {
 				$aid = is_array( $g ) ? (int) ( $g['ID'] ?? $g['id'] ?? 0 ) : ( is_numeric( $g ) ? (int) $g : 0 );
 				if ( ! $aid || wp_attachment_is( 'video', $aid ) ) continue;
 				$u = wp_get_attachment_image_url( $aid, 'full' );
-				if ( $u ) $imgs[] = [ $u, wp_get_attachment_caption( $aid ) ?: get_the_title() ];
+				$cap = wp_get_attachment_caption( $aid );
+				if ( ! $cap && function_exists( 'nr_get_exif' ) ) { $ex = nr_get_exif( $aid ); $cap = trim( implode( ' · ', array_filter( [ $ex['camera'] ?? '', $ex['focal'] ?? '', $ex['iso'] ?? '' ] ) ) ); }
+				if ( $u ) $imgs[] = [ $u, $cap ?: get_the_title() ];
 			}
 		}
 		if ( ! $imgs ) continue;

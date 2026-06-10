@@ -2563,3 +2563,25 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
 .nr-scrollvid{position:relative}
 .nr-scrollvid__sticky{position:sticky;top:var(--bar-h);height:calc(100vh - var(--bar-h));overflow:hidden}
 .nr-scrollvid__sticky video{width:100%;height:100%;object-fit:cover}
+
+/* ── v4.56.0: finishing batch 1 ───────────────────────────────── */
+/* #8 site-wide B&W (media only; UI keeps its amber) */
+body.nr-bw .nr-card img,body.nr-bw .nr-hero__plate img,body.nr-bw .nr-project__plate img,
+body.nr-bw .nr-jpost img,body.nr-bw .nr-about__portrait img{filter:grayscale(1) contrast(1.04)!important;transition:filter .4s}
+/* #46 reading mode — calmer measure + spacing on journal prose */
+body.nr-readmode .nr-jpost__prose{column-count:1!important;max-width:64ch;margin:0 auto;font-size:17px;line-height:1.85;letter-spacing:.01em}
+body.nr-readmode .nr-jpost__prose p{margin-bottom:1.1em}
+/* #8/#46 control */
+.nr-view{position:fixed;left:16px;bottom:56px;z-index:60;display:flex;gap:6px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px}
+.nr-view button{background:rgba(11,12,16,.66);color:var(--ink-3);border:1px solid var(--hair);border-radius:999px;padding:6px 10px;cursor:pointer;letter-spacing:.06em;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-view button[aria-pressed="true"]{color:var(--amber);border-color:var(--amber)}
+.nr-view button:hover{color:var(--ink)}
+@media (max-width:900px){.nr-view{display:none}}
+/* #20 surprise chip */
+.nr-surprise{color:var(--amber)}
+/* #29 kill display-font CLS with a metric-matched fallback */
+@font-face{font-family:'Inter Tight Fallback';src:local('Arial');size-adjust:96%;ascent-override:92%;descent-override:23%;line-gap-override:0%}
+.nr-display,.nr-hero__title,.nr-jpost h1{font-family:'Inter Tight','Inter Tight Fallback',system-ui,sans-serif}
+/* #48 Save-Data hero — one static frame, no slider machinery */
+body.nr-savedata .nr-hero__plate:not(.is-active){display:none!important}
+body.nr-savedata .nr-hero__thumbs,body.nr-savedata .nr-hero__nav{display:none!important}

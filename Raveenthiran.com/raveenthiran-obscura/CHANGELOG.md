@@ -1,5 +1,26 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.56.0 — IDEAS-50-NEXT, small batch 1 (11 items)
+New `inc/finishing.php` + front-end.
+- **#37 heuristic auto-alt** — images with no alt get one from the attachment/parent
+  title + EXIF camera (no AI). Fixes the “193 weak/empty alt” count; never overrides
+  a real alt.
+- **#5 per-project contact-sheet PDF** — `/nr-contactsheet/<id>.pdf` (memory-safe
+  JPEG passthrough) + a “Contact sheet ↓” button in the project actions.
+- **#39 image-sitemap EXIF captions** — fall back to camera/focal/ISO when no caption.
+- **#8 site-wide B&W toggle** + **#46 reading mode** — a small bottom-left “B/W · Aa”
+  control (desktop), persisted; B/W greys imagery only, reading mode relaxes journal
+  measure/leading.
+- **#19 keyboard gallery** — `j`/`k` move through cards, `r` = random project.
+- **#20 “surprise me”** — a chip on the portfolio archive (+ `?nr_random=1`).
+- **#13 reading-position memory** — journal singles resume where you left off.
+- **#30 decode-before-show** + **#29 font `size-adjust` fallback** — less hero jank,
+  no display-font CLS.
+- **#48 Save-Data hero** — shows a single static frame + hides slider chrome when the
+  browser sends `Save-Data`.
+
+IDEAS-50-NEXT: 11/50.
+
 ## 4.55.0 — Batch 6: Awwwards interaction layer (opt-in)
 New `assets/js/awwwards.js` (loaded only with the GPU-effects toggle). Every
 effect is opt-in and falls back to the normal rail/page if anything fails.

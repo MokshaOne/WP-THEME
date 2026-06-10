@@ -158,7 +158,8 @@ $lede = get_the_excerpt();
 				   href="<?php echo esc_url( add_query_arg( [ 'service' => sanitize_title( $m['cat'] ?: 'editorial' ), 'ref' => get_the_title() ], function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>">
 					<span><?php echo esc_html( nr_opt( 'nr_cta_commission', __( 'Commission similar', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 				</a>
-				<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
+				<a class="nr-btn nr-btn--ghost" href="<?php echo esc_url( function_exists( 'nr_contactsheet_url' ) ? nr_contactsheet_url( get_the_ID() ) : '#' ); ?>" target="_blank" rel="noopener"><span>Contact sheet</span> <span>↓</span></a>
+					<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
 			</div>
 
 				<?php

@@ -2139,3 +2139,77 @@
   bar.addEventListener('submit', function () { try { localStorage.removeItem(KEY); } catch (e) {} });
   refresh();
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-50-NEXT small batch 1 (v4.56.0)
+   #8 B&W toggle · #46 reading mode · #19 keyboard gallery ·
+   #20 surprise chip · #13 reading-position · #30 decode-before-show
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body, root = document.documentElement;
+
+  /* #8 + #46 — a tiny "view" control: B&W and reading-mode toggles, persisted. */
+  try {
+    if (localStorage.getItem('nr_bw') === '1') body.classList.add('nr-bw');
+    if (localStorage.getItem('nr_read') === '1') body.classList.add('nr-readmode');
+  } catch (e) {}
+  if (window.matchMedia('(min-width:901px)').matches) {
+    var view = document.createElement('div');
+    view.className = 'nr-view';
+    view.innerHTML = '<button data-bw aria-pressed="false" title="Black & white">B/W</button>'
+      + '<button data-read aria-pressed="false" title="Reading mode">Aa</button>';
+    body.appendChild(view);
+    var sync = function () {
+      view.querySelector('[data-bw]').setAttribute('aria-pressed', body.classList.contains('nr-bw'));
+      view.querySelector('[data-read]').setAttribute('aria-pressed', body.classList.contains('nr-readmode'));
+    };
+    view.querySelector('[data-bw]').addEventListener('click', function () { var on = body.classList.toggle('nr-bw'); try { localStorage.setItem('nr_bw', on ? '1' : '0'); } catch (e) {} sync(); });
+    view.querySelector('[data-read]').addEventListener('click', function () { var on = body.classList.toggle('nr-readmode'); try { localStorage.setItem('nr_read', on ? '1' : '0'); } catch (e) {} sync(); });
+    sync();
+  }
+
+  /* #19 — keyboard gallery: j/k move through cards, Enter opens, r = random. */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.matches('input,textarea,select,[contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return;
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.nr-portfolio-rail .nr-card, .nr-portfolio-rail .nr-card--journal'));
+    if ((e.key === 'j' || e.key === 'k') && cards.length) {
+      e.preventDefault();
+      var cur = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.nr-card') : null;
+      var i = cards.indexOf(cur);
+      i = e.key === 'j' ? Math.min(cards.length - 1, i + 1) : Math.max(0, i - 1);
+      if (i < 0) i = 0;
+      cards[i].focus({ preventScroll: true });
+      cards[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    } else if (e.key === 'r' && (document.querySelector('.nr-portfolio-archive') || body.classList.contains('nr-page-home'))) {
+      if (window.NR && NR.home) location.href = NR.home + '?nr_random=1';
+    }
+  });
+
+  /* #20 — "surprise me" chip on the portfolio archive. */
+  var head = document.querySelector('.nr-portfolio-archive .nr-chips');
+  if (head && window.NR && NR.home && !head.querySelector('.nr-surprise')) {
+    var a = document.createElement('a');
+    a.className = 'nr-chip nr-surprise'; a.href = NR.home + '?nr_random=1';
+    a.innerHTML = '↯ ' + 'surprise me';
+    head.appendChild(a);
+  }
+
+  /* #13 — reading-position memory on journal singles. */
+  if (body.classList.contains('single-nr_journal')) {
+    var art = document.querySelector('.nr-jpost__body, .nr-jpost__article');
+    if (art) {
+      var KEY = 'nr_read_' + location.pathname;
+      try { var y = parseInt(localStorage.getItem(KEY) || '0', 10); if (y > 200) art.scrollTop = y; } catch (e) {}
+      var t; art.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(function () { try { localStorage.setItem(KEY, String(art.scrollTop | 0)); } catch (e) {} }, 400); }, { passive: true });
+    }
+  }
+
+  /* #30 — decode large hero/plate images before they swap in (less jank). */
+  if ('decode' in HTMLImageElement.prototype) {
+    document.querySelectorAll('.nr-hero__plate img, .nr-project__plate img').forEach(function (img) {
+      if (img.complete) return;
+      img.decoding = 'async';
+      img.addEventListener('load', function () { try { img.decode(); } catch (e) {} }, { once: true });
+    });
+  }
+})();

@@ -76,6 +76,25 @@ Contact forms are worthless if mail lands in spam. We added theme SMTP
 enquiry; the "Enquiry insights" dashboard widget shows counts (7/30/90/all) and
 the top-converting projects. You can improve what you measure, privately.
 
+## 6b. Journal & taxonomy (v4.32–4.33)
+The journal now mirrors the portfolio: a horizontal **card rail** with desktop
+prev/next arrows + category chips (`archive-nr_journal.php`), and a fixed
+two-pane single post (`.nr-jpost`: image + scrollable article, pull-quotes,
+drop-cap, "More notes" related strip). A single **`taxonomy.php`** renders
+series / tag / project-cat / journal-cat archives as the same rail; **`search.php`**
+shows mixed results. All carry Article/Breadcrumb schema and are in the sitemap.
+
+## 6c. The 50-item review (v4.33–4.39)
+A structured review (`docs/IMPROVEMENTS-50.md`) shipped in 7 batches: journal/
+catalogue fixes, design polish (plate numbers, ghost hero numeral, chip counts),
+journal-OG cards, archive meta-descriptions, ⌘K journal search, admin UX (journal
+columns, **theme-health dashboard**, enquiry CSV export, importer dedupe-by-hash,
+reset-to-defaults), perf (eager LCP card, lazy Leaflet, cache headers), white
+date-picker icon, hreflang, `[nr_faq]` shortcode + FAQPage schema, marquee,
+signature. Two items intentionally skipped with rationale (JS-split, critical-CSS).
+**Next ideas live in `docs/IDEAS-NEXT.md`** (incl. real gaps: screenshot.png,
+load_theme_textdomain, editor styles).
+
 ## 7. Owner's standing to-dos (no code)
 - Run **Tools → Generate WebP**, then purge W3TC + Cloudflare.
 - Fill content into the new fields: **Tags**, **Series**, map **coordinates**,
@@ -88,8 +107,11 @@ the top-converting projects. You can improve what you measure, privately.
 `functions.php` (setup, enqueue, CPTs, helpers, module loader) · `inc/`
 (acf-polyfill, functions-additions, acf-fields, performance, seo, theme-settings,
 quote, tier1, tier2, medium, importer, security, pwa, compare, og-cards, pdf,
-series, interlink, map, smtp, insights, webp) · templates (front-page, archive/
-single for project & journal, page-enquire, page-about, 404, header, footer) ·
-`assets/` (css/theme.css, css/fonts.css, js/theme.js, js/webgl-hero.js, fonts/).
+series, interlink, map, smtp, insights, webp, admin-extras) · templates
+(front-page, archive/single for project & journal, **taxonomy**, **search**,
+page-enquire, page-about, page-impressum/datenschutz/agb, 404, index, header,
+footer) · `assets/` (css/theme.css, css/fonts.css, js/theme.js, js/webgl-hero.js,
+fonts/ incl. inter-tight TTFs for GD).
 
-_Current release: v4.30.1. Roadmap status in `docs/IDEAS-100.md`._
+_Current release: **v4.39.0**. Roadmaps: `docs/IDEAS-100.md` (original 100),
+`docs/IMPROVEMENTS-50.md` (review, all addressed), `docs/IDEAS-NEXT.md` (what's next)._

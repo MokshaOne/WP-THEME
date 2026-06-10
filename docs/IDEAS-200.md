@@ -32,33 +32,33 @@ WebGL-fallback-safe.*
 4. **Heat-haze / refraction idle shader** — subtle GPU refraction over the hero when idle. _Awww · M_
 5. **Animated dithering/noise background** — a slow Bayer-dither field as canvas texture (richer than the static grain). _Awww · M_
 6. **Fullscreen "shockwave" on click** — a GPU ripple emanates from the pointer on nav. _Awww · S_
-7. **RGB-split / chromatic aberration on hover** — desktop-only thumbnail treatment. _Awww · S_
+7. ✅ _v4.42.0_ — **RGB-split / chromatic aberration on hover** — desktop-only thumbnail treatment. _Awww · S_
 8. **Fluid/metaball cursor trail** — a GPU fluid sim trailing the custom cursor. _Awww · M_
 9. **WebGL aperture-iris page reveal** — an iris wipe (camera shutter) as the load transition. _Awww · M_
 10. **Variable-font axis morph** — animate Inter Tight weight/optical-size on load and slide-change (true variable font, see #106). _Awww · M_
 
 ### Scroll & physics
 11. **Lenis smooth-scroll (opt-in)** — inertial scrolling on the scrolling pages, reduced-motion-aware. _Awww · M_
-12. **Scroll-velocity image skew** — rail cards shear slightly with scroll speed, settle on stop. _Awww · S_
+12. ✅ _v4.42.0_ — **Scroll-velocity image skew** — rail cards shear slightly with scroll speed, settle on stop. _Awww · S_
 13. **Infinite draggable canvas** — a kinetic, momentum-based free-pan portfolio view as an alternate archive mode. _Awww · L_
 14. **Pinned scrollytelling section** — a flagship project told through pinned, scrubbed steps. _Awww · L_
 15. **Elastic overscroll on rails** — rubber-band the horizontal rails at their ends. _UX · S_
 16. **Snap carousel with momentum** — physics-based snap between plates. _UX · S_
 17. **Layered hero parallax** — separate fore/mid/back depth layers (beyond the current pointer parallax). _Awww · M_
-18. **Scroll progress as a film-frame counter** — replace the scrollbar with a 35mm frame counter. _Awww · S_
+18. ✅ _v4.42.0_ — **Scroll progress as a film-frame counter** — replace the scrollbar with a 35mm frame counter. _Awww · S_
 19. **Idle "screensaver" auto-cycle** — after inactivity, the hero slowly cycles like a slideshow. _UX · S_
 20. **Section-snap on mobile** — full-height snap between sub-page sections. _UX · S_
 
 ### Micro-interaction & feedback
 21. **Spring-physics magnetic buttons** — upgrade the current magnetic hover to a real spring solver. _Awww · S_
-22. **Text scramble/decode reveal** — headings resolve from noise on enter. _Awww · S_
+22. ✅ _v4.42.0_ — **Text scramble/decode reveal** — headings resolve from noise on enter. _Awww · S_
 23. **Viewfinder bracket tap feedback** — a camera AF-bracket animates on card tap. _Awww · S_
-24. **3D tilt + glare on cards** — perspective tilt with a moving specular highlight. _Awww · S_
+24. ✅ _v4.42.0_ — **3D tilt + glare on cards** — perspective tilt with a moving specular highlight. _Awww · S_
 25. **SVG line-draw monogram** — the wordmark/monogram draws itself on first load. _Awww · S_
 26. **Spotlight mask cursor** — the cursor reveals a second image layer (e.g. B&W→colour) through a soft mask. _Awww · M_
 27. **Animated link underlines** — draw-on underlines with directional awareness. _UX · S_
 28. **Contextual cursor states** — expand drag/view/close/sound cursor variants into a small state machine. _UX · S_
-29. **Split-flap stat counters** — airport departure-board flip for the stats row. _Awww · S_
+29. ✅ _v4.42.0_ — **Split-flap stat counters** — airport departure-board flip for the stats row. _Awww · S_
 30. **Hover sound waveform** — when sound is on, show a tiny reactive waveform. _Awww · S_
 
 ### Lightbox, players & orchestration
@@ -67,11 +67,11 @@ WebGL-fallback-safe.*
 33. **Film-strip sequence player** — a horizontal scrubbable strip for reportage sequences. _Content · M_
 34. **Transition orchestrator refactor** — one timeline manager so effects share a clock (no jank when stacked). _Dev · M_
 35. **Drift-grain over time** — make the existing grain slowly translate so it never looks static. _Awww · S_
-36. **Dividers that draw on scroll-in** — animate the amber hairline divider utility. _Awww · S_
+36. ✅ _v4.42.0_ — **Dividers that draw on scroll-in** — animate the amber hairline divider utility. _Awww · S_
 37. **Loading skeletons matched to aspect** — shimmer placeholders sized to each card's ratio (no layout shift). _Perf · S_
 38. **Compare-slider polish** — labels, keyboard, and haptic tick on the before/after handle. _UX · S_
 39. **Reduced-motion "elegant static" audit** — define a tasteful frozen variant of every effect, not just "off". _A11y · M_
-40. **Motion settings panel (front-end)** — a visitor-facing "calm / standard / cinematic" motion switch persisted locally. _A11y · S_
+40. ✅ _v4.42.0_ — **Motion settings panel (front-end)** — a visitor-facing "calm / standard / cinematic" motion switch persisted locally. _A11y · S_
 
 ---
 

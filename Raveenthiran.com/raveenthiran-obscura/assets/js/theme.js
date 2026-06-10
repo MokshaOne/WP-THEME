@@ -1091,3 +1091,164 @@
     items[i].classList.add('is-on');
   }, 6500);
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   Batch 1 (v4.42.0) — cinematic motion layer (opt-in).
+   Master toggle adds body.nr-cinematic; a visitor switch sets
+   <html data-nr-motion="calm|standard|cinematic">. Effects gate on
+   the level, so the live look only changes when both opt in.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  if (!body.classList.contains('nr-cinematic')) return;     // master toggle off → nothing
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  var LEVELS = ['calm', 'standard', 'cinematic'];
+
+  function getLevel() {
+    var l = null; try { l = localStorage.getItem('nr_motion'); } catch (e) {}
+    if (LEVELS.indexOf(l) < 0) l = reduce ? 'calm' : 'cinematic';
+    return l;
+  }
+  function setLevel(l) { try { localStorage.setItem('nr_motion', l); } catch (e) {} root.setAttribute('data-nr-motion', l); }
+  setLevel(getLevel());
+  function level() { return root.getAttribute('data-nr-motion'); }
+  function cinematic() { return level() === 'cinematic'; }
+  function notCalm() { return level() !== 'calm'; }
+
+  /* #40 — the visitor motion switch (desktop; CSS hides it on small screens). */
+  var panel = document.createElement('div');
+  panel.className = 'nr-motion';
+  panel.innerHTML = '<button class="nr-motion__btn" aria-haspopup="true" aria-expanded="false">◐ motion</button>'
+    + '<div class="nr-motion__menu" role="menu" hidden>'
+    + LEVELS.map(function (l) { return '<button role="menuitemradio" data-level="' + l + '">' + l + '</button>'; }).join('')
+    + '</div>';
+  body.appendChild(panel);
+  var btn = panel.querySelector('.nr-motion__btn'), menu = panel.querySelector('.nr-motion__menu');
+  function mark() { panel.querySelectorAll('[data-level]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.level === level() ? 'true' : 'false'); }); }
+  mark();
+  btn.addEventListener('click', function () { var open = !menu.hidden; menu.hidden = open; btn.setAttribute('aria-expanded', String(!open)); });
+  panel.querySelectorAll('[data-level]').forEach(function (b) {
+    b.addEventListener('click', function () { setLevel(b.dataset.level); mark(); menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); });
+  });
+  document.addEventListener('click', function (e) { if (!panel.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+
+  /* #7 — chromatic-aberration SVG filter (CSS applies it on card hover). */
+  if (!document.getElementById('nr-rgbsplit')) {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
+    svg.style.cssText = 'position:absolute;width:0;height:0';
+    svg.innerHTML = '<filter id="nr-rgbsplit" x="-20%" y="-20%" width="140%" height="140%">'
+      + '<feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>'
+      + '<feOffset in="r" dx="2.5" dy="0" result="ro"/>'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>'
+      + '<feOffset in="b" dx="-2.5" dy="0" result="bo"/>'
+      + '<feBlend in="ro" in2="g" mode="screen" result="rg"/>'
+      + '<feBlend in="rg" in2="bo" mode="screen"/></filter>';
+    body.appendChild(svg);
+  }
+
+  /* #24 — 3D tilt + glare on cards (desktop, cinematic level). */
+  if (hover) {
+    document.querySelectorAll('.nr-card').forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        if (!cinematic()) return;
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--rx', ((py - 0.5) * -6).toFixed(2) + 'deg');
+        card.style.setProperty('--ry', ((px - 0.5) * 6).toFixed(2) + 'deg');
+        card.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        card.classList.add('nr-tilt-on');
+      });
+      card.addEventListener('pointerleave', function () {
+        card.classList.remove('nr-tilt-on');
+        card.style.removeProperty('--rx'); card.style.removeProperty('--ry');
+      });
+    });
+  }
+
+  /* #12 — scroll-velocity image shear on the rails (cinematic level). */
+  document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+    var last = rail.scrollLeft, raf;
+    rail.addEventListener('scroll', function () {
+      if (!cinematic()) { rail.style.setProperty('--skew', '0deg'); return; }
+      var v = rail.scrollLeft - last; last = rail.scrollLeft;
+      var sk = Math.max(-7, Math.min(7, v * 0.22));
+      rail.style.setProperty('--skew', sk.toFixed(2) + 'deg');
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () { rail.style.setProperty('--skew', '0deg'); });
+    }, { passive: true });
+  });
+
+  /* #22 — decode/scramble reveal on the mono eyebrow labels (cinematic level). */
+  if (!reduce) {
+    var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·—/';
+    function scramble(el) {
+      var target = el.textContent, len = target.length, frame = 0, dur = Math.min(30, 10 + len);
+      var id = setInterval(function () {
+        var out = '', reveal = (frame / dur) * len;
+        for (var i = 0; i < len; i++) {
+          if (i < reveal || target[i] === ' ') out += target[i];
+          else out += glyphs[Math.floor(Math.random() * glyphs.length)];
+        }
+        el.textContent = out; frame++;
+        if (frame > dur) { clearInterval(id); el.textContent = target; }
+      }, 28);
+    }
+    var ioS = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (en.isIntersecting && cinematic() && !en.target.dataset.scrambled) {
+          en.target.dataset.scrambled = '1'; scramble(en.target); ioS.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.nr-eyebrow').forEach(function (el) { if (el.children.length === 0) ioS.observe(el); });
+  }
+
+  /* #36 — dividers draw in on scroll (standard + cinematic). */
+  var ioD = new IntersectionObserver(function (es) {
+    es.forEach(function (en) { if (en.isIntersecting && notCalm()) { en.target.classList.add('nr-divider--drawn'); ioD.unobserve(en.target); } });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.nr-divider').forEach(function (d) { ioD.observe(d); });
+
+  /* #29 — split-flap stat counters (standard + cinematic). */
+  if (!reduce) {
+    var ioF = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting || en.target.dataset.flapped || !notCalm()) return;
+        en.target.dataset.flapped = '1';
+        var el = en.target, full = el.textContent.trim(), num = parseInt(full.replace(/\D/g, ''), 10);
+        if (isNaN(num)) return;
+        var suffix = full.replace(/[0-9]/g, ''), steps = 22, i = 0;
+        var id = setInterval(function () {
+          i++; el.textContent = Math.round(num * (i / steps)) + suffix;
+          if (i >= steps) { clearInterval(id); el.textContent = full; }
+        }, 38);
+        ioF.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.nr-stats__n').forEach(function (el) { ioF.observe(el); });
+  }
+
+  /* #18 — scroll progress as a 35mm film-frame counter (scrolling pages). */
+  (function () {
+    var ind = document.createElement('div');
+    ind.className = 'nr-filmframe'; ind.setAttribute('aria-hidden', 'true');
+    ind.innerHTML = '<span class="nr-filmframe__cur">000</span><span class="nr-filmframe__sep">/</span><span>100</span>';
+    body.appendChild(ind);
+    var cur = ind.querySelector('.nr-filmframe__cur');
+    function pad(n) { n = String(n); return n.length >= 3 ? n : ('000' + n).slice(-3); }
+    function upd() {
+      if (level() === 'calm') { ind.classList.remove('is-on'); return; }
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      cur.textContent = pad(h > 0 ? Math.round(window.scrollY / h * 100) : 0);
+      ind.classList.toggle('is-on', h > 60);
+    }
+    window.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', upd); upd();
+  })();
+})();

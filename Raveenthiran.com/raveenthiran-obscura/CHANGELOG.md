@@ -1,5 +1,34 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.42.0 — IDEAS-200 Batch 1, part 1 (cinematic motion layer)
+First slice of the motion/GPU craft batch. **All of it is behind one master
+toggle (default OFF)** plus a per-visitor motion switch, so the live site is
+unchanged until you opt in.
+
+**How to test**
+1. WP admin → Appearance → Theme Settings → **§ Visual effects** → turn on
+   **"Cinematic motion"** → Save.
+2. Open a **portfolio / archive** page on desktop. A small **"◐ motion"** chip
+   appears bottom-left — it sets the level (defaults to *cinematic*, or *calm*
+   if your OS has reduce-motion on). Switch between calm / standard / cinematic.
+3. Verify, at *cinematic*:
+   - **Cards tilt in 3D** with a soft moving glare as you move the cursor (#24).
+   - **Hover a card image** → subtle red/blue **chromatic aberration** (#7).
+   - **Scroll a horizontal rail fast** → the images **shear** with the motion
+     and settle (#12).
+   - The mono **eyebrow labels decode/scramble** into place when scrolled in (#22).
+   - Any **`[nr_divider]`** hairline **draws in** left-to-right on scroll (#36).
+   - On the **Studio** page the **stat numbers count up** split-flap style (#29).
+   - A **film-frame counter** (`042 / 100`) sits bottom-right and tracks scroll
+     on scrolling pages (#18).
+4. Set the switch to **calm** (or enable OS reduce-motion) → the new effects go
+   quiet; **standard** keeps the subtle ones (dividers, counter, split-flap) and
+   drops the flashy ones. Turn the master toggle off → everything reverts.
+
+Items shipped: #7, #12, #18, #22, #24, #29, #36, #40 (see docs/IDEAS-200.md).
+Next sub-batches will tackle the heavier WebGL items (#1 OGL grid, #2 displacement
+transition, #14 scrollytelling) with the same opt-in + fallback discipline.
+
 ## 4.41.0
 - Fixed: enquire-form date picker icon is now reliably visible — replaced the
   native glyph with a white SVG (the v4.38 `color-scheme:dark` + `invert(1)`

@@ -129,6 +129,7 @@ function nr_settings_defaults() {
 		'nr_fx_sound'        => '0',
 		'nr_fx_favicon'      => '0',
 		'nr_fx_interlink'    => '0',
+		'nr_fx_cinematic'    => '0',  // Batch 1 — GPU/motion craft layer + visitor motion switch
 
 		/* Performance */
 		'nr_perf_async_css'  => '0',
@@ -747,6 +748,9 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Off by default. When on, a small speaker toggle appears; sound only plays after the visitor unmutes (browsers block autoplay audio anyway).', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Generative favicon', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_favicon', __( 'Draw an accent-colored monogram favicon at runtime (used when no Site Icon is set)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Cinematic motion', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_cinematic', __( 'Enable the cinematic motion layer + a visitor "calm / standard / cinematic" switch (desktop)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. When on, adds card tilt + glare, chromatic-aberration hover, scroll-velocity image shear, decode-reveal eyebrows, drawn-in dividers, split-flap stat counters, and a film-frame scroll indicator — with a bottom-left switch so each visitor can pick calm/standard/cinematic. Honors reduced-motion (defaults to calm). Try it on and reload a portfolio page.', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 
@@ -915,6 +919,7 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_lines',   '0' ) === '1' ) $classes[] = 'nr-has-lines';
 	if ( get_option( 'nr_fx_sound',   '0' ) === '1' ) $classes[] = 'nr-has-sound';
 	if ( get_option( 'nr_fx_favicon', '0' ) === '1' ) $classes[] = 'nr-has-favicon';
+	if ( get_option( 'nr_fx_cinematic', '0' ) === '1' ) $classes[] = 'nr-cinematic';
 	$mode = get_option( 'nr_color_mode', 'dark' );
 	if ( $mode === 'light' )  $classes[] = 'nr-light';
 	if ( $mode === 'system' ) $classes[] = 'nr-mode-system';

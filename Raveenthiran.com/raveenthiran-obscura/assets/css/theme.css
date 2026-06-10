@@ -2061,3 +2061,50 @@ body.nr-savedata .nr-recent__card img{background:var(--bg-2,#14151A)}
   .nr-extras{padding:32px 18px 4px;gap:24px}
   .nr-recent__card,.nr-recent__card img{width:124px}
 }
+
+/* ── Batch 1 (v4.42.0): cinematic motion layer (opt-in) ───────── */
+/* Active only when the master toggle (body.nr-cinematic) AND the visitor's
+   motion level agree. Default level is "cinematic" (or "calm" under
+   prefers-reduced-motion); the bottom-left switch lets visitors choose. */
+
+/* #40 — motion switch */
+.nr-motion{position:fixed;left:16px;bottom:16px;z-index:60;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px}
+.nr-motion__btn{background:rgba(11,12,16,.66);color:var(--ink-2);border:1px solid var(--hair);border-radius:999px;padding:7px 12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-motion__btn:hover{color:var(--ink);border-color:var(--ink-4)}
+.nr-motion__menu{position:absolute;left:0;bottom:calc(100% + 8px);display:flex;flex-direction:column;min-width:130px;background:rgba(11,12,16,.94);border:1px solid var(--hair);border-radius:8px;overflow:hidden;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.nr-motion__menu button{background:none;border:0;color:var(--ink-3);text-align:left;padding:9px 14px;cursor:pointer;text-transform:capitalize;letter-spacing:.04em}
+.nr-motion__menu button:hover{background:rgba(242,239,233,.06);color:var(--ink)}
+.nr-motion__menu button[aria-checked="true"]{color:var(--amber)}
+.nr-motion__menu button[aria-checked="true"]::before{content:"● ";font-size:8px;vertical-align:middle}
+@media (max-width:900px){.nr-motion{display:none}}
+
+/* #24 — 3D tilt + glare on cards (cinematic) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card.nr-tilt-on{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .09s linear}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card.nr-tilt-on::after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:inherit;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.18),transparent 62%);mix-blend-mode:screen}
+
+/* #7 — chromatic aberration on hover (uses the injected SVG filter) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card img{transition:filter .22s ease}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card:hover img{filter:url(#nr-rgbsplit)}
+
+/* #12 — scroll-velocity image shear (skew the image, never the card transform) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-portfolio-rail .nr-card img,
+.nr-cinematic[data-nr-motion="cinematic"] .nr-project__rail-track img{transform:skewX(var(--skew,0deg));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+
+/* #36 — dividers draw in (standard + cinematic; calm leaves them static) */
+.nr-cinematic[data-nr-motion="standard"] .nr-divider,
+.nr-cinematic[data-nr-motion="cinematic"] .nr-divider{transform:scaleX(0);transform-origin:left;transition:transform .85s cubic-bezier(.2,.8,.2,1)}
+.nr-cinematic .nr-divider.nr-divider--drawn{transform:scaleX(1)}
+
+/* #18 — film-frame scroll counter */
+.nr-filmframe{position:fixed;right:16px;bottom:16px;z-index:55;display:none;align-items:baseline;gap:3px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.12em;color:var(--ink-3);background:rgba(11,12,16,.6);border:1px solid var(--hair);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-filmframe.is-on{display:inline-flex}
+.nr-filmframe__cur{color:var(--amber)}
+.nr-filmframe__sep{opacity:.5}
+@media (max-width:900px){.nr-filmframe{bottom:calc(var(--nr-tabbar-h,64px) + 12px)}}
+
+/* Respect reduced-motion: kill transitions on the new layer regardless of level. */
+@media (prefers-reduced-motion:reduce){
+  .nr-cinematic .nr-card,.nr-cinematic .nr-card img,.nr-cinematic .nr-divider{transition:none!important;transform:none!important}
+  .nr-cinematic .nr-card:hover img{filter:none!important}
+}

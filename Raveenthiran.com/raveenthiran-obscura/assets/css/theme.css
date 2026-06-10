@@ -2487,3 +2487,12 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
 @media (max-width:900px){.nr-filmstrip{display:none}}
 /* keep the §-anchor from colliding with scrolled content */
 .nr-project__body::after{pointer-events:none;opacity:.5}
+
+/* ── v4.51.5: Studio — stats as a 2×2 block beside the bio ────── */
+.nr-bio-row{display:flex;gap:36px;align-items:flex-start}
+.nr-bio-row .nr-about__sub{flex:1;min-width:0}
+.nr-bio-row .nr-stats{flex:0 0 250px;grid-template-columns:repeat(2,1fr);gap:18px 24px;
+  margin:4px 0 0;border:0;border-left:1px solid var(--hair);padding-left:28px}
+.nr-bio-row .nr-stats > div{border:0;padding:0}
+@media (max-width:760px){.nr-bio-row{flex-direction:column;gap:18px}
+  .nr-bio-row .nr-stats{flex:none;width:100%;border-left:0;padding-left:0;border-top:1px solid var(--hair);padding-top:16px}}

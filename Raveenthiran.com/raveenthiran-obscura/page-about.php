@@ -85,6 +85,7 @@ $stats = [
 		   from one place. Blank the Bio field in Theme Settings to fall back
 		   to the WP page editor. */
 		?>
+		<div class="nr-bio-row">
 		<?php if ( $settings_bio !== '' ) : ?>
 			<div class="nr-about__sub"><?php echo wp_kses_post( wpautop( $settings_bio ) ); ?></div>
 		<?php elseif ( $rendered_content !== '' ) : ?>
@@ -112,6 +113,7 @@ $stats = [
 				</div>
 			<?php endforeach; ?>
 		</div>
+		</div><?php /* /nr-bio-row */ ?>
 
 		<?php
 		/* Clients — horizontal auto-scrolling marquee of client names.

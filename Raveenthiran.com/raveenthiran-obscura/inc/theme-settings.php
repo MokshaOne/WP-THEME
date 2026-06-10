@@ -227,13 +227,18 @@ function nr_settings_default_filter( $value ) { return $value; }
    Admin menu — top-level "Theme Settings" page
    ============================================================= */
 add_action( 'admin_menu', function () {
-	add_theme_page(
+	// Top-level "Obscura" hub next to Dashboard (was an Appearance sub-page).
+	add_menu_page(
 		__( 'Theme Settings — Catalogue Noir', 'raveenthiran' ),
-		__( 'Theme Settings', 'raveenthiran' ),
+		__( 'Obscura', 'raveenthiran' ),
 		'manage_options',
 		'nr-theme-settings',
-		'nr_theme_settings_page'
+		'nr_theme_settings_page',
+		'dashicons-camera',
+		3
 	);
+	// Relabel the auto-generated first sub-item.
+	add_submenu_page( 'nr-theme-settings', __( 'Settings', 'raveenthiran' ), __( 'Settings', 'raveenthiran' ), 'manage_options', 'nr-theme-settings', 'nr_theme_settings_page' );
 } );
 
 /* register all options so they're saveable */
@@ -273,7 +278,7 @@ function nr_settings_sanitize_raw_html( $v ) {
    Enqueue color picker on our settings page only
    ============================================================= */
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
-	if ( $hook !== 'appearance_page_nr-theme-settings' ) return;
+	if ( $hook !== 'toplevel_page_nr-theme-settings' ) return;
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'wp-color-picker' );
 	add_action( 'admin_footer', function () {

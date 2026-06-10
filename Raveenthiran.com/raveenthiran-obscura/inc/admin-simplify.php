@@ -95,7 +95,7 @@ function nr_combined_widget() {
 /* Quick links on the Theme Settings page header too. */
 add_action( 'admin_notices', function () {
 	$s = get_current_screen();
-	if ( ! $s || $s->id !== 'appearance_page_nr-theme-settings' || ! nr_admin_simple() ) return;
+	if ( ! $s || $s->id !== 'toplevel_page_nr-theme-settings' || ! nr_admin_simple() ) return;
 	printf( '<div class="notice notice-info" style="padding:8px 12px">%s <a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a></div>',
 		esc_html__( 'Utility pages:', 'raveenthiran' ),
 		esc_url( admin_url( 'themes.php?page=nr-flags' ) ), esc_html__( 'Feature flags', 'raveenthiran' ),

@@ -159,6 +159,7 @@ function nr_settings_defaults() {
 		'nr_clean_uninstall' => '0',  // #193 remove theme options when switching away
 		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
 		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
+		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -320,7 +321,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee', 'nr_block_ai', 'nr_clean_uninstall' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -819,6 +820,9 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Tokens: %title% %cat% %year% %site%. e.g. "%title% — %cat% photography, Vienna · %site%". Blank keeps the default title.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Block AI crawlers', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_block_ai', __( 'Disallow GPTBot / CCBot / Google-Extended / ClaudeBot etc. in robots.txt', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Simplified admin', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_admin_simplify', __( 'Hide Posts/Comments/ACF menus, merge the dashboard widgets into one, trim the Appearance menu', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'On by default. Turn off to restore the stock admin.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Clean uninstall', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_clean_uninstall', __( 'Remove all of this theme’s settings when switching away from Obscura', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Only deletes Obscura’s own options/transients, only on theme switch.', 'raveenthiran' ); ?></p></td></tr>

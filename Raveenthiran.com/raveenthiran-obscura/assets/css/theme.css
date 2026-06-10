@@ -2461,3 +2461,15 @@ body.nr-rhythm-story .nr-plate-cap{opacity:1;position:static;margin-top:8px;text
 /* #135 mood chips */
 .nr-moods{margin:0 0 14px}
 .nr-moods .nr-chip{text-transform:capitalize}
+
+/* ── Batch 6 r1 (v4.50.0): GPU/canvas effects (opt-in, .nr-gpu) ── */
+.nr-iris{position:fixed;inset:0;z-index:160;background:#0B0C10;pointer-events:none;
+  clip-path:circle(120% at 50% 50%);transition:clip-path 1.1s cubic-bezier(.7,0,.2,1)}
+.nr-iris.is-open{clip-path:circle(0% at 50% 50%)}
+.nr-dither{position:fixed;inset:0;width:100vw;height:100vh;z-index:1;pointer-events:none;opacity:.5;image-rendering:pixelated}
+.nr-blob{position:fixed;inset:0;z-index:45;pointer-events:none;mix-blend-mode:screen}
+.nr-haze{position:absolute;inset:auto 0 0 0;width:100%;height:55%;z-index:3;pointer-events:none;opacity:0;transition:opacity 2s ease}
+.nr-haze.is-on{opacity:1}
+body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{display:none!important}
+@media (max-width:900px){.nr-blob,.nr-haze{display:none}}
+@media (prefers-reduced-motion:reduce){.nr-iris,.nr-dither,.nr-blob,.nr-haze{display:none!important}}

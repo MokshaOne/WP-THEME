@@ -160,6 +160,7 @@ function nr_settings_defaults() {
 		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
 		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
 		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
+		'nr_fx_gpu'          => '0',  // Batch 6: GPU/canvas effects (haze, dither, blob trail, iris)
 		'nr_fx_wizard'       => '0',  // #42 multi-step enquire wizard
 		'nr_fx_palette'      => '0',  // #135 colour-mood filter chips on archives
 		'nr_cta_view_b'      => '',   // #48 A/B variant for the hero CTA label
@@ -766,6 +767,9 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Off by default. When on, a small speaker toggle appears; sound only plays after the visitor unmutes (browsers block autoplay audio anyway).', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Generative favicon', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_favicon', __( 'Draw an accent-colored monogram favicon at runtime (used when no Site Icon is set)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'GPU effects', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_gpu', __( 'Heat-haze idle shader, animated dither field, metaball cursor trail, aperture-iris reveal (desktop, cinematic level)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Loads a separate small script only when on; no WebGL → effects silently skip. Pairs with the Cinematic motion toggle below.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Cinematic motion', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_cinematic', __( 'Enable the cinematic motion layer + a visitor "calm / standard / cinematic" switch (desktop)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. When on, adds card tilt + glare, chromatic-aberration hover, scroll-velocity image shear, decode-reveal eyebrows, drawn-in dividers, split-flap stat counters, and a film-frame scroll indicator — with a bottom-left switch so each visitor can pick calm/standard/cinematic. Honors reduced-motion (defaults to calm). Try it on and reload a portfolio page.', 'raveenthiran' ); ?></p></td></tr>

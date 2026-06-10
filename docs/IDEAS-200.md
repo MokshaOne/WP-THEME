@@ -278,11 +278,11 @@ their original list positions; only the build order changed.*
 1. **OGL plane-grid portfolio** — render the work grid as textured planes (OGL ~16 KB), images as GPU textures with a real fallback `<img>`. _Awww · L_
 2. **Per-pixel displacement transition** — dissolve between projects via a displacement map instead of a crossfade. _Awww · M_
 3. **Particle dispersion on hover** — a thumbnail scatters into points and reforms. _Awww · M_
-4. **Heat-haze / refraction idle shader** — subtle GPU refraction over the hero when idle. _Awww · M_
-5. **Animated dithering/noise background** — a slow Bayer-dither field as canvas texture (richer than the static grain). _Awww · M_
+4. ✅ _v4.50.0_ — **Heat-haze / refraction idle shader** — subtle GPU refraction over the hero when idle. _Awww · M_
+5. ✅ _v4.50.0_ — **Animated dithering/noise background** — a slow Bayer-dither field as canvas texture (richer than the static grain). _Awww · M_
 6. ✅ _v4.46.0_ — **Fullscreen "shockwave" on click** — a GPU ripple emanates from the pointer on nav. _Awww · S_
-8. **Fluid/metaball cursor trail** — a GPU fluid sim trailing the custom cursor. _Awww · M_
-9. **WebGL aperture-iris page reveal** — an iris wipe (camera shutter) as the load transition. _Awww · M_
+8. ✅ _v4.50.0_ — **Fluid/metaball cursor trail** — a GPU fluid sim trailing the custom cursor. _Awww · M_
+9. ✅ _v4.50.0_ — **WebGL aperture-iris page reveal** — an iris wipe (camera shutter) as the load transition. _Awww · M_
 
 ### Large interaction systems
 13. **Infinite draggable canvas** — a kinetic, momentum-based free-pan portfolio view as an alternate archive mode. _Awww · L_

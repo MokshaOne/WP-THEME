@@ -1,5 +1,26 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.50.0 — Batch 6 r1: GPU/canvas effects (4 items)
+New **"GPU effects"** toggle (default OFF) loading a separate `assets/js/gpu-fx.js`
+only when enabled — zero cost otherwise. All effects respect reduced-motion,
+Save-Data, the calm/standard/cinematic switch, and mobile.
+- **#4 heat-haze idle shader** — real WebGL fragment shader; after 18 s of
+  inactivity a faint heat shimmer rises over the lower hero; any input stops it.
+  No WebGL → silently skipped.
+- **#5 animated dither field** — a slow 4×4-Bayer dither pattern drifts over the
+  canvas at ~11 fps (the "printed" look; intentionally low-fi).
+- **#8 metaball cursor trail** — amber blobs merge/dissolve behind the cursor
+  (canvas blur+contrast threshold; cinematic level, desktop only).
+- **#9 aperture-iris reveal** — the page opens through a camera-iris circle once
+  per session.
+
+**How to test:** Theme Settings → Visual effects → **GPU effects** ON (+ Cinematic
+motion ON, level *cinematic*). Reload → iris reveal; move the cursor → blob trail;
+leave the homepage untouched 18 s → heat shimmer; look closely at the background →
+drifting dither. Honesty note: #9 uses clip-path (visually identical, far cheaper
+than a WebGL pass); #8 is canvas 2D rather than a fluid sim — same look, fraction
+of the cost.
+
 ## 4.49.0 — IDEAS-200 Medium tier r2 (19 items) — Medium tier complete
 New `inc/mediumwins2.php`, `page-delivery.php` template, JS/CSS.
 

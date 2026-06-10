@@ -17,6 +17,7 @@ add_filter( 'body_class', function ( $c ) {
 	if ( nr_opt( 'nr_fx_exit', '0' ) === '1' && ! is_singular( 'nr_project' ) ) $c[] = 'nr-exit';
 	if ( nr_opt( 'nr_fx_wizard', '0' ) === '1' ) $c[] = 'nr-wizard';
 	if ( nr_opt( 'nr_fx_palette', '0' ) === '1' ) $c[] = 'nr-palette';
+	if ( nr_opt( 'nr_fx_gpu', '0' ) === '1' ) $c[] = 'nr-gpu';
 	return $c;
 } );
 

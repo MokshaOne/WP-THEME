@@ -132,6 +132,9 @@ function nr_settings_defaults() {
 
 		/* Performance */
 		'nr_perf_async_css'  => '0',
+		'nr_fx_marquee'      => '0',
+		'nr_marquee_text'    => 'Available for commissions · Vienna · International · Est. 2019',
+		'nr_signature'       => '',
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -293,7 +296,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -367,6 +370,9 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'e.g. ATU12345678. Leave blank to show “auf Anfrage”.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Trade / Gewerbe', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_gewerbe', 40 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Signature (Studio page)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_signature', 30 ); ?>
+							<p class="description"><?php esc_html_e( 'Your name in a handwritten-style script at the end of the Studio bio. Leave blank to hide.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Instagram URL', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_instagram', 60 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Behance URL', 'raveenthiran' ); ?></label></th>
@@ -720,6 +726,10 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Auto internal linking', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_interlink', __( 'Auto-link the first mention of another project\'s title inside project text (SEO)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Links the first occurrence per project only; never touches headings or existing links.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Footer marquee', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_marquee', __( 'Show a slow running ticker above the footer (scrolling pages)', 'raveenthiran' ) ); ?>
+							<p><?php nr_field_text( 'nr_marquee_text', 60 ); ?></p>
+							<p class="description"><?php esc_html_e( 'The ticker text. Off by default.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Non-blocking stylesheet', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_perf_async_css', __( 'Load the main CSS asynchronously (faster mobile FCP/LCP)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Removes ~2s of render-blocking on slow mobile — but can cause a brief unstyled flash on the first paint. Turn it on, hard-reload a few times on mobile, and keep it only if the flash is acceptable.', 'raveenthiran' ); ?></p></td></tr>

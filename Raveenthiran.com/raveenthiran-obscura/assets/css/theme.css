@@ -1962,3 +1962,22 @@ picture{display:contents}
   filter:invert(1) brightness(1.8);opacity:.65;cursor:pointer}
 .nr-form input[type=date]::-webkit-calendar-picker-indicator:hover,
 .nr-enquire__form input[type=date]::-webkit-calendar-picker-indicator:hover{opacity:1}
+
+/* ── Batch 7 (v4.39.0): marquee · signature · divider ─────────── */
+/* #14 — footer marquee ticker (opt-in) */
+.nr-marquee{overflow:hidden;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:11px 0;white-space:nowrap;background:var(--bg)}
+.nr-marquee__track{display:inline-flex;align-items:center;animation:nr-marquee 36s linear infinite;will-change:transform}
+.nr-marquee__track span{font-family:var(--ff-mono);font-size:var(--fs-sm);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);padding:0 20px}
+.nr-marquee__sep{color:var(--amber)}
+@keyframes nr-marquee{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.nr-marquee__track{animation:none}}
+
+/* #19 — handwritten-style signature on the Studio page */
+.nr-signature{font-family:'Segoe Script','Bradley Hand','Brush Script MT','Snell Roundhand',cursive;
+  font-size:clamp(30px,4.4vw,52px);line-height:1;color:var(--amber);transform:rotate(-3deg);
+  transform-origin:left center;margin:6px 0 26px;opacity:.92}
+
+/* #22 — reusable amber hairline section divider */
+.nr-divider{height:1px;border:0;margin:34px 0;
+  background:linear-gradient(90deg,transparent,var(--hair) 18%,var(--hair) 82%,transparent)}
+.nr-divider--amber{background:linear-gradient(90deg,transparent,var(--amber-soft) 50%,transparent)}

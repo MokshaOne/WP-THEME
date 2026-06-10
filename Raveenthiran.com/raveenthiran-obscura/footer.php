@@ -15,6 +15,16 @@ $nr_legal = [
 ];
 $nr_ig = nr_opt( 'nr_instagram', '' );
 $nr_show_footer = $nr_footer_text || $nr_legal['datenschutz'] || $nr_legal['agb'] || $nr_legal['impressum'];
+
+// #14 — opt-in footer marquee (scrolling pages only; default off).
+if ( nr_opt( 'nr_fx_marquee', '0' ) === '1' && ! is_front_page() && ! is_singular( 'nr_project' ) && ! is_post_type_archive( 'nr_project' ) ) {
+	$nr_mq = trim( (string) nr_opt( 'nr_marquee_text', '' ) );
+	if ( $nr_mq !== '' ) {
+		echo '<div class="nr-marquee" aria-hidden="true"><div class="nr-marquee__track">';
+		for ( $nr_k = 0; $nr_k < 4; $nr_k++ ) echo '<span>' . esc_html( $nr_mq ) . '</span><span class="nr-marquee__sep">✕</span>';
+		echo '</div></div>';
+	}
+}
 ?>
 <?php if ( $nr_show_footer && ! is_front_page() && ! is_singular( 'nr_project' ) && ! is_post_type_archive( 'nr_project' ) ) : ?>
 <footer class="nr-footer" role="contentinfo">

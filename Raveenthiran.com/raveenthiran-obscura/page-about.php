@@ -145,6 +145,10 @@ $stats = [
 			</div>
 		</section>
 
+		<?php /* #19 — handwritten-style signature */ ?>
+		<?php $nr_sig = trim( (string) nr_opt( 'nr_signature', '' ) ); if ( $nr_sig !== '' ) : ?>
+			<div class="nr-signature"><?php echo esc_html( $nr_sig ); ?></div>
+		<?php endif; ?>
 
 		<?php
 		$awards = nr_recognition_list( 'nr_awards_list' );

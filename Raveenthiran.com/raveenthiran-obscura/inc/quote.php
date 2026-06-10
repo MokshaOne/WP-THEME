@@ -165,3 +165,52 @@ add_action( 'template_redirect', function () {
 		exit;
 	}
 } );
+
+/* ─────────────────────────────────────────────────────────────
+ * #40 — [nr_faq] shortcode for journal posts / pages.
+ * Content = one "Question | Answer" per line. Renders the same
+ * accordion as the Enquire FAQ and emits FAQPage schema.
+ * ───────────────────────────────────────────────────────────── */
+$GLOBALS['nr_faq_shortcode_items'] = [];
+
+add_shortcode( 'nr_faq', function ( $atts, $content = '' ) {
+	$raw = trim( (string) $content );
+	if ( $raw === '' ) return '';
+	$pairs = [];
+	foreach ( preg_split( '/\r\n|\r|\n/', wp_strip_all_tags( $raw ) ) as $line ) {
+		$line = trim( $line );
+		if ( $line === '' || strpos( $line, '|' ) === false ) continue;
+		list( $q, $a ) = array_map( 'trim', explode( '|', $line, 2 ) );
+		if ( $q !== '' && $a !== '' ) $pairs[] = [ 'q' => $q, 'a' => $a ];
+	}
+	if ( ! $pairs ) return '';
+
+	// collect for the page-level FAQPage schema (printed in wp_footer)
+	$GLOBALS['nr_faq_shortcode_items'] = array_merge( $GLOBALS['nr_faq_shortcode_items'], $pairs );
+
+	$out = '<div class="nr-faq__list nr-faq__list--compact nr-faq--shortcode">';
+	foreach ( $pairs as $i => $f ) {
+		$out .= '<div class="nr-faq__item">'
+			. '<span class="nr-faq__n">' . esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ) . '</span>'
+			. '<div><div class="nr-faq__q">' . esc_html( $f['q'] ) . '</div>'
+			. '<div class="nr-faq__a">' . esc_html( $f['a'] ) . '</div></div>'
+			. '<button type="button" class="nr-faq__toggle" aria-label="' . esc_attr__( 'Toggle answer', 'raveenthiran' ) . '">+</button>'
+			. '</div>';
+	}
+	return $out . '</div>';
+} );
+
+add_action( 'wp_footer', function () {
+	$items = $GLOBALS['nr_faq_shortcode_items'] ?? [];
+	if ( ! $items ) return;
+	$entities = [];
+	foreach ( $items as $f ) {
+		$entities[] = [
+			'@type'          => 'Question',
+			'name'           => $f['q'],
+			'acceptedAnswer' => [ '@type' => 'Answer', 'text' => $f['a'] ],
+		];
+	}
+	$schema = [ '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $entities ];
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}, 20 );

@@ -363,6 +363,10 @@ function nr_social_meta() {
 	printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) ); // #12
 	if ( is_paged() ) echo '<meta name="robots" content="noindex,follow">' . "\n"; // #19
 
+	// #39 — self-referencing hreflang (single-language site → en + x-default).
+	printf( '<link rel="alternate" hreflang="en" href="%s">' . "\n", esc_url( $canonical ) );
+	printf( '<link rel="alternate" hreflang="x-default" href="%s">' . "\n", esc_url( $canonical ) );
+
 	// #35 — rel=prev/next pagination hints on archives.
 	if ( is_archive() || is_home() || is_search() ) {
 		$paged = max( 1, (int) get_query_var( 'paged' ) );

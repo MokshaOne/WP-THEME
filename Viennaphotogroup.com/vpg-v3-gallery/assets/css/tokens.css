@@ -1,0 +1,157 @@
+/*
+ * VPG v3 · Design tokens — "Gallery" remap.
+ *
+ * Same variable NAMES as v2 (so every inner template, CPT archive, single,
+ * page template and page-sheet inherits the new look untouched) — but the
+ * VALUES are the Gallery system: crisp white paper, near-black ink, ONE red
+ * accent, the Archivo grotesque, square edges, hairline rules, flat surfaces.
+ *
+ * The signature screens (header, footer, front page) use the dedicated
+ * assets/css/gallery.css (`g-` classes). Everything else follows from here.
+ */
+
+:root {
+
+    /* ── Page surfaces · white stack ─────────────────────────────────── */
+    --vpg-bg:         #FFFFFF;   /* page background */
+    --vpg-surface:    #F5F4F1;   /* off-white · alt section bg */
+    --vpg-card:       #FFFFFF;   /* card */
+    --vpg-card-deep:  #F5F4F1;   /* card variant */
+
+    /* ── Ink scale · near-black greys ────────────────────────────────── */
+    --vpg-ink:        #0B0B0B;
+    --vpg-ink-mid:    #2C2C2C;
+    --vpg-muted:      #6A6A6A;
+    --vpg-subtle:     #6A6A6A;   /* AA on white */
+    --vpg-faint:      #9C9A95;
+
+    /* ── Accent · one red does the pointing ──────────────────────────── */
+    --vpg-accent:        #E5341F;
+    --vpg-accent-deep:   #BE2410;
+    --vpg-accent-light:  #FBE4E0;
+    --vpg-oxblood:       #BE2410;   /* folded into the red family */
+    --vpg-gold:          #BE2410;
+
+    /* ── Member · keep a single quiet identifier ─────────────────────── */
+    --vpg-member:        #2C2C2C;
+    --vpg-member-light:  #F5F4F1;
+
+    /* ── Category palette · muted neutrals so red stays the only accent.
+       Used only on chips/meta to distinguish the seven CPTs. ──────────── */
+    --vpg-shop-bg:    #F0EFEC;  --vpg-shop-text:    #2C2C2C;
+    --vpg-studio-bg:  #F0EFEC;  --vpg-studio-text:  #2C2C2C;
+    --vpg-loc-bg:     #F0EFEC;  --vpg-loc-text:     #2C2C2C;
+    --vpg-event-bg:   #FBE4E0;  --vpg-event-text:   #BE2410;
+    --vpg-review-bg:  #F0EFEC;  --vpg-review-text:  #2C2C2C;
+    --vpg-tut-bg:     #F0EFEC;  --vpg-tut-text:     #2C2C2C;
+    --vpg-mag-bg:     #FBE4E0;  --vpg-mag-text:     #BE2410;
+
+    /* ── Semantic ────────────────────────────────────────────────────── */
+    --vpg-success:    #1F7A38;
+    --vpg-warning:    #B4791A;
+    --vpg-danger:     #BE2410;
+    --vpg-info:       #2C2C2C;
+
+    /* ── Borders · hairlines ─────────────────────────────────────────── */
+    --vpg-rule:           #D2D1CC;
+    --vpg-rule-soft:      #E6E5E1;
+    --vpg-rule-strong:    #0B0B0B;
+
+    /* ── Type stack · Archivo throughout (one variable grotesque) ────── */
+    --vpg-font-display:  'Archivo', system-ui, sans-serif;
+    --vpg-font-body:     'Archivo', system-ui, -apple-system, sans-serif;
+    --vpg-font-italic:   'Archivo', Georgia, serif;
+    --vpg-font-mono:     'Archivo', ui-monospace, monospace;  /* caps labels */
+
+    /* ── Size scale ──────────────────────────────────────────────────── */
+    --vpg-fs-xs:     11px;
+    --vpg-fs-sm:     12px;
+    --vpg-fs-md:     14px;
+    --vpg-fs-base:   16.5px;
+    --vpg-fs-lg:     19px;
+    --vpg-fs-xl:     22px;
+    --vpg-fs-h4:     clamp(19px, 1.5vw, 23px);
+    --vpg-fs-h3:     clamp(24px, 2.4vw, 32px);
+    --vpg-fs-h2:     clamp(28px, 4vw,   56px);
+    --vpg-fs-h1:     clamp(40px, 6.6vw, 104px);
+    --vpg-fs-cover:  clamp(56px, 9vw,  120px);
+
+    /* ── Weight · tracking · line-height ─────────────────────────────── */
+    --vpg-fw-light:  400;
+    --vpg-fw-body:   400;
+    --vpg-fw-medium: 500;
+    --vpg-fw-semi:   600;
+    --vpg-fw-bold:   700;
+    --vpg-fw-black:  800;
+
+    --vpg-tr-display:    -0.03em;
+    --vpg-tr-tight:      -0.02em;
+    --vpg-tr-normal:     0;
+    --vpg-tr-loose:      0.02em;
+    --vpg-tr-caps-sm:    0.1em;
+    --vpg-tr-caps:       0.16em;
+    --vpg-tr-caps-wide:  0.2em;
+
+    --vpg-lh-display: 0.92;
+    --vpg-lh-tight:   1.05;
+    --vpg-lh-body:    1.6;
+    --vpg-lh-loose:   1.6;
+    --vpg-lh-prose:   1.7;
+
+    /* ── Spacing scale (rems) ────────────────────────────────────────── */
+    --vpg-sp-1:  0.25rem;
+    --vpg-sp-2:  0.5rem;
+    --vpg-sp-3:  0.75rem;
+    --vpg-sp-4:  1rem;
+    --vpg-sp-5:  1.5rem;
+    --vpg-sp-6:  2rem;
+    --vpg-sp-7:  3rem;
+    --vpg-sp-8:  4rem;
+    --vpg-sp-9:  6rem;
+    --vpg-sp-10: 8rem;
+    --vpg-sp-11: 12rem;
+
+    /* ── Layout maxima ───────────────────────────────────────────────── */
+    --vpg-max-w:        1440px;
+    --vpg-max-narrow:    720px;
+    --vpg-max-magazine: 1180px;
+    --vpg-max-prose:     680px;
+
+    /* ── Radius · square Gallery edges; pill stays for nav/chips ─────── */
+    --vpg-radius-sm:   0px;
+    --vpg-radius:      0px;
+    --vpg-radius-lg:   0px;
+    --vpg-radius-xl:   0px;
+    --vpg-radius-pill: 999px;
+
+    /* ── Motion ──────────────────────────────────────────────────────── */
+    --vpg-ease:     cubic-bezier(.22,1,.36,1);
+    --vpg-ease-out: cubic-bezier(.22,1,.36,1);
+    --vpg-t-fast:   0.18s;
+    --vpg-t-mid:    0.32s;
+    --vpg-t-slow:   0.45s;
+
+    /* ── Decorative · muted (Gallery is flat — no glows/grain) ───────── */
+    --vpg-glow-warm:    none;
+    --vpg-glow-cool:    none;
+    --vpg-glow-oxblood: none;
+
+    --vpg-dot-grid:  radial-gradient(rgba(11,11,11,0.05) 1px, transparent 1px);
+    --vpg-dot-size:  22px 22px;
+
+    --vpg-grain: none;
+
+    /* ── Shadows · barely-there (paper, not glass) ───────────────────── */
+    --vpg-shadow-card:    none;
+    --vpg-shadow-lift:    0 18px 40px rgba(11, 11, 11, 0.10);
+    --vpg-shadow-modal:   0 32px 80px rgba(11, 11, 11, 0.18);
+    --vpg-shadow-inset:   none;
+
+    /* ── Sticky chrome heights (match gallery.css header) ────────────── */
+    --vpg-h-header:  64px;
+    --vpg-h-mobnav:  64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root { --vpg-t-fast: 0.001s; --vpg-t-mid: 0.001s; --vpg-t-slow: 0.001s; }
+}

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>COUNTERFLOW — Enterprise-Workflows ohne den Enterprise-Wahnsinn</title>
+<meta name="description" content="COUNTERFLOW ist die schlanke Alternative zu aufgeblähten ITSM-Plattformen. Schnell startklar, transparente Preise, kein Vendor-Lock-in, keine Berater-Armee." />
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-soft: #12121a;
+    --surface: #16161f;
+    --surface-2: #1d1d29;
+    --border: #262633;
+    --text: #f4f4f6;
+    --muted: #9b9bad;
+    --accent: #ff5a36;
+    --accent-2: #ffb13b;
+    --good: #34d399;
+    --bad: #6b6b7a;
+    --radius: 16px;
+    --max: 1140px;
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 15px;
+    padding: 14px 24px; border-radius: 999px;
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 8px 30px -8px rgba(255,90,54,.6);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px -8px rgba(255,90,54,.7); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* NAV */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(10,10,15,.72);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: -.5px; }
+  .logo .mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    position: relative; transform: rotate(45deg);
+  }
+  .logo .mark::after {
+    content: ""; position: absolute; inset: 8px 3px;
+    background: var(--bg); border-radius: 2px;
+  }
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { color: var(--muted); font-size: 15px; font-weight: 500; transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { display: flex; gap: 12px; align-items: center; }
+  @media (max-width: 860px) { .nav-links { display: none; } }
+
+  /* HERO */
+  .hero { position: relative; padding: 100px 0 80px; text-align: center; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 600px; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(255,90,54,.18), transparent 70%);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-size: 13px; font-weight: 500;
+    padding: 7px 16px; border-radius: 999px; margin-bottom: 28px;
+  }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); box-shadow: 0 0 8px var(--good); }
+  .hero h1 {
+    font-size: clamp(38px, 6vw, 68px); line-height: 1.05; letter-spacing: -1.5px;
+    font-weight: 800; max-width: 14ch; margin: 0 auto 24px;
+  }
+  .hero h1 .accent { background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); max-width: 56ch; margin: 0 auto 38px; }
+  .hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .hero-note { margin-top: 20px; font-size: 14px; color: var(--bad); }
+
+  .logos { margin-top: 70px; }
+  .logos p { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--bad); margin-bottom: 20px; }
+  .logo-row { display: flex; flex-wrap: wrap; gap: 36px; justify-content: center; align-items: center; opacity: .7; }
+  .logo-row span { font-weight: 700; font-size: 18px; color: var(--muted); letter-spacing: -.5px; }
+
+  /* SECTIONS */
+  section.block { padding: 90px 0; }
+  .eyebrow { color: var(--accent); font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+  .section-head { max-width: 640px; margin: 0 auto 56px; text-align: center; }
+  .section-head h2 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; }
+  .section-head p { color: var(--muted); font-size: 18px; }
+
+  /* PROBLEM CARDS */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 30px;
+    transition: transform .2s ease, border-color .2s ease;
+  }
+  .card:hover { transform: translateY(-4px); border-color: #34344a; }
+  .card .ico {
+    width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
+    background: rgba(255,90,54,.12); margin-bottom: 18px; font-size: 22px;
+  }
+  .card h3 { font-size: 19px; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 15px; }
+
+  /* COMPARISON */
+  .compare { background: var(--bg-soft); }
+  .compare-table {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+  }
+  .ct-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr; align-items: stretch; }
+  .ct-row + .ct-row { border-top: 1px solid var(--border); }
+  .ct-cell { padding: 20px 24px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+  .ct-head .ct-cell { font-weight: 700; font-size: 16px; }
+  .ct-them { color: var(--muted); background: rgba(0,0,0,.15); }
+  .ct-us { background: rgba(255,90,54,.06); font-weight: 600; position: relative; }
+  .ct-head .ct-us { color: var(--accent); }
+  .ct-feature { color: var(--muted); font-weight: 500; }
+  .tick { color: var(--good); font-weight: 800; }
+  .cross { color: var(--bad); font-weight: 800; }
+  @media (max-width: 700px) {
+    .ct-cell { padding: 14px 14px; font-size: 13px; }
+    .ct-head .ct-cell { font-size: 14px; }
+  }
+
+  /* FEATURES */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  @media (max-width: 760px) { .grid-2 { grid-template-columns: 1fr; } }
+  .feature { display: flex; gap: 16px; padding: 26px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .feature .fico { font-size: 26px; flex-shrink: 0; }
+  .feature h3 { font-size: 18px; margin-bottom: 6px; }
+  .feature p { color: var(--muted); font-size: 15px; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 22px; text-align: center; }
+  @media (max-width: 760px) { .stats { grid-template-columns: repeat(2,1fr); } }
+  .stat .num { font-size: clamp(34px, 5vw, 52px); font-weight: 800; letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat .label { color: var(--muted); font-size: 15px; }
+
+  /* PRICING */
+  .pricing { background: var(--bg-soft); }
+  .price-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; align-items: start; }
+  @media (max-width: 860px) { .price-grid { grid-template-columns: 1fr; } }
+  .plan { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; }
+  .plan.featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,90,54,.08), var(--surface)); position: relative; }
+  .plan.featured .tag { position: absolute; top: -13px; left: 32px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+  .plan h3 { font-size: 20px; margin-bottom: 6px; }
+  .plan .desc { color: var(--muted); font-size: 14px; margin-bottom: 20px; min-height: 40px; }
+  .plan .price { font-size: 42px; font-weight: 800; letter-spacing: -1px; }
+  .plan .price span { font-size: 16px; color: var(--muted); font-weight: 500; }
+  .plan ul { list-style: none; margin: 22px 0; display: flex; flex-direction: column; gap: 12px; }
+  .plan li { display: flex; gap: 10px; font-size: 15px; color: var(--text); }
+  .plan li::before { content: "✓"; color: var(--good); font-weight: 800; }
+  .plan .btn { width: 100%; justify-content: center; }
+
+  /* CTA */
+  .cta-band { text-align: center; padding: 90px 0; }
+  .cta-card {
+    background: linear-gradient(135deg, rgba(255,90,54,.14), rgba(255,177,59,.08));
+    border: 1px solid var(--border); border-radius: 28px; padding: 70px 30px;
+  }
+  .cta-card h2 { font-size: clamp(30px, 5vw, 48px); letter-spacing: -1px; margin-bottom: 18px; max-width: 18ch; margin-inline: auto; }
+  .cta-card p { color: var(--muted); font-size: 18px; max-width: 50ch; margin: 0 auto 32px; }
+
+  /* FOOTER */
+  footer.site { border-top: 1px solid var(--border); padding: 50px 0 40px; color: var(--muted); }
+  .foot-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; margin-bottom: 36px; }
+  .foot-col h4 { color: var(--text); font-size: 14px; margin-bottom: 14px; }
+  .foot-col a { display: block; font-size: 14px; color: var(--muted); margin-bottom: 8px; transition: color .2s; }
+  .foot-col a:hover { color: var(--accent); }
+  .foot-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--bad); }
+
+  .fade { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+  .fade.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="logo"><span class="mark"></span> COUNTERFLOW</a>
+    <nav class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#vergleich">Vergleich</a>
+      <a href="#features">Features</a>
+      <a href="#preise">Preise</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost">Login</a>
+      <a href="#preise" class="btn btn-primary">Kostenlos starten</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <span class="pill"><span class="dot"></span> Die Anti-ServiceNow-Plattform</span>
+    <h1>Enterprise-Workflows. <br><span class="accent">Ohne den Enterprise-Wahnsinn.</span></h1>
+    <p class="sub">Schluss mit 18-Monats-Rollouts, Berater-Armeen und Lizenzrechnungen, die niemand versteht. COUNTERFLOW bringt deine ITSM-, HR- und Service-Prozesse in Tagen live — nicht in Quartalen.</p>
+    <div class="hero-cta">
+      <a href="#preise" class="btn btn-primary">14 Tage gratis testen →</a>
+      <a href="#vergleich" class="btn btn-ghost">So schlagen wir ServiceNow</a>
+    </div>
+    <p class="hero-note">Keine Kreditkarte · Keine Implementierungsgebühr · Kein Lock-in</p>
+
+    <div class="logos">
+      <p>Teams, die genug vom Plattform-Tax hatten</p>
+      <div class="logo-row">
+        <span>Nordwind</span><span>Helio</span><span>Brückner&Co</span><span>Latitude</span><span>Voltra</span><span>Kessler AG</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="block fade" id="problem">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Das Problem</div>
+      <h2>Die alte Plattform sollte Arbeit abnehmen — nicht erzeugen</h2>
+      <p>Monolithische ITSM-Suiten versprechen alles und liefern vor allem eins: Komplexität, die du nur mit teuren Spezialisten bändigst.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="ico">💸</div>
+        <h3>Der versteckte Plattform-Tax</h3>
+        <p>Lizenz, Implementierung, zertifizierte Berater, jährliche Preissprünge. Am Ende zahlst du das Dreifache des Listenpreises — pro Jahr.</p>
+      </div>
+      <div class="card">
+        <div class="ico">⏳</div>
+        <h3>Rollouts wie Großprojekte</h3>
+        <p>12 bis 24 Monate bis zum ersten echten Mehrwert. Bis dahin hat sich dein Prozess schon wieder geändert.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔒</div>
+        <h3>Gefangen im Ökosystem</h3>
+        <p>Proprietäre Skriptsprachen, Daten in der Blackbox, jede Anpassung braucht einen Partner. Raus kommst du nur schwer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="block compare fade" id="vergleich">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Der direkte Vergleich</div>
+      <h2>COUNTERFLOW vs. die alte Enterprise-Suite</h2>
+      <p>Gleicher Funktionsumfang. Komplett andere Erfahrung.</p>
+    </div>
+    <div class="compare-table">
+      <div class="ct-row ct-head">
+        <div class="ct-cell ct-feature">&nbsp;</div>
+        <div class="ct-cell ct-them">Die alte Suite</div>
+        <div class="ct-cell ct-us">COUNTERFLOW</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell ct-feature">Time-to-Value</div>
+        <div class="ct-cell ct-them">12–24 Monate</div>
+        <div class="ct-cell ct-us">3–10 Tage</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell ct-feature">Preismodell</div>
+        <div class="ct-cell ct-them">Intransparent, Verhandlungssache</div>
+        <div class="ct-cell ct-us">Öffentlich & pauschal</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell ct-feature">Implementierung</div>
+        <div class="ct-cell ct-them">Berater-Armee nötig</div>
+        <div class="ct-cell ct-us">Self-Service in Stunden</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell ct-feature">Anpassungen</div>
+        <div class="ct-cell ct-them">Proprietäre Skripte</div>
+        <div class="ct-cell ct-us">Offene API · YAML · No-Code</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell ct-feature">Datenexport</div>
+        <div class="ct-cell ct-them"><span class="cross">✕</span> Vendor-Lock-in</div>
+        <div class="ct-cell ct-us"><span class="tick">✓</span> Jederzeit, ein Klick</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell ct-feature">Support</div>
+        <div class="ct-cell ct-them">Ticket-Queue, Tier-Stufen</div>
+        <div class="ct-cell ct-us">Echte Engineers, &lt; 2 Std.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="block fade" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Was du bekommst</div>
+      <h2>Alles, was du brauchst. Nichts, was du nicht brauchst.</h2>
+      <p>Die Module, für die andere Plattformen separate Lizenzen verlangen — bei uns von Tag eins inklusive.</p>
+    </div>
+    <div class="grid-2">
+      <div class="feature"><div class="fico">🎫</div><div><h3>ITSM & Ticketing</h3><p>Incidents, Changes, Problems und ein CMDB-Light, das sich in Minuten füllt statt in Monaten.</p></div></div>
+      <div class="feature"><div class="fico">⚡</div><div><h3>Visueller Workflow-Builder</h3><p>Drag-and-Drop für Genehmigungen, Eskalationen und Automationen. Kein Code-Studium nötig.</p></div></div>
+      <div class="feature"><div class="fico">🔗</div><div><h3>Offene Integrationen</h3><p>Slack, Teams, Jira, GitHub, ERP — über echte REST-APIs und Webhooks. Keine Middleware-Lizenz.</p></div></div>
+      <div class="feature"><div class="fico">🤖</div><div><h3>KI-Assistent inklusive</h3><p>Tickets klassifizieren, Antworten vorschlagen, Wissensartikel generieren — ohne Aufpreis-Modul.</p></div></div>
+      <div class="feature"><div class="fico">📊</div><div><h3>Reporting in Echtzeit</h3><p>Dashboards, SLAs und Exporte, die jeder versteht. Daten gehören dir, nicht der Plattform.</p></div></div>
+      <div class="feature"><div class="fico">🛡️</div><div><h3>Enterprise-Security</h3><p>SSO/SAML, RBAC, Audit-Logs, EU-Hosting & DSGVO-konform. Compliance ohne Sternchen.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="block fade">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="num">68%</div><div class="label">geringere Gesamtkosten</div></div>
+      <div class="stat"><div class="num">9 Tage</div><div class="label">Ø bis Go-Live</div></div>
+      <div class="stat"><div class="num">0 €</div><div class="label">Implementierungsgebühr</div></div>
+      <div class="stat"><div class="num">&lt; 2 Std.</div><div class="label">Support-Reaktion</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="block pricing fade" id="preise">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Transparente Preise</div>
+      <h2>Preise, die auf der Website stehen</h2>
+      <p>Keine „kontaktieren Sie den Vertrieb"-Mauer. Du siehst, was du zahlst — bevor du redest.</p>
+    </div>
+    <div class="price-grid">
+      <div class="plan">
+        <h3>Starter</h3>
+        <p class="desc">Für kleine Teams, die endlich loslegen wollen.</p>
+        <div class="price">19 €<span> / Agent / Monat</span></div>
+        <ul>
+          <li>ITSM & Ticketing</li>
+          <li>Workflow-Builder</li>
+          <li>Bis zu 10 Agents</li>
+          <li>Community-Support</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Starten</a>
+      </div>
+      <div class="plan featured">
+        <span class="tag">Beliebt</span>
+        <h3>Growth</h3>
+        <p class="desc">Für skalierende Service-Teams mit Anspruch.</p>
+        <div class="price">39 €<span> / Agent / Monat</span></div>
+        <ul>
+          <li>Alles aus Starter</li>
+          <li>KI-Assistent inklusive</li>
+          <li>Alle Integrationen</li>
+          <li>SSO/SAML & Audit-Logs</li>
+          <li>Support in &lt; 2 Std.</li>
+        </ul>
+        <a href="#" class="btn btn-primary">14 Tage gratis</a>
+      </div>
+      <div class="plan">
+        <h3>Enterprise</h3>
+        <p class="desc">Für große Organisationen — ohne den alten Tax.</p>
+        <div class="price">Fair<span> · pauschal pro Jahr</span></div>
+        <ul>
+          <li>Alles aus Growth</li>
+          <li>Dediziertes EU-Hosting</li>
+          <li>99,9% SLA</li>
+          <li>Migrations-Hilfe gratis</li>
+          <li>Persönlicher Engineer</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Angebot ansehen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+  <div class="wrap">
+    <div class="cta-card fade">
+      <h2>Bereit, den Plattform-Tax zu kündigen?</h2>
+      <p>Migriere in einem Nachmittag, was bei der alten Suite ein Projektjahr gekostet hätte. Wir bringen deine Daten mit — kostenlos.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-primary">Jetzt kostenlos starten →</a>
+        <a href="#" class="btn btn-ghost">Demo buchen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col" style="max-width:280px">
+        <a href="#" class="logo" style="margin-bottom:14px"><span class="mark"></span> COUNTERFLOW</a>
+        <p style="font-size:14px">Enterprise-Workflows ohne den Enterprise-Wahnsinn. Schlank, offen, fair.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Produkt</h4>
+        <a href="#features">Features</a>
+        <a href="#preise">Preise</a>
+        <a href="#vergleich">Vergleich</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="foot-col">
+        <h4>Ressourcen</h4>
+        <a href="#">Dokumentation</a>
+        <a href="#">Migrations-Guide</a>
+        <a href="#">API-Referenz</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="foot-col">
+        <h4>Unternehmen</h4>
+        <a href="#">Über uns</a>
+        <a href="#">Karriere</a>
+        <a href="#">Kontakt</a>
+        <a href="#">Datenschutz</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 COUNTERFLOW GmbH — Alle Rechte vorbehalten.</span>
+      <span>Nicht verbunden mit oder unterstützt von genannten Drittanbietern.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sanfte Einblend-Animation beim Scrollen
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

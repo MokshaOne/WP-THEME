@@ -1,0 +1,435 @@
+/* ═══════════════════════════════════════════════════════════
+   R-E — 3D Effects & Special Functions
+   WebGL-enhanced, GSAP-powered, perspective-driven
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── 3D Card Tilt (Vanilla Tilt integration) ─────────────── */
+
+[data-tilt] {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+[data-tilt] .re-card__overlay { transform: translateZ(30px); }
+[data-tilt] .re-card__title { transform: translateZ(50px); }
+[data-tilt] .re-card__badge { transform: translateZ(60px); }
+
+/* Tilt inner glow on hover */
+[data-tilt]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        circle at var(--tilt-x, 50%) var(--tilt-y, 50%),
+        rgba(var(--re-amber-rgb), 0.12) 0%,
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity var(--re-t-mid);
+    pointer-events: none;
+    z-index: 2;
+}
+[data-tilt]:hover::after { opacity: 1; }
+
+/* ─── 3D Hero Slide Transitions ───────────────────────────── */
+
+.re-hero__slide.re-3d-exit-left {
+    animation: re-slide-exit-left 0.7s var(--re-ease) forwards;
+}
+.re-hero__slide.re-3d-exit-right {
+    animation: re-slide-exit-right 0.7s var(--re-ease) forwards;
+}
+.re-hero__slide.re-3d-enter-left {
+    animation: re-slide-enter-left 0.7s var(--re-ease-out) forwards;
+}
+.re-hero__slide.re-3d-enter-right {
+    animation: re-slide-enter-right 0.7s var(--re-ease-out) forwards;
+}
+
+@keyframes re-slide-exit-left {
+    to {
+        opacity: 0;
+        transform: perspective(1200px) rotateY(12deg) translateX(-15%) translateZ(-200px);
+    }
+}
+@keyframes re-slide-exit-right {
+    to {
+        opacity: 0;
+        transform: perspective(1200px) rotateY(-12deg) translateX(15%) translateZ(-200px);
+    }
+}
+@keyframes re-slide-enter-left {
+    from {
+        opacity: 0;
+        transform: perspective(1200px) rotateY(-12deg) translateX(15%) translateZ(-200px);
+    }
+    to { opacity: 1; transform: none; }
+}
+@keyframes re-slide-enter-right {
+    from {
+        opacity: 0;
+        transform: perspective(1200px) rotateY(12deg) translateX(-15%) translateZ(-200px);
+    }
+    to { opacity: 1; transform: none; }
+}
+
+/* ─── Parallax Depth Layers ───────────────────────────────── */
+
+.re-parallax-container {
+    perspective: 1200px;
+    overflow: hidden;
+    position: relative;
+}
+
+[data-depth="1"] { transform: translateZ(-50px) scale(1.05); }
+[data-depth="2"] { transform: translateZ(-100px) scale(1.1); }
+[data-depth="3"] { transform: translateZ(-200px) scale(1.2); }
+
+.re-float {
+    animation: re-float 6s ease-in-out infinite;
+}
+.re-float--delay-1 { animation-delay: -2s; }
+.re-float--delay-2 { animation-delay: -4s; }
+
+@keyframes re-float {
+    0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
+    25% { transform: translateY(-8px) rotateX(1deg) rotateY(-1deg); }
+    50% { transform: translateY(-4px) rotateX(-0.5deg) rotateY(0.5deg); }
+    75% { transform: translateY(-10px) rotateX(0.5deg) rotateY(-0.5deg); }
+}
+
+/* ─── 3D Flip Reveal ──────────────────────────────────────── */
+
+.re-flip-reveal {
+    perspective: 1200px;
+}
+.re-flip-reveal__inner {
+    transform-style: preserve-3d;
+    transform: rotateX(90deg);
+    opacity: 0;
+    transition: all 0.8s var(--re-ease-out);
+}
+.re-flip-reveal.is-visible .re-flip-reveal__inner {
+    transform: rotateX(0);
+    opacity: 1;
+}
+
+/* Stagger children */
+.re-flip-reveal.is-visible .re-flip-reveal__inner:nth-child(2) { transition-delay: 0.1s; }
+.re-flip-reveal.is-visible .re-flip-reveal__inner:nth-child(3) { transition-delay: 0.2s; }
+.re-flip-reveal.is-visible .re-flip-reveal__inner:nth-child(4) { transition-delay: 0.3s; }
+
+/* ─── Magnetic Button Effect ──────────────────────────────── */
+
+.re-magnetic {
+    position: relative;
+    display: inline-block;
+}
+.re-magnetic > * {
+    transition: transform var(--re-t-mid) var(--re-ease-out);
+}
+
+/* ─── Morphing Text ───────────────────────────────────────── */
+
+.re-morph {
+    position: relative;
+    display: inline-block;
+}
+.re-morph__word {
+    display: inline-block;
+    transition: all 0.5s var(--re-ease-out);
+}
+.re-morph__word.is-morphing {
+    opacity: 0;
+    transform: translateY(-20px) rotateX(45deg);
+    filter: blur(4px);
+}
+.re-morph__word.is-entering {
+    animation: re-morph-in 0.5s var(--re-ease-out) forwards;
+}
+
+@keyframes re-morph-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px) rotateX(-45deg);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+        filter: blur(0);
+    }
+}
+
+/* ─── Glitch Effect ───────────────────────────────────────── */
+
+.re-glitch {
+    position: relative;
+}
+.re-glitch::before,
+.re-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.re-glitch::before {
+    color: #ff0040;
+    animation: re-glitch-1 2s infinite linear alternate-reverse;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+.re-glitch::after {
+    color: #00f0ff;
+    animation: re-glitch-2 3s infinite linear alternate-reverse;
+    clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+}
+
+@keyframes re-glitch-1 {
+    0%, 94% { transform: translate(0); }
+    95% { transform: translate(-3px, 1px); }
+    96% { transform: translate(3px, -1px); }
+    97% { transform: translate(-2px, 2px); }
+    98% { transform: translate(2px, -2px); }
+    99% { transform: translate(-1px, 1px); }
+    100% { transform: translate(0); }
+}
+@keyframes re-glitch-2 {
+    0%, 94% { transform: translate(0); }
+    95% { transform: translate(3px, -1px); }
+    96% { transform: translate(-3px, 1px); }
+    97% { transform: translate(2px, -2px); }
+    98% { transform: translate(-2px, 2px); }
+    99% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+}
+
+/* ─── 3D Image Gallery ────────────────────────────────────── */
+
+.re-gallery-3d {
+    display: flex;
+    gap: 20px;
+    perspective: 1200px;
+    padding: 40px 0;
+}
+
+.re-gallery-3d__item {
+    flex-shrink: 0;
+    transform-style: preserve-3d;
+    transition: transform var(--re-t-3d) var(--re-ease);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--re-shadow-float);
+}
+.re-gallery-3d__item:hover {
+    transform: translateZ(40px) rotateY(-3deg);
+    box-shadow: var(--re-shadow-hover);
+}
+
+/* Spread layout */
+.re-gallery-3d--spread .re-gallery-3d__item:nth-child(odd) {
+    transform: rotateY(5deg) translateZ(-20px);
+}
+.re-gallery-3d--spread .re-gallery-3d__item:nth-child(even) {
+    transform: rotateY(-5deg) translateZ(10px);
+}
+.re-gallery-3d--spread .re-gallery-3d__item:hover {
+    transform: rotateY(0) translateZ(50px);
+}
+
+/* ─── 3D Scene Section ────────────────────────────────────── */
+
+.re-scene {
+    position: relative;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    overflow: hidden;
+}
+
+.re-scene__layer {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+.re-scene__layer--bg { transform: translateZ(-100px) scale(1.2); }
+.re-scene__layer--mid { transform: translateZ(-50px) scale(1.1); }
+.re-scene__layer--fg { transform: translateZ(0); }
+.re-scene__layer--float { transform: translateZ(50px) scale(0.95); }
+
+/* ─── Animated Gradient Border ────────────────────────────── */
+
+.re-glow-border {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.re-glow-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(
+        from 0deg,
+        var(--re-amber),
+        transparent 25%,
+        transparent 50%,
+        var(--re-amber) 75%,
+        transparent
+    );
+    animation: re-glow-spin 4s linear infinite;
+    z-index: -1;
+    border-radius: inherit;
+}
+.re-glow-border::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--re-bg-2);
+    border-radius: 6px;
+    z-index: -1;
+}
+
+@keyframes re-glow-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ─── Liquid Glass Effect ─────────────────────────────────── */
+
+.re-glass {
+    background: rgba(var(--re-ink-rgb), 0.03);
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid rgba(var(--re-ink-rgb), 0.08);
+    border-radius: 12px;
+}
+
+/* ─── 3D Text Shadow ──────────────────────────────────────── */
+
+.re-text-3d {
+    text-shadow:
+        1px 1px 0 rgba(var(--re-ink-rgb), 0.15),
+        2px 2px 0 rgba(var(--re-ink-rgb), 0.12),
+        3px 3px 0 rgba(var(--re-ink-rgb), 0.09),
+        4px 4px 0 rgba(var(--re-ink-rgb), 0.06),
+        5px 5px 0 rgba(var(--re-ink-rgb), 0.03),
+        6px 6px 20px rgba(0,0,0,0.3);
+}
+
+/* ─── Hover Spotlight ─────────────────────────────────────── */
+
+.re-spotlight {
+    position: relative;
+    overflow: hidden;
+}
+.re-spotlight::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--re-amber-rgb), 0.15), transparent 70%);
+    pointer-events: none;
+    transform: translate(var(--spot-x, -100px), var(--spot-y, -100px));
+    transition: opacity 0.3s;
+    opacity: 0;
+    z-index: 1;
+}
+.re-spotlight:hover::before { opacity: 1; }
+
+/* ─── Stacked Cards (Deck) ────────────────────────────────── */
+
+.re-deck {
+    position: relative;
+    perspective: 1200px;
+    width: 350px;
+    height: 450px;
+    margin: 0 auto;
+}
+.re-deck__card {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--re-shadow-float);
+    transition: all var(--re-t-3d) var(--re-ease);
+    transform-origin: center bottom;
+}
+.re-deck__card:nth-child(1) { z-index: 3; }
+.re-deck__card:nth-child(2) { z-index: 2; transform: translateY(-8px) scale(0.96); opacity: 0.8; }
+.re-deck__card:nth-child(3) { z-index: 1; transform: translateY(-16px) scale(0.92); opacity: 0.6; }
+
+.re-deck:hover .re-deck__card:nth-child(1) { transform: rotateZ(-3deg) translateX(-20px); }
+.re-deck:hover .re-deck__card:nth-child(2) { transform: translateY(-8px) scale(0.96) rotateZ(0deg); opacity: 0.9; }
+.re-deck:hover .re-deck__card:nth-child(3) { transform: translateY(-16px) scale(0.92) rotateZ(3deg) translateX(20px); opacity: 0.8; }
+
+/* ─── Neon Amber Glow ─────────────────────────────────────── */
+
+.re-neon {
+    color: var(--re-amber);
+    text-shadow:
+        0 0 7px rgba(var(--re-amber-rgb), 0.5),
+        0 0 10px rgba(var(--re-amber-rgb), 0.4),
+        0 0 21px rgba(var(--re-amber-rgb), 0.3),
+        0 0 42px rgba(var(--re-amber-rgb), 0.2),
+        0 0 82px rgba(var(--re-amber-rgb), 0.1);
+    animation: re-neon-flicker 3s infinite alternate;
+}
+
+@keyframes re-neon-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 24%, 55% { opacity: 0.85; }
+}
+
+/* ─── Scroll-triggered Parallax (GSAP) ────────────────────── */
+
+[data-gsap-parallax] {
+    will-change: transform;
+}
+
+[data-gsap-fade-up] {
+    opacity: 0;
+    transform: translateY(60px);
+}
+
+[data-gsap-scale-in] {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+[data-gsap-rotate-in] {
+    opacity: 0;
+    transform: perspective(1200px) rotateX(15deg);
+}
+
+/* ─── Image Distortion Hover ──────────────────────────────── */
+
+.re-distort {
+    position: relative;
+    overflow: hidden;
+}
+.re-distort img {
+    transition: transform 0.6s var(--re-ease), filter 0.6s var(--re-ease);
+}
+.re-distort:hover img {
+    transform: scale(1.05);
+    filter: saturate(1.2) contrast(1.05);
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    [data-tilt] { transform: none !important; }
+    .re-float { animation: none; }
+    .re-marquee__track { animation: none; }
+    .re-glitch::before, .re-glitch::after { display: none; }
+    .re-neon { animation: none; }
+}

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect fill="#0B0C10" width="1200" height="900"/>
+  
+  <!-- Subtle grid -->
+  <g opacity="0.03" stroke="#F2EFE9" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="900"/>
+    <line x1="1200" y1="0" x2="0" y2="900"/>
+    <rect x="40" y="40" width="1120" height="820" fill="none"/>
+  </g>
+  
+  <!-- Registration marks -->
+  <g stroke="#F2EFE9" stroke-width="1" opacity="0.15">
+    <path d="M30,30 L30,52 M30,30 L52,30"/>
+    <path d="M1170,30 L1170,52 M1170,30 L1148,30"/>
+    <path d="M30,870 L30,848 M30,870 L52,870"/>
+    <path d="M1170,870 L1170,848 M1170,870 L1148,870"/>
+  </g>
+  
+  <!-- Amber accent line -->
+  <rect fill="#F2A03D" x="80" y="340" width="36" height="3" rx="1"/>
+  
+  <!-- Eyebrow -->
+  <text x="130" y="344" fill="#F2EFE9" opacity="0.42" font-family="monospace" font-size="11" letter-spacing="3" text-transform="uppercase">ELEMENTOR EDITION</text>
+  
+  <!-- Main title -->
+  <text x="80" y="430" fill="#F2EFE9" font-family="'Inter Tight', system-ui, sans-serif" font-size="96" font-weight="300" letter-spacing="-4">R-E</text>
+  
+  <!-- Subtitle -->
+  <text x="80" y="490" fill="#F2EFE9" font-family="'Inter Tight', system-ui, sans-serif" font-size="36" font-weight="300" letter-spacing="-1.5" opacity="0.8">Raveenthiran</text>
+  <text x="80" y="530" fill="#F2EFE9" font-family="'Inter Tight', system-ui, sans-serif" font-size="36" font-weight="700" font-style="italic" letter-spacing="-2" opacity="0.8">Elementor</text>
+  
+  <!-- Version badge -->
+  <text x="80" y="580" fill="#F2EFE9" opacity="0.3" font-family="monospace" font-size="11" letter-spacing="2">V1.0.0 · 3D · WEBGL · GSAP</text>
+  
+  <!-- Decorative particles -->
+  <g opacity="0.15">
+    <circle cx="800" cy="300" r="2" fill="#F2A03D"/>
+    <circle cx="850" cy="250" r="1.5" fill="#F2A03D"/>
+    <circle cx="900" cy="350" r="1" fill="#F2A03D"/>
+    <circle cx="750" cy="400" r="1.5" fill="#F2A03D"/>
+    <circle cx="950" cy="280" r="2" fill="#F2A03D"/>
+    <circle cx="1000" cy="380" r="1" fill="#F2A03D"/>
+    <circle cx="820" cy="450" r="1.5" fill="#F2A03D"/>
+    <circle cx="880" cy="200" r="1" fill="#F2A03D"/>
+    <circle cx="1050" cy="300" r="2" fill="#F2A03D"/>
+    <circle cx="700" cy="350" r="1" fill="#F2A03D"/>
+    <line x1="800" y1="300" x2="850" y2="250" stroke="#F2A03D" stroke-width="0.3"/>
+    <line x1="850" y1="250" x2="950" y2="280" stroke="#F2A03D" stroke-width="0.3"/>
+    <line x1="900" y1="350" x2="1000" y2="380" stroke="#F2A03D" stroke-width="0.3"/>
+    <line x1="750" y1="400" x2="820" y2="450" stroke="#F2A03D" stroke-width="0.3"/>
+    <line x1="950" y1="280" x2="1050" y2="300" stroke="#F2A03D" stroke-width="0.3"/>
+  </g>
+  
+  <!-- 3D Card mockup -->
+  <g transform="translate(700,350) rotate(-5)">
+    <rect x="0" y="0" width="220" height="300" rx="4" fill="#13141A" stroke="#F2EFE9" stroke-width="0.5" opacity="0.6"/>
+    <g transform="translate(10,200)">
+      <rect width="200" height="1" fill="#F2EFE9" opacity="0.06"/>
+    </g>
+    <text x="15" y="230" fill="#F2EFE9" opacity="0.5" font-family="monospace" font-size="8" letter-spacing="2">EDITORIAL</text>
+    <text x="15" y="260" fill="#F2EFE9" font-family="'Inter Tight', sans-serif" font-size="18" font-weight="300">Timeless</text>
+    <text x="15" y="280" fill="#F2EFE9" font-family="'Inter Tight', sans-serif" font-size="18" font-weight="700" font-style="italic">Portraits</text>
+  </g>
+  
+  <!-- Second card offset -->
+  <g transform="translate(780,310) rotate(3)">
+    <rect x="0" y="0" width="220" height="300" rx="4" fill="#181A20" stroke="#F2EFE9" stroke-width="0.3" opacity="0.4"/>
+  </g>
+  
+  <!-- Amber glow -->
+  <ellipse cx="850" cy="500" rx="200" ry="100" fill="#F2A03D" opacity="0.04"/>
+  
+  <!-- Bottom bar -->
+  <rect fill="#13141A" x="0" y="840" width="1200" height="60"/>
+  <text x="80" y="876" fill="#F2EFE9" opacity="0.3" font-family="monospace" font-size="10" letter-spacing="2">ELEMENTOR PRO · THREE.JS · GSAP · VANILLA TILT · WEBGL PARTICLES</text>
+  <text x="1120" y="876" fill="#F2A03D" opacity="0.5" font-family="monospace" font-size="10" text-anchor="end">2026</text>
+</svg>

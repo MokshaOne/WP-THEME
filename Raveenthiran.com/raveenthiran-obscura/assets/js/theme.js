@@ -2027,3 +2027,16 @@
     });
   }
 })();
+
+/* v4.51.6 — enquire FAQ popover */
+(function () {
+  var open = document.querySelector('.nr-faq-open'), pop = document.querySelector('.nr-faq-pop');
+  if (!open || !pop) return;
+  var x = pop.querySelector('.nr-faq-pop__x');
+  function show() { pop.hidden = false; document.body.classList.add('is-modal-open'); (x || pop).focus && (x || pop).focus(); }
+  function hide() { pop.hidden = true; document.body.classList.remove('is-modal-open'); open.focus(); }
+  open.addEventListener('click', show);
+  if (x) x.addEventListener('click', hide);
+  pop.addEventListener('click', function (e) { if (e.target === pop) hide(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) hide(); });
+})();

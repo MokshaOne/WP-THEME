@@ -2496,3 +2496,13 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
 .nr-bio-row .nr-stats > div{border:0;padding:0}
 @media (max-width:760px){.nr-bio-row{flex-direction:column;gap:18px}
   .nr-bio-row .nr-stats{flex:none;width:100%;border-left:0;padding-left:0;border-top:1px solid var(--hair);padding-top:16px}}
+
+/* ── v4.51.6: enquire FAQ as a popover ────────────────────────── */
+.nr-faq-open{align-self:flex-start;margin-top:18px}
+.nr-faq-pop{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;
+  background:rgba(11,12,16,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:nrFadeIn .2s ease}
+.nr-faq-pop[hidden]{display:none}
+.nr-faq-pop__box{position:relative;max-width:640px;width:calc(100% - 40px);max-height:80vh;overflow-y:auto;
+  background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:12px;padding:30px 30px 24px}
+.nr-faq-pop__x{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--ink-3);font-size:15px;cursor:pointer}
+.nr-faq-pop__x:hover{color:var(--ink)}

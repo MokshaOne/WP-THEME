@@ -133,7 +133,13 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 				</div>
 			</form>
 
-			<section class="nr-enquire__faq" id="faq">
+			<button type="button" class="nr-btn nr-btn--ghost nr-faq-open" aria-haspopup="dialog" aria-controls="faq">
+				<span><?php esc_html_e( 'Common questions', 'raveenthiran' ); ?></span> <span>?</span>
+			</button>
+
+			<section class="nr-enquire__faq nr-faq-pop" id="faq" role="dialog" aria-modal="true" aria-label="FAQ" hidden>
+				<div class="nr-faq-pop__box">
+				<button type="button" class="nr-faq-pop__x" aria-label="<?php esc_attr_e( 'Close', 'raveenthiran' ); ?>">✕</button>
 				<span class="nr-eyebrow nr-eyebrow--plain"><?php echo esc_html( nr_opt( 'nr_faq_eyebrow', __( 'FAQ · §05', 'raveenthiran' ) ) ); ?></span>
 				<div class="nr-faq__list nr-faq__list--compact">
 					<?php foreach ( ( function_exists( 'nr_faq_items' ) ? nr_faq_items() : [] ) as $i => $f ) : ?>
@@ -146,6 +152,7 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 							<button type="button" class="nr-faq__toggle" aria-label="<?php esc_attr_e( 'Toggle answer', 'raveenthiran' ); ?>">+</button>
 						</div>
 					<?php endforeach; ?>
+				</div>
 				</div>
 			</section>
 		</div>

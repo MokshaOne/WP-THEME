@@ -160,6 +160,9 @@ function nr_settings_defaults() {
 		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
 		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
 		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
+		'nr_fx_wizard'       => '0',  // #42 multi-step enquire wizard
+		'nr_fx_palette'      => '0',  // #135 colour-mood filter chips on archives
+		'nr_cta_view_b'      => '',   // #48 A/B variant for the hero CTA label
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -820,6 +823,16 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Tokens: %title% %cat% %year% %site%. e.g. "%title% — %cat% photography, Vienna · %site%". Blank keeps the default title.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Block AI crawlers', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_block_ai', __( 'Disallow GPTBot / CCBot / Google-Extended / ClaudeBot etc. in robots.txt', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Enquire wizard', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_wizard', __( 'Split the Enquire form into guided steps with a progress bar', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Colour-mood filter', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_palette', __( 'Warm / Cool / Mono filter chips on the portfolio rails (computed client-side)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'A/B hero CTA (variant B)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_cta_view_b', 30 ); ?>
+							<p class="description"><?php esc_html_e( 'Alternative label for the hero "View project" button. Blank = no test. Views/clicks are counted per variant (option nr_ab).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Sample content', 'raveenthiran' ); ?></label></th>
+						<td><a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nr_sample_content' ), 'nr_sample_content' ) ); ?>"><?php esc_html_e( 'Create demo drafts', 'raveenthiran' ); ?></a>
+							<span class="description"><?php esc_html_e( '3 projects + 2 journal entries as drafts — for a fresh install.', 'raveenthiran' ); ?></span></td></tr>
 					<tr><th><label><?php esc_html_e( 'Simplified admin', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_admin_simplify', __( 'Hide Posts/Comments/ACF menus, merge the dashboard widgets into one, trim the Appearance menu', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'On by default. Turn off to restore the stock admin.', 'raveenthiran' ); ?></p></td></tr>
@@ -843,7 +856,7 @@ function nr_theme_settings_page() {
 				<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nr_settings_export' ), 'nr_settings_export' ) ); ?>"><?php esc_html_e( 'Export settings (JSON)', 'raveenthiran' ); ?></a>
 			</p>
 			<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:8px">
-				<input type="hidden" name="action" value="nr_settings_import">
+				<input type="hidden" name="action" value="nr_settings_diff">
 				<?php wp_nonce_field( 'nr_settings_import' ); ?>
 				<input type="file" name="nr_settings_file" accept="application/json,.json" required>
 				<button type="submit" class="button"><?php esc_html_e( 'Import settings', 'raveenthiran' ); ?></button>

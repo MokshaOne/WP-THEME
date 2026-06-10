@@ -45,6 +45,7 @@ $nr_card_orient = function ( $post_id, $default = 'portrait' ) {
 	</div>
 
 	<?php if ( $nr_term && function_exists( 'nr_series_cover_header' ) ) nr_series_cover_header( $nr_term ); // #20 ?>
+	<?php if ( $nr_term ) do_action( 'nr_series_cover_after', $nr_term ); // #124 lookbook ?>
 
 	<?php if ( have_posts() ) : ?>
 		<div class="nr-portfolio-rail<?php echo $nr_is_journal ? ' nr-journal-rail' : ''; ?>" data-h-rail>

@@ -28,7 +28,7 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.13.x
           LHCI_URL="${{ github.event.inputs.base_url }}" \
-            lhci autorun --collect.url="${{ github.event.inputs.base_url }}" --config=./lighthouserc.json || true
+            lhci autorun --collect.url="${{ github.event.inputs.base_url }}" --config=./lighthouserc.json
 
   playwright:
     runs-on: ubuntu-latest

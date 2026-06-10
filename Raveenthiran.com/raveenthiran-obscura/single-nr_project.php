@@ -151,6 +151,7 @@ $lede = get_the_excerpt();
 				<?php if ( function_exists( 'nr_project_map_markup' ) ) echo nr_project_map_markup( get_the_ID() ); // #139 ?>
 				<?php if ( function_exists( 'nr_project_transcript_markup' ) ) echo nr_project_transcript_markup( get_the_ID() ); // #170 ?>
 				<?php if ( function_exists( 'nr_series_chapter_nav' ) ) echo nr_series_chapter_nav( get_the_ID() ); // #132 ?>
+				<?php if ( function_exists( 'nr_project_case_markup' ) ) echo nr_project_case_markup( get_the_ID() ); // #62 ?>
 
 			<div class="nr-project__actions">
 				<a class="nr-btn nr-btn--primary"

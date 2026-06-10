@@ -1,5 +1,42 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.49.0 — IDEAS-200 Medium tier r2 (19 items) — Medium tier complete
+New `inc/mediumwins2.php`, `page-delivery.php` template, JS/CSS.
+
+**Conversion:** multi-step **enquire wizard** (#42, opt-in toggle), **A/B hero CTA**
+with per-variant view/click counters (#48), PDF-estimate email **verified already
+shipped** in the auto-reply (#51), **Delivery page template** — native page password
++ gallery + per-file download + expiry (#60), newsletter **double opt-in** with
+confirm + welcome email (#72).
+**Editorial:** case-study section (#62), per-attachment **focal point** applied to
+crops (#127), **story mode** plate rhythm (#131), **colour-mood filter** chips
+Warm/Cool/Mono computed client-side (#135, opt-in), **lookbook PDF per series** —
+memory-safe DCTDecode passthrough, one JPEG at a time, at `/nr-lookbook/<slug>.pdf`
+with a download button on the series cover (#124).
+**Perf/typography:** art-directed `<picture>` — portrait crop on narrow portrait
+screens (#82); **variable-font support** — drop `inter-tight-var.woff2` into
+assets/fonts and it takes over all weights (#83) and enables the hero
+**weight-morph** at cinematic level (#10). Lighthouse job is now a **real gate**
+(#118, removed `|| true`).
+**Admin/ops:** **bulk alt-text editor** (Tools → Alt texts, #149), **editorial
+calendar** under Journal (#153), **sample-content button** in Theme Settings (#160),
+daily **self-test cron** that emails on state change (#187), settings import now
+shows a **diff preview** before applying (#191).
+
+**Skipped with rationale:** #34 orchestrator refactor (touching 15 working effects
+for an internal clock isn't worth the regression risk) · #87 modulepreload/islands
+(theme.js already loads deferred in the footer; an ESM split is build tooling we
+deliberately rejected earlier).
+
+**Medium tier complete** (r1+r2). 160/200 shipped overall; what remains is Batch 6
+(heavyweight: GPU/WebGL, commerce/portal, offline infra, bilingual) + 4 small skips.
+
+## 4.48.0 — Simplified admin (toggleable)
+Hides Posts/Comments/ACF menus + Theme File Editor, removes the stock dashboard
+widgets, merges the four theme widgets into one collapsible "Obscura — health &
+metrics" widget, trims Feature flags / Tag clusters / Series grid out of the
+Appearance menu (quick links instead). Toggle: Theme Settings → "Simplified admin".
+
 ## 4.47.0 — IDEAS-200 "Medium" tier, release 1 (24 items)
 The low-risk, self-contained half of the Medium tier (the heavier subsystems —
 booking wizard, PDF-email, delivery, double-opt-in, importer, calendar, AVIF

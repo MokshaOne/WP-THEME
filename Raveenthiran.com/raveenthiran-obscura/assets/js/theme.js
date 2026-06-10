@@ -1866,3 +1866,108 @@
     window.addEventListener('scroll', function () { if (!ticking) { target = current = window.scrollY; } }, { passive: true });
   }
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 "Medium" r2 (v4.49.0) — wizard, A/B, palette filter.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+
+  /* #42 — multi-step enquire wizard (opt-in, progressive over the real form). */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form && body.classList.contains('nr-wizard') && !form.dataset.wizard) {
+    form.dataset.wizard = '1';
+    var labels = Array.prototype.slice.call(form.querySelectorAll(':scope > label, :scope > fieldset'));
+    if (labels.length >= 4) {
+      var steps = [[], [], []];
+      labels.forEach(function (el) {
+        var t = (el.textContent || '').toLowerCase();
+        var i = /name|email/.test(t) ? 0 : (/type|date|budget|estimate/.test(t) ? 1 : 2);
+        steps[i].push(el);
+      });
+      var bar = document.createElement('div'); bar.className = 'nr-wiz';
+      bar.innerHTML = '<span class="nr-wiz__t">1 / 3</span><span class="nr-wiz__bar"><i></i></span>'
+        + '<span class="nr-wiz__nav"><button type="button" data-wb hidden>← Back</button><button type="button" data-wn>Next →</button></span>';
+      form.insertBefore(bar, form.firstChild);
+      var cur = 0, fill = bar.querySelector('.nr-wiz__bar i'), txt = bar.querySelector('.nr-wiz__t');
+      var bb = bar.querySelector('[data-wb]'), bn = bar.querySelector('[data-wn]');
+      var actions = form.querySelector('.nr-form__actions') || form.querySelector('[type="submit"]');
+      function show() {
+        steps.forEach(function (els, i) { els.forEach(function (el) { el.style.display = i === cur ? '' : 'none'; }); });
+        if (actions) actions.style.display = cur === 2 ? '' : 'none';
+        bb.hidden = cur === 0; bn.hidden = cur === 2;
+        txt.textContent = (cur + 1) + ' / 3';
+        fill.style.width = ((cur + 1) / 3 * 100) + '%';
+      }
+      bn.addEventListener('click', function () {
+        // native-validate the visible required fields before advancing
+        var ok = steps[cur].every(function (el) {
+          return Array.prototype.every.call(el.querySelectorAll('input,textarea,select'), function (f) { return f.reportValidity ? f.reportValidity() : true; });
+        });
+        if (ok && cur < 2) { cur++; show(); }
+      });
+      bb.addEventListener('click', function () { if (cur > 0) { cur--; show(); } });
+      show();
+    }
+  }
+
+  /* #48 — A/B hero CTA: stable per-visitor variant, log view + click. */
+  var ab = document.getElementById('nr-ab');
+  if (ab && window.NR && NR.home) {
+    try {
+      var cfg = JSON.parse(ab.textContent || '{}');
+      var v = localStorage.getItem('nr_ab_v');
+      if (v !== 'a' && v !== 'b') { v = Math.random() < 0.5 ? 'a' : 'b'; localStorage.setItem('nr_ab_v', v); }
+      var btn = document.querySelector('[data-hero-link] span');
+      if (v === 'b' && cfg.b && btn) btn.textContent = cfg.b;
+      var ping = function (k) { try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/ab', new Blob([JSON.stringify({ k: k })], { type: 'application/json' })); } catch (e) {} };
+      ping(v + '_view');
+      var link = document.querySelector('[data-hero-link]');
+      if (link) link.addEventListener('click', function () { ping(v + '_click'); });
+    } catch (e) {}
+  }
+
+  /* #135 — colour-mood filter chips (Warm/Cool/Mono) on archive rails, opt-in.
+     Dominant colour is computed client-side from each thumbnail (same-origin). */
+  if (body.classList.contains('nr-palette')) {
+    var rail = document.querySelector('.nr-portfolio-rail');
+    var cards = rail ? Array.prototype.slice.call(rail.querySelectorAll('.nr-card')) : [];
+    if (cards.length >= 4) {
+      var done = 0;
+      cards.forEach(function (card) {
+        var img = card.querySelector('img'); if (!img) { done++; return; }
+        var probe = new Image();
+        probe.crossOrigin = 'anonymous';
+        probe.onload = function () {
+          try {
+            var c = document.createElement('canvas'); c.width = c.height = 1;
+            var x = c.getContext('2d'); x.drawImage(probe, 0, 0, 1, 1);
+            var d = x.getImageData(0, 0, 1, 1).data, r = d[0], g = d[1], b = d[2];
+            var max = Math.max(r, g, b), min = Math.min(r, g, b), sat = max - min;
+            card.dataset.mood = sat < 18 ? 'mono' : (r >= b ? 'warm' : 'cool');
+          } catch (e) { card.dataset.mood = ''; }
+          if (++done === cards.length) chips();
+        };
+        probe.onerror = function () { if (++done === cards.length) chips(); };
+        probe.src = img.currentSrc || img.src;
+      });
+      function chips() {
+        if (document.querySelector('.nr-moods')) return;
+        var moods = { warm: 0, cool: 0, mono: 0 };
+        cards.forEach(function (c) { if (moods[c.dataset.mood] !== undefined) moods[c.dataset.mood]++; });
+        if (!moods.warm && !moods.cool && !moods.mono) return;
+        var box = document.createElement('div'); box.className = 'nr-moods nr-chips nr-chips--center';
+        box.innerHTML = '<button class="nr-chip is-on" data-mood="">All</button>'
+          + ['warm', 'cool', 'mono'].filter(function (m) { return moods[m]; })
+            .map(function (m) { return '<button class="nr-chip" data-mood="' + m + '">' + m + '</button>'; }).join('');
+        rail.parentElement.insertBefore(box, rail);
+        box.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-mood]'); if (!b) return;
+          box.querySelectorAll('.nr-chip').forEach(function (c) { c.classList.toggle('is-on', c === b); });
+          var m = b.dataset.mood;
+          cards.forEach(function (c) { c.style.display = (!m || c.dataset.mood === m) ? '' : 'none'; });
+        });
+      }
+    }
+  }
+})();

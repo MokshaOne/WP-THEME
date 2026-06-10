@@ -34,7 +34,7 @@ $nr_card_orient = function ( $post_id ) {
 		<div class="nr-chips nr-chips--center" data-group="main" role="tablist" aria-label="<?php esc_attr_e( 'Filter by category', 'raveenthiran' ); ?>">
 			<button type="button" class="nr-chip is-on" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'raveenthiran' ); ?></button>
 			<?php foreach ( $cats as $c ) : ?>
-				<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
+				<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?><sup class="nr-chip__n"><?php echo (int) $c->count; ?></sup></button>
 			<?php endforeach; ?>
 			<?php $nr_years = function_exists( 'nr_project_years' ) ? nr_project_years() : []; foreach ( $nr_years as $yy ) : ?>
 				<button type="button" class="nr-chip nr-chip--year" data-filter="year-<?php echo esc_attr( $yy ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $yy ); ?></button>
@@ -47,7 +47,7 @@ $nr_card_orient = function ( $post_id ) {
 		if ( ! is_wp_error( $nr_tags ) && $nr_tags ) : ?>
 			<div class="nr-chips nr-chips--center nr-chips--tags" data-group="tags" aria-label="<?php esc_attr_e( 'Filter by keyword (combine freely)', 'raveenthiran' ); ?>">
 				<?php foreach ( $nr_tags as $t ) : ?>
-					<button type="button" class="nr-chip nr-chip--tag" data-filter="tag-<?php echo esc_attr( $t->slug ); ?>" aria-pressed="false"><?php echo esc_html( $t->name ); ?></button>
+					<button type="button" class="nr-chip nr-chip--tag" data-filter="tag-<?php echo esc_attr( $t->slug ); ?>" aria-pressed="false"><?php echo esc_html( $t->name ); ?><sup class="nr-chip__n"><?php echo (int) $t->count; ?></sup></button>
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>

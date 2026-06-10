@@ -29,7 +29,7 @@ $nr_j_orient = function ( $post_id ) {
 			<div class="nr-chips nr-chips--center" data-group="main" role="tablist" aria-label="<?php esc_attr_e( 'Filter journal', 'raveenthiran' ); ?>">
 				<button type="button" class="nr-chip is-on" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'raveenthiran' ); ?></button>
 				<?php foreach ( $nr_jcats as $c ) : ?>
-					<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
+					<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?><sup class="nr-chip__n"><?php echo (int) $c->count; ?></sup></button>
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>

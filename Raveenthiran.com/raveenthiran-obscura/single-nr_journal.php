@@ -42,6 +42,39 @@ $nr_jurl = function_exists( 'nr_journal_url' ) ? nr_journal_url() : home_url( '/
 
 			<div class="nr-jpost__prose"><?php the_content(); ?></div>
 
+			<?php
+			// #20/#37 — "More notes": related journal entries (same category, else recent).
+			$nr_rel_args = [
+				'post_type'      => 'nr_journal',
+				'posts_per_page' => 2,
+				'post__not_in'   => [ get_the_ID() ],
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'no_found_rows'  => true,
+			];
+			$nr_terms = wp_get_post_terms( get_the_ID(), 'nr_journal_cat', [ 'fields' => 'ids' ] );
+			if ( ! is_wp_error( $nr_terms ) && $nr_terms ) {
+				$nr_rel_args['tax_query'] = [ [ 'taxonomy' => 'nr_journal_cat', 'field' => 'term_id', 'terms' => $nr_terms ] ];
+			}
+			$nr_rel = get_posts( $nr_rel_args );
+			if ( count( $nr_rel ) < 2 ) { // top up with recent entries
+				$nr_rel = get_posts( [ 'post_type' => 'nr_journal', 'posts_per_page' => 2, 'post__not_in' => [ get_the_ID() ], 'no_found_rows' => true ] );
+			}
+			if ( $nr_rel ) : ?>
+				<div class="nr-jpost__more">
+					<span class="nr-eyebrow nr-eyebrow--xs"><?php esc_html_e( 'More notes', 'raveenthiran' ); ?></span>
+					<div class="nr-jpost__more-grid">
+						<?php foreach ( $nr_rel as $rp ) : ?>
+							<a class="nr-jpost__more-card" href="<?php echo esc_url( get_permalink( $rp ) ); ?>">
+								<span class="nr-jpost__more-date"><?php echo esc_html( get_the_date( 'M Y', $rp ) ); ?></span>
+								<span class="nr-jpost__more-title"><?php echo esc_html( get_the_title( $rp ) ); ?></span>
+							</a>
+						<?php endforeach; ?>
+						<a class="nr-jpost__more-all" href="<?php echo esc_url( $nr_jurl ); ?>"><?php esc_html_e( 'All entries', 'raveenthiran' ); ?> <span aria-hidden="true">↗</span></a>
+					</div>
+				</div>
+			<?php endif; ?>
+
 			<div class="nr-jpost__foot">
 				<a class="nr-btn" href="<?php echo esc_url( $nr_jurl ); ?>"><span><?php esc_html_e( 'All entries', 'raveenthiran' ); ?></span></a>
 				<a class="nr-btn nr-btn--primary" href="<?php echo esc_url( function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ); ?>"><span><?php esc_html_e( 'Start a project', 'raveenthiran' ); ?></span> <span>→</span></a>

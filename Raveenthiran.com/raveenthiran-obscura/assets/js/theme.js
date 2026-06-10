@@ -209,6 +209,7 @@
     const yearEl  = $('[data-meta-year]', hero);
     const currEl  = $('[data-hero-curr]', hero);
     const bigEl   = $('[data-hero-curr-big]', hero);
+    const ghostEl = $('[data-hero-ghost]', hero);
     const fillEl  = $('[data-hero-fill]', hero);
     const thumbs  = $$('[data-hero-thumb]', hero);
     const prevBtn = $('[data-hero-prev]', hero);
@@ -256,6 +257,7 @@
         if (linkEl && s.url)    linkEl.setAttribute('href', s.url);
         if (currEl)             currEl.textContent = String(i + 1).padStart(2, '0');
         if (bigEl)              bigEl.textContent  = String(i + 1).padStart(2, '0');
+        if (ghostEl)            ghostEl.textContent = String(i + 1).padStart(2, '0');
         if (fillEl)             fillEl.style.width = (((i + 1) / N) * 100) + '%';
         thumbs.forEach((t, k) => {
           t.classList.toggle('is-on', k === i);

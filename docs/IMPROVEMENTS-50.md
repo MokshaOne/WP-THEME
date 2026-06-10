@@ -4,6 +4,10 @@ Living backlog from the v4.32 review. Items marked ✅ ship with the version not
 Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustness).
 
 ## Update log
+- **v4.34.0** — Batch 2: D13 hero ghost numeral, D17 chip counts (cat/tag/journal),
+  D18 journal pull-quotes + drop-cap, D20+D37 "More notes" related-journal strip,
+  D21 confirmed (all cards already share `.nr-hover-frame`), SEO33 breadcrumb
+  schema extended to journal + all taxonomy archives.
 - **v4.33.0** — Batch 1: A1 journal rail limit (pre_get_posts 60), A2 footer
   overlap on single journal (padding), A3 journal in sitemap, A4 Article schema,
   A5–A7 taxonomy.php (series/tag/cat + journal-cat archives), A8 search.php,
@@ -27,15 +31,15 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 ## 📐 B — Design / catalogue identity
 11. ✅ v4.33.0 — Plate numbers on work cards (`PL—07`, vertical mono).
 12. ✅ v4.33.0 — Journal cards as index cards (amber top-rule, big mono date, subdued image).
-13. Ghost numerals in the hero (slide number large/outlined behind the title).
+13. ✅ v4.34.0 — Ghost numerals in the hero (outlined slide number behind the title).
 14. Marquee ticker above the footer (Available · Vienna · International · Est.) — opt-in.
 15. EXIF captions on hover (not permanent) — developer-note feel.
 16. ✅ v4.33.0 — `::selection` amber + scrollbar polish (verified present).
-17. Filter chips with counts (`Editorial ⁰⁸`).
-18. Pull-quotes + drop-cap in journal body.
+17. ✅ v4.34.0 — Filter chips with counts (category / tag / journal).
+18. ✅ v4.34.0 — Pull-quotes + drop-cap in journal body.
 19. Handwritten signature SVG on the Studio page.
-20. "More notes" strip at the journal post end (2 cards + hairline + `All entries ↗`).
-21. Hover-frame corner animation on journal/series/search cards too.
+20. ✅ v4.34.0 — "More notes" strip at the journal post end (2 cards + `All entries ↗`).
+21. ✅ v4.34.0 — Hover-frame already shared by all `.nr-card` (journal/series/search).
 22. Amber hairline section dividers (hero → footer strip).
 
 ## 🚀 C — Performance & technical
@@ -51,11 +55,11 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 32. Sane cache headers / TTL for `/nr-og/` + `/projects.json`.
 
 ## 🔍 D — SEO & content
-33. Breadcrumb schema on journal + taxonomy archives.
+33. ✅ v4.34.0 — Breadcrumb schema on journal + all taxonomy archives.
 34. Meta-description fallback for archives/taxonomies (currently singular only).
 35. `rel=prev/next` / canonical on paginated archives.
 36. Journal in `/projects.json` (or `/journal.json`) so ⌘K search finds posts.
-37. Auto "Related journal" via shared `nr_journal_cat`.
+37. ✅ v4.34.0 — Auto "Related journal" (shared category, recent fallback) = the More-notes strip.
 38. Sitemap `lastmod` from `post_modified` (done for journal; audit projects).
 39. `hreflang` groundwork (currently clean `og:locale` only).
 40. FAQ schema on guide-type journal posts.

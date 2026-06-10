@@ -142,6 +142,7 @@ $first        = $slides[0] ?? [];
 		</div>
 
 		<div class="nr-hero__center">
+			<span class="nr-hero__ghost" aria-hidden="true" data-hero-ghost>01</span>
 			<h1 class="nr-hero__title" data-hero-title>
 				<?php
 				$parts = explode( ' ', $first['title'] ?? '' );

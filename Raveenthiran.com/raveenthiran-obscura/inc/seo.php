@@ -408,6 +408,21 @@ function nr_breadcrumb_schema() {
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
 	} elseif ( is_post_type_archive( 'nr_project' ) ) {
 		$items[] = [ 'name' => __( 'Work', 'raveenthiran' ), 'item' => get_post_type_archive_link( 'nr_project' ) ];
+	} elseif ( is_singular( 'nr_journal' ) ) {
+		$jurl = function_exists( 'nr_journal_url' ) ? nr_journal_url() : get_post_type_archive_link( 'nr_journal' );
+		if ( $jurl ) $items[] = [ 'name' => __( 'Journal', 'raveenthiran' ), 'item' => $jurl ];
+		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
+	} elseif ( is_post_type_archive( 'nr_journal' ) ) {
+		$items[] = [ 'name' => __( 'Journal', 'raveenthiran' ), 'item' => get_post_type_archive_link( 'nr_journal' ) ];
+	} elseif ( is_tax( [ 'nr_project_cat', 'nr_project_tag', 'nr_project_series' ] ) ) {
+		$items[] = [ 'name' => __( 'Work', 'raveenthiran' ), 'item' => get_post_type_archive_link( 'nr_project' ) ];
+		$t = get_queried_object();
+		if ( $t ) $items[] = [ 'name' => $t->name, 'item' => get_term_link( $t ) ];
+	} elseif ( is_tax( 'nr_journal_cat' ) ) {
+		$jurl = function_exists( 'nr_journal_url' ) ? nr_journal_url() : get_post_type_archive_link( 'nr_journal' );
+		if ( $jurl ) $items[] = [ 'name' => __( 'Journal', 'raveenthiran' ), 'item' => $jurl ];
+		$t = get_queried_object();
+		if ( $t ) $items[] = [ 'name' => $t->name, 'item' => get_term_link( $t ) ];
 	} elseif ( is_page() ) {
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
 	} else {

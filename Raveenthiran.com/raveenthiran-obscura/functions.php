@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.36.0' );
+define( 'NR_THEME_VERSION', '4.37.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -266,15 +266,17 @@ function nr_placeholder( $label = 'photo', $dark = true, $aspect = '3/4' ) {
 /**
  * Print thumbnail OR placeholder if missing.
  */
-function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true ) {
+function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true, $eager = false ) {
 	if ( has_post_thumbnail( $post_id ) ) {
-		echo get_the_post_thumbnail( $post_id, $size, [
+		$attr = [
 			'class'    => 'nr-img',
 			'style'    => 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover',
 			'alt'      => esc_attr( get_the_title( $post_id ) ),
-			'loading'  => 'lazy',
+			'loading'  => $eager ? 'eager' : 'lazy',
 			'decoding' => 'async',
-		] );
+		];
+		if ( $eager ) $attr['fetchpriority'] = 'high';
+		echo get_the_post_thumbnail( $post_id, $size, $attr );
 	} else {
 		echo '<div style="position:absolute;inset:0">';
 		echo nr_placeholder( $label ?: get_the_title( $post_id ), $dark );

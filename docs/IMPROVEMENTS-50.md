@@ -4,6 +4,10 @@ Living backlog from the v4.32 review. Items marked ✅ ship with the version not
 Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustness).
 
 ## Update log
+- **v4.37.0** — Batch 5 (perf + onboarding): C24 first rail card loads eager
+  (fetchpriority high), C31 Leaflet loads lazily on scroll-in (IntersectionObserver),
+  C32 Cache-Control on /projects.json + sitemap, SEO38 verified (sitemap lastmod =
+  post_modified), E50 post-activation onboarding admin notice.
 - **v4.36.0** — Batch 4 (admin UX): E41 journal admin columns (category + image
   check), E43 light settings normalisation (UID + URL fields), E44 importer
   duplicate-guard by image MD5, E45 "Theme health" dashboard widget, E47 enquiry
@@ -52,15 +56,15 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 
 ## 🚀 C — Performance & technical
 23. ✅ v4.35.0 — OG share cards for journal (`/nr-og/<id>.jpg` now serves `nr_journal`).
-24. `fetchpriority`/`loading` audit across new templates (jpost, taxonomy, search).
+24. ✅ v4.37.0 — First rail card eager + fetchpriority=high; rest stay lazy.
 25. WebP bulk: persistent resume after an interrupted run.
 26. ✅ v4.35.0 — Verified: new templates use WP image fns (width/height emitted).
 27. Lazy-init WebGL/distortion only when toggle ON and in viewport.
 28. Split `theme.js` into modules; load per-page.
 29. Critical CSS for legal/journal (different above-the-fold than the hero).
 30. `rel=preconnect` to Cloudflare/font origin in `<head>`.
-31. Defer the Leaflet map until scrolled into view.
-32. Sane cache headers / TTL for `/nr-og/` + `/projects.json`.
+31. ✅ v4.37.0 — Leaflet loaded lazily on scroll-in (no cost on map-less visits).
+32. ✅ v4.37.0 — Cache-Control on /projects.json + sitemap (/nr-og already cached).
 
 ## 🔍 D — SEO & content
 33. ✅ v4.34.0 — Breadcrumb schema on journal + all taxonomy archives.
@@ -68,7 +72,7 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 35. `rel=prev/next` / canonical on paginated archives.
 36. ✅ v4.35.0 — Journal added to /projects.json and the ⌘K command palette.
 37. ✅ v4.34.0 — Auto "Related journal" (shared category, recent fallback) = the More-notes strip.
-38. Sitemap `lastmod` from `post_modified` (done for journal; audit projects).
+38. ✅ v4.37.0 — Verified: sitemap lastmod uses post_modified for projects + journal.
 39. `hreflang` groundwork (currently clean `og:locale` only).
 40. FAQ schema on guide-type journal posts.
 
@@ -82,4 +86,4 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 47. ✅ v4.36.0 — Enquiry CSV export (UTF-8 BOM) from the insights widget.
 48. ✅ v4.35.0 — Cookie notice skipped server-side when an nr_consent cookie exists.
 49. Test the `NR_DISABLE_FEATURES` fallback path.
-50. Post-activation onboarding notice (pages · permalinks · settings).
+50. ✅ v4.37.0 — Dismissible onboarding admin notice after theme activation.

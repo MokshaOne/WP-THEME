@@ -45,7 +45,7 @@ $nr_j_orient = function ( $post_id ) {
 				$orient = $nr_j_orient( get_the_ID() );
 			?>
 				<a class="nr-card nr-card--journal is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $terms ?: [] ) ); ?>" style="--i:<?php echo (int) $i; ?>">
-					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
+					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true, $i === 0 ); ?>
 					<div class="nr-card__shade"></div>
 					<div class="nr-card__head">
 						<span><?php echo esc_html( get_the_date( 'M Y' ) ); ?></span>

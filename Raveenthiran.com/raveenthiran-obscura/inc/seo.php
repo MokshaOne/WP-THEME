@@ -209,6 +209,7 @@ function nr_serve_sitemap() {
     if ( ! get_query_var( 'nr_sitemap' ) ) return;
 
     header( 'Content-Type: application/xml; charset=UTF-8' );
+    header( 'Cache-Control: public, max-age=3600' ); // #32
 
     $urls = [];
 

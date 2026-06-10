@@ -102,6 +102,31 @@ function nr_enquiry_export_url() {
 	return wp_nonce_url( admin_url( 'admin-post.php?action=nr_export_enquiries' ), 'nr_export_enq' );
 }
 
+/* ── #50 — post-activation onboarding notice ──────────────────── */
+add_action( 'after_switch_theme', function () { update_option( 'nr_onboard', 1 ); } );
+
+add_action( 'admin_init', function () {
+	if ( isset( $_GET['nr_dismiss_onboard'] ) && current_user_can( 'manage_options' )
+		&& wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'nr_onboard' ) ) {
+		delete_option( 'nr_onboard' );
+		wp_safe_redirect( remove_query_arg( [ 'nr_dismiss_onboard', '_wpnonce' ] ) );
+		exit;
+	}
+} );
+
+add_action( 'admin_notices', function () {
+	if ( ! get_option( 'nr_onboard' ) || ! current_user_can( 'manage_options' ) ) return;
+	$dismiss  = wp_nonce_url( add_query_arg( 'nr_dismiss_onboard', 1 ), 'nr_onboard' );
+	$settings = admin_url( 'themes.php?page=nr-theme-settings' );
+	echo '<div class="notice notice-info"><p><strong>' . esc_html__( 'Obscura — quick setup', 'raveenthiran' ) . '</strong></p><ol style="margin:.4em 0 .8em 1.4em">';
+	echo '<li>' . wp_kses_post( __( 'Create pages with the slugs <code>enquire</code>, <code>about</code>, <code>impressum</code>, <code>datenschutz</code>, <code>agb</code>.', 'raveenthiran' ) ) . '</li>';
+	echo '<li>' . esc_html__( 'Settings → Permalinks → Save once (flushes rewrites for /portfolio, /journal, sitemap).', 'raveenthiran' ) . '</li>';
+	echo '<li>' . esc_html__( 'Appearance → Theme Settings → fill in studio info, email and SMTP.', 'raveenthiran' ) . '</li>';
+	echo '<li>' . esc_html__( 'Tools → Generate WebP, then review the “Theme health” widget on the dashboard.', 'raveenthiran' ) . '</li>';
+	echo '</ol><p><a href="' . esc_url( $settings ) . '" class="button button-primary">' . esc_html__( 'Theme Settings', 'raveenthiran' ) . '</a> '
+		. '<a href="' . esc_url( $dismiss ) . '" class="button">' . esc_html__( 'Dismiss', 'raveenthiran' ) . '</a></p></div>';
+} );
+
 /* ── #43 — light settings normalisation ───────────────────────── */
 add_filter( 'pre_update_option_nr_uid', function ( $v ) {
 	return strtoupper( preg_replace( '/\s+/', '', (string) $v ) );

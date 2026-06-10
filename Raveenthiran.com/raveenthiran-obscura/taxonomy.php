@@ -50,7 +50,7 @@ $nr_card_orient = function ( $post_id, $default = 'portrait' ) {
 				$orient = $nr_card_orient( get_the_ID(), $nr_is_journal ? 'landscape' : 'portrait' );
 				if ( $nr_is_journal ) : ?>
 					<a class="nr-card nr-card--journal is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" style="--i:<?php echo (int) $i; ?>">
-						<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
+						<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true, $i === 0 ); ?>
 						<div class="nr-card__shade"></div>
 						<div class="nr-card__head"><span><?php echo esc_html( get_the_date( 'M Y' ) ); ?></span></div>
 						<div class="nr-card__foot">
@@ -62,7 +62,7 @@ $nr_card_orient = function ( $post_id, $default = 'portrait' ) {
 				<?php else :
 					$m = function_exists( 'nr_project_meta' ) ? nr_project_meta() : [ 'yr' => get_the_date( 'Y' ), 'cat' => '' ]; ?>
 					<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" style="--i:<?php echo (int) $i; ?>">
-						<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
+						<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true, $i === 0 ); ?>
 						<div class="nr-card__shade"></div>
 						<span class="nr-card__no" aria-hidden="true">PL—<?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 						<div class="nr-card__head"><span><?php echo esc_html( $nr_term->name ); ?></span><span><?php echo esc_html( $m['yr'] ); ?></span></div>

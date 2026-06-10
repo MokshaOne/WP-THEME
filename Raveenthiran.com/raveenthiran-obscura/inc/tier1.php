@@ -89,6 +89,7 @@ add_action( 'init', function () {
 add_action( 'template_redirect', function () {
 	if ( ! get_query_var( 'nr_projects_json' ) ) return;
 	header( 'Content-Type: application/json; charset=UTF-8' );
+	header( 'Cache-Control: public, max-age=3600' ); // #32 — feed changes rarely
 	$items = [];
 	foreach ( get_posts( [ 'post_type' => 'nr_project', 'posts_per_page' => 100, 'orderby' => 'date', 'order' => 'DESC' ] ) as $p ) {
 		$items[] = [

@@ -81,8 +81,9 @@ add_shortcode( 'nr_map', function ( $atts ) {
 		return '<p class="nr-map-empty">' . esc_html__( 'No project locations yet — add coordinates in the “Location (map)” box on a project.', 'raveenthiran' ) . '</p>';
 	}
 
-	wp_enqueue_style( 'leaflet' );
-	wp_enqueue_script( 'leaflet' );
+	// #31 — Leaflet is NOT enqueued here; the footer loader fetches it lazily
+	// only when the map scrolls into view, so map-less visits pay nothing.
+	$GLOBALS['nr_map_present'] = true;
 
 	$h = max( 240, (int) $a['height'] );
 	return sprintf(
@@ -92,13 +93,25 @@ add_shortcode( 'nr_map', function ( $atts ) {
 	);
 } );
 
-/* ── Initialiser (only emitted when Leaflet is enqueued) ───────── */
+/* ── Lazy initialiser: load Leaflet on demand (IntersectionObserver) ── */
 add_action( 'wp_footer', function () {
-	if ( ! wp_script_is( 'leaflet', 'enqueued' ) ) return;
+	if ( empty( $GLOBALS['nr_map_present'] ) ) return;
 	?>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof L === 'undefined') return;
+(function () {
+  var maps = document.querySelectorAll('[data-nr-map]');
+  if (!maps.length) return;
+  var loaded = false;
+  function loadLeaflet(cb) {
+    if (window.L) { cb(); return; }
+    var css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    var js = document.createElement('script');
+    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.onload = cb; document.head.appendChild(js);
+  }
+  function initMaps() {
   document.querySelectorAll('[data-nr-map]').forEach(function (el) {
     var pins;
     try { pins = JSON.parse(el.getAttribute('data-pins') || '[]'); } catch (e) { return; }
@@ -120,7 +133,18 @@ document.addEventListener('DOMContentLoaded', function () {
     if (group.length > 1) map.fitBounds(group, { padding: [40, 40] });
     else map.setView(group[0], 12);
   });
-});
+  }
+  function trigger() { if (loaded) return; loaded = true; if (io) io.disconnect(); loadLeaflet(initMaps); }
+  var io = null;
+  if ('IntersectionObserver' in window) {
+    io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) trigger(); });
+    }, { rootMargin: '300px' });
+    maps.forEach(function (m) { io.observe(m); });
+  } else {
+    trigger(); // no IO support → just load
+  }
+})();
 </script>
 	<?php
 }, 99 );

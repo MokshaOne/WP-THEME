@@ -27,7 +27,7 @@ $nr_total = (int) $GLOBALS['wp_query']->found_posts;
 				$type_label = get_post_type() === 'nr_project' ? __( 'Work', 'raveenthiran' )
 					: ( get_post_type() === 'nr_journal' ? __( 'Journal', 'raveenthiran' ) : __( 'Page', 'raveenthiran' ) ); ?>
 				<a class="nr-card is-portrait<?php echo get_post_type() === 'nr_journal' ? ' nr-card--journal' : ''; ?>" href="<?php the_permalink(); ?>" style="--i:<?php echo (int) $i; ?>">
-					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
+					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true, $i === 0 ); ?>
 					<div class="nr-card__shade"></div>
 					<div class="nr-card__head"><span><?php echo esc_html( $type_label ); ?></span><span><?php echo esc_html( get_the_date( 'Y' ) ); ?></span></div>
 					<div class="nr-card__foot">

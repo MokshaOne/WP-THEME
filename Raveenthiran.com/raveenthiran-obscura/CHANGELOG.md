@@ -1,5 +1,36 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.60.0 — All theme admin pages under one menu
+No theme page lives in **Tools** or **Appearance** any more — everything is a
+submenu of the top-level **Obscura** menu.
+- **Re-parented from Appearance** → Components, Feature flags, Tag clusters,
+  Series grid, Pricing & Quote (ACF options page).
+- **Re-parented from Tools** → Generate WebP, Obscura log, Redirects, Alt texts.
+- Tools hub links + dashboard quick-links updated to `admin.php?page=…`; added
+  Generate WebP and Pricing & Quote cards, plus an "All tools" quick-link.
+- Dropped the now-obsolete `remove_submenu_page('themes.php',…)` calls and the
+  duplicate Settings-page admin notice.
+- All pages post to themselves / use AJAX, so the new parent doesn't change
+  their behaviour. (Pipeline stays under Enquiries, Calendar under Journal —
+  those are CPT-contextual, not loose in Tools/Appearance.)
+
+## 4.59.0 — Admin panel rework (tabs + one home for the backend)
+- **Top-level "Obscura" menu** (camera icon, next to Dashboard) replaces the
+  old *Appearance → Theme Settings* location; first item relabelled **Settings**.
+- **New `inc/admin-hub.php`** — an **Obscura → Tools** hub that gathers every
+  backend feature in one place as cards with dashicons + one-line explanations
+  (Enquiries & clients · Content · SEO & ops · Settings & data).
+- **Settings is now tabbed** — accordion `<details>` become a sticky tab strip;
+  the last-open tab is remembered (localStorage).
+- **Full-width, two-column fields** at ≥1500px so the form fills the window.
+  The save form/field markup is untouched, so options.php still saves all fields.
+- Color-picker enqueue + admin-simplify screen checks updated to the new
+  `toplevel_page_nr-theme-settings` screen id.
+
+## 4.58.1 — Remove the contact-sheet feature
+Dropped the public **"CONTACT SHEET ↓"** button, the `/nr-contactsheet` PDF
+endpoint, and the `nr_contactsheet_url()` helper entirely — not needed.
+
 ## 4.58.0 — IDEAS-50-NEXT, Medium batch 1 (6 items)
 New `inc/lib.php` (pure helpers) + `inc/medium-next.php`.
 - **#33 weekly studio digest** — a Monday-morning email to you: new enquiries +

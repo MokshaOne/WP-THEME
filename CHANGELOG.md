@@ -2,9 +2,25 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**78 releases**, current **v4.57.0**.
+**82 releases**, current **v4.60.0**.
 
 ---
+
+## v4.60.0 — 2026-06-10
+Admin consolidation: every theme-added admin page is now a submenu of the top-level **Obscura** menu — nothing left in Tools or Appearance. Re-parented Components, Feature flags, Tag clusters, Series grid, Pricing & Quote (from Appearance) and Generate WebP, Obscura log, Redirects, Alt texts (from Tools). Dropped the obsolete `remove_submenu_page('themes.php',…)` calls and the duplicate Settings-page notice; dashboard quick-links + Tools hub links point at the new `admin.php?page=` URLs.
+
+
+## v4.59.0 — 2026-06-10
+Admin panel rework: Theme Settings moved out of Appearance into a top-level **Obscura** menu (dashicons-camera, next to Dashboard). New `inc/admin-hub.php` adds an **Obscura → Tools** hub grouping every backend feature as cards with icons + one-line explanations. Settings upgraded from accordion `<details>` to a sticky tab strip with full-width, two-column fields (≥1500px), active tab persisted in localStorage. Save markup untouched.
+
+
+## v4.58.1 — 2026-06-10
+Removed the per-project contact-sheet feature entirely — the public "CONTACT SHEET ↓" button, the `/nr-contactsheet` PDF endpoint, and the `nr_contactsheet_url()` helper. Owner doesn't need it.
+
+
+## v4.58.0 — 2026-06-10
+IDEAS-50-NEXT Medium batch 1: weekly studio digest email (#33), exhibitions setting + `[nr_shows]` with Event schema (#35), `/nr-presskit.zip` auto-zip (#38), `[nr_availability]` heat-calendar (#41), PHPUnit + pure-helper `inc/lib.php` (#49), Appearance → Components gallery (#50). Repo CHANGELOG refreshed.
+
 
 ## v4.57.0 — 2026-06-10
 IDEAS-50-NEXT small batch 2: lightbox slideshow + plate deep-link (#21/#22), PWA nudge (#24), rail compass (#26), section-aware speculation (#31), [nr_featured] (#40), onboarding template (#43), testimonial videos (#45), long-descriptions (#47); CF edge-cache + uptime docs (#32/#34)

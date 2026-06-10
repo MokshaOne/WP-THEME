@@ -1954,3 +1954,11 @@ picture{display:contents}
   font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--hair)}
 .nr-jpost__more-all:hover{color:var(--amber);border-color:var(--amber)}
 @media (max-width:600px){.nr-jpost__more-grid{grid-template-columns:1fr}}
+
+/* Date input on dark UI — white calendar icon + dark native picker */
+.nr-form input[type=date],.nr-enquire__form input[type=date]{color-scheme:dark}
+.nr-form input[type=date]::-webkit-calendar-picker-indicator,
+.nr-enquire__form input[type=date]::-webkit-calendar-picker-indicator{
+  filter:invert(1) brightness(1.8);opacity:.65;cursor:pointer}
+.nr-form input[type=date]::-webkit-calendar-picker-indicator:hover,
+.nr-enquire__form input[type=date]::-webkit-calendar-picker-indicator:hover{opacity:1}

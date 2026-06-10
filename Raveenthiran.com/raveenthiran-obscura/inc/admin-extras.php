@@ -102,6 +102,26 @@ function nr_enquiry_export_url() {
 	return wp_nonce_url( admin_url( 'admin-post.php?action=nr_export_enquiries' ), 'nr_export_enq' );
 }
 
+/* ── #46 — reset all theme settings to defaults ───────────────── */
+add_action( 'admin_post_nr_reset_settings', function () {
+	if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'nr_reset_settings' ) ) {
+		wp_die( esc_html__( 'Unauthorized.', 'raveenthiran' ) );
+	}
+	if ( function_exists( 'nr_settings_defaults' ) ) {
+		foreach ( nr_settings_defaults() as $k => $v ) {
+			update_option( $k, $v );
+		}
+	}
+	delete_option( 'nr_smtp_pass' ); // not in defaults; clear the stored SMTP password too
+	wp_safe_redirect( admin_url( 'themes.php?page=nr-theme-settings&nr_reset=1' ) );
+	exit;
+} );
+add_action( 'admin_notices', function () {
+	if ( isset( $_GET['nr_reset'] ) && current_user_can( 'manage_options' ) ) {
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Theme settings reset to defaults.', 'raveenthiran' ) . '</p></div>';
+	}
+} );
+
 /* ── #50 — post-activation onboarding notice ──────────────────── */
 add_action( 'after_switch_theme', function () { update_option( 'nr_onboard', 1 ); } );
 

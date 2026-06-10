@@ -4,6 +4,10 @@ Living backlog from the v4.32 review. Items marked ✅ ship with the version not
 Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustness).
 
 ## Update log
+- **v4.38.0** — Batch 6: white calendar icon on the date field (dark color-scheme),
+  C10 index.php fallback rebuilt as a card rail, D15 verified (plate EXIF caption
+  already hover-only), SEO35 rel=prev/next on paginated archives, E46 "reset all
+  settings to defaults" button.
 - **v4.37.0** — Batch 5 (perf + onboarding): C24 first rail card loads eager
   (fetchpriority high), C31 Leaflet loads lazily on scroll-in (IntersectionObserver),
   C32 Cache-Control on /projects.json + sitemap, SEO38 verified (sitemap lastmod =
@@ -38,14 +42,14 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 7. ✅ v4.33.0 — No journal-category template → covered by `taxonomy.php`.
 8. ✅ v4.33.0 — No `search.php` → designed mixed-results rail added.
 9. ✅ v4.33.0 — `.nr-card__excerpt` contrast on bright photos → stronger bottom shade.
-10. Upgrade `index.php` fallback to reuse the card rail (currently a plain stopgap).
+10. ✅ v4.38.0 — index.php fallback rebuilt as the card rail.
 
 ## 📐 B — Design / catalogue identity
 11. ✅ v4.33.0 — Plate numbers on work cards (`PL—07`, vertical mono).
 12. ✅ v4.33.0 — Journal cards as index cards (amber top-rule, big mono date, subdued image).
 13. ✅ v4.34.0 — Ghost numerals in the hero (outlined slide number behind the title).
 14. Marquee ticker above the footer (Available · Vienna · International · Est.) — opt-in.
-15. EXIF captions on hover (not permanent) — developer-note feel.
+15. ✅ v4.38.0 — Verified: plate EXIF caption already reveals on hover (desktop).
 16. ✅ v4.33.0 — `::selection` amber + scrollbar polish (verified present).
 17. ✅ v4.34.0 — Filter chips with counts (category / tag / journal).
 18. ✅ v4.34.0 — Pull-quotes + drop-cap in journal body.
@@ -69,7 +73,7 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 ## 🔍 D — SEO & content
 33. ✅ v4.34.0 — Breadcrumb schema on journal + all taxonomy archives.
 34. ✅ v4.35.0 — Meta-description fallback for archives + taxonomy/term pages.
-35. `rel=prev/next` / canonical on paginated archives.
+35. ✅ v4.38.0 — rel=prev/next emitted on paginated archives/search.
 36. ✅ v4.35.0 — Journal added to /projects.json and the ⌘K command palette.
 37. ✅ v4.34.0 — Auto "Related journal" (shared category, recent fallback) = the More-notes strip.
 38. ✅ v4.37.0 — Verified: sitemap lastmod uses post_modified for projects + journal.
@@ -82,7 +86,7 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 43. ✅ v4.36.0 — Settings normalisation: UID uppercased/trimmed, URL fields get a scheme.
 44. ✅ v4.36.0 — Importer reuses an existing attachment when the image MD5 matches.
 45. ✅ v4.36.0 — "Theme health" dashboard widget (permalinks, SMTP, WebP, Site Icon, pages…).
-46. Per-section reset-to-defaults button in settings.
+46. ✅ v4.38.0 — "Reset all settings to defaults" button (with confirm).
 47. ✅ v4.36.0 — Enquiry CSV export (UTF-8 BOM) from the insights widget.
 48. ✅ v4.35.0 — Cookie notice skipped server-side when an nr_consent cookie exists.
 49. Test the `NR_DISABLE_FEATURES` fallback path.

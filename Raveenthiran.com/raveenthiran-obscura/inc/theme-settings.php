@@ -733,6 +733,14 @@ function nr_theme_settings_page() {
 
 			<?php submit_button( __( 'Save settings', 'raveenthiran' ) ); ?>
 		</form>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:24px;padding-top:16px;border-top:1px solid #ddd"
+			onsubmit="return confirm('<?php echo esc_js( __( 'Reset ALL theme settings to their defaults? This cannot be undone.', 'raveenthiran' ) ); ?>');">
+			<input type="hidden" name="action" value="nr_reset_settings">
+			<?php wp_nonce_field( 'nr_reset_settings' ); ?>
+			<button type="submit" class="button button-link-delete"><?php esc_html_e( 'Reset all settings to defaults', 'raveenthiran' ); ?></button>
+			<span class="description" style="margin-left:8px"><?php esc_html_e( 'Restores every Theme Settings field to its default value.', 'raveenthiran' ); ?></span>
+		</form>
 	</div>
 
 	<style>

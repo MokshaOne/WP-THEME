@@ -363,6 +363,14 @@ function nr_social_meta() {
 	printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) ); // #12
 	if ( is_paged() ) echo '<meta name="robots" content="noindex,follow">' . "\n"; // #19
 
+	// #35 — rel=prev/next pagination hints on archives.
+	if ( is_archive() || is_home() || is_search() ) {
+		$paged = max( 1, (int) get_query_var( 'paged' ) );
+		$max   = isset( $GLOBALS['wp_query']->max_num_pages ) ? (int) $GLOBALS['wp_query']->max_num_pages : 1;
+		if ( $paged > 1 )    printf( '<link rel="prev" href="%s">' . "\n", esc_url( get_pagenum_link( $paged - 1 ) ) );
+		if ( $paged < $max ) printf( '<link rel="next" href="%s">' . "\n", esc_url( get_pagenum_link( $paged + 1 ) ) );
+	}
+
 	// Open Graph
 	printf( '<meta property="og:type" content="%s">' . "\n", esc_attr( $type ) );
 	printf( '<meta property="og:site_name" content="%s">' . "\n", esc_attr( get_bloginfo( 'name' ) ) );

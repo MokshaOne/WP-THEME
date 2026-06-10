@@ -716,10 +716,10 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   display:grid;grid-template-rows:auto 1fr;overflow:hidden;
 }
 .nr-project__crumbs{
-  display:flex;align-items:center;gap:14px;padding:18px var(--pad) 16px;
-  background:var(--bg);
+  display:flex;align-items:center;gap:14px;padding:30px var(--pad) 16px;
+  background:transparent;
   font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
-  border-bottom:1px solid var(--hair);position:relative;z-index:5;
+  position:relative;z-index:5;
 }
 .nr-project__crumbs a{color:var(--ink-2);transition:color .25s var(--ease)}
 .nr-project__crumbs a:hover{color:var(--ink)}

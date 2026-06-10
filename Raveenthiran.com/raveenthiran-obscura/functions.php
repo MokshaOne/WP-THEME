@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.60.0' );
+define( 'NR_THEME_VERSION', '4.61.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -347,6 +347,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'studio-ops.php',
 		'finishing.php',
 		'medium-next.php',
+		'medium2.php',
 		'admin-hub.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;

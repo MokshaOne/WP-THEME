@@ -1,5 +1,25 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.61.0 — IDEAS-50-NEXT, Medium batch 2 (6 items)
+New `inc/medium2.php` — the body of work as data + a little editorial surfacing.
+All self-contained: no external libraries, no uploads, no service-worker changes.
+- **#2 "Shot on" facet** — indexes each project's cameras/lenses from EXIF
+  (`_nr_gear` + queryable `_nr_camera` rows, one-time backfill for existing
+  projects). `?shot_on=` filters the portfolio archive; `[nr_shot_on]` renders
+  the camera chips.
+- **#3 Lens & focal-length chart** — `[nr_focal_chart]` inline-SVG histogram of
+  every frame bucketed by focal length (cached 12h).
+- **#9 Related-by-EXIF** — `[nr_related_gear]` "more work shot on {camera}" on a
+  project page.
+- **#7 Aspect-true masonry** — `[nr_masonry cat="" count=""]` CSS-columns archive
+  that honours each frame's real crop.
+- **#11 Field notes** — `[nr_fieldnotes]` short-form micro-journal band (a
+  `field-notes` journal category, falls back to recent short entries).
+- **#16 Pull-quote rotator** — `[nr_pullquotes]` rotates strong lines from the
+  `nr_pullquotes` setting or, by default, journal excerpts (reduced-motion safe).
+
+IDEAS-50-NEXT: 33/50 shipped · 16 open (11 M + 5 S).
+
 ## 4.60.0 — All theme admin pages under one menu
 No theme page lives in **Tools** or **Appearance** any more — everything is a
 submenu of the top-level **Obscura** menu.

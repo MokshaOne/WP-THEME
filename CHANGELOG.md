@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**82 releases**, current **v4.60.0**.
+**83 releases**, current **v4.61.0**.
 
 ---
+
+## v4.61.0 — 2026-06-10
+IDEAS-50-NEXT Medium batch 2 (6 items), new `inc/medium2.php`: "Shot on" EXIF facet + portfolio filter + `[nr_shot_on]` (#2), `[nr_focal_chart]` focal-length histogram (#3), `[nr_related_gear]` related-by-camera (#9), `[nr_masonry]` aspect-true archive (#7), `[nr_fieldnotes]` micro-journal (#11), `[nr_pullquotes]` rotator (#16). All self-contained; one-time gear backfill for existing projects. 33/50 shipped, 16 open.
+
 
 ## v4.60.0 — 2026-06-10
 Admin consolidation: every theme-added admin page is now a submenu of the top-level **Obscura** menu — nothing left in Tools or Appearance. Re-parented Components, Feature flags, Tag clusters, Series grid, Pricing & Quote (from Appearance) and Generate WebP, Obscura log, Redirects, Alt texts (from Tools). Dropped the obsolete `remove_submenu_page('themes.php',…)` calls and the duplicate Settings-page notice; dashboard quick-links + Tools hub links point at the new `admin.php?page=` URLs.

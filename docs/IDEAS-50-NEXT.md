@@ -9,23 +9,23 @@ or risky = opt-in.
 
 ## 📷 Photography craft (the body of work as data)
 1. **EXIF location map per project** — pin every *frame's* GPS, not just one project coord. _Content · M_
-2. **"Shot on" facet** — browse/filter by camera body or film stock pulled from EXIF (e.g. "Leica M6"). _UX · M_
-3. **Lens & focal-length chart** on Studio — a quiet data-viz of the whole body of work. _Awww · M_
+2. ✅ _v4.61.0_ — **"Shot on" facet** — browse/filter by camera body or film stock pulled from EXIF (e.g. "Leica M6"). _UX · M_
+3. ✅ _v4.61.0_ — **Lens & focal-length chart** on Studio — a quiet data-viz of the whole body of work. _Awww · M_
 4. **Time-of-day filter** — golden-hour / blue-hour / night, derived from EXIF timestamps. _UX · S_
 5. ⏭ _removed v4.58.1 (owner: not needed)_ — **Per-project contact-sheet PDF** — one-page proof of all selects (separate from the series lookbook). _Content · S_
 6. **Print-size wall preview** — show a frame at A2/A1 against a room scale (viz only, no sale). _Awww · M_
-7. **Aspect-true masonry** — an archive view that respects each frame's real crop instead of forcing 4:5. _UX · M_
+7. ✅ _v4.61.0_ — **Aspect-true masonry** — an archive view that respects each frame's real crop instead of forcing 4:5. _UX · M_
 8. ✅ _v4.56.0_ — **Site-wide B&W toggle** — a one-tap monochrome view honouring the noir aesthetic. _Awww · S_
-9. **Related-by-EXIF** — "other frames from this location / same camera" on a project. _SEO · S_
+9. ✅ _v4.61.0_ — **Related-by-EXIF** — "other frames from this location / same camera" on a project. _SEO · S_
 10. **Burst / sequence viewer** — step through a rapid series frame-by-frame. _Content · M_
 
 ## ✍️ Editorial depth
-11. **Field notes** — a short-form micro-journal (a sentence + one frame) separate from long essays. _Content · M_
+11. ✅ _v4.61.0_ — **Field notes** — a short-form micro-journal (a sentence + one frame) separate from long essays. _Content · M_
 12. **Image hotspots** — annotate a frame with small note pins (behind-the-scenes). _Content · M_
 13. ✅ _v4.56.0_ — **Reading-position memory** — resume a long journal article where you left off. _UX · S_
 14. **Diptych compare** — view two projects side by side. _UX · S_
 15. **Series mood-board intro** — auto-compose a palette/grid intro screen per series. _Awww · M_
-16. **Pull-quote rotator** — surface the strongest lines from journal essays on Home/About. _Content · S_
+16. ✅ _v4.61.0_ — **Pull-quote rotator** — surface the strongest lines from journal essays on Home/About. _Content · S_
 17. **Annotated changelog / "studio log"** — a public "what's new in the studio" feed. _Content · S_
 18. **Footnoted credits** — link collaborators to their own sites/socials consistently. _Content · S_
 
@@ -87,12 +87,17 @@ clean EXIF in the library.
 Per the owner: do the small (S) ones first; the Medium (M) items are parked here
 as the next run, smallest-impact-risk first within the tier:
 
-**#1** EXIF location map · **#2** "Shot on" facet · **#3** lens/focal chart ·
-**#7** aspect-true masonry · **#10** burst viewer · **#11** field notes ·
-**#12** image hotspots · **#15** series mood-board · **#23** shareable shortlist ·
-**#25** offline-readable journal · **#27** BlurHash · **#33** weekly studio digest ·
-**#35** exhibition/Event schema · **#36** Vienna district pages · **#38** press-kit
-zip · **#41** availability heat-calendar · **#42** moodboard upload · **#44**
-pre-shoot countdown mails · **#49** PHPUnit · **#50** component gallery.
+**Still open (16):**
 
-_Status: 22/50 shipped (all S). 28 Medium queued._
+_Medium (11):_ **#1** EXIF location map · **#6** print-size wall preview ·
+**#10** burst viewer · **#12** image hotspots · **#15** series mood-board ·
+**#23** shareable shortlist · **#25** offline-readable journal · **#27** BlurHash ·
+**#36** Vienna district pages · **#42** moodboard upload · **#44** pre-shoot
+countdown mails.
+
+_Small (5):_ **#4** time-of-day filter · **#14** diptych compare · **#17** studio
+log · **#18** footnoted credits · **#28** video-poster auto-generation.
+
+_Status: 33/50 shipped · 1 removed (#5) · 16 open. Medium batch 2 (v4.61.0):
+#2 shot-on facet, #3 focal chart, #7 aspect-true masonry, #9 related-by-EXIF,
+#11 field notes, #16 pull-quote rotator._

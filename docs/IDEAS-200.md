@@ -304,11 +304,11 @@ their original list positions; only the build order changed.*
 79. **SMS shoot reminder (opt-in)** — provider-based reminder before the date. _Conv · M_
 
 ### Performance / offline infrastructure
-88. **Virtualised rails** — render only on-screen cards on 200-project archives. _Perf · M_
-91. **HTTP 103 Early Hints** — push the hero preload via Cloudflare Early Hints. _Perf · M_
-93. **Service-worker offline page** — extend the PWA with a branded offline fallback + SWR for assets. _Perf · M_
-94. **Background-sync enquiry submit** — queue a submission made offline, send when back. _Perf · M_
-106. **Self-hosted pageview analytics** — extend `inc/insights.php` to privacy-first pageviews + funnels. _Ops · M_
+88. ✅ _v4.51.0_ — **Virtualised rails** — render only on-screen cards on 200-project archives. _Perf · M_
+91. ✅ _v4.51.0_ — **HTTP 103 Early Hints** — push the hero preload via Cloudflare Early Hints. _Perf · M_
+93. ✅ _v4.51.0_ — **Service-worker offline page** — extend the PWA with a branded offline fallback + SWR for assets. _Perf · M_
+94. ✅ _v4.51.0_ — **Background-sync enquiry submit** — queue a submission made offline, send when back. _Perf · M_
+106. ✅ _v4.51.0_ — **Self-hosted pageview analytics** — extend `inc/insights.php` to privacy-first pageviews + funnels. _Ops · M_
 
 ### Content & i18n systems
 123. **Scroll-scrubbed video hero (opt-in)** — flagship-only, decode-budget-aware. _Awww · L_
@@ -316,8 +316,8 @@ their original list positions; only the build order changed.*
 171. **Theme-native bilingual DE/EN** — language switcher + per-post translations without a heavy plugin. _Content · L_
 
 ### Security & privacy systems
-176. **CSP header builder** — nonce-based Content-Security-Policy with a report-only ramp. _Sec · M_
-180. **GDPR export/erase** — data subject requests for enquiries + subscribers. _Sec · M_
+176. ✅ _v4.51.0_ — **CSP header builder** — nonce-based Content-Security-Policy with a report-only ramp. _Sec · M_
+180. ✅ _v4.51.0_ — **GDPR export/erase** — data subject requests for enquiries + subscribers. _Sec · M_
 
 ---
 ## How to sequence (recommendation)

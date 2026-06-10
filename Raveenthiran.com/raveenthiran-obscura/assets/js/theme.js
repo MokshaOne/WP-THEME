@@ -1971,3 +1971,59 @@
     }
   }
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   Batch 6 r2 (v4.51.0) — infra: service worker, analytics beacon,
+   offline enquiry queue (#94), virtualised rails (#88).
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var X = window.NRX || {};
+
+  /* #93 — register the root-scoped service worker. */
+  if (X.sw && 'serviceWorker' in navigator) {
+    addEventListener('load', function () { navigator.serviceWorker.register(X.sw_url, { scope: '/' }).catch(function () {}); });
+  }
+
+  /* #106 — pageview beacon (logged-out only; flag set server-side). */
+  if (X.analytics && X.home) {
+    try { navigator.sendBeacon(X.home + '?rest_route=/nr/v1/pv', new Blob([JSON.stringify({ p: location.pathname })], { type: 'application/json' })); } catch (e) {}
+  }
+
+  /* #94 — offline enquiry queue: if the brief is submitted while offline,
+     stash it and replay (fetch) when the connection returns. */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form) {
+    var QK = 'nr_enq_queue';
+    form.addEventListener('submit', function (e) {
+      if (navigator.onLine) return; // online → let the normal POST happen
+      e.preventDefault();
+      try {
+        var fd = new FormData(form), o = {}; fd.forEach(function (v, k) { o[k] = v; });
+        localStorage.setItem(QK, JSON.stringify({ action: form.action, data: o, t: Date.now() }));
+        var s = document.createElement('div'); s.className = 'nr-status nr-status--ok'; s.setAttribute('role', 'status');
+        s.textContent = 'Saved offline — it will send automatically when you’re back online.';
+        document.body.appendChild(s);
+      } catch (x) { form.submit(); }
+    });
+    var flush = function () {
+      var raw; try { raw = localStorage.getItem(QK); } catch (e) { return; }
+      if (!raw || !navigator.onLine) return;
+      var q; try { q = JSON.parse(raw); } catch (e) { localStorage.removeItem(QK); return; }
+      var body = new URLSearchParams(q.data);
+      fetch(q.action, { method: 'POST', body: body, credentials: 'same-origin' }).then(function () {
+        try { localStorage.removeItem(QK); } catch (e) {}
+      }).catch(function () {});
+    };
+    addEventListener('online', flush); flush();
+  }
+
+  /* #88 — virtualised rails: let the browser skip off-screen card layout/paint.
+     content-visibility:auto + an intrinsic size keeps scroll position stable. */
+  if (X.vrails) {
+    document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+      var cards = rail.children;
+      if (cards.length < 24) return; // only worth it on big archives
+      rail.classList.add('nr-vrail');
+    });
+  }
+})();

@@ -161,6 +161,11 @@ function nr_settings_defaults() {
 		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
 		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
 		'nr_fx_gpu'          => '0',  // Batch 6: GPU/canvas effects (haze, dither, blob trail, iris)
+		'nr_csp_mode'        => 'off', // Content-Security-Policy: off | report | enforce
+		'nr_csp_extra'       => '',   // extra allowed hosts (space-separated)
+		'nr_fx_analytics'    => '0',  // self-hosted pageview analytics
+		'nr_fx_sw'           => '0',  // service worker (offline + SWR)
+		'nr_fx_vrails'       => '0',  // virtualised rails (content-visibility)
 		'nr_fx_wizard'       => '0',  // #42 multi-step enquire wizard
 		'nr_fx_palette'      => '0',  // #135 colour-mood filter chips on archives
 		'nr_cta_view_b'      => '',   // #48 A/B variant for the hero CTA label
@@ -325,7 +330,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify', 'nr_fx_gpu', 'nr_fx_analytics', 'nr_fx_sw', 'nr_fx_vrails', 'nr_fx_wizard', 'nr_fx_palette', 'nr_fx_shortlist', 'nr_fx_exit' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -843,6 +848,28 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Clean uninstall', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_clean_uninstall', __( 'Remove all of this theme’s settings when switching away from Obscura', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Only deletes Obscura’s own options/transients, only on theme switch.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Security &amp; infrastructure</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'All off by default. Turn CSP on as “report” first and watch the violation log before enforcing.', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Content-Security-Policy', 'raveenthiran' ); ?></label></th>
+						<td><?php $cm = get_option( 'nr_csp_mode', 'off' ); ?>
+							<select name="nr_csp_mode">
+								<option value="off"     <?php selected( $cm, 'off' ); ?>><?php esc_html_e( 'Off', 'raveenthiran' ); ?></option>
+								<option value="report"  <?php selected( $cm, 'report' ); ?>><?php esc_html_e( 'Report-only (safe — never blocks)', 'raveenthiran' ); ?></option>
+								<option value="enforce" <?php selected( $cm, 'enforce' ); ?>><?php esc_html_e( 'Enforce', 'raveenthiran' ); ?></option>
+							</select>
+							<p><?php nr_field_text( 'nr_csp_extra', 50 ); ?></p>
+							<p class="description"><?php esc_html_e( 'Extra allowed hosts (space-separated) for any analytics/embeds you add. Violations are logged (option nr_csp_log).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Self-hosted analytics', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_analytics', __( 'Count logged-out pageviews (cookieless, no PII) → dashboard widget', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Service worker', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_sw', __( 'Offline fallback page + stale-while-revalidate caching of theme assets', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Virtualised rails', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_vrails', __( 'Skip rendering off-screen rail cards (content-visibility) — smoother huge archives', 'raveenthiran' ) ); ?></td></tr>
 				</table>
 			</details>
 

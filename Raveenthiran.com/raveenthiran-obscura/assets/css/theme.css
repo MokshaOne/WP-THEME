@@ -2473,3 +2473,6 @@ body.nr-rhythm-story .nr-plate-cap{opacity:1;position:static;margin-top:8px;text
 body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{display:none!important}
 @media (max-width:900px){.nr-blob,.nr-haze{display:none}}
 @media (prefers-reduced-motion:reduce){.nr-iris,.nr-dither,.nr-blob,.nr-haze{display:none!important}}
+
+/* ── Batch 6 r2 (v4.51.0): virtualised rails (#88) ── */
+.nr-vrail > .nr-card,.nr-vrail > *{content-visibility:auto;contain-intrinsic-size:480px 640px}

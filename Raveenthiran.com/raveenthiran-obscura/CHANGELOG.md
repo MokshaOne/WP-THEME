@@ -1,5 +1,28 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.51.0 — Batch 6 r2: security & infrastructure (7 items)
+New `inc/infra.php`. All off by default.
+- **#176 CSP builder** — Theme Settings → Security & infrastructure → off /
+  **report-only** (never blocks, logs violations to `nr_csp_log`) / enforce. Sensible
+  default policy for the theme's own CDNs (Leaflet, Turnstile, Google Calendar),
+  plus an "extra hosts" box; violations beacon to `/nr/v1/csp-report`.
+- **#180 GDPR export/erase** — registers WP's native Personal-Data exporter +
+  eraser for the theme's enquiries & subscribers (Tools → Export/Erase Personal Data).
+- **#91 HTTP 103 Early Hints** — real `headers_send_early_hints()` for the two hero
+  fonts where the SAPI supports it; silent no-op otherwise.
+- **#106 self-hosted analytics** — cookieless, PII-free logged-out pageview counts
+  (opt-in) → "Obscura — analytics" dashboard widget (7-day total + top paths).
+- **#93 service worker** — root-scoped, served from `/nr-sw.js` (with
+  `Service-Worker-Allowed: /`): offline fallback page + stale-while-revalidate for
+  theme assets (opt-in).
+- **#94 offline enquiry queue** — submitting the brief while offline stores it and
+  auto-replays via fetch on reconnect.
+- **#88 virtualised rails** — `content-visibility:auto` on big archives (≥24 cards)
+  so off-screen plates skip layout/paint (opt-in).
+
+171/200. Batch 6 remaining = the GPU page-transitions (#1 #2 #3 #13 #14 #123) and
+the commerce/client block (#50 #52 #53 #59 #63 #64 #65 #66 #76 #78 #79) + #151 #171.
+
 ## 4.50.0 — Batch 6 r1: GPU/canvas effects (4 items)
 New **"GPU effects"** toggle (default OFF) loading a separate `assets/js/gpu-fx.js`
 only when enabled — zero cost otherwise. All effects respect reduced-motion,

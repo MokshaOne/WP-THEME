@@ -1,5 +1,29 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.47.0 — IDEAS-200 "Medium" tier, release 1 (24 items)
+The low-risk, self-contained half of the Medium tier (the heavier subsystems —
+booking wizard, PDF-email, delivery, double-opt-in, importer, calendar, AVIF
+art-direction — come in r2). New module `inc/mediumwins.php` + JS/CSS + configs.
+
+**Motion (cinematic-gated):** layered hero parallax (#17), spotlight cursor (#26),
+immersive lightbox with pan-zoom + keyboard (#31), video scrubber (#32), film-strip
+nav (#33), conservative inertial smooth-scroll (#11), reduced-motion "elegant static"
+audit (#39).
+**Editorial:** diptych/triptych plate rhythm (#121), cover aspect presets (#129),
+series chapter prev/next (#132), `[nr_timeline]` (#133), `[nr_map_all]` (#134),
+video transcript block (#170).
+**A11y:** forced-colors / Windows-HC polish (#164), WCAG 2.2 target sizes (#167),
+cognitive-load flatten under "calm" (#168), RTL stylesheet pass (#174).
+**Perf/SEO:** AVIF twins + `<source type=image/avif>` injection (#81), Core Web
+Vitals field collection + dashboard readout (#107), conversion funnel counters (#108),
+404 redirect-map admin UI with 301/410 (#111).
+**Dev:** PHPCS (WordPress) config (#198), Playwright visual-regression spec (#200),
+German `de_DE.po` (#172 — compile to `.mo` on the host / via Loco Translate).
+
+Fields added: plate rhythm, cover aspect, video transcript.
+**Medium r2 (next):** #10 #42 #48 #51 #60 #62 #72 #82 #83 #87 #118 #124 #127 #131
+#135 #149 #153 #160 #187 #191 #34.
+
 ## 4.46.0 — IDEAS-200 "Small" tier (49 in one go)
 New module `inc/smallwins.php` + JS/CSS, two admin pages, dev/CI configs. Built
 and cut with the new one-command build (`bin/nr-build.sh`).

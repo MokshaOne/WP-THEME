@@ -2343,3 +2343,82 @@ abbr.nr-gloss{text-decoration:underline dotted var(--ink-4);cursor:help}
   .nr-cmd,.nr-sheet{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--bg-2,#14151A)!important}
 }
 :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:2px}
+
+/* ── IDEAS-200 "Medium" r1 (v4.47.0) ──────────────────────────── */
+
+/* #31 immersive lightbox */
+.nr-lightbox{position:fixed;inset:0;z-index:140;display:flex;align-items:center;justify-content:center;background:rgba(8,9,12,.94);animation:nrFadeIn .2s ease}
+.nr-lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;cursor:zoom-in;transition:transform .25s}
+.nr-lightbox img.is-zoom{transform:scale(2);cursor:zoom-out}
+.nr-lightbox button{position:absolute;background:rgba(255,255,255,.06);border:1px solid var(--hair);color:var(--ink);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:18px}
+.nr-lightbox__x{top:18px;right:18px}.nr-lightbox__p{left:18px;top:50%;transform:translateY(-50%)}.nr-lightbox__n{right:18px;top:50%;transform:translateY(-50%)}
+.nr-lightbox__c{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:var(--mono,monospace);font-size:12px;color:var(--ink-3)}
+
+/* #32 video scrubber */
+.nr-plate-video{position:relative}
+.nr-vbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.18);cursor:pointer}
+.nr-vbar i{display:block;height:100%;width:0;background:var(--amber)}
+
+/* #33 film-strip */
+.nr-filmstrip{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.nr-filmstrip::-webkit-scrollbar{display:none}
+.nr-filmstrip button{flex:0 0 auto;width:54px;height:40px;border:1px solid var(--hair);border-radius:2px;background-size:cover;background-position:center;cursor:pointer;opacity:.6;transition:opacity .2s}
+.nr-filmstrip button:hover{opacity:1;border-color:var(--amber)}
+
+/* #17 parallax layers (smoothing) · #26 spotlight */
+.nr-hero__gradient,.nr-hero__meta--tl,.nr-hero__meta--br,.nr-hero__center{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.nr-hero__frame.nr-spot::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(260px circle at var(--spot-x,50%) var(--spot-y,50%),rgba(255,255,255,.12),transparent 70%);mix-blend-mode:soft-light}
+
+/* #121 diptych / triptych rhythm (rail pairs/threes) */
+body.nr-rhythm-diptych .nr-project__rail-track{display:grid;grid-auto-flow:column;grid-template-rows:1fr 1fr;gap:10px}
+body.nr-rhythm-triptych .nr-project__rail-track{display:grid;grid-auto-flow:column;grid-template-rows:1fr 1fr 1fr;gap:8px}
+@media (max-width:700px){body.nr-rhythm-diptych .nr-project__rail-track,body.nr-rhythm-triptych .nr-project__rail-track{grid-template-rows:1fr}}
+
+/* #129 cover aspect */
+body.nr-cover-4-5 .nr-card img{aspect-ratio:4/5;object-fit:cover}
+body.nr-cover-5-4 .nr-card img{aspect-ratio:5/4;object-fit:cover}
+body.nr-cover-16-9 .nr-card img{aspect-ratio:16/9;object-fit:cover}
+body.nr-cover-1-1 .nr-card img{aspect-ratio:1/1;object-fit:cover}
+
+/* #132 chapters · #133 timeline · #170 transcript · #134 map */
+.nr-chapters{display:flex;flex-direction:column;gap:6px;margin:18px 0;border-top:1px solid var(--hair);padding-top:12px}
+.nr-chapters__nav{display:flex;justify-content:space-between;gap:14px;font-size:13px}
+.nr-chapters__nav a{color:var(--ink-2);text-decoration:none}.nr-chapters__nav a:hover{color:var(--amber)}
+.nr-timeline{display:flex;flex-direction:column;gap:22px;max-width:760px;margin:0 auto}
+.nr-timeline__year{display:grid;grid-template-columns:80px 1fr;gap:18px;border-top:1px solid var(--hair);padding-top:14px}
+.nr-timeline__y{font-family:var(--mono,monospace);font-size:13px;color:var(--amber)}
+.nr-timeline ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.nr-timeline a{color:var(--ink-2);text-decoration:none}.nr-timeline a:hover{color:var(--ink)}
+.nr-transcript{margin:14px 0;font-size:13px}.nr-transcript summary{cursor:pointer;color:var(--ink-3)}
+.nr-map-all{margin:18px 0;border:1px solid var(--hair);border-radius:4px;overflow:hidden}
+
+/* #39 reduced-motion elegant-static: freeze, don't break */
+@media (prefers-reduced-motion:reduce){
+  .nr-filmframe,.nr-readbar{transition:none!important}
+  .nr-hero__plate.is-active img{animation:none!important}
+  *{scroll-behavior:auto!important}
+}
+
+/* #164 forced-colors (Windows High Contrast) */
+@media (forced-colors:active){
+  .nr-btn,.nr-card,.nr-chip,.nr-motion__btn,.nr-tray__btn{border:1px solid CanvasText}
+  .nr-card__shade,.nr-hero__gradient,body::before,body::after{display:none!important}
+  .nr-heart.is-on,.nr-filmframe__cur,.nr-timeline__y{forced-color-adjust:none}
+}
+
+/* #167 WCAG 2.2 target size — min 24px interactive targets */
+.nr-chip,.nr-footer__links a,.nr-hero__thumb,.nr-motion__menu button,.nr-toc a{min-height:24px}
+.nr-heart,.nr-hero__arrow,.nr-icon-btn{min-width:32px;min-height:32px}
+
+/* #168 cognitive-load: 'calm' motion also flattens decoration */
+body.nr-cinematic[data-nr-motion="calm"] body::after,
+.nr-cinematic[data-nr-motion="calm"]::after{display:none}
+.nr-cinematic[data-nr-motion="calm"] .nr-card__shade{background:linear-gradient(0deg,rgba(11,12,16,.85),transparent)}
+
+/* #174 RTL pass — logical flips for the main rails/nav */
+[dir="rtl"] .nr-hero__meta--tl{right:auto;left:24px}
+[dir="rtl"] .nr-project__crumbs,[dir="rtl"] .nr-chapters__nav{direction:rtl}
+[dir="rtl"] .nr-filmframe{right:auto;left:16px}
+[dir="rtl"] .nr-motion{left:auto;right:16px}
+[dir="rtl"] .nr-tray{right:auto;left:16px}

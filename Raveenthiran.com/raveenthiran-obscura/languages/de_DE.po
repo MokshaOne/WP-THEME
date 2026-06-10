@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Obscura\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: de_DE\n"
+
+msgid "View project"
+msgstr "Projekt ansehen"
+
+msgid "Book a shoot"
+msgstr "Shooting buchen"
+
+msgid "Back home"
+msgstr "Zur Startseite"
+
+msgid "Enquire"
+msgstr "Anfragen"
+
+msgid "Send brief"
+msgstr "Briefing senden"
+
+msgid "Reading time"
+msgstr "Lesezeit"
+
+msgid "Share"
+msgstr "Teilen"
+
+msgid "Recently viewed"
+msgstr "Zuletzt angesehen"
+
+msgid "Trusted by"
+msgstr "Vertrauen von"
+
+msgid "Next open dates"
+msgstr "Nächste freie Termine"

@@ -1722,3 +1722,147 @@
     }
   }
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 "Medium" r1 (v4.47.0) — motion + field metrics.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  var cine = body.classList.contains('nr-cinematic');
+  function level() { return body.getAttribute('data-nr-motion') || 'standard'; }
+
+  /* #107 — Core Web Vitals beacon (LCP/CLS/INP/FCP/TTFB), sampled. */
+  if (window.NR && NR.home && Math.random() < 0.5) {
+    var send = function (m, v) { try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/cwv', new Blob([JSON.stringify({ m: m, v: Math.round(v) })], { type: 'application/json' })); } catch (e) {} };
+    try {
+      var po = function (type, cb) { try { new PerformanceObserver(cb).observe({ type: type, buffered: true }); } catch (e) {} };
+      var cls = 0;
+      po('largest-contentful-paint', function (l) { var e = l.getEntries(); send('LCP', e[e.length - 1].startTime); });
+      po('layout-shift', function (l) { l.getEntries().forEach(function (e) { if (!e.hadRecentInput) cls += e.value; }); });
+      po('paint', function (l) { l.getEntries().forEach(function (e) { if (e.name === 'first-contentful-paint') send('FCP', e.startTime); }); });
+      po('event', function (l) { l.getEntries().forEach(function (e) { if (e.interactionId) send('INP', e.duration); }); });
+      addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') send('CLS', cls * 1000); }, { once: true });
+      var nav = performance.getEntriesByType('navigation')[0]; if (nav) send('TTFB', nav.responseStart);
+    } catch (e) {}
+  }
+
+  /* #108 — funnel step beacon. */
+  if (window.NR && NR.home) {
+    var step = body.classList.contains('nr-page-home') ? 'home'
+      : (/\/portfolio|nr-portfolio-archive/.test(location.pathname + ' ' + body.className) ? 'portfolio'
+        : (document.querySelector('.nr-enquire__form') ? 'enquire' : ''));
+    if (step) { try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/funnel', new Blob([JSON.stringify({ s: step })], { type: 'application/json' })); } catch (e) {} }
+  }
+
+  /* #31 — pointer-lock-ish immersive lightbox for project plates. */
+  (function () {
+    var figs = Array.prototype.slice.call(document.querySelectorAll('.nr-project__plate'));
+    if (!figs.length) return;
+    var imgs = figs.map(function (f) { var i = f.querySelector('img'); return i ? (i.currentSrc || i.src) : ''; }).filter(Boolean);
+    if (!imgs.length) return;
+    var lb, idx = 0;
+    function open(i) {
+      idx = i;
+      lb = document.createElement('div'); lb.className = 'nr-lightbox'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
+      lb.innerHTML = '<button class="nr-lightbox__x" aria-label="Close">✕</button><button class="nr-lightbox__p" aria-label="Previous">←</button><img alt=""><button class="nr-lightbox__n" aria-label="Next">→</button><span class="nr-lightbox__c"></span>';
+      body.appendChild(lb); body.classList.add('is-modal-open');
+      render();
+      lb.querySelector('.nr-lightbox__x').onclick = close;
+      lb.querySelector('.nr-lightbox__p').onclick = function () { go(-1); };
+      lb.querySelector('.nr-lightbox__n').onclick = function () { go(1); };
+      lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+      var im = lb.querySelector('img');
+      im.addEventListener('click', function () { im.classList.toggle('is-zoom'); });
+      document.addEventListener('keydown', key);
+      lb.querySelector('.nr-lightbox__x').focus();
+    }
+    function render() { var im = lb.querySelector('img'); im.classList.remove('is-zoom'); im.src = imgs[idx]; lb.querySelector('.nr-lightbox__c').textContent = (idx + 1) + ' / ' + imgs.length; }
+    function go(d) { idx = (idx + d + imgs.length) % imgs.length; render(); }
+    function close() { if (!lb) return; lb.remove(); lb = null; body.classList.remove('is-modal-open'); document.removeEventListener('keydown', key); }
+    function key(e) { if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1); }
+    figs.forEach(function (f, i) {
+      var im = f.querySelector('img'); if (!im) return;
+      im.style.cursor = 'zoom-in';
+      f.addEventListener('click', function (e) { if (e.target.closest('a')) return; e.preventDefault(); open(i); });
+    });
+  })();
+
+  /* #32 — video plate scrubber (seek bar over motion plates). */
+  document.querySelectorAll('.nr-plate-video video').forEach(function (v) {
+    if (v.closest('.nr-plate-video').querySelector('.nr-vbar')) return;
+    var bar = document.createElement('div'); bar.className = 'nr-vbar'; var fill = document.createElement('i'); bar.appendChild(fill);
+    v.closest('.nr-plate-video').appendChild(bar);
+    v.addEventListener('timeupdate', function () { if (v.duration) fill.style.width = (v.currentTime / v.duration * 100) + '%'; });
+    bar.addEventListener('click', function (e) { var r = bar.getBoundingClientRect(); if (v.duration) v.currentTime = ((e.clientX - r.left) / r.width) * v.duration; });
+  });
+
+  /* #33 — film-strip thumbnail nav for the project rail. */
+  (function () {
+    var track = document.querySelector('.nr-project__rail-track');
+    if (!track) return;
+    var plates = track.querySelectorAll('.nr-project__plate'); if (plates.length < 3) return;
+    var strip = document.createElement('div'); strip.className = 'nr-filmstrip';
+    plates.forEach(function (p, i) {
+      var im = p.querySelector('img'); var b = document.createElement('button'); b.setAttribute('aria-label', 'Plate ' + (i + 1));
+      if (im) b.style.backgroundImage = 'url(' + (im.currentSrc || im.src) + ')';
+      b.addEventListener('click', function () { p.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', inline: 'center', block: 'nearest' }); });
+      strip.appendChild(b);
+    });
+    var rail = document.querySelector('.nr-project__rail'); if (rail) rail.appendChild(strip);
+  })();
+
+  if (!cine) return;
+
+  /* #17 — layered hero parallax (gradient + meta move at different rates). */
+  if (hover && !reduce) {
+    var frame = document.querySelector('.nr-hero__frame');
+    if (frame) {
+      var layers = [
+        [frame.querySelector('.nr-hero__gradient'), 8],
+        [document.querySelector('.nr-hero__meta--tl'), 16],
+        [document.querySelector('.nr-hero__meta--br'), 16],
+        [document.querySelector('.nr-hero__center'), 5]
+      ].filter(function (l) { return l[0]; });
+      frame.addEventListener('pointermove', function (e) {
+        if (level() !== 'cinematic') return;
+        var r = frame.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        layers.forEach(function (l) { l[0].style.transform = 'translate(' + (-x * l[1]).toFixed(1) + 'px,' + (-y * l[1]).toFixed(1) + 'px)'; });
+      });
+      frame.addEventListener('pointerleave', function () { layers.forEach(function (l) { l[0].style.transform = ''; }); });
+    }
+  }
+
+  /* #26 — spotlight cursor over the hero (brightness reveal). */
+  if (hover && !reduce) {
+    var hero = document.querySelector('.nr-hero__frame');
+    if (hero) {
+      hero.addEventListener('pointermove', function (e) {
+        if (level() !== 'cinematic') { hero.style.removeProperty('--spot'); return; }
+        var r = hero.getBoundingClientRect();
+        hero.style.setProperty('--spot-x', ((e.clientX - r.left) / r.width * 100) + '%');
+        hero.style.setProperty('--spot-y', ((e.clientY - r.top) / r.height * 100) + '%');
+        hero.classList.add('nr-spot');
+      });
+      hero.addEventListener('pointerleave', function () { hero.classList.remove('nr-spot'); });
+    }
+  }
+
+  /* #11 — conservative inertial (Lenis-style) smooth scroll, desktop + cinematic. */
+  if (hover && !reduce && level() === 'cinematic' && !document.querySelector('.nr-fullscreen')) {
+    var target = window.scrollY, current = window.scrollY, ticking = false;
+    var ease = function () {
+      current += (target - current) * 0.12;
+      if (Math.abs(target - current) < 0.5) { current = target; ticking = false; window.scrollTo(0, current); return; }
+      window.scrollTo(0, current); requestAnimationFrame(ease);
+    };
+    window.addEventListener('wheel', function (e) {
+      if (e.ctrlKey || Math.abs(e.deltaY) < 2) return;
+      e.preventDefault();
+      target = Math.max(0, Math.min(document.documentElement.scrollHeight - window.innerHeight, target + e.deltaY));
+      if (!ticking) { ticking = true; requestAnimationFrame(ease); }
+    }, { passive: false });
+    window.addEventListener('scroll', function () { if (!ticking) { target = current = window.scrollY; } }, { passive: true });
+  }
+})();

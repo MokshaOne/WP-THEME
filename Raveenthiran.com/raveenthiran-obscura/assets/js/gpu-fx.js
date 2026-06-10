@@ -123,4 +123,67 @@
     }
     arm();
   }
+
+  /* ── #3 particle dispersion on card hover (canvas; reform-on-enter) ──
+     Samples the card's loaded image into a coarse particle grid and lets it
+     "assemble" once on hover. Same-origin uploads only; any taint/error just
+     removes the overlay and restores the image. Cinematic + desktop only. */
+  if (hover && !reduce) {
+    var busy = false;
+    document.querySelectorAll('.nr-card').forEach(function (card) {
+      card.addEventListener('pointerenter', function () {
+        if (level() !== 'cinematic' || busy || card.dataset.pd) return;
+        var img = card.querySelector('img');
+        if (!img || !(img.currentSrc || img.src) || !img.complete || !img.naturalWidth) return;
+        var w = card.clientWidth, h = card.clientHeight;
+        if (!w || !h) return;
+        busy = true; card.dataset.pd = '1';
+        var done = false;
+        var cv = document.createElement('canvas');
+        cv.className = 'nr-pd'; cv.width = w; cv.height = h;
+        var cx = cv.getContext('2d');
+        var safety = setTimeout(finish, 1200);
+        function finish() {
+          if (done) return; done = true;
+          clearTimeout(safety); busy = false;
+          img.style.opacity = ''; if (cv.parentNode) cv.remove();
+          setTimeout(function () { delete card.dataset.pd; }, 400); // debounce re-trigger
+        }
+        try {
+          // sample a coarse grid from a downscaled draw of the image
+          var GX = 46, GY = Math.max(8, Math.round(GX * h / w));
+          var off = document.createElement('canvas'); off.width = GX; off.height = GY;
+          var ox = off.getContext('2d');
+          ox.drawImage(img, 0, 0, GX, GY);
+          var data = ox.getImageData(0, 0, GX, GY).data; // throws if tainted
+          var cellW = w / GX, cellH = h / GY, parts = [];
+          for (var gy = 0; gy < GY; gy++) for (var gx = 0; gx < GX; gx++) {
+            var i = (gy * GX + gx) * 4;
+            parts.push({
+              tx: gx * cellW, ty: gy * cellH,
+              x: gx * cellW + (Math.random() - 0.5) * 60, y: gy * cellH + (Math.random() - 0.5) * 60,
+              r: data[i], g: data[i + 1], b: data[i + 2]
+            });
+          }
+          card.style.position = card.style.position || 'relative';
+          card.appendChild(cv);
+          img.style.opacity = '0';
+          var t0 = 0, DUR = 520;
+          (function step(t) {
+            if (done) return;
+            if (!t0) t0 = t;
+            var p = Math.min(1, (t - t0) / DUR), e = 1 - Math.pow(1 - p, 3);
+            cx.clearRect(0, 0, w, h);
+            for (var k = 0; k < parts.length; k++) {
+              var q = parts[k];
+              var px = q.x + (q.tx - q.x) * e, py = q.y + (q.ty - q.y) * e;
+              cx.fillStyle = 'rgba(' + q.r + ',' + q.g + ',' + q.b + ',' + (0.35 + 0.65 * e) + ')';
+              cx.fillRect(px, py, cellW + 1, cellH + 1);
+            }
+            if (p < 1) requestAnimationFrame(step); else finish();
+          })(0);
+        } catch (e) { finish(); }
+      });
+    });
+  }
 })();

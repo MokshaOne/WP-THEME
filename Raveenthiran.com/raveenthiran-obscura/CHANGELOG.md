@@ -1,5 +1,19 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.53.0 — Batch 6: GPU transitions (#2 + #3)
+- **#2 displacement page transition** — verified as already shipped: the WebGL
+  hero (`nr_fx_webgl`, assets/js/webgl-hero.js) dissolves between project hero
+  slides with a displacement + chromatic "melt" shader, with the native crossfade
+  as a guaranteed fallback. Ticked.
+- **#3 particle dispersion on hover** — added to `assets/js/gpu-fx.js`: hovering a
+  portfolio card lets its image "assemble" from a coarse particle grid (~520ms,
+  one-shot). Gated by the GPU-effects toggle + cinematic level, desktop+hover only.
+  Same-origin uploads only; any canvas taint or error silently removes the overlay
+  and restores the image (hard 1.2s safety timeout). Opt-in, zero effect when off.
+
+179/200 · 3 skipped. Remaining: #1 OGL grid, #13 drag-canvas, #14 scrollytelling,
+#123 scroll-video hero, the commerce/client block, #151, #171.
+
 ## 4.51.0 — Batch 6 r2: security & infrastructure (7 items)
 New `inc/infra.php`. All off by default.
 - **#176 CSP builder** — Theme Settings → Security & infrastructure → off /

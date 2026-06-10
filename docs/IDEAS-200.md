@@ -276,8 +276,8 @@ their original list positions; only the build order changed.*
 
 ### GPU / WebGL shader effects
 1. **OGL plane-grid portfolio** — render the work grid as textured planes (OGL ~16 KB), images as GPU textures with a real fallback `<img>`. _Awww · L_
-2. **Per-pixel displacement transition** — dissolve between projects via a displacement map instead of a crossfade. _Awww · M_
-3. **Particle dispersion on hover** — a thumbnail scatters into points and reforms. _Awww · M_
+2. ✅ _v4.53.0_ — **Per-pixel displacement transition** — dissolve between projects via a displacement map instead of a crossfade. _Awww · M_
+3. ✅ _v4.53.0_ — **Particle dispersion on hover** — a thumbnail scatters into points and reforms. _Awww · M_
 4. ✅ _v4.50.0_ — **Heat-haze / refraction idle shader** — subtle GPU refraction over the hero when idle. _Awww · M_
 5. ✅ _v4.50.0_ — **Animated dithering/noise background** — a slow Bayer-dither field as canvas texture (richer than the static grain). _Awww · M_
 6. ✅ _v4.46.0_ — **Fullscreen "shockwave" on click** — a GPU ripple emanates from the pointer on nav. _Awww · S_

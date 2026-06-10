@@ -2506,3 +2506,14 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
   background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:12px;padding:30px 30px 24px}
 .nr-faq-pop__x{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--ink-3);font-size:15px;cursor:pointer}
 .nr-faq-pop__x:hover{color:var(--ink)}
+
+/* ── v4.51.7: journal prose in 2 columns on wide screens ──────── */
+@media (min-width:1200px){
+  .nr-jpost__prose{column-count:2;column-gap:48px;column-rule:1px solid var(--hair)}
+  .nr-jpost__prose h2,.nr-jpost__prose h3,.nr-jpost__prose blockquote,
+  .nr-jpost__prose figure,.nr-jpost__prose img,.nr-jpost__prose ul,.nr-jpost__prose ol{break-inside:avoid}
+  .nr-jpost__prose h2,.nr-jpost__prose h3{column-span:none}
+  /* let the first paragraph (with the drop-cap) start clean */
+  .nr-jpost__prose > p:first-child{break-inside:avoid}
+}
+@media (min-width:1700px){ .nr-jpost__prose{column-gap:64px} }

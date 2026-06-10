@@ -4,6 +4,10 @@ Living backlog from the v4.32 review. Items marked ✅ ship with the version not
 Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustness).
 
 ## Update log
+- **v4.36.0** — Batch 4 (admin UX): E41 journal admin columns (category + image
+  check), E43 light settings normalisation (UID + URL fields), E44 importer
+  duplicate-guard by image MD5, E45 "Theme health" dashboard widget, E47 enquiry
+  CSV export from the insights widget.
 - **v4.35.0** — Batch 3: C23 OG cards for journal, C26 verified (WP image fns emit
   width/height in new templates), SEO34 meta-description fallback for archives +
   taxonomies, SEO36 journal entries added to /projects.json + the ⌘K palette,
@@ -69,13 +73,13 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 40. FAQ schema on guide-type journal posts.
 
 ## ⚙️ E — Admin UX & robustness
-41. Journal admin column: category + "has featured image?".
+41. ✅ v4.36.0 — Journal admin columns: category + featured-image check.
 42. Featured/Credits section (link collection — awaiting the curated list).
-43. Settings validation (UID / phone / URLs) with inline hints.
-44. Importer duplicate-guard by image hash (not just title).
-45. "Theme health" dashboard (WebP generated? SMTP on? permalinks flushed?).
+43. ✅ v4.36.0 — Settings normalisation: UID uppercased/trimmed, URL fields get a scheme.
+44. ✅ v4.36.0 — Importer reuses an existing attachment when the image MD5 matches.
+45. ✅ v4.36.0 — "Theme health" dashboard widget (permalinks, SMTP, WebP, Site Icon, pages…).
 46. Per-section reset-to-defaults button in settings.
-47. Enquiry CSV export from the insights widget.
+47. ✅ v4.36.0 — Enquiry CSV export (UTF-8 BOM) from the insights widget.
 48. ✅ v4.35.0 — Cookie notice skipped server-side when an nr_consent cookie exists.
 49. Test the `NR_DISABLE_FEATURES` fallback path.
 50. Post-activation onboarding notice (pages · permalinks · settings).

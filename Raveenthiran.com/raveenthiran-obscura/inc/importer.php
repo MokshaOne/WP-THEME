@@ -155,11 +155,29 @@ function nr_import_project_exists( $title ) {
 }
 
 function nr_import_sideload( $file, $parent ) {
+	// #44 — duplicate guard: if an identical image (same MD5) was already
+	// imported, reuse that attachment instead of creating a copy. Makes
+	// re-running the importer safe even if folders/titles changed.
+	$hash = @md5_file( $file );
+	if ( $hash ) {
+		$existing = get_posts( [
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_key'       => '_nr_img_hash',
+			'meta_value'     => $hash,
+		] );
+		if ( ! empty( $existing ) ) return (int) $existing[0];
+	}
+
 	$tmp = wp_tempnam( basename( $file ) );
 	if ( ! $tmp ) return false;
 	if ( ! @copy( $file, $tmp ) ) { @unlink( $tmp ); return false; }
 	$id = media_handle_sideload( [ 'name' => basename( $file ), 'tmp_name' => $tmp ], (int) $parent );
 	if ( is_wp_error( $id ) ) { @unlink( $tmp ); return $id; }
+	if ( $hash ) update_post_meta( $id, '_nr_img_hash', $hash );
 	return $id;
 }
 

@@ -91,9 +91,13 @@ function nr_enquiry_insights_render() {
 		echo $list( $by_src, '' );
 	}
 
+	$export = function_exists( 'nr_enquiry_export_url' )
+		? sprintf( ' <a href="%s" class="button button-small">%s</a>', esc_url( nr_enquiry_export_url() ), esc_html__( 'Export CSV', 'raveenthiran' ) )
+		: '';
 	printf(
-		'<p style="margin:14px 0 0"><a href="%s" class="button button-small">%s</a></p>',
+		'<p style="margin:14px 0 0"><a href="%s" class="button button-small">%s</a>%s</p>',
 		esc_url( admin_url( 'edit.php?post_type=nr_enquiry' ) ),
-		esc_html__( 'All enquiries', 'raveenthiran' )
+		esc_html__( 'All enquiries', 'raveenthiran' ),
+		$export
 	);
 }

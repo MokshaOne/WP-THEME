@@ -116,7 +116,7 @@ add_shortcode( 'nr_availability', function ( $a ) {
 
 /* ── #50 — component gallery (Appearance → Components, admin QA) ── */
 add_action( 'admin_menu', function () {
-	add_theme_page( __( 'Components', 'raveenthiran' ), __( 'Components', 'raveenthiran' ), 'edit_theme_options', 'nr-components', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Components', 'raveenthiran' ), __( 'Components', 'raveenthiran' ), 'edit_theme_options', 'nr-components', function () {
 		$blocks = [
 			'Buttons' => '<a class="nr-btn nr-btn--primary"><span>Primary</span> <span>→</span></a> <a class="nr-btn"><span>Default</span></a> <a class="nr-btn nr-btn--ghost"><span>Ghost</span></a>',
 			'Eyebrow' => '<span class="nr-eyebrow">Featured work · §01</span>',

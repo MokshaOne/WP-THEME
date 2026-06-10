@@ -264,7 +264,7 @@ function nr_feature_flags() {
 	return $out;
 }
 add_action( 'admin_menu', function () {
-	add_theme_page( __( 'Feature flags', 'raveenthiran' ), __( 'Feature flags', 'raveenthiran' ), 'manage_options', 'nr-flags', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Feature flags', 'raveenthiran' ), __( 'Feature flags', 'raveenthiran' ), 'manage_options', 'nr-flags', function () {
 		echo '<div class="wrap"><h1>' . esc_html__( 'Feature flags', 'raveenthiran' ) . '</h1><table class="widefat striped" style="max-width:520px"><thead><tr><th>Flag</th><th>State</th></tr></thead><tbody>';
 		foreach ( nr_feature_flags() as $k => $on ) printf( '<tr><td><code>%s</code></td><td style="color:%s;font-weight:600">%s</td></tr>', esc_html( $k ), $on ? '#2a7' : '#999', $on ? 'ON' : 'off' );
 		echo '</tbody></table><p class="description">' . esc_html__( 'Change these in Appearance → Theme Settings → Visual effects / extras.', 'raveenthiran' ) . '</p></div>';
@@ -284,7 +284,7 @@ add_action( 'updated_option', function ( $option ) {
 
 /* #189 — error-log viewer (theme-scoped [NR] lines from debug.log). */
 add_action( 'admin_menu', function () {
-	add_management_page( __( 'Obscura log', 'raveenthiran' ), __( 'Obscura log', 'raveenthiran' ), 'manage_options', 'nr-log', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Obscura log', 'raveenthiran' ), __( 'Obscura log', 'raveenthiran' ), 'manage_options', 'nr-log', function () {
 		echo '<div class="wrap"><h1>' . esc_html__( 'Obscura error log', 'raveenthiran' ) . '</h1>';
 		$f = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR . '/debug.log' : '';
 		if ( $f && is_readable( $f ) ) {
@@ -391,7 +391,7 @@ add_shortcode( 'nr_compare', function ( $a ) {
 
 /* #152 — tag clustering view: tags by use, flag near-duplicates / orphans. */
 add_action( 'admin_menu', function () {
-	add_theme_page( __( 'Tag clusters', 'raveenthiran' ), __( 'Tag clusters', 'raveenthiran' ), 'manage_categories', 'nr-tags', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Tag clusters', 'raveenthiran' ), __( 'Tag clusters', 'raveenthiran' ), 'manage_categories', 'nr-tags', function () {
 		$terms = get_terms( [ 'taxonomy' => 'nr_project_tag', 'hide_empty' => false ] );
 		echo '<div class="wrap"><h1>' . esc_html__( 'Tag clusters', 'raveenthiran' ) . '</h1>';
 		if ( is_wp_error( $terms ) || ! $terms ) { echo '<p>' . esc_html__( 'No tags yet.', 'raveenthiran' ) . '</p></div>'; return; }
@@ -433,7 +433,7 @@ add_filter( 'posts_results', function ( $posts, $q ) {
 
 /* #159 — series consistency grid: thumbnails per series to spot outliers. */
 add_action( 'admin_menu', function () {
-	add_theme_page( __( 'Series grid', 'raveenthiran' ), __( 'Series grid', 'raveenthiran' ), 'edit_posts', 'nr-series-grid', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Series grid', 'raveenthiran' ), __( 'Series grid', 'raveenthiran' ), 'edit_posts', 'nr-series-grid', function () {
 		echo '<div class="wrap"><h1>' . esc_html__( 'Series consistency', 'raveenthiran' ) . '</h1>';
 		$series = get_terms( [ 'taxonomy' => 'nr_project_series', 'hide_empty' => true ] );
 		if ( is_wp_error( $series ) || ! $series ) { echo '<p>' . esc_html__( 'No series yet.', 'raveenthiran' ) . '</p></div>'; return; }

@@ -197,7 +197,7 @@ add_action( 'nr_series_cover_after', function ( $term ) {
 
 /* #149 — bulk alt editor (Tools page; saves on submit). */
 add_action( 'admin_menu', function () {
-	add_management_page( __( 'Alt-text editor', 'raveenthiran' ), __( 'Alt texts', 'raveenthiran' ), 'upload_files', 'nr-alts', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Alt-text editor', 'raveenthiran' ), __( 'Alt texts', 'raveenthiran' ), 'upload_files', 'nr-alts', function () {
 		if ( isset( $_POST['nr_alts'] ) && check_admin_referer( 'nr_alts' ) ) {
 			foreach ( (array) $_POST['nr_alts'] as $id => $alt ) update_post_meta( (int) $id, '_wp_attachment_image_alt', sanitize_text_field( wp_unslash( $alt ) ) );
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Saved.', 'raveenthiran' ) . '</p></div>';

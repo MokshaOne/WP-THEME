@@ -23,7 +23,7 @@ add_action( 'acf/init', function () {
 		'page_title'  => __( 'Pricing & Quote', 'raveenthiran' ),
 		'menu_title'  => __( 'Pricing & Quote', 'raveenthiran' ),
 		'menu_slug'   => 'nr-site-settings',
-		'parent_slug' => 'themes.php',
+		'parent_slug' => 'nr-theme-settings',
 		'capability'  => 'manage_options',
 		'redirect'    => false,
 	] );

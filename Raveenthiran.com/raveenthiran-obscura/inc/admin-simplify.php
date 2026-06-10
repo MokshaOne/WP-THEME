@@ -24,10 +24,7 @@ add_action( 'admin_menu', function () {
 	remove_menu_page( 'edit-comments.php' );   // Comments — portfolio has none
 	remove_menu_page( 'edit.php?post_type=acf-field-group' ); // ACF UI (fields live in code)
 	remove_submenu_page( 'themes.php', 'theme-editor.php' );
-	// utility pages out of the Appearance menu (pages stay registered + reachable)
-	remove_submenu_page( 'themes.php', 'nr-flags' );
-	remove_submenu_page( 'themes.php', 'nr-tags' );
-	remove_submenu_page( 'themes.php', 'nr-series-grid' );
+	// (theme utility pages now live under the top-level "Obscura" menu, not here)
 }, 999 );
 add_action( 'wp_before_admin_bar_render', function () {
 	if ( ! nr_admin_simple() ) return;
@@ -84,21 +81,11 @@ function nr_combined_widget() {
 		}
 		echo '</div></details>';
 	}
-	// quick links to the tucked-away utility pages
-	printf( '<p style="margin:6px 0 0;font-size:12px"><a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a></p>',
-		esc_url( admin_url( 'themes.php?page=nr-flags' ) ), esc_html__( 'Feature flags', 'raveenthiran' ),
-		esc_url( admin_url( 'themes.php?page=nr-tags' ) ), esc_html__( 'Tag clusters', 'raveenthiran' ),
-		esc_url( admin_url( 'themes.php?page=nr-series-grid' ) ), esc_html__( 'Series grid', 'raveenthiran' ),
-		esc_url( admin_url( 'tools.php?page=nr-redirects' ) ), esc_html__( 'Redirects', 'raveenthiran' ) );
+	// quick links to the utility pages (all now under the Obscura menu)
+	printf( '<p style="margin:6px 0 0;font-size:12px"><a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a></p>',
+		esc_url( admin_url( 'admin.php?page=nr-tools' ) ), esc_html__( 'All tools', 'raveenthiran' ),
+		esc_url( admin_url( 'admin.php?page=nr-flags' ) ), esc_html__( 'Feature flags', 'raveenthiran' ),
+		esc_url( admin_url( 'admin.php?page=nr-tags' ) ), esc_html__( 'Tag clusters', 'raveenthiran' ),
+		esc_url( admin_url( 'admin.php?page=nr-series-grid' ) ), esc_html__( 'Series grid', 'raveenthiran' ),
+		esc_url( admin_url( 'admin.php?page=nr-redirects' ) ), esc_html__( 'Redirects', 'raveenthiran' ) );
 }
-
-/* Quick links on the Theme Settings page header too. */
-add_action( 'admin_notices', function () {
-	$s = get_current_screen();
-	if ( ! $s || $s->id !== 'toplevel_page_nr-theme-settings' || ! nr_admin_simple() ) return;
-	printf( '<div class="notice notice-info" style="padding:8px 12px">%s <a href="%s">%s</a> · <a href="%s">%s</a> · <a href="%s">%s</a></div>',
-		esc_html__( 'Utility pages:', 'raveenthiran' ),
-		esc_url( admin_url( 'themes.php?page=nr-flags' ) ), esc_html__( 'Feature flags', 'raveenthiran' ),
-		esc_url( admin_url( 'themes.php?page=nr-tags' ) ), esc_html__( 'Tag clusters', 'raveenthiran' ),
-		esc_url( admin_url( 'themes.php?page=nr-series-grid' ) ), esc_html__( 'Series grid', 'raveenthiran' ) );
-} );

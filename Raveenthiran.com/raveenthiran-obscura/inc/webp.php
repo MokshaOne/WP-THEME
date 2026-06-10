@@ -121,7 +121,8 @@ add_filter( 'wp_get_attachment_image', function ( $html, $attachment_id, $size, 
  * WebP sources. This admin page bakes a .webp twin for every jpg/png sub-size
  * of every image (batched via AJAX so it never times out on shared hosting). */
 add_action( 'admin_menu', function () {
-	add_management_page(
+	add_submenu_page(
+		'nr-theme-settings',
 		__( 'Generate WebP', 'raveenthiran' ),
 		__( 'Generate WebP', 'raveenthiran' ),
 		'manage_options',

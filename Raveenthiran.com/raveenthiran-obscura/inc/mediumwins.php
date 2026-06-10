@@ -187,7 +187,7 @@ add_action( 'rest_api_init', function () {
 
 /* #111 — 404/410 + redirect-map UI. Stored as option, applied on template_redirect. */
 add_action( 'admin_menu', function () {
-	add_management_page( __( 'Redirects', 'raveenthiran' ), __( 'Redirects', 'raveenthiran' ), 'manage_options', 'nr-redirects', function () {
+	add_submenu_page( 'nr-theme-settings', __( 'Redirects', 'raveenthiran' ), __( 'Redirects', 'raveenthiran' ), 'manage_options', 'nr-redirects', function () {
 		if ( isset( $_POST['nr_redirects'] ) && check_admin_referer( 'nr_redirects' ) ) {
 			update_option( 'nr_redirects', sanitize_textarea_field( wp_unslash( $_POST['nr_redirects'] ) ), false );
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Saved.', 'raveenthiran' ) . '</p></div>';

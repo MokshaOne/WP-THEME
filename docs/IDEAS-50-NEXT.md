@@ -80,3 +80,19 @@ or risky = opt-in.
 on-brand), **#19 keyboard gallery**, **#33 weekly digest**, and **#41 availability
 calendar**. The photography-data ones (#1–#4) are the most distinctive but depend on
 clean EXIF in the library.
+
+---
+
+## ⏳ Queued next — Medium tier (remembered, not yet built)
+Per the owner: do the small (S) ones first; the Medium (M) items are parked here
+as the next run, smallest-impact-risk first within the tier:
+
+**#1** EXIF location map · **#2** "Shot on" facet · **#3** lens/focal chart ·
+**#7** aspect-true masonry · **#10** burst viewer · **#11** field notes ·
+**#12** image hotspots · **#15** series mood-board · **#23** shareable shortlist ·
+**#25** offline-readable journal · **#27** BlurHash · **#33** weekly studio digest ·
+**#35** exhibition/Event schema · **#36** Vienna district pages · **#38** press-kit
+zip · **#41** availability heat-calendar · **#42** moodboard upload · **#44**
+pre-shoot countdown mails · **#49** PHPUnit · **#50** component gallery.
+
+_Status: 22/50 shipped (all S). 28 Medium queued._

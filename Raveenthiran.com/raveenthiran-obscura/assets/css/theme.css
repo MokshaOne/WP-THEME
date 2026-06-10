@@ -1917,8 +1917,9 @@ picture{display:contents}
 .nr-search-form input[type=search]:focus{outline:none;border-color:var(--amber)}
 
 /* ── Batch 2 (v4.34.0): hero ghost numeral · chip counts · journal depth ── */
-/* #13 — oversized outlined slide number behind the hero title */
-.nr-hero__center{position:relative}
+/* #13 — oversized outlined slide number behind the hero title.
+   NB: .nr-hero__center is already position:absolute (its own containing block),
+   so we must NOT re-position it here — that broke the bottom-anchored layout. */
 .nr-hero__ghost{position:absolute;left:-2px;top:-.34em;z-index:0;pointer-events:none;
   font-weight:300;font-size:clamp(140px,26vw,360px);line-height:.8;letter-spacing:-.04em;
   color:transparent;-webkit-text-stroke:1px var(--ink-5);

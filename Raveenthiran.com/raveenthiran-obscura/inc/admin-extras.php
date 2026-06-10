@@ -65,20 +65,11 @@ function nr_theme_health_render() {
 }
 
 /* ── #47 — Enquiry CSV export ─────────────────────────────────── */
-add_action( 'admin_post_nr_export_enquiries', function () {
-	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'nr_export_enq' ) ) {
-		wp_die( esc_html__( 'Unauthorized.', 'raveenthiran' ) );
-	}
-	if ( ! post_type_exists( 'nr_enquiry' ) ) wp_die( esc_html__( 'No enquiries.', 'raveenthiran' ) );
-
-	nocache_headers();
-	header( 'Content-Type: text/csv; charset=utf-8' );
-	header( 'Content-Disposition: attachment; filename=enquiries-' . date_i18n( 'Y-m-d' ) . '.csv' );
-
-	$out = fopen( 'php://output', 'w' );
+/* Build the CSV as a string (shared by the plain + encrypted exports). */
+function nr_enquiries_csv() {
+	$out = fopen( 'php://temp', 'r+' );
 	fwrite( $out, "\xEF\xBB\xBF" ); // UTF-8 BOM for Excel
 	fputcsv( $out, [ 'Date', 'Name', 'Email', 'Type', 'Estimate', 'Preferred date', 'From project', 'Source', 'Message' ] );
-
 	$ids = get_posts( [ 'post_type' => 'nr_enquiry', 'posts_per_page' => -1, 'post_status' => 'publish', 'fields' => 'ids', 'orderby' => 'date', 'order' => 'DESC' ] );
 	foreach ( $ids as $id ) {
 		fputcsv( $out, [
@@ -93,7 +84,21 @@ add_action( 'admin_post_nr_export_enquiries', function () {
 			wp_strip_all_tags( get_post_field( 'post_content', $id ) ),
 		] );
 	}
+	rewind( $out );
+	$csv = stream_get_contents( $out );
 	fclose( $out );
+	return $csv;
+}
+add_action( 'admin_post_nr_export_enquiries', function () {
+	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'nr_export_enq' ) ) {
+		wp_die( esc_html__( 'Unauthorized.', 'raveenthiran' ) );
+	}
+	if ( ! post_type_exists( 'nr_enquiry' ) ) wp_die( esc_html__( 'No enquiries.', 'raveenthiran' ) );
+
+	nocache_headers();
+	header( 'Content-Type: text/csv; charset=utf-8' );
+	header( 'Content-Disposition: attachment; filename=enquiries-' . date_i18n( 'Y-m-d' ) . '.csv' );
+	echo nr_enquiries_csv();
 	exit;
 } );
 

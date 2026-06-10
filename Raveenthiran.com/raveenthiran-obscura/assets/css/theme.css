@@ -2517,3 +2517,11 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
   .nr-jpost__prose > p:first-child{break-inside:avoid}
 }
 @media (min-width:1700px){ .nr-jpost__prose{column-gap:64px} }
+
+/* ── v4.52.0: trusted-by count · resume bar ───────────────────── */
+.nr-clients__count{color:var(--amber);font-weight:600}
+.nr-clients__item{display:inline-flex;align-items:center}
+.nr-resume{display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:10px 14px;border:1px solid var(--amber);border-radius:8px;background:rgba(242,160,61,.07);font-size:13.5px;color:var(--ink-2)}
+.nr-resume span{flex:1}.nr-resume b{color:var(--ink)}
+.nr-resume__y{background:var(--amber);color:#0B0C10;border:0;border-radius:999px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer}
+.nr-resume__x{background:none;border:0;color:var(--ink-3);cursor:pointer}

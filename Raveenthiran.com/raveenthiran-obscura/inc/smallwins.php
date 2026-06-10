@@ -353,6 +353,34 @@ function nr_encrypt_blob( $data, $pass ) {
 	$ct = openssl_encrypt( $data, 'aes-256-cbc', hash( 'sha256', $pass, true ), OPENSSL_RAW_DATA, $iv );
 	return $ct === false ? '' : base64_encode( $iv . $ct ); // decrypt: base64 → split 16-byte IV → aes-256-cbc with sha256(pass)
 }
+/* #182 — encrypted enquiry export. GET shows a passphrase form; POST returns a
+   .enc file (AES-256-CBC). Decrypt with: openssl available in the README. */
+add_action( 'admin_post_nr_export_enquiries_enc', function () {
+	if ( ! current_user_can( 'edit_posts' ) ) wp_die( 'no' );
+	$pass = (string) ( $_POST['nr_enc_pass'] ?? '' );
+	if ( $_SERVER['REQUEST_METHOD'] !== 'POST' || ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'nr_export_enq_enc' ) || strlen( $pass ) < 6 ) {
+		// show the form
+		echo '<!doctype html><meta charset=utf-8><title>Encrypted export</title>';
+		echo '<body style="font-family:system-ui;max-width:520px;margin:60px auto;padding:0 20px;background:#0B0C10;color:#F2EFE9">';
+		echo '<h1 style="font-weight:300">Encrypted enquiry export</h1><p style="color:#9C9A94">Choose a passphrase (min 6 chars). The download is AES-256-CBC encrypted; keep the passphrase safe — there is no recovery.</p>';
+		echo '<form method="post"><input type="hidden" name="action" value="nr_export_enquiries_enc">' . wp_nonce_field( 'nr_export_enq_enc', '_wpnonce', true, false );
+		echo '<input type="password" name="nr_enc_pass" minlength="6" required placeholder="passphrase" style="width:100%;padding:12px;margin:10px 0;background:#14151A;border:1px solid #2a2c33;color:#fff;border-radius:6px">';
+		echo '<button style="background:#F2A03D;border:0;color:#0B0C10;font-weight:600;padding:12px 20px;border-radius:999px;cursor:pointer">Download .enc</button></form></body>';
+		exit;
+	}
+	if ( ! function_exists( 'nr_enquiries_csv' ) ) wp_die( 'export unavailable' );
+	$blob = nr_encrypt_blob( nr_enquiries_csv(), $pass );
+	if ( $blob === '' ) wp_die( 'encryption unavailable (OpenSSL missing)' );
+	$readme = "# Obscura encrypted enquiry export\n# Decrypt:\n#   base64 -d enquiries.enc > enc.bin\n#   IV = first 16 bytes; KEY = sha256(passphrase) raw\n#   openssl enc -d -aes-256-cbc -K <key-hex> -iv <iv-hex> -in body.bin -out enquiries.csv\n# (or use any AES-256-CBC tool with the passphrase's SHA-256 as key)\n\n";
+	nocache_headers();
+	header( 'Content-Type: application/octet-stream' );
+	header( 'Content-Disposition: attachment; filename=enquiries-' . gmdate( 'Y-m-d' ) . '.enc' );
+	echo $readme . $blob;
+	exit;
+} );
+function nr_enquiry_export_enc_url() {
+	return admin_url( 'admin-post.php?action=nr_export_enquiries_enc' );
+}
 
 /* #125 — [nr_compare before="12" after="34"] reusing the .nr-compare slider. */
 add_shortcode( 'nr_compare', function ( $a ) {
@@ -428,4 +456,21 @@ add_action( 'admin_menu', function () {
 add_action( 'admin_notices', function () {
 	if ( isset( $_GET['nr_treq'] ) ) printf( '<div class="notice notice-%s is-dismissible"><p>%s</p></div>', $_GET['nr_treq'] === '1' ? 'success' : 'error', esc_html( $_GET['nr_treq'] === '1' ? __( 'Testimonial request sent.', 'raveenthiran' ) : __( 'Could not send — check the email / SMTP.', 'raveenthiran' ) ) );
 	if ( isset( $_GET['nr_linkcheck'] ) ) printf( '<div class="notice notice-info is-dismissible"><p>%s</p></div>', esc_html( sprintf( __( 'Link check done — %d broken/unreachable outbound links (see the content-health widget).', 'raveenthiran' ), (int) $_GET['nr_linkcheck'] ) ) );
+} );
+
+/* #154 — reusable content blocks: Obscura block patterns for the editor. */
+add_action( 'init', function () {
+	if ( ! function_exists( 'register_block_pattern_category' ) ) return;
+	register_block_pattern_category( 'obscura', [ 'label' => __( 'Obscura', 'raveenthiran' ) ] );
+	$pats = [
+		'obscura/packages'  => [ __( 'Packages table', 'raveenthiran' ), '<!-- wp:shortcode -->[nr_packages]<!-- /wp:shortcode -->' ],
+		'obscura/press'     => [ __( 'Press wall', 'raveenthiran' ), '<!-- wp:shortcode -->[nr_press]<!-- /wp:shortcode -->' ],
+		'obscura/timeline'  => [ __( 'Year timeline', 'raveenthiran' ), '<!-- wp:shortcode -->[nr_timeline]<!-- /wp:shortcode -->' ],
+		'obscura/map'       => [ __( 'Map of all projects', 'raveenthiran' ), '<!-- wp:shortcode -->[nr_map_all]<!-- /wp:shortcode -->' ],
+		'obscura/onthisday' => [ __( '“On this day” strip', 'raveenthiran' ), '<!-- wp:shortcode -->[nr_onthisday]<!-- /wp:shortcode -->' ],
+		'obscura/pullquote' => [ __( 'Obscura pull-quote', 'raveenthiran' ), '<!-- wp:quote {"className":"nr-pullquote"} --><blockquote class="wp-block-quote nr-pullquote"><p>' . esc_html__( 'A single sentence that carries the whole idea.', 'raveenthiran' ) . '</p></blockquote><!-- /wp:quote -->' ],
+	];
+	foreach ( $pats as $name => $p ) {
+		register_block_pattern( $name, [ 'title' => $p[0], 'categories' => [ 'obscura' ], 'content' => $p[1] ] );
+	}
 } );

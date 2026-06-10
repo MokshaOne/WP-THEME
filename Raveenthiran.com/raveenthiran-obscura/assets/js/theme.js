@@ -2040,3 +2040,55 @@
   pop.addEventListener('click', function (e) { if (e.target === pop) hide(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) hide(); });
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   v4.52.0 — small wins: count-up (#70) + abandoned-quote (#67)
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  /* #70 — animate any [data-count] number into view once. */
+  var els = document.querySelectorAll('[data-count]');
+  if (els.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting || en.target.dataset.counted) return;
+        en.target.dataset.counted = '1';
+        var el = en.target, end = parseInt(el.dataset.count, 10) || 0, t0 = 0;
+        function step(t) { if (!t0) t0 = t; var p = Math.min(1, (t - t0) / 900); el.textContent = Math.round(end * (p * (2 - p))); if (p < 1) requestAnimationFrame(step); }
+        requestAnimationFrame(step); io.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    els.forEach(function (e) { io.observe(e); });
+  }
+
+  /* #67 — abandoned-quote recovery: remember an unfinished estimate, offer to
+     resume it next visit (localStorage; cleared on submit/sent). */
+  var form = document.querySelector('.nr-enquire__form');
+  if (!form) return;
+  var QK = 'nr_quote_v1';
+  var est = form.querySelector('[data-enquire-estimate-input], input[name="estimate"]');
+  if (est) {
+    var save = function () { try { if (est.value) localStorage.setItem(QK, JSON.stringify({ v: est.value, t: Date.now() })); } catch (e) {} };
+    est.addEventListener('change', save);
+    form.addEventListener('submit', function () { try { localStorage.removeItem(QK); } catch (e) {} });
+  }
+  try {
+    var sent = new URLSearchParams(location.search).get('nr_sent');
+    var raw = localStorage.getItem(QK);
+    if (raw && sent === null && (!est || !est.value)) {
+      var q = JSON.parse(raw);
+      // only offer for ~14 days
+      if (q && q.v && (Date.now() - (q.t || 0) < 12096e5)) {
+        var bar = document.createElement('div');
+        bar.className = 'nr-resume';
+        bar.innerHTML = '<span>' + 'Pick up where you left off — last estimate <b>' + String(q.v).replace(/[<>&]/g, '') + '</b>.</span>'
+          + '<button type="button" class="nr-resume__y">Resume</button><button type="button" class="nr-resume__x" aria-label="Dismiss">✕</button>';
+        form.insertBefore(bar, form.firstChild);
+        bar.querySelector('.nr-resume__y').addEventListener('click', function () {
+          if (est) { est.value = q.v; var p = form.querySelector('[data-enquire-estimate-out], .nr-enquire__estimate'); if (p) p.textContent = q.v; }
+          bar.remove();
+        });
+        bar.querySelector('.nr-resume__x').addEventListener('click', function () { try { localStorage.removeItem(QK); } catch (e) {} bar.remove(); });
+      }
+    }
+  } catch (e) {}
+})();

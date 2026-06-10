@@ -98,17 +98,17 @@ start with the small high-leverage ones.*
 60. ✅ _v4.49.0_ — **Delivery page with download-all + expiry** — a clean handover page per shoot. _Conv · M_
 61. ✅ _v4.46.0_ — **Post-delivery testimonial request** — auto-email that feeds the Testimonials CPT + aggregateRating. _Conv · S_
 62. ✅ _v4.49.0_ — **Case-study template** — problem → approach → result for selected projects. _Content · M_
-67. **Abandoned-quote recovery** — if email was captured, nudge unfinished estimates. _Conv · S_
+67. ✅ _v4.52.0_ — **Abandoned-quote recovery** — if email was captured, nudge unfinished estimates. _Conv · S_
 68. ✅ _v4.44.0_ — **Referral code for past clients** — track word-of-mouth in insights. _Conv · S_
 
 ### Presentation of value
 69. ✅ _v4.44.0_ — **Packages comparison table** — transparent pricing tiers with feature ticks. _Conv · S_
-70. **"Trusted by" with link-out + counts** — extend the client-logos strip with animated counts. _Conv · S_
+70. ✅ _v4.52.0_ — **"Trusted by" with link-out + counts** — extend the client-logos strip with animated counts. _Conv · S_
 71. ✅ _v4.44.0_ — **Press wall** — manual press list rendered with logos + links + dates. _Content · S_
 72. ✅ _v4.49.0_ — **Newsletter double opt-in + welcome + archive** — confirm subscribers, send a welcome, publish past issues. _Conv · M_
 73. ✅ _v4.44.0_ — **Seasonal campaign banner scheduler** — date-bounded promo bar, auto on/off. _Conv · S_
 74. ✅ _v4.44.0_ — **WhatsApp Business deep-link** — prefilled message with the project reference. _Conv · S_
-75. **"Hold two dates" request** — soft-reserve flow before a firm booking. _Conv · S_
+75. ✅ _v4.52.0_ — **"Hold two dates" request** — soft-reserve flow before a firm booking. _Conv · S_
 77. ✅ _v4.44.0_ — **Share-card generator for clients** — "shot by" card a client can post. _Conv · S_
 80. ✅ _v4.46.0_ — **Saved enquiry resume link** — tokenised link to continue a brief later. _Conv · S_
 
@@ -123,7 +123,7 @@ perf change — see the playbook.*
 82. ✅ _v4.49.0_ — **Art-directed `<picture>`** — different crops for portrait vs landscape viewports, not just resize. _Perf · M_
 83. ✅ _v4.49.0_ — **Variable font swap** — one Inter Tight variable file instead of three static weights. _Perf · M_
 84. ✅ _v4.46.0_ — **Font subsetting + unicode-range** — Latin subset, split rare glyphs. _Perf · S_
-85. **SVG icon sprite** — inline one sprite instead of many icon requests. _Perf · S_
+85. ⏭ _skipped_ — **SVG icon sprite** — inline one sprite instead of many icon requests. _Perf · S_
 86. ✅ _v4.45.0_ — **Precompressed Brotli/gzip static assets** — verify the host/Cloudflare serves `.br`. _Perf · S_
 87. ⏭ _skipped_ — **`modulepreload` + JS islands** — lazy-hydrate non-critical interactivity. _Perf · M_
 89. ✅ _v4.45.0_ — **Exhaustive `loading`/`decoding`/`fetchpriority` re-audit** — across all templates after the recent additions. _Perf · S_
@@ -205,7 +205,7 @@ projects maintainable.*
 150. ✅ _v4.46.0_ — **Alt-text quality linter** — warn when alt equals the filename. _A11y · S_
 152. ✅ _v4.46.0_ — **Tag clustering view** — see and merge near-duplicate tags. _Ops · S_
 153. ✅ _v4.49.0_ — **Editorial calendar** — schedule + status board for journal. _Ops · M_
-154. **Reusable content blocks library** — saved patterns for essays. _Content · S_
+154. ✅ _v4.52.0_ — **Reusable content blocks library** — saved patterns for essays. _Content · S_
 155. ✅ _v4.46.0_ — **Tokenised draft preview links** — share unpublished work with clients/editors. _Ops · S_
 156. ✅ _v4.45.0_ — **Gear/setup metadata block** — bodies, lenses, lighting per project. _Content · S_
 157. ✅ _v4.46.0_ — **Captions toggle (front-end)** — show/hide all EXIF captions. _UX · S_
@@ -241,7 +241,7 @@ projects maintainable.*
 178. ✅ _v4.46.0_ — **Repeat-spam IP throttle + banlist** — extend the honeypot/rate-limit with persistence. _Sec · S_
 179. ✅ _v4.46.0_ — **Admin settings audit log** — record who changed which setting, when. _Sec · S_
 181. ✅ _v4.46.0_ — **Consent log + cookieless analytics** — record consent events; keep analytics cookie-free. _Sec · S_
-182. **Enquiry-export encryption** — optional passphrase on the CSV export. _Sec · S_
+182. ✅ _v4.52.0_ — **Enquiry-export encryption** — optional passphrase on the CSV export. _Sec · S_
 183. ✅ _v4.45.0_ — **Login hardening doc + hooks** — app-password rotation reminder, 2FA guidance. _Sec · S_
 184. ✅ _v4.45.0_ — **Uploads MIME/dimension validation** — reject oversized or mistyped uploads early. _Sec · S_
 185. ✅ _v4.45.0_ — **Honeytoken admin page** — a trap URL that bans scanners. _Sec · S_

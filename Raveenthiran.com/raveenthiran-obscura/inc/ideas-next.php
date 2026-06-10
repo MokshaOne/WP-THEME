@@ -225,15 +225,26 @@ function nr_client_logos_markup() {
 	if ( ! $lines ) return '';
 	ob_start();
 	echo '<aside class="nr-clients" aria-label="' . esc_attr__( 'Trusted by', 'raveenthiran' ) . '">';
-	echo '<span class="nr-clients__label">' . esc_html__( 'Trusted by', 'raveenthiran' ) . '</span><div class="nr-clients__row">';
+	// #70 — count badge (animated client-side via [data-count]).
+	printf(
+		'<span class="nr-clients__label">%s <b class="nr-clients__count" data-count="%d">%d</b></span><div class="nr-clients__row">',
+		esc_html__( 'Trusted by', 'raveenthiran' ), count( $lines ), count( $lines )
+	);
 	foreach ( $lines as $ln ) {
-		$parts = array_map( 'trim', explode( '|', $ln, 2 ) );
-		$url   = $parts[0]; $name = $parts[1] ?? '';
-		if ( filter_var( $url, FILTER_VALIDATE_URL ) ) {
-			printf( '<img src="%s" alt="%s" loading="lazy" decoding="async" height="28">', esc_url( $url ), esc_attr( $name ) );
-		} elseif ( $url !== '' ) {
-			printf( '<span class="nr-clients__name">%s</span>', esc_html( $url ) );
+		// line forms: "img-url" · "img-url | Name" · "img-url | Name | link-url" · "Name | link-url" · "Name"
+		$parts = array_map( 'trim', explode( '|', $ln ) );
+		$img = $name = $link = '';
+		foreach ( $parts as $p ) {
+			if ( filter_var( $p, FILTER_VALIDATE_URL ) ) { if ( preg_match( '/\.(svg|png|jpe?g|webp|gif)$/i', $p ) ) $img = $p; else $link = $p; }
+			elseif ( $p !== '' ) $name = $name === '' ? $p : $name;
 		}
+		$inner = $img
+			? sprintf( '<img src="%s" alt="%s" loading="lazy" decoding="async" height="28">', esc_url( $img ), esc_attr( $name ) )
+			: ( $name !== '' ? sprintf( '<span class="nr-clients__name">%s</span>', esc_html( $name ) ) : '' );
+		if ( $inner === '' ) continue;
+		echo $link
+			? '<a class="nr-clients__item" href="' . esc_url( $link ) . '" target="_blank" rel="noopener">' . $inner . '</a>'
+			: $inner;
 	}
 	echo '</div></aside>';
 	return ob_get_clean();

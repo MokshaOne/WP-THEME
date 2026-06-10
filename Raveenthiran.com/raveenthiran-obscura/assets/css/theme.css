@@ -2108,3 +2108,58 @@ body.nr-savedata .nr-recent__card img{background:var(--bg-2,#14151A)}
   .nr-cinematic .nr-card,.nr-cinematic .nr-card img,.nr-cinematic .nr-divider{transition:none!important;transform:none!important}
   .nr-cinematic .nr-card:hover img{filter:none!important}
 }
+
+/* ── Batch 1 (v4.43.0): cinematic motion layer, part 2 (lightweight) ── */
+/* (Also fixes v4.42: data-nr-motion now lives on <body> with .nr-cinematic,
+   so these compound selectors match.) */
+
+/* #23 — viewfinder AF bracket on press */
+.nr-viewfinder{position:fixed;width:46px;height:46px;margin:-23px 0 0 -23px;z-index:58;pointer-events:none;
+  animation:nrVf .5s ease-out forwards}
+.nr-viewfinder::before,.nr-viewfinder::after{content:"";position:absolute;width:14px;height:14px;border:1.5px solid var(--amber)}
+.nr-viewfinder::before{top:0;left:0;border-right:0;border-bottom:0}
+.nr-viewfinder::after{bottom:0;right:0;border-left:0;border-top:0}
+@keyframes nrVf{0%{opacity:0;transform:scale(1.4)}30%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+
+/* #37 — aspect-matched loading skeleton (shimmer until the image loads) */
+.nr-cinematic .nr-card.nr-skel,.nr-cinematic .nr-project__plate.nr-skel{position:relative;background:var(--bg-2,#14151A)}
+.nr-cinematic .nr-card.nr-skel::after,.nr-cinematic .nr-project__plate.nr-skel::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(100deg,transparent 20%,rgba(242,239,233,.07) 50%,transparent 80%);
+  background-size:220% 100%;animation:nrSkel 1.25s linear infinite}
+.nr-cinematic .nr-card.nr-skel img,.nr-cinematic .nr-project__plate.nr-skel img{opacity:0}
+@keyframes nrSkel{from{background-position:120% 0}to{background-position:-120% 0}}
+
+/* #27 — directional draw-on underline for prose links */
+.nr-cinematic[data-nr-motion="standard"] a.nr-ul,
+.nr-cinematic[data-nr-motion="cinematic"] a.nr-ul{position:relative;border-bottom-color:transparent!important;text-decoration:none}
+.nr-cinematic[data-nr-motion="standard"] a.nr-ul::after,
+.nr-cinematic[data-nr-motion="cinematic"] a.nr-ul::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--amber);
+  transform:scaleX(0);transform-origin:var(--ul-origin,left) bottom;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.nr-cinematic[data-nr-motion="standard"] a.nr-ul:hover::after,
+.nr-cinematic[data-nr-motion="cinematic"] a.nr-ul:hover::after{transform:scaleX(1)}
+
+/* #28 — cursor "drag" affordance over rails */
+.nr-cur.is-drag .nr-cur__lbl{opacity:1}
+.nr-cur.is-drag{mix-blend-mode:normal}
+
+/* #25 — wordmark reveal/draw on first load (standard + cinematic) */
+.nr-cinematic[data-nr-motion="standard"] .nr-logo,
+.nr-cinematic[data-nr-motion="cinematic"] .nr-logo{animation:nrLogoWipe .8s .15s cubic-bezier(.2,.8,.2,1) both}
+@keyframes nrLogoWipe{from{clip-path:inset(0 100% 0 0);opacity:.45}to{clip-path:inset(0 0 0 0);opacity:1}}
+
+/* #16 — gentle scroll-snap on the rails (cinematic; proximity so arrows still work) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-portfolio-rail{scroll-snap-type:x proximity}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-portfolio-rail .nr-card{scroll-snap-align:center}
+
+/* #35 — drift-grain: the film grain slowly translates so it never looks frozen */
+.nr-cinematic[data-nr-motion="standard"]::after,
+.nr-cinematic[data-nr-motion="cinematic"]::after{animation:nrGrainDrift 6s steps(5) infinite}
+@keyframes nrGrainDrift{from{background-position:0 0,0 0}to{background-position:-240px 240px,0 0}}
+
+@media (prefers-reduced-motion:reduce){
+  .nr-viewfinder,.nr-cinematic .nr-card.nr-skel::after{animation:none!important}
+  .nr-cinematic .nr-logo{animation:none!important}
+  .nr-cinematic[data-nr-motion="standard"]::after,
+  .nr-cinematic[data-nr-motion="cinematic"]::after{animation:none!important}
+}

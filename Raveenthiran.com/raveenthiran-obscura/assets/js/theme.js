@@ -1111,9 +1111,9 @@
     if (LEVELS.indexOf(l) < 0) l = reduce ? 'calm' : 'cinematic';
     return l;
   }
-  function setLevel(l) { try { localStorage.setItem('nr_motion', l); } catch (e) {} root.setAttribute('data-nr-motion', l); }
+  function setLevel(l) { try { localStorage.setItem('nr_motion', l); } catch (e) {} body.setAttribute('data-nr-motion', l); root.setAttribute('data-nr-motion', l); }
   setLevel(getLevel());
-  function level() { return root.getAttribute('data-nr-motion'); }
+  function level() { return body.getAttribute('data-nr-motion'); }
   function cinematic() { return level() === 'cinematic'; }
   function notCalm() { return level() !== 'calm'; }
 
@@ -1251,4 +1251,86 @@
     window.addEventListener('scroll', upd, { passive: true });
     window.addEventListener('resize', upd); upd();
   })();
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   Batch 1 (v4.43.0) — cinematic motion layer, part 2 (lightweight).
+   Reads the motion level set by part 1 (on <body>). Same opt-in gate.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  if (!body.classList.contains('nr-cinematic')) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  function level() { return body.getAttribute('data-nr-motion') || 'standard'; }
+  function notCalm() { return level() !== 'calm'; }
+  function cinematic() { return level() === 'cinematic'; }
+
+  /* #23 — viewfinder AF-bracket feedback on card/button press. */
+  if (!reduce) {
+    document.addEventListener('pointerdown', function (e) {
+      if (!notCalm()) return;
+      if (!e.target.closest('.nr-card, .nr-btn, .nr-hero__thumb')) return;
+      var b = document.createElement('span');
+      b.className = 'nr-viewfinder'; b.setAttribute('aria-hidden', 'true');
+      b.style.left = e.clientX + 'px'; b.style.top = e.clientY + 'px';
+      document.body.appendChild(b);
+      setTimeout(function () { b.remove(); }, 520);
+    }, { passive: true });
+  }
+
+  /* #37 — aspect-matched loading skeleton on portfolio/plate images. */
+  document.querySelectorAll('.nr-card img, .nr-project__plate img').forEach(function (img) {
+    var fig = img.closest('.nr-card, .nr-project__plate');
+    if (!fig || (img.complete && img.naturalWidth > 0)) return;
+    fig.classList.add('nr-skel');
+    var done = function () { fig.classList.remove('nr-skel'); };
+    img.addEventListener('load', done, { once: true });
+    img.addEventListener('error', done, { once: true });
+  });
+
+  /* #15 — elastic overscroll: rubber-band the rails past their ends. */
+  if (!reduce) {
+    document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+      var raf;
+      rail.addEventListener('wheel', function (e) {
+        if (!cinematic()) return;
+        var d = e.deltaX || e.deltaY;
+        var atStart = rail.scrollLeft <= 0, atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 1;
+        if ((atStart && d < 0) || (atEnd && d > 0)) {
+          var push = Math.max(-26, Math.min(26, -d * 0.16));
+          rail.style.transition = 'none';
+          rail.style.transform = 'translateX(' + push.toFixed(1) + 'px)';
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(function () {
+            rail.style.transition = 'transform .5s cubic-bezier(.2,.8,.2,1)';
+            rail.style.transform = 'translateX(0)';
+            setTimeout(function () { rail.style.transition = ''; }, 520);
+          });
+        }
+      }, { passive: true });
+    });
+  }
+
+  /* #28 — contextual cursor: "drag" over the scrollable rails. */
+  if (hover) {
+    var cur = document.querySelector('.nr-cur');
+    var lbl = cur && cur.querySelector('.nr-cur__lbl');
+    if (cur) {
+      document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail').forEach(function (r) {
+        r.addEventListener('mouseenter', function () { cur.classList.add('is-drag'); if (lbl) lbl.textContent = 'drag'; });
+        r.addEventListener('mouseleave', function () { cur.classList.remove('is-drag'); });
+      });
+    }
+  }
+
+  /* #27 — directional draw-on underline for prose links. */
+  document.querySelectorAll('.nr-prose a, .nr-jpost a, .nr-static a, .nr-process__body a').forEach(function (a) {
+    if (a.classList.contains('nr-ul')) return;
+    a.classList.add('nr-ul');
+    a.addEventListener('mouseenter', function (e) {
+      var r = a.getBoundingClientRect();
+      a.style.setProperty('--ul-origin', (e.clientX - r.left) < r.width / 2 ? 'left' : 'right');
+    });
+  });
 })();

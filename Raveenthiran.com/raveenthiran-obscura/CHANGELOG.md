@@ -1,5 +1,32 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.43.0 — Batch 1 part 2 (lightweight motion) + a v4.42 fix
+**Fix:** in v4.42 the motion level (`data-nr-motion`) was written to `<html>` while
+the `.nr-cinematic` class is on `<body>`, so the compound CSS selectors never
+matched and the tilt / chromatic-aberration / skew / divider styles were inert.
+The attribute now lives on `<body>` too — those effects work as intended.
+
+**New lightweight effects** (same opt-in gate: "Cinematic motion" master toggle +
+the calm/standard/cinematic switch):
+- **Viewfinder bracket** flashes where you press a card/button (#23, standard+).
+- **Loading skeleton** shimmer sized to each card until its image loads (#37).
+- **Elastic overscroll** rubber-bands the rails past their ends (#15, cinematic).
+- **Snap carousel** — gentle scroll-snap on the rails (#16, cinematic).
+- **Contextual cursor** shows "drag" over scrollable rails (#28).
+- **Directional link underlines** draw in from the side you approach (#27, standard+).
+- **Wordmark reveal** wipes in on first load (#25, standard+).
+- **Drift-grain** — the film grain slowly translates so it never looks frozen (#35).
+
+**How to test:** Theme Settings → Visual effects → "Cinematic motion" on → open a
+portfolio page → press a card (bracket), watch images shimmer-load, scroll a rail to
+its end (rubber-band) and notice the snap, hover a prose link (underline draws),
+reload (wordmark wipes), and watch the grain drift. The bottom-left switch dials it
+calm/standard/cinematic. Items shipped: #15, #16, #23, #25, #27, #28, #35, #37.
+
+**Docs:** `docs/IDEAS-200.md` reorganised — all heavyweight items (every `L`, plus
+GPU/WebGL effects, commerce/payment/portal subsystems, offline/edge infra, and large
+content/i18n/security systems) moved to a new **Batch 6 (build last)**; IDs stay stable.
+
 ## 4.42.0 — IDEAS-200 Batch 1, part 1 (cinematic motion layer)
 First slice of the motion/GPU craft batch. **All of it is behind one master
 toggle (default OFF)** plus a per-visitor motion switch, so the live site is

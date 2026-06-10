@@ -38,7 +38,7 @@ add_filter( 'body_class', function ( $c ) {
 /* #170 — transcript + caption block under the project (a11y for motion plates). */
 function nr_project_transcript_markup( $id = 0 ) {
 	$id = $id ?: get_the_ID();
-	$t = function_exists( 'nr_field' ) ? trim( (string) nr_field( 'project_transcript', $id ) ) : '';
+	$t = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_transcript', $id ) : '';
 	if ( $t === '' ) return '';
 	return '<details class="nr-transcript"><summary>' . esc_html__( 'Transcript', 'raveenthiran' ) . '</summary><div>' . wp_kses_post( wpautop( $t ) ) . '</div></details>';
 }

@@ -126,12 +126,12 @@ $lede = get_the_excerpt();
 					[ nr_opt( 'nr_meta_year',       __( 'Year',       'raveenthiran' ) ), (string) $m['yr'] ],
 					[ nr_opt( 'nr_meta_location',   __( 'Location',   'raveenthiran' ) ), $m['loc'] ?: '—' ],
 					[ nr_opt( 'nr_meta_discipline', __( 'Discipline', 'raveenthiran' ) ), $m['cat'] ?: 'Editorial' ],
-					[ nr_opt( 'nr_meta_frames',     __( 'Frames',     'raveenthiran' ) ), function_exists( 'nr_field' ) ? ( nr_field( 'project_frames' ) ?: '—' ) : '—' ],
+					[ nr_opt( 'nr_meta_frames',     __( 'Frames',     'raveenthiran' ) ), function_exists( 'nr_field_str' ) ? ( nr_field_str( 'project_frames' ) ?: '—' ) : '—' ],
 				];
-				$format = function_exists( 'nr_field' ) ? nr_field( 'project_format' ) : '';
+				$format = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_format' ) : '';
 				if ( $format ) $rows[] = [ nr_opt( 'nr_meta_format', __( 'Format', 'raveenthiran' ) ), $format ];
 				// #156 — gear / setup metadata
-				$gear = function_exists( 'nr_field' ) ? nr_field( 'project_gear' ) : '';
+				$gear = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_gear' ) : '';
 				if ( $gear ) $rows[] = [ __( 'Setup', 'raveenthiran' ), $gear ];
 				// #63 — series / collection
 				$nr_series = function_exists( 'nr_project_series' ) ? nr_project_series( get_the_ID() ) : null;

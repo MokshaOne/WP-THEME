@@ -716,7 +716,8 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   display:grid;grid-template-rows:auto 1fr;overflow:hidden;
 }
 .nr-project__crumbs{
-  display:flex;align-items:center;gap:14px;padding:14px var(--pad);
+  display:flex;align-items:center;gap:14px;padding:18px var(--pad) 16px;
+  background:var(--bg);
   font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
   border-bottom:1px solid var(--hair);position:relative;z-index:5;
 }
@@ -727,9 +728,10 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 
 .nr-project__layout{display:grid;grid-template-columns:420px 1fr;overflow:hidden;position:relative;height:100%}
 .nr-project__body{
-  padding:40px 40px 40px var(--pad);
+  padding:34px 40px 70px var(--pad);
   display:flex;flex-direction:column;gap:20px;
-  border-right:1px solid var(--hair);overflow:hidden;position:relative;
+  border-right:1px solid var(--hair);position:relative;
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--ink-5) transparent;
 }
 .nr-project__body::after{
   content:'§02·a';position:absolute;right:24px;bottom:18px;
@@ -2476,3 +2478,12 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
 
 /* ── Batch 6 r2 (v4.51.0): virtualised rails (#88) ── */
 .nr-vrail > .nr-card,.nr-vrail > *{content-visibility:auto;contain-intrinsic-size:480px 640px}
+
+/* ── v4.51.1 hotfix: project layout ───────────────────────────── */
+.nr-project__rail{position:relative}
+.nr-filmstrip{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;
+  max-width:min(72%,720px);padding:6px 8px;border:1px solid var(--hair);border-radius:10px;
+  background:rgba(11,12,16,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+@media (max-width:900px){.nr-filmstrip{display:none}}
+/* keep the §-anchor from colliding with scrolled content */
+.nr-project__body::after{pointer-events:none;opacity:.5}

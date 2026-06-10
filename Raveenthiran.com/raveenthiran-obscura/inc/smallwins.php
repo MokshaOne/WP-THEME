@@ -17,6 +17,15 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* Flatten any field value (ACF may return arrays) to a printable string. */
+if ( ! function_exists( 'nr_field_str' ) ) {
+function nr_field_str( $name, $id = 0 ) {
+	$v = function_exists( 'nr_field' ) ? nr_field( $name, $id ?: get_the_ID() ) : '';
+	if ( is_array( $v ) ) $v = implode( ' · ', array_filter( array_map( 'strval', array_filter( $v, 'is_scalar' ) ) ) );
+	return trim( (string) $v );
+}
+}
+
 /* ===== ACF fields for the editorial small-wins ===== */
 add_action( 'acf/init', function () {
 	if ( ! function_exists( 'acf_add_local_field_group' ) ) return;
@@ -44,7 +53,7 @@ add_action( 'acf/init', function () {
 /* #140 — credits render helper (called from single-nr_project.php). */
 function nr_project_credits_markup( $id = 0 ) {
 	$id = $id ?: get_the_ID();
-	$raw = function_exists( 'nr_field' ) ? (string) nr_field( 'project_credits', $id ) : '';
+	$raw = nr_field_str( 'project_credits', $id );
 	$lines = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) );
 	if ( ! $lines ) return '';
 	$out = '<dl class="nr-credits">';
@@ -55,7 +64,7 @@ function nr_project_credits_markup( $id = 0 ) {
 /* #139 — mini-map markup for a single project (reuses inc/map.php loader). */
 function nr_project_map_markup( $id = 0 ) {
 	$id = $id ?: get_the_ID();
-	$c = function_exists( 'nr_field' ) ? trim( (string) nr_field( 'project_coords', $id ) ) : '';
+	$c = nr_field_str( 'project_coords', $id );
 	if ( ! preg_match( '/^\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*$/', $c, $m ) ) return '';
 	$GLOBALS['nr_map_present'] = true;
 	$pins = wp_json_encode( [ [ 'lat' => (float) $m[1], 'lng' => (float) $m[2], 'label' => wp_strip_all_tags( get_the_title( $id ) ) ] ] );

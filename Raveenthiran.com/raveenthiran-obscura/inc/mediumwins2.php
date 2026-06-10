@@ -34,7 +34,7 @@ add_action( 'acf/init', function () {
 /* #62 — case-study section. */
 function nr_project_case_markup( $id = 0 ) {
 	$id = $id ?: get_the_ID();
-	$raw = function_exists( 'nr_field' ) ? trim( (string) nr_field( 'project_case', $id ) ) : '';
+	$raw = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_case', $id ) : '';
 	if ( $raw === '' ) return '';
 	$out = '<section class="nr-case"><span class="nr-eyebrow nr-eyebrow--xs">' . esc_html__( 'Case study', 'raveenthiran' ) . '</span><dl>';
 	foreach ( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) ) as $l ) {

@@ -387,8 +387,7 @@ function nr_journal_feed_render() {
    ============================================================= */
 function nr_project_process_markup( $post_id = 0 ) {
 	$post_id = $post_id ?: get_the_ID();
-	$txt = function_exists( 'nr_field' ) ? nr_field( 'project_process', $post_id ) : '';
-	$txt = is_string( $txt ) ? trim( $txt ) : '';
+	$txt = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_process', $post_id ) : '';
 	if ( $txt === '' ) return '';
 	ob_start(); ?>
 	<section class="nr-process">

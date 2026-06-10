@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.54.0' );
+define( 'NR_THEME_VERSION', '4.55.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -63,6 +63,7 @@ add_action( 'wp_enqueue_scripts', function () {
 	// Batch 6 — GPU/canvas effects bundle (off unless enabled in Theme Settings).
 	if ( nr_opt( 'nr_fx_gpu', '0' ) === '1' ) {
 		wp_enqueue_script( 'nr-gpu-fx', get_template_directory_uri() . '/assets/js/gpu-fx.js', [ 'nr-theme' ], NR_THEME_VERSION, true );
+		wp_enqueue_script( 'nr-awwwards', get_template_directory_uri() . '/assets/js/awwwards.js', [ 'nr-theme' ], NR_THEME_VERSION, true );
 	}
 
 	// #1 — optional WebGL hero transitions (off unless enabled in Theme Settings).

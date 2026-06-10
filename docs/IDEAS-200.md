@@ -275,7 +275,7 @@ the large content/i18n/security systems. **ID numbers are stable** — they keep
 their original list positions; only the build order changed.*
 
 ### GPU / WebGL shader effects
-1. **OGL plane-grid portfolio** — render the work grid as textured planes (OGL ~16 KB), images as GPU textures with a real fallback `<img>`. _Awww · L_
+1. ✅ _v4.55.0_ — **OGL plane-grid portfolio** — render the work grid as textured planes (OGL ~16 KB), images as GPU textures with a real fallback `<img>`. _Awww · L_
 2. ✅ _v4.53.0_ — **Per-pixel displacement transition** — dissolve between projects via a displacement map instead of a crossfade. _Awww · M_
 3. ✅ _v4.53.0_ — **Particle dispersion on hover** — a thumbnail scatters into points and reforms. _Awww · M_
 4. ✅ _v4.50.0_ — **Heat-haze / refraction idle shader** — subtle GPU refraction over the hero when idle. _Awww · M_
@@ -285,8 +285,8 @@ their original list positions; only the build order changed.*
 9. ✅ _v4.50.0_ — **WebGL aperture-iris page reveal** — an iris wipe (camera shutter) as the load transition. _Awww · M_
 
 ### Large interaction systems
-13. **Infinite draggable canvas** — a kinetic, momentum-based free-pan portfolio view as an alternate archive mode. _Awww · L_
-14. **Pinned scrollytelling section** — a flagship project told through pinned, scrubbed steps. _Awww · L_
+13. ✅ _v4.55.0_ — **Infinite draggable canvas** — a kinetic, momentum-based free-pan portfolio view as an alternate archive mode. _Awww · L_
+14. ✅ _v4.55.0_ — **Pinned scrollytelling section** — a flagship project told through pinned, scrubbed steps. _Awww · L_
 
 ### Commerce, payments & client systems
 50. ⏭ _won't-do · no payments_ — **Deposit via Stripe Payment Link** — collect a retainer to confirm a booking. _Conv · M_
@@ -311,7 +311,7 @@ their original list positions; only the build order changed.*
 106. ✅ _v4.51.0_ — **Self-hosted pageview analytics** — extend `inc/insights.php` to privacy-first pageviews + funnels. _Ops · M_
 
 ### Content & i18n systems
-123. **Scroll-scrubbed video hero (opt-in)** — flagship-only, decode-budget-aware. _Awww · L_
+123. ✅ _v4.55.0_ — **Scroll-scrubbed video hero (opt-in)** — flagship-only, decode-budget-aware. _Awww · L_
 151. ✅ _v4.54.0_ — **Auto-tagging on save** — keyword/term extraction suggestions. _Ops · M_
 171. ⏭ _won't-do · site stays single-language_ — **Theme-native bilingual DE/EN** — language switcher + per-post translations without a heavy plugin. _Content · L_
 

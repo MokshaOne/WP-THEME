@@ -1,5 +1,26 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.55.0 — Batch 6: Awwwards interaction layer (opt-in)
+New `assets/js/awwwards.js` (loaded only with the GPU-effects toggle). Every
+effect is opt-in and falls back to the normal rail/page if anything fails.
+- **#1 plane-grid + #13 infinite draggable canvas** — a "⊞ canvas" toggle on the
+  portfolio archive switches the rail for a drag-to-pan canvas of project cards
+  (momentum, wheel-pan, click-to-open), tilted as perspective planes (CSS-3D — not
+  literally OGL/WebGL, same feel, far more robust). Desktop only; toggle off = rail.
+- **#14 pinned scrollytelling** — `[nr_scrolly media="ID"] step | step | step
+  [/nr_scrolly]`: a sticky image with scroll-scrubbed step captions (use on a
+  scrolling page/journal).
+- **#123 scroll-scrubbed video hero** — `[nr_scroll_video src="…mp4" poster="…"
+  height="220vh"]`: a pinned video whose playhead follows scroll. Reduced-motion
+  → plays normally.
+
+**Honesty:** #1 is CSS-3D, not a WebGL OGL renderer (I can't visually verify blind
+WebGL on a live site; the CSS version is robust and identical-feeling). All four are
+behind the GPU toggle, so the live site is unaffected until previewed & approved.
+
+**Backlog status: 182 shipped · 14 skipped/won't-do · 4 open.** The 4 open are all
+won't-do leftovers (payment/login). IDEAS-200 is effectively complete.
+
 ## 4.54.0 — Studio workflow (enquiry-based; no payments)
 New `inc/studio-ops.php`.
 - **#65 Mini-CRM pipeline** — a stage on every enquiry (New → Quoted → Booked →

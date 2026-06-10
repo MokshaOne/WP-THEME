@@ -307,3 +307,30 @@ add_action( 'admin_post_nr_settings_apply', function () {
 	wp_safe_redirect( admin_url( 'themes.php?page=nr-theme-settings&nr_import=' . $ok ) );
 	exit;
 } );
+
+/* #14 — [nr_scrolly media="ID"] step one | step two | step three [/nr_scrolly]
+   Pinned media + scroll-scrubbed step captions (front-end in awwwards.js). */
+add_shortcode( 'nr_scrolly', function ( $a, $content = '' ) {
+	$a = shortcode_atts( [ 'media' => 0 ], $a );
+	$steps = array_filter( array_map( 'trim', explode( '|', wp_strip_all_tags( (string) $content ) ) ) );
+	if ( ! $steps ) return '';
+	$mid = (int) $a['media'];
+	$media = $mid ? wp_get_attachment_image( $mid, 'nr-hero', false, [ 'loading' => 'lazy', 'decoding' => 'async' ] ) : '';
+	$out = '<div class="nr-scrolly">';
+	$out .= '<div class="nr-scrolly__media">' . $media . '</div><div class="nr-scrolly__steps">';
+	foreach ( $steps as $i => $s ) $out .= '<div class="nr-scrolly__step" data-step="' . ( $i + 1 ) . '"><p>' . esc_html( $s ) . '</p></div>';
+	return $out . '</div></div>';
+} );
+
+/* #123 — [nr_scroll_video src="…mp4" poster="…jpg" height="220vh"] (scrolling pages). */
+add_shortcode( 'nr_scroll_video', function ( $a ) {
+	$a = shortcode_atts( [ 'src' => '', 'poster' => '', 'height' => '220vh' ], $a );
+	if ( ! $a['src'] ) return '';
+	$h = preg_match( '/^\d+(vh|px|%)$/', $a['height'] ) ? $a['height'] : '220vh';
+	return sprintf(
+		'<div class="nr-scrollvid" data-scroll-video style="height:%s"><div class="nr-scrollvid__sticky"><video muted playsinline preload="metadata" %s><source src="%s" type="video/mp4"></video></div></div>',
+		esc_attr( $h ),
+		$a['poster'] ? 'poster="' . esc_url( $a['poster'] ) . '"' : '',
+		esc_url( $a['src'] )
+	);
+} );

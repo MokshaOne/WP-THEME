@@ -141,6 +141,8 @@ $lede = get_the_excerpt();
 				<?php endforeach; ?>
 			</ul>
 
+				<?php if ( function_exists( 'nr_project_process_markup' ) ) echo nr_project_process_markup( get_the_ID() ); // #16 ?>
+
 			<div class="nr-project__actions">
 				<a class="nr-btn nr-btn--primary"
 				   href="<?php echo esc_url( add_query_arg( [ 'service' => sanitize_title( $m['cat'] ?: 'editorial' ), 'ref' => get_the_title() ], function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>">

@@ -1,5 +1,30 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.41.0
+- Fixed: enquire-form date picker icon is now reliably visible — replaced the
+  native glyph with a white SVG (the v4.38 `color-scheme:dark` + `invert(1)`
+  combination cancelled out to black).
+- IDEAS-NEXT batch (all visitor-facing features opt-in, default off):
+  - Conversion: recently-viewed strip, footer newsletter capture (local
+    Subscribers CPT + optional Brevo forward), rotating testimonials band,
+    "next open dates" line.
+  - SEO: aggregateRating + reviews from Testimonials, IndexNow ping on publish
+    (+ virtual key file), branded `/feed` description and a dedicated
+    `/journal/feed`, Speculation Rules prerender-on-hover, OG audit
+    (`article:published_time`/`modified_time`/`section`/`tag`).
+  - Editorial: project "Behind the frame" process section, client-logos strip,
+    series cover pages (statement + cover image term meta).
+  - A11y: `prefers-contrast` + Save-Data / `prefers-reduced-data` handling,
+    Tab focus-trap for the ⌘K palette and contact-sheet dialogs.
+  - Ops: Theme Settings JSON import/export, content-health dashboard widget
+    (missing thumbnails / empty galleries / uncategorised + backup reminder),
+    Studio Assistant role.
+  - Quality scaffolding: Playwright smoke test + Lighthouse CI config behind a
+    manual `workflow_dispatch` action (they need a live WP runtime, so they
+    don't gate PRs).
+- Deferred with rationale (see docs/IDEAS-NEXT.md): lookbook PDF export,
+  scroll-scrubbed video hero, per-plate diptych variants.
+
 ## 4.40.0
 - Theme professionalism: `load_theme_textdomain` + `languages/` scaffold,
   block-editor styles (dark Obscura look), minimal `theme.json` (palette/fonts),

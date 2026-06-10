@@ -26,6 +26,8 @@ if ( nr_opt( 'nr_fx_marquee', '0' ) === '1' && ! is_front_page() && ! is_singula
 	}
 }
 ?>
+<?php /* IDEAS-NEXT v4.41 — conversion/editorial bands (scrolling pages, opt-in) */ ?>
+<?php if ( function_exists( 'nr_render_footer_extras' ) ) nr_render_footer_extras(); ?>
 <?php if ( $nr_show_footer && ! is_front_page() && ! is_singular( 'nr_project' ) && ! is_post_type_archive( 'nr_project' ) ) : ?>
 <footer class="nr-footer" role="contentinfo">
 	<span><?php echo esc_html( $nr_footer_text ); ?></span>

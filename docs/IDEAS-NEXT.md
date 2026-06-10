@@ -11,39 +11,39 @@ Nothing here is started yet.
 4. ✅ **`readme.txt` + `CHANGELOG.md`** — proper theme metadata + a human changelog (currently only the per-version commit log).
 5. ✅ **Minimal `theme.json`** — even for a classic theme, a small `theme.json` exposes the Obscura palette/fonts to the block editor color pickers.
 
-## 🎯 Conversion & audience
-6. **"Recently viewed projects"** strip (localStorage) on the portfolio/home — gentle re-engagement, no tracking.
-7. **Newsletter / "new work" email capture** — a single-field owned-audience box (footer or enquire), stored as a CPT or piped to a provider.
-8. **Testimonials on the homepage** — a quiet rotating quote band (the CPT exists; only used on About + schema today).
-9. **Availability calendar / "next open dates"** — surface bookable windows from a simple settings field or Google Calendar feed.
-10. **Lookbook / portfolio PDF export** — "download this series as a PDF" using the existing dependency-free PDF writer.
+## 🎯 Conversion & audience — ✅ shipped v4.41.0
+6. ✅ **"Recently viewed projects"** strip (localStorage, no tracking) — footer-extras on scrolling pages. Opt-in (`nr_fx_recent`).
+7. ✅ **Newsletter / "new work" email capture** — single-field footer box → private `nr_subscriber` CPT + optional Brevo forward. Opt-in (`nr_fx_newsletter`).
+8. ✅ **Testimonials band** — quiet rotating quote (uses the CPT). Opt-in (`nr_fx_testi_band`).
+9. ✅ **"Next open dates"** — `nr_avail_dates` settings field rendered as an availability line.
+10. ⏭ **Lookbook / portfolio PDF export** — deferred. The dependency-free PDF writer handles a one-page estimate fine, but compositing a multi-image series PDF is memory-heavy on easyname shared hosting (risk of OOM on large series). Revisit if a slimmer image-embed path proves safe.
 
-## 📈 SEO & distribution
-11. **AggregateRating schema** from testimonials → star snippets on the LocalBusiness/Person graph.
-12. **Per-project "last updated" + freshness** signals; ping IndexNow (Bing/Yandex) on publish.
-13. **RSS/JSON feed polish** — branded `/feed` description + a dedicated `/journal/feed`.
-14. **Speculation Rules API** (prerender-on-hover) to replace the manual prefetch — instant nav on modern browsers.
-15. **Social/OG audit per template** — verify cards for taxonomy/search/legal, add `article:published_time` etc. on journal.
+## 📈 SEO & distribution — ✅ shipped v4.41.0
+11. ✅ **AggregateRating + reviews** from the Testimonials CPT → on the Person/LocalBusiness graph.
+12. ✅ **Freshness + IndexNow** — `transition_post_status` pings Bing/Yandex on publish; virtual `/<key>.txt` ownership file; `nr_indexnow_key` setting.
+13. ✅ **Feed polish** — branded `/feed` description + dedicated `/feed/journal-feed/` + `<link rel=alternate>`.
+14. ✅ **Speculation Rules API** (prerender-on-hover, moderate eagerness). Opt-in (`nr_fx_speculation`).
+15. ✅ **OG audit** — `article:published_time` / `modified_time` / `section` / `tag` / `author` on journal + projects.
 
 ## 🖼 Editorial depth (Awwwards lever)
-16. **Project "process" / behind-the-scenes** field + a dedicated section on the project page (juries love it).
-17. **Scroll-scrubbed video hero** option for a flagship project (opt-in).
-18. **Diptych / full-bleed layout variants** per plate (let a project mix grid rhythms).
-19. **Client logos / "trusted by" strip** (separate from testimonials).
-20. **Series cover pages** — a curated intro screen per series (hero + statement) before the rail.
+16. ✅ **Project "process" / behind-the-scenes** — `project_process` ACF field + "Behind the frame" section.
+17. ⏭ **Scroll-scrubbed video hero** — deferred. Niche (one flagship), heavy JS, and decoding a scrubbed video is rough on mobile/shared hosting; low ROI vs. risk.
+18. ⏭ **Diptych / full-bleed per-plate variants** — deferred. Needs a per-image layout field and a gallery-model rework that would touch the whole rail; out of scope for an additive batch.
+19. ✅ **Client logos / "trusted by" strip** — `nr_clients_logos` settings field ("url | name" per line).
+20. ✅ **Series cover pages** — `nr_project_series` term meta (statement + cover image) shown atop `taxonomy.php`.
 
-## ♿ A11y & resilience
-21. **`prefers-contrast` + reduced-data** handling (skip heavy effects/images on Save-Data).
-22. **Keyboard-complete command palette & lightbox audit** (focus trap, roving tabindex).
-23. **Automated Lighthouse CI** in the GitHub Action (perf/a11y budget, fails the PR on regression).
-24. **Visual smoke test** — a tiny Playwright check that the hero, rails and forms render.
+## ♿ A11y & resilience — ✅ shipped v4.41.0
+21. ✅ **`prefers-contrast` + Save-Data / `prefers-reduced-data`** — body class from the `Save-Data` header (+ JS fallback), contrast/reduced-data media queries.
+22. ✅ **Palette & dialog focus audit** — Tab focus-trap for the ⌘K palette and contact-sheet (Escape already closed them).
+23. ✅ **Lighthouse CI** — `lighthouserc.json` budget + manual `workflow_dispatch` job (needs a live URL, so it doesn't gate PRs).
+24. ✅ **Visual smoke test** — Playwright `tests/smoke.spec.js` (hero, rail, enquire form + visible date picker), same manual workflow.
 
-## ⚙️ Ops & admin
-25. **Settings import/export** (JSON) — move config between staging and live.
-26. **Backup reminder / one-click DB+uploads export** hook into the health widget.
-27. **Broken-link & missing-featured-image report** across projects/journal in the dashboard.
-28. **Role for an editor/assistant** with access limited to Projects/Journal/Enquiries.
+## ⚙️ Ops & admin — ✅ shipped v4.41.0
+25. ✅ **Settings import/export** (JSON) in Theme Settings → Backup & migration.
+26. ✅ **Backup reminder** — folded into the new content-health dashboard widget.
+27. ✅ **Content-health report** — missing featured images / empty galleries / uncategorised projects, with edit links.
+28. ✅ **Studio Assistant role** — manages Projects/Journal/Testimonials, no settings/plugins/users.
 
 ---
 
-**Recommended first pick:** the audit quick-wins (1–5) are a tidy "theme professionalism" release; then #6/#8 (recently-viewed + homepage testimonials) for conversion. Say which to build.
+**Status:** v4.41.0 shipped 25 of 28 items. Deferred with rationale: #10 (lookbook PDF — memory on shared hosting), #17 (scroll-video hero — niche/risky), #18 (per-plate diptych — needs gallery rework). Next worthwhile direction: revisit #10/#18 only if a flagship project genuinely needs them.

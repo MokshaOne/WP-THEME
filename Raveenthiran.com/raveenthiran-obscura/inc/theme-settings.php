@@ -136,6 +136,15 @@ function nr_settings_defaults() {
 		'nr_marquee_text'    => 'Available for commissions · Vienna · International · Est. 2019',
 		'nr_signature'       => '',
 
+		/* Conversion & editorial (IDEAS-NEXT, v4.41) — all opt-in */
+		'nr_fx_recent'       => '0',  // recently-viewed strip (scrolling pages)
+		'nr_fx_newsletter'   => '0',  // footer "new work" capture
+		'nr_fx_testi_band'   => '0',  // rotating testimonials band
+		'nr_fx_speculation'  => '0',  // Speculation Rules prerender-on-hover
+		'nr_avail_dates'     => '',   // "next open dates" line
+		'nr_clients_logos'   => '',   // "url | name" per line
+		'nr_indexnow_key'    => '',   // IndexNow key (8–128 hex chars)
+
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
 
@@ -741,8 +750,52 @@ function nr_theme_settings_page() {
 				</table>
 			</details>
 
+			<details open class="nr-settings__group">
+				<summary><h2>§ Conversion &amp; editorial</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'Quiet, owned-audience features. Everything here is off by default and only appears on scrolling pages (never the fixed home hero or single-project view). Turn one on, preview a sub-page, keep what fits.', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Recently viewed', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_recent', __( 'Show a "recently viewed projects" strip (localStorage only — no tracking)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Newsletter capture', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_newsletter', __( 'Show a single-field "new work" email box in the footer', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Addresses are stored privately as Subscribers (under Enquiries). If a Brevo API key is set in Site Settings → Newsletter, each address is also forwarded there.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Testimonials band', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_testi_band', __( 'Show a quiet rotating testimonial band (uses the Testimonials CPT)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Next open dates', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_avail_dates', 50 ); ?>
+							<p class="description"><?php esc_html_e( 'e.g. "Booking April–June 2026 · 2 windows left". Leave blank to hide.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Client logos', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_clients_logos', 5 ); ?>
+							<p class="description"><?php esc_html_e( 'One per line as "https://logo.svg | Client name", or just a plain name. Renders a small "Trusted by" strip.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Speculation Rules', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_speculation', __( 'Prerender same-site links on hover for instant navigation (modern browsers)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Uses the browser Speculation Rules API; ignored where unsupported.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'IndexNow key', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_indexnow_key', 40 ); ?>
+							<p class="description"><?php esc_html_e( '8–128 hex characters. When set, publishing a project/journal/page instantly pings Bing & Yandex. A matching key file is served automatically at /<key>.txt.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
 			<?php submit_button( __( 'Save settings', 'raveenthiran' ) ); ?>
 		</form>
+
+		<?php if ( isset( $_GET['nr_import'] ) ) : ?>
+			<div class="notice notice-success" style="margin-top:16px"><p><?php printf( esc_html__( 'Imported %d settings.', 'raveenthiran' ), (int) $_GET['nr_import'] ); ?></p></div>
+		<?php endif; ?>
+
+		<div style="margin-top:24px;padding-top:16px;border-top:1px solid #ddd">
+			<h2 style="font-size:16px"><?php esc_html_e( '§ Backup & migration', 'raveenthiran' ); ?></h2>
+			<p class="description" style="max-width:780px"><?php esc_html_e( 'Export every Theme Settings value as a JSON file (e.g. to copy a staging configuration to the live site), or import one back. Only known theme keys are restored; passwords/secrets are included, so keep the file private.', 'raveenthiran' ); ?></p>
+			<p>
+				<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nr_settings_export' ), 'nr_settings_export' ) ); ?>"><?php esc_html_e( 'Export settings (JSON)', 'raveenthiran' ); ?></a>
+			</p>
+			<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:8px">
+				<input type="hidden" name="action" value="nr_settings_import">
+				<?php wp_nonce_field( 'nr_settings_import' ); ?>
+				<input type="file" name="nr_settings_file" accept="application/json,.json" required>
+				<button type="submit" class="button"><?php esc_html_e( 'Import settings', 'raveenthiran' ); ?></button>
+			</form>
+		</div>
 
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:24px;padding-top:16px;border-top:1px solid #ddd"
 			onsubmit="return confirm('<?php echo esc_js( __( 'Reset ALL theme settings to their defaults? This cannot be undone.', 'raveenthiran' ) ); ?>');">

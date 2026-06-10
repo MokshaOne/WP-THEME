@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.40.0' );
+define( 'NR_THEME_VERSION', '4.41.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -328,6 +328,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'insights.php',
 		'webp.php',
 		'admin-extras.php',
+		'ideas-next.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;

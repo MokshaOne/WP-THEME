@@ -1001,3 +1001,93 @@
     if (r) { var u = new URL(r); if (u.host !== location.host) f.value = u.host; }
   } catch (e) {}
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-NEXT v4.41 — front-end behaviours
+   ───────────────────────────────────────────────────────────── */
+
+/* #21 — honor Save-Data even when the server header didn't reach us
+   (CDN edge, etc.). The class lets CSS skip heavy backgrounds. */
+(function () {
+  try {
+    var c = navigator.connection || navigator.webkitConnection;
+    if ((c && c.saveData) && !document.body.classList.contains('nr-savedata')) {
+      document.body.classList.add('nr-savedata');
+    }
+  } catch (e) {}
+})();
+
+/* #22 — focus trap for the ⌘K palette and contact-sheet dialogs.
+   Keeps Tab inside the open dialog (WCAG 2.4.3); Escape already closes. */
+(function () {
+  var sel = 'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var dlg = document.querySelector('.nr-cmd.is-on, .nr-sheet.is-on');
+    if (!dlg) return;
+    var f = Array.prototype.slice.call(dlg.querySelectorAll(sel)).filter(function (el) {
+      return el.offsetParent !== null;
+    });
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    else if (!dlg.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+  });
+})();
+
+/* #6 — recently viewed projects (localStorage, capped at 8, no tracking). */
+(function () {
+  var KEY = 'nr_recent_v1', MAX = 8;
+  function read() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+  function write(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+
+  // Record the current project.
+  var cur = document.getElementById('nr-recent-current');
+  if (cur) {
+    try {
+      var rec = JSON.parse(cur.textContent);
+      if (rec && rec.id) {
+        var list = read().filter(function (r) { return r.id !== rec.id; });
+        list.unshift(rec);
+        write(list.slice(0, MAX));
+      }
+    } catch (e) {}
+  }
+
+  // Render the strip (omits the page you're currently on).
+  var box = document.getElementById('nr-recent');
+  if (box) {
+    var track = box.querySelector('[data-recent-track]');
+    var here = location.pathname.replace(/\/+$/, '');
+    var items = read().filter(function (r) {
+      try { return new URL(r.url).pathname.replace(/\/+$/, '') !== here; } catch (e) { return true; }
+    }).slice(0, 6);
+    if (items.length && track) {
+      track.innerHTML = items.map(function (r) {
+        var img = r.thumb ? '<img src="' + encodeURI(r.thumb) + '" alt="" loading="lazy" decoding="async">' : '';
+        var t = (r.title || '').replace(/[<>&]/g, '');
+        return '<a class="nr-recent__card" href="' + encodeURI(r.url) + '">' + img + '<span>' + t + '</span></a>';
+      }).join('');
+      box.hidden = false;
+    }
+  }
+})();
+
+/* #8 — testimonials band: gentle auto-rotation, pauses on hover. */
+(function () {
+  var band = document.querySelector('[data-testi-band]');
+  if (!band) return;
+  var items = band.querySelectorAll('.nr-testi');
+  if (items.length < 2) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var i = 0, paused = false;
+  band.addEventListener('mouseenter', function () { paused = true; });
+  band.addEventListener('mouseleave', function () { paused = false; });
+  setInterval(function () {
+    if (paused) return;
+    items[i].classList.remove('is-on');
+    i = (i + 1) % items.length;
+    items[i].classList.add('is-on');
+  }, 6500);
+})();

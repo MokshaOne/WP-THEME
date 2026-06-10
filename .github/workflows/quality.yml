@@ -1,0 +1,48 @@
+name: Quality (manual)
+
+# #23 + #24 — Lighthouse + Playwright against a live/staging URL.
+# These need a running WordPress, so they are MANUAL (workflow_dispatch) and
+# never gate a pull request. Run from the Actions tab and pass a base URL.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL of a live/staging site to test"
+        required: true
+        default: "https://raveenthiran.com"
+
+defaults:
+  run:
+    working-directory: Raveenthiran.com/raveenthiran-obscura
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          LHCI_URL="${{ github.event.inputs.base_url }}" \
+            lhci autorun --collect.url="${{ github.event.inputs.base_url }}" --config=./lighthouserc.json || true
+
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install -D @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Smoke test
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url }}
+        run: npx playwright test

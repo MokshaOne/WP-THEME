@@ -97,6 +97,21 @@ function nr_schema_markup_extended_render() {
             $schema['@graph'][0]['image'] = $hero;
         }
 
+        // #11 — aggregateRating + a few reviews from the Testimonials CPT.
+        if ( function_exists( 'nr_testimonial_rating_data' ) ) {
+            $rd = nr_testimonial_rating_data();
+            if ( ! empty( $rd['count'] ) ) {
+                $schema['@graph'][0]['aggregateRating'] = [
+                    '@type'       => 'AggregateRating',
+                    'ratingValue' => (string) $rd['avg'],
+                    'reviewCount' => (int) $rd['count'],
+                    'bestRating'  => '5',
+                    'worstRating' => '1',
+                ];
+                if ( ! empty( $rd['reviews'] ) ) $schema['@graph'][0]['review'] = $rd['reviews'];
+            }
+        }
+
         echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
     }
 

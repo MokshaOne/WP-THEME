@@ -819,7 +819,7 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 
 .nr-stats{
   display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:6px;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:-22px;margin-bottom:14px;
 }
 .nr-stats > div{
   padding:22px 14px 18px;display:flex;flex-direction:column;gap:6px;

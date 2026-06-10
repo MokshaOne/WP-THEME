@@ -2092,3 +2092,50 @@
     }
   } catch (e) {}
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   v4.54.0 — #59 proofing selection on the delivery page.
+   Client hearts favourites; "Send my selection" emails the studio
+   the chosen filenames (no login). Picks persist per delivery URL.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var grid = document.querySelector('[data-proof-grid]');
+  if (!grid) return;
+  var page = grid.dataset.page, url = grid.dataset.proofUrl;
+  if (!page || !url) return;
+  var KEY = 'nr_proof_' + page;
+  var picks = {};
+  try { picks = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var save = function () { try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {} };
+  var fname = function (fig) { var i = fig.querySelector('img'); var s = i ? (i.currentSrc || i.src) : ''; return s.split('/').pop().split('?')[0]; };
+
+  var bar = document.createElement('form');
+  bar.className = 'nr-proof__bar'; bar.method = 'post'; bar.action = url; bar.hidden = true;
+  bar.innerHTML = '<input type="hidden" name="action" value="nr_proof"><input type="hidden" name="page" value="' + parseInt(page, 10) + '">'
+    + '<span class="nr-proof__count"><b data-c>0</b> selected</span>'
+    + '<button type="submit" class="nr-btn nr-btn--primary"><span>Send my selection</span> <span>→</span></button>';
+  grid.insertAdjacentElement('afterend', bar);
+  var counter = bar.querySelector('[data-c]');
+
+  function refresh() {
+    var keys = Object.keys(picks);
+    counter.textContent = keys.length;
+    bar.hidden = keys.length === 0;
+    bar.querySelectorAll('input[name="picks[]"]').forEach(function (i) { i.remove(); });
+    keys.forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = 'picks[]'; i.value = k; bar.appendChild(i); });
+  }
+  grid.querySelectorAll('.nr-delivery__item').forEach(function (fig) {
+    var f = fname(fig); if (!f) return;
+    var h = document.createElement('button');
+    h.type = 'button'; h.className = 'nr-proof__heart'; h.setAttribute('aria-label', 'Mark as favourite');
+    if (picks[f]) { h.classList.add('is-on'); fig.classList.add('is-picked'); }
+    h.addEventListener('click', function () {
+      if (picks[f]) { delete picks[f]; h.classList.remove('is-on'); fig.classList.remove('is-picked'); }
+      else { picks[f] = 1; h.classList.add('is-on'); fig.classList.add('is-picked'); }
+      save(); refresh();
+    });
+    fig.appendChild(h);
+  });
+  bar.addEventListener('submit', function () { try { localStorage.removeItem(KEY); } catch (e) {} });
+  refresh();
+})();

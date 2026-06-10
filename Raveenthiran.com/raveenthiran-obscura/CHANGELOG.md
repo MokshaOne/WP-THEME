@@ -1,5 +1,21 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.54.0 — Studio workflow (enquiry-based; no payments)
+New `inc/studio-ops.php`.
+- **#65 Mini-CRM pipeline** — a stage on every enquiry (New → Quoted → Booked →
+  Delivered → Lost): a colour badge column in the enquiry list + a **Pipeline**
+  board (Enquiries → Pipeline) where a per-card dropdown moves it along.
+- **#66 Follow-up reminders** — a daily cron emails **you** (never the client) a
+  digest of enquiries still "New" and unanswered after N days (Theme Settings →
+  `nr_followup_days`, default 3).
+- **#151 Auto-tag suggestions** — a "Suggested tags" box on projects proposes
+  keywords from the title/content; tick the ones you want and they're added on save.
+- **#59 Proofing** — on the (password-protected) Delivery page, clients ♥ their
+  favourites and hit "Send my selection"; you get the chosen filenames by email.
+  Selection persists per delivery, no login.
+
+Marked #171 (bilingual DE/EN) won't-do — the site stays single-language.
+
 ## 4.53.0 — Batch 6: GPU transitions (#2 + #3)
 - **#2 displacement page transition** — verified as already shipped: the WebGL
   hero (`nr_fx_webgl`, assets/js/webgl-hero.js) dissolves between project hero

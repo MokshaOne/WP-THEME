@@ -159,6 +159,7 @@ function nr_settings_defaults() {
 		'nr_clean_uninstall' => '0',  // #193 remove theme options when switching away
 		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
 		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
+		'nr_followup_days'   => '3',  // #66 remind the owner about enquiries unanswered after N days
 		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
 		'nr_fx_gpu'          => '0',  // Batch 6: GPU/canvas effects (haze, dither, blob trail, iris)
 		'nr_csp_mode'        => 'off', // Content-Security-Policy: off | report | enforce

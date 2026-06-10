@@ -28,7 +28,7 @@ if ( $exp && ( $ts = strtotime( $exp . ' 23:59:59' ) ) && time() > $ts ) $expire
 		if ( $exp ) printf( '<p class="nr-delivery__until">%s</p>', esc_html( sprintf( __( 'Available until %s', 'raveenthiran' ), $exp ) ) );
 		$g = function_exists( 'nr_field' ) ? nr_field( 'delivery_gallery' ) : [];
 		if ( is_array( $g ) && $g ) : ?>
-			<div class="nr-delivery__grid">
+			<div class="nr-delivery__grid" data-proof-grid data-page="<?php echo (int) get_the_ID(); ?>" data-proof-url="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php foreach ( $g as $item ) :
 					$aid = is_array( $item ) ? (int) ( $item['ID'] ?? $item['id'] ?? 0 ) : ( is_numeric( $item ) ? (int) $item : 0 );
 					if ( ! $aid ) continue;

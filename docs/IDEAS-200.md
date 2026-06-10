@@ -294,11 +294,11 @@ their original list positions; only the build order changed.*
 53. ⏭ _won't-do · niche legal_ — **Lightweight e-sign** — "I agree" + timestamp + IP, stored on the enquiry, for simple shoot agreements. _Ops · M_
 57. ⏭ _won't-do · no checkout_ — **Multi-currency display** — geo or manual toggle for prices. _Conv · M_
 58. ⏭ _won't-do · no commerce_ — **Gift voucher** — sell a code, redeem against a booking. _Conv · M_
-59. **Client proofing galleries** — private, password-protected delivery with favourites + download (keeps clients on-domain). _Conv · L_
+59. ✅ _v4.54.0_ — **Client proofing galleries** — private, password-protected delivery with favourites + download (keeps clients on-domain). _Conv · L_
 63. ⏭ _won't-do · no print sales_ — **Print sales** — limited-edition prints per project (Stripe + simple stock). _Conv · L_
 64. ⏭ _won't-do · no paid licensing_ — **Image licensing flow** — request usage/territory/term per image, priced. _Conv · M_
-65. **Mini-CRM kanban** — enquiry board: new → quoted → booked → delivered. _Ops · M_
-66. **Automated follow-up drip** — a cron sequence for un-answered enquiries (opt-in). _Conv · M_
+65. ✅ _v4.54.0_ — **Mini-CRM kanban** — enquiry board: new → quoted → booked → delivered. _Ops · M_
+66. ✅ _v4.54.0_ — **Automated follow-up drip** — a cron sequence for un-answered enquiries (opt-in). _Conv · M_
 76. ⏭ _won't-do · no client login needed_ — **Client portal login** — delivery + invoices + messages behind a login. _Conv · L_
 78. ⏭ _won't-do · no affiliate program_ — **Referral/affiliate landing pages** — per-partner tracked URLs. _Conv · M_
 79. ⏭ _won't-do · paid SMS provider, low ROI_ — **SMS shoot reminder (opt-in)** — provider-based reminder before the date. _Conv · M_
@@ -312,8 +312,8 @@ their original list positions; only the build order changed.*
 
 ### Content & i18n systems
 123. **Scroll-scrubbed video hero (opt-in)** — flagship-only, decode-budget-aware. _Awww · L_
-151. **Auto-tagging on save** — keyword/term extraction suggestions. _Ops · M_
-171. **Theme-native bilingual DE/EN** — language switcher + per-post translations without a heavy plugin. _Content · L_
+151. ✅ _v4.54.0_ — **Auto-tagging on save** — keyword/term extraction suggestions. _Ops · M_
+171. ⏭ _won't-do · site stays single-language_ — **Theme-native bilingual DE/EN** — language switcher + per-post translations without a heavy plugin. _Content · L_
 
 ### Security & privacy systems
 176. ✅ _v4.51.0_ — **CSP header builder** — nonce-based Content-Security-Policy with a report-only ramp. _Sec · M_

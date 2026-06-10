@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.53.0' );
+define( 'NR_THEME_VERSION', '4.54.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -342,6 +342,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'admin-simplify.php',
 		'mediumwins2.php',
 		'infra.php',
+		'studio-ops.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;

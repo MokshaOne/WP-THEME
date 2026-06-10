@@ -1,10 +1,8 @@
 # Obscura — full changelog
 
-Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history. Each version was lint-checked (php -l · node --check · CSS brace balance), built into an installable ZIP, and shipped with the `build` CI check green on PR #13.
+Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
 **78 releases**, current **v4.57.0**.
-
-> The theme's own copy (recent, hand-written detail) lives in `Raveenthiran.com/raveenthiran-obscura/CHANGELOG.md`. Roadmaps: `docs/IDEAS-200.md` (done) · `docs/IDEAS-50-NEXT.md` (live) · `docs/ROADMAP-ARCHIVE.md` (history).
 
 ---
 

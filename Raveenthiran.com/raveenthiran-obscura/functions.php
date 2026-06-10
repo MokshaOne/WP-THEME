@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.57.0' );
+define( 'NR_THEME_VERSION', '4.58.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -311,6 +311,7 @@ function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dar
  * ───────────────────────────────────────────────────────────── */
 if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 	foreach ( [
+		'lib.php',
 		'acf-polyfill.php',
 		'functions-additions.php',
 		'acf-fields.php',
@@ -345,6 +346,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'infra.php',
 		'studio-ops.php',
 		'finishing.php',
+		'medium-next.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;

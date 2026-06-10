@@ -348,11 +348,7 @@ add_action( 'admin_post_nr_linkcheck', function () {
 
 /* #182 — enquiry-export encryption: if a passphrase is posted, AES-encrypt the CSV.
    (Wraps the existing export; only active when a passphrase is supplied.) */
-function nr_encrypt_blob( $data, $pass ) {
-	$iv = openssl_random_pseudo_bytes( 16 );
-	$ct = openssl_encrypt( $data, 'aes-256-cbc', hash( 'sha256', $pass, true ), OPENSSL_RAW_DATA, $iv );
-	return $ct === false ? '' : base64_encode( $iv . $ct ); // decrypt: base64 → split 16-byte IV → aes-256-cbc with sha256(pass)
-}
+/* nr_encrypt_blob() now lives in inc/lib.php (pure, unit-tested). */
 /* #182 — encrypted enquiry export. GET shows a passphrase form; POST returns a
    .enc file (AES-256-CBC). Decrypt with: openssl available in the README. */
 add_action( 'admin_post_nr_export_enquiries_enc', function () {

@@ -160,6 +160,8 @@ function nr_settings_defaults() {
 		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
 		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
 		'nr_followup_days'   => '3',  // #66 remind the owner about enquiries unanswered after N days
+		'nr_shows'           => '',   // #35 exhibitions: Title | Venue | YYYY-MM-DD | url (per line)
+		'nr_busy_dates'      => '',   // #41 availability: busy YYYY-MM-DD per line
 		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
 		'nr_fx_gpu'          => '0',  // Batch 6: GPU/canvas effects (haze, dither, blob trail, iris)
 		'nr_csp_mode'        => 'off', // Content-Security-Policy: off | report | enforce

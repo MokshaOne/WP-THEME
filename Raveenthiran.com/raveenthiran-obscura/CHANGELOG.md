@@ -1,5 +1,23 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.58.0 — IDEAS-50-NEXT, Medium batch 1 (6 items)
+New `inc/lib.php` (pure helpers) + `inc/medium-next.php`.
+- **#33 weekly studio digest** — a Monday-morning email to you: new enquiries +
+  what drove them + Core Web Vitals + 7-day pageviews. Owner only.
+- **#35 exhibitions** — `nr_shows` setting ("Title | Venue | date | url" per line) +
+  `[nr_shows]` list with **Event** schema for gallery shows.
+- **#38 press-kit auto-zip** — `/nr-presskit.zip`: bio + logo + up to 8 web-res
+  featured images, streamed from a temp file (light on memory).
+- **#41 availability heat-calendar** — `[nr_availability]` month grid; "busy" dates
+  from the `nr_busy_dates` setting, the rest shown open.
+- **#49 PHPUnit** — `inc/lib.php` holds the pure helpers (AES encrypt/decrypt,
+  pipe-line parse, hex-key check); `tests/php/` + `phpunit.xml.dist` unit-test them
+  with no WordPress bootstrap.
+- **#50 component gallery** — Appearance → Components renders the reusable blocks
+  (buttons, chips, packages, press, timeline, shows, availability) for visual QA.
+
+IDEAS-50-NEXT: 28/50.
+
 ## 4.57.0 — IDEAS-50-NEXT, small batch 2 (11 items)
 - **#21 lightbox slideshow** — ▶ play button + slow Ken-Burns auto-advance (space
   toggles, reduced-motion safe).

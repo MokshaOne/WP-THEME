@@ -46,19 +46,19 @@ or risky = opt-in.
 30. ✅ _v4.56.0_ — **`decode()` before swap** — decode large images off the main thread to avoid jank. _Perf · S_
 31. ✅ _v4.57.0_ — **Section-aware speculation rules** — prerender portfolio, only prefetch journal. _Perf · S_
 32. ✅ _v4.57.0_ — **Cloudflare HTML edge-cache recipe** — a worker/cache-rule doc for logged-out HTML. _Perf · S_
-33. **Weekly studio digest email** — new enquiries + top projects + CWV, to the owner. _Ops · M_
+33. ✅ _v4.58.0_ — **Weekly studio digest email** — new enquiries + top projects + CWV, to the owner. _Ops · M_
 34. ✅ _v4.57.0_ — **Synthetic uptime check from a 2nd region** — catch easyname blips the local cron misses. _Ops · S_
 
 ## 🔎 SEO & reach (Vienna-specific)
-35. **Exhibition / show schema** — `Event` markup for gallery shows + a "Shows" section. _SEO · M_
+35. ✅ _v4.58.0_ — **Exhibition / show schema** — `Event` markup for gallery shows + a "Shows" section. _SEO · M_
 36. **Vienna district landing pages** — "editorial photographer in Neubau/1070" long-tail pages. _SEO · M_
 37. ✅ _v4.56.0_ — **Heuristic auto-alt** — generate decent alt from title + EXIF when empty (no AI/subscription). _SEO · S_
-38. **Press-kit auto-zip** — bundle bio, headshots, logo, selected hi-res into one download. _Conv · M_
+38. ✅ _v4.58.0_ — **Press-kit auto-zip** — bundle bio, headshots, logo, selected hi-res into one download. _Conv · M_
 39. ✅ _v4.56.0_ — **Image sitemap captions from EXIF** — richer image search entries. _SEO · S_
 40. ✅ _v4.57.0_ — **"As featured in" logo wall** — a dedicated, animated press-logo band (beyond the list). _Conv · S_
 
 ## 🤝 Booking flow (still no payment)
-41. **Availability heat-calendar** — a month grid showing busy/open, fed from a simple field or `.ics`. _Conv · M_
+41. ✅ _v4.58.0_ — **Availability heat-calendar** — a month grid showing busy/open, fed from a simple field or `.ics`. _Conv · M_
 42. **Moodboard upload on Enquire** — let a client attach reference images with the brief. _Conv · M_
 43. ✅ _v4.57.0_ — **Client onboarding page** — "what to expect / what to bring", linked from the booking confirmation. _Content · S_
 44. **Pre-shoot countdown emails** — info-only drip (location, prep) before the date. _Conv · M_
@@ -70,8 +70,8 @@ or risky = opt-in.
 48. ✅ _v4.56.0_ — **Save-Data hero** — a single static poster instead of the slider when Save-Data is on. _Perf · S_
 
 ## 🛠 Dev & quality
-49. **Unit tests for the pure helpers** — PDF writer, EXIF parse, field flatten, encryption (PHPUnit). _Dev · M_
-50. **Storybook-style component gallery** — a hidden `/components` page rendering every UI block for visual QA. _Dev · M_
+49. ✅ _v4.58.0_ — **Unit tests for the pure helpers** — PDF writer, EXIF parse, field flatten, encryption (PHPUnit). _Dev · M_
+50. ✅ _v4.58.0_ — **Storybook-style component gallery** — a hidden `/components` page rendering every UI block for visual QA. _Dev · M_
 
 ---
 

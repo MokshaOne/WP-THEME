@@ -98,7 +98,15 @@ add_action( 'template_redirect', function () {
 			'image' => get_the_post_thumbnail_url( $p->ID, 'nr-hero' ) ?: '',
 		];
 	}
-	echo wp_json_encode( [ 'site' => home_url( '/' ), 'projects' => $items ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+	$journal = [];
+	foreach ( get_posts( [ 'post_type' => 'nr_journal', 'posts_per_page' => 60, 'orderby' => 'date', 'order' => 'DESC' ] ) as $p ) {
+		$journal[] = [
+			'title' => html_entity_decode( get_the_title( $p ), ENT_QUOTES, 'UTF-8' ),
+			'url'   => get_permalink( $p ),
+			'year'  => get_the_date( 'Y', $p ),
+		];
+	}
+	echo wp_json_encode( [ 'site' => home_url( '/' ), 'projects' => $items, 'journal' => $journal ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	exit;
 } );
 

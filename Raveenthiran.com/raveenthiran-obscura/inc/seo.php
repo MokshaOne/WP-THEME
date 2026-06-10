@@ -321,6 +321,15 @@ function nr_social_meta() {
 	} elseif ( is_singular() && ! is_front_page() ) {
 		$post_content = trim( wp_strip_all_tags( get_post()->post_content ?? '' ) );
 		if ( $post_content ) $desc = mb_substr( $post_content, 0, 200 );
+	} elseif ( is_tax() || is_category() || is_tag() ) {
+		// #34 — term description, else a sensible label.
+		$t = get_queried_object();
+		$td = $t ? trim( wp_strip_all_tags( term_description( $t ) ) ) : '';
+		$desc = $td ?: ( $t ? sprintf( __( '%s — selected work and notes by %s.', 'raveenthiran' ), $t->name, get_bloginfo( 'name' ) ) : $desc );
+	} elseif ( is_post_type_archive( 'nr_journal' ) ) {
+		$desc = __( 'Journal — field notes, process, and behind-the-scenes from the studio.', 'raveenthiran' );
+	} elseif ( is_post_type_archive( 'nr_project' ) ) {
+		$desc = __( 'The complete portfolio — editorial, portrait, and architectural photography.', 'raveenthiran' );
 	}
 
 	$image = '';
@@ -362,7 +371,7 @@ function nr_social_meta() {
 	printf( '<meta property="og:locale" content="%s">' . "\n", esc_attr( $locale ) );
 	// #69 — prefer a composited 1200x630 share card for single projects.
 	$og_w = 2400; $og_h = 1600;
-	if ( is_singular( 'nr_project' ) && function_exists( 'nr_og_card_url' ) ) {
+	if ( ( is_singular( 'nr_project' ) || is_singular( 'nr_journal' ) ) && function_exists( 'nr_og_card_url' ) ) {
 		$card = nr_og_card_url( get_queried_object_id() );
 		if ( $card ) { $image = $card; $og_w = 1200; $og_h = 630; }
 	}

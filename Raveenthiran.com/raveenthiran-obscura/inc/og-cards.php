@@ -33,7 +33,7 @@ add_action( 'template_redirect', function () {
 
 function nr_og_serve( $post_id ) {
 	$post = get_post( $post_id );
-	if ( ! $post || $post->post_type !== 'nr_project' || ! has_post_thumbnail( $post_id ) ) {
+	if ( ! $post || ! in_array( $post->post_type, [ 'nr_project', 'nr_journal' ], true ) || ! has_post_thumbnail( $post_id ) ) {
 		status_header( 404 ); exit;
 	}
 
@@ -94,9 +94,15 @@ function nr_og_render( $post_id, $src_path ) {
 	$pad = 64;
 	if ( $has_ttf ) {
 		$cat  = '';
-		$terms = wp_get_post_terms( $post_id, 'nr_project_cat', [ 'fields' => 'names' ] );
-		if ( ! is_wp_error( $terms ) && $terms ) $cat = $terms[0];
-		$yr   = get_post_meta( $post_id, 'project_year', true ) ?: get_the_date( 'Y', $post_id );
+		if ( get_post_type( $post_id ) === 'nr_journal' ) {
+			$terms = wp_get_post_terms( $post_id, 'nr_journal_cat', [ 'fields' => 'names' ] );
+			$cat   = ( ! is_wp_error( $terms ) && $terms ) ? $terms[0] : __( 'Journal', 'raveenthiran' );
+			$yr    = get_the_date( 'Y', $post_id );
+		} else {
+			$terms = wp_get_post_terms( $post_id, 'nr_project_cat', [ 'fields' => 'names' ] );
+			if ( ! is_wp_error( $terms ) && $terms ) $cat = $terms[0];
+			$yr   = get_post_meta( $post_id, 'project_year', true ) ?: get_the_date( 'Y', $post_id );
+		}
 		$eyebrow = strtoupper( trim( $cat . ( $cat && $yr ? '   ·   ' : '' ) . $yr ) );
 		$title   = html_entity_decode( get_the_title( $post_id ), ENT_QUOTES, 'UTF-8' );
 

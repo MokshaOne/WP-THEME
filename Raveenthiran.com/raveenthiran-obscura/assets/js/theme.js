@@ -674,13 +674,13 @@
 (function () {
   'use strict';
   var home = ( window.NR && NR.home ) ? NR.home : '/';
-  var data = null, loading = null;
+  var data = null, journalData = [], loading = null;
   function load(){
     if ( data ) return Promise.resolve( data );
     if ( ! loading ) loading = fetch( home + 'projects.json', { credentials:'same-origin' } )
       .then(function(r){ return r.ok ? r.json() : { projects: [] }; })
-      .then(function(j){ data = ( j && j.projects ) || []; return data; })
-      .catch(function(){ data = []; return data; });
+      .then(function(j){ data = ( j && j.projects ) || []; journalData = ( j && j.journal ) || []; return data; })
+      .catch(function(){ data = []; journalData = []; return data; });
     return loading;
   }
   var pages = [
@@ -717,6 +717,7 @@
     items.push({ title:'▦  All projects — contact sheet', action:function(){ closePalette(); openSheet(); } });
     pages.forEach(function(p){ if(!q||p.title.toLowerCase().indexOf(q)>=0) items.push(p); });
     (data||[]).forEach(function(p){ if(!q||(p.title||'').toLowerCase().indexOf(q)>=0) items.push({ title:p.title, sub:p.year, url:p.url }); });
+    (journalData||[]).forEach(function(p){ if(!q||(p.title||'').toLowerCase().indexOf(q)>=0) items.push({ title:p.title, sub:'Journal', url:p.url }); });
     palItems=items.slice(0,40); palIdx=0;
     palList.innerHTML=palItems.map(function(it,i){ return '<li class="nr-cmd__item'+(i===0?' is-sel':'')+'" data-i="'+i+'">'+esc(it.title)+(it.sub?'<span class="nr-cmd__sub">'+esc(String(it.sub))+'</span>':'')+'</li>'; }).join('');
     Array.prototype.forEach.call(palList.children,function(li){ li.addEventListener('click',function(){ go(palItems[+li.dataset.i]); }); });

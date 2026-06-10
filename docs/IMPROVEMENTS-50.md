@@ -4,6 +4,10 @@ Living backlog from the v4.32 review. Items marked ✅ ship with the version not
 Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustness).
 
 ## Update log
+- **v4.35.0** — Batch 3: C23 OG cards for journal, C26 verified (WP image fns emit
+  width/height in new templates), SEO34 meta-description fallback for archives +
+  taxonomies, SEO36 journal entries added to /projects.json + the ⌘K palette,
+  E48 cookie notice skipped server-side once an nr_consent cookie exists.
 - **v4.34.0** — Batch 2: D13 hero ghost numeral, D17 chip counts (cat/tag/journal),
   D18 journal pull-quotes + drop-cap, D20+D37 "More notes" related-journal strip,
   D21 confirmed (all cards already share `.nr-hover-frame`), SEO33 breadcrumb
@@ -43,10 +47,10 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 22. Amber hairline section dividers (hero → footer strip).
 
 ## 🚀 C — Performance & technical
-23. OG share cards for journal (`/nr-og/<id>.jpg` also for `nr_journal`).
+23. ✅ v4.35.0 — OG share cards for journal (`/nr-og/<id>.jpg` now serves `nr_journal`).
 24. `fetchpriority`/`loading` audit across new templates (jpost, taxonomy, search).
 25. WebP bulk: persistent resume after an interrupted run.
-26. Explicit `width`/`height` on all `<img>` in new templates (CLS).
+26. ✅ v4.35.0 — Verified: new templates use WP image fns (width/height emitted).
 27. Lazy-init WebGL/distortion only when toggle ON and in viewport.
 28. Split `theme.js` into modules; load per-page.
 29. Critical CSS for legal/journal (different above-the-fold than the hero).
@@ -56,9 +60,9 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 
 ## 🔍 D — SEO & content
 33. ✅ v4.34.0 — Breadcrumb schema on journal + all taxonomy archives.
-34. Meta-description fallback for archives/taxonomies (currently singular only).
+34. ✅ v4.35.0 — Meta-description fallback for archives + taxonomy/term pages.
 35. `rel=prev/next` / canonical on paginated archives.
-36. Journal in `/projects.json` (or `/journal.json`) so ⌘K search finds posts.
+36. ✅ v4.35.0 — Journal added to /projects.json and the ⌘K command palette.
 37. ✅ v4.34.0 — Auto "Related journal" (shared category, recent fallback) = the More-notes strip.
 38. Sitemap `lastmod` from `post_modified` (done for journal; audit projects).
 39. `hreflang` groundwork (currently clean `og:locale` only).
@@ -72,6 +76,6 @@ Grouped A (bugs/gaps) · B (design) · C (perf) · D (SEO) · E (admin/robustnes
 45. "Theme health" dashboard (WebP generated? SMTP on? permalinks flushed?).
 46. Per-section reset-to-defaults button in settings.
 47. Enquiry CSV export from the insights widget.
-48. Cookie notice: don't render once a choice is stored.
+48. ✅ v4.35.0 — Cookie notice skipped server-side when an nr_consent cookie exists.
 49. Test the `NR_DISABLE_FEATURES` fallback path.
 50. Post-activation onboarding notice (pages · permalinks · settings).

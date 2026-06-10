@@ -44,11 +44,11 @@ WebGL-fallback-safe.*
 16. ✅ _v4.43.0_ — **Snap carousel with momentum** — physics-based snap between plates. _UX · S_
 17. **Layered hero parallax** — separate fore/mid/back depth layers (beyond the current pointer parallax). _Awww · M_
 18. ✅ _v4.42.0_ — **Scroll progress as a film-frame counter** — replace the scrollbar with a 35mm frame counter. _Awww · S_
-19. **Idle "screensaver" auto-cycle** — after inactivity, the hero slowly cycles like a slideshow. _UX · S_
-20. **Section-snap on mobile** — full-height snap between sub-page sections. _UX · S_
+19. ✅ _v4.46.0_ — **Idle "screensaver" auto-cycle** — after inactivity, the hero slowly cycles like a slideshow. _UX · S_
+20. ✅ _v4.46.0_ — **Section-snap on mobile** — full-height snap between sub-page sections. _UX · S_
 
 ### Micro-interaction & feedback
-21. **Spring-physics magnetic buttons** — upgrade the current magnetic hover to a real spring solver. _Awww · S_
+21. ✅ _v4.46.0_ — **Spring-physics magnetic buttons** — upgrade the current magnetic hover to a real spring solver. _Awww · S_
 22. ✅ _v4.42.0_ — **Text scramble/decode reveal** — headings resolve from noise on enter. _Awww · S_
 23. ✅ _v4.43.0_ — **Viewfinder bracket tap feedback** — a camera AF-bracket animates on card tap. _Awww · S_
 24. ✅ _v4.42.0_ — **3D tilt + glare on cards** — perspective tilt with a moving specular highlight. _Awww · S_
@@ -57,7 +57,7 @@ WebGL-fallback-safe.*
 27. ✅ _v4.43.0_ — **Animated link underlines** — draw-on underlines with directional awareness. _UX · S_
 28. ✅ _v4.43.0_ — **Contextual cursor states** — expand drag/view/close/sound cursor variants into a small state machine. _UX · S_
 29. ✅ _v4.42.0_ — **Split-flap stat counters** — airport departure-board flip for the stats row. _Awww · S_
-30. **Hover sound waveform** — when sound is on, show a tiny reactive waveform. _Awww · S_
+30. ✅ _v4.46.0_ — **Hover sound waveform** — when sound is on, show a tiny reactive waveform. _Awww · S_
 
 ### Lightbox, players & orchestration
 31. **Pointer-lock immersive lightbox** — fullscreen pan/zoom with arrow/WASD, frame counter, EXIF. _UX · M_
@@ -67,7 +67,7 @@ WebGL-fallback-safe.*
 35. ✅ _v4.43.0_ — **Drift-grain over time** — make the existing grain slowly translate so it never looks static. _Awww · S_
 36. ✅ _v4.42.0_ — **Dividers that draw on scroll-in** — animate the amber hairline divider utility. _Awww · S_
 37. ✅ _v4.43.0_ — **Loading skeletons matched to aspect** — shimmer placeholders sized to each card's ratio (no layout shift). _Perf · S_
-38. **Compare-slider polish** — labels, keyboard, and haptic tick on the before/after handle. _UX · S_
+38. ✅ _v4.46.0_ — **Compare-slider polish** — labels, keyboard, and haptic tick on the before/after handle. _UX · S_
 39. **Reduced-motion "elegant static" audit** — define a tasteful frozen variant of every effect, not just "off". _A11y · M_
 40. ✅ _v4.42.0_ — **Motion settings panel (front-end)** — a visitor-facing "calm / standard / cinematic" motion switch persisted locally. _A11y · S_
 
@@ -80,9 +80,9 @@ start with the small high-leverage ones.*
 ### Capture & qualify
 41. ✅ _v4.44.0_ — **Visitor shortlist / "my selection"** — heart frames across the site, persisted, then email the list as a brief. _Conv · M_
 42. **Multi-step booking wizard** — type → date → budget → details, with progress + save/resume. _Conv · M_
-43. **Lead scoring in insights** — weight enquiries by budget/date/type and sort the dashboard. _Conv · S_
+43. ✅ _v4.46.0_ — **Lead scoring in insights** — weight enquiries by budget/date/type and sort the dashboard. _Conv · S_
 44. ✅ _v4.44.0_ — **Exit-intent lookbook offer** — gentle, opt-in: offer the PDF lookbook as the cursor leaves. _Conv · S_
-45. **"Similar budget" project hints** — on Enquire, surface work that fits the chosen package. _Conv · S_
+45. ✅ _v4.46.0_ — **"Similar budget" project hints** — on Enquire, surface work that fits the chosen package. _Conv · S_
 46. ✅ _v4.44.0_ — **Pre-filled brief from a project** — extend "Commission similar" to seed the brief text, not just the type. _Conv · S_
 47. ✅ _v4.44.0_ — **Conversion microcopy + trust audit** — reassurance, response-time, privacy near every form field. _Conv · S_
 48. **A/B hero CTA copy** — a lightweight built-in splitter logging to insights. _Conv · M_
@@ -90,13 +90,13 @@ start with the small high-leverage ones.*
 ### Booking, payment & contracts
 49. ✅ _v4.44.0_ — **Availability calendar on Enquire** — native date-picker showing open shoot windows (or Cal.com embed). _Conv · M_
 51. **Branded PDF estimate by email** — the quote calculator emails the visitor a real estimate + notifies you. _Conv · M_
-54. **Booking .ics invite** — attach a calendar invite to the confirmation email. _Conv · S_
-55. **VAT-aware estimates (AT 20%)** — show net/gross + reverse-charge note for EU business clients. _Conv · S_
-56. **Quote add-ons / upsells** — retouching, rush delivery, extra looks as line items. _Conv · S_
+54. ✅ _v4.46.0_ — **Booking .ics invite** — attach a calendar invite to the confirmation email. _Conv · S_
+55. ✅ _v4.46.0_ — **VAT-aware estimates (AT 20%)** — show net/gross + reverse-charge note for EU business clients. _Conv · S_
+56. ✅ _v4.46.0_ — **Quote add-ons / upsells** — retouching, rush delivery, extra looks as line items. _Conv · S_
 
 ### Retention & social proof
 60. **Delivery page with download-all + expiry** — a clean handover page per shoot. _Conv · M_
-61. **Post-delivery testimonial request** — auto-email that feeds the Testimonials CPT + aggregateRating. _Conv · S_
+61. ✅ _v4.46.0_ — **Post-delivery testimonial request** — auto-email that feeds the Testimonials CPT + aggregateRating. _Conv · S_
 62. **Case-study template** — problem → approach → result for selected projects. _Content · M_
 67. **Abandoned-quote recovery** — if email was captured, nudge unfinished estimates. _Conv · S_
 68. ✅ _v4.44.0_ — **Referral code for past clients** — track word-of-mouth in insights. _Conv · S_
@@ -110,7 +110,7 @@ start with the small high-leverage ones.*
 74. ✅ _v4.44.0_ — **WhatsApp Business deep-link** — prefilled message with the project reference. _Conv · S_
 75. **"Hold two dates" request** — soft-reserve flow before a firm booking. _Conv · S_
 77. ✅ _v4.44.0_ — **Share-card generator for clients** — "shot by" card a client can post. _Conv · S_
-80. **Saved enquiry resume link** — tokenised link to continue a brief later. _Conv · S_
+80. ✅ _v4.46.0_ — **Saved enquiry resume link** — tokenised link to continue a brief later. _Conv · S_
 
 ---
 
@@ -122,7 +122,7 @@ perf change — see the playbook.*
 81. **AVIF twins** — add AVIF alongside the existing WebP pipeline, `<picture>` with AVIF→WebP→JPEG. _Perf · M_
 82. **Art-directed `<picture>`** — different crops for portrait vs landscape viewports, not just resize. _Perf · M_
 83. **Variable font swap** — one Inter Tight variable file instead of three static weights. _Perf · M_
-84. **Font subsetting + unicode-range** — Latin subset, split rare glyphs. _Perf · S_
+84. ✅ _v4.46.0_ — **Font subsetting + unicode-range** — Latin subset, split rare glyphs. _Perf · S_
 85. **SVG icon sprite** — inline one sprite instead of many icon requests. _Perf · S_
 86. ✅ _v4.45.0_ — **Precompressed Brotli/gzip static assets** — verify the host/Cloudflare serves `.br`. _Perf · S_
 87. **`modulepreload` + JS islands** — lazy-hydrate non-critical interactivity. _Perf · M_
@@ -131,7 +131,7 @@ perf change — see the playbook.*
 
 ### Edge & delivery
 92. ✅ _v4.45.0_ — **Cloudflare cache-rules + APO guide** — a documented, copy-paste edge config for this theme. _Perf · S_
-95. **Periodic background prefetch** — warm the journal index in the background (where supported). _Perf · S_
+95. ✅ _v4.46.0_ — **Periodic background prefetch** — warm the journal index in the background (where supported). _Perf · S_
 
 ### Structured data & feeds
 96. ✅ _v4.44.0_ — **Per-plate ImageObject schema** — creator, caption, license, EXIF on each image. _SEO · M_
@@ -151,10 +151,10 @@ perf change — see the playbook.*
 109. ✅ _v4.45.0_ — **Structured-data lint in CI** — validate JSON-LD in the manual quality workflow. _SEO · S_
 110. ✅ _v4.44.0_ — **Search-term capture** — log the ⌘K palette queries to find content gaps. _Content · S_
 111. **404/410 + redirect-map UI** — manage redirects for deleted/renamed projects in the dashboard. _SEO · M_
-112. **Outbound broken-link checker** — extend content-health to external links. _SEO · S_
+112. ✅ _v4.46.0_ — **Outbound broken-link checker** — extend content-health to external links. _SEO · S_
 113. ✅ _v4.44.0_ — **On-demand IndexNow bulk resubmit** — a button to re-ping all URLs after a big change. _SEO · S_
 114. ✅ _v4.44.0_ — **Per-project unique meta + title templates** — token-based (`%title% — %cat% photography, Vienna`). _SEO · S_
-115. **FAQ + HowTo schema on relevant journal posts** — earn rich results on guides. _SEO · S_
+115. ✅ _v4.46.0_ — **FAQ + HowTo schema on relevant journal posts** — earn rich results on guides. _SEO · S_
 116. ✅ _v4.44.0_ — **Author/Person entity consolidation** — single `@id` referenced everywhere (Knowledge-Panel hygiene). _SEO · S_
 117. ✅ _v4.44.0_ — **`speakable` schema on key pages** — voice-assistant surfacing. _SEO · S_
 118. **Lighthouse budget enforcement** — wire the existing `lighthouserc.json` into a real gate when a staging URL exists. _Perf · M_
@@ -169,14 +169,14 @@ projects maintainable.*
 
 ### Plate & layout craft
 121. **Diptych / triptych plates (done right)** — per-image layout field driving paired/tripled rhythms in the rail. _Awww · M_
-122. **Full-bleed cinematic plate** — an edge-to-edge variant for a hero frame. _Awww · S_
+122. ✅ _v4.46.0_ — **Full-bleed cinematic plate** — an edge-to-edge variant for a hero frame. _Awww · S_
 124. **Lookbook PDF per series (memory-safe)** — stream images one at a time so it survives shared-hosting limits. _Conv · M_
-125. **Inline before/after in a plate** — embed the compare slider as a gallery item. _Content · S_
-126. **Per-project contact-sheet view** — all frames as a grid, toggle from the rail. _Content · S_
+125. ✅ _v4.46.0_ — **Inline before/after in a plate** — embed the compare slider as a gallery item. _Content · S_
+126. ✅ _v4.46.0_ — **Per-project contact-sheet view** — all frames as a grid, toggle from the rail. _Content · S_
 127. **Focal-point picker** — set a smart-crop anchor per image for art-directed crops. _Content · M_
-128. **Featured-frame / hero-crop picker** — choose the exact hero crop per project. _Content · S_
+128. ✅ _v4.46.0_ — **Featured-frame / hero-crop picker** — choose the exact hero crop per project. _Content · S_
 129. **Cover cropper with aspect presets** — crop covers to 4:5 / 5:4 / 16:9 in admin. _Content · M_
-130. **Duotone/treatment presets** — optional CSS-filter "house look" per project. _Awww · S_
+130. ✅ _v4.46.0_ — **Duotone/treatment presets** — optional CSS-filter "house look" per project. _Awww · S_
 
 ### Story & navigation
 131. **Story/diary mode** — captioned, sequential reportage layout. _Content · M_
@@ -185,32 +185,32 @@ projects maintainable.*
 134. **Map archive view** — every shoot on one Leaflet map (uses existing coords). _UX · M_
 135. **Colour-palette filter** — extract a palette per project, filter "by mood/colour". _Awww · M_
 136. ✅ _v4.45.0_ — **Related-by-tag suggestions** — not just category; richer cross-linking. _SEO · S_
-137. **"On this day" resurfacing** — gently surface older work by anniversary. _Content · S_
+137. ✅ _v4.46.0_ — **"On this day" resurfacing** — gently surface older work by anniversary. _Content · S_
 138. ✅ _v4.45.0_ — **Per-series RSS** — a feed per series for niche followers. _SEO · S_
-139. **Location map per project** — a mini-map tied to the project's GPS. _Content · S_
-140. **Credits block** — stylist / MUA / agency / talent with links. _Content · S_
+139. ✅ _v4.46.0_ — **Location map per project** — a mini-map tied to the project's GPS. _Content · S_
+140. ✅ _v4.46.0_ — **Credits block** — stylist / MUA / agency / talent with links. _Content · S_
 
 ### Journal & long-form
 141. ✅ _v4.45.0_ — **Reading time + progress bar** — on journal essays. _UX · S_
 142. ✅ _v4.45.0_ — **Auto table of contents** — for long journal posts. _UX · S_
-143. **Footnotes / margin notes** — editorial annotations in essays. _Content · S_
-144. **Inline glossary tooltips** — define terms on hover/tap. _Content · S_
-145. **Editorial kicker/dek fields** — proper headline + standfirst structure. _Content · S_
+143. ✅ _v4.46.0_ — **Footnotes / margin notes** — editorial annotations in essays. _Content · S_
+144. ✅ _v4.46.0_ — **Inline glossary tooltips** — define terms on hover/tap. _Content · S_
+145. ✅ _v4.46.0_ — **Editorial kicker/dek fields** — proper headline + standfirst structure. _Content · S_
 146. ✅ _v4.45.0_ — **Pull-quotes on projects** — bring the journal's pull-quote styling to project text. _Content · S_
-147. **Markdown import for essays** — paste/import Markdown into journal. _Dev · S_
+147. ✅ _v4.46.0_ — **Markdown import for essays** — paste/import Markdown into journal. _Dev · S_
 148. ✅ _v4.45.0_ — **Print stylesheet for projects** — a clean printable layout. _UX · S_
 
 ### Admin content tooling
 149. **Bulk caption/alt editor** — one screen to fix alts across the library. _Ops · M_
-150. **Alt-text quality linter** — warn when alt equals the filename. _A11y · S_
-152. **Tag clustering view** — see and merge near-duplicate tags. _Ops · S_
+150. ✅ _v4.46.0_ — **Alt-text quality linter** — warn when alt equals the filename. _A11y · S_
+152. ✅ _v4.46.0_ — **Tag clustering view** — see and merge near-duplicate tags. _Ops · S_
 153. **Editorial calendar** — schedule + status board for journal. _Ops · M_
 154. **Reusable content blocks library** — saved patterns for essays. _Content · S_
-155. **Tokenised draft preview links** — share unpublished work with clients/editors. _Ops · S_
+155. ✅ _v4.46.0_ — **Tokenised draft preview links** — share unpublished work with clients/editors. _Ops · S_
 156. ✅ _v4.45.0_ — **Gear/setup metadata block** — bodies, lenses, lighting per project. _Content · S_
-157. **Captions toggle (front-end)** — show/hide all EXIF captions. _UX · S_
+157. ✅ _v4.46.0_ — **Captions toggle (front-end)** — show/hide all EXIF captions. _UX · S_
 158. ✅ _v4.45.0_ — **"Quote of the day" empty states** — testimonials on 404 / empty search. _Content · S_
-159. **Series consistency grid** — compare frames across a series to spot outliers. _Ops · S_
+159. ✅ _v4.46.0_ — **Series consistency grid** — compare frames across a series to spot outliers. _Ops · S_
 160. **Sample-content importer** — one-click demo projects/journal for a fresh install. _Ops · M_
 
 ---
@@ -219,15 +219,15 @@ projects maintainable.*
 *The unglamorous layer that keeps a live site trustworthy and the codebase shippable.*
 
 ### Accessibility
-161. **SR live-region announcements** — announce slider/palette/state changes to screen readers. _A11y · S_
-162. **Landmark + skip-link audit** — complete roles, multiple skip targets. _A11y · S_
-163. **Keyboard shortcuts help overlay** — press `?` for a discoverable cheat-sheet. _A11y · S_
+161. ✅ _v4.46.0_ — **SR live-region announcements** — announce slider/palette/state changes to screen readers. _A11y · S_
+162. ✅ _v4.46.0_ — **Landmark + skip-link audit** — complete roles, multiple skip targets. _A11y · S_
+163. ✅ _v4.46.0_ — **Keyboard shortcuts help overlay** — press `?` for a discoverable cheat-sheet. _A11y · S_
 164. **Forced-colors (Windows High Contrast) polish** — verify every component. _A11y · M_
-165. **`prefers-reduced-transparency` handling** — solidify glassy surfaces when requested. _A11y · S_
-166. **`focus-visible` consistency audit** — one coherent focus ring system. _A11y · S_
+165. ✅ _v4.46.0_ — **`prefers-reduced-transparency` handling** — solidify glassy surfaces when requested. _A11y · S_
+166. ✅ _v4.46.0_ — **`focus-visible` consistency audit** — one coherent focus ring system. _A11y · S_
 167. **WCAG 2.2 target-size + dragging alternatives** — 24px targets, non-drag fallbacks for sliders. _A11y · M_
 168. **Cognitive-load mode** — a "plain" layout that strips motion + density. _A11y · M_
-169. **axe-core in the quality workflow** — automated a11y assertions on staging. _A11y · S_
+169. ✅ _v4.46.0_ — **axe-core in the quality workflow** — automated a11y assertions on staging. _A11y · S_
 170. **Caption/transcript support for video plates** — `<track>` + transcript block. _A11y · M_
 
 ### Internationalisation
@@ -238,27 +238,27 @@ projects maintainable.*
 
 ### Security & privacy
 177. ✅ _v4.45.0_ — **Subresource Integrity** — SRI on any external script (Leaflet, Turnstile). _Sec · S_
-178. **Repeat-spam IP throttle + banlist** — extend the honeypot/rate-limit with persistence. _Sec · S_
-179. **Admin settings audit log** — record who changed which setting, when. _Sec · S_
-181. **Consent log + cookieless analytics** — record consent events; keep analytics cookie-free. _Sec · S_
+178. ✅ _v4.46.0_ — **Repeat-spam IP throttle + banlist** — extend the honeypot/rate-limit with persistence. _Sec · S_
+179. ✅ _v4.46.0_ — **Admin settings audit log** — record who changed which setting, when. _Sec · S_
+181. ✅ _v4.46.0_ — **Consent log + cookieless analytics** — record consent events; keep analytics cookie-free. _Sec · S_
 182. **Enquiry-export encryption** — optional passphrase on the CSV export. _Sec · S_
 183. ✅ _v4.45.0_ — **Login hardening doc + hooks** — app-password rotation reminder, 2FA guidance. _Sec · S_
 184. ✅ _v4.45.0_ — **Uploads MIME/dimension validation** — reject oversized or mistyped uploads early. _Sec · S_
 185. ✅ _v4.45.0_ — **Honeytoken admin page** — a trap URL that bans scanners. _Sec · S_
 
 ### Ops & resilience
-186. **Theme self-test health check** — verify GD, fonts, writable uploads, SMTP, cron. _Ops · S_
+186. ✅ _v4.46.0_ — **Theme self-test health check** — verify GD, fonts, writable uploads, SMTP, cron. _Ops · S_
 187. **SMTP/uptime self-test cron + alert** — email the owner if mail or the site looks down. _Ops · M_
 188. ✅ _v4.45.0_ — **Autoload-options audit** — flag bloated autoloaded options hurting every request. _Perf · S_
-189. **Error-log viewer (theme-scoped)** — surface theme errors in the dashboard. _Ops · S_
-190. **Settings migration on version change** — versioned option schema with safe upgrades. _Dev · S_
+189. ✅ _v4.46.0_ — **Error-log viewer (theme-scoped)** — surface theme errors in the dashboard. _Ops · S_
+190. ✅ _v4.46.0_ — **Settings migration on version change** — versioned option schema with safe upgrades. _Dev · S_
 191. **Staging↔live settings diff** — show what differs before importing. _Ops · M_
-192. **Backup-to-cloud hook + doc** — B2/S3 reminder wired into the health widget. _Ops · S_
+192. ✅ _v4.46.0_ — **Backup-to-cloud hook + doc** — B2/S3 reminder wired into the health widget. _Ops · S_
 193. ✅ _v4.45.0_ — **Opt-in uninstall cleanup** — remove options/CPT data on theme removal if chosen. _Ops · S_
-194. **Feature-flag registry page** — one screen auditing every `nr_fx_*` toggle + state. _Ops · S_
+194. ✅ _v4.46.0_ — **Feature-flag registry page** — one screen auditing every `nr_fx_*` toggle + state. _Ops · S_
 
 ### Developer experience
-195. **One-command build** — `composer run build` = lint + bump + ZIP + checksum. _Dev · S_
+195. ✅ _v4.46.0_ — **One-command build** — `composer run build` = lint + bump + ZIP + checksum. _Dev · S_
 196. ✅ _v4.45.0_ — **Auto GitHub Release on tag** — attach the ZIP to a release automatically. _Dev · S_
 197. ✅ _v4.45.0_ — **Version-bump script** — sync `functions.php` + `style.css` + `readme.txt` in one go. _Dev · S_
 198. **PHPCS (WordPress standard) + PHPStan** — advisory static analysis on `inc/`. _Dev · M_
@@ -280,7 +280,7 @@ their original list positions; only the build order changed.*
 3. **Particle dispersion on hover** — a thumbnail scatters into points and reforms. _Awww · M_
 4. **Heat-haze / refraction idle shader** — subtle GPU refraction over the hero when idle. _Awww · M_
 5. **Animated dithering/noise background** — a slow Bayer-dither field as canvas texture (richer than the static grain). _Awww · M_
-6. **Fullscreen "shockwave" on click** — a GPU ripple emanates from the pointer on nav. _Awww · S_
+6. ✅ _v4.46.0_ — **Fullscreen "shockwave" on click** — a GPU ripple emanates from the pointer on nav. _Awww · S_
 8. **Fluid/metaball cursor trail** — a GPU fluid sim trailing the custom cursor. _Awww · M_
 9. **WebGL aperture-iris page reveal** — an iris wipe (camera shutter) as the load transition. _Awww · M_
 

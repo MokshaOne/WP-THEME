@@ -1,5 +1,38 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.46.0 — IDEAS-200 "Small" tier (49 in one go)
+New module `inc/smallwins.php` + JS/CSS, two admin pages, dev/CI configs. Built
+and cut with the new one-command build (`bin/nr-build.sh`).
+
+**Motion (cinematic-gated):** click shockwave (#6), idle hero "screensaver" (#19),
+spring-release magnetic (#21), mobile section-snap (#20), sound waveform (#30),
+compare-slider keyboard + before/after labels (#38).
+**Conversion:** lead-score column on enquiries (#43), "similar work" on Enquire
+(#45), .ics "add to calendar" (#54), VAT note + rate setting (#55), quote add-ons
+verified (#56), "request testimonial" row action (#61), brief autosave/restore
+(#80), hold-two-dates (#75 via the date helper).
+**Editorial:** project credits (#140), per-project mini-map from coords (#139),
+treatment presets (#130), hero focal point (#128), first-plate full-bleed (#122),
+contact-sheet toggle (#126), captions toggle (#157), journal kicker/dek (#145),
+`[nr_compare]` (#125), `[nr_onthisday]` (#137), `[fn]` footnotes (#143), glossary
+tooltips (#144), `[nr_howto]` schema (#115), `[md]` (#147).
+**A11y:** SR live-region (#161), landmark/skip hygiene (#162), `?` shortcuts overlay
+(#163), `prefers-reduced-transparency` (#165), unified `:focus-visible` ring (#166),
+alt-text linter (#150).
+**SEO/Perf:** idle link-prefetch (#95), outbound broken-link checker (#112),
+`unicode-range` font subsetting confirmed present (#84).
+**Ops/Sec/Dev:** tag-clusters page (#152), tokenised draft-preview links (#155),
+series consistency grid (#159), spam-strike escalation (#178), settings audit log
+(#179), consent counter (#181), self-test dashboard widget (#186), theme error-log
+viewer (#189), settings-migration scaffold (#190), feature-flag registry page (#194),
+**one-command build** `bin/nr-build.sh` (#195), axe-core workflow job (#169),
+off-site-backup note (#192, docs/OPS-NOTES.md).
+
+Settings added: `nr_vat_rate`, `nr_glossary`.
+**Not done (still open):** #67 abandoned-quote (needs capture+cron), #70 trusted-by
+counts, #85 SVG sprite (icons are text — low value), #182 export-encryption (helper
+`nr_encrypt_blob()` shipped, not yet wired into the CSV export).
+
 ## 4.45.0 — IDEAS-200 quick wins (25, in one go)
 Small, additive, low-risk wins. New module `inc/quickwins.php` + a few hooks,
 two reading aids, a print sheet, dev configs and ops docs.

@@ -44,3 +44,12 @@ The theme can't safely change auth, but here's the checklist:
 - Cloudflare **WAF → Rate limiting**: throttle `POST /wp-login.php` (e.g. 5/min/IP).
 - Keep `DISALLOW_FILE_EDIT` true in `wp-config.php`; the theme's honeytoken
   (`#185`) soft-bans scanners that probe bait paths.
+
+## #192 — Off-site backup (recommendation)
+The dashboard "content health" widget nags monthly. To actually move bytes off the host:
+- **Uploads + DB to Backblaze B2 / S3** (cheap, ~€0.005/GB): run `wp db export`
+  + `rclone sync wp-content/uploads b2:bucket/uploads` from cron, or use a backup
+  plugin pointed at B2/S3.
+- Keep the **theme ZIP** in the GitHub Release (auto-created on tag, see
+  `.github/workflows/release.yml`) — that's your code backup.
+- Verify a restore once a quarter; an untested backup isn't a backup.

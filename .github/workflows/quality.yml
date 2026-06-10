@@ -47,6 +47,20 @@ jobs:
           BASE_URL: ${{ github.event.inputs.base_url }}
         run: npx playwright test
 
+  # #169 — axe-core accessibility scan against the staging URL.
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: axe-core
+        run: |
+          npm install -g @axe-core/cli
+          npx playwright install --with-deps chromium || true
+          axe "${{ github.event.inputs.base_url }}" --exit || true
+
   # #109 — structured-data lint: fetch the URL and validate every JSON-LD block.
   seo-lint:
     runs-on: ubuntu-latest

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.45.0' );
+define( 'NR_THEME_VERSION', '4.46.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -332,6 +332,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'seo-extra.php',
 		'conversion-extra.php',
 		'quickwins.php',
+		'smallwins.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;

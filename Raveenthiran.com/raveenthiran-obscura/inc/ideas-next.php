@@ -554,6 +554,18 @@ function nr_content_health_widget() {
 		echo '</p>';
 	}
 
+	// #112 — outbound broken-link report (on-demand scan).
+	$lc = get_transient( 'nr_linkcheck' );
+	$lcu = wp_nonce_url( admin_url( 'admin-post.php?action=nr_linkcheck' ), 'nr_linkcheck' );
+	echo '<p style="margin-top:8px;font-size:12px"><strong>' . esc_html__( 'Outbound links', 'raveenthiran' ) . '</strong> — ';
+	if ( is_array( $lc ) ) {
+		printf( '<span style="color:%s">%d broken</span> · ', $lc ? '#c0392b' : '#2a7', count( $lc ) );
+		foreach ( array_slice( $lc, 0, 5, true ) as $u => $info ) printf( '<a href="%s">%s</a> (%d) ', esc_url( get_edit_post_link( $info['post'] ) ), esc_html( wp_parse_url( $u, PHP_URL_HOST ) ), (int) $info['code'] );
+	} else {
+		echo esc_html__( 'not scanned yet. ', 'raveenthiran' );
+	}
+	echo '<a class="button button-small" href="' . esc_url( $lcu ) . '">' . esc_html__( 'Check now', 'raveenthiran' ) . '</a></p>';
+
 	// #113 — IndexNow bulk resubmit (only useful once a key is set).
 	if ( function_exists( 'nr_indexnow_key' ) && nr_indexnow_key() ) {
 		$u = wp_nonce_url( admin_url( 'admin-post.php?action=nr_indexnow_bulk' ), 'nr_indexnow_bulk' );

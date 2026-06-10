@@ -157,6 +157,8 @@ function nr_settings_defaults() {
 		'nr_meta_title_tpl'  => '',   // #114 token <title> template for projects
 		'nr_block_ai'        => '0',  // robots.txt: disallow AI crawlers
 		'nr_clean_uninstall' => '0',  // #193 remove theme options when switching away
+		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
+		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',

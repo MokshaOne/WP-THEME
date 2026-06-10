@@ -2262,3 +2262,84 @@ body.nr-savedata .nr-recent__card img{background:var(--bg-2,#14151A)}
   a{color:#111!important;text-decoration:underline}
   a[href^="http"]::after{content:" (" attr(href) ")";font-size:10px;color:#777}
 }
+
+/* ── IDEAS-200 "Small" tier (v4.46.0) ─────────────────────────── */
+
+/* sr-only utility (#161/#162) */
+.nr-sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* #163 keyboard help overlay */
+.nr-keys{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;background:rgba(11,12,16,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.nr-keys__box{position:relative;background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:10px;padding:28px 30px;min-width:300px}
+.nr-keys__box h3{margin:0 0 12px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.nr-keys__box ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;color:var(--ink-2);font-size:13.5px}
+.nr-keys kbd{background:#0b0c10;border:1px solid var(--hair);border-radius:4px;padding:1px 6px;font-family:var(--mono,monospace);font-size:11px}
+.nr-keys__x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--ink-3);cursor:pointer}
+
+/* #6 click shockwave (cinematic) */
+.nr-shock{position:fixed;width:14px;height:14px;margin:-7px 0 0 -7px;border:1.5px solid var(--amber);border-radius:50%;pointer-events:none;z-index:58;animation:nrShock .65s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes nrShock{to{width:170px;height:170px;margin:-85px 0 0 -85px;opacity:0}}
+
+/* #21 spring release */
+.nr-spring{animation:nrSpring .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes nrSpring{0%{transform:translate(0,0)}40%{transform:translate(0,-3px) scale(1.02)}100%{transform:translate(0,0)}}
+
+/* #19 idle screensaver: dim chrome, let the hero breathe */
+body.nr-idle .nr-hero__bottom,body.nr-idle .nr-hero__meta,body.nr-idle nav.nr-menu,body.nr-idle .nr-topbar{opacity:0;transition:opacity 1.2s ease}
+body.nr-idle .nr-hero__plate.is-active img{animation-duration:24s!important}
+
+/* #30 hover sound waveform (only when sound fx is on) */
+body:not(.nr-has-sound) .nr-wave{display:none}
+.nr-wave{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
+.nr-wave i{width:2px;background:var(--amber);height:30%}
+.nr-has-sound .nr-sound-toggle:hover .nr-wave i{animation:nrWave .8s ease-in-out infinite}
+.nr-wave i:nth-child(2){animation-delay:.15s}.nr-wave i:nth-child(3){animation-delay:.3s}.nr-wave i:nth-child(4){animation-delay:.45s}
+@keyframes nrWave{0%,100%{height:30%}50%{height:100%}}
+
+/* #38 compare slider labels */
+.nr-compare__before::after{content:"BEFORE";position:absolute;top:10px;left:10px}
+.nr-compare__after::after{content:"AFTER";position:absolute;top:10px;right:10px}
+.nr-compare__before::after,.nr-compare__after::after{font-family:var(--mono,monospace);font-size:10px;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,.5);padding:2px 6px;border-radius:3px;pointer-events:none}
+
+/* #122 full-bleed first plate · #126 contact sheet · #128 focus (inline) */
+body.nr-fullbleed .nr-project__plate[data-plate="0"]{flex:0 0 100%;width:100%}
+.nr-project__rail.is-sheet .nr-project__rail-track{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;overflow:visible}
+.nr-project__rail.is-sheet .nr-project__plate{width:auto!important;height:auto;aspect-ratio:4/5}
+.nr-sheet-toggle,.nr-cap-toggle{background:none;border:1px solid var(--hair);color:var(--ink-3);border-radius:999px;padding:3px 10px;font-family:var(--mono,monospace);font-size:11px;cursor:pointer;margin-left:8px}
+.nr-sheet-toggle:hover,.nr-cap-toggle:hover{color:var(--ink);border-color:var(--ink-4)}
+
+/* #157 captions hidden until toggled on */
+.nr-plate-cap{opacity:0;transition:opacity .25s}
+body.nr-caps-on .nr-plate-cap,.nr-project__plate:hover .nr-plate-cap{opacity:1}
+
+/* #130 treatment presets (project-level filter) */
+body.nr-treat-noir .nr-project__plate img{filter:grayscale(1) contrast(1.12)}
+body.nr-treat-warm .nr-project__plate img{filter:sepia(.18) saturate(1.15) hue-rotate(-8deg)}
+body.nr-treat-cool .nr-project__plate img{filter:saturate(1.05) hue-rotate(8deg) brightness(1.02)}
+body.nr-treat-sepia .nr-project__plate img{filter:sepia(.55) contrast(1.05)}
+
+/* #140 credits · #139 map · #145 kicker/dek · #137 on-this-day · #143 footnotes · #144 glossary */
+.nr-credits{display:flex;flex-wrap:wrap;gap:6px 22px;margin:14px 0;font-size:12.5px}
+.nr-credits div{display:flex;gap:6px}.nr-credits dt{color:var(--ink-4)}.nr-credits dd{margin:0;color:var(--ink-2)}
+.nr-project__map{margin:16px 0;border-radius:4px;overflow:hidden;border:1px solid var(--hair)}
+.nr-kicker{font-family:var(--mono,monospace);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin:0 0 4px}
+.nr-dek{font-size:clamp(16px,2.2vw,20px);line-height:1.45;color:var(--ink-2);font-weight:300;margin:0 0 18px}
+.nr-otd__row{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
+.nr-otd__row a{color:var(--ink-2);text-decoration:none}.nr-otd__row a span{color:var(--ink-4);font-family:var(--mono,monospace);font-size:11px}
+.nr-fn a{color:var(--amber);text-decoration:none}.nr-fnlist{font-size:13px;color:var(--ink-3);border-top:1px solid var(--hair);margin-top:24px;padding-top:14px}
+.nr-howto{color:var(--ink-2);line-height:1.6}
+abbr.nr-gloss{text-decoration:underline dotted var(--ink-4);cursor:help}
+
+/* #20 mobile section-snap (gentle) */
+@media (max-width:900px){.nr-extras{scroll-snap-type:y proximity}.nr-extras>*{scroll-snap-align:start}}
+
+/* #45 similar work · #165 reduced-transparency · #166 focus-visible */
+.nr-similar{display:flex;flex-direction:column;gap:6px;margin:18px 0;max-width:520px}
+.nr-similar a{color:var(--ink-2);text-decoration:none;font-size:14px;border-bottom:1px solid var(--hair);padding:6px 0}
+.nr-similar a:hover{color:var(--amber)}
+.nr-cal-link{display:inline-block;margin-top:6px;font-size:12px;color:var(--amber);text-decoration:none}
+@media (prefers-reduced-transparency:reduce){
+  .nr-motion__btn,.nr-motion__menu,.nr-filmframe,.nr-tray__panel,.nr-keys,.nr-exitp,.nr-promo,
+  .nr-cmd,.nr-sheet{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--bg-2,#14151A)!important}
+}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:2px}

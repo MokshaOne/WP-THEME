@@ -146,7 +146,9 @@ $lede = get_the_excerpt();
 
 				<?php if ( function_exists( 'nr_project_tag_chips' ) ) echo nr_project_tag_chips( get_the_ID() ); // #136 ?>
 
-			<?php if ( function_exists( 'nr_project_process_markup' ) ) echo nr_project_process_markup( get_the_ID() ); // #16 ?>
+			<?php if ( function_exists( 'nr_project_credits_markup' ) ) echo nr_project_credits_markup( get_the_ID() ); // #140 ?>
+				<?php if ( function_exists( 'nr_project_process_markup' ) ) echo nr_project_process_markup( get_the_ID() ); // #16 ?>
+				<?php if ( function_exists( 'nr_project_map_markup' ) ) echo nr_project_map_markup( get_the_ID() ); // #139 ?>
 
 			<div class="nr-project__actions">
 				<a class="nr-btn nr-btn--primary"

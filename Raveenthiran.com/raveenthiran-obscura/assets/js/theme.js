@@ -1548,3 +1548,177 @@
     if (rt2) rt2.insertAdjacentElement('afterend', toc); else art.insertBefore(toc, art.firstChild);
   }
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 "Small" tier (v4.46.0) — front-end behaviours.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  var cine = body.classList.contains('nr-cinematic');
+  function level() { return body.getAttribute('data-nr-motion') || 'standard'; }
+
+  /* #161 — a polite live-region for screen readers. */
+  var live = document.createElement('div');
+  live.className = 'nr-sr-only'; live.setAttribute('aria-live', 'polite'); live.setAttribute('aria-atomic', 'true');
+  body.appendChild(live);
+  window.nrAnnounce = function (msg) { live.textContent = ''; setTimeout(function () { live.textContent = msg; }, 60); };
+
+  /* #162 — landmark hygiene: label main + primary nav if unlabelled. */
+  var main = document.querySelector('main'); if (main && !main.getAttribute('role')) main.setAttribute('role', 'main');
+  var nav = document.querySelector('.nr-menu'); if (nav && !nav.getAttribute('aria-label')) nav.setAttribute('aria-label', 'Primary');
+
+  /* #163 — keyboard shortcuts help overlay ("?"). */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== '?' || e.target.matches('input,textarea,select,[contenteditable]')) return;
+    if (document.querySelector('.nr-keys')) return;
+    var o = document.createElement('div'); o.className = 'nr-keys'; o.setAttribute('role', 'dialog');
+    o.innerHTML = '<div class="nr-keys__box"><button class="nr-keys__x" aria-label="Close">✕</button><h3>Keyboard</h3><ul>'
+      + '<li><kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> — search</li><li><kbd>←</kbd><kbd>→</kbd> — hero / plates</li>'
+      + '<li><kbd>Esc</kbd> — close</li><li><kbd>?</kbd> — this help</li></ul></div>';
+    body.appendChild(o);
+    var close = function () { o.remove(); };
+    o.addEventListener('click', function (e2) { if (e2.target === o || e2.target.closest('.nr-keys__x')) close(); });
+    document.addEventListener('keydown', function k(e3) { if (e3.key === 'Escape') { close(); document.removeEventListener('keydown', k); } });
+  });
+
+  /* #181 — consent beacon when the cookie notice is accepted. */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-consent-accept], .nr-cookie__accept, .nr-cookie button');
+    if (!b || !(window.NR && NR.home)) return;
+    try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/consent', new Blob([''], { type: 'text/plain' })); } catch (x) {}
+  });
+
+  /* #95 — idle prefetch of a few internal links (saves a hop on first nav). */
+  var pf = function () {
+    if (body.classList.contains('nr-savedata')) return;
+    var seen = {}, n = 0;
+    document.querySelectorAll('a.nr-card[href], .nr-hero__thumb[href], a.nr-recent__card[href]').forEach(function (a) {
+      var h = a.getAttribute('href'); if (!h || seen[h] || n >= 5) return;
+      try { if (new URL(h, location.href).host !== location.host) return; } catch (e) { return; }
+      seen[h] = 1; n++;
+      var l = document.createElement('link'); l.rel = 'prefetch'; l.href = h; document.head.appendChild(l);
+    });
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(pf, { timeout: 4000 }); else setTimeout(pf, 3000);
+
+  /* #38 — compare-slider keyboard + labels. */
+  document.querySelectorAll('[data-compare] input[type="range"], .nr-compare__range').forEach(function (r) {
+    r.setAttribute('aria-label', r.getAttribute('aria-label') || 'Compare before and after');
+  });
+
+  /* #126 — contact-sheet toggle on a project page. */
+  var rail = document.querySelector('.nr-project__rail');
+  if (rail && !document.querySelector('.nr-sheet-toggle')) {
+    var crumbs = document.querySelector('.nr-project__crumbs');
+    if (crumbs) {
+      var t = document.createElement('button');
+      t.type = 'button'; t.className = 'nr-sheet-toggle'; t.textContent = '▦ contact sheet';
+      t.setAttribute('aria-pressed', 'false');
+      t.addEventListener('click', function () {
+        var on = rail.classList.toggle('is-sheet');
+        t.setAttribute('aria-pressed', String(on));
+        t.textContent = on ? '▭ single' : '▦ contact sheet';
+      });
+      crumbs.appendChild(t);
+    }
+  }
+
+  /* #157 — captions toggle (EXIF plate captions). */
+  if (document.querySelector('.nr-plate-cap')) {
+    var ct = document.createElement('button');
+    ct.type = 'button'; ct.className = 'nr-cap-toggle'; ct.textContent = 'ƒ captions';
+    var capOn = false; try { capOn = localStorage.getItem('nr_caps') === '1'; } catch (e) {}
+    if (capOn) body.classList.add('nr-caps-on');
+    ct.addEventListener('click', function () {
+      capOn = !capOn; body.classList.toggle('nr-caps-on', capOn);
+      try { localStorage.setItem('nr_caps', capOn ? '1' : '0'); } catch (e) {}
+    });
+    var cr = document.querySelector('.nr-project__crumbs'); if (cr) cr.appendChild(ct);
+  }
+
+  /* ── Enquire-page helpers ── */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form) {
+    /* #80 — autosave/restore the brief (localStorage). */
+    var FK = 'nr_brief_v1';
+    var fields = form.querySelectorAll('input[name="name"],input[name="email"],textarea[name="notes"]');
+    try {
+      var saved = JSON.parse(localStorage.getItem(FK) || '{}');
+      fields.forEach(function (f) { if (saved[f.name] && !f.value) f.value = saved[f.name]; });
+    } catch (e) {}
+    form.addEventListener('input', function () {
+      var o = {}; fields.forEach(function (f) { o[f.name] = f.value; });
+      try { localStorage.setItem(FK, JSON.stringify(o)); } catch (e) {}
+    });
+    form.addEventListener('submit', function () { try { localStorage.removeItem(FK); } catch (e) {} });
+
+    /* #75 — "hold two dates": add an alternative date, folded into notes. */
+    var d = form.querySelector('input[type="date"][name="preferred_date"]');
+    if (d && !form.querySelector('[name="preferred_date_2"]')) {
+      var wrap = document.createElement('label');
+      wrap.innerHTML = '<span class="nr-eyebrow nr-eyebrow--plain">' + 'Alternative date' + '</span>';
+      var d2 = document.createElement('input'); d2.type = 'date'; d2.name = 'preferred_date_2';
+      wrap.appendChild(d2);
+      if (d.parentElement && d.parentElement.parentElement) d.parentElement.insertAdjacentElement('afterend', wrap);
+      form.addEventListener('submit', function () {
+        var notes = form.querySelector('[name="notes"]');
+        if (d2.value && notes && notes.value.indexOf(d2.value) < 0) notes.value += '\n\nAlternative date: ' + d2.value;
+      });
+      /* #54 — "add to calendar" link once a date is chosen. */
+      var cal = document.createElement('a'); cal.className = 'nr-cal-link'; cal.target = '_blank'; cal.rel = 'noopener'; cal.hidden = true; cal.textContent = '+ add to calendar';
+      d.insertAdjacentElement('afterend', cal);
+      d.addEventListener('change', function () {
+        if (!d.value) { cal.hidden = true; return; }
+        var day = d.value.replace(/-/g, '');
+        cal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Shoot — ' + (document.title)) + '&dates=' + day + '/' + day;
+        cal.hidden = false;
+      });
+    }
+
+    /* #45 — "similar work" for the chosen service (from /projects.json). */
+    try {
+      var svc = new URLSearchParams(location.search).get('service');
+      if (svc && window.NR && NR.home) {
+        fetch(NR.home + 'projects.json').then(function (r) { return r.json(); }).then(function (data) {
+          var list = (data.projects || data || []).filter(function (p) {
+            return (p.cat || p.category || '').toLowerCase().indexOf(svc.replace(/-/g, ' ')) >= 0;
+          }).slice(0, 3);
+          if (!list.length) return;
+          var box = document.createElement('div'); box.className = 'nr-similar';
+          box.innerHTML = '<span class="nr-eyebrow nr-eyebrow--xs">Similar work</span>'
+            + list.map(function (p) { return '<a href="' + encodeURI(p.url) + '">' + (p.title || '').replace(/[<>&]/g, '') + '</a>'; }).join('');
+          form.insertAdjacentElement('afterend', box);
+        }).catch(function () {});
+      }
+    } catch (e) {}
+  }
+
+  /* ── Cinematic-gated motion (only when master toggle + level agree) ── */
+  if (cine && !reduce) {
+    /* #6 — click shockwave. */
+    document.addEventListener('pointerdown', function (e) {
+      if (level() !== 'cinematic') return;
+      if (e.target.closest('input,textarea,select')) return;
+      var s = document.createElement('span'); s.className = 'nr-shock';
+      s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px';
+      body.appendChild(s); setTimeout(function () { s.remove(); }, 650);
+    }, { passive: true });
+
+    /* #21 — spring release on magnetic buttons (overshoot back to rest). */
+    document.querySelectorAll('.nr-btn, [data-magnetic]').forEach(function (b) {
+      b.addEventListener('mouseleave', function () {
+        if (level() === 'calm') return;
+        b.classList.add('nr-spring'); setTimeout(function () { b.classList.remove('nr-spring'); }, 420);
+      });
+    });
+
+    /* #19 — idle "screensaver" on the home hero. */
+    if (body.classList.contains('nr-page-home')) {
+      var idle; var arm = function () { clearTimeout(idle); body.classList.remove('nr-idle'); idle = setTimeout(function () { if (level() !== 'calm') body.classList.add('nr-idle'); }, 60000); };
+      ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function (ev) { window.addEventListener(ev, arm, { passive: true }); });
+      arm();
+    }
+  }
+})();

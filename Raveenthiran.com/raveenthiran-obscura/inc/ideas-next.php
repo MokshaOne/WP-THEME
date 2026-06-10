@@ -544,6 +544,16 @@ function nr_content_health_widget() {
 	);
 	echo '</p>';
 
+	// #188 — autoloaded-options size (perf hygiene).
+	if ( function_exists( 'nr_autoload_report' ) ) {
+		$ar = nr_autoload_report();
+		$kb = round( $ar['bytes'] / 1024 );
+		$warn = $kb > 800 ? '#c0392b' : '#2a7';
+		echo '<p style="margin-top:10px;font-size:12px;color:#555"><strong>' . esc_html__( 'Autoloaded options', 'raveenthiran' ) . '</strong> — ';
+		printf( '<span style="color:%s">%d KB</span>. %s', $warn, (int) $kb, esc_html__( 'Under ~800 KB is healthy.', 'raveenthiran' ) );
+		echo '</p>';
+	}
+
 	// #113 — IndexNow bulk resubmit (only useful once a key is set).
 	if ( function_exists( 'nr_indexnow_key' ) && nr_indexnow_key() ) {
 		$u = wp_nonce_url( admin_url( 'admin-post.php?action=nr_indexnow_bulk' ), 'nr_indexnow_bulk' );

@@ -124,31 +124,31 @@ perf change — see the playbook.*
 83. **Variable font swap** — one Inter Tight variable file instead of three static weights. _Perf · M_
 84. **Font subsetting + unicode-range** — Latin subset, split rare glyphs. _Perf · S_
 85. **SVG icon sprite** — inline one sprite instead of many icon requests. _Perf · S_
-86. **Precompressed Brotli/gzip static assets** — verify the host/Cloudflare serves `.br`. _Perf · S_
+86. ✅ _v4.45.0_ — **Precompressed Brotli/gzip static assets** — verify the host/Cloudflare serves `.br`. _Perf · S_
 87. **`modulepreload` + JS islands** — lazy-hydrate non-critical interactivity. _Perf · M_
-89. **Exhaustive `loading`/`decoding`/`fetchpriority` re-audit** — across all templates after the recent additions. _Perf · S_
+89. ✅ _v4.45.0_ — **Exhaustive `loading`/`decoding`/`fetchpriority` re-audit** — across all templates after the recent additions. _Perf · S_
 90. ✅ _v4.44.0_ — **Generalised LCP preload** — auto-detect and preload the LCP element on every template, not just front-page. _Perf · M_
 
 ### Edge & delivery
-92. **Cloudflare cache-rules + APO guide** — a documented, copy-paste edge config for this theme. _Perf · S_
+92. ✅ _v4.45.0_ — **Cloudflare cache-rules + APO guide** — a documented, copy-paste edge config for this theme. _Perf · S_
 95. **Periodic background prefetch** — warm the journal index in the background (where supported). _Perf · S_
 
 ### Structured data & feeds
 96. ✅ _v4.44.0_ — **Per-plate ImageObject schema** — creator, caption, license, EXIF on each image. _SEO · M_
 97. ✅ _v4.44.0_ — **VideoObject schema** — duration + thumbnail for motion plates. _SEO · S_
 98. ✅ _v4.44.0_ — **XML image sitemap** — separate, with captions + geo. _SEO · S_
-99. **Sitemap index splitting** — paginate the sitemap at 200+ URLs. _SEO · S_
+99. ✅ _v4.45.0_ — **Sitemap index splitting** — paginate the sitemap at 200+ URLs. _SEO · S_
 100. ✅ _v4.44.0_ — **WebSub / PubSubHubbub ping** — instant feed push to subscribers/readers. _SEO · S_
 101. ✅ _v4.44.0_ — **JSON Feed 1.1 endpoint** — modern reader support alongside RSS. _SEO · S_
 102. ✅ _v4.44.0_ — **`og:video` + X player card** — for projects with motion. _SEO · S_
-103. **Pinterest rich pins** — article/product meta for save-driven discovery. _SEO · S_
+103. ✅ _v4.45.0_ — **Pinterest rich pins** — article/product meta for save-driven discovery. _SEO · S_
 104. ✅ _v4.44.0_ — **Google Discover optimisation for journal** — large images + freshness + author markup. _SEO · M_
 105. ✅ _v4.44.0_ — **Canonical consolidation** — collapse filtered/sorted archive permutations to one canonical. _SEO · S_
 
 ### Analytics & quality gates
 107. **Core Web Vitals field collection** — `web-vitals.js` → a theme endpoint, charted in the dashboard. _Perf · M_
 108. **Conversion funnel report** — view → enquire-start → submit, per source/project. _Conv · M_
-109. **Structured-data lint in CI** — validate JSON-LD in the manual quality workflow. _SEO · S_
+109. ✅ _v4.45.0_ — **Structured-data lint in CI** — validate JSON-LD in the manual quality workflow. _SEO · S_
 110. ✅ _v4.44.0_ — **Search-term capture** — log the ⌘K palette queries to find content gaps. _Content · S_
 111. **404/410 + redirect-map UI** — manage redirects for deleted/renamed projects in the dashboard. _SEO · M_
 112. **Outbound broken-link checker** — extend content-health to external links. _SEO · S_
@@ -184,21 +184,21 @@ projects maintainable.*
 133. **Year-timeline archive view** — browse 200 projects by year. _UX · M_
 134. **Map archive view** — every shoot on one Leaflet map (uses existing coords). _UX · M_
 135. **Colour-palette filter** — extract a palette per project, filter "by mood/colour". _Awww · M_
-136. **Related-by-tag suggestions** — not just category; richer cross-linking. _SEO · S_
+136. ✅ _v4.45.0_ — **Related-by-tag suggestions** — not just category; richer cross-linking. _SEO · S_
 137. **"On this day" resurfacing** — gently surface older work by anniversary. _Content · S_
-138. **Per-series RSS** — a feed per series for niche followers. _SEO · S_
+138. ✅ _v4.45.0_ — **Per-series RSS** — a feed per series for niche followers. _SEO · S_
 139. **Location map per project** — a mini-map tied to the project's GPS. _Content · S_
 140. **Credits block** — stylist / MUA / agency / talent with links. _Content · S_
 
 ### Journal & long-form
-141. **Reading time + progress bar** — on journal essays. _UX · S_
-142. **Auto table of contents** — for long journal posts. _UX · S_
+141. ✅ _v4.45.0_ — **Reading time + progress bar** — on journal essays. _UX · S_
+142. ✅ _v4.45.0_ — **Auto table of contents** — for long journal posts. _UX · S_
 143. **Footnotes / margin notes** — editorial annotations in essays. _Content · S_
 144. **Inline glossary tooltips** — define terms on hover/tap. _Content · S_
 145. **Editorial kicker/dek fields** — proper headline + standfirst structure. _Content · S_
-146. **Pull-quotes on projects** — bring the journal's pull-quote styling to project text. _Content · S_
+146. ✅ _v4.45.0_ — **Pull-quotes on projects** — bring the journal's pull-quote styling to project text. _Content · S_
 147. **Markdown import for essays** — paste/import Markdown into journal. _Dev · S_
-148. **Print stylesheet for projects** — a clean printable layout. _UX · S_
+148. ✅ _v4.45.0_ — **Print stylesheet for projects** — a clean printable layout. _UX · S_
 
 ### Admin content tooling
 149. **Bulk caption/alt editor** — one screen to fix alts across the library. _Ops · M_
@@ -207,9 +207,9 @@ projects maintainable.*
 153. **Editorial calendar** — schedule + status board for journal. _Ops · M_
 154. **Reusable content blocks library** — saved patterns for essays. _Content · S_
 155. **Tokenised draft preview links** — share unpublished work with clients/editors. _Ops · S_
-156. **Gear/setup metadata block** — bodies, lenses, lighting per project. _Content · S_
+156. ✅ _v4.45.0_ — **Gear/setup metadata block** — bodies, lenses, lighting per project. _Content · S_
 157. **Captions toggle (front-end)** — show/hide all EXIF captions. _UX · S_
-158. **"Quote of the day" empty states** — testimonials on 404 / empty search. _Content · S_
+158. ✅ _v4.45.0_ — **"Quote of the day" empty states** — testimonials on 404 / empty search. _Content · S_
 159. **Series consistency grid** — compare frames across a series to spot outliers. _Ops · S_
 160. **Sample-content importer** — one-click demo projects/journal for a fresh install. _Ops · M_
 
@@ -232,37 +232,37 @@ projects maintainable.*
 
 ### Internationalisation
 172. **Complete `.pot` + ship `de_DE`** — finish string extraction and provide a German translation. _Dev · M_
-173. **hreflang sync with the switcher** — keep alternates correct as content is translated. _SEO · S_
+173. ✅ _v4.45.0_ — **hreflang sync with the switcher** — keep alternates correct as content is translated. _SEO · S_
 174. **RTL stylesheet pass** — logical properties + an RTL sheet for future clients. _A11y · M_
-175. **Locale-aware dates/numbers** — format per locale in templates. _Dev · S_
+175. ✅ _v4.45.0_ — **Locale-aware dates/numbers** — format per locale in templates. _Dev · S_
 
 ### Security & privacy
-177. **Subresource Integrity** — SRI on any external script (Leaflet, Turnstile). _Sec · S_
+177. ✅ _v4.45.0_ — **Subresource Integrity** — SRI on any external script (Leaflet, Turnstile). _Sec · S_
 178. **Repeat-spam IP throttle + banlist** — extend the honeypot/rate-limit with persistence. _Sec · S_
 179. **Admin settings audit log** — record who changed which setting, when. _Sec · S_
 181. **Consent log + cookieless analytics** — record consent events; keep analytics cookie-free. _Sec · S_
 182. **Enquiry-export encryption** — optional passphrase on the CSV export. _Sec · S_
-183. **Login hardening doc + hooks** — app-password rotation reminder, 2FA guidance. _Sec · S_
-184. **Uploads MIME/dimension validation** — reject oversized or mistyped uploads early. _Sec · S_
-185. **Honeytoken admin page** — a trap URL that bans scanners. _Sec · S_
+183. ✅ _v4.45.0_ — **Login hardening doc + hooks** — app-password rotation reminder, 2FA guidance. _Sec · S_
+184. ✅ _v4.45.0_ — **Uploads MIME/dimension validation** — reject oversized or mistyped uploads early. _Sec · S_
+185. ✅ _v4.45.0_ — **Honeytoken admin page** — a trap URL that bans scanners. _Sec · S_
 
 ### Ops & resilience
 186. **Theme self-test health check** — verify GD, fonts, writable uploads, SMTP, cron. _Ops · S_
 187. **SMTP/uptime self-test cron + alert** — email the owner if mail or the site looks down. _Ops · M_
-188. **Autoload-options audit** — flag bloated autoloaded options hurting every request. _Perf · S_
+188. ✅ _v4.45.0_ — **Autoload-options audit** — flag bloated autoloaded options hurting every request. _Perf · S_
 189. **Error-log viewer (theme-scoped)** — surface theme errors in the dashboard. _Ops · S_
 190. **Settings migration on version change** — versioned option schema with safe upgrades. _Dev · S_
 191. **Staging↔live settings diff** — show what differs before importing. _Ops · M_
 192. **Backup-to-cloud hook + doc** — B2/S3 reminder wired into the health widget. _Ops · S_
-193. **Opt-in uninstall cleanup** — remove options/CPT data on theme removal if chosen. _Ops · S_
+193. ✅ _v4.45.0_ — **Opt-in uninstall cleanup** — remove options/CPT data on theme removal if chosen. _Ops · S_
 194. **Feature-flag registry page** — one screen auditing every `nr_fx_*` toggle + state. _Ops · S_
 
 ### Developer experience
 195. **One-command build** — `composer run build` = lint + bump + ZIP + checksum. _Dev · S_
-196. **Auto GitHub Release on tag** — attach the ZIP to a release automatically. _Dev · S_
-197. **Version-bump script** — sync `functions.php` + `style.css` + `readme.txt` in one go. _Dev · S_
+196. ✅ _v4.45.0_ — **Auto GitHub Release on tag** — attach the ZIP to a release automatically. _Dev · S_
+197. ✅ _v4.45.0_ — **Version-bump script** — sync `functions.php` + `style.css` + `readme.txt` in one go. _Dev · S_
 198. **PHPCS (WordPress standard) + PHPStan** — advisory static analysis on `inc/`. _Dev · M_
-199. **ESLint + Prettier + Stylelint** — lint `assets/js` and `theme.css`, pre-commit hooks. _Dev · S_
+199. ✅ _v4.45.0_ — **ESLint + Prettier + Stylelint** — lint `assets/js` and `theme.css`, pre-commit hooks. _Dev · S_
 200. **Visual regression snapshots** — Playwright screenshot diffs of hero/rails/forms in the workflow. _Dev · M_
 
 ---

@@ -161,6 +161,8 @@ function nr_register_feature_acf_fields() {
             [ 'key' => 'field_project_frames',   'label' => 'Frames',          'name' => 'project_frames',   'type' => 'text',   'instructions' => 'Number of final selects (e.g. 24).' ],
             [ 'key' => 'field_project_process',  'label' => 'Process / behind-the-scenes', 'name' => 'project_process', 'type' => 'textarea', 'rows' => 4,
               'instructions' => 'Optional. A short note on how the work was made — shown as a "Behind the frame" section on the project page. Juries love this.' ],
+            [ 'key' => 'field_project_gear',     'label' => 'Setup / gear',    'name' => 'project_gear',     'type' => 'text',
+              'instructions' => 'Optional. Camera, lens, lighting — e.g. "Leica M6 · 35mm Summicron · available light". Shown in the project meta.' ],
             [ 'key' => 'field_featured_on_homepage', 'label' => 'Featured on Homepage', 'name' => 'featured_on_homepage', 'type' => 'true_false', 'ui' => 1, 'default_value' => 0,
               'instructions' => 'Show this project in the fullscreen hero slider on the home page.' ],
         ],

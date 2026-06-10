@@ -46,3 +46,27 @@ jobs:
         env:
           BASE_URL: ${{ github.event.inputs.base_url }}
         run: npx playwright test
+
+  # #109 — structured-data lint: fetch the URL and validate every JSON-LD block.
+  seo-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate JSON-LD
+        run: |
+          node -e '
+            const url = process.env.URL;
+            fetch(url).then(r => r.text()).then(html => {
+              const re = /<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi;
+              let m, n = 0, bad = 0;
+              while ((m = re.exec(html))) { n++; try { JSON.parse(m[1]); } catch (e) { bad++; console.error("Invalid JSON-LD #" + n + ": " + e.message); } }
+              console.log("Found " + n + " JSON-LD blocks, " + bad + " invalid.");
+              if (n === 0) { console.error("No JSON-LD found"); process.exit(1); }
+              if (bad > 0) process.exit(1);
+            }).catch(e => { console.error(e); process.exit(1); });
+          '
+        env:
+          URL: ${{ github.event.inputs.base_url }}

@@ -2222,3 +2222,43 @@ body.nr-savedata .nr-recent__card img{background:var(--bg-2,#14151A)}
 
 /* #77 share button inherits .nr-btn */
 .nr-share{cursor:pointer}
+
+/* ── IDEAS-200 quick wins (v4.45.0) ───────────────────────────── */
+
+/* #136 — related-by-tag chips on the project page */
+.nr-project__tags{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+.nr-chip--sm{font-size:11px;padding:3px 9px;letter-spacing:.02em}
+
+/* #146 — pull-quotes on projects + process */
+.nr-process blockquote,.nr-project__body blockquote{margin:18px 0;padding-left:18px;border-left:2px solid var(--amber);
+  font-size:clamp(17px,2.2vw,21px);line-height:1.45;color:var(--ink);font-weight:300}
+
+/* #141 — reading time + scroll-progress bar */
+.nr-readtime{font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin:0 0 18px}
+.nr-readbar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--amber);transform:scaleX(0);transform-origin:left;z-index:80;pointer-events:none}
+
+/* #142 — auto table of contents */
+.nr-toc{margin:0 0 26px;padding:14px 16px;border:1px solid var(--hair);border-radius:6px;background:var(--bg-2,#14151A)}
+.nr-toc ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.nr-toc a{color:var(--ink-2);text-decoration:none;font-size:13.5px;border:0}
+.nr-toc a:hover{color:var(--amber)}
+.nr-toc__h3{padding-left:14px;font-size:12.5px;opacity:.85}
+
+/* #158 — quote of the day (empty states) */
+.nr-qotd{margin:34px auto 0;max-width:600px;text-align:center}
+.nr-qotd blockquote{margin:0;font-size:clamp(16px,2.2vw,20px);line-height:1.5;color:var(--ink-2);font-weight:300}
+.nr-qotd figcaption{margin-top:10px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+
+/* #148 — print stylesheet: a clean, ink-on-paper layout */
+@media print{
+  :root{--bg:#fff;--ink:#111;--ink-2:#333;--ink-3:#555;--amber:#a66b16;--hair:#ddd}
+  body{background:#fff!important;color:#111!important}
+  body::before,body::after,.nr-cur,.nr-wipe,.nr-grain,.nr-motion,.nr-filmframe,.nr-readbar,
+  .nr-marquee,.nr-promo,.nr-tray,.nr-extras,.nr-hero__nav,.nr-hero__thumbs,
+  nav.nr-menu,.nr-mobile-tabs,.nr-footer,.nr-cmd,.nr-sheet,.nr-heart{display:none!important}
+  .nr-fullscreen,.nr-page{position:static!important;height:auto!important;overflow:visible!important;display:block!important}
+  .nr-portfolio-rail,.nr-project__rail,.nr-project__rail-track{overflow:visible!important;display:block!important}
+  img{max-width:100%!important;height:auto!important;page-break-inside:avoid}
+  a{color:#111!important;text-decoration:underline}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-size:10px;color:#777}
+}

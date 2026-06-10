@@ -130,6 +130,9 @@ $lede = get_the_excerpt();
 				];
 				$format = function_exists( 'nr_field' ) ? nr_field( 'project_format' ) : '';
 				if ( $format ) $rows[] = [ nr_opt( 'nr_meta_format', __( 'Format', 'raveenthiran' ) ), $format ];
+				// #156 — gear / setup metadata
+				$gear = function_exists( 'nr_field' ) ? nr_field( 'project_gear' ) : '';
+				if ( $gear ) $rows[] = [ __( 'Setup', 'raveenthiran' ), $gear ];
 				// #63 — series / collection
 				$nr_series = function_exists( 'nr_project_series' ) ? nr_project_series( get_the_ID() ) : null;
 				if ( $nr_series ) $rows[] = [ __( 'Series', 'raveenthiran' ), $nr_series->name ];
@@ -141,7 +144,9 @@ $lede = get_the_excerpt();
 				<?php endforeach; ?>
 			</ul>
 
-				<?php if ( function_exists( 'nr_project_process_markup' ) ) echo nr_project_process_markup( get_the_ID() ); // #16 ?>
+				<?php if ( function_exists( 'nr_project_tag_chips' ) ) echo nr_project_tag_chips( get_the_ID() ); // #136 ?>
+
+			<?php if ( function_exists( 'nr_project_process_markup' ) ) echo nr_project_process_markup( get_the_ID() ); // #16 ?>
 
 			<div class="nr-project__actions">
 				<a class="nr-btn nr-btn--primary"

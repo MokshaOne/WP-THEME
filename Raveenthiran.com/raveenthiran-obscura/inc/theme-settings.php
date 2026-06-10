@@ -156,6 +156,7 @@ function nr_settings_defaults() {
 		'nr_promo_until'     => '',   // YYYY-MM-DD — banner auto-hides after
 		'nr_meta_title_tpl'  => '',   // #114 token <title> template for projects
 		'nr_block_ai'        => '0',  // robots.txt: disallow AI crawlers
+		'nr_clean_uninstall' => '0',  // #193 remove theme options when switching away
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -317,7 +318,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee', 'nr_block_ai', 'nr_clean_uninstall' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -816,6 +817,9 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Tokens: %title% %cat% %year% %site%. e.g. "%title% — %cat% photography, Vienna · %site%". Blank keeps the default title.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Block AI crawlers', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_block_ai', __( 'Disallow GPTBot / CCBot / Google-Extended / ClaudeBot etc. in robots.txt', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Clean uninstall', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_clean_uninstall', __( 'Remove all of this theme’s settings when switching away from Obscura', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Only deletes Obscura’s own options/transients, only on theme switch.', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 

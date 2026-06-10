@@ -1,5 +1,32 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.45.0 — IDEAS-200 quick wins (25, in one go)
+Small, additive, low-risk wins. New module `inc/quickwins.php` + a few hooks,
+two reading aids, a print sheet, dev configs and ops docs.
+
+**SEO / feeds:** `og:updated_time` (#103), sitemap **index** `/sitemap-index.xml`
+(#99), per-series RSS link + feed query (#138), hreflang-alternates filter hook
+for future translations (#173), decoding=async backstop on images (#89).
+**Editorial / UX:** related-by-tag **#tag chips** on projects (#136), **setup/gear**
+meta field (#156), **reading time + scroll-progress bar** and **auto table of
+contents** on journal posts (#141/#142), **pull-quote** styling on projects (#146),
+a **print stylesheet** (#148), **"quote of the day"** testimonial on 404 / empty
+search (#158).
+**Security / ops:** **Subresource Integrity** on Leaflet (#177), **upload size
+validation** (#184, 25 MB cap, filterable), a **honeytoken** bait path that soft-bans
+scanners (#185), **autoloaded-options size** readout in the health widget (#188),
+opt-in **clean-uninstall** (#193, default off).
+**Dev / CI:** structured-data lint job in the manual quality workflow (#109), an
+**auto-release-on-tag** workflow (#196), a **`bin/nr-bump.sh`** version-bump script
+(#197, used to cut this release), and **ESLint/Prettier/Stylelint/EditorConfig**
+configs (#199).
+**Docs (owner actions, no code completes them):** `docs/OPS-NOTES.md` — Brotli
+verification (#86), Cloudflare cache-rules + APO recipe (#92), login-hardening
+checklist (#183).
+
+Locale-aware date helper `nr_i18n_date()` added (#175). 25 items ticked in
+`docs/IDEAS-200.md`.
+
 ## 4.44.0 — IDEAS-200 Batch 2 + 3 (the lightweight majority)
 A large additive release. Two new modules — `inc/seo-extra.php` and
 `inc/conversion-extra.php` — plus settings, CSS and JS. Nothing changes the

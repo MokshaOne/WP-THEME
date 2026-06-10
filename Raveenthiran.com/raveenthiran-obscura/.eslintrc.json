@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "env": { "browser": true, "es2021": true },
+  "parserOptions": { "ecmaVersion": 2021, "sourceType": "script" },
+  "globals": { "NR": "readonly", "L": "readonly", "jQuery": "readonly" },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-empty": ["warn", { "allowEmptyCatch": true }],
+    "no-console": "warn"
+  },
+  "ignorePatterns": ["assets/js/webgl-hero.js"]
+}

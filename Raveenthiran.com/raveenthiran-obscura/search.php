@@ -40,6 +40,7 @@ $nr_total = (int) $GLOBALS['wp_query']->found_posts;
 	<?php else : ?>
 		<div class="nr-portfolio-rail">
 			<p class="nr-journal__empty"><?php esc_html_e( 'No results — try a different word, or browse the portfolio.', 'raveenthiran' ); ?></p>
+				<?php if ( function_exists( 'nr_random_testimonial_markup' ) ) echo nr_random_testimonial_markup(); // #158 ?>
 		</div>
 	<?php endif; ?>
 </section>

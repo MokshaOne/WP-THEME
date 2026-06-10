@@ -1496,3 +1496,55 @@
     }
   })();
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 quick wins (v4.45.0) — journal reading aids.
+   #141 reading time + scroll progress · #142 auto table of contents.
+   Pure progressive enhancement on the journal single (.nr-jpost).
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var art = document.querySelector('.nr-jpost__article, .nr-jpost article, article.nr-jpost');
+  if (!art) return;
+
+  /* #141 — reading time, injected once near the top of the article. */
+  var words = (art.textContent || '').trim().split(/\s+/).length;
+  var mins = Math.max(1, Math.round(words / 200));
+  if (!art.querySelector('.nr-readtime')) {
+    var rt = document.createElement('p');
+    rt.className = 'nr-readtime';
+    rt.textContent = mins + ' min read';
+    art.insertBefore(rt, art.firstChild);
+  }
+
+  /* #141 — top scroll-progress bar tracking the article. */
+  var bar = document.createElement('div');
+  bar.className = 'nr-readbar'; bar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(bar);
+  var upd = function () {
+    var r = art.getBoundingClientRect();
+    var total = art.offsetHeight - window.innerHeight;
+    var done = Math.min(1, Math.max(0, (-r.top) / (total > 0 ? total : 1)));
+    bar.style.transform = 'scaleX(' + done.toFixed(3) + ')';
+  };
+  window.addEventListener('scroll', upd, { passive: true });
+  window.addEventListener('resize', upd); upd();
+
+  /* #142 — auto table of contents from h2/h3 (only if ≥3 headings). */
+  var heads = art.querySelectorAll('h2, h3');
+  if (heads.length >= 3) {
+    var toc = document.createElement('nav');
+    toc.className = 'nr-toc'; toc.setAttribute('aria-label', 'Contents');
+    var ul = document.createElement('ul');
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + i + '-' + (h.textContent || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 32);
+      var li = document.createElement('li');
+      li.className = 'nr-toc__' + h.tagName.toLowerCase();
+      var a = document.createElement('a');
+      a.href = '#' + h.id; a.textContent = h.textContent;
+      li.appendChild(a); ul.appendChild(li);
+    });
+    toc.appendChild(ul);
+    var rt2 = art.querySelector('.nr-readtime');
+    if (rt2) rt2.insertAdjacentElement('afterend', toc); else art.insertBefore(toc, art.firstChild);
+  }
+})();

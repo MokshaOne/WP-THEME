@@ -22,7 +22,7 @@
   - Quality scaffolding: Playwright smoke test + Lighthouse CI config behind a
     manual `workflow_dispatch` action (they need a live WP runtime, so they
     don't gate PRs).
-- Deferred with rationale (see docs/IDEAS-NEXT.md): lookbook PDF export,
+- Deferred with rationale (see docs/ROADMAP-ARCHIVE.md): lookbook PDF export,
   scroll-scrubbed video hero, per-plate diptych variants.
 
 ## 4.40.0

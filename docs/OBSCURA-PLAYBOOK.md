@@ -92,8 +92,11 @@ columns, **theme-health dashboard**, enquiry CSV export, importer dedupe-by-hash
 reset-to-defaults), perf (eager LCP card, lazy Leaflet, cache headers), white
 date-picker icon, hreflang, `[nr_faq]` shortcode + FAQPage schema, marquee,
 signature. Two items intentionally skipped with rationale (JS-split, critical-CSS).
-**Next ideas live in `docs/IDEAS-NEXT.md`** (incl. real gaps: screenshot.png,
-load_theme_textdomain, editor styles).
+The post-review IDEAS-NEXT batch (recently-viewed, newsletter, testimonials band,
+IndexNow, speculation rules, process field, series covers, import/export, content-
+health, assistant role…) shipped in **v4.41.0**. **The live backlog is now
+`docs/IDEAS-200.md`** (200 items in 5 batches); completed history is in
+`docs/ROADMAP-ARCHIVE.md`.
 
 ## 7. Owner's standing to-dos (no code)
 - Run **Tools → Generate WebP**, then purge W3TC + Cloudflare.
@@ -113,5 +116,6 @@ page-enquire, page-about, page-impressum/datenschutz/agb, 404, index, header,
 footer) · `assets/` (css/theme.css, css/fonts.css, js/theme.js, js/webgl-hero.js,
 fonts/ incl. inter-tight TTFs for GD).
 
-_Current release: **v4.39.0**. Roadmaps: `docs/IDEAS-100.md` (original 100),
-`docs/IMPROVEMENTS-50.md` (review, all addressed), `docs/IDEAS-NEXT.md` (what's next)._
+_Current release: **v4.41.0**. Roadmaps: `docs/IDEAS-200.md` (the live backlog —
+200 items in 5 batches) and `docs/ROADMAP-ARCHIVE.md` (the merged, completed history:
+IDEAS-100 → ROADMAP-V2 → IMPROVEMENTS-50 → IDEAS-NEXT + the Awwwards gap analysis)._

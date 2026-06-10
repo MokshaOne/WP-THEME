@@ -36,7 +36,7 @@
       for (var y = 0; y < 90; y++) {
         for (var x = 0; x < 160; x++) {
           var v = (Math.sin(x * 0.06 + t) + Math.cos(y * 0.08 - t * 0.7)) * 0.25 + 0.5;
-          var on = v * 16 > B[(y % 4) * 4 + (x % 4)] ? 18 : 0;
+          var on = v * 16 > B[(y % 4) * 4 + (x % 4)] ? 7 : 0;
           var i = (y * 160 + x) * 4;
           img.data[i] = img.data[i + 1] = img.data[i + 2] = 242; img.data[i + 3] = on;
         }

@@ -26,7 +26,7 @@ $stats = [
 ];
 ?>
 <section class="nr-page nr-fullscreen nr-about">
-	<div class="nr-about__portrait">
+	<div class="nr-about__portrait"<?php if ( ! $portrait ) echo ' style="display:none"'; ?>>
 		<?php if ( $portrait ) : ?>
 			<img src="<?php echo esc_url( $portrait ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="1200" height="1600" loading="eager" fetchpriority="high" decoding="async">
 		<?php else : ?>

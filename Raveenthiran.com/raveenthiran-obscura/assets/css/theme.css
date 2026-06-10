@@ -1889,3 +1889,29 @@ picture{display:contents}
 @media (max-width:900px){
   .nr-static{position:static;height:auto;overflow:visible;padding:96px 0 80px}
 }
+
+/* ── Batch 1 (v4.33.0): journal/card polish + fixes ─────────────── */
+/* fix: article column must clear the fixed global footer */
+.nr-jpost__body{padding-bottom:110px}
+
+/* #11 — catalogue plate number on work cards */
+.nr-card__no{position:absolute;top:56px;right:14px;z-index:4;writing-mode:vertical-rl;
+  font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.3em;color:var(--ink-3);
+  pointer-events:none;transition:color .25s var(--ease)}
+.nr-card:hover .nr-card__no{color:var(--amber)}
+
+/* #12 — journal cards: index-card character (amber rule, big mono date, subdued image) */
+.nr-card--journal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);z-index:5}
+.nr-card--journal img{filter:contrast(1.02) saturate(.8) brightness(.6)}
+.nr-card--journal:hover img{filter:contrast(1.06) saturate(.95) brightness(.85)}
+.nr-card--journal .nr-card__head span:first-child{font-size:var(--fs-md);font-weight:500;color:var(--ink)}
+/* #9 — stronger bottom shade so the excerpt stays AA on bright photos */
+.nr-card--journal .nr-card__shade{background:linear-gradient(180deg,rgba(11,12,16,.25) 0%,transparent 30%,rgba(11,12,16,.96) 100%)}
+.nr-card--journal .nr-card__excerpt{color:var(--ink)}
+
+/* term/search archive head description */
+.nr-page__head-desc{color:var(--ink-2);font-size:var(--fs-md);line-height:1.6;max-width:60ch;margin-top:10px}
+.nr-search-form{display:flex;gap:10px;max-width:480px;margin-top:18px}
+.nr-search-form input[type=search]{flex:1;background:transparent;border:1px solid var(--hair);color:var(--ink);
+  padding:12px 14px;font-family:inherit;font-size:var(--fs-md)}
+.nr-search-form input[type=search]:focus{outline:none;border-color:var(--amber)}

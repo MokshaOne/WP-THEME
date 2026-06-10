@@ -150,6 +150,27 @@ function nr_schema_markup_extended_render() {
         echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
     }
 
+    // Article schema on journal posts (headline/date/author/image).
+    if ( is_singular( 'nr_journal' ) && $post ) {
+        $schema = [
+            '@context'      => 'https://schema.org',
+            '@type'         => 'Article',
+            'headline'      => get_the_title(),
+            'url'           => get_permalink(),
+            'datePublished' => get_the_date( 'c' ),
+            'dateModified'  => get_the_modified_date( 'c' ),
+            'author'        => [ '@type' => 'Person', 'name' => $name, 'url' => $site_url ],
+            'publisher'     => [ '@type' => 'Person', 'name' => $name, 'url' => $site_url ],
+            'mainEntityOfPage' => get_permalink(),
+        ];
+        if ( has_excerpt( $post ) ) $schema['description'] = wp_strip_all_tags( get_the_excerpt() );
+        if ( has_post_thumbnail( $post ) ) {
+            $u = get_the_post_thumbnail_url( $post, 'nr-hero' );
+            if ( $u ) $schema['image'] = $u;
+        }
+        echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+    }
+
     // FAQPage Schema — FAQ now lives on the merged Enquire page.
     $is_enquire = ( is_page() && get_page_template_slug( get_queried_object_id() ) === 'page-enquire.php' ) || is_page( 'enquire' );
     if ( $is_enquire && function_exists( 'nr_faq_items' ) ) {
@@ -197,6 +218,7 @@ function nr_serve_sitemap() {
         [ 'loc' => home_url( '/portfolio' ),  'priority' => '0.9', 'changefreq' => 'weekly' ],
         [ 'loc' => home_url( '/about' ),      'priority' => '0.7', 'changefreq' => 'monthly' ],
         [ 'loc' => home_url( '/enquire' ),    'priority' => '0.9', 'changefreq' => 'monthly' ],
+        [ 'loc' => home_url( '/journal' ),    'priority' => '0.7', 'changefreq' => 'weekly' ],
     ];
     $urls = array_merge( $urls, $static );
 
@@ -225,6 +247,23 @@ function nr_serve_sitemap() {
             'priority'   => '0.8',
             'changefreq' => 'monthly',
             'images'     => array_slice( array_values( array_unique( $imgs ) ), 0, 1000 ),
+        ];
+    }
+
+    // Journal entries (text content — important for SEO posts/guides)
+    $journal = get_posts( [ 'post_type' => 'nr_journal', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+    foreach ( $journal as $id ) {
+        $imgs = [];
+        if ( has_post_thumbnail( $id ) ) {
+            $u = get_the_post_thumbnail_url( $id, 'nr-hero' );
+            if ( $u ) $imgs[] = $u;
+        }
+        $urls[] = [
+            'loc'        => get_permalink( $id ),
+            'lastmod'    => get_the_modified_date( 'Y-m-d', $id ),
+            'priority'   => '0.6',
+            'changefreq' => 'monthly',
+            'images'     => $imgs,
         ];
     }
 

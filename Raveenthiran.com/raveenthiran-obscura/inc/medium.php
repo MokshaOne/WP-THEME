@@ -30,6 +30,18 @@ function nr_journal_url() {
 	return get_post_type_archive_link( 'nr_journal' ) ?: home_url( '/journal' );
 }
 
+/* Rail archives have no pagination UI, so the default 10-per-page limit would
+   silently hide older entries. Raise the cap on every rail-rendered archive. */
+add_action( 'pre_get_posts', function ( $q ) {
+	if ( is_admin() || ! $q->is_main_query() ) return;
+	if ( $q->is_post_type_archive( 'nr_journal' ) || $q->is_tax( 'nr_journal_cat' ) ) {
+		$q->set( 'posts_per_page', 60 );
+	}
+	if ( $q->is_tax( 'nr_project_series' ) || $q->is_tax( 'nr_project_tag' ) || $q->is_tax( 'nr_project_cat' ) ) {
+		$q->set( 'posts_per_page', 48 );
+	}
+} );
+
 /* Distinct project years (newest first) — used by the archive year filter (#61). */
 function nr_project_years() {
 	$ids = get_posts( [ 'post_type' => 'nr_project', 'posts_per_page' => -1, 'fields' => 'ids', 'no_found_rows' => true ] );

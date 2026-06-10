@@ -53,3 +53,19 @@ The dashboard "content health" widget nags monthly. To actually move bytes off t
 - Keep the **theme ZIP** in the GitHub Release (auto-created on tag, see
   `.github/workflows/release.yml`) — that's your code backup.
 - Verify a restore once a quarter; an untested backup isn't a backup.
+
+## #32 — Cloudflare HTML edge-cache (logged-out only)
+Cache the HTML at the edge for anonymous visitors; always bypass for logged-in.
+**Rules → Cache Rules** (free plan):
+- *Match:* `Cookie` does **not** contain `wordpress_logged_in` **and** `URI Path`
+  does not start with `/wp-admin/`, `/wp-json/`, `/nr-`, `/?nr_`
+- *Then:* Eligible for cache · Edge TTL **2 h** · respect the theme's `Vary: Save-Data`.
+- Add a **bypass** rule for `Cookie contains wordpress_logged_in` (and the enquiry
+  POST to `/wp-admin/admin-post.php`).
+Purge on deploy (theme version bump busts asset URLs automatically).
+
+## #34 — Off-site uptime check
+The theme's daily self-test runs *on* the host, so it can't see a full outage.
+Add a free external monitor (UptimeRobot / Better Stack / Cron-job.org) hitting
+`https://raveenthiran.com/?nr_random=1` every 5 min from outside, alerting by email/
+Telegram. Point it at a lightweight URL, not the homepage, to keep logs clean.

@@ -302,12 +302,22 @@ add_action( 'wp_head', function () {
 add_action( 'wp_footer', function () {
 	if ( nr_opt( 'nr_fx_speculation', '0' ) !== '1' ) return;
 	$rules = [
+		// #31 — prerender project pages on hover (instant), only prefetch journal.
 		'prerender' => [ [
+			'source'    => 'document',
+			'where'     => [ 'and' => [
+				[ 'href_matches' => '/project/*' ],
+				[ 'not' => [ 'selector_matches' => '[rel~="nofollow"], [data-no-prerender]' ] ],
+			] ],
+			'eagerness' => 'moderate',
+		] ],
+		'prefetch' => [ [
 			'source'    => 'document',
 			'where'     => [ 'and' => [
 				[ 'href_matches' => '/*' ],
 				[ 'not' => [ 'href_matches' => '/wp-admin/*' ] ],
 				[ 'not' => [ 'href_matches' => '/wp-login.php' ] ],
+				[ 'not' => [ 'href_matches' => '/project/*' ] ],
 				[ 'not' => [ 'selector_matches' => '[rel~="nofollow"], [data-no-prerender], .nr-footer__email' ] ],
 			] ],
 			'eagerness' => 'moderate',

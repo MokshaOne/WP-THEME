@@ -1762,31 +1762,49 @@
     if (!figs.length) return;
     var imgs = figs.map(function (f) { var i = f.querySelector('img'); return i ? (i.currentSrc || i.src) : ''; }).filter(Boolean);
     if (!imgs.length) return;
-    var lb, idx = 0;
+    var lb, idx = 0, playing = false, timer = null;
     function open(i) {
       idx = i;
       lb = document.createElement('div'); lb.className = 'nr-lightbox'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
-      lb.innerHTML = '<button class="nr-lightbox__x" aria-label="Close">✕</button><button class="nr-lightbox__p" aria-label="Previous">←</button><img alt=""><button class="nr-lightbox__n" aria-label="Next">→</button><span class="nr-lightbox__c"></span>';
+      lb.innerHTML = '<button class="nr-lightbox__x" aria-label="Close">✕</button><button class="nr-lightbox__p" aria-label="Previous">←</button><img alt=""><button class="nr-lightbox__n" aria-label="Next">→</button>'
+        + '<button class="nr-lightbox__play" aria-label="Play slideshow">▶</button><span class="nr-lightbox__c"></span>';
       body.appendChild(lb); body.classList.add('is-modal-open');
       render();
       lb.querySelector('.nr-lightbox__x').onclick = close;
-      lb.querySelector('.nr-lightbox__p').onclick = function () { go(-1); };
-      lb.querySelector('.nr-lightbox__n').onclick = function () { go(1); };
+      lb.querySelector('.nr-lightbox__p').onclick = function () { stop(); go(-1); };
+      lb.querySelector('.nr-lightbox__n').onclick = function () { stop(); go(1); };
+      lb.querySelector('.nr-lightbox__play').onclick = toggle;       // #21
       lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
       var im = lb.querySelector('img');
       im.addEventListener('click', function () { im.classList.toggle('is-zoom'); });
       document.addEventListener('keydown', key);
       lb.querySelector('.nr-lightbox__x').focus();
     }
-    function render() { var im = lb.querySelector('img'); im.classList.remove('is-zoom'); im.src = imgs[idx]; lb.querySelector('.nr-lightbox__c').textContent = (idx + 1) + ' / ' + imgs.length; }
+    function render() {
+      var im = lb.querySelector('img'); im.classList.remove('is-zoom'); im.src = imgs[idx];
+      if (playing && !reduceLb()) { im.classList.remove('is-ken'); void im.offsetWidth; im.classList.add('is-ken'); }
+      lb.querySelector('.nr-lightbox__c').textContent = (idx + 1) + ' / ' + imgs.length;
+      try { history.replaceState(null, '', '#frame-' + (idx + 1)); } catch (e) {}   // #22
+    }
+    function reduceLb() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
     function go(d) { idx = (idx + d + imgs.length) % imgs.length; render(); }
-    function close() { if (!lb) return; lb.remove(); lb = null; body.classList.remove('is-modal-open'); document.removeEventListener('keydown', key); }
-    function key(e) { if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1); }
+    function toggle() { playing ? stop() : play(); }
+    function play() { playing = true; lb.classList.add('is-playing'); lb.querySelector('.nr-lightbox__play').textContent = '❚❚'; render(); timer = setInterval(function () { go(1); }, 4000); }
+    function stop() { playing = false; if (lb) { lb.classList.remove('is-playing'); var b = lb.querySelector('.nr-lightbox__play'); if (b) b.textContent = '▶'; } clearInterval(timer); }
+    function close() { stop(); if (!lb) return; lb.remove(); lb = null; body.classList.remove('is-modal-open'); document.removeEventListener('keydown', key); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+    function key(e) { if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight') { stop(); go(1); } else if (e.key === 'ArrowLeft') { stop(); go(-1); } else if (e.key === ' ') { e.preventDefault(); toggle(); } }
     figs.forEach(function (f, i) {
       var im = f.querySelector('img'); if (!im) return;
       im.style.cursor = 'zoom-in';
       f.addEventListener('click', function (e) { if (e.target.closest('a')) return; e.preventDefault(); open(i); });
     });
+    /* #22 — open a specific frame from the URL (#frame-3 or ?frame=3). */
+    (function () {
+      var n = 0, mm = (location.hash.match(/^#frame-(\d+)$/) || []);
+      if (mm[1]) n = parseInt(mm[1], 10);
+      else { try { n = parseInt(new URLSearchParams(location.search).get('frame') || '0', 10); } catch (e) {} }
+      if (n >= 1 && n <= imgs.length) setTimeout(function () { open(n - 1); }, 300);
+    })();
   })();
 
   /* #32 — video plate scrubber (seek bar over motion plates). */
@@ -2212,4 +2230,35 @@
       img.addEventListener('load', function () { try { img.decode(); } catch (e) {} }, { once: true });
     });
   }
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   v4.57.0 — #24 PWA install nudge · #26 rail scroll-compass
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  /* #24 — unobtrusive "add to home screen" nudge (dismissible, once). */
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e;
+    try { if (localStorage.getItem('nr_pwa_no') === '1') return; } catch (x) {}
+    var b = document.createElement('div');
+    b.className = 'nr-pwa';
+    b.innerHTML = '<span>Install this portfolio as an app?</span><button data-y>Install</button><button data-n aria-label="Dismiss">✕</button>';
+    document.body.appendChild(b);
+    b.querySelector('[data-y]').addEventListener('click', function () { b.remove(); if (deferred) { deferred.prompt(); deferred = null; } });
+    b.querySelector('[data-n]').addEventListener('click', function () { b.remove(); try { localStorage.setItem('nr_pwa_no', '1'); } catch (x) {} });
+  });
+
+  /* #26 — scroll-compass: a slim progress bar showing how much rail is left. */
+  document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+    if (rail.scrollWidth <= rail.clientWidth + 8) return;
+    var c = document.createElement('div'); c.className = 'nr-compass'; c.setAttribute('aria-hidden', 'true');
+    var fill = document.createElement('i'); c.appendChild(fill);
+    (rail.closest('.nr-portfolio-archive, .nr-project__rail, .nr-page') || rail.parentElement).appendChild(c);
+    var upd = function () {
+      var max = rail.scrollWidth - rail.clientWidth;
+      fill.style.width = (max > 0 ? Math.min(100, rail.scrollLeft / max * 100) : 0) + '%';
+    };
+    rail.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
+  });
 })();

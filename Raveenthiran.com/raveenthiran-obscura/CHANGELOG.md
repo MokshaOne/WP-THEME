@@ -1,5 +1,25 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.57.0 — IDEAS-50-NEXT, small batch 2 (11 items)
+- **#21 lightbox slideshow** — ▶ play button + slow Ken-Burns auto-advance (space
+  toggles, reduced-motion safe).
+- **#22 shareable plate deep-link** — the lightbox updates the URL to `#frame-N`;
+  opening a `…#frame-3` / `?frame=3` link jumps straight to that frame.
+- **#24 PWA install nudge** — a dismissible "install as app?" pill on
+  `beforeinstallprompt` (once).
+- **#26 rail scroll-compass** — a slim amber progress bar under horizontal rails.
+- **#31 section-aware speculation** — *prerender* project pages on hover, only
+  *prefetch* everything else.
+- **#40 `[nr_featured]`** — an "As featured in" press-logo band (from the press list).
+- **#43 Client onboarding** — a "Client onboarding" page template ("what to expect /
+  what to bring", with a sensible default).
+- **#45 `[nr_testimonial_videos]`** — testimonial-video field + an embed band
+  (YouTube/Vimeo/.mp4).
+- **#47 long descriptions** — per-image detailed alt via `aria-describedby` (a11y).
+- **Docs (#32 Cloudflare edge-cache recipe, #34 off-site uptime) → docs/OPS-NOTES.md.**
+
+IDEAS-50-NEXT: 22/50.
+
 ## 4.56.0 — IDEAS-50-NEXT, small batch 1 (11 items)
 New `inc/finishing.php` + front-end.
 - **#37 heuristic auto-alt** — images with no alt get one from the attachment/parent

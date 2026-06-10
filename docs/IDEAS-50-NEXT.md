@@ -32,22 +32,22 @@ or risky = opt-in.
 ## 🧭 Visitor experience
 19. ✅ _v4.56.0_ — **Keyboard gallery mode** — `j`/`k` to move through projects, `f` favourite, `?` help. _A11y · S_
 20. ✅ _v4.56.0_ — **"Surprise me"** — a button that deep-links to a random project. _UX · S_
-21. **Lightbox slideshow** — autoplay with slow Ken Burns + caption, pause on interaction. _UX · S_
-22. **Shareable plate deep-link** — URL that opens a specific frame (#3 of a project). _UX · S_
+21. ✅ _v4.57.0_ — **Lightbox slideshow** — autoplay with slow Ken Burns + caption, pause on interaction. _UX · S_
+22. ✅ _v4.57.0_ — **Shareable plate deep-link** — URL that opens a specific frame (#3 of a project). _UX · S_
 23. **Shareable shortlist** — turn the "my selection" into a sendable link, not just an email. _Conv · M_
-24. **PWA install polish** — proper icon set, splash, an unobtrusive "add to home screen" nudge. _Perf · S_
+24. ✅ _v4.57.0_ — **PWA install polish** — proper icon set, splash, an unobtrusive "add to home screen" nudge. _Perf · S_
 25. **Offline-readable journal** — cache opened articles so they survive a tunnel/flight. _Perf · M_
-26. **Cursor "compass"** — a tiny edge indicator showing how much rail is left to scroll. _Awww · S_
+26. ✅ _v4.57.0_ — **Cursor "compass"** — a tiny edge indicator showing how much rail is left to scroll. _Awww · S_
 
 ## ⚡ Performance & resilience
 27. **BlurHash placeholders** — sharper than the current LQIP, ~30 bytes each. _Perf · M_
 28. **Video poster auto-generation** — grab frame 0 as a poster so motion plates don't pop. _Perf · S_
 29. ✅ _v4.56.0_ — **size-adjust / font metrics** — eliminate the display-font CLS with a metric-matched fallback. _Perf · S_
 30. ✅ _v4.56.0_ — **`decode()` before swap** — decode large images off the main thread to avoid jank. _Perf · S_
-31. **Section-aware speculation rules** — prerender portfolio, only prefetch journal. _Perf · S_
-32. **Cloudflare HTML edge-cache recipe** — a worker/cache-rule doc for logged-out HTML. _Perf · S_
+31. ✅ _v4.57.0_ — **Section-aware speculation rules** — prerender portfolio, only prefetch journal. _Perf · S_
+32. ✅ _v4.57.0_ — **Cloudflare HTML edge-cache recipe** — a worker/cache-rule doc for logged-out HTML. _Perf · S_
 33. **Weekly studio digest email** — new enquiries + top projects + CWV, to the owner. _Ops · M_
-34. **Synthetic uptime check from a 2nd region** — catch easyname blips the local cron misses. _Ops · S_
+34. ✅ _v4.57.0_ — **Synthetic uptime check from a 2nd region** — catch easyname blips the local cron misses. _Ops · S_
 
 ## 🔎 SEO & reach (Vienna-specific)
 35. **Exhibition / show schema** — `Event` markup for gallery shows + a "Shows" section. _SEO · M_
@@ -55,18 +55,18 @@ or risky = opt-in.
 37. ✅ _v4.56.0_ — **Heuristic auto-alt** — generate decent alt from title + EXIF when empty (no AI/subscription). _SEO · S_
 38. **Press-kit auto-zip** — bundle bio, headshots, logo, selected hi-res into one download. _Conv · M_
 39. ✅ _v4.56.0_ — **Image sitemap captions from EXIF** — richer image search entries. _SEO · S_
-40. **"As featured in" logo wall** — a dedicated, animated press-logo band (beyond the list). _Conv · S_
+40. ✅ _v4.57.0_ — **"As featured in" logo wall** — a dedicated, animated press-logo band (beyond the list). _Conv · S_
 
 ## 🤝 Booking flow (still no payment)
 41. **Availability heat-calendar** — a month grid showing busy/open, fed from a simple field or `.ics`. _Conv · M_
 42. **Moodboard upload on Enquire** — let a client attach reference images with the brief. _Conv · M_
-43. **Client onboarding page** — "what to expect / what to bring", linked from the booking confirmation. _Content · S_
+43. ✅ _v4.57.0_ — **Client onboarding page** — "what to expect / what to bring", linked from the booking confirmation. _Content · S_
 44. **Pre-shoot countdown emails** — info-only drip (location, prep) before the date. _Conv · M_
-45. **Testimonial video embeds** — short client clips alongside the text quotes. _Content · S_
+45. ✅ _v4.57.0_ — **Testimonial video embeds** — short client clips alongside the text quotes. _Content · S_
 
 ## ♿ Accessibility & inclusivity
 46. ✅ _v4.56.0_ — **Dyslexia-friendly reading mode** — font + spacing toggle on journal essays. _A11y · S_
-47. **Long-descriptions** for complex editorial frames (`aria-describedby` → a hidden detailed alt). _A11y · S_
+47. ✅ _v4.57.0_ — **Long-descriptions** for complex editorial frames (`aria-describedby` → a hidden detailed alt). _A11y · S_
 48. ✅ _v4.56.0_ — **Save-Data hero** — a single static poster instead of the slider when Save-Data is on. _Perf · S_
 
 ## 🛠 Dev & quality

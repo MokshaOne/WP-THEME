@@ -12,7 +12,7 @@ or risky = opt-in.
 2. **"Shot on" facet** — browse/filter by camera body or film stock pulled from EXIF (e.g. "Leica M6"). _UX · M_
 3. **Lens & focal-length chart** on Studio — a quiet data-viz of the whole body of work. _Awww · M_
 4. **Time-of-day filter** — golden-hour / blue-hour / night, derived from EXIF timestamps. _UX · S_
-5. ✅ _v4.56.0_ — **Per-project contact-sheet PDF** — one-page proof of all selects (separate from the series lookbook). _Content · S_
+5. ⏭ _removed v4.58.1 (owner: not needed)_ — **Per-project contact-sheet PDF** — one-page proof of all selects (separate from the series lookbook). _Content · S_
 6. **Print-size wall preview** — show a frame at A2/A1 against a room scale (viz only, no sale). _Awww · M_
 7. **Aspect-true masonry** — an archive view that respects each frame's real crop instead of forcing 4:5. _UX · M_
 8. ✅ _v4.56.0_ — **Site-wide B&W toggle** — a one-tap monochrome view honouring the noir aesthetic. _Awww · S_

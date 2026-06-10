@@ -27,35 +27,6 @@ add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $att ) {
 	return $attr;
 }, 9, 2 );
 
-/* ── #5 — per-project contact-sheet PDF at /nr-contactsheet/<id>.pdf ──
-   Reuses the memory-safe JPEG-passthrough writer (nr_stream_jpeg_pdf, mediumwins2). */
-add_action( 'template_redirect', function () {
-	$path = (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH );
-	if ( ! preg_match( '#/nr-contactsheet/(\d+)\.pdf$#', $path, $m ) ) return;
-	$id = (int) $m[1];
-	if ( get_post_type( $id ) !== 'nr_project' || ! function_exists( 'nr_stream_jpeg_pdf' ) ) { status_header( 404 ); exit; }
-	$gallery = function_exists( 'nr_field' ) ? nr_field( 'project_gallery', $id ) : [];
-	$jpegs = [];
-	if ( is_array( $gallery ) ) {
-		foreach ( $gallery as $g ) {
-			$aid = is_array( $g ) ? (int) ( $g['ID'] ?? $g['id'] ?? 0 ) : ( is_numeric( $g ) ? (int) $g : 0 );
-			if ( ! $aid || wp_attachment_is( 'video', $aid ) ) continue;
-			$f = get_attached_file( $aid );
-			if ( $f && preg_match( '/\.jpe?g$/i', $f ) && file_exists( $f ) ) $jpegs[] = $f;
-		}
-	}
-	if ( ! $jpegs && has_post_thumbnail( $id ) ) {
-		$f = get_attached_file( get_post_thumbnail_id( $id ) );
-		if ( $f && preg_match( '/\.jpe?g$/i', $f ) ) $jpegs[] = $f;
-	}
-	if ( ! $jpegs ) { status_header( 404 ); exit; }
-	header( 'Content-Type: application/pdf' );
-	header( 'Content-Disposition: inline; filename="' . sanitize_title( get_the_title( $id ) ) . '-contact-sheet.pdf"' );
-	nr_stream_jpeg_pdf( array_slice( $jpegs, 0, 24 ), get_the_title( $id ) );
-	exit;
-}, 0 );
-function nr_contactsheet_url( $id = 0 ) { $id = $id ?: get_the_ID(); return home_url( '/nr-contactsheet/' . (int) $id . '.pdf' ); }
-
 /* ── #20 — "surprise me": /?nr_random=1 → redirect to a random project ── */
 add_action( 'template_redirect', function () {
 	if ( empty( $_GET['nr_random'] ) ) return;

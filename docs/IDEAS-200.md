@@ -289,19 +289,19 @@ their original list positions; only the build order changed.*
 14. **Pinned scrollytelling section** — a flagship project told through pinned, scrubbed steps. _Awww · L_
 
 ### Commerce, payments & client systems
-50. **Deposit via Stripe Payment Link** — collect a retainer to confirm a booking. _Conv · M_
-52. **Invoice generator** — turn an accepted estimate into a numbered invoice PDF. _Ops · M_
-53. **Lightweight e-sign** — "I agree" + timestamp + IP, stored on the enquiry, for simple shoot agreements. _Ops · M_
-57. **Multi-currency display** — geo or manual toggle for prices. _Conv · M_
-58. **Gift voucher** — sell a code, redeem against a booking. _Conv · M_
+50. ⏭ _won't-do · no payments_ — **Deposit via Stripe Payment Link** — collect a retainer to confirm a booking. _Conv · M_
+52. ⏭ _won't-do · accounting, not theme_ — **Invoice generator** — turn an accepted estimate into a numbered invoice PDF. _Ops · M_
+53. ⏭ _won't-do · niche legal_ — **Lightweight e-sign** — "I agree" + timestamp + IP, stored on the enquiry, for simple shoot agreements. _Ops · M_
+57. ⏭ _won't-do · no checkout_ — **Multi-currency display** — geo or manual toggle for prices. _Conv · M_
+58. ⏭ _won't-do · no commerce_ — **Gift voucher** — sell a code, redeem against a booking. _Conv · M_
 59. **Client proofing galleries** — private, password-protected delivery with favourites + download (keeps clients on-domain). _Conv · L_
-63. **Print sales** — limited-edition prints per project (Stripe + simple stock). _Conv · L_
-64. **Image licensing flow** — request usage/territory/term per image, priced. _Conv · M_
+63. ⏭ _won't-do · no print sales_ — **Print sales** — limited-edition prints per project (Stripe + simple stock). _Conv · L_
+64. ⏭ _won't-do · no paid licensing_ — **Image licensing flow** — request usage/territory/term per image, priced. _Conv · M_
 65. **Mini-CRM kanban** — enquiry board: new → quoted → booked → delivered. _Ops · M_
 66. **Automated follow-up drip** — a cron sequence for un-answered enquiries (opt-in). _Conv · M_
-76. **Client portal login** — delivery + invoices + messages behind a login. _Conv · L_
-78. **Referral/affiliate landing pages** — per-partner tracked URLs. _Conv · M_
-79. **SMS shoot reminder (opt-in)** — provider-based reminder before the date. _Conv · M_
+76. ⏭ _won't-do · no client login needed_ — **Client portal login** — delivery + invoices + messages behind a login. _Conv · L_
+78. ⏭ _won't-do · no affiliate program_ — **Referral/affiliate landing pages** — per-partner tracked URLs. _Conv · M_
+79. ⏭ _won't-do · paid SMS provider, low ROI_ — **SMS shoot reminder (opt-in)** — provider-based reminder before the date. _Conv · M_
 
 ### Performance / offline infrastructure
 88. ✅ _v4.51.0_ — **Virtualised rails** — render only on-screen cards on 200-project archives. _Perf · M_

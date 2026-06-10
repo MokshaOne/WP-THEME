@@ -6,18 +6,23 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.39.0' );
+define( 'NR_THEME_VERSION', '4.40.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
  * ───────────────────────────────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
+	load_theme_textdomain( 'raveenthiran', get_template_directory() . '/languages' );
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'html5', [ 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ] );
 	add_theme_support( 'automatic-feed-links' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'custom-logo', [ 'width' => 320, 'height' => 80, 'flex-width' => true, 'flex-height' => true ] );
+	// Block editor reflects the Obscura look (dark canvas + theme fonts).
+	add_theme_support( 'editor-styles' );
+	add_theme_support( 'dark-editor-style' );
+	add_editor_style( 'assets/css/editor-style.css' );
 
 	register_nav_menus( [
 		'primary'   => __( 'Primary Menu (top bar + sidebar)', 'raveenthiran' ),

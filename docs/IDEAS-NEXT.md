@@ -4,12 +4,12 @@ Fresh, forward-looking backlog after the 50-item review (all shipped/closed in
 v4.33–4.39). These are NOT rehashes — they're new directions, grouped by theme.
 Nothing here is started yet.
 
-## ⚡ Quick wins found in the v4.39 audit (genuine gaps)
-1. **`screenshot.png`** — the theme has no preview thumbnail in Appearance → Themes. Add a 1200×900 hero shot.
-2. **`load_theme_textdomain()` + `languages/obscura.pot`** — the text domain is declared but never loaded, so all `__()` strings aren't actually translatable. (Low urgency for an English-only site, but it's a correctness gap.)
-3. **Editor styles (`add_editor_style`)** — the block editor for Journal/pages is light + system-font; an `editor-style.css` would mirror the dark Obscura look so authoring matches the front end.
-4. **`readme.txt` + `CHANGELOG.md`** — proper theme metadata + a human changelog (currently only the per-version commit log).
-5. **Minimal `theme.json`** — even for a classic theme, a small `theme.json` exposes the Obscura palette/fonts to the block editor color pickers.
+## ⚡ Quick wins found in the v4.39 audit — ✅ shipped v4.40.0
+1. ✅ **`screenshot.png`** — the theme has no preview thumbnail in Appearance → Themes. Add a 1200×900 hero shot.
+2. ✅ **`load_theme_textdomain()` + `languages/raveenthiran.pot`** — the text domain is declared but never loaded, so all `__()` strings aren't actually translatable. (Low urgency for an English-only site, but it's a correctness gap.)
+3. ✅ **Editor styles (`add_editor_style`)** — the block editor for Journal/pages is light + system-font; an `editor-style.css` would mirror the dark Obscura look so authoring matches the front end.
+4. ✅ **`readme.txt` + `CHANGELOG.md`** — proper theme metadata + a human changelog (currently only the per-version commit log).
+5. ✅ **Minimal `theme.json`** — even for a classic theme, a small `theme.json` exposes the Obscura palette/fonts to the block editor color pickers.
 
 ## 🎯 Conversion & audience
 6. **"Recently viewed projects"** strip (localStorage) on the portfolio/home — gentle re-engagement, no tracking.

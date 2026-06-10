@@ -543,6 +543,12 @@ function nr_content_health_widget() {
 		'<a href="' . esc_url( $tools ) . '">' . esc_html__( 'Tools → Export', 'raveenthiran' ) . '</a>'
 	);
 	echo '</p>';
+
+	// #113 — IndexNow bulk resubmit (only useful once a key is set).
+	if ( function_exists( 'nr_indexnow_key' ) && nr_indexnow_key() ) {
+		$u = wp_nonce_url( admin_url( 'admin-post.php?action=nr_indexnow_bulk' ), 'nr_indexnow_bulk' );
+		echo '<p style="margin-top:8px"><a class="button button-small" href="' . esc_url( $u ) . '">' . esc_html__( 'Re-ping all URLs to IndexNow', 'raveenthiran' ) . '</a></p>';
+	}
 }
 
 /* =============================================================

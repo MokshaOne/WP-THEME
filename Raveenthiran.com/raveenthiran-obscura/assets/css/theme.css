@@ -2163,3 +2163,62 @@ body.nr-savedata .nr-recent__card img{background:var(--bg-2,#14151A)}
   .nr-cinematic[data-nr-motion="standard"]::after,
   .nr-cinematic[data-nr-motion="cinematic"]::after{animation:none!important}
 }
+
+/* ── IDEAS-200 Batch 2 (v4.44.0): conversion UI ───────────────── */
+
+/* #47 trust line + #49 availability on Enquire */
+.nr-trust{font-size:12.5px;color:var(--ink-3);margin:10px 2px 0;letter-spacing:.01em}
+.nr-form__avail{display:block;margin-top:6px;font-size:12px;color:var(--amber);letter-spacing:.02em}
+
+/* #69 packages comparison */
+.nr-packages{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0}
+.nr-package{display:flex;flex-direction:column;gap:12px;padding:22px;border:1px solid var(--hair);border-radius:6px;background:var(--bg-2,#14151A)}
+.nr-package__head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.nr-package__name{font-size:16px;color:var(--ink);font-weight:600}
+.nr-package__price{font-family:var(--mono,'JetBrains Mono',monospace);font-size:13px;color:var(--amber)}
+.nr-package ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.nr-package li{font-size:13.5px;color:var(--ink-2);padding-left:16px;position:relative}
+.nr-package li::before{content:"·";position:absolute;left:2px;color:var(--amber)}
+.nr-package .nr-btn{margin-top:auto;align-self:flex-start}
+
+/* #71 press wall */
+.nr-press{display:flex;flex-direction:column;border-top:1px solid var(--hair)}
+.nr-press__item{display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--hair);text-decoration:none;color:var(--ink-2);transition:color .2s}
+.nr-press__item:hover{color:var(--ink)}
+.nr-press__medium{font-weight:600;color:var(--ink);min-width:140px}
+.nr-press__title{flex:1}
+.nr-press__year{font-family:var(--mono,'JetBrains Mono',monospace);font-size:12px;color:var(--ink-4)}
+
+/* #73 seasonal banner */
+.nr-promo{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:9px 44px;background:var(--amber);color:#0B0C10;font-size:13px;letter-spacing:.01em;text-align:center}
+.nr-promo a{color:#0B0C10;text-decoration:underline}
+.nr-promo__x{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:0;color:#0B0C10;cursor:pointer;font-size:14px;opacity:.7}
+.nr-promo__x:hover{opacity:1}
+
+/* #44 exit-intent */
+.nr-exitp{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;background:rgba(11,12,16,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:nrFadeIn .2s ease}
+.nr-exitp__box{position:relative;max-width:420px;margin:20px;padding:34px 30px;background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:10px;text-align:center}
+.nr-exitp__box p{font-size:18px;line-height:1.45;color:var(--ink);margin:0 0 18px;font-weight:300}
+.nr-exitp__x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--ink-3);font-size:15px;cursor:pointer}
+@keyframes nrFadeIn{from{opacity:0}to{opacity:1}}
+
+/* #41 visitor shortlist — hearts + tray */
+.nr-shortlist .nr-card{position:relative}
+.nr-heart{position:absolute;top:10px;right:10px;z-index:7;width:30px;height:30px;border-radius:50%;border:1px solid var(--hair);
+  background:rgba(11,12,16,.5);color:var(--ink-3);cursor:pointer;line-height:1;font-size:14px;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:transform .15s,color .2s}
+.nr-heart::before{content:"♡"}
+.nr-heart.is-on{color:var(--amber);border-color:var(--amber)}
+.nr-heart.is-on::before{content:"♥"}
+.nr-heart:hover{transform:scale(1.12)}
+.nr-tray{position:fixed;right:16px;bottom:16px;z-index:60;font-family:var(--mono,'JetBrains Mono',monospace)}
+.nr-tray__btn{background:var(--amber);color:#0B0C10;border:0;border-radius:999px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:600;letter-spacing:.04em}
+.nr-tray__panel{position:absolute;right:0;bottom:calc(100% + 8px);min-width:220px;max-width:280px;background:rgba(11,12,16,.96);border:1px solid var(--hair);border-radius:10px;padding:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.nr-tray__panel strong{display:block;color:var(--ink);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.nr-tray__panel ul{list-style:none;margin:0 0 14px;padding:0;max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.nr-tray__panel li{font-size:13px;color:var(--ink-2);font-family:'Inter Tight',sans-serif}
+@media (max-width:900px){.nr-tray{bottom:calc(var(--nr-tabbar-h,64px) + 12px)}}
+
+/* #77 share button inherits .nr-btn */
+.nr-share{cursor:pointer}

@@ -78,17 +78,17 @@ WebGL-fallback-safe.*
 start with the small high-leverage ones.*
 
 ### Capture & qualify
-41. **Visitor shortlist / "my selection"** — heart frames across the site, persisted, then email the list as a brief. _Conv · M_
+41. ✅ _v4.44.0_ — **Visitor shortlist / "my selection"** — heart frames across the site, persisted, then email the list as a brief. _Conv · M_
 42. **Multi-step booking wizard** — type → date → budget → details, with progress + save/resume. _Conv · M_
 43. **Lead scoring in insights** — weight enquiries by budget/date/type and sort the dashboard. _Conv · S_
-44. **Exit-intent lookbook offer** — gentle, opt-in: offer the PDF lookbook as the cursor leaves. _Conv · S_
+44. ✅ _v4.44.0_ — **Exit-intent lookbook offer** — gentle, opt-in: offer the PDF lookbook as the cursor leaves. _Conv · S_
 45. **"Similar budget" project hints** — on Enquire, surface work that fits the chosen package. _Conv · S_
-46. **Pre-filled brief from a project** — extend "Commission similar" to seed the brief text, not just the type. _Conv · S_
-47. **Conversion microcopy + trust audit** — reassurance, response-time, privacy near every form field. _Conv · S_
+46. ✅ _v4.44.0_ — **Pre-filled brief from a project** — extend "Commission similar" to seed the brief text, not just the type. _Conv · S_
+47. ✅ _v4.44.0_ — **Conversion microcopy + trust audit** — reassurance, response-time, privacy near every form field. _Conv · S_
 48. **A/B hero CTA copy** — a lightweight built-in splitter logging to insights. _Conv · M_
 
 ### Booking, payment & contracts
-49. **Availability calendar on Enquire** — native date-picker showing open shoot windows (or Cal.com embed). _Conv · M_
+49. ✅ _v4.44.0_ — **Availability calendar on Enquire** — native date-picker showing open shoot windows (or Cal.com embed). _Conv · M_
 51. **Branded PDF estimate by email** — the quote calculator emails the visitor a real estimate + notifies you. _Conv · M_
 54. **Booking .ics invite** — attach a calendar invite to the confirmation email. _Conv · S_
 55. **VAT-aware estimates (AT 20%)** — show net/gross + reverse-charge note for EU business clients. _Conv · S_
@@ -99,17 +99,17 @@ start with the small high-leverage ones.*
 61. **Post-delivery testimonial request** — auto-email that feeds the Testimonials CPT + aggregateRating. _Conv · S_
 62. **Case-study template** — problem → approach → result for selected projects. _Content · M_
 67. **Abandoned-quote recovery** — if email was captured, nudge unfinished estimates. _Conv · S_
-68. **Referral code for past clients** — track word-of-mouth in insights. _Conv · S_
+68. ✅ _v4.44.0_ — **Referral code for past clients** — track word-of-mouth in insights. _Conv · S_
 
 ### Presentation of value
-69. **Packages comparison table** — transparent pricing tiers with feature ticks. _Conv · S_
+69. ✅ _v4.44.0_ — **Packages comparison table** — transparent pricing tiers with feature ticks. _Conv · S_
 70. **"Trusted by" with link-out + counts** — extend the client-logos strip with animated counts. _Conv · S_
-71. **Press wall** — manual press list rendered with logos + links + dates. _Content · S_
+71. ✅ _v4.44.0_ — **Press wall** — manual press list rendered with logos + links + dates. _Content · S_
 72. **Newsletter double opt-in + welcome + archive** — confirm subscribers, send a welcome, publish past issues. _Conv · M_
-73. **Seasonal campaign banner scheduler** — date-bounded promo bar, auto on/off. _Conv · S_
-74. **WhatsApp Business deep-link** — prefilled message with the project reference. _Conv · S_
+73. ✅ _v4.44.0_ — **Seasonal campaign banner scheduler** — date-bounded promo bar, auto on/off. _Conv · S_
+74. ✅ _v4.44.0_ — **WhatsApp Business deep-link** — prefilled message with the project reference. _Conv · S_
 75. **"Hold two dates" request** — soft-reserve flow before a firm booking. _Conv · S_
-77. **Share-card generator for clients** — "shot by" card a client can post. _Conv · S_
+77. ✅ _v4.44.0_ — **Share-card generator for clients** — "shot by" card a client can post. _Conv · S_
 80. **Saved enquiry resume link** — tokenised link to continue a brief later. _Conv · S_
 
 ---
@@ -127,39 +127,39 @@ perf change — see the playbook.*
 86. **Precompressed Brotli/gzip static assets** — verify the host/Cloudflare serves `.br`. _Perf · S_
 87. **`modulepreload` + JS islands** — lazy-hydrate non-critical interactivity. _Perf · M_
 89. **Exhaustive `loading`/`decoding`/`fetchpriority` re-audit** — across all templates after the recent additions. _Perf · S_
-90. **Generalised LCP preload** — auto-detect and preload the LCP element on every template, not just front-page. _Perf · M_
+90. ✅ _v4.44.0_ — **Generalised LCP preload** — auto-detect and preload the LCP element on every template, not just front-page. _Perf · M_
 
 ### Edge & delivery
 92. **Cloudflare cache-rules + APO guide** — a documented, copy-paste edge config for this theme. _Perf · S_
 95. **Periodic background prefetch** — warm the journal index in the background (where supported). _Perf · S_
 
 ### Structured data & feeds
-96. **Per-plate ImageObject schema** — creator, caption, license, EXIF on each image. _SEO · M_
-97. **VideoObject schema** — duration + thumbnail for motion plates. _SEO · S_
-98. **XML image sitemap** — separate, with captions + geo. _SEO · S_
+96. ✅ _v4.44.0_ — **Per-plate ImageObject schema** — creator, caption, license, EXIF on each image. _SEO · M_
+97. ✅ _v4.44.0_ — **VideoObject schema** — duration + thumbnail for motion plates. _SEO · S_
+98. ✅ _v4.44.0_ — **XML image sitemap** — separate, with captions + geo. _SEO · S_
 99. **Sitemap index splitting** — paginate the sitemap at 200+ URLs. _SEO · S_
-100. **WebSub / PubSubHubbub ping** — instant feed push to subscribers/readers. _SEO · S_
-101. **JSON Feed 1.1 endpoint** — modern reader support alongside RSS. _SEO · S_
-102. **`og:video` + X player card** — for projects with motion. _SEO · S_
+100. ✅ _v4.44.0_ — **WebSub / PubSubHubbub ping** — instant feed push to subscribers/readers. _SEO · S_
+101. ✅ _v4.44.0_ — **JSON Feed 1.1 endpoint** — modern reader support alongside RSS. _SEO · S_
+102. ✅ _v4.44.0_ — **`og:video` + X player card** — for projects with motion. _SEO · S_
 103. **Pinterest rich pins** — article/product meta for save-driven discovery. _SEO · S_
-104. **Google Discover optimisation for journal** — large images + freshness + author markup. _SEO · M_
-105. **Canonical consolidation** — collapse filtered/sorted archive permutations to one canonical. _SEO · S_
+104. ✅ _v4.44.0_ — **Google Discover optimisation for journal** — large images + freshness + author markup. _SEO · M_
+105. ✅ _v4.44.0_ — **Canonical consolidation** — collapse filtered/sorted archive permutations to one canonical. _SEO · S_
 
 ### Analytics & quality gates
 107. **Core Web Vitals field collection** — `web-vitals.js` → a theme endpoint, charted in the dashboard. _Perf · M_
 108. **Conversion funnel report** — view → enquire-start → submit, per source/project. _Conv · M_
 109. **Structured-data lint in CI** — validate JSON-LD in the manual quality workflow. _SEO · S_
-110. **Search-term capture** — log the ⌘K palette queries to find content gaps. _Content · S_
+110. ✅ _v4.44.0_ — **Search-term capture** — log the ⌘K palette queries to find content gaps. _Content · S_
 111. **404/410 + redirect-map UI** — manage redirects for deleted/renamed projects in the dashboard. _SEO · M_
 112. **Outbound broken-link checker** — extend content-health to external links. _SEO · S_
-113. **On-demand IndexNow bulk resubmit** — a button to re-ping all URLs after a big change. _SEO · S_
-114. **Per-project unique meta + title templates** — token-based (`%title% — %cat% photography, Vienna`). _SEO · S_
+113. ✅ _v4.44.0_ — **On-demand IndexNow bulk resubmit** — a button to re-ping all URLs after a big change. _SEO · S_
+114. ✅ _v4.44.0_ — **Per-project unique meta + title templates** — token-based (`%title% — %cat% photography, Vienna`). _SEO · S_
 115. **FAQ + HowTo schema on relevant journal posts** — earn rich results on guides. _SEO · S_
-116. **Author/Person entity consolidation** — single `@id` referenced everywhere (Knowledge-Panel hygiene). _SEO · S_
-117. **`speakable` schema on key pages** — voice-assistant surfacing. _SEO · S_
+116. ✅ _v4.44.0_ — **Author/Person entity consolidation** — single `@id` referenced everywhere (Knowledge-Panel hygiene). _SEO · S_
+117. ✅ _v4.44.0_ — **`speakable` schema on key pages** — voice-assistant surfacing. _SEO · S_
 118. **Lighthouse budget enforcement** — wire the existing `lighthouserc.json` into a real gate when a staging URL exists. _Perf · M_
-119. **Robots/AI-crawler policy** — explicit allow/deny for GPTBot/CCBot etc., owner's choice. _SEO · S_
-120. **hreflang region tuning** — en, en-AT, x-default refinement for the DACH market. _SEO · S_
+119. ✅ _v4.44.0_ — **Robots/AI-crawler policy** — explicit allow/deny for GPTBot/CCBot etc., owner's choice. _SEO · S_
+120. ✅ _v4.44.0_ — **hreflang region tuning** — en, en-AT, x-default refinement for the DACH market. _SEO · S_
 
 ---
 

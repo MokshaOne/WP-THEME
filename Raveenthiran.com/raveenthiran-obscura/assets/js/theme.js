@@ -1334,3 +1334,165 @@
     });
   });
 })();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 Batch 2 — conversion behaviours (v4.44.0).
+   Reads #nr-conv config. Toggles gate via body classes from PHP.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var cfg = {};
+  try { cfg = JSON.parse((document.getElementById('nr-conv') || {}).textContent || '{}'); } catch (e) {}
+  var body = document.body;
+
+  /* #68 — referral capture: ?via=CODE → localStorage, appended to the brief. */
+  try {
+    var via = new URLSearchParams(location.search).get('via');
+    if (via) localStorage.setItem('nr_via', via.slice(0, 40));
+  } catch (e) {}
+
+  /* #47 trust line + #49 availability + #74 WhatsApp ref + #68 brief tag — on Enquire. */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form) {
+    if (cfg.trust) {
+      var t = document.createElement('p'); t.className = 'nr-trust'; t.textContent = cfg.trust;
+      (form.querySelector('.nr-form__actions') || form).insertAdjacentElement('afterend', t);
+    }
+    if (cfg.avail) {
+      var d = form.querySelector('input[type="date"]');
+      if (d && d.parentElement) {
+        var a = document.createElement('span'); a.className = 'nr-form__avail'; a.textContent = cfg.avail;
+        d.parentElement.appendChild(a);
+      }
+    }
+    // append referral code to notes on submit so it reaches the email
+    form.addEventListener('submit', function () {
+      try {
+        var v = localStorage.getItem('nr_via');
+        var notes = form.querySelector('[name="notes"]');
+        if (v && notes && notes.value.indexOf('[ref:') < 0) notes.value += '\n\n[ref: ' + v + ']';
+      } catch (e) {}
+    });
+    // enrich the WhatsApp link with the project ref if present
+    try {
+      var ref = new URLSearchParams(location.search).get('ref');
+      if (ref) {
+        var wa = form.parentElement && form.parentElement.querySelector('a[href*="wa.me"]');
+        if (wa) { var u = new URL(wa.href); u.searchParams.set('text', 'Re: ' + ref); wa.href = u.toString(); }
+      }
+    } catch (e) {}
+  }
+
+  /* #77 — share button on single projects (Web Share API → clipboard fallback). */
+  if (body.classList.contains('single-nr_project') || document.querySelector('.nr-project')) {
+    var actions = document.querySelector('.nr-project__actions');
+    if (actions && !actions.querySelector('.nr-share')) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'nr-btn nr-share'; b.innerHTML = '<span>Share</span>';
+      b.addEventListener('click', function () {
+        var data = { title: document.title, url: location.href };
+        if (navigator.share) { navigator.share(data).catch(function () {}); }
+        else if (navigator.clipboard) { navigator.clipboard.writeText(location.href); b.querySelector('span').textContent = 'Copied'; setTimeout(function () { b.querySelector('span').textContent = 'Share'; }, 1600); }
+      });
+      actions.appendChild(b);
+    }
+  }
+
+  /* #73 — seasonal banner dismiss (persisted). */
+  var promo = document.querySelector('[data-promo]');
+  if (promo) {
+    var key = 'nr_promo_seen';
+    try { if (localStorage.getItem(key) === promo.textContent.trim()) promo.remove(); } catch (e) {}
+    var x = promo.querySelector('.nr-promo__x');
+    if (x) x.addEventListener('click', function () { try { localStorage.setItem(key, promo.textContent.trim()); } catch (e) {} promo.remove(); });
+  }
+
+  /* #44 — exit-intent soft offer (desktop, once per session). */
+  if (body.classList.contains('nr-exit') && window.matchMedia('(hover:hover)').matches) {
+    var shown = false;
+    try { shown = sessionStorage.getItem('nr_exit') === '1'; } catch (e) {}
+    document.addEventListener('mouseout', function (e) {
+      if (shown || e.relatedTarget || e.clientY > 12) return;
+      shown = true; try { sessionStorage.setItem('nr_exit', '1'); } catch (e2) {}
+      var o = document.createElement('div'); o.className = 'nr-exitp'; o.setAttribute('role', 'dialog');
+      o.innerHTML = '<div class="nr-exitp__box"><button class="nr-exitp__x" aria-label="Close">✕</button>'
+        + '<p>' + (cfg.exit || 'Before you go — tell me about your project.') + '</p>'
+        + '<a class="nr-btn nr-btn--primary" href="' + (cfg.enquire || '/enquire') + '"><span>Start a brief</span> <span>→</span></a></div>';
+      document.body.appendChild(o);
+      var close = function () { o.remove(); };
+      o.addEventListener('click', function (e3) { if (e3.target === o || e3.target.closest('.nr-exitp__x')) close(); });
+    });
+  }
+
+  /* #41 — visitor shortlist: ♥ on cards → a "selection" tray → send as brief. */
+  if (body.classList.contains('nr-shortlist')) {
+    var SK = 'nr_shortlist_v1';
+    var read = function () { try { return JSON.parse(localStorage.getItem(SK) || '[]'); } catch (e) { return []; } };
+    var write = function (a) { try { localStorage.setItem(SK, JSON.stringify(a)); } catch (e) {} };
+    var titleOf = function (card) {
+      var el = card.querySelector('.nr-card__title, .nr-card__t');
+      return (el ? el.textContent : (card.getAttribute('aria-label') || '')).trim();
+    };
+    var list = read();
+    // inject hearts
+    document.querySelectorAll('.nr-card').forEach(function (card) {
+      if (card.querySelector('.nr-heart')) return;
+      var href = card.getAttribute('href') || (card.querySelector('a') && card.querySelector('a').getAttribute('href')) || '';
+      var t = titleOf(card); if (!t) return;
+      var h = document.createElement('button');
+      h.type = 'button'; h.className = 'nr-heart'; h.setAttribute('aria-label', 'Add to selection');
+      if (list.some(function (x) { return x.t === t; })) h.classList.add('is-on');
+      h.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var l = read(), i = l.findIndex(function (x) { return x.t === t; });
+        if (i >= 0) { l.splice(i, 1); h.classList.remove('is-on'); } else { l.push({ t: t, u: href }); h.classList.add('is-on'); }
+        write(l); render();
+      });
+      card.appendChild(h);
+    });
+    // tray
+    var tray = document.createElement('div'); tray.className = 'nr-tray'; tray.hidden = true;
+    tray.innerHTML = '<button class="nr-tray__btn" aria-expanded="false">♥ <span data-tray-n>0</span></button>'
+      + '<div class="nr-tray__panel" hidden><strong>Your selection</strong><ul data-tray-list></ul>'
+      + '<a class="nr-btn nr-btn--primary" data-tray-send><span>Send as brief</span> <span>→</span></a></div>';
+    document.body.appendChild(tray);
+    var btn = tray.querySelector('.nr-tray__btn'), panel = tray.querySelector('.nr-tray__panel');
+    btn.addEventListener('click', function () { var o = panel.hidden; panel.hidden = !o; btn.setAttribute('aria-expanded', String(o)); });
+    function render() {
+      var l = read();
+      tray.hidden = l.length === 0;
+      tray.querySelector('[data-tray-n]').textContent = l.length;
+      tray.querySelector('[data-tray-list]').innerHTML = l.map(function (x) { return '<li>' + (x.t || '').replace(/[<>&]/g, '') + '</li>'; }).join('');
+      var send = tray.querySelector('[data-tray-send]');
+      var titles = l.map(function (x) { return x.t; }).join(', ');
+      var base = cfg.enquire || '/enquire';
+      send.href = base + (base.indexOf('?') < 0 ? '?' : '&') + 'ref=' + encodeURIComponent(titles.slice(0, 180));
+    }
+    render();
+  }
+
+  /* #110 — search-term capture: beacon ⌘K palette queries (debounced). */
+  (function () {
+    if (!(window.NR && NR.home)) return;
+    var input = document.querySelector('.nr-cmd__input'); // exists once the palette is built
+    var bind = function (el) {
+      var tmr;
+      el.addEventListener('input', function () {
+        clearTimeout(tmr);
+        tmr = setTimeout(function () {
+          var q = el.value.trim();
+          if (q.length < 3) return;
+          try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/search-log', new Blob([JSON.stringify({ q: q })], { type: 'application/json' })); } catch (e) {}
+        }, 1200);
+      });
+    };
+    if (input) bind(input);
+    else {
+      // the palette is built lazily; observe for it
+      var mo = new MutationObserver(function () {
+        var i = document.querySelector('.nr-cmd__input');
+        if (i) { bind(i); mo.disconnect(); }
+      });
+      mo.observe(document.body, { childList: true });
+    }
+  })();
+})();

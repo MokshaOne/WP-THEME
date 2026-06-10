@@ -1,5 +1,50 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.44.0 — IDEAS-200 Batch 2 + 3 (the lightweight majority)
+A large additive release. Two new modules — `inc/seo-extra.php` and
+`inc/conversion-extra.php` — plus settings, CSS and JS. Nothing changes the
+front-end look unless you opt in; the SEO/feed/schema work is all `<head>`,
+feeds and sitemaps.
+
+**SEO / distribution / schema (Batch 3):**
+- ImageObject + VideoObject schema for project media, `og:video` for motion (#96/#97/#102).
+- Person `@id` + WebPage author/dates + `speakable` for Discover & assistants (#104/#116/#117).
+- Canonical consolidation — `noindex,follow` on filtered/sorted archive URLs (#105).
+- `en-AT` hreflang alongside en + x-default (#120).
+- **JSON Feed 1.1** at `/feed/json` and an **image sitemap** at `/sitemap-images.xml` (#101/#98).
+- **WebSub** ping on publish so feeds push instantly (#100).
+- Token **`<title>` templates** for projects (`%title% %cat% %year% %site%`) (#114).
+- **robots.txt**: both sitemaps + an opt-in **AI-crawler block** (GPTBot/CCBot/…) (#119).
+- **Search-term capture** — the ⌘K palette logs queries to `nr_search_log` (#110).
+- **IndexNow bulk re-ping** button in the content-health widget (#113).
+- **Generalised LCP preload** on single projects/journal/pages (#90).
+
+**Conversion (Batch 2):**
+- **Visitor shortlist** — ♥ projects into a tray, send as a pre-filled brief (#41, opt-in).
+- **Exit-intent** soft prompt (desktop, once/session, opt-in) (#44).
+- **Trust line** + **availability** shown on the Enquire form (#47/#49).
+- **Pre-filled brief** from a project (the `?ref` prefill, surfaced) (#46).
+- **Referral capture** — `?via=CODE` rides along into the brief (#68).
+- **`[nr_packages]`** comparison table + **`[nr_press]`** press wall shortcodes (#69/#71).
+- **Seasonal banner** — dismissible, date-bounded (#73).
+- **Share** button on projects (Web Share → clipboard) + WhatsApp project ref (#77/#74).
+
+**How to test:** Theme Settings → new **§ Conversion & SEO extras** section (toggles +
+packages/banner/title-template/AI-block). Visit `/feed/json` and `/sitemap-images.xml`.
+Drop `[nr_packages]` / `[nr_press]` on a page. View a project's source for the new
+JSON-LD and `og:video`. Turn on the shortlist/exit-intent toggles and reload a
+portfolio page.
+
+**Held for the next pass (deliberately — integration-heavy / asset- or owner-bound):**
+booking wizard (#42), lead scoring (#43), A/B CTA (#48), PDF-estimate email (#51),
+.ics + VAT + add-ons (#54/#55/#56), delivery page (#60), testimonial request (#61),
+case-study (#62), abandoned-quote (#67), newsletter double-opt-in (#72), resume link
+(#80); and the perf items that need build tooling / assets / host config: variable
+font (#83), subsetting (#84), SVG sprite (#85), Brotli (#86), modulepreload (#87),
+CF guide (#92), SW prefetch (#95), AVIF (#81), art-directed picture (#82), CWV
+endpoint (#107), funnel (#108), SD-lint CI (#109), redirect-map UI (#111), outbound
+link check (#112), HowTo (#115), LHCI gate (#118).
+
 ## 4.43.0 — Batch 1 part 2 (lightweight motion) + a v4.42 fix
 **Fix:** in v4.42 the motion level (`data-nr-motion`) was written to `<html>` while
 the `.nr-cinematic` class is on `<body>`, so the compound CSS selectors never

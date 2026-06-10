@@ -146,6 +146,17 @@ function nr_settings_defaults() {
 		'nr_clients_logos'   => '',   // "url | name" per line
 		'nr_indexnow_key'    => '',   // IndexNow key (8–128 hex chars)
 
+		/* Conversion & SEO extras (IDEAS-200 Batch 2+3, v4.44) — opt-in / empty */
+		'nr_fx_shortlist'    => '0',  // visitor "selection" hearts on cards
+		'nr_fx_exit'         => '0',  // exit-intent soft offer
+		'nr_exit_text'       => '',   // exit-intent line (blank → a default)
+		'nr_trust_text'      => '',   // reassurance line under the Enquire form
+		'nr_packages'        => '',   // [nr_packages] — "Name | €from | feat;feat"
+		'nr_promo_text'      => '',   // seasonal banner (HTML <a>/<strong> ok)
+		'nr_promo_until'     => '',   // YYYY-MM-DD — banner auto-hides after
+		'nr_meta_title_tpl'  => '',   // #114 token <title> template for projects
+		'nr_block_ai'        => '0',  // robots.txt: disallow AI crawlers
+
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
 
@@ -777,6 +788,34 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'IndexNow key', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_indexnow_key', 40 ); ?>
 							<p class="description"><?php esc_html_e( '8–128 hex characters. When set, publishing a project/journal/page instantly pings Bing & Yandex. A matching key file is served automatically at /<key>.txt.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Conversion &amp; SEO extras</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'IDEAS-200 batch 2+3. Visitor-facing toggles are off by default. Packages/press render via the [nr_packages] and [nr_press] shortcodes (drop them on any page).', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Visitor shortlist', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_shortlist', __( 'Let visitors ♥ projects into a "selection" and send it as a brief (localStorage)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Exit-intent offer', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_exit', __( 'Show a one-time soft prompt when the cursor leaves toward the tab bar (desktop)', 'raveenthiran' ) ); ?>
+							<p><?php nr_field_text( 'nr_exit_text', 60 ); ?></p>
+							<p class="description"><?php esc_html_e( 'The prompt line. Blank uses a sensible default. Never shown on single-project pages.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Trust line (Enquire)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_trust_text', 70 ); ?>
+							<p class="description"><?php esc_html_e( 'Reassurance shown under the Enquire form, e.g. "Reply within 24h · no spam · your data stays private".', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Packages', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_packages', 5 ); ?>
+							<p class="description"><?php esc_html_e( 'One tier per line: "Name | €from 1,200 | half-day; 30 edits; web licence". Render with [nr_packages].', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Seasonal banner', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_promo_text', 70 ); ?>
+							<p><?php esc_html_e( 'Auto-hide after', 'raveenthiran' ); ?> <input type="date" name="nr_promo_until" value="<?php echo esc_attr( get_option( 'nr_promo_until', '' ) ); ?>"></p>
+							<p class="description"><?php esc_html_e( 'A dismissible bar. Basic <a>/<strong> allowed. Leave the date blank to show indefinitely.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Project <title> template', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_meta_title_tpl', 60 ); ?>
+							<p class="description"><?php esc_html_e( 'Tokens: %title% %cat% %year% %site%. e.g. "%title% — %cat% photography, Vienna · %site%". Blank keeps the default title.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Block AI crawlers', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_block_ai', __( 'Disallow GPTBot / CCBot / Google-Extended / ClaudeBot etc. in robots.txt', 'raveenthiran' ) ); ?></td></tr>
 				</table>
 			</details>
 

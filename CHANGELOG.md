@@ -2,9 +2,12 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**94 releases**, current **v4.70.0**.
+**95 releases**, current **v4.70.1**.
 
 ---
+
+## v4.70.1 — 2026-06-11
+Desktop CLS fix: the big front-page hero headline uses Inter Tight weight 300, which wasn't preloaded (only 500/700 were) — it painted in the fallback font then reflowed on swap (large desktop CLS; mobile unaffected because the title is much smaller). Weight 300 is now preloaded. Note: the v4.69 `.nr-modal{display:none}` change was correct hardening but not the CLS cause — Lighthouse had mis-attributed the shift to the full-screen overlay.
 
 ## v4.70.0 — 2026-06-11
 Press list is now a 3-column repeater (Year · Publisher · Link) with add/remove rows instead of one free-text box. Saves into the same option as canonical `year | publisher | url` lines (save pipeline unchanged); degrades to a textarea without JS. `nr_recognition_list` made tolerant of space-separated lines so existing entries (`2025 Heute.at https://…`) parse correctly. Publisher renders as a clickable link on the site (Press wall, “As featured in”, About page); the URL is never shown as raw text.

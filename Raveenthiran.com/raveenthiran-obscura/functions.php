@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.70.0' );
+define( 'NR_THEME_VERSION', '4.70.1' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -45,10 +45,12 @@ add_action( 'wp_enqueue_scripts', function () {
 	// fonts.css (~2.5KB of @font-face) is inlined into <head> below to drop a
 	// render-blocking request; only the main stylesheet loads externally.
 	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/theme.css', [], NR_THEME_VERSION );
-	// Preload the two above-the-fold weights (Inter Tight 500 body + 700 display em).
+	// Preload above-the-fold weights: 300 (big hero display title, was reflowing on
+		// font-swap = large desktop CLS), 500 (body), 700 (display em).
 	add_action( 'wp_head', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';
-		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
+		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-300.woff2' ) . '">' . "\n";
+			echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-700.woff2' ) . '">' . "\n";
 	}, 1 );
 

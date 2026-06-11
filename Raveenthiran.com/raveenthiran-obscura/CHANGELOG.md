@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.70.1 — Desktop CLS: preload the hero title weight
+The big front-page headline uses Inter Tight **300**, which wasn't preloaded (only
+500 + 700 were), so on desktop it painted in the fallback font and then reflowed
+when the web font arrived — the real source of the large desktop CLS (mobile was
+fine because the title is far smaller there). Weight 300 is now preloaded with 500
+and 700. The v4.69 `.nr-modal{display:none}` change was a correct hardening but not
+the CLS cause (Lighthouse had mis-attributed the shift to the full-screen overlay).
+
 ## 4.70.0 — Press: 3-field editor (Year · Publisher · Link)
 The Press list is now a proper 3-column repeater in Theme Settings — **Year**,
 **Publisher**, **Link** — with add/remove rows, instead of one free-text box. It

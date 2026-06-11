@@ -53,7 +53,7 @@ $nr_card_orient = function ( $post_id ) {
 		<?php endif; ?>
 	</div>
 
-	<div class="nr-portfolio-rail" data-portfolio data-h-rail>
+	<div class="nr-portfolio-grid" data-portfolio>
 		<?php
 		$nr_per_page = max( 4, min( 96, (int) nr_opt( 'nr_work_per_page', 24 ) ) );
 		$nr_paged    = max( 1, (int) get_query_var( 'paged', 1 ) );

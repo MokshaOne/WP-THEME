@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**85 releases**, current **v4.63.0**.
+**86 releases**, current **v4.64.0**.
 
 ---
+
+## v4.64.0 — 2026-06-11
+Replaced the horizontal portfolio rail with a plain responsive grid that scrolls vertically (`.nr-portfolio-rail` → `.nr-portfolio-grid`, `data-h-rail` dropped; filtering, colour-mood chips and keyboard gallery still work; rail-collapse bug retired). Awards & Press: `nr_recognition_list()` is now URL-aware — a link in any position is used as the link target and never shown as text (fixes the URL leaking into the "organisation" column on `year · name · url` entries).
+
 
 ## v4.63.0 — 2026-06-11
 Removed every EXIF feature — the studio works in AVIF/WebP, which carry no readable EXIF (so the EXIF-on-upload extractor, #43 EXIF→year, auto-alt camera hint, sitemap caption fallback, per-plate "Shot on" caption, and the EXIF-based ideas #2/#3/#4/#9 are gone; #1 → won't-do). Fixed the portfolio-rail collapse (cards sized off a rail row that collapsed when `:has()` didn't resolve → explicit `grid-template-rows` + rail min-height). Medium batch 3, new `inc/medium3.php`: `[nr_wallpreview]` print-size wall preview (#6), `[nr_burst]` sequence viewer (#10), shareable shortlist via "Copy share link" + `?shortlist=` import (#23). 37/50 shipped, 7 Medium open.

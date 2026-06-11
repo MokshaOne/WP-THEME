@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.63.0' );
+define( 'NR_THEME_VERSION', '4.64.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -202,11 +202,22 @@ function nr_recognition_list( $option_key ) {
 		$line = trim( $line );
 		if ( $line === '' ) continue;
 		$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
+		// A URL can sit in any position — pull it out as the link and never show
+		// it as text, so "year · name · url" works as well as "year · name · org · url".
+		$url  = '';
+		$rest = [];
+		foreach ( $parts as $p ) {
+			if ( $url === '' && preg_match( '#^(https?://|www\.)#i', $p ) ) {
+				$url = ( stripos( $p, 'http' ) === 0 ) ? $p : 'https://' . $p;
+				continue;
+			}
+			$rest[] = $p;
+		}
 		$row = [
-			'year' => $parts[0] ?? '',
-			'title' => $parts[1] ?? '',
-			'org'   => $parts[2] ?? '',
-			'url'   => $parts[3] ?? '',
+			'year'  => $rest[0] ?? '',
+			'title' => $rest[1] ?? '',
+			'org'   => $rest[2] ?? '',
+			'url'   => $url,
 		];
 		// Skip ghost rows (blank / punctuation-only lines) so an empty
 		// Awards or Press list hides cleanly instead of showing a stray dash.

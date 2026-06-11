@@ -1,5 +1,18 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.64.0 — Portfolio grid (no rail) · awards/press URL fix
+- **Removed the horizontal portfolio rail.** The archive is now a plain
+  responsive **grid** that scrolls vertically inside the single-screen frame
+  (`.nr-portfolio-rail` → `.nr-portfolio-grid`, `data-h-rail` dropped). Category/
+  year/tag filtering still works (keys off `data-portfolio`); the rail-only
+  behaviours (wheel-to-scroll, drag, scroll-compass, snap, parallax) no longer
+  apply. Colour-mood chips + keyboard gallery updated to target the grid too.
+  This also retires the rail-collapse layout bug for good.
+- **Awards & Press — URL no longer shown as text.** `nr_recognition_list()` is
+  now URL-aware: a link in any position (`year · name · url`) is used as the
+  link target and never rendered as a column. Fixes the case where a 3-field
+  entry pushed the URL into the visible "organisation" slot.
+
 ## 4.63.0 — Drop EXIF · fix portfolio rail · Medium batch 3
 **Removed every EXIF feature.** The studio works in AVIF/WebP, which don't carry
 the EXIF that `exif_read_data()` reads, so these never had data:

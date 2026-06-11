@@ -650,13 +650,24 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
    Portfolio archive
    ========================================================= */
 .nr-portfolio-archive .nr-page__head{padding-bottom:18px}
-/* Explicit rows so the head sizes to content and the rail fills the rest, even
-   when :has() isn't honoured (otherwise the head took 1fr, the rail collapsed
-   to auto, every height:100% card shrank to 0 and the labels piled up). */
+/* Head sizes to content; the grid below fills the rest and scrolls vertically.
+   (Explicit rows so it holds even where :has() isn't honoured.) */
 .nr-portfolio-archive.nr-fullscreen{grid-template-rows:auto minmax(0,1fr)}
-/* Height floor so cards keep their shape even if the rail row ever collapses
-   (e.g. before layout settles, or with no cover images on a fresh install). */
-.nr-portfolio-archive .nr-portfolio-rail{min-height:min(72vh,640px)}
+/* Portfolio grid (replaced the horizontal rail v4.64.0). A plain responsive
+   grid that scrolls vertically inside the fixed single-screen frame. */
+.nr-portfolio-grid{
+  height:100%;overflow-y:auto;overflow-x:hidden;
+  padding:32px 48px;
+  display:grid;gap:18px;align-content:start;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  scrollbar-width:thin;
+}
+.nr-portfolio-grid .nr-card{height:auto;width:100%;aspect-ratio:4/5;scroll-snap-align:none}
+.nr-portfolio-grid .nr-card.is-landscape{aspect-ratio:5/4}
+@media (max-width:900px){
+  .nr-portfolio-grid{padding:18px var(--pad);grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .nr-portfolio-grid .nr-card.is-portrait,.nr-portfolio-grid .nr-card.is-landscape{width:100%}
+}
 .nr-chips{display:flex;flex-wrap:wrap;gap:18px;justify-content:flex-end}
 .nr-chips--center{justify-content:flex-end}
 .nr-chip{

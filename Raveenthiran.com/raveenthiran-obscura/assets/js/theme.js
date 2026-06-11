@@ -1878,7 +1878,7 @@
   /* #135 — colour-mood filter chips (Warm/Cool/Mono) on archive rails, opt-in.
      Dominant colour is computed client-side from each thumbnail (same-origin). */
   if (body.classList.contains('nr-palette')) {
-    var rail = document.querySelector('.nr-portfolio-rail, .nr-portfolio-grid');
+    var rail = document.querySelector('.nr-portfolio-rail');
     var cards = rail ? Array.prototype.slice.call(rail.querySelectorAll('.nr-card')) : [];
     if (cards.length >= 4) {
       var done = 0;
@@ -2119,7 +2119,7 @@
   /* #19 — keyboard gallery: j/k move through cards, Enter opens, r = random. */
   document.addEventListener('keydown', function (e) {
     if (e.target.matches('input,textarea,select,[contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return;
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.nr-portfolio-rail .nr-card, .nr-portfolio-grid .nr-card, .nr-portfolio-rail .nr-card--journal'));
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.nr-portfolio-rail .nr-card, .nr-portfolio-rail .nr-card--journal'));
     if ((e.key === 'j' || e.key === 'k') && cards.length) {
       e.preventDefault();
       var cur = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.nr-card') : null;

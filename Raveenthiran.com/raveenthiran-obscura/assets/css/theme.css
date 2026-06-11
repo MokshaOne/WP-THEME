@@ -653,21 +653,11 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 /* Head sizes to content; the grid below fills the rest and scrolls vertically.
    (Explicit rows so it holds even where :has() isn't honoured.) */
 .nr-portfolio-archive.nr-fullscreen{grid-template-rows:auto minmax(0,1fr)}
-/* Portfolio grid (replaced the horizontal rail v4.64.0). A plain responsive
-   grid that scrolls vertically inside the fixed single-screen frame. */
-.nr-portfolio-grid{
-  height:100%;overflow-y:auto;overflow-x:hidden;
-  padding:32px 48px;
-  display:grid;gap:18px;align-content:start;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  scrollbar-width:thin;
-}
-.nr-portfolio-grid .nr-card{height:auto;width:100%;aspect-ratio:4/5;scroll-snap-align:none}
-.nr-portfolio-grid .nr-card.is-landscape{aspect-ratio:5/4}
-@media (max-width:900px){
-  .nr-portfolio-grid{padding:18px var(--pad);grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-  .nr-portfolio-grid .nr-card.is-portrait,.nr-portfolio-grid .nr-card.is-landscape{width:100%}
-}
+/* v4.68.1 — the horizontal slider (rail) is back on the portfolio archive
+   (the v4.64 grid was a misunderstanding: the owner disliked the v4.63
+   collapse bug, not the slider). Height floor = belt-and-braces so cards
+   keep their shape even if the rail row ever collapses again. */
+.nr-portfolio-archive .nr-portfolio-rail{min-height:min(72vh,640px)}
 .nr-chips{display:flex;flex-wrap:wrap;gap:18px;justify-content:flex-end}
 .nr-chips--center{justify-content:flex-end}
 .nr-chip{

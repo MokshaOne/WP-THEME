@@ -1,5 +1,12 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.68.1 — Portfolio slider restored
+The horizontal slider (rail with ← → arrows, wheel + drag scroll) is back on the
+portfolio overview. The v4.64 switch to a static grid was a misunderstanding:
+the owner disliked the **collapsed-layout bug** (fixed separately in v4.63), not
+the slider itself. The collapse fix stays in place, plus a min-height floor so
+the rail can't shrink to zero again. Grid CSS + its JS selectors removed.
+
 ## 4.68.0 — Dead-code purge (no functional change)
 Removed code for features retired in v4.65 that was still shipping (gated off) on
 every page. No behaviour or visual change — purely smaller payloads.

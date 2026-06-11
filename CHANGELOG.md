@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**90 releases**, current **v4.68.0**.
+**91 releases**, current **v4.68.1**.
 
 ---
+
+## v4.68.1 — 2026-06-11
+Restored the horizontal slider (rail + arrows + wheel/drag) on the portfolio overview — the v4.64 grid switch was a misunderstanding (the owner disliked the collapse bug, which v4.63 had already fixed, not the slider). Collapse fix + a min-height floor stay; grid CSS/JS selectors removed.
+
 
 ## v4.68.0 — 2026-06-11
 Dead-code purge — removed code for the features retired in v4.65 that was still shipping (gated off) on every page: the interface-sound, recently-viewed and testimonials-band JS blocks; the `.nr-sound`/`.nr-marquee`/`.nr-testi-band`/`.nr-news`/`.nr-wiz`/`.nr-moods` CSS; and the uncalled `nr_recent_strip_markup()`/`nr_newsletter_form_markup()`/`nr_testimonials_band_markup()` PHP + the dead recently-viewed footer block. No functional or visual change — smaller JS/CSS payloads. The live rail and ⌘K contact-sheet view were left intact.

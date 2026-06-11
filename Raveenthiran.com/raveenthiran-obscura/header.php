@@ -50,7 +50,10 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 <body <?php body_class( 'nr nr-page-' . esc_attr( $nr_current ?: 'default' ) ); ?>>
 <?php wp_body_open(); ?>
 
-<?php /* ── intro preloader (once per session; skipped for reduced-motion) ─── */ ?>
+<?php /* ── intro preloader — opt-in, OFF by default. It ran on a fixed timer and
+		revealed the hero while it was still loading → large desktop CLS. Once per
+		session; skipped for reduced-motion. Re-enable in Obscura → Settings. */ ?>
+<?php if ( nr_opt( 'nr_fx_preloader', '0' ) === '1' ) : ?>
 <div class="nr-preloader" aria-hidden="true">
 	<div class="nr-preloader__inner">
 		<span class="nr-preloader__mark"><?php echo esc_html( $nr_logo_text ); ?></span>
@@ -58,6 +61,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 	</div>
 	<span class="nr-preloader__bar"></span>
 </div>
+<?php endif; ?>
 
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'raveenthiran' ); ?></a>
 

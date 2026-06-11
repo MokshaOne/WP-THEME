@@ -2,9 +2,12 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**95 releases**, current **v4.70.1**.
+**96 releases**, current **v4.70.2**.
 
 ---
+
+## v4.70.2 — 2026-06-12
+Real fix for the desktop CLS (~1.0): the full-screen intro preloader runs on a fixed fake timer and fades out while the hero is still loading, revealing the settling hero (image+font) mid-shift = counted as layout shift. It only ran on desktop (display:none on mobile) — exactly matching the asymmetry (desktop CLS ~1.0, mobile fine). Now a Theme Settings toggle, default OFF. The v4.69 modal and v4.70.1 font-preload changes were correct hardening but not the cause. Re-enable the intro under Obscura → Settings if desired.
 
 ## v4.70.1 — 2026-06-11
 Desktop CLS fix: the big front-page hero headline uses Inter Tight weight 300, which wasn't preloaded (only 500/700 were) — it painted in the fallback font then reflowed on swap (large desktop CLS; mobile unaffected because the title is much smaller). Weight 300 is now preloaded. Note: the v4.69 `.nr-modal{display:none}` change was correct hardening but not the CLS cause — Lighthouse had mis-attributed the shift to the full-screen overlay.

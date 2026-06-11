@@ -1,5 +1,14 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.70.2 — Desktop CLS: intro preloader now opt-in (off)
+Found the real cause of the desktop CLS (~1.0). The full-screen **intro preloader**
+runs on a fixed fake timer and fades out **while the hero is still loading**, so the
+settling hero (image + font) is revealed mid-shift and counted as a layout shift. It
+only ran on desktop (`display:none` on mobile) — which is exactly why desktop CLS was
+~1.0 and mobile was fine. It's now a **Theme Settings toggle, default OFF**. The
+earlier modal/font changes (v4.69/4.70.1) were correct hardening but weren't the cause.
+Re-enable the intro under Obscura → Settings if you want it (it costs CLS).
+
 ## 4.70.1 — Desktop CLS: preload the hero title weight
 The big front-page headline uses Inter Tight **300**, which wasn't preloaded (only
 500 + 700 were), so on desktop it painted in the fallback font and then reflowed

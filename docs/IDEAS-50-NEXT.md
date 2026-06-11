@@ -51,7 +51,7 @@ or risky = opt-in.
 
 ## 🔎 SEO & reach (Vienna-specific)
 35. ✅ _v4.58.0_ — **Exhibition / show schema** — `Event` markup for gallery shows + a "Shows" section. _SEO · M_
-36. **Vienna district landing pages** — "editorial photographer in Neubau/1070" long-tail pages. _SEO · M_
+36. ✅ _v4.66.0_ — **Vienna district landing pages** — "editorial photographer in Neubau/1070" long-tail pages. _SEO · M_
 37. ✅ _v4.56.0_ — **Heuristic auto-alt** — generate decent alt from title + EXIF when empty (no AI/subscription). _SEO · S_
 38. ✅ _v4.58.0_ — **Press-kit auto-zip** — bundle bio, headshots, logo, selected hi-res into one download. _Conv · M_
 39. ✅ _v4.56.0_ — **Image sitemap captions from EXIF** — richer image search entries. _SEO · S_
@@ -87,11 +87,12 @@ clean EXIF in the library.
 Per the owner: do the small (S) ones first; the Medium (M) items are parked here
 as the next run, smallest-impact-risk first within the tier:
 
-**Still open (7) — all Medium:** **#12** image hotspots · **#15** series
-mood-board · **#25** offline-readable journal · **#27** BlurHash · **#36** Vienna
-district pages · **#42** moodboard upload · **#44** pre-shoot countdown mails.
+**Still open (6) — all Medium:** **#12** image hotspots · **#15** series
+mood-board · **#25** offline-readable journal · **#27** BlurHash · **#42**
+moodboard upload · **#44** pre-shoot countdown mails.
 
-_Status: 37/50 shipped · 6 removed/won't-do (#1/#2/#3/#4/#5/#9) · 7 open (all M).
+_Status: 38/50 shipped · 6 removed/won't-do (#1/#2/#3/#4/#5/#9) · 6 open (all M).
+v4.66.0: #36 Vienna district landing pages ([nr_district] shortcode).
 v4.63.0: removed every EXIF feature (#2/#3/#4/#9 + #1 won't-do — the studio works
 in AVIF/WebP, which carry no readable EXIF), fixed the portfolio-rail collapse,
 and shipped Medium batch 3: #6 print-size wall preview, #10 burst viewer,

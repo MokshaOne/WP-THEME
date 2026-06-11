@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.66.0 — Vienna district landing pages (#36)
+New `inc/districts.php` — a plugin-light local-SEO helper. Drop
+`[nr_district name="Neubau" code="1070"]` on a thin page per area; it renders a
+localised heading + intro, a small project grid (optionally filtered by
+`cat`), a CTA to enquire, and `ProfessionalService` / `areaServed` JSON-LD for
+the long-tail "photographer in <district>" query. No rewrite rules, no new admin
+pages. IDEAS-50-NEXT: 38/50 shipped · 6 Medium open.
+
 ## 4.65.0 — Remove unused toggles · slim "Pricing & Quote"
 - **Removed 7 opt-in toggles and their features** (per owner — unused): Colour-mood
   filter (#135), Enquire wizard (#42), Newsletter capture, Recently viewed,

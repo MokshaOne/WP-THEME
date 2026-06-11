@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**87 releases**, current **v4.65.0**.
+**88 releases**, current **v4.66.0**.
 
 ---
+
+## v4.66.0 — 2026-06-11
+IDEAS-50-NEXT #36 — Vienna district landing pages. New `inc/districts.php` adds a `[nr_district name="Neubau" code="1070" cat="" intro="" count="6"]` shortcode: localised heading + intro, a small project grid, an enquire CTA, and ProfessionalService/areaServed JSON-LD for the long-tail local query. Plugin-light (no rewrite rules, no new admin pages). 38/50 shipped, 6 Medium open.
+
 
 ## v4.65.0 — 2026-06-11
 Removed 7 unused opt-in toggles + their features (Colour-mood filter, Enquire wizard, Newsletter capture, Recently viewed, Testimonials band, Footer marquee, Interface sound) — settings rows, defaults, body classes and footer renders all gone. Slimmed the ACF "Pricing & Quote" page to only Quote + License: deleted the unused legacy groups (Hero/About/CTA/FAQ/Availability), the Newsletter group, and the Awards/Press groups (duplicated Theme Settings); moved Local SEO to its own "Business & SEO" page. `[nr_press]`/`[nr_featured]` now read the single Theme Settings press list.

@@ -2518,16 +2518,6 @@ body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{
 .nr-proof__count{font-family:var(--mono,monospace);font-size:13px;color:var(--ink-2)}.nr-proof__count b{color:var(--amber)}
 
 /* ── v4.55.0: Awwwards layer (opt-in, GPU toggle) ─────────────── */
-/* #13/#1 canvas / plane-grid archive */
-.nr-canvas-toggle.is-on{background:var(--amber);color:#0B0C10}
-.nr-canvas{position:fixed;inset:var(--bar-h) 0 0 0;z-index:4;overflow:hidden;cursor:grab;background:var(--bg)}
-.nr-canvas.is-drag{cursor:grabbing}
-.nr-canvas__plane{position:absolute;top:0;left:0;will-change:transform;transform-style:preserve-3d}
-.nr-canvas__card{position:absolute;width:280px;height:340px;transition:transform .3s}
-.nr-canvas-on .nr-portfolio-rail{visibility:hidden}
-.nr-canvas-on .nr-canvas__card{transform:perspective(1400px) rotateY(calc((var(--i,0) % 3 - 1) * 4deg))}
-.nr-canvas__card:hover{z-index:5;transform:perspective(1400px) scale(1.04)!important}
-@media (max-width:900px){.nr-canvas-toggle{display:none}}
 /* #14 scrollytelling */
 .nr-scrolly{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;margin:40px 0}
 .nr-scrolly__media{position:sticky;top:calc(var(--bar-h) + 30px);height:70vh;align-self:start}

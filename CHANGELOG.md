@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**91 releases**, current **v4.68.1**.
+**92 releases**, current **v4.68.2**.
 
 ---
+
+## v4.68.2 — 2026-06-11
+Removed the alternate draggable "canvas" view on the portfolio overview — the "⊞ canvas / ☰ rail" toggle (added by the opt-in GPU layer) and the scattered plane-grid it produced. The overview is now only the horizontal slider (rail + arrows + wheel/drag). Canvas JS removed from `awwwards.js`, `.nr-canvas*` CSS removed; scrollytelling + scroll-video hero untouched.
+
 
 ## v4.68.1 — 2026-06-11
 Restored the horizontal slider (rail + arrows + wheel/drag) on the portfolio overview — the v4.64 grid switch was a misunderstanding (the owner disliked the collapse bug, which v4.63 had already fixed, not the slider). Collapse fix + a min-height floor stay; grid CSS/JS selectors removed.

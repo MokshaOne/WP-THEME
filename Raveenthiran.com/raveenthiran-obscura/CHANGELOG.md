@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.68.2 — Remove the canvas archive view
+Deleted the alternate **draggable "canvas" view** on the portfolio overview —
+the "⊞ canvas / ☰ rail" toggle button (added by the opt-in GPU layer) and the
+scattered plane-grid it produced. The portfolio overview is now **only** the
+horizontal slider (rail with ← → arrows, wheel + drag). Removed the canvas JS
+block from `awwwards.js` and the `.nr-canvas*` CSS; scrollytelling and the
+scroll-scrubbed video hero in that file are untouched.
+
 ## 4.68.1 — Portfolio slider restored
 The horizontal slider (rail with ← → arrows, wheel + drag scroll) is back on the
 portfolio overview. The v4.64 switch to a static grid was a misunderstanding:

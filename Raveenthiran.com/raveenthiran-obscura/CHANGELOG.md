@@ -1,5 +1,15 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.70.0 — Press: 3-field editor (Year · Publisher · Link)
+The Press list is now a proper 3-column repeater in Theme Settings — **Year**,
+**Publisher**, **Link** — with add/remove rows, instead of one free-text box. It
+saves into the same option as clean `year | publisher | url` lines (so the save
+pipeline is unchanged) and degrades to a plain textarea without JS. The parser
+(`nr_recognition_list`) is now tolerant of space-separated lines too, so existing
+entries like `2025 Heute.at https://…` parse correctly. The publisher renders as a
+**clickable link** on the site (Press wall, “As featured in”, and the About page) —
+the URL is never shown as raw text.
+
 ## 4.69.0 — PageSpeed: fix mobile LCP + desktop CLS
 Driven by real pagespeed.web.dev data (mobile Perf 74, LCP 8.5s; desktop CLS 1.064).
 - **Mobile LCP (8.5s → expected ~1.5s):** the hero LCP preload was emitting the

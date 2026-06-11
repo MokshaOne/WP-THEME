@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.69.0' );
+define( 'NR_THEME_VERSION', '4.70.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -201,7 +201,22 @@ function nr_recognition_list( $option_key ) {
 	foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $line ) {
 		$line = trim( $line );
 		if ( $line === '' ) continue;
-		$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
+		if ( preg_match( '/[·|]/u', $line ) ) {
+			// Explicit columns: "year · name · org · url" (url optional, any order).
+			$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
+		} else {
+			// No delimiter (e.g. "2025 Heute.at https://…"): pull the URL, take a
+			// leading 4-digit year, treat the remaining words as the name.
+			$tokens = preg_split( '/\s+/', $line );
+			$u0 = ''; $kept = [];
+			foreach ( $tokens as $t ) {
+				if ( $u0 === '' && preg_match( '#^(https?://|www\.)#i', $t ) ) { $u0 = $t; continue; }
+				$kept[] = $t;
+			}
+			$y0    = ( isset( $kept[0] ) && preg_match( '/^(19|20)\d{2}$/', $kept[0] ) ) ? array_shift( $kept ) : '';
+			$parts = [ $y0, trim( implode( ' ', $kept ) ) ];
+			if ( $u0 !== '' ) $parts[] = $u0;
+		}
 		// A URL can sit in any position — pull it out as the link and never show
 		// it as text, so "year · name · url" works as well as "year · name · org · url".
 		$url  = '';

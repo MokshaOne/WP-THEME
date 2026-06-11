@@ -2,9 +2,12 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**93 releases**, current **v4.69.0**.
+**94 releases**, current **v4.70.0**.
 
 ---
+
+## v4.70.0 — 2026-06-11
+Press list is now a 3-column repeater (Year · Publisher · Link) with add/remove rows instead of one free-text box. Saves into the same option as canonical `year | publisher | url` lines (save pipeline unchanged); degrades to a textarea without JS. `nr_recognition_list` made tolerant of space-separated lines so existing entries (`2025 Heute.at https://…`) parse correctly. Publisher renders as a clickable link on the site (Press wall, “As featured in”, About page); the URL is never shown as raw text.
 
 ## v4.69.0 — 2026-06-11
 PageSpeed fixes from real field data (mobile LCP 8.5s, desktop CLS 1.064). **Mobile LCP:** the hero preload was emitting the full-size AVIF original (~470KB) with `type=image/webp` when no WebP twin existed, front-running the `<picture>` (which serves a small WebP) → heavy LCP. Preload now always matches the served WebP and never preloads a raw AVIF (front-page.php + seo-extra.php). **Desktop CLS:** `.nr-modal` was `display:flex` while closed → a viewport-size modal scored ~1.0 CLS; now `display:none` when closed (fade kept via discrete transitions). Plus accurate card `sizes`, first project plate `fetchpriority=high`, real attachment alt on gallery plates, `--ink-3` contrast to ~4.7:1. Owner: run Tools → Generate WebP once + purge cache.

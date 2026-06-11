@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**89 releases**, current **v4.67.0**.
+**90 releases**, current **v4.68.0**.
 
 ---
+
+## v4.68.0 — 2026-06-11
+Dead-code purge — removed code for the features retired in v4.65 that was still shipping (gated off) on every page: the interface-sound, recently-viewed and testimonials-band JS blocks; the `.nr-sound`/`.nr-marquee`/`.nr-testi-band`/`.nr-news`/`.nr-wiz`/`.nr-moods` CSS; and the uncalled `nr_recent_strip_markup()`/`nr_newsletter_form_markup()`/`nr_testimonials_band_markup()` PHP + the dead recently-viewed footer block. No functional or visual change — smaller JS/CSS payloads. The live rail and ⌘K contact-sheet view were left intact.
+
 
 ## v4.67.0 — 2026-06-11
 Finished IDEAS-50-NEXT (44/50 shipped, 6 won't-do). New `inc/medium4.php` + `inc/preshoot.php`: dominant-colour image placeholders (#27, a light BlurHash stand-in via GD at upload), `[nr_moodboard series=""]` cover grid + palette (#15), `[nr_hotspots img=""]x,y | note ;; …[/nr_hotspots]` annotated pins (#12), persistent `nr-reader` service-worker cache so opened journal articles survive updates (#25), optional reference-image upload on the Enquire form attached to the enquiry (#42), and a "Shoot date" + daily cron sending info-only T-7/T-1 prep emails (#44).

@@ -939,36 +939,7 @@
   });
 })();
 
-/* #58 — opt-in interface sound with a mute toggle (body.nr-has-sound) */
-(function () {
-  if (!document.body.classList.contains('nr-has-sound')) return;
-  var muted = localStorage.getItem('nr_sound') !== 'on'; // starts muted
-  var ctx = null;
-  function tone(freq, vol, dur) {
-    if (muted) return;
-    try {
-      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
-      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
-      o.type = 'sine'; o.frequency.value = freq; o.connect(g); g.connect(ctx.destination);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(vol, t + 0.006);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + (dur || 0.09));
-      o.start(t); o.stop(t + (dur || 0.1));
-    } catch (e) {}
-  }
-  var btn = document.createElement('button');
-  btn.type = 'button'; btn.className = 'nr-sound'; btn.setAttribute('aria-label', 'Toggle interface sound');
-  function paint() { btn.classList.toggle('is-on', !muted); btn.textContent = muted ? '🔇' : '🔊'; btn.setAttribute('aria-pressed', String(!muted)); }
-  paint();
-  btn.addEventListener('click', function () {
-    muted = !muted; localStorage.setItem('nr_sound', muted ? 'off' : 'on');
-    if (!muted) { try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} tone(880, 0.05, 0.12); }
-    paint();
-  });
-  document.body.appendChild(btn);
-  document.body.addEventListener('pointerover', function (e) { if (e.target.closest('a,button,.nr-card,.nr-chip,.nr-hero__thumb')) tone(620, 0.012, 0.06); }, { passive: true });
-  document.body.addEventListener('click', function (e) { if (e.target.closest('a,button')) tone(880, 0.03, 0.1); }, true);
-})();
+/* #58 interface sound — removed v4.68.0 (toggle retired in v4.65, code unused). */
 
 /* #59 — generative monogram favicon (opt-in: body.nr-has-favicon) */
 (function () {
@@ -1036,61 +1007,7 @@
   });
 })();
 
-/* #6 — recently viewed projects (localStorage, capped at 8, no tracking). */
-(function () {
-  var KEY = 'nr_recent_v1', MAX = 8;
-  function read() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
-  function write(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
-
-  // Record the current project.
-  var cur = document.getElementById('nr-recent-current');
-  if (cur) {
-    try {
-      var rec = JSON.parse(cur.textContent);
-      if (rec && rec.id) {
-        var list = read().filter(function (r) { return r.id !== rec.id; });
-        list.unshift(rec);
-        write(list.slice(0, MAX));
-      }
-    } catch (e) {}
-  }
-
-  // Render the strip (omits the page you're currently on).
-  var box = document.getElementById('nr-recent');
-  if (box) {
-    var track = box.querySelector('[data-recent-track]');
-    var here = location.pathname.replace(/\/+$/, '');
-    var items = read().filter(function (r) {
-      try { return new URL(r.url).pathname.replace(/\/+$/, '') !== here; } catch (e) { return true; }
-    }).slice(0, 6);
-    if (items.length && track) {
-      track.innerHTML = items.map(function (r) {
-        var img = r.thumb ? '<img src="' + encodeURI(r.thumb) + '" alt="" loading="lazy" decoding="async">' : '';
-        var t = (r.title || '').replace(/[<>&]/g, '');
-        return '<a class="nr-recent__card" href="' + encodeURI(r.url) + '">' + img + '<span>' + t + '</span></a>';
-      }).join('');
-      box.hidden = false;
-    }
-  }
-})();
-
-/* #8 — testimonials band: gentle auto-rotation, pauses on hover. */
-(function () {
-  var band = document.querySelector('[data-testi-band]');
-  if (!band) return;
-  var items = band.querySelectorAll('.nr-testi');
-  if (items.length < 2) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var i = 0, paused = false;
-  band.addEventListener('mouseenter', function () { paused = true; });
-  band.addEventListener('mouseleave', function () { paused = false; });
-  setInterval(function () {
-    if (paused) return;
-    items[i].classList.remove('is-on');
-    i = (i + 1) % items.length;
-    items[i].classList.add('is-on');
-  }, 6500);
-})();
+/* #6 recently-viewed + #8 testimonials band — removed v4.68.0 (toggles retired in v4.65, code unused). */
 
 /* ─────────────────────────────────────────────────────────────
    Batch 1 (v4.42.0) — cinematic motion layer (opt-in).
@@ -1620,7 +1537,7 @@
   var pf = function () {
     if (body.classList.contains('nr-savedata')) return;
     var seen = {}, n = 0;
-    document.querySelectorAll('a.nr-card[href], .nr-hero__thumb[href], a.nr-recent__card[href]').forEach(function (a) {
+    document.querySelectorAll('a.nr-card[href], .nr-hero__thumb[href]').forEach(function (a) {
       var h = a.getAttribute('href'); if (!h || seen[h] || n >= 5) return;
       try { if (new URL(h, location.href).host !== location.host) return; } catch (e) { return; }
       seen[h] = 1; n++;

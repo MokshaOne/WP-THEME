@@ -1,5 +1,20 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.68.0 — Dead-code purge (no functional change)
+Removed code for features retired in v4.65 that was still shipping (gated off) on
+every page. No behaviour or visual change — purely smaller payloads.
+- **theme.js:** deleted the unused interface-sound (#58), recently-viewed (#6)
+  and testimonials-band (#8) blocks, and an orphaned `nr-recent__card` selector.
+- **theme.css:** removed the dead `.nr-sound`, `.nr-marquee`, `.nr-testi-band` /
+  `.nr-testi`, `.nr-news`, `.nr-wiz` and `.nr-moods` rules. (Left selectors that
+  share a rule with live classes, e.g. `.nr-clients__label`, untouched.)
+- **PHP:** dropped the uncalled `nr_recent_strip_markup()`,
+  `nr_newsletter_form_markup()`, `nr_testimonials_band_markup()` and the dead
+  recently-viewed footer block. The `nr_subscriber` / `nr_testimonial` CPTs stay
+  so any existing data remains accessible.
+- Left the live horizontal rail (`.nr-portfolio-rail`, used by journal/search/
+  taxonomy archives) and the ⌘K contact-sheet view in place.
+
 ## 4.67.0 — Finish IDEAS-50-NEXT (last 6 Medium items)
 The list is complete (44/50 shipped, 6 won't-do). New `inc/medium4.php` +
 `inc/preshoot.php`, plus a service-worker tweak.

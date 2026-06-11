@@ -1838,11 +1838,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .nr-rl.is-in .nr-line__i{transform:translateY(0)}
 .nr-rl .nr-w.is-em{font-style:normal;font-weight:700;letter-spacing:-.055em;color:var(--ink)}
 
-/* #58 — interface-sound toggle */
-.nr-sound{position:fixed;left:18px;bottom:18px;z-index:60;width:38px;height:38px;border-radius:50%;border:1px solid var(--hair);background:rgba(11,12,16,.6);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;backdrop-filter:blur(6px);transition:border-color .2s,transform .2s}
-.nr-sound:hover{border-color:var(--amber);transform:translateY(-2px)}
-.nr-sound.is-on{border-color:var(--amber)}
-@media (max-width:900px){.nr-sound{left:12px;bottom:84px;width:34px;height:34px}}
+/* #58 interface-sound CSS removed v4.68.0 (feature retired). */
 
 /* #83 — card hover distortion (filter applied per-image only while hovered) */
 .nr-has-distort .nr-card img{will-change:filter}
@@ -1989,13 +1985,7 @@ picture{display:contents}
 .nr-enquire__form input[type=date]::-webkit-calendar-picker-indicator:hover{opacity:1}
 
 /* ── Batch 7 (v4.39.0): marquee · signature · divider ─────────── */
-/* #14 — footer marquee ticker (opt-in) */
-.nr-marquee{overflow:hidden;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:11px 0;white-space:nowrap;background:var(--bg)}
-.nr-marquee__track{display:inline-flex;align-items:center;animation:nr-marquee 36s linear infinite;will-change:transform}
-.nr-marquee__track span{font-family:var(--ff-mono);font-size:var(--fs-sm);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);padding:0 20px}
-.nr-marquee__sep{color:var(--amber)}
-@keyframes nr-marquee{to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion:reduce){.nr-marquee__track{animation:none}}
+/* #14 footer marquee CSS removed v4.68.0 (feature retired). */
 
 /* #19 — handwritten-style signature on the Studio page */
 .nr-signature{font-family:'Segoe Script','Bradley Hand','Brush Script MT','Snell Roundhand',cursive;
@@ -2012,13 +2002,7 @@ picture{display:contents}
 /* Footer-extras region — sits above the footer on scrolling pages. */
 .nr-extras{max-width:1100px;margin:0 auto;padding:48px 24px 8px;display:flex;flex-direction:column;gap:32px}
 
-/* #8 — testimonials band (rotating; only one shown at a time) */
-.nr-testi-band{position:relative;min-height:96px}
-.nr-testi{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;pointer-events:none;text-align:center}
-.nr-testi.is-on{opacity:1;position:relative;pointer-events:auto}
-.nr-testi blockquote{margin:0 auto;max-width:760px;font-size:clamp(17px,2.4vw,23px);line-height:1.5;color:var(--ink);font-weight:300}
-.nr-testi figcaption{margin-top:12px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-.nr-testi figcaption span{color:var(--ink-4)}
+/* #8 testimonials-band CSS removed v4.68.0 (feature retired; [nr_testimonial_videos] keeps .nr-testi-vid). */
 
 /* #6 — recently viewed strip */
 .nr-recent__label,.nr-clients__label{display:block;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);margin-bottom:12px}
@@ -2040,13 +2024,7 @@ picture{display:contents}
 .nr-availability b{color:var(--ink)}
 .nr-availability .tick{width:7px;height:7px;border-radius:50%;background:#54d27a;box-shadow:0 0 0 3px rgba(84,210,122,.18)}
 
-/* #7 — newsletter capture */
-.nr-news{display:flex;flex-direction:column;gap:10px;max-width:520px}
-.nr-news__lede{font-size:14px;color:var(--ink-2)}
-.nr-news__row{display:flex;gap:10px;flex-wrap:wrap}
-.nr-news__row input[type=email]{flex:1 1 220px;background:transparent;border:1px solid var(--hair);border-radius:3px;color:var(--ink);padding:11px 14px;font:inherit;font-size:15px}
-.nr-news__row input[type=email]:focus{outline:0;border-color:var(--amber)}
-.nr-news__row .nr-btn{flex:0 0 auto}
+/* #7 newsletter-capture CSS removed v4.68.0 (feature retired). */
 
 /* #16 — project process / behind-the-scenes */
 .nr-process{margin-top:26px;padding-top:20px;border-top:1px solid var(--hair)}
@@ -2445,14 +2423,7 @@ body.nr-cinematic[data-nr-motion="calm"] body::after,
 
 /* ── IDEAS-200 "Medium" r2 (v4.49.0) ──────────────────────────── */
 
-/* #42 enquire wizard */
-.nr-wiz{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.nr-wiz__t{font-family:var(--mono,monospace);font-size:11px;color:var(--ink-3);letter-spacing:.1em}
-.nr-wiz__bar{flex:1;height:2px;background:var(--hair);border-radius:2px;overflow:hidden}
-.nr-wiz__bar i{display:block;height:100%;width:33%;background:var(--amber);transition:width .3s}
-.nr-wiz__nav{display:flex;gap:8px}
-.nr-wiz__nav button{background:none;border:1px solid var(--hair);color:var(--ink-2);border-radius:999px;padding:5px 13px;font-size:12px;cursor:pointer}
-.nr-wiz__nav button:hover{color:var(--ink);border-color:var(--ink-4)}
+/* #42 enquire-wizard CSS removed v4.68.0 (feature retired). */
 
 /* #10 variable-font axis morph (needs the var font + cinematic level) */
 .nr-varfont.nr-cinematic[data-nr-motion="cinematic"] .nr-hero__title .nr-hero__word{animation:nrWeight 1.1s cubic-bezier(.2,.8,.2,1) both}
@@ -2478,9 +2449,7 @@ body.nr-rhythm-story .nr-plate-cap{opacity:1;position:static;margin-top:8px;text
 .nr-delivery__until{font-family:var(--mono,monospace);font-size:12px;color:var(--amber)}
 .nr-delivery__expired{color:var(--ink-2)}
 
-/* #135 mood chips */
-.nr-moods{margin:0 0 14px}
-.nr-moods .nr-chip{text-transform:capitalize}
+/* #135 mood-chip CSS removed v4.68.0 (feature retired). */
 
 /* ── Batch 6 r1 (v4.50.0): GPU/canvas effects (opt-in, .nr-gpu) ── */
 .nr-iris{position:fixed;inset:0;z-index:160;background:#0B0C10;pointer-events:none;

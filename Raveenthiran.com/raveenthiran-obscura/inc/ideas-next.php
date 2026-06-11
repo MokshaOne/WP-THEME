@@ -34,33 +34,7 @@ add_filter( 'wp_headers', function ( $h ) {
 	return $h;
 } );
 
-/* =============================================================
-   #6 — Recently viewed projects (localStorage, no tracking).
-   On a single project we localise a tiny record; theme.js pushes
-   it into localStorage and renders the strip into #nr-recent.
-   ============================================================= */
-add_action( 'wp_footer', function () {
-	if ( nr_opt( 'nr_fx_recent', '0' ) !== '1' ) return;
-	if ( is_singular( 'nr_project' ) ) {
-		$id = get_queried_object_id();
-		$rec = [
-			'id'    => $id,
-			'title' => html_entity_decode( get_the_title( $id ), ENT_QUOTES, 'UTF-8' ),
-			'url'   => get_permalink( $id ),
-			'thumb' => (string) get_the_post_thumbnail_url( $id, 'nr-thumb' ),
-		];
-		echo '<script type="application/json" id="nr-recent-current">' . wp_json_encode( $rec ) . '</script>' . "\n";
-	}
-}, 5 );
-
-/* The strip itself lives in the footer-extras region (scrolling pages). */
-function nr_recent_strip_markup() {
-	if ( nr_opt( 'nr_fx_recent', '0' ) !== '1' ) return '';
-	if ( is_front_page() || is_singular( 'nr_project' ) ) return '';
-	return '<aside class="nr-recent" id="nr-recent" hidden aria-label="' . esc_attr__( 'Recently viewed', 'raveenthiran' ) . '">'
-		. '<span class="nr-recent__label">' . esc_html__( 'Recently viewed', 'raveenthiran' ) . '</span>'
-		. '<div class="nr-recent__track" data-recent-track></div></aside>';
-}
+/* #6 "recently viewed" — removed v4.68.0 (toggle retired in v4.65). */
 
 /* =============================================================
    #7 — Newsletter / "new work" capture (owned audience).
@@ -85,23 +59,9 @@ add_action( 'init', function () {
 	] );
 } );
 
-function nr_newsletter_form_markup() {
-	if ( nr_opt( 'nr_fx_newsletter', '0' ) !== '1' ) return '';
-	if ( is_front_page() || is_singular( 'nr_project' ) ) return '';
-	ob_start(); ?>
-	<form class="nr-news" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" aria-label="<?php esc_attr_e( 'New-work newsletter', 'raveenthiran' ); ?>">
-		<input type="hidden" name="action" value="nr_news_subscribe">
-		<?php wp_nonce_field( 'nr_news_subscribe', 'nr_news_nonce' ); ?>
-		<label class="nr-news__lede"><?php esc_html_e( 'New work, a few times a year. No noise.', 'raveenthiran' ); ?></label>
-		<div class="nr-news__row">
-			<input type="email" name="nr_news_email" required placeholder="<?php esc_attr_e( 'you@studio.com', 'raveenthiran' ); ?>" autocomplete="email">
-			<button type="submit" class="nr-btn nr-btn--primary"><span><?php esc_html_e( 'Subscribe', 'raveenthiran' ); ?></span> <span>→</span></button>
-		</div>
-		<input type="text" name="nr_news_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-	</form>
-	<?php
-	return ob_get_clean();
-}
+/* nr_newsletter_form_markup() — removed v4.68.0 (footer capture retired in v4.65).
+   The nr_subscriber CPT + subscribe handler are kept so any existing addresses
+   stay viewable, but no new sign-up form is rendered. */
 
 add_action( 'admin_post_nopriv_nr_news_subscribe', 'nr_news_subscribe_handler' );
 add_action( 'admin_post_nr_news_subscribe', 'nr_news_subscribe_handler' );
@@ -145,42 +105,8 @@ function nr_newsletter_forward_brevo( $email ) {
 	] );
 }
 
-/* =============================================================
-   #8 — Testimonials band (opt-in). A quiet rotating quote.
-   Renders into the footer-extras region; theme.js rotates it.
-   ============================================================= */
-function nr_testimonials_band_markup() {
-	if ( nr_opt( 'nr_fx_testi_band', '0' ) !== '1' ) return '';
-	if ( is_singular( 'nr_project' ) ) return '';
-	$q = new WP_Query( [
-		'post_type'      => 'nr_testimonial',
-		'posts_per_page' => 8,
-		'orderby'        => 'rand',
-		'no_found_rows'  => true,
-		'meta_query'     => [ 'relation' => 'OR',
-			[ 'key' => 'show_on_homepage', 'value' => '1' ],
-			[ 'key' => 'show_on_homepage', 'compare' => 'NOT EXISTS' ],
-		],
-	] );
-	if ( ! $q->have_posts() ) { wp_reset_postdata(); return ''; }
-	ob_start();
-	echo '<aside class="nr-testi-band" aria-label="' . esc_attr__( 'What clients say', 'raveenthiran' ) . '" data-testi-band>';
-	$i = 0;
-	while ( $q->have_posts() ) { $q->the_post();
-		$role = function_exists( 'get_field' ) ? get_field( 'client_role' ) : '';
-		printf(
-			'<figure class="nr-testi%s" data-testi="%d"><blockquote>%s</blockquote><figcaption>%s%s</figcaption></figure>',
-			$i === 0 ? ' is-on' : '', $i,
-			esc_html( wp_trim_words( wp_strip_all_tags( get_the_content() ?: get_the_excerpt() ), 34 ) ),
-			esc_html( get_the_title() ),
-			$role ? ' · <span>' . esc_html( $role ) . '</span>' : ''
-		);
-		$i++;
-	}
-	echo '</aside>';
-	wp_reset_postdata();
-	return ob_get_clean();
-}
+/* #8 testimonials band — removed v4.68.0 (toggle retired in v4.65). The
+   nr_testimonial CPT remains; use [nr_testimonial_videos] or a custom layout. */
 
 /* Aggregate rating data shared by the band + schema (#11). */
 function nr_testimonial_rating_data() {

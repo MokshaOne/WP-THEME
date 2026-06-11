@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**86 releases**, current **v4.64.0**.
+**87 releases**, current **v4.65.0**.
 
 ---
+
+## v4.65.0 — 2026-06-11
+Removed 7 unused opt-in toggles + their features (Colour-mood filter, Enquire wizard, Newsletter capture, Recently viewed, Testimonials band, Footer marquee, Interface sound) — settings rows, defaults, body classes and footer renders all gone. Slimmed the ACF "Pricing & Quote" page to only Quote + License: deleted the unused legacy groups (Hero/About/CTA/FAQ/Availability), the Newsletter group, and the Awards/Press groups (duplicated Theme Settings); moved Local SEO to its own "Business & SEO" page. `[nr_press]`/`[nr_featured]` now read the single Theme Settings press list.
+
 
 ## v4.64.0 — 2026-06-11
 Replaced the horizontal portfolio rail with a plain responsive grid that scrolls vertically (`.nr-portfolio-rail` → `.nr-portfolio-grid`, `data-h-rail` dropped; filtering, colour-mood chips and keyboard gallery still work; rail-collapse bug retired). Awards & Press: `nr_recognition_list()` is now URL-aware — a link in any position is used as the link target and never shown as text (fixes the URL leaking into the "organisation" column on `year · name · url` entries).

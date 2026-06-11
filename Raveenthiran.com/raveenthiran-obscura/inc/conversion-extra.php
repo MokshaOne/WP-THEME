@@ -15,8 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_filter( 'body_class', function ( $c ) {
 	if ( nr_opt( 'nr_fx_shortlist', '0' ) === '1' ) $c[] = 'nr-shortlist';
 	if ( nr_opt( 'nr_fx_exit', '0' ) === '1' && ! is_singular( 'nr_project' ) ) $c[] = 'nr-exit';
-	if ( nr_opt( 'nr_fx_wizard', '0' ) === '1' ) $c[] = 'nr-wizard';
-	if ( nr_opt( 'nr_fx_palette', '0' ) === '1' ) $c[] = 'nr-palette';
 	if ( nr_opt( 'nr_fx_gpu', '0' ) === '1' ) $c[] = 'nr-gpu';
 	return $c;
 } );
@@ -81,16 +79,18 @@ add_shortcode( 'nr_packages', function () {
 } );
 
 /* =============================================================
-   #71 — press wall. Renders the ACF press_list repeater (option).
+   #71 — press wall. Reads the single Press list in Theme Settings → Obscura
+   ("year · article · publication · url" per line), same source as the About page.
    ============================================================= */
 add_shortcode( 'nr_press', function () {
-	if ( ! function_exists( 'get_field' ) ) return '';
-	$rows = get_field( 'press_list', 'option' );
-	if ( ! is_array( $rows ) || ! $rows ) return '';
+	$rows = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( 'nr_press_list' ) : [];
+	if ( ! $rows ) return '';
 	$out = '<div class="nr-press">';
 	foreach ( $rows as $r ) {
-		$medium = $r['medium'] ?? ''; $title = $r['pr_title'] ?? ''; $year = $r['year'] ?? ''; $url = $r['pr_url'] ?? '';
-		if ( $medium === '' && $title === '' ) continue;
+		$medium = trim( $r['org'] ?: $r['title'] );                 // publication
+		$title  = ( $r['org'] && $r['title'] ) ? $r['title'] : '';  // article, if both given
+		$year   = $r['year']; $url = $r['url'];
+		if ( $medium === '' ) continue;
 		$inner = '<span class="nr-press__medium">' . esc_html( $medium ) . '</span>'
 			. ( $title ? '<span class="nr-press__title">' . esc_html( $title ) . '</span>' : '' )
 			. ( $year ? '<span class="nr-press__year">' . esc_html( $year ) . '</span>' : '' );

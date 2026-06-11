@@ -254,12 +254,10 @@ function nr_client_logos_markup() {
    and is called once from footer.php on scrolling pages. */
 function nr_render_footer_extras() {
 	if ( is_front_page() || is_singular( 'nr_project' ) || is_post_type_archive( 'nr_project' ) ) return;
+	// Recently-viewed, Testimonials band and Newsletter were removed in v4.65.0.
 	$blocks = array_filter( [
-		nr_testimonials_band_markup(),
-		nr_recent_strip_markup(),
 		nr_client_logos_markup(),
 		nr_availability_markup(),
-		nr_newsletter_form_markup(),
 	] );
 	if ( ! $blocks ) return;
 	echo '<section class="nr-extras" aria-label="' . esc_attr__( 'More from the studio', 'raveenthiran' ) . '">';

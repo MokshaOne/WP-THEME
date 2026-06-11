@@ -27,6 +27,16 @@ add_action( 'acf/init', function () {
 		'capability'  => 'manage_options',
 		'redirect'    => false,
 	] );
+	// Local business / SEO schema fields live on their own page (kept off the
+	// Pricing & Quote page, which now holds only quote/licence fields).
+	acf_add_options_page( [
+		'page_title'  => __( 'Business & SEO', 'raveenthiran' ),
+		'menu_title'  => __( 'Business & SEO', 'raveenthiran' ),
+		'menu_slug'   => 'nr-business-seo',
+		'parent_slug' => 'nr-theme-settings',
+		'capability'  => 'manage_options',
+		'redirect'    => false,
+	] );
 } );
 
 /* ─────────────────────────────────────────────────────────────

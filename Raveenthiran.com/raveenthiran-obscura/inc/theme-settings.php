@@ -126,21 +126,15 @@ function nr_settings_defaults() {
 		'nr_fx_viewtrans'    => '0',
 		'nr_fx_distort'      => '0',
 		'nr_fx_lines'        => '0',
-		'nr_fx_sound'        => '0',
 		'nr_fx_favicon'      => '0',
 		'nr_fx_interlink'    => '0',
 		'nr_fx_cinematic'    => '0',  // Batch 1 — GPU/motion craft layer + visitor motion switch
 
 		/* Performance */
 		'nr_perf_async_css'  => '0',
-		'nr_fx_marquee'      => '0',
-		'nr_marquee_text'    => 'Available for commissions · Vienna · International · Est. 2019',
 		'nr_signature'       => '',
 
 		/* Conversion & editorial (IDEAS-NEXT, v4.41) — all opt-in */
-		'nr_fx_recent'       => '0',  // recently-viewed strip (scrolling pages)
-		'nr_fx_newsletter'   => '0',  // footer "new work" capture
-		'nr_fx_testi_band'   => '0',  // rotating testimonials band
 		'nr_fx_speculation'  => '0',  // Speculation Rules prerender-on-hover
 		'nr_avail_dates'     => '',   // "next open dates" line
 		'nr_clients_logos'   => '',   // "url | name" per line
@@ -169,8 +163,6 @@ function nr_settings_defaults() {
 		'nr_fx_analytics'    => '0',  // self-hosted pageview analytics
 		'nr_fx_sw'           => '0',  // service worker (offline + SWR)
 		'nr_fx_vrails'       => '0',  // virtualised rails (content-visibility)
-		'nr_fx_wizard'       => '0',  // #42 multi-step enquire wizard
-		'nr_fx_palette'      => '0',  // #135 colour-mood filter chips on archives
 		'nr_cta_view_b'      => '',   // #48 A/B variant for the hero CTA label
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
@@ -338,7 +330,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_fx_marquee', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify', 'nr_fx_gpu', 'nr_fx_analytics', 'nr_fx_sw', 'nr_fx_vrails', 'nr_fx_wizard', 'nr_fx_palette', 'nr_fx_shortlist', 'nr_fx_exit' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify', 'nr_fx_gpu', 'nr_fx_analytics', 'nr_fx_sw', 'nr_fx_vrails', 'nr_fx_shortlist', 'nr_fx_exit' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -768,16 +760,9 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Auto internal linking', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_interlink', __( 'Auto-link the first mention of another project\'s title inside project text (SEO)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Links the first occurrence per project only; never touches headings or existing links.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Footer marquee', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_marquee', __( 'Show a slow running ticker above the footer (scrolling pages)', 'raveenthiran' ) ); ?>
-							<p><?php nr_field_text( 'nr_marquee_text', 60 ); ?></p>
-							<p class="description"><?php esc_html_e( 'The ticker text. Off by default.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Non-blocking stylesheet', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_perf_async_css', __( 'Load the main CSS asynchronously (faster mobile FCP/LCP)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Removes ~2s of render-blocking on slow mobile — but can cause a brief unstyled flash on the first paint. Turn it on, hard-reload a few times on mobile, and keep it only if the flash is acceptable.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Interface sound', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_sound', __( 'Tiny hover/click ticks with a mute control (off until the visitor opts in)', 'raveenthiran' ) ); ?>
-							<p class="description"><?php esc_html_e( 'Off by default. When on, a small speaker toggle appears; sound only plays after the visitor unmutes (browsers block autoplay audio anyway).', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Generative favicon', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_favicon', __( 'Draw an accent-colored monogram favicon at runtime (used when no Site Icon is set)', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'GPU effects', 'raveenthiran' ); ?></label></th>
@@ -793,13 +778,6 @@ function nr_theme_settings_page() {
 				<summary><h2>§ Conversion &amp; editorial</h2></summary>
 				<p class="description" style="max-width:820px"><?php esc_html_e( 'Quiet, owned-audience features. Everything here is off by default and only appears on scrolling pages (never the fixed home hero or single-project view). Turn one on, preview a sub-page, keep what fits.', 'raveenthiran' ); ?></p>
 				<table class="form-table" role="presentation">
-					<tr><th><label><?php esc_html_e( 'Recently viewed', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_recent', __( 'Show a "recently viewed projects" strip (localStorage only — no tracking)', 'raveenthiran' ) ); ?></td></tr>
-					<tr><th><label><?php esc_html_e( 'Newsletter capture', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_newsletter', __( 'Show a single-field "new work" email box in the footer', 'raveenthiran' ) ); ?>
-							<p class="description"><?php esc_html_e( 'Addresses are stored privately as Subscribers (under Enquiries). If a Brevo API key is set in Site Settings → Newsletter, each address is also forwarded there.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Testimonials band', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_testi_band', __( 'Show a quiet rotating testimonial band (uses the Testimonials CPT)', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Next open dates', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_avail_dates', 50 ); ?>
 							<p class="description"><?php esc_html_e( 'e.g. "Booking April–June 2026 · 2 windows left". Leave blank to hide.', 'raveenthiran' ); ?></p></td></tr>
@@ -840,10 +818,6 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Tokens: %title% %cat% %year% %site%. e.g. "%title% — %cat% photography, Vienna · %site%". Blank keeps the default title.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Block AI crawlers', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_block_ai', __( 'Disallow GPTBot / CCBot / Google-Extended / ClaudeBot etc. in robots.txt', 'raveenthiran' ) ); ?></td></tr>
-					<tr><th><label><?php esc_html_e( 'Enquire wizard', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_wizard', __( 'Split the Enquire form into guided steps with a progress bar', 'raveenthiran' ) ); ?></td></tr>
-					<tr><th><label><?php esc_html_e( 'Colour-mood filter', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_palette', __( 'Warm / Cool / Mono filter chips on the portfolio rails (computed client-side)', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'A/B hero CTA (variant B)', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_cta_view_b', 30 ); ?>
 							<p class="description"><?php esc_html_e( 'Alternative label for the hero "View project" button. Blank = no test. Views/clicks are counted per variant (option nr_ab).', 'raveenthiran' ); ?></p></td></tr>
@@ -1018,7 +992,6 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_webgl',   '0' ) === '1' ) $classes[] = 'nr-has-webgl';
 	if ( get_option( 'nr_fx_distort', '0' ) === '1' ) $classes[] = 'nr-has-distort';
 	if ( get_option( 'nr_fx_lines',   '0' ) === '1' ) $classes[] = 'nr-has-lines';
-	if ( get_option( 'nr_fx_sound',   '0' ) === '1' ) $classes[] = 'nr-has-sound';
 	if ( get_option( 'nr_fx_favicon', '0' ) === '1' ) $classes[] = 'nr-has-favicon';
 	if ( get_option( 'nr_fx_cinematic', '0' ) === '1' ) $classes[] = 'nr-cinematic';
 	$mode = get_option( 'nr_color_mode', 'dark' );

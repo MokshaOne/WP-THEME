@@ -70,19 +70,20 @@ add_filter( 'wp_get_attachment_image', function ( $html, $att_id ) {
 	return $html . '<span id="' . esc_attr( $id ) . '" class="nr-sr-only">' . esc_html( $ld ) . '</span>';
 }, 13, 2 );
 
-/* ── #40 — [nr_featured] "as featured in" press-logo band ── */
+/* ── #40 — [nr_featured] "as featured in" press band ──
+   Reads the single Press list in Theme Settings → Obscura (same source as the
+   About page). Renders publication names (logos are no longer a separate field). */
 add_shortcode( 'nr_featured', function () {
-	if ( ! function_exists( 'get_field' ) ) return '';
-	$rows = get_field( 'press_list', 'option' );
-	if ( ! is_array( $rows ) ) return '';
-	$logos = [];
+	$rows = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( 'nr_press_list' ) : [];
+	if ( ! $rows ) return '';
+	$names = [];
 	foreach ( $rows as $r ) {
-		$logo = $r['pr_logo'] ?? null; $url = $r['pr_url'] ?? '';
-		$src = is_array( $logo ) ? ( $logo['sizes']['medium'] ?? $logo['url'] ?? '' ) : '';
-		if ( ! $src ) continue;
-		$img = '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $r['medium'] ?? '' ) . '" loading="lazy" decoding="async" height="30">';
-		$logos[] = $url ? '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . $img . '</a>' : $img;
+		$name = trim( $r['org'] ?: $r['title'] );
+		if ( $name === '' ) continue;
+		$names[] = $r['url']
+			? '<a href="' . esc_url( $r['url'] ) . '" target="_blank" rel="noopener">' . esc_html( $name ) . '</a>'
+			: '<span>' . esc_html( $name ) . '</span>';
 	}
-	if ( ! $logos ) return '';
-	return '<div class="nr-featured"><span class="nr-featured__label">' . esc_html__( 'As featured in', 'raveenthiran' ) . '</span><div class="nr-featured__row">' . implode( '', $logos ) . '</div></div>';
+	if ( ! $names ) return '';
+	return '<div class="nr-featured"><span class="nr-featured__label">' . esc_html__( 'As featured in', 'raveenthiran' ) . '</span><div class="nr-featured__row">' . implode( '', $names ) . '</div></div>';
 } );

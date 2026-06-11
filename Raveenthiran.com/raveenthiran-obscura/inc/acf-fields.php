@@ -6,104 +6,10 @@ add_action( 'acf/init', 'nr_register_feature_acf_fields' );
 function nr_register_feature_acf_fields() {
     if ( ! function_exists( 'acf_add_local_field_group' ) ) return;
 
-    /* =========================================================
-       HERO — all fields for parts/hero.php
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_hero_settings',
-        'title'    => 'Hero Section',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_hero_headline',       'label' => 'Hero Headline (H1)',       'name' => 'hero_headline',       'type' => 'text',
-              'instructions' => 'Main title. Use <em>word</em> for italic accent. HTML br tag allowed for line breaks.' ],
-            [ 'key' => 'field_hero_overline',       'label' => 'Hero Overline',            'name' => 'hero_overline',       'type' => 'text' ],
-            [ 'key' => 'field_hero_subline',        'label' => 'Hero Subline / Tagline',   'name' => 'hero_subline',        'type' => 'text' ],
-            [ 'key' => 'field_hero_cta_label',      'label' => 'Hero CTA Button Label',    'name' => 'hero_cta_label',      'type' => 'text' ],
-            [ 'key' => 'field_hero_cta_url',        'label' => 'Hero CTA Button URL',      'name' => 'hero_cta_url',        'type' => 'url' ],
-            [ 'key' => 'field_hero_available_text', 'label' => '"Currently Available" Text','name' => 'hero_available_text', 'type' => 'text' ],
-            [ 'key' => 'field_stat_projects',       'label' => 'Stat — Projects',          'name' => 'stat_projects',       'type' => 'text' ],
-            [ 'key' => 'field_stat_countries',      'label' => 'Stat — Countries',         'name' => 'stat_countries',      'type' => 'text' ],
-            [ 'key' => 'field_stat_since',          'label' => 'Stat — Since (Year)',      'name' => 'stat_since',          'type' => 'text' ],
-            [
-                'key'        => 'field_hero_images',
-                'label'      => 'Hero Slide Images',
-                'name'       => 'hero_images',
-                'type'       => 'repeater',
-                'layout'     => 'block',
-                'instructions' => 'Add images for the hero carousel. First image loads eagerly.',
-                'sub_fields' => [
-                    [ 'key' => 'field_hero_slide_image', 'label' => 'Image', 'name' => 'image', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'medium' ],
-                ],
-            ],
-        ],
-    ] );
-
-    /* =========================================================
-       ABOUT — extra fields beyond functions.php base group
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_about_extended',
-        'title'    => 'About — Extended',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_about_statement', 'label' => 'About Statement / Pull Quote', 'name' => 'about_statement', 'type' => 'text',
-              'instructions' => 'Short italic quote shown in the about section (optional).' ],
-            [ 'key' => 'field_about_phone',     'label' => 'Phone Number',                 'name' => 'phone',           'type' => 'text' ],
-        ],
-    ] );
-
-    /* =========================================================
-       CTA BLOCK — fields for parts/contact-cta.php
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_cta_block',
-        'title'    => 'CTA Block (Bottom Section)',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_cta_overline',          'label' => 'CTA Overline',        'name' => 'cta_overline',          'type' => 'text' ],
-            [ 'key' => 'field_cta_headline',          'label' => 'CTA Headline',         'name' => 'cta_headline',          'type' => 'text',
-              'instructions' => 'Use <em>word</em> for italic/accent.' ],
-            [ 'key' => 'field_cta_subline',           'label' => 'CTA Subline',          'name' => 'cta_subline',           'type' => 'text' ],
-            [ 'key' => 'field_cta_btn_label',         'label' => 'CTA Primary Button',   'name' => 'cta_btn_label',         'type' => 'text' ],
-            [ 'key' => 'field_cta_btn_url',           'label' => 'CTA Primary URL',      'name' => 'cta_btn_url',           'type' => 'url' ],
-            [ 'key' => 'field_cta_link_text',         'label' => 'CTA Secondary Link',   'name' => 'cta_link_text',         'type' => 'text' ],
-            [ 'key' => 'field_cta_background_image',  'label' => 'CTA Background Image', 'name' => 'cta_background_image',  'type' => 'image', 'return_format' => 'array', 'preview_size' => 'medium' ],
-        ],
-    ] );
-
-    /* =========================================================
-       FAQ — repeater for templates/page-faq.php
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_faq',
-        'title'    => 'FAQ Items',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [
-                'key'        => 'field_faq_items',
-                'label'      => 'FAQ Items',
-                'name'       => 'faq_items',
-                'type'       => 'repeater',
-                'layout'     => 'block',
-                'sub_fields' => [
-                    [ 'key' => 'field_faq_question', 'label' => 'Question', 'name' => 'question', 'type' => 'text' ],
-                    [ 'key' => 'field_faq_answer',   'label' => 'Answer',   'name' => 'answer',   'type' => 'textarea', 'rows' => 3 ],
-                ],
-            ],
-        ],
-    ] );
-
-    /* =========================================================
-       AVAILABILITY — for header badge
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_availability',
-        'title'    => 'Availability',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_nr_available_for_work', 'label' => 'Available for Work', 'name' => 'nr_available_for_work', 'type' => 'true_false', 'default_value' => 1, 'ui' => 1 ],
-        ],
-    ] );
+    /* The "Pricing & Quote" options page (nr-site-settings) now holds ONLY the
+       Quote Generator + License Calculator (below). The old Hero / About / CTA /
+       FAQ / Availability groups were unused (0 reads — content lives in Theme
+       Settings → Obscura), so they were removed in v4.65.0. */
 
     /* =========================================================
        TESTIMONIALS CPT
@@ -218,7 +124,7 @@ function nr_register_feature_acf_fields() {
     acf_add_local_field_group( [
         'key'      => 'group_local_seo',
         'title'    => 'Local SEO / Schema',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
+        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-business-seo' ] ] ],
         'fields'   => [
             [ 'key' => 'field_seo_phone',       'label' => 'Phone',         'name' => 'seo_phone',       'type' => 'text' ],
             [ 'key' => 'field_seo_street',      'label' => 'Street',        'name' => 'seo_street',      'type' => 'text' ],
@@ -237,60 +143,7 @@ function nr_register_feature_acf_fields() {
         ],
     ] );
 
-    /* =========================================================
-       NEWSLETTER / BREVO (Site Settings)
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_newsletter_config',
-        'title'    => 'Newsletter / Brevo',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_nl_api_key',    'label' => 'Brevo API Key',     'name' => 'brevo_api_key',            'type' => 'password' ],
-            [ 'key' => 'field_nl_list_id',    'label' => 'Brevo List ID',     'name' => 'brevo_list_id',            'type' => 'number' ],
-            [ 'key' => 'field_nl_show_footer','label' => 'Show in Footer',    'name' => 'newsletter_show_footer',   'type' => 'true_false', 'default_value' => 1, 'ui' => 1 ],
-        ],
-    ] );
-
-    /* =========================================================
-       AWARDS (Site Settings)
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_awards',
-        'title'    => 'Awards & Recognition',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [
-                'key' => 'field_awards_list', 'label' => 'Awards', 'name' => 'awards_list',
-                'type' => 'repeater', 'layout' => 'table',
-                'sub_fields' => [
-                    [ 'key' => 'field_aw_year',  'label' => 'Year',         'name' => 'year',         'type' => 'text' ],
-                    [ 'key' => 'field_aw_title', 'label' => 'Award',        'name' => 'award_title',  'type' => 'text' ],
-                    [ 'key' => 'field_aw_org',   'label' => 'Organisation', 'name' => 'organisation', 'type' => 'text' ],
-                    [ 'key' => 'field_aw_url',   'label' => 'Link',         'name' => 'award_url',    'type' => 'url' ],
-                ],
-            ],
-        ],
-    ] );
-
-    /* =========================================================
-       PRESS (Site Settings)
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_press',
-        'title'    => 'Press & Publications',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [
-                'key' => 'field_press_list', 'label' => 'Publications', 'name' => 'press_list',
-                'type' => 'repeater', 'layout' => 'table',
-                'sub_fields' => [
-                    [ 'key' => 'field_pr_medium', 'label' => 'Publication', 'name' => 'medium',   'type' => 'text' ],
-                    [ 'key' => 'field_pr_year',   'label' => 'Year',        'name' => 'year',     'type' => 'text' ],
-                    [ 'key' => 'field_pr_title',  'label' => 'Article',     'name' => 'pr_title', 'type' => 'text' ],
-                    [ 'key' => 'field_pr_url',    'label' => 'Link',        'name' => 'pr_url',   'type' => 'url' ],
-                    [ 'key' => 'field_pr_logo',   'label' => 'Logo',        'name' => 'pr_logo',  'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ],
-                ],
-            ],
-        ],
-    ] );
+    /* Newsletter/Brevo, Awards and Press groups were removed in v4.65.0:
+       the newsletter feature was retired, and Awards/Press are managed in
+       Theme Settings → Obscura (the About page reads those). */
 }

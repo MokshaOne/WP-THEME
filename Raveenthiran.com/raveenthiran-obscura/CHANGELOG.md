@@ -1,5 +1,21 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.65.0 — Remove unused toggles · slim "Pricing & Quote"
+- **Removed 7 opt-in toggles and their features** (per owner — unused): Colour-mood
+  filter (#135), Enquire wizard (#42), Newsletter capture, Recently viewed,
+  Testimonials band, Footer marquee, Interface sound. The Theme-Settings rows,
+  defaults, toggle-keys, body classes and footer renders are gone, so the
+  features can't activate even if a stale option lingers.
+- **"Pricing & Quote" now contains only pricing & quote.** The ACF options page
+  was holding ~9 unrelated groups; removed the unused legacy ones (Hero, About,
+  CTA, FAQ, Availability — 0 reads, content lives in Theme Settings), the
+  Newsletter/Brevo group (feature retired), and the **Awards & Press** groups
+  (duplicated Theme Settings → Obscura, which the About page already uses).
+- **Local SEO / Schema** moved to its own **Business & SEO** page under the
+  Obscura menu (kept editable, just off the Pricing & Quote page).
+- `[nr_press]` / `[nr_featured]` now read the single Press list in Theme Settings
+  (same source as the About page) instead of the removed ACF repeater.
+
 ## 4.64.0 — Portfolio grid (no rail) · awards/press URL fix
 - **Removed the horizontal portfolio rail.** The archive is now a plain
   responsive **grid** that scrolls vertically inside the single-screen frame

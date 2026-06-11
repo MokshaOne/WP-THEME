@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.66.0' );
+define( 'NR_THEME_VERSION', '4.67.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -362,6 +362,8 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'leftovers.php',
 		'medium3.php',
 		'districts.php',
+		'medium4.php',
+		'preshoot.php',
 		'admin-hub.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
@@ -446,6 +448,34 @@ function nr_handle_contact_send() {
 			if ( $ref_in )   update_post_meta( $eid, '_nr_ref',      $ref_in );
 			if ( $service )  update_post_meta( $eid, '_nr_service',  $service );
 			if ( $referrer ) update_post_meta( $eid, '_nr_referrer', $referrer );
+			// #42 — optional reference images: validate (image, ≤5MB, ≤4) and
+			// attach to the enquiry. Skips silently on any problem.
+			if ( ! empty( $_FILES['nr_refs'] ) && is_array( $_FILES['nr_refs']['name'] ) ) {
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				require_once ABSPATH . 'wp-admin/includes/media.php';
+				require_once ABSPATH . 'wp-admin/includes/image.php';
+				$ref_ids = [];
+				$count   = count( $_FILES['nr_refs']['name'] );
+				for ( $fi = 0; $fi < min( 4, $count ); $fi++ ) {
+					if ( empty( $_FILES['nr_refs']['name'][ $fi ] ) ) continue;
+					if ( (int) ( $_FILES['nr_refs']['error'][ $fi ] ?? 1 ) !== UPLOAD_ERR_OK ) continue;
+					if ( (int) ( $_FILES['nr_refs']['size'][ $fi ] ?? 0 ) > 5 * 1024 * 1024 ) continue;
+					$ft = wp_check_filetype( (string) $_FILES['nr_refs']['name'][ $fi ] );
+					if ( strpos( (string) $ft['type'], 'image/' ) !== 0 ) continue;
+					$file = [
+						'name'     => $_FILES['nr_refs']['name'][ $fi ],
+						'type'     => $_FILES['nr_refs']['type'][ $fi ],
+						'tmp_name' => $_FILES['nr_refs']['tmp_name'][ $fi ],
+						'error'    => $_FILES['nr_refs']['error'][ $fi ],
+						'size'     => $_FILES['nr_refs']['size'][ $fi ],
+					];
+					$_FILES['nr_ref_single'] = $file;
+					$aid = media_handle_upload( 'nr_ref_single', $eid );
+					if ( ! is_wp_error( $aid ) ) $ref_ids[] = (int) $aid;
+				}
+				unset( $_FILES['nr_ref_single'] );
+				if ( $ref_ids ) update_post_meta( $eid, '_nr_ref_images', $ref_ids );
+			}
 		}
 	}
 

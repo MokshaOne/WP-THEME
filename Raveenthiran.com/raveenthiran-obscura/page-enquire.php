@@ -77,7 +77,7 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 				<p class="nr-enquire__lede"><?php echo esc_html( nr_opt( 'nr_enquire_lede', __( 'Booking and saying hello live in one place. Tell me what you have in mind — or check pricing first.', 'raveenthiran' ) ) ); ?></p>
 			</header>
 
-			<form class="nr-form nr-enquire__form" data-enquire-form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<form class="nr-form nr-enquire__form" data-enquire-form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="nr_contact_send">
 				<?php wp_nonce_field( 'nr_contact', '_nr_nonce' ); ?>
 				<input type="text" name="nr_company" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">
@@ -120,6 +120,12 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 
 				<label class="nr-form__wide"><span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Tell me about the project', 'raveenthiran' ); ?></span>
 					<textarea name="notes" rows="4" placeholder="<?php esc_attr_e( 'A few sentences — a place, a person, an hour of the day.', 'raveenthiran' ); ?>"><?php echo $ref ? esc_textarea( sprintf( __( 'Re: %s — I saw this project and would like something in the same spirit.', 'raveenthiran' ), $ref ) ) : ''; ?></textarea>
+				</label>
+
+				<label class="nr-form__wide nr-form__refs">
+					<span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Reference images (optional)', 'raveenthiran' ); ?></span>
+					<input type="file" name="nr_refs[]" accept="image/*" multiple>
+					<span class="nr-form__hint"><?php esc_html_e( 'Up to 4 images, 5MB each — a mood-board or examples of the look you want.', 'raveenthiran' ); ?></span>
 				</label>
 
 				<?php if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field(); ?>

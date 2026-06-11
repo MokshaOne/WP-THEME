@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**88 releases**, current **v4.66.0**.
+**89 releases**, current **v4.67.0**.
 
 ---
+
+## v4.67.0 — 2026-06-11
+Finished IDEAS-50-NEXT (44/50 shipped, 6 won't-do). New `inc/medium4.php` + `inc/preshoot.php`: dominant-colour image placeholders (#27, a light BlurHash stand-in via GD at upload), `[nr_moodboard series=""]` cover grid + palette (#15), `[nr_hotspots img=""]x,y | note ;; …[/nr_hotspots]` annotated pins (#12), persistent `nr-reader` service-worker cache so opened journal articles survive updates (#25), optional reference-image upload on the Enquire form attached to the enquiry (#42), and a "Shoot date" + daily cron sending info-only T-7/T-1 prep emails (#44).
+
 
 ## v4.66.0 — 2026-06-11
 IDEAS-50-NEXT #36 — Vienna district landing pages. New `inc/districts.php` adds a `[nr_district name="Neubau" code="1070" cat="" intro="" count="6"]` shortcode: localised heading + intro, a small project grid, an enquire CTA, and ProfessionalService/areaServed JSON-LD for the long-tail local query. Plugin-light (no rewrite rules, no new admin pages). 38/50 shipped, 6 Medium open.

@@ -1,5 +1,23 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.67.0 — Finish IDEAS-50-NEXT (last 6 Medium items)
+The list is complete (44/50 shipped, 6 won't-do). New `inc/medium4.php` +
+`inc/preshoot.php`, plus a service-worker tweak.
+- **#27 Dominant-colour placeholder** — stores a 1px average colour per image at
+  upload (GD) and paints it behind the image while it loads (a light BlurHash
+  stand-in; degrades silently when GD can't decode the format).
+- **#15 Series mood-board** — `[nr_moodboard series="slug"]`: a cover grid + a
+  palette strip built from those dominant colours (no live decoding).
+- **#12 Image hotspots** — `[nr_hotspots img="123"]35,40 | note ;; 60,70 | note[/nr_hotspots]`
+  positions note pins over a frame (hover / focus / tap).
+- **#25 Offline-readable journal** — the SW now stores opened `/journal` articles
+  in a persistent `nr-reader` cache that survives theme updates.
+- **#42 Moodboard upload on Enquire** — an optional image field on the form (≤4
+  files, ≤5MB, images only); validated uploads attach to the enquiry and show as
+  thumbnails in a new enquiry meta box.
+- **#44 Pre-shoot countdown emails** — a "Shoot date" on the enquiry + a daily
+  cron that sends info-only prep emails at T-7 and T-1 (logistics only).
+
 ## 4.66.0 — Vienna district landing pages (#36)
 New `inc/districts.php` — a plugin-light local-SEO helper. Drop
 `[nr_district name="Neubau" code="1070"]` on a thin page per area; it renders a

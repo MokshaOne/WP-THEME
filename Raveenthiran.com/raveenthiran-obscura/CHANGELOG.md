@@ -1,5 +1,21 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.69.0 — PageSpeed: fix mobile LCP + desktop CLS
+Driven by real pagespeed.web.dev data (mobile Perf 74, LCP 8.5s; desktop CLS 1.064).
+- **Mobile LCP (8.5s → expected ~1.5s):** the hero LCP preload was emitting the
+  full-size **AVIF** original (~470KB) with `type="image/webp"` when the original
+  had no WebP twin — front-running the `<picture>` (which serves a small WebP) and
+  becoming a heavy LCP. The preload now always matches the WebP the page serves and
+  **never preloads a raw AVIF** (skips the preload if no WebP is available). Fixed in
+  both `front-page.php` and `inc/seo-extra.php`. **Run Tools → Generate WebP once,
+  then purge cache** so every size has its twin.
+- **Desktop CLS (1.064 → ~0):** the `.nr-modal` (pricing/enquiry) was `display:flex`
+  while closed, so the viewport-size modal was laid out and scored ~1.0 CLS. It's now
+  `display:none` when closed (fade preserved via discrete transitions).
+- Card images now carry an accurate `sizes` (was WP's full-width default); first
+  project plate gets `fetchpriority="high"`; gallery alt text prefers the real
+  attachment alt; `--ink-3` lifted to ~4.7:1 contrast.
+
 ## 4.68.2 — Remove the canvas archive view
 Deleted the alternate **draggable "canvas" view** on the portfolio overview —
 the "⊞ canvas / ☰ rail" toggle button (added by the opt-in GPU layer) and the

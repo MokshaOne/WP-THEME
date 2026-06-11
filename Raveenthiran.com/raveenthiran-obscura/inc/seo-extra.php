@@ -327,14 +327,23 @@ add_action( 'wp_head', function () {
 	$src = wp_get_attachment_image_url( $tid, 'nr-hero' );
 	if ( ! $src ) return;
 	$srcset = wp_get_attachment_image_srcset( $tid, 'nr-hero' );
+	// Match the <picture>'s WebP twin; never preload a heavy AVIF original (see front-page.php).
 	$type = '';
-	if ( function_exists( 'nr_webp_twin_url' ) ) {
-		$w = nr_webp_twin_url( $src );
-		if ( $w ) { $src = $w; $type = ' type="image/webp"'; }
-		if ( $srcset && function_exists( 'nr_webp_swap_srcset' ) ) $srcset = nr_webp_swap_srcset( $srcset );
+	if ( function_exists( 'nr_webp_swap_srcset' ) ) {
+		$w_set = $srcset ? nr_webp_swap_srcset( $srcset ) : '';
+		if ( $w_set ) {
+			$srcset = $w_set;
+			$type   = ' type="image/webp"';
+			$first  = preg_split( '/\s+/', trim( explode( ',', $w_set )[0] ) )[0];
+			if ( $first ) $src = $first;
+		} else {
+			$w_src = function_exists( 'nr_webp_twin_url' ) ? nr_webp_twin_url( $src ) : '';
+			if ( $w_src ) { $src = $w_src; $type = ' type="image/webp"'; }
+			else return; // no WebP available — skip rather than preload a heavy AVIF
+		}
 	}
 	printf(
-		'<link rel="preload" as="image" href="%s"%s%s imagesizes="(max-width:900px) 100vw, 70vw" fetchpriority="high">' . "\n",
+		'<link rel="preload" as="image" href="%s"%s imagesizes="(max-width:900px) 96vw, 70vw"%s fetchpriority="high">' . "\n",
 		esc_url( $src ),
 		$srcset ? ' imagesrcset="' . esc_attr( $srcset ) . '"' : '',
 		$type

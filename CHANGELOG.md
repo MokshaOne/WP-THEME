@@ -2,9 +2,12 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**92 releases**, current **v4.68.2**.
+**93 releases**, current **v4.69.0**.
 
 ---
+
+## v4.69.0 — 2026-06-11
+PageSpeed fixes from real field data (mobile LCP 8.5s, desktop CLS 1.064). **Mobile LCP:** the hero preload was emitting the full-size AVIF original (~470KB) with `type=image/webp` when no WebP twin existed, front-running the `<picture>` (which serves a small WebP) → heavy LCP. Preload now always matches the served WebP and never preloads a raw AVIF (front-page.php + seo-extra.php). **Desktop CLS:** `.nr-modal` was `display:flex` while closed → a viewport-size modal scored ~1.0 CLS; now `display:none` when closed (fade kept via discrete transitions). Plus accurate card `sizes`, first project plate `fetchpriority=high`, real attachment alt on gallery plates, `--ink-3` contrast to ~4.7:1. Owner: run Tools → Generate WebP once + purge cache.
 
 ## v4.68.2 — 2026-06-11
 Removed the alternate draggable "canvas" view on the portfolio overview — the "⊞ canvas / ☰ rail" toggle (added by the opt-in GPU layer) and the scattered plane-grid it produced. The overview is now only the horizontal slider (rail + arrows + wheel/drag). Canvas JS removed from `awwwards.js`, `.nr-canvas*` CSS removed; scrollytelling + scroll-video hero untouched.

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.68.2' );
+define( 'NR_THEME_VERSION', '4.69.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -288,7 +288,7 @@ function nr_placeholder( $label = 'photo', $dark = true, $aspect = '3/4' ) {
 /**
  * Print thumbnail OR placeholder if missing.
  */
-function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true, $eager = false ) {
+function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true, $eager = false, $sizes = '(max-width:900px) 90vw, 42vw' ) {
 	if ( has_post_thumbnail( $post_id ) ) {
 		$attr = [
 			'class'    => 'nr-img',
@@ -297,6 +297,9 @@ function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dar
 			'loading'  => $eager ? 'eager' : 'lazy',
 			'decoding' => 'async',
 		];
+		// Accurate sizes so the browser picks a card-width candidate instead of
+		// WordPress' default full-width guess (cuts mobile image payload).
+		if ( $sizes ) $attr['sizes'] = $sizes;
 		if ( $eager ) $attr['fetchpriority'] = 'high';
 		echo get_the_post_thumbnail( $post_id, $size, $attr );
 	} else {

@@ -188,7 +188,10 @@ $lede = get_the_excerpt();
 			</div>
 			<div class="nr-project__rail-track">
 				<?php foreach ( $plates as $i => $p ) :
-					$alt   = sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
+					// Prefer the attachment's own alt text (set in the Media library) for
+					// accessibility + image SEO; fall back to a positional label.
+					$real_alt = ! empty( $p['id'] ) ? trim( (string) get_post_meta( $p['id'], '_wp_attachment_image_alt', true ) ) : '';
+					$alt   = $real_alt !== '' ? $real_alt : sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
 				?>
 					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>"<?php echo $i === 0 ? ' style="view-transition-name:vt-project-' . (int) get_the_ID() . '"' : ''; ?>>
 							<?php if ( ( $p['type'] ?? '' ) === 'video' ) : ?>
@@ -199,12 +202,13 @@ $lede = get_the_excerpt();
 									</video>
 								</div>
 							<?php elseif ( $p['id'] ) :
-								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [
-									'alt'      => $alt,
-									'sizes'    => '(max-width:900px) 100vw, 70vw',
-									'loading'  => $i === 0 ? 'eager' : 'lazy',
-									'decoding' => 'async',
-								] );
+								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, array_filter( [
+									'alt'           => $alt,
+									'sizes'         => '(max-width:900px) 96vw, 70vw',
+									'loading'       => $i === 0 ? 'eager' : 'lazy',
+									'fetchpriority' => $i === 0 ? 'high' : '',
+									'decoding'      => 'async',
+								] ) );
 							else : ?>
 								<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
 							<?php endif; ?>

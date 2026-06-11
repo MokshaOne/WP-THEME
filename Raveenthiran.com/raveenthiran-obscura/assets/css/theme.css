@@ -9,7 +9,7 @@
   --bg-3:#181A20;
   --ink:#F2EFE9;
   --ink-2:rgba(242,239,233,.62);
-  --ink-3:rgba(242,239,233,.42); /* lifted from .32 → .42 for WCAG AA (4.5:1) on small body text */
+  --ink-3:rgba(242,239,233,.50); /* WCAG AA: .50 ≈ 4.7:1 on the near-black canvas (was .42 ≈ 3.7:1) */
   --ink-4:rgba(242,239,233,.12);
   --ink-5:rgba(242,239,233,.06);
   --amber:#F2A03D;
@@ -1052,11 +1052,18 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
    ========================================================= */
 .nr-modal{
   position:fixed;inset:0;z-index:80;
-  display:flex;align-items:center;justify-content:center;padding:32px;
+  /* display:none when closed so the modal never participates in layout — a
+     laid-out (display:flex) but hidden viewport-size modal was scoring ~1.0 CLS
+     on desktop. Fade preserved via discrete transition where supported. */
+  display:none;align-items:center;justify-content:center;padding:32px;
   background:rgba(11,12,16,.85);backdrop-filter:blur(10px);
-  opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s var(--ease),visibility .35s,display .35s allow-discrete;
 }
-.nr-modal.is-on, .nr-modal[aria-hidden="false"]{opacity:1;visibility:visible}
+.nr-modal.is-on, .nr-modal[aria-hidden="false"]{display:flex;opacity:1;visibility:visible}
+@starting-style{
+  .nr-modal.is-on, .nr-modal[aria-hidden="false"]{opacity:0}
+}
 .nr-modal__panel{
   position:relative;background:var(--bg-2);border:1px solid var(--hair);
   max-width:920px;width:100%;max-height:90vh;overflow:hidden;

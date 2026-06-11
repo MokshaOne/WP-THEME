@@ -57,7 +57,16 @@ function nr_project_credits_markup( $id = 0 ) {
 	$lines = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ) );
 	if ( ! $lines ) return '';
 	$out = '<dl class="nr-credits">';
-	foreach ( $lines as $l ) { $p = array_map( 'trim', explode( '|', $l, 2 ) ); $out .= '<div><dt>' . esc_html( $p[0] ) . '</dt><dd>' . esc_html( $p[1] ?? '' ) . '</dd></div>'; }
+	foreach ( $lines as $l ) {
+		// #18 — "Role | Name | https://collaborator.site" → link the name consistently.
+		$p    = array_map( 'trim', explode( '|', $l, 3 ) );
+		$name = $p[1] ?? '';
+		$url  = isset( $p[2] ) ? esc_url( $p[2] ) : '';
+		$dd   = ( $url && $name !== '' )
+			? '<a href="' . $url . '" target="_blank" rel="noopener nofollow">' . esc_html( $name ) . '</a>'
+			: esc_html( $name );
+		$out .= '<div><dt>' . esc_html( $p[0] ) . '</dt><dd>' . $dd . '</dd></div>';
+	}
 	return $out . '</dl>';
 }
 

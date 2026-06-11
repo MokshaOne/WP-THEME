@@ -11,7 +11,7 @@ or risky = opt-in.
 1. **EXIF location map per project** — pin every *frame's* GPS, not just one project coord. _Content · M_
 2. ✅ _v4.61.0_ — **"Shot on" facet** — browse/filter by camera body or film stock pulled from EXIF (e.g. "Leica M6"). _UX · M_
 3. ✅ _v4.61.0_ — **Lens & focal-length chart** on Studio — a quiet data-viz of the whole body of work. _Awww · M_
-4. **Time-of-day filter** — golden-hour / blue-hour / night, derived from EXIF timestamps. _UX · S_
+4. ✅ _v4.62.0_ — **Time-of-day filter** — golden-hour / blue-hour / night, derived from EXIF timestamps. _UX · S_
 5. ⏭ _removed v4.58.1 (owner: not needed)_ — **Per-project contact-sheet PDF** — one-page proof of all selects (separate from the series lookbook). _Content · S_
 6. **Print-size wall preview** — show a frame at A2/A1 against a room scale (viz only, no sale). _Awww · M_
 7. ✅ _v4.61.0_ — **Aspect-true masonry** — an archive view that respects each frame's real crop instead of forcing 4:5. _UX · M_
@@ -23,11 +23,11 @@ or risky = opt-in.
 11. ✅ _v4.61.0_ — **Field notes** — a short-form micro-journal (a sentence + one frame) separate from long essays. _Content · M_
 12. **Image hotspots** — annotate a frame with small note pins (behind-the-scenes). _Content · M_
 13. ✅ _v4.56.0_ — **Reading-position memory** — resume a long journal article where you left off. _UX · S_
-14. **Diptych compare** — view two projects side by side. _UX · S_
+14. ✅ _v4.62.0_ — **Diptych compare** — view two projects side by side. _UX · S_
 15. **Series mood-board intro** — auto-compose a palette/grid intro screen per series. _Awww · M_
 16. ✅ _v4.61.0_ — **Pull-quote rotator** — surface the strongest lines from journal essays on Home/About. _Content · S_
-17. **Annotated changelog / "studio log"** — a public "what's new in the studio" feed. _Content · S_
-18. **Footnoted credits** — link collaborators to their own sites/socials consistently. _Content · S_
+17. ✅ _v4.62.0_ — **Annotated changelog / "studio log"** — a public "what's new in the studio" feed. _Content · S_
+18. ✅ _v4.62.0_ — **Footnoted credits** — link collaborators to their own sites/socials consistently. _Content · S_
 
 ## 🧭 Visitor experience
 19. ✅ _v4.56.0_ — **Keyboard gallery mode** — `j`/`k` to move through projects, `f` favourite, `?` help. _A11y · S_
@@ -41,7 +41,7 @@ or risky = opt-in.
 
 ## ⚡ Performance & resilience
 27. **BlurHash placeholders** — sharper than the current LQIP, ~30 bytes each. _Perf · M_
-28. **Video poster auto-generation** — grab frame 0 as a poster so motion plates don't pop. _Perf · S_
+28. ✅ _v4.62.0_ — **Video poster auto-generation** — grab frame 0 as a poster so motion plates don't pop. _Perf · S_
 29. ✅ _v4.56.0_ — **size-adjust / font metrics** — eliminate the display-font CLS with a metric-matched fallback. _Perf · S_
 30. ✅ _v4.56.0_ — **`decode()` before swap** — decode large images off the main thread to avoid jank. _Perf · S_
 31. ✅ _v4.57.0_ — **Section-aware speculation rules** — prerender portfolio, only prefetch journal. _Perf · S_
@@ -87,17 +87,12 @@ clean EXIF in the library.
 Per the owner: do the small (S) ones first; the Medium (M) items are parked here
 as the next run, smallest-impact-risk first within the tier:
 
-**Still open (16):**
+**Still open (11) — all Medium:** **#1** EXIF location map · **#6** print-size
+wall preview · **#10** burst viewer · **#12** image hotspots · **#15** series
+mood-board · **#23** shareable shortlist · **#25** offline-readable journal ·
+**#27** BlurHash · **#36** Vienna district pages · **#42** moodboard upload ·
+**#44** pre-shoot countdown mails.
 
-_Medium (11):_ **#1** EXIF location map · **#6** print-size wall preview ·
-**#10** burst viewer · **#12** image hotspots · **#15** series mood-board ·
-**#23** shareable shortlist · **#25** offline-readable journal · **#27** BlurHash ·
-**#36** Vienna district pages · **#42** moodboard upload · **#44** pre-shoot
-countdown mails.
-
-_Small (5):_ **#4** time-of-day filter · **#14** diptych compare · **#17** studio
-log · **#18** footnoted credits · **#28** video-poster auto-generation.
-
-_Status: 33/50 shipped · 1 removed (#5) · 16 open. Medium batch 2 (v4.61.0):
-#2 shot-on facet, #3 focal chart, #7 aspect-true masonry, #9 related-by-EXIF,
-#11 field notes, #16 pull-quote rotator._
+_Status: 38/50 shipped · 1 removed (#5) · 11 open (all M). The small (S) tier is
+fully cleared. Leftovers (v4.62.0): #4 time-of-day facet, #14 diptych, #17 studio
+log, #18 footnoted credits, #28 video poster._

@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**83 releases**, current **v4.61.0**.
+**84 releases**, current **v4.62.0**.
 
 ---
+
+## v4.62.0 — 2026-06-11
+IDEAS-50-NEXT small leftovers (5 items), new `inc/leftovers.php`: time-of-day facet from EXIF hour + `[nr_tod]` + `?tod=` archive filter (#4), `[nr_diptych]` side-by-side compare (#14), `[nr_studiolog]` public studio-log timeline (#17), footnoted credits now link collaborators via an optional "Role | Name | URL" (#18), and a no-ffmpeg video first-frame poster (#28). S-tier fully cleared — 38/50 shipped, 11 Medium open.
+
 
 ## v4.61.0 — 2026-06-10
 IDEAS-50-NEXT Medium batch 2 (6 items), new `inc/medium2.php`: "Shot on" EXIF facet + portfolio filter + `[nr_shot_on]` (#2), `[nr_focal_chart]` focal-length histogram (#3), `[nr_related_gear]` related-by-camera (#9), `[nr_masonry]` aspect-true archive (#7), `[nr_fieldnotes]` micro-journal (#11), `[nr_pullquotes]` rotator (#16). All self-contained; one-time gear backfill for existing projects. 33/50 shipped, 16 open.

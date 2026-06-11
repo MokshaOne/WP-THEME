@@ -159,6 +159,9 @@ function nr_extract_exif( $attachment_id ) {
     if ( ! empty( $exif['ExposureTime'] ) )      $data['shutter']  = nr_exif_fraction( $exif['ExposureTime'] ) . 's';
     if ( ! empty( $exif['ISOSpeedRatings'] ) )   $data['iso']      = 'ISO ' . (int) ( is_array( $exif['ISOSpeedRatings'] ) ? $exif['ISOSpeedRatings'][0] : $exif['ISOSpeedRatings'] );
     if ( ! empty( $exif['LensModel'] ) )         $data['lens']     = sanitize_text_field( $exif['LensModel'] );
+    // #4 — capture the hour the frame was taken (for the time-of-day facet).
+    $when = $exif['DateTimeOriginal'] ?? ( $exif['DateTime'] ?? '' );
+    if ( $when && preg_match( '/\s(\d{2}):/', (string) $when, $hm ) ) $data['hour'] = (int) $hm[1];
 
     if ( ! empty( $data ) ) {
         update_post_meta( $attachment_id, '_nr_exif', $data );

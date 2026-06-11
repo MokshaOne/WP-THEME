@@ -1,5 +1,23 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.62.0 — IDEAS-50-NEXT, small leftovers (5 items) — S-tier cleared
+New `inc/leftovers.php` (+ small touches to `inc/performance.php` and
+`inc/smallwins.php`). All self-contained.
+- **#4 Time-of-day facet** — EXIF capture now records the shot **hour**;
+  projects are indexed into blue/golden/day/night (`_nr_tod`, one-time backfill).
+  `?tod=golden` filters the portfolio archive; `[nr_tod]` renders the chips.
+  (Heuristic is clock-based, so "golden/blue" is approximate.)
+- **#14 Diptych compare** — `[nr_diptych a="slug|id" b="slug|id"]` shows two
+  projects side by side (stacks on mobile).
+- **#17 Studio log** — `[nr_studiolog]` public "what's new" timeline from the
+  `nr_studiolog` setting ("YYYY-MM-DD | note"), falling back to recent journal.
+- **#18 Footnoted credits** — `nr_project_credits_markup` now accepts an optional
+  third field ("Role | Name | URL") and links the collaborator consistently.
+- **#28 Video poster** — any `<video>` without a poster paints its first frame
+  (`preload=metadata` + `#t=0.1`) instead of a black flash. No ffmpeg needed.
+
+IDEAS-50-NEXT: 38/50 shipped · 11 open (all Medium). Small tier fully cleared.
+
 ## 4.61.0 — IDEAS-50-NEXT, Medium batch 2 (6 items)
 New `inc/medium2.php` — the body of work as data + a little editorial surfacing.
 All self-contained: no external libraries, no uploads, no service-worker changes.

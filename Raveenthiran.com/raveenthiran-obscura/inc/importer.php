@@ -6,7 +6,6 @@
  *   • folder name        → project title
  *   • first image        → featured image (cover)
  *   • all images (sorted) → the gallery (project_gallery), in filename order
- *   • EXIF date          → project_year (via the add_attachment hook in tier2.php)
  *
  * Replaces an Immich / Media-Picker workflow: photos are imported straight into
  * the WordPress media library. Process modest zips (~5–10 projects) at a time
@@ -49,7 +48,7 @@ function nr_import_render_page() {
 		<?php endif; ?>
 
 		<p style="max-width:720px">
-			<?php esc_html_e( 'Upload a .zip where each top-level folder is one project. The folder name becomes the title, the first image becomes the cover, and every image becomes the gallery (in filename order). The year auto-fills from photo EXIF.', 'raveenthiran' ); ?>
+			<?php esc_html_e( 'Upload a .zip where each top-level folder is one project. The folder name becomes the title, the first image becomes the cover, and every image becomes the gallery (in filename order).', 'raveenthiran' ); ?>
 		</p>
 		<p style="max-width:720px;color:#666">
 			<strong><?php esc_html_e( 'Tip:', 'raveenthiran' ); ?></strong>

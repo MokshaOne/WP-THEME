@@ -1432,6 +1432,20 @@
       var el = card.querySelector('.nr-card__title, .nr-card__t');
       return (el ? el.textContent : (card.getAttribute('aria-label') || '')).trim();
     };
+    // #23 — import a shared selection from ?shortlist=… , then clean the URL.
+    (function () {
+      try {
+        var sp = new URLSearchParams(location.search), raw = sp.get('shortlist');
+        if (!raw) return;
+        var inc = JSON.parse(decodeURIComponent(escape(atob(raw))));
+        if (!Array.isArray(inc)) return;
+        var cur = read();
+        inc.forEach(function (x) { if (x && x.t && !cur.some(function (y) { return y.t === x.t; })) cur.push({ t: String(x.t), u: String(x.u || '') }); });
+        write(cur);
+        sp.delete('shortlist');
+        history.replaceState(null, '', location.pathname + (sp.toString() ? '?' + sp.toString() : '') + location.hash);
+      } catch (e) {}
+    })();
     var list = read();
     // inject hearts
     document.querySelectorAll('.nr-card').forEach(function (card) {
@@ -1453,6 +1467,7 @@
     var tray = document.createElement('div'); tray.className = 'nr-tray'; tray.hidden = true;
     tray.innerHTML = '<button class="nr-tray__btn" aria-expanded="false">♥ <span data-tray-n>0</span></button>'
       + '<div class="nr-tray__panel" hidden><strong>Your selection</strong><ul data-tray-list></ul>'
+      + '<button type="button" class="nr-btn nr-tray__share" data-tray-share>⧉ <span>Copy share link</span></button>'
       + '<a class="nr-btn nr-btn--primary" data-tray-send><span>Send as brief</span> <span>→</span></a></div>';
     document.body.appendChild(tray);
     var btn = tray.querySelector('.nr-tray__btn'), panel = tray.querySelector('.nr-tray__panel');
@@ -1468,6 +1483,17 @@
       send.href = base + (base.indexOf('?') < 0 ? '?' : '&') + 'ref=' + encodeURIComponent(titles.slice(0, 180));
     }
     render();
+    // #23 — copy a shareable link to the current selection.
+    var shareBtn = tray.querySelector('[data-tray-share]');
+    if (shareBtn) shareBtn.addEventListener('click', function () {
+      var l = read(); if (!l.length) return;
+      var enc; try { enc = btoa(unescape(encodeURIComponent(JSON.stringify(l)))); } catch (e) { return; }
+      var url = location.origin + location.pathname + '?shortlist=' + encodeURIComponent(enc);
+      var lab = shareBtn.querySelector('span'), txt = lab ? lab.textContent : '';
+      var done = function () { if (lab) { lab.textContent = 'Link copied ✓'; setTimeout(function () { lab.textContent = txt; }, 1600); } };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { window.prompt('Copy this link', url); });
+      else window.prompt('Copy this link', url);
+    });
   }
 
   /* #110 — search-term capture: beacon ⌘K palette queries (debounced). */
@@ -1623,19 +1649,6 @@
       });
       crumbs.appendChild(t);
     }
-  }
-
-  /* #157 — captions toggle (EXIF plate captions). */
-  if (document.querySelector('.nr-plate-cap')) {
-    var ct = document.createElement('button');
-    ct.type = 'button'; ct.className = 'nr-cap-toggle'; ct.textContent = 'ƒ captions';
-    var capOn = false; try { capOn = localStorage.getItem('nr_caps') === '1'; } catch (e) {}
-    if (capOn) body.classList.add('nr-caps-on');
-    ct.addEventListener('click', function () {
-      capOn = !capOn; body.classList.toggle('nr-caps-on', capOn);
-      try { localStorage.setItem('nr_caps', capOn ? '1' : '0'); } catch (e) {}
-    });
-    var cr = document.querySelector('.nr-project__crumbs'); if (cr) cr.appendChild(ct);
   }
 
   /* ── Enquire-page helpers ── */

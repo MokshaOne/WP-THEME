@@ -189,13 +189,6 @@ $lede = get_the_excerpt();
 			<div class="nr-project__rail-track">
 				<?php foreach ( $plates as $i => $p ) :
 					$alt   = sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
-					// "Shot on" — built from EXIF captured on upload (inc/performance.php).
-					$exif_str = '';
-					if ( $p['id'] && function_exists( 'nr_get_exif' ) ) {
-						$ex   = nr_get_exif( $p['id'] );
-						$bits = array_filter( [ $ex['camera'] ?? '', $ex['focal'] ?? '', $ex['aperture'] ?? '', $ex['shutter'] ?? '', $ex['iso'] ?? '' ] );
-						$exif_str = implode( '  ·  ', $bits );
-					}
 				?>
 					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>"<?php echo $i === 0 ? ' style="view-transition-name:vt-project-' . (int) get_the_ID() . '"' : ''; ?>>
 							<?php if ( ( $p['type'] ?? '' ) === 'video' ) : ?>
@@ -215,7 +208,6 @@ $lede = get_the_excerpt();
 							else : ?>
 								<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
 							<?php endif; ?>
-						<?php if ( $exif_str ) : ?><figcaption class="nr-plate-cap"><?php echo esc_html( $exif_str ); ?></figcaption><?php endif; ?>
 					</figure>
 				<?php endforeach; ?>
 			</div>

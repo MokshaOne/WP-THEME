@@ -107,11 +107,6 @@ add_action( 'wp_head', function () {
 		$src = wp_get_attachment_image_url( $aid, 'nr-hero' );
 		if ( ! $src ) continue;
 		$cap = wp_get_attachment_caption( $aid );
-		if ( ! $cap && function_exists( 'nr_get_exif' ) ) {
-			$ex = nr_get_exif( $aid );
-			$bits = array_filter( [ $ex['camera'] ?? '', $ex['focal'] ?? '', $ex['aperture'] ?? '', $ex['iso'] ?? '' ] );
-			$cap = $bits ? implode( ' · ', $bits ) : '';
-		}
 		$io = [ '@type' => 'ImageObject', 'contentUrl' => $src, 'creator' => [ '@id' => get_site_url() . '/#person' ] ];
 		if ( $cap ) $io['caption'] = $cap;
 		$images[] = $io; $n++;
@@ -237,7 +232,6 @@ function nr_render_image_sitemap() {
 				if ( ! $aid || wp_attachment_is( 'video', $aid ) ) continue;
 				$u = wp_get_attachment_image_url( $aid, 'full' );
 				$cap = wp_get_attachment_caption( $aid );
-				if ( ! $cap && function_exists( 'nr_get_exif' ) ) { $ex = nr_get_exif( $aid ); $cap = trim( implode( ' · ', array_filter( [ $ex['camera'] ?? '', $ex['focal'] ?? '', $ex['iso'] ?? '' ] ) ) ); }
 				if ( $u ) $imgs[] = [ $u, $cap ?: get_the_title() ];
 			}
 		}

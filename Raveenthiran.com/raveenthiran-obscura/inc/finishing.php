@@ -1,15 +1,15 @@
 <?php
 /**
  * inc/finishing.php — IDEAS-50-NEXT, small batch 1 (v4.56.0).
- * #37 heuristic auto-alt · #5 per-project contact-sheet PDF · #39 image-sitemap
- * EXIF captions · #20 "surprise me" random project · #8/#13/#19/#46/#48 are
- * front-end (theme.js / theme.css). No payments, no external services.
+ * #37 heuristic auto-alt · #39 image-sitemap captions · #20 "surprise me"
+ * random project · #8/#13/#19/#46/#48 are front-end (theme.js / theme.css).
+ * No payments, no external services.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* ── #37 — heuristic auto-alt when an image has none (no AI, no subscription) ──
-   Uses the attachment title, falling back to the parent project's title, plus a
-   camera hint from EXIF. Never overrides a real, human-written alt. */
+   Uses the attachment title, falling back to the parent project's title.
+   Never overrides a real, human-written alt. */
 add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $att ) {
 	if ( isset( $attr['alt'] ) && trim( (string) $attr['alt'] ) !== '' ) return $attr;
 	$title = trim( (string) get_the_title( $att->ID ) );
@@ -19,10 +19,7 @@ add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $att ) {
 		$ptitle = $parent ? trim( (string) get_the_title( $parent ) ) : '';
 		$title  = $ptitle ?: '';
 	}
-	$cam = '';
-	if ( function_exists( 'nr_get_exif' ) ) { $ex = nr_get_exif( $att->ID ); $cam = trim( (string) ( $ex['camera'] ?? '' ) ); }
 	$alt = $title !== '' ? $title : ( get_bloginfo( 'name' ) . ' — ' . __( 'photograph', 'raveenthiran' ) );
-	if ( $cam && $title !== '' ) $alt .= ' · ' . $cam;
 	$attr['alt'] = $alt;
 	return $attr;
 }, 9, 2 );

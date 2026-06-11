@@ -2,9 +2,13 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**84 releases**, current **v4.62.0**.
+**85 releases**, current **v4.63.0**.
 
 ---
+
+## v4.63.0 — 2026-06-11
+Removed every EXIF feature — the studio works in AVIF/WebP, which carry no readable EXIF (so the EXIF-on-upload extractor, #43 EXIF→year, auto-alt camera hint, sitemap caption fallback, per-plate "Shot on" caption, and the EXIF-based ideas #2/#3/#4/#9 are gone; #1 → won't-do). Fixed the portfolio-rail collapse (cards sized off a rail row that collapsed when `:has()` didn't resolve → explicit `grid-template-rows` + rail min-height). Medium batch 3, new `inc/medium3.php`: `[nr_wallpreview]` print-size wall preview (#6), `[nr_burst]` sequence viewer (#10), shareable shortlist via "Copy share link" + `?shortlist=` import (#23). 37/50 shipped, 7 Medium open.
+
 
 ## v4.62.0 — 2026-06-11
 IDEAS-50-NEXT small leftovers (5 items), new `inc/leftovers.php`: time-of-day facet from EXIF hour + `[nr_tod]` + `?tod=` archive filter (#4), `[nr_diptych]` side-by-side compare (#14), `[nr_studiolog]` public studio-log timeline (#17), footnoted credits now link collaborators via an optional "Role | Name | URL" (#18), and a no-ffmpeg video first-frame poster (#28). S-tier fully cleared — 38/50 shipped, 11 Medium open.

@@ -135,58 +135,7 @@ function nr_image_with_lqip( $attachment_id, $size = 'large', $attrs = [] ) {
     return wp_get_attachment_image( $attachment_id, $size, false, $attrs );
 }
 
-/* =============================================================================
-   FEATURE 19 — EXIF-Daten beim Upload auslesen
-   ============================================================================= */
-
-add_action( 'add_attachment', 'nr_extract_exif' );
-
-function nr_extract_exif( $attachment_id ) {
-    $mime = get_post_mime_type( $attachment_id );
-    if ( ! in_array( $mime, [ 'image/jpeg' ], true ) ) return;
-
-    $file = get_attached_file( $attachment_id );
-    if ( ! $file || ! function_exists( 'exif_read_data' ) ) return;
-
-    $exif = @exif_read_data( $file, 'EXIF', false );
-    if ( ! $exif ) return;
-
-    $data = [];
-
-    if ( ! empty( $exif['Model'] ) )            $data['camera']   = sanitize_text_field( $exif['Model'] );
-    if ( ! empty( $exif['FocalLength'] ) )       $data['focal']    = nr_exif_fraction( $exif['FocalLength'] ) . 'mm';
-    if ( ! empty( $exif['FNumber'] ) )           $data['aperture'] = 'f/' . nr_exif_fraction( $exif['FNumber'] );
-    if ( ! empty( $exif['ExposureTime'] ) )      $data['shutter']  = nr_exif_fraction( $exif['ExposureTime'] ) . 's';
-    if ( ! empty( $exif['ISOSpeedRatings'] ) )   $data['iso']      = 'ISO ' . (int) ( is_array( $exif['ISOSpeedRatings'] ) ? $exif['ISOSpeedRatings'][0] : $exif['ISOSpeedRatings'] );
-    if ( ! empty( $exif['LensModel'] ) )         $data['lens']     = sanitize_text_field( $exif['LensModel'] );
-    // #4 — capture the hour the frame was taken (for the time-of-day facet).
-    $when = $exif['DateTimeOriginal'] ?? ( $exif['DateTime'] ?? '' );
-    if ( $when && preg_match( '/\s(\d{2}):/', (string) $when, $hm ) ) $data['hour'] = (int) $hm[1];
-
-    if ( ! empty( $data ) ) {
-        update_post_meta( $attachment_id, '_nr_exif', $data );
-    }
-}
-
-function nr_exif_fraction( $value ) {
-    if ( is_array( $value ) ) {
-        $parts = explode( '/', $value );
-    } else {
-        $parts = explode( '/', (string) $value );
-    }
-    if ( count( $parts ) === 2 && (float) $parts[1] !== 0.0 ) {
-        $result = (float) $parts[0] / (float) $parts[1];
-        // Verschlusszeit als Bruch anzeigen wenn < 1s
-        if ( $result < 1 && $result > 0 ) {
-            return '1/' . round( 1 / $result );
-        }
-        return round( $result, 1 );
-    }
-    return $value;
-}
-
-function nr_get_exif( $attachment_id ) {
-    return get_post_meta( $attachment_id, '_nr_exif', true ) ?: [];
-}
+/* (EXIF-on-upload removed v4.63.0 — the studio works in AVIF/WebP, which don't
+   carry the EXIF that exif_read_data() reads, so the feature never had data.) */
 
 

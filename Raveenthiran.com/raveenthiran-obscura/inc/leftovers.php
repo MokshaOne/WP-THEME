@@ -1,94 +1,14 @@
 <?php
 /**
- * inc/leftovers.php — IDEAS-50-NEXT small leftovers (v4.62.0).
- * The remaining S-tier items, all self-contained:
- *   #4  Time-of-day facet  — golden/blue/day/night from EXIF hour, [nr_tod].
+ * inc/leftovers.php — IDEAS-50-NEXT small leftovers (v4.62.0; trimmed v4.63.0).
+ * Self-contained. (#4 time-of-day facet was removed in v4.63.0 — it relied on
+ * EXIF timestamps, and the studio works in AVIF/WebP with no readable EXIF.)
  *   #14 Diptych compare    — [nr_diptych a="" b=""] two projects side by side.
  *   #17 Studio log         — [nr_studiolog] a public "what's new" timeline.
  *   #28 Video poster       — show frame 0 instead of a black flash (no ffmpeg).
  * (#18 footnoted credits is folded into nr_project_credits_markup in smallwins.php.)
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-/* ════════════════════════════════════════════════════════════════════════
- * #4 — Time-of-day facet (from the EXIF hour captured in inc/performance.php)
- * ════════════════════════════════════════════════════════════════════════ */
-function nr_tod_label( $hour ) {
-	$h = (int) $hour;
-	if ( $h >= 5 && $h < 7 )   return 'blue';   // dawn blue hour
-	if ( $h >= 7 && $h < 9 )   return 'golden'; // morning golden
-	if ( $h >= 9 && $h < 17 )  return 'day';
-	if ( $h >= 17 && $h < 19 ) return 'golden'; // evening golden
-	if ( $h >= 19 && $h < 21 ) return 'blue';   // dusk blue hour
-	return 'night';
-}
-function nr_tod_name( $slug ) {
-	$map = [ 'blue' => __( 'Blue hour', 'raveenthiran' ), 'golden' => __( 'Golden hour', 'raveenthiran' ),
-		'day' => __( 'Daylight', 'raveenthiran' ), 'night' => __( 'Night', 'raveenthiran' ) ];
-	return $map[ $slug ] ?? $slug;
-}
-
-/* Index distinct time-of-day labels per project (flat _nr_tod rows for querying). */
-function nr_index_project_tod( $post_id ) {
-	if ( wp_is_post_revision( $post_id ) || get_post_type( $post_id ) !== 'nr_project' ) return;
-	if ( ! function_exists( 'nr_get_exif' ) || ! function_exists( 'nr_project_image_ids' ) ) return;
-	$tods = [];
-	foreach ( nr_project_image_ids( $post_id ) as $aid ) {
-		$ex = nr_get_exif( $aid );
-		if ( isset( $ex['hour'] ) ) $tods[ nr_tod_label( $ex['hour'] ) ] = true;
-	}
-	delete_post_meta( $post_id, '_nr_tod' );
-	foreach ( array_keys( $tods ) as $t ) add_post_meta( $post_id, '_nr_tod', $t );
-	delete_transient( 'nr_tod_facets' );
-}
-add_action( 'save_post_nr_project', 'nr_index_project_tod' );
-
-/* One-time backfill (separate flag from the gear index). */
-add_action( 'admin_init', function () {
-	if ( get_option( 'nr_tod_indexed' ) ) return;
-	$ids = get_posts( [ 'post_type' => 'nr_project', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'any', 'no_found_rows' => true ] );
-	foreach ( (array) $ids as $pid ) nr_index_project_tod( $pid );
-	update_option( 'nr_tod_indexed', 1, false );
-} );
-
-/* Filter the portfolio archive when ?tod=golden|blue|day|night is present. */
-add_action( 'pre_get_posts', function ( $q ) {
-	if ( is_admin() || ! $q->is_main_query() || ! $q->is_post_type_archive( 'nr_project' ) ) return;
-	$tod = isset( $_GET['tod'] ) ? sanitize_key( wp_unslash( $_GET['tod'] ) ) : '';
-	if ( in_array( $tod, [ 'blue', 'golden', 'day', 'night' ], true ) ) {
-		$mq = (array) $q->get( 'meta_query' );
-		$mq[] = [ 'key' => '_nr_tod', 'value' => $tod ];
-		$q->set( 'meta_query', $mq );
-	}
-} );
-
-function nr_tod_facets() {
-	$cached = get_transient( 'nr_tod_facets' );
-	if ( is_array( $cached ) ) return $cached;
-	global $wpdb;
-	$rows = $wpdb->get_col( "SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm
-		INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-		WHERE pm.meta_key = '_nr_tod' AND p.post_status = 'publish' AND p.post_type = 'nr_project'" );
-	$order = [ 'blue' => 0, 'golden' => 1, 'day' => 2, 'night' => 3 ];
-	$rows  = array_values( array_filter( array_map( 'strval', (array) $rows ) ) );
-	usort( $rows, function ( $a, $b ) use ( $order ) { return ( $order[ $a ] ?? 9 ) <=> ( $order[ $b ] ?? 9 ); } );
-	set_transient( 'nr_tod_facets', $rows, 12 * HOUR_IN_SECONDS );
-	return $rows;
-}
-
-add_shortcode( 'nr_tod', function () {
-	$tods = nr_tod_facets();
-	if ( ! $tods ) return '';
-	$base = get_post_type_archive_link( 'nr_project' );
-	$cur  = isset( $_GET['tod'] ) ? sanitize_key( wp_unslash( $_GET['tod'] ) ) : '';
-	$chip_css = function_exists( 'nr_medium2_css' ) ? nr_medium2_css() : '';
-	$out  = $chip_css . nr_leftovers_css() . '<div class="nr-shoton"><span class="nr-shoton__label">' . esc_html__( 'Time of day', 'raveenthiran' ) . '</span>';
-	$out .= '<a class="nr-chip' . ( $cur === '' ? ' is-on' : '' ) . '" href="' . esc_url( $base ) . '">' . esc_html__( 'Any', 'raveenthiran' ) . '</a>';
-	foreach ( $tods as $t ) {
-		$out .= '<a class="nr-chip' . ( $cur === $t ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( 'tod', $t, $base ) ) . '">' . esc_html( nr_tod_name( $t ) ) . '</a>';
-	}
-	return $out . '</div>';
-} );
 
 /* ════════════════════════════════════════════════════════════════════════
  * #14 — Diptych compare : [nr_diptych a="slug|id" b="slug|id"]

@@ -7,23 +7,8 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/* ─────────────────────────────────────────────────────────────
- * #43 Auto-fill project_year from a photo's EXIF date on upload.
- * Best-effort: only when the upload is attached to a project and the
- * year isn't already set.
- * ───────────────────────────────────────────────────────────── */
-add_action( 'add_attachment', function ( $att_id ) {
-	$parent = (int) get_post_field( 'post_parent', $att_id );
-	if ( ! $parent || get_post_type( $parent ) !== 'nr_project' ) return;
-	$existing = function_exists( 'nr_field' ) ? nr_field( 'project_year', $parent ) : get_post_meta( $parent, 'project_year', true );
-	if ( $existing ) return;
-	$file = get_attached_file( $att_id );
-	if ( ! $file || ! function_exists( 'exif_read_data' ) || get_post_mime_type( $att_id ) !== 'image/jpeg' ) return;
-	$e  = @exif_read_data( $file );
-	$dt = $e['DateTimeOriginal'] ?? ( $e['DateTime'] ?? '' );
-	$yr = $dt ? substr( $dt, 0, 4 ) : '';
-	if ( ctype_digit( $yr ) ) update_post_meta( $parent, 'project_year', $yr );
-} );
+/* (#43 EXIF-date → project_year removed v4.63.0 — AVIF/WebP carry no readable
+ * EXIF date. Set the year by hand in the project fields.) */
 
 /* ─────────────────────────────────────────────────────────────
  * #45 Admin dashboard widget — counts + latest enquiries + quick links.

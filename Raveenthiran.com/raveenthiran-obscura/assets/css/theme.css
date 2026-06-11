@@ -650,6 +650,13 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
    Portfolio archive
    ========================================================= */
 .nr-portfolio-archive .nr-page__head{padding-bottom:18px}
+/* Explicit rows so the head sizes to content and the rail fills the rest, even
+   when :has() isn't honoured (otherwise the head took 1fr, the rail collapsed
+   to auto, every height:100% card shrank to 0 and the labels piled up). */
+.nr-portfolio-archive.nr-fullscreen{grid-template-rows:auto minmax(0,1fr)}
+/* Height floor so cards keep their shape even if the rail row ever collapses
+   (e.g. before layout settles, or with no cover images on a fresh install). */
+.nr-portfolio-archive .nr-portfolio-rail{min-height:min(72vh,640px)}
 .nr-chips{display:flex;flex-wrap:wrap;gap:18px;justify-content:flex-end}
 .nr-chips--center{justify-content:flex-end}
 .nr-chip{

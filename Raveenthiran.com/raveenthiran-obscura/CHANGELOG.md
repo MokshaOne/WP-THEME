@@ -1,5 +1,32 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.63.0 — Drop EXIF · fix portfolio rail · Medium batch 3
+**Removed every EXIF feature.** The studio works in AVIF/WebP, which don't carry
+the EXIF that `exif_read_data()` reads, so these never had data:
+- EXIF-on-upload extractor + `nr_get_exif` (`inc/performance.php`), `#43`
+  EXIF-date → project_year (`inc/tier2.php`), the auto-alt camera hint
+  (`inc/finishing.php`), image-sitemap EXIF caption fallbacks (`inc/seo-extra.php`),
+  the per-plate "Shot on" caption (`single-nr_project.php`) and its JS toggle.
+- Reverted the EXIF-based ideas: **#2** shot-on facet, **#3** focal chart,
+  **#9** related-by-EXIF (`inc/medium2.php`), **#4** time-of-day facet
+  (`inc/leftovers.php`). **#1** EXIF location map → won't-do.
+
+**Fixed the portfolio-rail collapse.** The cards are sized by `height:100%` of the
+rail, whose height came from `.nr-fullscreen:has(> .nr-page__head)`. When that row
+collapsed, every card shrank to zero and the title/meta piled up over the heading
+(your screenshot). Now the archive sets explicit `grid-template-rows:auto
+minmax(0,1fr)` (no `:has()` dependency) plus a rail `min-height` floor.
+
+**Medium batch 3 (3 items), new `inc/medium3.php`:**
+- **#6 Print-size wall preview** — `[nr_wallpreview img="id"]` shows a frame at
+  A4/A3/A2/A1 against a 175 cm reference (viz only, no sale).
+- **#10 Burst / sequence viewer** — `[nr_burst ids="…"]` step through a series
+  (← → / buttons / scrubber); defaults to the current project's gallery.
+- **#23 Shareable shortlist** — the ♥ selection tray gains a "Copy share link";
+  opening `?shortlist=…` imports someone's selection.
+
+IDEAS-50-NEXT: 37/50 shipped · 7 open (all Medium).
+
 ## 4.62.0 — IDEAS-50-NEXT, small leftovers (5 items) — S-tier cleared
 New `inc/leftovers.php` (+ small touches to `inc/performance.php` and
 `inc/smallwins.php`). All self-contained.

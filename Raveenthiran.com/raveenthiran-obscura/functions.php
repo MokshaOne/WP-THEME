@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.62.0' );
+define( 'NR_THEME_VERSION', '4.63.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -303,7 +303,7 @@ function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dar
  *   functions-additions — helpers, sticky CTA, shortcodes, asset enqueue
  *   acf-fields          — registers ACF field groups (no-op without ACF)
  *   admin-panel         — Site Control admin dashboard
- *   performance         — WebP / LQIP / EXIF on upload
+ *   performance         — WebP / LQIP on upload
  *   seo                 — schema.org, sitemap.xml, robots.txt
  *
  * Define NR_DISABLE_FEATURES in wp-config.php to skip all modules and
@@ -349,6 +349,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'medium-next.php',
 		'medium2.php',
 		'leftovers.php',
+		'medium3.php',
 		'admin-hub.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;

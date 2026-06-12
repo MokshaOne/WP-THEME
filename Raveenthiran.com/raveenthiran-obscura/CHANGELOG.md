@@ -1,5 +1,12 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.75.2 — Booking lives on the Enquire page (popover)
+The fixed-slot booking now sits **on the Enquire page itself**, not a separate page:
+a “Book a fixed slot” button appears above the enquiry form and opens the slot
+picker in the popover. Shown only when open slots exist, so the page stays clean
+otherwise. Custom projects still use the form below; fixed sessions book in two
+clicks — one page, two paths.
+
 ## 4.75.1 — Booking slots: popover mode (one page, no extra page)
 `[nr_booking_slots]` gains `mode="popover"`: instead of the picker sitting inline,
 it renders a single **“Book a time”** button that opens the slot picker in the

@@ -77,7 +77,15 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 				<p class="nr-enquire__lede"><?php echo esc_html( nr_opt( 'nr_enquire_lede', __( 'Booking and saying hello live in one place. Tell me what you have in mind — or check pricing first.', 'raveenthiran' ) ) ); ?></p>
 			</header>
 
-			<form class="nr-form nr-enquire__form" data-enquire-form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php /* Fixed-slot booking, in a popover on this same page — shown only when slots are open. */ ?>
+				<?php if ( function_exists( 'nr_slots_open' ) && nr_slots_open() ) : ?>
+				<div class="nr-enquire__book">
+					<?php echo do_shortcode( '[nr_booking_slots mode="popover" cta="' . esc_attr__( 'Book a fixed slot', 'raveenthiran' ) . '" title="' . esc_attr__( 'Book a slot', 'raveenthiran' ) . '"]' ); ?>
+					<span class="nr-enquire__book-or"><?php esc_html_e( '— or tell me about your project below', 'raveenthiran' ); ?></span>
+				</div>
+				<?php endif; ?>
+
+				<form class="nr-form nr-enquire__form" data-enquire-form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="nr_contact_send">
 				<?php wp_nonce_field( 'nr_contact', '_nr_nonce' ); ?>
 				<input type="text" name="nr_company" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">

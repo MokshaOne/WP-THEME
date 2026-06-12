@@ -114,7 +114,9 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 							<output data-enquire-estimate><?php echo $est ? esc_html( $cur . number_format_i18n( (float) $est ) ) : '—'; ?></output>
 							<button type="button" class="nr-enquire__price-link" data-modal="nr-quote"><?php esc_html_e( 'Check pricing', 'raveenthiran' ); ?> →</button>
 						</span>
+						<small class="nr-enquire__breakdown" data-enquire-breakdown></small>
 						<input type="hidden" name="estimate" data-enquire-estimate-input value="<?php echo $est ? esc_attr( $cur . $est ) : ''; ?>">
+						<input type="hidden" name="estimate_breakdown" data-enquire-breakdown-input value="">
 					</label>
 				</div>
 

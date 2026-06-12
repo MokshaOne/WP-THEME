@@ -83,6 +83,14 @@ function nr_enquiry_details_box( $post ) {
 		__( 'Preferred date', 'raveenthiran' )  => esc_html( $g( '_nr_date' ) ?: '—' ),
 		__( 'Estimate', 'raveenthiran' )        => esc_html( $g( '_nr_est' ) ?: '—' ),
 	];
+	if ( $g( '_nr_breakdown' ) ) {
+		// "label | amount ;; …" → readable "label — €amount" lines
+		$bd = array_map( function ( $part ) {
+			$bits = array_map( 'trim', explode( ' | ', $part ) );
+			return esc_html( $bits[0] ) . ( isset( $bits[1] ) && is_numeric( $bits[1] ) ? ' — €' . esc_html( number_format( (float) $bits[1], 2, '.', ',' ) ) : '' );
+		}, explode( ' ;; ', $g( '_nr_breakdown' ) ) );
+		$rows[ __( 'Calculation', 'raveenthiran' ) ] = implode( '<br>', $bd );
+	}
 	if ( $g( '_nr_ref' ) )     $rows[ __( 'Referenced project', 'raveenthiran' ) ] = esc_html( $g( '_nr_ref' ) );
 	if ( $g( '_nr_service' ) ) $rows[ __( 'Selected service', 'raveenthiran' ) ]   = esc_html( $g( '_nr_service' ) );
 	if ( $g( '_nr_referrer' ) ) {

@@ -109,19 +109,30 @@ function nr_invoice_pdf_file( $inv ) {
 		$y -= 22;
 	}
 
-	// Line item
+	// Line items — the whole calculation when available, else one summary line.
 	$y -= 18;
 	$pdf->rect( 72, $y + 12, 451, 1, [ 0.85, 0.84, 0.80 ] );
-	$pdf->text( 72, $y - 8, (string) $inv['desc'], '', 11, $ink );
-	$pdf->text( 523, $y - 8, $amount, '', 11, $ink, 'right' );
-	$pdf->rect( 72, $y - 24, 451, 1, [ 0.85, 0.84, 0.80 ] );
+	$items = ! empty( $inv['items'] ) && is_array( $inv['items'] ) ? $inv['items'] : [];
+	if ( $items ) {
+		foreach ( $items as $it ) {
+			$pdf->text( 72, $y - 8, (string) $it[0], '', 11, $ink );
+			$pdf->text( 523, $y - 8, '€' . number_format( (float) $it[1], 2, '.', ',' ), '', 11, $ink, 'right' );
+			$y -= 20;
+		}
+	} else {
+		$pdf->text( 72, $y - 8, (string) $inv['desc'], '', 11, $ink );
+		$pdf->text( 523, $y - 8, $amount, '', 11, $ink, 'right' );
+		$y -= 20;
+	}
+	$pdf->rect( 72, $y - 4, 451, 1, [ 0.85, 0.84, 0.80 ] );
 
 	// Total
-	$pdf->text( 72, $y - 64, 'TOTAL DUE', 'B', 10, $muted );
-	$pdf->text( 72, $y - 106, $amount, 'B', 38, $ink );
+	$pdf->text( 72, $y - 44, 'TOTAL DUE', 'B', 10, $muted );
+	$pdf->text( 72, $y - 86, $amount, 'B', 38, $ink );
+	$y -= 0;
 
 	// Legal note (Kleinunternehmer)
-	$ny = $y - 142;
+	$ny = $y - 122;
 	foreach ( nr_pdf_wrap( $note, 92 ) as $line ) {
 		$pdf->text( 72, $ny, $line, '', 10, $muted );
 		$ny -= 15;
@@ -171,6 +182,16 @@ function nr_invoice_create( $eid, $amount_override = null ) {
 	$sdate = (string) get_post_meta( $eid, '_nr_date', true );
 	$terms = max( 1, (int) nr_opt( 'nr_inv_terms', 14 ) );
 
+	// Whole calculation from the quote (label | amount ;; …). Used as invoice
+	// line items only when it still sums to the billed amount (the owner may
+	// have overridden the amount — then a single summary line is correct).
+	$items = function_exists( 'nr_breakdown_items' ) ? nr_breakdown_items( get_post_meta( $eid, '_nr_breakdown', true ) ) : [];
+	if ( $items ) {
+		$sum = 0.0;
+		foreach ( $items as $it ) $sum += $it[1];
+		if ( abs( $sum - $amount ) > 0.01 ) $items = [];
+	}
+
 	$inv = [
 		'no'           => nr_invoice_next_no(),
 		'date'         => date_i18n( 'j M Y' ),
@@ -180,6 +201,7 @@ function nr_invoice_create( $eid, $amount_override = null ) {
 		'email'        => (string) get_post_meta( $eid, '_nr_email', true ),
 		'desc'         => trim( ( $type ?: 'Photography' ) . ' — photography session' ),
 		'amount'       => $amount,
+		'items'        => $items,
 	];
 
 	$path = nr_invoice_pdf_file( $inv );

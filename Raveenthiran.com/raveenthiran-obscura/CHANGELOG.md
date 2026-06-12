@@ -1,5 +1,20 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.74.0 — Whole calculation everywhere (not just the total)
+The price calculator now carries its full breakdown — session type, each add-on,
+usage license, travel km × rate, each with its amount — through the entire chain
+instead of collapsing to one number:
+- **Quote modal:** the note under the total lists every item with its price.
+- **Enquire form:** the calculation appears under "Your estimate" and is submitted
+  in a new `estimate_breakdown` field.
+- **Owner email:** a "Calculation:" line; stored on the enquiry as `_nr_breakdown`.
+- **Backend:** the Enquiry-details box shows the calculation line by line.
+- **Estimate PDF:** an itemised block above the headline amount.
+- **Invoice:** line items from the calculation — used only when they still sum to
+  the billed amount (an owner override falls back to one summary line, so the
+  invoice never shows a calculation that contradicts its total).
+New shared parser `nr_breakdown_items()` (pdf.php).
+
 ## 4.73.1 — Show enquiry details on the edit screen
 The enquiry editor only showed the title (the captured data lives in post meta,
 so the screen looked empty). Added a read-only **Enquiry details** box (main

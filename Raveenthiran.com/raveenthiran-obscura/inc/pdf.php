@@ -23,6 +23,7 @@ function nr_quote_pdf_file( $args ) {
 		'date'     => '',
 		'estimate' => '',
 		'ref'      => '',
+		'breakdown' => '',
 	] );
 
 	$studio  = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
@@ -54,6 +55,20 @@ function nr_quote_pdf_file( $args ) {
 		$y -= 26;
 	}
 
+	// Whole calculation — one line per item when the brief carried a breakdown.
+	$items = function_exists( 'nr_breakdown_items' ) ? nr_breakdown_items( $a['breakdown'] ) : [];
+	if ( $items ) {
+		$y -= 10;
+		$pdf->rect( 72, $y + 4, 451, 1, [ 0.85, 0.84, 0.80 ] );
+		foreach ( $items as $it ) {
+			$y -= 20;
+			$pdf->text( 72, $y, $it[0], '', 10, $ink );
+			$pdf->text( 523, $y, '€' . number_format( $it[1], 2, '.', ',' ), '', 10, $ink, 'right' );
+		}
+		$y -= 10;
+		$pdf->rect( 72, $y + 2, 451, 1, [ 0.85, 0.84, 0.80 ] );
+	}
+
 	// Headline amount
 	$pdf->text( 72, $y - 36, __( 'Estimated investment', 'raveenthiran' ), 'B', 10, $muted );
 	$pdf->text( 72, $y - 86, $a['estimate'] ?: '—', 'B', 44, $ink );
@@ -82,6 +97,20 @@ function nr_quote_pdf_file( $args ) {
 	$path = $dir . $name;
 	if ( @file_put_contents( $path, $bytes ) === false ) return '';
 	return $path;
+}
+
+/**
+ * Parse a "label | amount ;; label | amount" breakdown string into
+ * [ [label, float amount], … ] (max 8 rows, defensively trimmed).
+ */
+function nr_breakdown_items( $raw ) {
+	$out = [];
+	foreach ( array_slice( explode( ' ;; ', trim( (string) $raw ) ), 0, 8 ) as $part ) {
+		$bits = array_map( 'trim', explode( ' | ', $part ) );
+		if ( count( $bits ) !== 2 || $bits[0] === '' || ! is_numeric( $bits[1] ) ) continue;
+		$out[] = [ substr( $bits[0], 0, 60 ), (float) $bits[1] ];
+	}
+	return $out;
 }
 
 /* rough greedy wrap by character count (Helvetica ~0.5em average) */

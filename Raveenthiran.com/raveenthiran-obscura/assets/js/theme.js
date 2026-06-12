@@ -459,23 +459,31 @@
 
     function fmt(n){ return cur + Math.round(n).toLocaleString(); }
 
-    function compute(){
+    /* Full calculation as line items [{l: label, a: amount}] — shown in the
+       modal, mirrored onto the enquiry form, and carried server-side so the
+       estimate PDF / backend / invoice can display the whole breakdown. */
+    function items(){
+      var out = [];
       var typeInput = form.querySelector('input[name="nr_q_type"]:checked');
-      var base = typeInput ? (parseFloat(typeInput.getAttribute('data-base')) || 0) : 0;
-      var total = base, parts = [];
-      if (typeInput) parts.push((typeInput.getAttribute('data-label') || '') + ' ' + fmt(base));
-      var extras = form.querySelectorAll('input[name="nr_q_extra"]:checked');
-      extras.forEach(function (x) { total += parseFloat(x.getAttribute('data-price')) || 0; });
-      if (extras.length) parts.push(extras.length + (extras.length > 1 ? ' add-ons' : ' add-on'));
+      if (typeInput) out.push({ l: typeInput.getAttribute('data-label') || 'Session', a: parseFloat(typeInput.getAttribute('data-base')) || 0 });
+      form.querySelectorAll('input[name="nr_q_extra"]:checked').forEach(function (x) {
+        out.push({ l: x.getAttribute('data-label') || 'Add-on', a: parseFloat(x.getAttribute('data-price')) || 0 });
+      });
       var lic = form.querySelector('input[name="nr_q_license"]');
-      if (lic && lic.checked) { total += parseFloat(lic.getAttribute('data-price')) || 0; parts.push('license'); }
+      if (lic && lic.checked) out.push({ l: lic.getAttribute('data-label') || 'Usage license', a: parseFloat(lic.getAttribute('data-price')) || 0 });
       var km = form.querySelector('input[name="nr_q_km"]');
       if (km && parseFloat(km.value) > 0) {
-        total += parseFloat(km.value) * (parseFloat(km.getAttribute('data-per-km')) || 0);
-        parts.push(Math.round(parseFloat(km.value)) + ' km');
+        var n = parseFloat(km.value), rate = parseFloat(km.getAttribute('data-per-km')) || 0;
+        out.push({ l: 'Travel ' + Math.round(n) + ' km', a: n * rate });
       }
+      return out;
+    }
+
+    function compute(){
+      var list = items(), total = 0;
+      list.forEach(function (i) { total += i.a; });
       if (sumEl) sumEl.textContent = fmt(total);
-      if (noteEl) noteEl.textContent = parts.join('  ·  ');
+      if (noteEl) noteEl.textContent = list.map(function (i) { return i.l + ' ' + fmt(i.a); }).join('  +  ');
       return total;
     }
 
@@ -509,6 +517,12 @@
         }
         var out = ef.querySelector('[data-enquire-estimate]'); if (out) out.textContent = fmt(total);
         var hidden = ef.querySelector('[data-enquire-estimate-input]'); if (hidden) hidden.value = cur + Math.round(total);
+        // carry + show the whole calculation, not just the total
+        var list = items();
+        var bd = ef.querySelector('[data-enquire-breakdown-input]');
+        if (bd) bd.value = list.map(function (i) { return i.l + ' | ' + (Math.round(i.a * 100) / 100); }).join(' ;; ');
+        var bdOut = ef.querySelector('[data-enquire-breakdown]');
+        if (bdOut) bdOut.textContent = list.map(function (i) { return i.l + ' ' + fmt(i.a); }).join('  +  ');
         var modal = form.closest('.nr-modal');
         var close = modal && modal.querySelector('[data-modal-close]'); if (close) close.click();
         ef.scrollIntoView({ behavior: 'smooth', block: 'start' });

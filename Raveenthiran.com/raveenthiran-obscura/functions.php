@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.73.1' );
+define( 'NR_THEME_VERSION', '4.74.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -438,6 +438,7 @@ function nr_handle_contact_send() {
 	$type    = sanitize_text_field( wp_unslash( $_POST['project_type']   ?? '' ) );
 	$date    = sanitize_text_field( wp_unslash( $_POST['preferred_date'] ?? '' ) );
 	$est     = sanitize_text_field( wp_unslash( $_POST['estimate']       ?? '' ) );
+	$estb    = substr( sanitize_text_field( wp_unslash( $_POST['estimate_breakdown'] ?? '' ) ), 0, 600 );
 	// Attribution — which project / source drove the enquiry.
 	$ref_in   = sanitize_text_field( wp_unslash( $_POST['nr_ref']      ?? '' ) );
 	$service  = sanitize_text_field( wp_unslash( $_POST['nr_service']  ?? '' ) );
@@ -449,6 +450,7 @@ function nr_handle_contact_send() {
 	if ( $type ) $lines[] = "Project type: {$type}";
 	if ( $date ) $lines[] = "Preferred date: {$date}";
 	if ( $est )  $lines[] = "Estimate: {$est}";
+	if ( $estb ) $lines[] = 'Calculation: ' . str_replace( ' ;; ', '; ', $estb );
 	$body    = implode( "\n", $lines ) . "\n\n{$notes}";
 	$headers = [ 'Content-Type: text/plain; charset=UTF-8' ];
 	if ( $email ) $headers[] = 'Reply-To: ' . $email;
@@ -466,6 +468,7 @@ function nr_handle_contact_send() {
 			update_post_meta( $eid, '_nr_email', $email );
 			update_post_meta( $eid, '_nr_type',  $type );
 			update_post_meta( $eid, '_nr_est',   $est );
+			if ( $estb ) update_post_meta( $eid, '_nr_breakdown', $estb );
 			update_post_meta( $eid, '_nr_date',  $date );
 			if ( $ref_in )   update_post_meta( $eid, '_nr_ref',      $ref_in );
 			if ( $service )  update_post_meta( $eid, '_nr_service',  $service );
@@ -514,6 +517,7 @@ function nr_handle_contact_send() {
 				'type'     => $type,
 				'date'     => $date,
 				'estimate' => $est,
+				'breakdown' => $estb,
 			] );
 		}
 		$est_note = $pdf_path ? __( "\n\nI've attached a non-binding estimate as a PDF for your records.", 'raveenthiran' ) : '';

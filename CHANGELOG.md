@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.73.1** · **102 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.74.0** · **103 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_p
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.74.0 — 2026-06-12
+The price calculator's full breakdown (type, each add-on, license, travel km × rate) now flows through the whole chain instead of collapsing to one total: shown in the quote modal and under "Your estimate" on the Enquire form, submitted as `estimate_breakdown`, stored as `_nr_breakdown`, listed in the owner email and the backend Enquiry-details box, itemised in the estimate PDF, and used as invoice line items (only when they still sum to the billed amount — an owner override falls back to a single summary line). Shared parser `nr_breakdown_items()` in pdf.php.
 
 ## v4.73.1 — 2026-06-12
 Enquiry edit screen showed only the title (data lives in post meta). Added a read-only "Enquiry details" meta box surfacing email (mailto), project type, preferred date, estimate, attribution (referenced project / service / referrer), brief/notes, and reference-image thumbnails. Visibility only, no data-model change.

@@ -1,8 +1,195 @@
-# Obscura — full changelog
+# Obscura — Project Handbook & Changelog
 
-Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
+> **Read this first.** This file is the single source of truth for the Obscura theme:
+> everything you need to resume work from a cold start — what it is, how it's built,
+> how to ship & deploy it, the hard-won gotchas, and the current state — followed by
+> the full version history. If you only have this file, you have the project.
 
-**97 releases**, current **v4.70.3**.
+**Current version: v4.70.3** · **97 releases** · Branch `claude/obscura-rebuild` · PR
+[#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
+
+---
+
+## 1. What this is
+
+A **bespoke, classic (non-block) PHP WordPress theme** for **raveenthiran.com** — a
+Vienna photographer's **enquiry-based** portfolio.
+
+- **Hosting:** easyname **shared hosting**, behind **free Cloudflare** (DNS on Cloudflare).
+- **Philosophy:** **plugin-light** — prefer self-hosted, theme-built solutions over plugins.
+- **Ships as:** an installable **ZIP** (`raveenthiran-obscura-vX.Y.Z.zip`) at the repo root.
+- **Language:** English only (no bilingual).
+- **Images:** the studio works in **AVIF / WebP** (no readable EXIF — all EXIF features removed).
+
+**Hard NOs (owner decisions — do not build these):** payment system, client logins /
+proofing galleries, bilingual DE/EN, dark/light toggle, Instagram auto-feed, and **never
+recommend paid Cloudflare features** (Polish/Mirage/Image Resizing) — do image work in the theme.
+
+## 2. Where things live
+
+- **Theme root:** `Raveenthiran.com/raveenthiran-obscura/`
+- **Templates (root):** `front-page.php` (fullscreen hero), `archive-nr_project.php`
+  (portfolio overview = horizontal slider), `single-nr_project.php`, `archive-nr_journal.php`,
+  `single-nr_journal.php`, `taxonomy.php`, `search.php`, `index.php`, `404.php`,
+  `page-enquire.php` (booking+contact+price estimator+FAQ), `page-about.php`, legal pages,
+  `header.php`, `footer.php`.
+- **Feature modules:** `inc/*.php`, loaded in order by a `foreach` array in `functions.php`
+  (~line 344). **`lib.php` first**; order matters. Add a new feature as a new `inc/<name>.php`
+  (guard with `if ( ! defined( 'ABSPATH' ) ) exit;`) and append it to that array.
+- **Assets:** `assets/css/theme.css` (main, ~150KB), `assets/css/fonts.css` (@font-face only,
+  **inlined into `<head>`**), `assets/js/theme.js` (main), `assets/js/gpu-fx.js` +
+  `assets/js/awwwards.js` (opt-in GPU bundle), `assets/js/webgl-hero.js` (opt-in),
+  `assets/fonts/*.woff2` (Inter Tight 300/400/500/600/700 + JetBrains Mono 400/500 — **all in use**).
+- **Build:** `bin/nr-build.sh` (lint + version bump + ZIP), `bin/nr-bump.sh`.
+- **Docs:** this file (root `CHANGELOG.md`) + theme `CHANGELOG.md` (mirror, theme-relative).
+
+## 3. Architecture & conventions
+
+- **CPTs:** `nr_project` (taxonomies `nr_project_cat`, `nr_project_tag`, `nr_project_series`),
+  `nr_journal` (`nr_journal_cat`), `nr_testimonial`, private `nr_enquiry` (auto-logged on form
+  submit), private `nr_subscriber`.
+- **Settings:** every option is a `wp_options` row read via **`nr_opt('nr_*', $default)`**.
+  Defaults + whitelist live in **`nr_settings_defaults()`** (`inc/theme-settings.php`). Saved via
+  `options.php` + `settings_fields('nr_theme_settings_group')`; sanitised by
+  `nr_settings_sanitize_field` (allows `<em><br><strong><b>`).
+- **Toggles:** render with `nr_field_toggle`. A toggle persists "off" if its key is prefixed
+  **`nr_fx_*`** OR listed in `$toggle_keys`. Body classes (`nr-has-*`, `nr-fx-*`) gate JS/CSS.
+- **ACF optional:** `inc/acf-polyfill.php` stubs ACF; read fields via **`nr_field()`**
+  (`get_field` → `get_post_meta`). Option-page fields fall back to `get_option('options_'.$key)`.
+- **Design tokens** (inlined `:root` in `header.php` + `theme.css`): `--bg #0B0C10`,
+  `--ink #F2EFE9` (bone), `--amber #F2A03D`; `--ink-3` is muted text at **.50 opacity ≈ 4.7:1**
+  (WCAG AA). Fonts: **Inter Tight** (display/body) + **JetBrains Mono** (chrome), self-hosted woff2.
+- **Layout model:** **desktop = fixed single-screen** (`.nr-fullscreen` / `.nr-hero` are
+  `position:fixed; inset`), **no scroll**; **mobile (≤900px) = normal scrolling** with a bottom
+  tab bar. This desktop/mobile split is the source of most "works on mobile, breaks on desktop"
+  asymmetries (e.g. the CLS saga below).
+- **The golden rule:** anything that can change the live look or break (WebGL hero, View
+  Transitions, GPU/iris effects, async CSS, intro preloader, line-reveal headings) ships behind a
+  **Theme-Settings toggle defaulting to `'0'`**, with graceful fallback (reduced-motion / no-WebGL
+  / no-JS / ≤900px). The owner flips it on, previews, keeps it only if they like it.
+
+### Module map (`inc/`, load order)
+`lib.php` (helpers — load first) · `acf-polyfill` · `functions-additions` · `acf-fields` ·
+`performance` (WebP/LQIP on upload) · `seo` (schema/sitemap/robots) · `theme-settings` ·
+`quote` (pricing + Business&SEO option pages) · `tier1`/`tier2` · `medium`/`medium-next`/
+`medium2`/`medium3`/`medium4` · `importer` (ZIP project import) · `security` (Turnstile) · `pwa`
+(virtual `/nr-sw.js` + manifest) · `compare` (`[nr_compare]`) · `og-cards` (GD share cards) ·
+`pdf` (estimate writer) · `series` · `interlink` · `map` (Leaflet `[nr_map]`) · `smtp` · `insights`
+(enquiry dashboard) · `webp` (`<picture>` twins + bulk Tools page) · `admin-extras`/`admin-hub`/
+`admin-simplify` (Obscura admin menu) · `ideas-next` · `seo-extra` (ImageObject/preload) ·
+`conversion-extra` (`[nr_press]`) · `quickwins`/`smallwins`/`mediumwins`/`mediumwins2` · `infra` ·
+`studio-ops` · `finishing` (`[nr_featured]`) · `leftovers` · `districts` (`[nr_district]` local SEO) ·
+`preshoot` (shoot-date cron). Press/Awards rendering helper: **`nr_recognition_list()`** in `functions.php`.
+
+## 4. Build & ship workflow (every change)
+
+1. **Edit**, matching surrounding style (tabs, naming, comment density). The Edit tool fails on
+   tab/space mismatch — Read first, or use a Python string-replace with exact `\t`.
+2. **Lint:** `php -l` every changed `.php`; `node --check` every changed `.js`; CSS brace balance
+   (`grep -c '{' == grep -c '}'`).
+3. For testable-without-WP logic, write a tiny stub harness and actually run it.
+4. **Build:** `bash bin/nr-build.sh X.Y.Z` — bumps `NR_THEME_VERSION` (functions.php),
+   `Version:` (style.css), `Stable tag` (readme.txt); lints; writes
+   `raveenthiran-obscura-vX.Y.Z.zip` at repo root.
+5. **Update both changelogs** (this file + theme `CHANGELOG.md`).
+6. **Commit** (concise body), **push** `git push -u origin claude/obscura-rebuild` (retry w/ backoff
+   on network error), keep PR #13 current.
+7. **Deliver the ZIP** to the owner with a short "what changed / how to test".
+
+> **Patch** = fixes, **minor** = features. Keep the model identifier out of commits/PRs/code.
+
+## 5. Deploying to the LIVE site — READ THIS (cost us a whole debugging saga)
+
+- **Deploy via WP-Admin → Appearance → Themes → Add New → Upload Theme → ZIP → "Replace active
+  with uploaded".** This overwrites **all** files atomically.
+- **Do NOT deploy by FTP file-by-file.** Partial/failed FTP uploads were the root cause of a long
+  CLS hunt: `style.css` got replaced (so Themes showed the new version) while `functions.php`,
+  `theme.css`, and `header.php` stayed old — so **none of the fixes were actually live** even though
+  the version number looked right.
+- **Cache purge order after deploy:** **1) W3TC "Purge All Caches" (origin) → 2) Cloudflare "Purge
+  Everything" (edge).** Purging only Cloudflare is useless — it just re-pulls the still-cached page
+  from the origin. Keep **W3TC Minify OFF** (it breaks JS/CSS; Brotli handles size).
+- **Verification (5-second check):** view source and confirm assets load as
+  **`theme.css?ver=<the version you just shipped>`**. The `?ver` comes from `NR_THEME_VERSION` in
+  `functions.php` — if it shows an **older** version than the Themes page, your upload was **partial**
+  (PHP not replaced). A query-string URL like `raveenthiran.com/?x=1` bypasses W3TC + is a fresh
+  Cloudflare key → shows the true current origin output.
+
+## 6. Performance playbook (measured, not guessed)
+
+Diagnose with a fresh **pagespeed.web.dev** run; read the **filmstrip** + the **"Layout shift
+culprits"** / **LCP** breakdowns. Test 2–3× (the run right after a purge is cold/worst).
+
+- **Images / LCP (the big mobile lever).** Originals are **AVIF**; the shared host **cannot resize
+  AVIF**, so WordPress writes **JPEG sub-sizes** and the theme makes a **`.webp` twin** of each
+  (`inc/webp.php`: at upload + on-demand capped 8/req + a **Obscura → Generate WebP** bulk page).
+  Delivery wraps `wp_get_attachment_image()` in `<picture><source type=image/webp>`.
+  - **Run "Generate WebP" once + purge** after adding media, so every size has a twin.
+  - **The LCP preload must point at the WebP the page serves — never the raw full-size AVIF**
+    (that bug = 8.5s mobile LCP). `front-page.php` + `inc/seo-extra.php` now derive the preload from
+    the WebP srcset and skip the preload entirely if no WebP exists. Result: mobile **74→95**, LCP **8.5s→2.7s**.
+  - `nr-hero` image size = 2400×1600 (uncropped, `object-fit:contain`). Cards/plates carry accurate
+    `sizes`; first hero/plate gets `fetchpriority="high"`.
+- **CLS.** The fixed-desktop layout + the giant hero title are the usual suspects. **All Inter Tight
+  weights are in use** (don't drop any → FOUT). The `.nr-modal` (pricing/enquiry) is `display:none`
+  when closed so a viewport-size modal can't score ~1.0 CLS. Hero title display weights (300/700,
+  preloaded) use `font-display:optional`. **If desktop CLS is "stuck" at a byte-stable ~1.0 across
+  several fixes, suspect a stale/partial deploy (§5) before more code.**
+- **Fonts:** `fonts.css` is inlined; weights 300/500/700 preloaded with `crossorigin`. `font-display:
+  swap` for body, `optional` for the display weights.
+- **JS/CSS:** deferred; no third-party analytics. Opt-in bundles (`gpu-fx.js`+`awwwards.js` via
+  `nr_fx_gpu`, `webgl-hero.js` via `nr_fx_webgl`) only load when toggled on. The **"round" full-screen
+  reveal on load = the aperture-iris from `nr_fx_gpu`** — turn that toggle off to remove it.
+- **Stop at ~90 mobile / ~95 desktop.** Minify (~8KB post-Brotli), unused-CSS splitting, preconnect
+  (everything is same-origin) are diminishing returns — say so honestly.
+
+## 7. Email deliverability (Google Workspace, `inc/smtp.php`)
+
+`phpmailer_init` SMTP. Settings: host `smtp.gmail.com`, port 587 STARTTLS, **Username = the real
+login mailbox** (e.g. `hq@m1o.at`, NOT the alias), **App Password** (or `NR_SMTP_PASS` constant),
+**From = a verified "Send mail as" alias** (`office@raveenthiran.com`). Includes a "send test email"
+button. DNS in **Cloudflare**: one SPF TXT (`v=spf1 include:_spf.google.com include:spf.easyname.com
+~all`), **DKIM** generated in Google Admin (Apps → Gmail → Authenticate email → Start authentication —
+else Google signs with the generic `gappssmtp.com` key and DMARC fails alignment), DMARC on `_dmarc`.
+Verify with port25 `check-auth@verifier.port25.com`. **Exactly one** SPF/DKIM record each.
+**Security:** a previously-exposed Application Password must be treated as **compromised — rotate it.**
+
+## 8. Self-built (no-plugin) capabilities
+
+Bulk ZIP project importer · PWA/offline (virtual SW + manifest, persistent `nr-reader` cache) ·
+dynamic OG share cards (GD, needs a bundled TTF) · dependency-free PDF estimate writer · Turnstile
+spam shield (fails open if unconfigured) · Leaflet map · before/after `[nr_compare]` · enquiry
+attribution + insights dashboard · keyword tags + multi-filter · series · video gallery plates ·
+Vienna district local-SEO pages (`[nr_district]`) · reference-image upload on the Enquire form ·
+pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
+
+## 9. Gotchas
+
+- **Partial FTP deploys** (see §5) — the #1 time-sink. Prefer the WP ZIP uploader.
+- **Cache layering** — purge W3TC (origin) before Cloudflare (edge); `?x=1` bypasses both.
+- **Lighthouse mis-attribution** — it blamed a fullscreen `#nr-quote` overlay for a shift that was
+  really elsewhere; trust the **mobile-vs-desktop asymmetry** more than the named element.
+- **AVIF can't be resized** on this host → rely on JPEG sub-sizes + WebP twins, not AVIF sub-sizes.
+- **Edit tool tab/space** mismatches — Read first or Python-replace with exact `\t`.
+- Sandbox: GD/AVIF + pypdf are limited; validate with tiny stub harnesses.
+
+## 10. Current state & open items
+
+- **Mobile: ~95** (LCP 2.7s, CLS ~0.06) — done.
+- **Desktop:** LCP 0.9s (great); **CLS** fix (`.nr-modal{display:none}`) is correct and, as of the
+  **full** v4.70.3 deploy, finally live — **pending the owner's purge + re-measure** (expected
+  CLS ~1.0 → ~0.06, score → ~95).
+- A11y & SEO already score **100**.
+- **Backlogs complete:** IDEAS-200 and IDEAS-50-NEXT both fully shipped/closed.
+- **Possible next polish (not started):** Awards as a multi-field editor (like Press); font
+  subsetting (~260KB of woff2 → could roughly halve); email deliverability (SPF/DKIM/DMARC) — needs
+  DNS access; rotate the compromised App Password.
+
+---
+
+## Version history
+
+Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
 

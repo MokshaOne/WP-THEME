@@ -68,6 +68,51 @@ add_action( 'manage_nr_enquiry_posts_custom_column', function ( $col, $post_id )
 	if ( isset( $map[ $col ] ) ) echo esc_html( get_post_meta( $post_id, $map[ $col ], true ) );
 }, 10, 2 );
 
+/* Read-only "Enquiry details" box on the edit screen — surfaces everything the
+   form captured (the post body alone showed nothing useful to the owner). */
+add_action( 'add_meta_boxes', function () {
+	add_meta_box( 'nr-enquiry-details', __( 'Enquiry details', 'raveenthiran' ), 'nr_enquiry_details_box', 'nr_enquiry', 'normal', 'high' );
+} );
+function nr_enquiry_details_box( $post ) {
+	$g = function ( $k ) use ( $post ) { return trim( (string) get_post_meta( $post->ID, $k, true ) ); };
+	$email = $g( '_nr_email' );
+
+	$rows = [
+		__( 'Email', 'raveenthiran' )          => $email ? '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>' : '—',
+		__( 'Project type', 'raveenthiran' )    => esc_html( $g( '_nr_type' ) ?: '—' ),
+		__( 'Preferred date', 'raveenthiran' )  => esc_html( $g( '_nr_date' ) ?: '—' ),
+		__( 'Estimate', 'raveenthiran' )        => esc_html( $g( '_nr_est' ) ?: '—' ),
+	];
+	if ( $g( '_nr_ref' ) )     $rows[ __( 'Referenced project', 'raveenthiran' ) ] = esc_html( $g( '_nr_ref' ) );
+	if ( $g( '_nr_service' ) ) $rows[ __( 'Selected service', 'raveenthiran' ) ]   = esc_html( $g( '_nr_service' ) );
+	if ( $g( '_nr_referrer' ) ) {
+		$rf = $g( '_nr_referrer' );
+		$rows[ __( 'Came from', 'raveenthiran' ) ] = '<a href="' . esc_url( $rf ) . '" target="_blank" rel="noopener">' . esc_html( $rf ) . '</a>';
+	}
+
+	echo '<style>.nr-enq{margin:0}.nr-enq dt{font-weight:600;color:#646970;font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-top:14px}.nr-enq dd{margin:3px 0 0;font-size:14px;color:#1d2327}.nr-enq__notes{white-space:pre-wrap;background:#f6f7f7;border:1px solid #dcdcde;padding:12px;border-radius:4px;margin:4px 0 0;font-size:14px;line-height:1.5}.nr-enq__refs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.nr-enq__refs a{line-height:0}.nr-enq__refs img{width:88px;height:88px;object-fit:cover;border-radius:4px;border:1px solid #dcdcde}</style>';
+	echo '<dl class="nr-enq">';
+	foreach ( $rows as $k => $v ) {
+		echo '<dt>' . esc_html( $k ) . '</dt><dd>' . $v . '</dd>'; // values pre-escaped above
+	}
+
+	$notes = trim( (string) $post->post_content );
+	echo '<dt>' . esc_html__( 'Brief / notes', 'raveenthiran' ) . '</dt>';
+	echo $notes !== '' ? '<dd><div class="nr-enq__notes">' . esc_html( $notes ) . '</div></dd>' : '<dd>—</dd>';
+
+	$refs = get_post_meta( $post->ID, '_nr_ref_images', true );
+	if ( is_array( $refs ) && $refs ) {
+		echo '<dt>' . esc_html__( 'Reference images', 'raveenthiran' ) . '</dt><dd><div class="nr-enq__refs">';
+		foreach ( $refs as $aid ) {
+			$full  = wp_get_attachment_url( (int) $aid );
+			$thumb = wp_get_attachment_image( (int) $aid, [ 88, 88 ] );
+			if ( $thumb ) echo $full ? '<a href="' . esc_url( $full ) . '" target="_blank" rel="noopener">' . $thumb . '</a>' : $thumb;
+		}
+		echo '</div></dd>';
+	}
+	echo '</dl>';
+}
+
 /* ─────────────────────────────────────────────────────────────
  * #28 Auto availability text ("Booking Q3/Q4 YYYY") when none is set.
  * ───────────────────────────────────────────────────────────── */

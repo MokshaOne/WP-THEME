@@ -1,5 +1,14 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.73.1 — Show enquiry details on the edit screen
+The enquiry editor only showed the title (the captured data lives in post meta,
+so the screen looked empty). Added a read-only **Enquiry details** box (main
+column) that surfaces everything the form captured: email (mailto), project type,
+preferred date, estimate, attribution (referenced project / selected service /
+referrer URL), the brief/notes, and reference-image thumbnails. No data model
+change — purely visibility. (The auto-reply estimate PDF reflects whatever the
+form captured at submit time.)
+
 ## 4.73.0 — Invoicing is now manual-only
 Per the owner: the automatic invoice-on-booking path is removed entirely (no dead
 toggle left behind — the `nr_inv_auto` setting, its row and the `nr_enquiry_logged`

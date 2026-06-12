@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.73.0** · **101 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.73.1** · **102 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_p
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.73.1 — 2026-06-12
+Enquiry edit screen showed only the title (data lives in post meta). Added a read-only "Enquiry details" meta box surfacing email (mailto), project type, preferred date, estimate, attribution (referenced project / service / referrer), brief/notes, and reference-image thumbnails. Visibility only, no data-model change.
 
 ## v4.73.0 — 2026-06-12
 Invoicing converted to manual-only (owner request): removed the auto-invoice-on-booking path entirely — `nr_inv_auto` setting/row and the `nr_enquiry_logged` hook are gone, no dead toggle left. Invoices are created from the Invoice meta box on each enquiry (amount pre-filled from the estimate, adjustable) via "Create + send". Numbering/PDF/storage/download/re-send unchanged.

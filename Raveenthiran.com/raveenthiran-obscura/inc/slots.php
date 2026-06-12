@@ -155,12 +155,36 @@ add_shortcode( 'nr_booking_slots', function ( $atts ) {
 		}
 		if ( $cur_day !== '' ) echo '</div>';
 		echo '</fieldset>';
+		// Price calculator (optional) — same pricing source as the quote modal.
+		if ( function_exists( 'nr_quote_data' ) ) {
+			$q = nr_quote_data();
+			if ( ! empty( $q['types'] ) ) {
+				$cur = $q['currency'];
+				echo '<fieldset class="nr-slots__calc" data-bk-calc data-cur="' . esc_attr( $cur ) . '"><legend class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Estimate (optional)', 'raveenthiran' ) . '</legend>';
+				echo '<div class="nr-slots__types">';
+				foreach ( $q['types'] as $t ) {
+					echo '<label class="nr-slots__type"><input type="radio" name="nr_q_type" value="' . esc_attr( $t['slug'] ) . '" data-price="' . esc_attr( (float) $t['base'] ) . '"><span>' . esc_html( $t['label'] ) . ' · ' . esc_html( $cur . number_format_i18n( (float) $t['base'] ) ) . '</span></label>';
+				}
+				echo '</div>';
+				if ( ! empty( $q['extras'] ) || (float) $q['license'] > 0 ) {
+					echo '<div class="nr-slots__extras">';
+					foreach ( (array) ( $q['extras'] ?? [] ) as $x ) {
+						echo '<label class="nr-slots__extra"><input type="checkbox" name="nr_q_extra[]" value="' . esc_attr( $x['slug'] ) . '" data-price="' . esc_attr( (float) $x['price'] ) . '"><span>' . esc_html( $x['label'] ) . ' +' . esc_html( $cur . number_format_i18n( (float) $x['price'] ) ) . '</span></label>';
+					}
+					if ( (float) $q['license'] > 0 ) {
+						echo '<label class="nr-slots__extra"><input type="checkbox" name="nr_q_license" value="1" data-price="' . esc_attr( (float) $q['license'] ) . '"><span>' . esc_html__( 'Commercial usage license', 'raveenthiran' ) . ' +' . esc_html( $cur . number_format_i18n( (float) $q['license'] ) ) . '</span></label>';
+					}
+					echo '</div>';
+				}
+				echo '<p class="nr-slots__total">' . esc_html__( 'Estimate', 'raveenthiran' ) . ' <b data-bk-total>—</b></p>';
+				echo '</fieldset>';
+			}
+		}
 		echo '<div class="nr-slots__fields">'
 			. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Name', 'raveenthiran' ) . '</span><input type="text" name="name" autocomplete="name" required></label>'
 			. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Email', 'raveenthiran' ) . '</span><input type="email" name="email" autocomplete="email" required></label>'
 			. '<label class="nr-slots__notes"><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Anything I should know? (optional)', 'raveenthiran' ) . '</span><textarea name="notes" rows="3"></textarea></label>'
 			. '</div>';
-		if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field();
 		echo '<button type="submit" class="nr-btn nr-btn--primary"><span>' . esc_html__( 'Book this time', 'raveenthiran' ) . '</span> <span>→</span></button>';
 		echo '</form>';
 	}
@@ -169,26 +193,55 @@ add_shortcode( 'nr_booking_slots', function ( $atts ) {
 	$intro = '<div class="nr-slots__intro"><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html( $a['title'] ) . '</span>'
 		. ( $a['intro'] ? '<p>' . esc_html( $a['intro'] ) . '</p>' : '' ) . '</div>';
 
-	if ( ! $popover ) {
-		return '<div class="nr-slots">' . $intro . $notice . $body . '</div>';
+	// Live-total calculator JS — printed once, drives any [data-bk-calc] form.
+	static $calc_printed = false;
+	$calc_js = '';
+	if ( ! $calc_printed ) {
+		$calc_printed = true;
+		$calc_js = <<<'JS'
+<script>(function(){
+	function upd(f){
+		var c=f.querySelector('[data-bk-calc]'); if(!c) return;
+		var cur=c.getAttribute('data-cur')||'€', t=0, any=false;
+		var ty=f.querySelector('input[name="nr_q_type"]:checked'); if(ty){ t+=parseFloat(ty.getAttribute('data-price'))||0; any=true; }
+		f.querySelectorAll('input[name="nr_q_extra[]"]:checked, input[name="nr_q_license"]:checked').forEach(function(x){ t+=parseFloat(x.getAttribute('data-price'))||0; any=true; });
+		var o=f.querySelector('[data-bk-total]'); if(o) o.textContent = any ? cur+Math.round(t).toLocaleString() : '—';
+	}
+	document.querySelectorAll('.nr-slots__form').forEach(function(f){
+		if(!f.querySelector('[data-bk-calc]')) return;
+		f.addEventListener('change', function(){ upd(f); });
+		upd(f);
+	});
+})();</script>
+JS;
 	}
 
-	// Popover: a trigger button on the page; the picker lives in the theme modal
-	// (reuses the global .nr-modal open/close + focus-trap wiring in theme.js).
-	$bid = $id . '-btn';
+	if ( ! $popover ) {
+		return '<div class="nr-slots">' . $intro . $notice . $body . '</div>' . $calc_js;
+	}
+
+	// Popover: a trigger button on the page; the picker lives in a self-contained
+	// modal with its own open/close (no dependency on the global modal JS).
+	$bid  = $id . '-btn';
+	$open = ( $state === 'taken' || $state === '0' );   // re-open after a failed attempt
 	$out  = '<div class="nr-booking-trigger">' . $notice
-		. '<button type="button" id="' . esc_attr( $bid ) . '" class="nr-btn nr-btn--primary" data-modal="' . esc_attr( $id ) . '"><span>' . esc_html( $a['cta'] ) . '</span> <span>→</span></button></div>';
+		. '<button type="button" id="' . esc_attr( $bid ) . '" class="nr-btn nr-btn--primary"><span>' . esc_html( $a['cta'] ) . '</span> <span>→</span></button></div>';
 	$out .= '<div id="' . esc_attr( $id ) . '" class="nr-modal nr-slots-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="' . esc_attr( wp_strip_all_tags( $a['title'] ) ) . '">'
 		. '<div class="nr-modal__panel nr-slots__panel">'
 		. '<button type="button" class="nr-modal__close" data-modal-close aria-label="' . esc_attr__( 'Close', 'raveenthiran' ) . '">✕</button>'
 		. '<div class="nr-slots nr-slots--inmodal">' . $intro . $body . '</div>'
 		. '</div></div>';
-	// Relocate to <body> so position:fixed is viewport-relative (no transformed
-	// ancestor breaks it); re-open via the trigger after a "just taken" bounce.
-	$out .= '<script>(function(){var m=document.getElementById(' . wp_json_encode( $id ) . ');if(m){document.body.appendChild(m);}'
-		. ( $state === 'taken' ? 'window.addEventListener("load",function(){var b=document.getElementById(' . wp_json_encode( $bid ) . ');if(b)b.click();});' : '' )
+	$out .= '<script>(function(){'
+		. 'var b=document.getElementById(' . wp_json_encode( $bid ) . '),m=document.getElementById(' . wp_json_encode( $id ) . ');'
+		. 'if(!b||!m)return;if(m.parentNode!==document.body)document.body.appendChild(m);'
+		. 'function o(){m.classList.add("is-on");m.setAttribute("aria-hidden","false");document.body.classList.add("is-modal-open");}'
+		. 'function c(){m.classList.remove("is-on");m.setAttribute("aria-hidden","true");document.body.classList.remove("is-modal-open");}'
+		. 'b.addEventListener("click",function(e){e.preventDefault();o();});'
+		. 'm.addEventListener("click",function(e){if(e.target===m||(e.target.closest&&e.target.closest("[data-modal-close]"))){e.preventDefault();c();}});'
+		. 'document.addEventListener("keydown",function(e){if(e.key==="Escape")c();});'
+		. ( $open ? 'o();' : '' )
 		. '})();</script>';
-	return $out;
+	return $out . $calc_js;
 } );
 
 /* ── Booking handler ───────────────────────────────────────────────────── */
@@ -198,14 +251,27 @@ function nr_book_slot_handle() {
 		wp_safe_redirect( add_query_arg( 'nr_booked', '0', $ref ) ); exit;
 	}
 	if ( ! empty( $_POST['nr_hp'] ) ) { wp_safe_redirect( $ref ); exit; }               // honeypot
-	if ( function_exists( 'nr_turnstile_passes' ) && ! nr_turnstile_passes() ) {
-		wp_safe_redirect( add_query_arg( 'nr_booked', '0', $ref ) ); exit;
-	}
 
 	$sid   = (int) ( $_POST['slot'] ?? 0 );
 	$name  = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
 	$email = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
 	$notes = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
+
+	// Optional price estimate from the embedded calculator — recomputed here from
+	// nr_quote_data() (never trust posted prices), stored so the invoice can use it.
+	$est = ''; $bd = '';
+	if ( function_exists( 'nr_quote_data' ) ) {
+		$q = nr_quote_data();
+		if ( ! empty( $q['types'] ) ) {
+			$cur = $q['currency']; $total = 0; $rows = [];
+			$ts  = sanitize_text_field( wp_unslash( $_POST['nr_q_type'] ?? '' ) );
+			foreach ( $q['types'] as $t ) { if ( $t['slug'] === $ts ) { $total += (float) $t['base']; $rows[] = $t['label'] . ' | ' . (float) $t['base']; break; } }
+			$ex = array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['nr_q_extra'] ?? [] ) );
+			foreach ( (array) ( $q['extras'] ?? [] ) as $x ) { if ( in_array( $x['slug'], $ex, true ) ) { $total += (float) $x['price']; $rows[] = $x['label'] . ' | ' . (float) $x['price']; } }
+			if ( ! empty( $_POST['nr_q_license'] ) && (float) $q['license'] > 0 ) { $total += (float) $q['license']; $rows[] = __( 'Commercial usage license', 'raveenthiran' ) . ' | ' . (float) $q['license']; }
+			if ( $total > 0 ) { $est = $cur . round( $total ); $bd = implode( ' ;; ', $rows ); }
+		}
+	}
 
 	// Validate slot is real, future and still open (re-check → no double-booking).
 	if ( ! $sid || get_post_type( $sid ) !== 'nr_slot' || nr_slot_status( $sid ) !== 'open'
@@ -238,12 +304,15 @@ function nr_book_slot_handle() {
 			update_post_meta( $sid, '_nr_slot_enquiry', (int) $eid );
 			update_post_meta( $sid, '_nr_slot_name',    $name );
 			update_post_meta( $sid, '_nr_slot_email',   $email );
+			if ( $est ) update_post_meta( $eid, '_nr_est', $est );
+			if ( $bd )  update_post_meta( $eid, '_nr_breakdown', $bd );
 		}
 	}
 
 	// Owner notification.
 	$to = nr_opt( 'nr_email', get_option( 'admin_email' ) );
 	$ob = "New booking\n\nName: {$name}\nEmail: {$email}\nWhen: {$when}\nSlot: " . nr_slot_label( $sid );
+	if ( $est ) $ob .= "\nEstimate: {$est}";
 	if ( $notes ) $ob .= "\n\nNotes:\n{$notes}";
 	wp_mail( $to, sprintf( '[%s] New booking — %s', $site, $when ), $ob, [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $email ] );
 

@@ -2648,3 +2648,17 @@ body.nr-savedata .nr-hero__thumbs,body.nr-savedata .nr-hero__nav{display:none!im
 .nr-slots__sets > legend{padding:0;margin:0 0 6px}
 .nr-slots__dayhead{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:16px 0 8px}
 .nr-slots__sets .nr-slots__grid{margin:0 0 6px}
+
+/* Booking: embedded price calculator */
+.nr-slots__calc{border:0;padding:0;margin:18px 0 4px}
+.nr-slots__calc > legend{padding:0;margin:0 0 8px}
+.nr-slots__types{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.nr-slots__type{position:relative;display:block}
+.nr-slots__type input{position:absolute;opacity:0;width:0;height:0}
+.nr-slots__type span{display:block;border:1px solid var(--hair);padding:11px 13px;cursor:pointer;font-size:13px;color:var(--ink-2);transition:border-color .2s,background .2s,color .2s}
+.nr-slots__type input:checked + span{border-color:var(--amber);background:rgba(242,160,61,.08);color:var(--ink)}
+.nr-slots__type input:focus-visible + span{outline:2px solid var(--amber);outline-offset:2px}
+.nr-slots__extras{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.nr-slots__extra{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);cursor:pointer}
+.nr-slots__total{margin:12px 0 0;font-family:var(--ff-mono,ui-monospace,monospace);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.nr-slots__total b{color:var(--amber);font-size:18px;letter-spacing:0;margin-left:8px}

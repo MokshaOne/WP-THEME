@@ -1,5 +1,18 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.77.0 — Booking: price calculator built in + more robust popover
+- **Calculator in the booking:** the slot form now includes the price calculator
+  (session type · add-ons · usage license) with a live total. The estimate is
+  **recomputed server-side** from the real pricing (posted prices are never
+  trusted) and stored on the booking as `_nr_est` + `_nr_breakdown` — so it shows
+  in the backend and **pre-fills the invoice** (amount + line items). Choosing a
+  type is optional, so free intro calls still book.
+- **Self-contained popover:** the booking modal now has its own open/close
+  (button → open, ✕ / backdrop / Esc → close) and no longer depends on the global
+  modal script — fixes “nothing happens” when the popover wouldn’t open.
+- **Turnstile removed from the slot form:** one fewer failure point — the booking
+  is already validated server-side against real, open, future slots + a honeypot.
+
 ## 4.76.0 — Booking, perfected (cancel · lead time · buffer · grouped · settings)
 Rounds the native booking tool out to production quality:
 - **Client self-service cancel:** every confirmation email carries a tokenised

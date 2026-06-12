@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.76.0** · **109 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.77.0** · **110 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.77.0 — 2026-06-12
+Booking gains the price calculator (session type + add-ons + license, live total) directly in the slot form; the estimate is recomputed server-side from nr_quote_data (posted prices never trusted) and stored as `_nr_est` + `_nr_breakdown`, so it shows in the backend and pre-fills the invoice. Type selection is optional (free calls still book). The booking popover is now self-contained (own open/close, no dependency on the global modal JS — fixes "nothing happens"). Turnstile removed from the slot form (already server-validated against real slots + honeypot).
 
 ## v4.76.0 — 2026-06-12
 Booking tool rounded out to production quality: client self-service cancel via a tokenised link in the confirmation email (reopens the slot, emails the owner, enquiry kept and marked cancelled); owner one-click "Release" on booked slots (reopens + emails client); minimum lead-time setting (hours, enforced on the picker + server); optional buffer between generated back-to-back slots; the picker is grouped by day with date headings (each slot shows just its time); location now appears in the confirmation email + .ics; and a Booking settings block (lead time · location · intro) on the Obscura → Booking page.

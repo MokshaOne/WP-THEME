@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.75.0** · **104 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.75.1** · **105 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.75.1 — 2026-06-12
+`[nr_booking_slots]` gains `mode="popover"`: a single "Book a time" button opens the slot picker in the Obscura modal (reuses the global .nr-modal wiring), so booking lives on one page without a big inline block. The modal is relocated to <body> on load (viewport-correct position:fixed) and re-opens automatically after a "just taken" bounce. Default stays inline. e.g. `[nr_booking_slots mode="popover"]`.
 
 ## v4.75.0 — 2026-06-12
 Native, self-hosted slot-booking tool (no Google, no plugin, no payment): new `inc/slots.php` + `nr_slot` CPT. Owner adds open slots under Obscura → Booking (date · times · duration · label) and manages them (Open/Booked + who, delete). Visitors use the `[nr_booking_slots]` block: pick a free future slot + name/email → booked instantly (server re-checks open → no double-booking; honeypot + Turnstile guard). Each booking is logged as a normal `nr_enquiry` (type "Booking", `_nr_date` = slot) so details box + invoicing apply; owner gets a notification, client gets a confirmation with a dependency-free `.ics` invite (site timezone). DSGVO-clean — data stays in WordPress. Stub-tested the .ics output + time validation.

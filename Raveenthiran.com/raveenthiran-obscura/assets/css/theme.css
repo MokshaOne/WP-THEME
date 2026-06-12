@@ -2630,3 +2630,9 @@ body.nr-savedata .nr-hero__thumbs,body.nr-savedata .nr-hero__nav{display:none!im
 .nr-slots__slot input:focus-visible + span{outline:2px solid var(--amber);outline-offset:2px}
 .nr-slots__fields{display:grid;gap:12px;margin:18px 0;max-width:520px}
 .nr-slots__fields input,.nr-slots__fields textarea{width:100%}
+
+/* Booking slots in a popover (mode="popover") */
+.nr-booking-trigger{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.nr-slots-modal .nr-modal__panel{display:block;grid-template-columns:none;max-width:560px;max-height:88vh;overflow-y:auto;padding:34px}
+.nr-slots--inmodal{border:0;background:transparent;padding:0}
+.nr-slots--inmodal .nr-slots__grid{max-height:42vh;overflow-y:auto}

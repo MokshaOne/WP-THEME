@@ -1,5 +1,14 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.75.1 — Booking slots: popover mode (one page, no extra page)
+`[nr_booking_slots]` gains `mode="popover"`: instead of the picker sitting inline,
+it renders a single **“Book a time”** button that opens the slot picker in the
+Obscura **modal** (reuses the global `.nr-modal` open/close + focus-trap). Lets you
+keep everything on one page. The modal is relocated to `<body>` on load so its
+`position:fixed` is viewport-correct, and it re-opens automatically if a slot was
+just taken so the visitor can pick another. Default stays `inline`.
+Usage: `[nr_booking_slots mode="popover" cta="Book a session"]`.
+
 ## 4.75.0 — Native booking tool (self-hosted slots, no third party)
 A real slot-booking system built entirely in WordPress — no Google, no plugin, no
 payment. New `inc/slots.php`:

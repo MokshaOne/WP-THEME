@@ -95,59 +95,78 @@ function nr_slot_ics_file( $id, $attendee_name, $attendee_email ) {
 	return $path;
 }
 
-/* ── Front-end: [nr_booking_slots] ─────────────────────────────────────── */
+/* ── Front-end: [nr_booking_slots] (inline or popover) ─────────────────── */
 add_shortcode( 'nr_booking_slots', function ( $atts ) {
+	static $n = 0; $n++;
 	$a = shortcode_atts( [
 		'title' => __( 'Book a time', 'raveenthiran' ),
-		'intro' => (string) nr_opt( 'nr_book_intro', __( 'Pick an open slot below. You’ll get a confirmation with a calendar invite by email.', 'raveenthiran' ) ),
+		'intro' => (string) nr_opt( 'nr_book_intro', __( 'Pick an open slot — you’ll get a confirmation with a calendar invite by email.', 'raveenthiran' ) ),
+		'mode'  => 'inline',                       // 'inline' | 'popover'
+		'cta'   => __( 'Book a time', 'raveenthiran' ),
 	], $atts, 'nr_booking_slots' );
 
 	$slots   = nr_slots_open();
 	$enquire = function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire/' );
+	$popover = ( $a['mode'] === 'popover' || $a['mode'] === 'modal' );
+	$id      = 'nr-booking-modal-' . $n;
 
+	// Post-redirect notice.
+	$state  = isset( $_GET['nr_booked'] ) ? sanitize_key( $_GET['nr_booked'] ) : '';
+	$notice = '';
+	if ( $state === '1' )         $notice = '<p class="nr-slots__ok">' . esc_html__( 'Booked — check your inbox for the confirmation and calendar invite.', 'raveenthiran' ) . '</p>';
+	elseif ( $state === 'taken' ) $notice = '<p class="nr-slots__err">' . esc_html__( 'Sorry — that slot was just taken. Please pick another.', 'raveenthiran' ) . '</p>';
+	elseif ( $state === '0' )     $notice = '<p class="nr-slots__err">' . esc_html__( 'Could not complete — please try again.', 'raveenthiran' ) . '</p>';
+
+	// The picker (form) or the empty state.
 	ob_start();
-	echo '<div class="nr-slots">';
-	echo '<div class="nr-slots__intro"><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html( $a['title'] ) . '</span>';
-	if ( $a['intro'] ) echo '<p>' . esc_html( $a['intro'] ) . '</p>';
-	echo '</div>';
-
-	if ( isset( $_GET['nr_booked'] ) && $_GET['nr_booked'] === '1' ) {
-		echo '<p class="nr-slots__ok">' . esc_html__( 'Booked — check your inbox for the confirmation and calendar invite.', 'raveenthiran' ) . '</p>';
-	} elseif ( isset( $_GET['nr_booked'] ) && $_GET['nr_booked'] === 'taken' ) {
-		echo '<p class="nr-slots__err">' . esc_html__( 'Sorry — that slot was just taken. Please pick another.', 'raveenthiran' ) . '</p>';
-	}
-
 	if ( ! $slots ) {
 		echo '<p class="nr-slots__empty">' . esc_html__( 'No open slots right now — ', 'raveenthiran' )
 			. '<a href="' . esc_url( $enquire ) . '">' . esc_html__( 'send an enquiry', 'raveenthiran' ) . '</a>'
-			. esc_html__( ' and we’ll find a time.', 'raveenthiran' ) . '</p></div>';
-		return ob_get_clean();
+			. esc_html__( ' and we’ll find a time.', 'raveenthiran' ) . '</p>';
+	} else {
+		echo '<form class="nr-slots__form" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+		echo '<input type="hidden" name="action" value="nr_book_slot">';
+		echo wp_nonce_field( 'nr_book_slot', '_nr_bnonce', true, false );
+		echo '<input type="text" name="nr_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">';
+		echo '<fieldset class="nr-slots__grid"><legend class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Available times', 'raveenthiran' ) . '</legend>';
+		foreach ( $slots as $i => $s ) {
+			echo '<label class="nr-slots__slot"><input type="radio" name="slot" value="' . (int) $s->ID . '"' . checked( $i, 0, false ) . ' required><span>' . esc_html( nr_slot_human( $s->ID ) ) . '</span></label>';
+		}
+		echo '</fieldset>';
+		echo '<div class="nr-slots__fields">'
+			. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Name', 'raveenthiran' ) . '</span><input type="text" name="name" autocomplete="name" required></label>'
+			. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Email', 'raveenthiran' ) . '</span><input type="email" name="email" autocomplete="email" required></label>'
+			. '<label class="nr-slots__notes"><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Anything I should know? (optional)', 'raveenthiran' ) . '</span><textarea name="notes" rows="3"></textarea></label>'
+			. '</div>';
+		if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field();
+		echo '<button type="submit" class="nr-btn nr-btn--primary"><span>' . esc_html__( 'Book this time', 'raveenthiran' ) . '</span> <span>→</span></button>';
+		echo '</form>';
+	}
+	$body = ob_get_clean();
+
+	$intro = '<div class="nr-slots__intro"><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html( $a['title'] ) . '</span>'
+		. ( $a['intro'] ? '<p>' . esc_html( $a['intro'] ) . '</p>' : '' ) . '</div>';
+
+	if ( ! $popover ) {
+		return '<div class="nr-slots">' . $intro . $notice . $body . '</div>';
 	}
 
-	echo '<form class="nr-slots__form" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-	echo '<input type="hidden" name="action" value="nr_book_slot">';
-	echo wp_nonce_field( 'nr_book_slot', '_nr_bnonce', true, false );
-	echo '<input type="text" name="nr_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">';
-
-	echo '<fieldset class="nr-slots__grid"><legend class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Available times', 'raveenthiran' ) . '</legend>';
-	foreach ( $slots as $i => $s ) {
-		echo '<label class="nr-slots__slot">'
-			. '<input type="radio" name="slot" value="' . (int) $s->ID . '"' . checked( $i, 0, false ) . ' required>'
-			. '<span>' . esc_html( nr_slot_human( $s->ID ) ) . '</span></label>';
-	}
-	echo '</fieldset>';
-
-	echo '<div class="nr-slots__fields">'
-		. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Name', 'raveenthiran' ) . '</span><input type="text" name="name" autocomplete="name" required></label>'
-		. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Email', 'raveenthiran' ) . '</span><input type="email" name="email" autocomplete="email" required></label>'
-		. '<label class="nr-slots__notes"><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Anything I should know? (optional)', 'raveenthiran' ) . '</span><textarea name="notes" rows="3"></textarea></label>'
-		. '</div>';
-
-	if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field();
-
-	echo '<button type="submit" class="nr-btn nr-btn--primary"><span>' . esc_html__( 'Book this time', 'raveenthiran' ) . '</span> <span>→</span></button>';
-	echo '</form></div>';
-	return ob_get_clean();
+	// Popover: a trigger button on the page; the picker lives in the theme modal
+	// (reuses the global .nr-modal open/close + focus-trap wiring in theme.js).
+	$bid = $id . '-btn';
+	$out  = '<div class="nr-booking-trigger">' . $notice
+		. '<button type="button" id="' . esc_attr( $bid ) . '" class="nr-btn nr-btn--primary" data-modal="' . esc_attr( $id ) . '"><span>' . esc_html( $a['cta'] ) . '</span> <span>→</span></button></div>';
+	$out .= '<div id="' . esc_attr( $id ) . '" class="nr-modal nr-slots-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="' . esc_attr( wp_strip_all_tags( $a['title'] ) ) . '">'
+		. '<div class="nr-modal__panel nr-slots__panel">'
+		. '<button type="button" class="nr-modal__close" data-modal-close aria-label="' . esc_attr__( 'Close', 'raveenthiran' ) . '">✕</button>'
+		. '<div class="nr-slots nr-slots--inmodal">' . $intro . $body . '</div>'
+		. '</div></div>';
+	// Relocate to <body> so position:fixed is viewport-relative (no transformed
+	// ancestor breaks it); re-open via the trigger after a "just taken" bounce.
+	$out .= '<script>(function(){var m=document.getElementById(' . wp_json_encode( $id ) . ');if(m){document.body.appendChild(m);}'
+		. ( $state === 'taken' ? 'window.addEventListener("load",function(){var b=document.getElementById(' . wp_json_encode( $bid ) . ');if(b)b.click();});' : '' )
+		. '})();</script>';
+	return $out;
 } );
 
 /* ── Booking handler ───────────────────────────────────────────────────── */

@@ -1,5 +1,20 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.76.0 — Booking, perfected (cancel · lead time · buffer · grouped · settings)
+Rounds the native booking tool out to production quality:
+- **Client self-service cancel:** every confirmation email carries a tokenised
+  cancel link — the visitor cancels, the slot reopens automatically, and you’re
+  emailed. The enquiry stays as a record, marked “Booking (cancelled)”.
+- **Owner “Release”:** a one-click action on each booked slot in Obscura → Booking
+  reopens it and emails the client that it’s cancelled.
+- **Lead time:** a minimum-notice setting (hours) — visitors can’t book a slot
+  starting sooner than that, on the picker and re-checked server-side.
+- **Buffer between slots:** optional gap when generating back-to-back slots.
+- **Picker grouped by day** with date headings; each slot shows just its time.
+- **Location** now appears in the confirmation email (and the calendar invite).
+- **Booking settings** (lead time · location · intro text) live on the Obscura →
+  Booking page.
+
 ## 4.75.4 — Booking slots: start/end time instead of typing times
 The Obscura → Booking add form no longer needs times typed by hand. Pick a
 **Start time** and **End time** (time pickers) and slots are generated

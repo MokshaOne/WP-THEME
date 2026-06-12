@@ -2642,3 +2642,9 @@ body.nr-savedata .nr-hero__thumbs,body.nr-savedata .nr-hero__nav{display:none!im
 .nr-enquire__book .nr-booking-trigger{flex-direction:row;align-items:center;gap:12px}
 .nr-enquire__book-or{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
 @media (max-width:560px){.nr-enquire__book{flex-direction:column;align-items:flex-start;gap:10px}}
+
+/* Booking slots — grouped by day + day headings */
+.nr-slots__sets{border:0;padding:0;margin:18px 0 4px}
+.nr-slots__sets > legend{padding:0;margin:0 0 6px}
+.nr-slots__dayhead{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:16px 0 8px}
+.nr-slots__sets .nr-slots__grid{margin:0 0 6px}

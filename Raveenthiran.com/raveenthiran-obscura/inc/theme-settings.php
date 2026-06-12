@@ -44,6 +44,9 @@ function nr_settings_defaults() {
 		'nr_avail_text'      => __( 'Available · 2026', 'raveenthiran' ),
 		'nr_booking_url'     => '',
 		'nr_booking_embed'   => '',
+		'nr_book_lead'       => '0',   // booking lead time (hours)
+		'nr_book_location'   => '',
+		'nr_book_intro'      => '',
 		'nr_inv_business'    => '',   // sender block: name / street / ZIP city (one per line)
 		'nr_inv_iban'        => '',
 		'nr_inv_bic'         => '',

@@ -33,6 +33,12 @@ function nr_slot_dur( $id )   { return max( 5, (int) get_post_meta( $id, '_nr_sl
 function nr_slot_label( $id ) { return (string) get_post_meta( $id, '_nr_slot_label', true ); }
 function nr_slot_status( $id ){ return get_post_meta( $id, '_nr_slot_status', true ) ?: 'open'; }
 
+/** Earliest timestamp a visitor may book (now + lead-time hours from Settings). */
+function nr_book_cutoff() {
+	$lead = max( 0, (int) nr_opt( 'nr_book_lead', 0 ) );
+	return time() + $lead * HOUR_IN_SECONDS;
+}
+
 /** Open, future slots (ascending). */
 function nr_slots_open( $limit = 60 ) {
 	return get_posts( [
@@ -42,7 +48,7 @@ function nr_slots_open( $limit = 60 ) {
 		'meta_query'     => [
 			'relation' => 'AND',
 			[ 'key' => '_nr_slot_status', 'value' => 'open' ],
-			[ 'key' => '_nr_slot_start', 'value' => time(), 'compare' => '>=', 'type' => 'NUMERIC' ],
+			[ 'key' => '_nr_slot_start', 'value' => nr_book_cutoff(), 'compare' => '>=', 'type' => 'NUMERIC' ],
 		],
 		'meta_key'       => '_nr_slot_start',
 		'orderby'        => 'meta_value_num',
@@ -116,6 +122,11 @@ add_shortcode( 'nr_booking_slots', function ( $atts ) {
 	if ( $state === '1' )         $notice = '<p class="nr-slots__ok">' . esc_html__( 'Booked — check your inbox for the confirmation and calendar invite.', 'raveenthiran' ) . '</p>';
 	elseif ( $state === 'taken' ) $notice = '<p class="nr-slots__err">' . esc_html__( 'Sorry — that slot was just taken. Please pick another.', 'raveenthiran' ) . '</p>';
 	elseif ( $state === '0' )     $notice = '<p class="nr-slots__err">' . esc_html__( 'Could not complete — please try again.', 'raveenthiran' ) . '</p>';
+	if ( isset( $_GET['nr_cancelled'] ) ) {
+		$notice .= ( $_GET['nr_cancelled'] === '1' )
+			? '<p class="nr-slots__ok">' . esc_html__( 'Your booking was cancelled — that time is open again.', 'raveenthiran' ) . '</p>'
+			: '<p class="nr-slots__err">' . esc_html__( 'That cancellation link is no longer valid (the booking may have already passed).', 'raveenthiran' ) . '</p>';
+	}
 
 	// The picker (form) or the empty state.
 	ob_start();
@@ -128,10 +139,21 @@ add_shortcode( 'nr_booking_slots', function ( $atts ) {
 		echo '<input type="hidden" name="action" value="nr_book_slot">';
 		echo wp_nonce_field( 'nr_book_slot', '_nr_bnonce', true, false );
 		echo '<input type="text" name="nr_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">';
-		echo '<fieldset class="nr-slots__grid"><legend class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Available times', 'raveenthiran' ) . '</legend>';
+		echo '<fieldset class="nr-slots__sets"><legend class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Available times', 'raveenthiran' ) . '</legend>';
+		$cur_day = '';
 		foreach ( $slots as $i => $s ) {
-			echo '<label class="nr-slots__slot"><input type="radio" name="slot" value="' . (int) $s->ID . '"' . checked( $i, 0, false ) . ' required><span>' . esc_html( nr_slot_human( $s->ID ) ) . '</span></label>';
+			$st = nr_slot_start( $s->ID ); $en = $st + nr_slot_dur( $s->ID ) * 60;
+			$day = wp_date( 'l, j F', $st );
+			if ( $day !== $cur_day ) {
+				if ( $cur_day !== '' ) echo '</div>';
+				echo '<div class="nr-slots__dayhead">' . esc_html( $day ) . '</div><div class="nr-slots__grid">';
+				$cur_day = $day;
+			}
+			$lbl = nr_slot_label( $s->ID );
+			$tt  = wp_date( 'H:i', $st ) . '–' . wp_date( 'H:i', $en );
+			echo '<label class="nr-slots__slot"><input type="radio" name="slot" value="' . (int) $s->ID . '"' . checked( $i, 0, false ) . ' required aria-label="' . esc_attr( nr_slot_human( $s->ID ) ) . '"><span>' . esc_html( $lbl ? $lbl . ' · ' . $tt : $tt ) . '</span></label>';
 		}
+		if ( $cur_day !== '' ) echo '</div>';
 		echo '</fieldset>';
 		echo '<div class="nr-slots__fields">'
 			. '<label><span class="nr-eyebrow nr-eyebrow--plain">' . esc_html__( 'Name', 'raveenthiran' ) . '</span><input type="text" name="name" autocomplete="name" required></label>'
@@ -187,12 +209,14 @@ function nr_book_slot_handle() {
 
 	// Validate slot is real, future and still open (re-check → no double-booking).
 	if ( ! $sid || get_post_type( $sid ) !== 'nr_slot' || nr_slot_status( $sid ) !== 'open'
-		|| nr_slot_start( $sid ) < time() || ! is_email( $email ) || $name === '' ) {
+		|| nr_slot_start( $sid ) < nr_book_cutoff() || ! is_email( $email ) || $name === '' ) {
 		wp_safe_redirect( add_query_arg( 'nr_booked', 'taken', $ref ) ); exit;
 	}
 
 	// Reserve the slot first (so a racing request sees it as taken).
 	update_post_meta( $sid, '_nr_slot_status', 'booked' );
+	$token = wp_generate_password( 20, false );
+	update_post_meta( $sid, '_nr_slot_token', $token );
 
 	$when = wp_date( 'D j M Y · H:i', nr_slot_start( $sid ) );
 	$site = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
@@ -223,13 +247,17 @@ function nr_book_slot_handle() {
 	if ( $notes ) $ob .= "\n\nNotes:\n{$notes}";
 	wp_mail( $to, sprintf( '[%s] New booking — %s', $site, $when ), $ob, [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $email ] );
 
-	// Client confirmation + .ics invite.
-	$ics = nr_slot_ics_file( $sid, $name, $email );
+	// Client confirmation + .ics invite + self-service cancel link.
+	$ics    = nr_slot_ics_file( $sid, $name, $email );
+	$loc    = (string) ( nr_opt( 'nr_book_location', '' ) ?: nr_opt( 'nr_studio', '' ) );
+	$cancel = add_query_arg( [ 'action' => 'nr_cancel_booking', 'slot' => $sid, 't' => $token ], admin_url( 'admin-post.php' ) );
 	$cb  = sprintf(
 		/* translators: 1: name, 2: date/time, 3: studio */
-		__( "Hi %1\$s,\n\nyour booking is confirmed for %2\$s. A calendar invite is attached.\n\nIf you need to change anything, just reply to this email.\n\n— %3\$s", 'raveenthiran' ),
+		__( "Hi %1\$s,\n\nyour booking is confirmed for %2\$s. A calendar invite is attached.\n\n— %3\$s", 'raveenthiran' ),
 		$name ?: __( 'there', 'raveenthiran' ), $when, $site
 	);
+	if ( $loc )    $cb .= "\n\n" . sprintf( __( 'Where: %s', 'raveenthiran' ), $loc );
+	$cb .= "\n\n" . sprintf( __( 'Need to cancel? %s', 'raveenthiran' ), $cancel );
 	$headers = [ 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $to ];
 	wp_mail( $email, sprintf( __( 'Booking confirmed — %s', 'raveenthiran' ), $when ), $cb, $headers, $ics ? [ $ics ] : [] );
 	if ( $ics ) @unlink( $ics );
@@ -252,6 +280,26 @@ function nr_booking_admin_page() {
 			<div class="notice notice-success is-dismissible"><p><?php printf( esc_html( _n( '%d slot added.', '%d slots added.', (int) $_GET['nr_added'], 'raveenthiran' ) ), (int) $_GET['nr_added'] ); ?></p></div>
 		<?php endif; ?>
 		<p style="max-width:680px"><?php esc_html_e( 'Add the times you’re open for bookings. Visitors pick a free slot on the [nr_booking_slots] block; it’s booked instantly and logged as an enquiry. No third party, no payment.', 'raveenthiran' ); ?></p>
+
+		<?php if ( isset( $_GET['nr_saved'] ) ) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Booking settings saved.', 'raveenthiran' ); ?></p></div><?php endif; ?>
+
+		<h2><?php esc_html_e( 'Booking settings', 'raveenthiran' ); ?></h2>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="card" style="padding:14px 16px;max-width:680px">
+			<input type="hidden" name="action" value="nr_book_settings">
+			<?php wp_nonce_field( 'nr_book_settings' ); ?>
+			<table class="form-table" role="presentation">
+				<tr><th><label for="nr_lead"><?php esc_html_e( 'Lead time (hours)', 'raveenthiran' ); ?></label></th>
+					<td><input type="number" id="nr_lead" name="lead" min="0" step="1" value="<?php echo esc_attr( (int) nr_opt( 'nr_book_lead', 0 ) ); ?>" style="width:90px">
+						<p class="description"><?php esc_html_e( 'Minimum notice — visitors can’t book a slot starting sooner than this many hours from now. 0 = no limit.', 'raveenthiran' ); ?></p></td></tr>
+				<tr><th><label for="nr_loc"><?php esc_html_e( 'Location', 'raveenthiran' ); ?></label></th>
+					<td><input type="text" id="nr_loc" name="loc" class="regular-text" value="<?php echo esc_attr( (string) nr_opt( 'nr_book_location', '' ) ); ?>" placeholder="<?php echo esc_attr( (string) nr_opt( 'nr_studio', '' ) ); ?>">
+						<p class="description"><?php esc_html_e( 'Shown in the confirmation email and the calendar invite. Empty = the studio address from Settings.', 'raveenthiran' ); ?></p></td></tr>
+				<tr><th><label for="nr_intro"><?php esc_html_e( 'Intro text', 'raveenthiran' ); ?></label></th>
+					<td><input type="text" id="nr_intro" name="intro" class="large-text" value="<?php echo esc_attr( (string) nr_opt( 'nr_book_intro', '' ) ); ?>" placeholder="<?php esc_attr_e( 'Pick an open slot — you’ll get a confirmation with a calendar invite by email.', 'raveenthiran' ); ?>">
+						<p class="description"><?php esc_html_e( 'Shown above the slot picker.', 'raveenthiran' ); ?></p></td></tr>
+			</table>
+			<p><button class="button"><?php esc_html_e( 'Save settings', 'raveenthiran' ); ?></button></p>
+		</form>
 
 		<h2><?php esc_html_e( 'Add slots', 'raveenthiran' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="card" style="padding:14px 16px;max-width:680px">
@@ -278,6 +326,9 @@ function nr_booking_admin_page() {
 						<p class="description"><?php esc_html_e( 'Slots are generated from start to end, back-to-back by the duration below (e.g. 14:00–18:00 at 60 min → 14:00, 15:00, 16:00, 17:00). Leave empty for a single slot at the start time.', 'raveenthiran' ); ?></p></td></tr>
 				<tr><th><label for="nr_dur"><?php esc_html_e( 'Duration (min)', 'raveenthiran' ); ?></label></th>
 					<td><input type="number" id="nr_dur" name="dur" value="60" min="5" step="5" style="width:90px"></td></tr>
+				<tr><th><label for="nr_buf"><?php esc_html_e( 'Buffer (min)', 'raveenthiran' ); ?></label></th>
+					<td><input type="number" id="nr_buf" name="buffer" value="0" min="0" step="5" style="width:90px">
+						<p class="description"><?php esc_html_e( 'Optional gap between back-to-back slots (e.g. 15 to reset between sessions).', 'raveenthiran' ); ?></p></td></tr>
 				<tr><th><label for="nr_lbl"><?php esc_html_e( 'Label', 'raveenthiran' ); ?></label></th>
 					<td><input type="text" id="nr_lbl" name="label" placeholder="<?php esc_attr_e( 'e.g. Portrait mini-session', 'raveenthiran' ); ?>" class="regular-text"></td></tr>
 			</table>
@@ -302,13 +353,16 @@ function nr_booking_admin_page() {
 				$eid    = (int) get_post_meta( $s->ID, '_nr_slot_enquiry', true );
 				$who    = (string) get_post_meta( $s->ID, '_nr_slot_name', true );
 				$del    = wp_nonce_url( admin_url( 'admin-post.php?action=nr_del_slot&slot=' . $s->ID ), 'nr_del_slot_' . $s->ID );
+				$rel    = wp_nonce_url( admin_url( 'admin-post.php?action=nr_release_slot&slot=' . $s->ID ), 'nr_release_' . $s->ID );
 				echo '<tr><td>' . esc_html( wp_date( 'D j M Y · H:i', nr_slot_start( $s->ID ) ) ) . '</td>'
 					. '<td>' . esc_html( nr_slot_label( $s->ID ) ?: '—' ) . '</td>'
 					. '<td>' . ( $booked
 						? '<strong style="color:#b32d2e">' . esc_html__( 'Booked', 'raveenthiran' ) . '</strong>'
 							. ( $who ? ' · ' . ( $eid ? '<a href="' . esc_url( get_edit_post_link( $eid ) ) . '">' . esc_html( $who ) . '</a>' : esc_html( $who ) ) : '' )
 						: '<span style="color:#1a7f37">' . esc_html__( 'Open', 'raveenthiran' ) . '</span>' ) . '</td>'
-					. '<td><a class="button-link" style="color:#b32d2e" href="' . esc_url( $del ) . '" onclick="return confirm(\'' . esc_js( __( 'Delete this slot?', 'raveenthiran' ) ) . '\')">' . esc_html__( 'Delete', 'raveenthiran' ) . '</a></td></tr>';
+					. '<td>'
+					. ( $booked ? '<a class="button-link" href="' . esc_url( $rel ) . '" onclick="return confirm(\'' . esc_js( __( 'Cancel this booking and reopen the slot? The client is emailed.', 'raveenthiran' ) ) . '\')">' . esc_html__( 'Release', 'raveenthiran' ) . '</a> &nbsp; ' : '' )
+					. '<a class="button-link" style="color:#b32d2e" href="' . esc_url( $del ) . '" onclick="return confirm(\'' . esc_js( __( 'Delete this slot?', 'raveenthiran' ) ) . '\')">' . esc_html__( 'Delete', 'raveenthiran' ) . '</a></td></tr>';
 			}
 			echo '</tbody></table>';
 		}
@@ -323,6 +377,7 @@ add_action( 'admin_post_nr_add_slots', function () {
 	$date  = sanitize_text_field( wp_unslash( $_POST['date'] ?? '' ) );
 	$until = sanitize_text_field( wp_unslash( $_POST['until'] ?? '' ) );
 	$dur   = max( 5, (int) ( $_POST['dur'] ?? 60 ) );
+	$buffer = max( 0, (int) ( $_POST['buffer'] ?? 0 ) );
 	$label = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
 	// Generate the per-day start times from a start→end range, stepped by the
 	// duration (back-to-back). No end time → a single slot at the start time.
@@ -336,7 +391,7 @@ add_action( 'admin_post_nr_add_slots', function () {
 			$cur = $sh * 60 + $sm; $stop = $eh * 60 + $em; $guard = 0;
 			while ( $cur + $dur <= $stop && $guard++ < 50 ) {
 				$times[] = sprintf( '%02d:%02d', intdiv( $cur, 60 ), $cur % 60 );
-				$cur += $dur;
+				$cur += $dur + $buffer;
 			}
 		} else {
 			$times = [ $start_t ];                                    // single slot
@@ -394,5 +449,78 @@ add_action( 'admin_post_nr_del_slot', function () {
 	if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'nr_del_slot_' . $sid ) ) wp_die( 'Denied.' );
 	if ( get_post_type( $sid ) === 'nr_slot' ) wp_delete_post( $sid, true );
 	wp_safe_redirect( admin_url( 'admin.php?page=nr-booking' ) );
+	exit;
+} );
+
+/* ── Cancellation: client self-service (token) + owner release ─────────── */
+
+/** Reopen a booked slot and notify the other party. $by = 'client' | 'owner'. */
+function nr_slot_release( $sid, $by = 'owner' ) {
+	$sid = (int) $sid;
+	if ( get_post_type( $sid ) !== 'nr_slot' ) return false;
+	$eid   = (int) get_post_meta( $sid, '_nr_slot_enquiry', true );
+	$name  = (string) get_post_meta( $sid, '_nr_slot_name', true );
+	$email = (string) get_post_meta( $sid, '_nr_slot_email', true );
+	$when  = wp_date( 'D j M Y · H:i', nr_slot_start( $sid ) );
+	$site  = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$owner = nr_opt( 'nr_email', get_option( 'admin_email' ) );
+
+	// Reopen for others; drop the booking link + token.
+	update_post_meta( $sid, '_nr_slot_status', 'open' );
+	delete_post_meta( $sid, '_nr_slot_token' );
+	delete_post_meta( $sid, '_nr_slot_enquiry' );
+	delete_post_meta( $sid, '_nr_slot_name' );
+	delete_post_meta( $sid, '_nr_slot_email' );
+
+	// Keep the enquiry as a record, marked cancelled.
+	if ( $eid && get_post_type( $eid ) === 'nr_enquiry' ) {
+		update_post_meta( $eid, '_nr_cancelled', current_time( 'mysql' ) );
+		update_post_meta( $eid, '_nr_type', __( 'Booking (cancelled)', 'raveenthiran' ) );
+	}
+
+	$h = [ 'Content-Type: text/plain; charset=UTF-8' ];
+	if ( $by === 'client' && $owner ) {
+		wp_mail( $owner, sprintf( '[%s] Booking cancelled — %s', $site, $when ),
+			sprintf( "%s cancelled their booking for %s.\nThe slot is open again.", $name ?: $email, $when ), $h );
+	} elseif ( $by === 'owner' && is_email( $email ) ) {
+		wp_mail( $email, sprintf( __( 'Booking cancelled — %s', 'raveenthiran' ), $when ),
+			sprintf( __( "Hi %1\$s,\n\nyour booking on %2\$s has been cancelled. Sorry for any inconvenience — just reply and we'll find another time.\n\n— %3\$s", 'raveenthiran' ), $name ?: __( 'there', 'raveenthiran' ), $when, $site ),
+			array_merge( $h, [ 'Reply-To: ' . $owner ] ) );
+	}
+	return true;
+}
+
+/* Client cancels via the tokenised link from their confirmation email. */
+function nr_cancel_booking_handle() {
+	$sid    = (int) ( $_GET['slot'] ?? 0 );
+	$tok    = sanitize_text_field( wp_unslash( $_GET['t'] ?? '' ) );
+	$dest   = function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/' );
+	$stored = (string) get_post_meta( $sid, '_nr_slot_token', true );
+	$ok = $sid && get_post_type( $sid ) === 'nr_slot' && nr_slot_status( $sid ) === 'booked'
+		&& $tok !== '' && $stored !== '' && hash_equals( $stored, $tok )
+		&& nr_slot_start( $sid ) > time();
+	if ( $ok ) nr_slot_release( $sid, 'client' );
+	wp_safe_redirect( add_query_arg( 'nr_cancelled', $ok ? '1' : '0', $dest ) );
+	exit;
+}
+add_action( 'admin_post_nr_cancel_booking', 'nr_cancel_booking_handle' );
+add_action( 'admin_post_nopriv_nr_cancel_booking', 'nr_cancel_booking_handle' );
+
+/* Owner releases a booked slot from the Booking admin list. */
+add_action( 'admin_post_nr_release_slot', function () {
+	$sid = (int) ( $_GET['slot'] ?? 0 );
+	if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'nr_release_' . $sid ) ) wp_die( 'Denied.' );
+	nr_slot_release( $sid, 'owner' );
+	wp_safe_redirect( admin_url( 'admin.php?page=nr-booking' ) );
+	exit;
+} );
+
+/* Save booking settings (lead time, location, intro). */
+add_action( 'admin_post_nr_book_settings', function () {
+	if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'nr_book_settings' ) ) wp_die( 'Denied.' );
+	update_option( 'nr_book_lead', max( 0, (int) ( $_POST['lead'] ?? 0 ) ), false );
+	update_option( 'nr_book_location', sanitize_text_field( wp_unslash( $_POST['loc'] ?? '' ) ), false );
+	update_option( 'nr_book_intro', sanitize_text_field( wp_unslash( $_POST['intro'] ?? '' ) ), false );
+	wp_safe_redirect( add_query_arg( 'nr_saved', '1', admin_url( 'admin.php?page=nr-booking' ) ) );
 	exit;
 } );

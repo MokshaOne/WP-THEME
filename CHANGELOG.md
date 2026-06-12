@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.75.4** · **108 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.76.0** · **109 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.76.0 — 2026-06-12
+Booking tool rounded out to production quality: client self-service cancel via a tokenised link in the confirmation email (reopens the slot, emails the owner, enquiry kept and marked cancelled); owner one-click "Release" on booked slots (reopens + emails client); minimum lead-time setting (hours, enforced on the picker + server); optional buffer between generated back-to-back slots; the picker is grouped by day with date headings (each slot shows just its time); location now appears in the confirmation email + .ics; and a Booking settings block (lead time · location · intro) on the Obscura → Booking page.
 
 ## v4.75.4 — 2026-06-12
 Booking slot creation now uses Start time + End time pickers instead of a typed comma list: slots are generated back-to-back by the duration (e.g. 14:00–18:00 at 60 min → 14/15/16/17:00), only when a slot finishes by the end time; empty end time = single slot. Combines with the v4.75.3 date-range + weekday recurrence.

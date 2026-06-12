@@ -1,5 +1,15 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.70.3 — Desktop CLS: stop the hero title reflow (font-display:optional)
+The real desktop CLS cause: the hero headline is up to **176px on desktop vs 84px on
+mobile**, so when the web font swaps in, the giant title reflows (≈1.0 CLS on desktop,
+~0.14 on mobile — exactly the observed asymmetry). The display weights (Inter Tight
+300 + 700, both preloaded) now use **`font-display:optional`**, so the title never
+swap-reflows: the preloaded font is used when it arrives in time, otherwise the
+fallback is kept for that view with **no later swap** → no layout shift. Body weights
+stay `swap`. Combine with v4.70.2 (preloader off) — both ride in the page HTML, so one
+cache purge lands them together.
+
 ## 4.70.2 — Desktop CLS: intro preloader now opt-in (off)
 Found the real cause of the desktop CLS (~1.0). The full-screen **intro preloader**
 runs on a fixed fake timer and fades out **while the hero is still loading**, so the

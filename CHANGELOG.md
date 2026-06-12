@@ -2,9 +2,12 @@
 
 Every shipped version of the **raveenthiran-obscura** theme, newest first, compiled from the commit history.
 
-**96 releases**, current **v4.70.2**.
+**97 releases**, current **v4.70.3**.
 
 ---
+
+## v4.70.3 — 2026-06-12
+Desktop CLS: the hero headline is up to 176px on desktop vs 84px on mobile, so the web-font swap reflowed the giant title (~1.0 desktop, ~0.14 mobile — the observed asymmetry). The display weights (Inter Tight 300 + 700, both preloaded) now use font-display:optional → the title never swap-reflows (preloaded font used if it arrives in the block window, else fallback kept with no later swap). Body weights stay swap. Rides in the inlined font CSS, so it lands with v4.70.2 (preloader off) on one cache purge.
 
 ## v4.70.2 — 2026-06-12
 Real fix for the desktop CLS (~1.0): the full-screen intro preloader runs on a fixed fake timer and fades out while the hero is still loading, revealing the settling hero (image+font) mid-shift = counted as layout shift. It only ran on desktop (display:none on mobile) — exactly matching the asymmetry (desktop CLS ~1.0, mobile fine). Now a Theme Settings toggle, default OFF. The v4.69 modal and v4.70.1 font-preload changes were correct hardening but not the cause. Re-enable the intro under Obscura → Settings if desired.

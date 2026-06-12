@@ -161,7 +161,7 @@ dynamic OG share cards (GD, needs a bundled TTF) · dependency-free PDF estimate
 spam shield (fails open if unconfigured) · Leaflet map · before/after `[nr_compare]` · enquiry
 attribution + insights dashboard · keyword tags + multi-filter · series · video gallery plates ·
 Vienna district local-SEO pages (`[nr_district]`) · reference-image upload on the Enquire form ·
-pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_booking_slots]`, owner-managed slots + .ics invite, no third party) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
+pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_booking_slots]`, owner-managed slots + recurrence + embedded price calculator + .ics invite + tokenised cancel, no third party) · manual Kleinunternehmer invoicing (`inc/invoices.php`, bank-transfer PDF) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
 
 ## 9. Gotchas
 
@@ -175,15 +175,28 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 
 ## 10. Current state & open items
 
-- **Mobile: ~95** (LCP 2.7s, CLS ~0.06) — done.
-- **Desktop:** LCP 0.9s (great); **CLS** fix (`.nr-modal{display:none}`) is correct and, as of the
-  **full** v4.70.3 deploy, finally live — **pending the owner's purge + re-measure** (expected
-  CLS ~1.0 → ~0.06, score → ~95).
-- A11y & SEO already score **100**.
+- **Performance:** Mobile ~95 (LCP 2.7s, CLS ~0.06); Desktop LCP 0.9s, CLS fix
+  (`.nr-modal{display:none}`) live as of the full v4.70.3 deploy. A11y & SEO **100**.
+- **Booking + invoicing (built v4.71–v4.77):** native self-hosted slot booking
+  (`[nr_booking_slots]`, `inc/slots.php`, CPT `nr_slot`) — owner adds slots under
+  **Obscura → Booking** (date/range · weekdays · start–end time · duration · buffer),
+  visitor books a free slot instantly (no double-booking, honeypot, lead-time). The
+  slot form embeds the **price calculator** (type + add-ons + license; estimate
+  recomputed server-side → `_nr_est` + `_nr_breakdown`). Each booking is logged as an
+  `nr_enquiry` (type "Booking") and the client gets a confirmation with an **.ics**
+  invite + a **tokenised self-service cancel** link; the owner can **Release** a slot.
+  **Invoicing** (`inc/invoices.php`, manual): Invoice meta box on each enquiry →
+  Create+send a Kleinunternehmer PDF (no VAT, § 6 Abs. 1 Z 27 UStG, gap-free numbers),
+  pre-filled from the estimate/breakdown; PDFs stored behind `.htaccess` deny.
+  Booking shows in **Obscura → Booking** (slot status) and **Enquiries** (records).
+  The optional Google embed (`[nr_booking]`, v4.71) is off unless a Schedule URL is set.
 - **Backlogs complete:** IDEAS-200 and IDEAS-50-NEXT both fully shipped/closed.
-- **Possible next polish (not started):** Awards as a multi-field editor (like Press); font
-  subsetting (~260KB of woff2 → could roughly halve); email deliverability (SPF/DKIM/DMARC) — needs
-  DNS access; rotate the compromised App Password.
+- **Known follow-up:** a test booking reportedly "did nothing" — most likely a partial
+  deploy (verify `theme.css?ver=` matches the active version) or the popover (now made
+  self-contained in v4.77.0). Confirm v4.77.0 is fully live + cache purged.
+- **Possible next polish (not started):** Awards as a multi-field editor (like Press);
+  font subsetting (~260KB woff2); email deliverability (SPF/DKIM/DMARC) — needs DNS
+  access; rotate the compromised App Password; optional buffer/no-show reminders.
 
 ---
 

@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.71.1** · **99 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.72.0** · **100 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_p
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.72.0 — 2026-06-12
+Invoicing without payments: new `inc/invoices.php`. When a booking/enquiry arrives with a price estimate, an invoice is auto-created and emailed (only when business details + IBAN are configured; one invoice per enquiry; gap-free numbering `2026-0001`). Kleinunternehmer format: no VAT, § 6 Abs. 1 Z 27 UStG note (editable). PDF via the dependency-free NR_PDF writer; stored in uploads/nr-invoices/ behind .htaccess-deny (client gets a mail attachment, owner a capability-checked download). Invoice meta box on every enquiry (download / re-send / manual create with custom amount). New Settings § Invoices + `nr_enquiry_logged` action.
 
 ## v4.71.1 — 2026-06-12
 Booking block adapts to the link type: a real embed URL (…/appointments/schedules/…?gv=true) loads as an inline click-to-load iframe; a Google share short link (calendar.app.google/…), which Google blocks from framing, becomes a one-click button that opens the booking page in a new tab. Works with either input; both remain click-to-load.

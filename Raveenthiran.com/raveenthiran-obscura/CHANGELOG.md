@@ -1,5 +1,27 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.72.0 — Invoicing (no payments — bank transfer + PDF invoice)
+New `inc/invoices.php`. Booking system stays payment-free; invoices are proper
+documents paid by bank transfer.
+- **Automatic (owner's choice):** when an enquiry/booking arrives **with a price
+  estimate**, an invoice is created and emailed to the client — but only if the
+  business details + IBAN are configured (guards against empty legal documents).
+  One invoice per enquiry, **gap-free sequential numbering** (`2026-0001`, prefix
+  configurable, counter never resets).
+- **Kleinunternehmer:** no VAT line; the § 6 Abs. 1 Z 27 UStG exemption note is
+  printed on every invoice (wording editable in Settings).
+- **PDF:** reuses the dependency-free `NR_PDF` writer — invoice no/date/due date/
+  service date, billed-to, line item, total, payment block (IBAN/BIC + reference),
+  sender footer. Stored in `uploads/nr-invoices/` behind `.htaccess deny`; the
+  client gets the PDF as a mail attachment, the owner via a capability-checked
+  download — no public URL.
+- **Admin:** an Invoice meta box on every enquiry — status, Download PDF, Send
+  again, and manual "Create + send" with a custom amount (for enquiries without
+  an estimate).
+- New Settings → **§ Invoices**: auto-toggle, business block, IBAN/BIC, number
+  prefix, payment terms, tax note. New `nr_enquiry_logged` action after an
+  enquiry is fully logged (modules hook there).
+
 ## 4.71.1 — Booking: handle share short links (link-out vs inline)
 The booking block now adapts to what's pasted: a real embed URL
 (`…/appointments/schedules/…?gv=true`) loads as an **inline click-to-load iframe**,

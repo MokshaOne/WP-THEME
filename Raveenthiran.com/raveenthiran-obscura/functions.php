@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.71.1' );
+define( 'NR_THEME_VERSION', '4.72.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -385,6 +385,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'medium4.php',
 		'preshoot.php',
 			'booking.php',
+			'invoices.php',
 		'admin-hub.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
@@ -497,6 +498,8 @@ function nr_handle_contact_send() {
 				unset( $_FILES['nr_ref_single'] );
 				if ( $ref_ids ) update_post_meta( $eid, '_nr_ref_images', $ref_ids );
 			}
+			// Modules (e.g. invoicing) hook here once the enquiry is fully logged.
+			do_action( 'nr_enquiry_logged', $eid );
 		}
 	}
 

@@ -44,6 +44,13 @@ function nr_settings_defaults() {
 		'nr_avail_text'      => __( 'Available · 2026', 'raveenthiran' ),
 		'nr_booking_url'     => '',
 		'nr_booking_embed'   => '',
+		'nr_inv_auto'        => '1',  // auto-invoice bookings that carry an estimate
+		'nr_inv_business'    => '',   // sender block: name / street / ZIP city (one per line)
+		'nr_inv_iban'        => '',
+		'nr_inv_bic'         => '',
+		'nr_inv_prefix'      => '',   // empty = current year, e.g. 2026-0001
+		'nr_inv_terms'       => '14',
+		'nr_inv_note'        => 'Umsatzsteuerfrei gemäß § 6 Abs. 1 Z 27 UStG (Kleinunternehmerregelung).',
 		'nr_whatsapp'        => '',
 		'nr_presskit_url'    => '',
 		'nr_footer_cta'      => __( 'Start a project', 'raveenthiran' ),
@@ -421,7 +428,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify', 'nr_fx_gpu', 'nr_fx_analytics', 'nr_fx_sw', 'nr_fx_vrails', 'nr_fx_shortlist', 'nr_fx_exit' ];
+	$toggle_keys = [ 'nr_inv_auto', 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify', 'nr_fx_gpu', 'nr_fx_analytics', 'nr_fx_sw', 'nr_fx_vrails', 'nr_fx_shortlist', 'nr_fx_exit' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -527,6 +534,30 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Instagram grid', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_textarea( 'nr_ig_grid', 5 ); ?>
 							<p class="description"><?php esc_html_e( 'One image per line: image_url | post_url — a curated grid on the Studio page (Meta\'s API no longer allows auto-feeds).', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Invoices</h2></summary>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Auto-invoice bookings', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_inv_auto', __( 'Create + email an invoice automatically when a booking arrives with a price estimate', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Only runs when the business details + IBAN below are filled in and the enquiry carries an estimate. One invoice per enquiry; numbering is sequential and gap-free. You can also create/re-send invoices manually on each enquiry.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Business details', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_inv_business', 3 ); ?>
+							<p class="description"><?php esc_html_e( 'Sender block, one line each: name · street · ZIP city. Appears on every invoice (legally required).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'IBAN', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_iban', 40 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'BIC', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_bic', 20 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Number prefix', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_prefix', 12 ); ?>
+							<p class="description"><?php esc_html_e( 'Empty = current year (e.g. 2026-0001). The counter itself never resets or skips.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Payment terms (days)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_terms', 6 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Tax note', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_inv_note', 2 ); ?>
+							<p class="description"><?php esc_html_e( 'Printed on every invoice. Default is the Austrian small-business VAT exemption (§ 6 Abs. 1 Z 27 UStG).', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 

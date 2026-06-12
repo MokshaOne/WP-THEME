@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.75.2' );
+define( 'NR_THEME_VERSION', '4.75.3' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup

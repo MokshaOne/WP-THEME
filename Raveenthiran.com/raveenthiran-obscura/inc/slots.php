@@ -248,6 +248,9 @@ function nr_booking_admin_page() {
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Booking slots', 'raveenthiran' ); ?></h1>
+		<?php if ( isset( $_GET['nr_added'] ) ) : ?>
+			<div class="notice notice-success is-dismissible"><p><?php printf( esc_html( _n( '%d slot added.', '%d slots added.', (int) $_GET['nr_added'], 'raveenthiran' ) ), (int) $_GET['nr_added'] ); ?></p></div>
+		<?php endif; ?>
 		<p style="max-width:680px"><?php esc_html_e( 'Add the times you’re open for bookings. Visitors pick a free slot on the [nr_booking_slots] block; it’s booked instantly and logged as an enquiry. No third party, no payment.', 'raveenthiran' ); ?></p>
 
 		<h2><?php esc_html_e( 'Add slots', 'raveenthiran' ); ?></h2>
@@ -256,7 +259,18 @@ function nr_booking_admin_page() {
 			<?php wp_nonce_field( 'nr_add_slots' ); ?>
 			<table class="form-table" role="presentation">
 				<tr><th><label for="nr_d"><?php esc_html_e( 'Date', 'raveenthiran' ); ?></label></th>
-					<td><input type="date" id="nr_d" name="date" required></td></tr>
+					<td><input type="date" id="nr_d" name="date" required>
+						<p class="description"><?php esc_html_e( 'Start date (or the single day).', 'raveenthiran' ); ?></p></td></tr>
+				<tr><th><label for="nr_u"><?php esc_html_e( 'Repeat until', 'raveenthiran' ); ?></label></th>
+					<td><input type="date" id="nr_u" name="until">
+						<p class="description"><?php esc_html_e( 'Optional. Leave empty for a single day. If set, slots are created on every chosen weekday from the start date up to (and including) this date.', 'raveenthiran' ); ?></p></td></tr>
+				<tr><th><?php esc_html_e( 'Weekdays', 'raveenthiran' ); ?></th>
+					<td><?php
+						$nr_wd = [ 1 => __( 'Mon', 'raveenthiran' ), 2 => __( 'Tue', 'raveenthiran' ), 3 => __( 'Wed', 'raveenthiran' ), 4 => __( 'Thu', 'raveenthiran' ), 5 => __( 'Fri', 'raveenthiran' ), 6 => __( 'Sat', 'raveenthiran' ), 7 => __( 'Sun', 'raveenthiran' ) ];
+						foreach ( $nr_wd as $nr_n => $nr_lbl ) {
+							echo '<label style="display:inline-block;margin:0 12px 4px 0"><input type="checkbox" name="wd[]" value="' . (int) $nr_n . '"> ' . esc_html( $nr_lbl ) . '</label>';
+						}
+					?><p class="description"><?php esc_html_e( 'Only used with “Repeat until”. None ticked = every day in the range.', 'raveenthiran' ); ?></p></td></tr>
 				<tr><th><label for="nr_t"><?php esc_html_e( 'Times', 'raveenthiran' ); ?></label></th>
 					<td><input type="text" id="nr_t" name="times" placeholder="10:00, 14:00, 16:30" class="regular-text" required>
 						<p class="description"><?php esc_html_e( 'One or more start times, comma-separated.', 'raveenthiran' ); ?></p></td></tr>
@@ -305,22 +319,50 @@ function nr_booking_admin_page() {
 add_action( 'admin_post_nr_add_slots', function () {
 	if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'nr_add_slots' ) ) wp_die( 'Denied.' );
 	$date  = sanitize_text_field( wp_unslash( $_POST['date'] ?? '' ) );
+	$until = sanitize_text_field( wp_unslash( $_POST['until'] ?? '' ) );
 	$dur   = max( 5, (int) ( $_POST['dur'] ?? 60 ) );
 	$label = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
 	$times = array_filter( array_map( 'trim', explode( ',', (string) wp_unslash( $_POST['times'] ?? '' ) ) ) );
+	$wds   = array_values( array_filter( array_map( 'intval', (array) ( $_POST['wd'] ?? [] ) ), function ( $n ) { return $n >= 1 && $n <= 7; } ) );
 	$tz    = wp_timezone();
-	$made  = 0;
-	foreach ( $times as $t ) {
-		if ( ! preg_match( '/^([01]?\d|2[0-3]):([0-5]\d)$/', $t ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) continue;
-		try { $dt = new DateTime( $date . ' ' . $t, $tz ); } catch ( Exception $e ) { continue; }
-		$start = $dt->getTimestamp();
-		$id = wp_insert_post( [ 'post_type' => 'nr_slot', 'post_status' => 'publish', 'post_title' => wp_date( 'Y-m-d H:i', $start ) . ( $label ? ' · ' . $label : '' ) ] );
-		if ( $id && ! is_wp_error( $id ) ) {
-			update_post_meta( $id, '_nr_slot_start', $start );
-			update_post_meta( $id, '_nr_slot_dur', $dur );
-			update_post_meta( $id, '_nr_slot_label', $label );
-			update_post_meta( $id, '_nr_slot_status', 'open' );
-			$made++;
+
+	if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+		wp_safe_redirect( add_query_arg( 'nr_added', 0, admin_url( 'admin.php?page=nr-booking' ) ) ); exit;
+	}
+
+	// Build the list of dates: a single day, or every chosen weekday in a range.
+	$dates = [];
+	if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $until ) && $until >= $date ) {
+		try {
+			$cur = new DateTime( $date, $tz ); $end = new DateTime( $until, $tz ); $end->setTime( 23, 59, 59 );
+		} catch ( Exception $e ) { $cur = null; }
+		$guard = 0;
+		while ( $cur && $cur <= $end && $guard++ < 370 ) {           // ~1 year cap
+			if ( ! $wds || in_array( (int) $cur->format( 'N' ), $wds, true ) ) $dates[] = $cur->format( 'Y-m-d' );
+			$cur->modify( '+1 day' );
+		}
+	} else {
+		$dates = [ $date ];
+	}
+
+	$made = 0;
+	foreach ( $dates as $d ) {
+		foreach ( $times as $t ) {
+			if ( $made >= 500 ) break 2;                              // hard safety cap per run
+			if ( ! preg_match( '/^([01]?\d|2[0-3]):([0-5]\d)$/', $t ) ) continue;
+			try { $dt = new DateTime( $d . ' ' . $t, $tz ); } catch ( Exception $e ) { continue; }
+			$start = $dt->getTimestamp();
+			// Skip if a slot already exists at this exact start (re-running is safe).
+			$dupe = get_posts( [ 'post_type' => 'nr_slot', 'post_status' => 'publish', 'fields' => 'ids', 'posts_per_page' => 1, 'meta_key' => '_nr_slot_start', 'meta_value' => $start ] );
+			if ( $dupe ) continue;
+			$id = wp_insert_post( [ 'post_type' => 'nr_slot', 'post_status' => 'publish', 'post_title' => wp_date( 'Y-m-d H:i', $start ) . ( $label ? ' · ' . $label : '' ) ] );
+			if ( $id && ! is_wp_error( $id ) ) {
+				update_post_meta( $id, '_nr_slot_start', $start );
+				update_post_meta( $id, '_nr_slot_dur', $dur );
+				update_post_meta( $id, '_nr_slot_label', $label );
+				update_post_meta( $id, '_nr_slot_status', 'open' );
+				$made++;
+			}
 		}
 	}
 	wp_safe_redirect( add_query_arg( 'nr_added', $made, admin_url( 'admin.php?page=nr-booking' ) ) );

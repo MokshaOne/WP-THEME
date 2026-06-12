@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.75.3 — Recurring booking slots
+The Obscura → Booking add form can now create **recurring slots** in one go: a
+**“Repeat until”** date + **weekday** checkboxes generate a slot at each given time
+on every chosen weekday across the range (e.g. every Tue + Thu, 14:00 & 16:00, for
+the next two months). Leave “Repeat until” empty for a single day (unchanged).
+Re-running is safe — it **skips any slot that already exists** at the same start —
+with a ~1-year span guard and a 500-slots-per-run cap. Shows “N slots added”.
+
 ## 4.75.2 — Booking lives on the Enquire page (popover)
 The fixed-slot booking now sits **on the Enquire page itself**, not a separate page:
 a “Book a fixed slot” button appears above the enquiry form and opens the slot

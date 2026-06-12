@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.75.2** · **106 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.75.3** · **107 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.75.3 — 2026-06-12
+Recurring booking slots: the Obscura → Booking add form gains a "Repeat until" date + weekday checkboxes — generates a slot at each time on every chosen weekday across the range (none ticked = every day). Empty "Repeat until" = single day (unchanged). De-dupes by exact start (safe to re-run), ~1-year span guard, 500/run cap; shows "N slots added".
 
 ## v4.75.2 — 2026-06-12
 Fixed-slot booking now lives on the Enquire page itself (not a separate page): a "Book a fixed slot" popover trigger renders above the enquiry form, shown only when open slots exist. One page, two paths — fixed sessions book via the popover, custom projects use the form below.

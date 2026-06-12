@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.73.0 — Invoicing is now manual-only
+Per the owner: the automatic invoice-on-booking path is removed entirely (no dead
+toggle left behind — the `nr_inv_auto` setting, its row and the `nr_enquiry_logged`
+hook are gone). Invoices are created from the **Invoice meta box on each enquiry**:
+review the booking, confirm/adjust the amount (pre-filled from the estimate when
+present) and click **Create + send**. Numbering, PDF, protected storage, download
+and re-send are unchanged from v4.72.0.
+
 ## 4.72.0 — Invoicing (no payments — bank transfer + PDF invoice)
 New `inc/invoices.php`. Booking system stays payment-free; invoices are proper
 documents paid by bank transfer.

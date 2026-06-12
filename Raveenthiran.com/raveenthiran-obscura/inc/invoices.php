@@ -5,15 +5,11 @@
  * Austrian Kleinunternehmer setup: no VAT line, mandatory exemption note
  * (§ 6 Abs. 1 Z 27 UStG — the wording is a Theme Setting).
  *
- * Flow (owner chose AUTOMATIC):
- *   • When an enquiry arrives WITH a calculated estimate (the booking path),
- *     and the business details + IBAN are configured, an invoice is created
- *     (gap-free sequential number), rendered as a PDF (reuses the NR_PDF
- *     writer from inc/pdf.php) and emailed to the client automatically.
- *   • Safety guards: no estimate → no auto-invoice; settings incomplete →
- *     no auto-invoice; one invoice per enquiry (idempotent).
- *   • Every enquiry also gets an Invoice meta box: create manually (for
- *     enquiries without an estimate), download the PDF, re-send the email.
+ * Flow (MANUAL): every enquiry gets an Invoice meta box — the owner reviews
+ * the booking, sets/confirms the amount (pre-filled from the estimate when
+ * present) and clicks "Create + send": gap-free sequential number, PDF via
+ * the NR_PDF writer (inc/pdf.php), emailed to the client. Download + re-send
+ * any time. One invoice per enquiry (idempotent).
  *
  * PDFs are stored in uploads/nr-invoices/ behind an .htaccess deny; the owner
  * downloads via a capability-checked admin endpoint, the client receives the
@@ -221,16 +217,6 @@ function nr_invoice_send( $eid ) {
 	if ( $ok ) update_post_meta( $eid, '_nr_inv_sent', current_time( 'mysql' ) );
 	return (bool) $ok;
 }
-
-/* ── Automatic path: invoice each booking that carries an estimate ─────── */
-
-add_action( 'nr_enquiry_logged', function ( $eid ) {
-	if ( nr_opt( 'nr_inv_auto', '1' ) !== '1' ) return;
-	if ( ! nr_invoice_ready() ) return;                                   // sender data not configured
-	if ( ! is_email( (string) get_post_meta( $eid, '_nr_email', true ) ) ) return;
-	$inv = nr_invoice_create( $eid );                                     // guards estimate > 0 itself
-	if ( ! is_wp_error( $inv ) ) nr_invoice_send( $eid );
-} );
 
 /* ── Admin: meta box on enquiries (status · download · resend · create) ── */
 

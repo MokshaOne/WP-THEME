@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.72.0' );
+define( 'NR_THEME_VERSION', '4.73.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -498,8 +498,6 @@ function nr_handle_contact_send() {
 				unset( $_FILES['nr_ref_single'] );
 				if ( $ref_ids ) update_post_meta( $eid, '_nr_ref_images', $ref_ids );
 			}
-			// Modules (e.g. invoicing) hook here once the enquiry is fully logged.
-			do_action( 'nr_enquiry_logged', $eid );
 		}
 	}
 

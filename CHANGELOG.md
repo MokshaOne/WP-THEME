@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.71.0** · **98 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.71.1** · **99 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_p
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.71.1 — 2026-06-12
+Booking block adapts to the link type: a real embed URL (…/appointments/schedules/…?gv=true) loads as an inline click-to-load iframe; a Google share short link (calendar.app.google/…), which Google blocks from framing, becomes a one-click button that opens the booking page in a new tab. Works with either input; both remain click-to-load.
 
 ## v4.71.0 — 2026-06-12
 Booking embed: new `inc/booking.php` + `[nr_booking]` shortcode embeds a Google Calendar **Appointment Schedule** (real booking page) with **click-to-load** — the Google iframe loads only after the visitor clicks, so no third-party request / LCP / CLS / privacy hit on page load (DSGVO-friendly); falls back to the enquiry form when unset. Owner pastes the embed code/URL into Theme Settings → "Booking embed (Google)"; only `calendar.google.com` / `calendar.app.google` hosts are accepted. Needs an Appointment Schedule link, not the read-only `calendar/embed` view.

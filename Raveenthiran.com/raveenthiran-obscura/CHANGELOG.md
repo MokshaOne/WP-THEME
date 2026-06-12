@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.71.1 — Booking: handle share short links (link-out vs inline)
+The booking block now adapts to what's pasted: a real embed URL
+(`…/appointments/schedules/…?gv=true`) loads as an **inline click-to-load iframe**,
+while a Google **share short link** (`calendar.app.google/…`) — which Google blocks
+from framing — becomes a **one-click button that opens the booking page in a new tab**.
+So it works correctly with either input; both stay click-to-load (no third-party load
+until the visitor acts).
+
 ## 4.71.0 — Booking embed (Google Appointment Schedule)
 New `inc/booking.php` + `[nr_booking]` shortcode: drop a click-to-load Google
 **Appointment Schedule** (real booking page) on any page. The external Google iframe

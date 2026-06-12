@@ -1,5 +1,20 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.75.0 — Native booking tool (self-hosted slots, no third party)
+A real slot-booking system built entirely in WordPress — no Google, no plugin, no
+payment. New `inc/slots.php`:
+- **Owner:** Obscura → **Booking** — add open slots (date · one or more times ·
+  duration · label) and see/cancel upcoming ones (Open / Booked + who).
+- **Visitor:** the **`[nr_booking_slots]`** block lists open future slots; pick one
+  + name/email and it's **booked instantly**. Server re-checks the slot is still
+  open before reserving → no double-booking; honeypot + Turnstile (when configured)
+  guard against spam.
+- Each booking is logged as a normal **`nr_enquiry`** (`_nr_type` = "Booking",
+  `_nr_date` = the slot) so the Enquiry-details box and invoicing apply unchanged.
+- Owner gets a notification; the client gets a confirmation with an **.ics calendar
+  invite** (Apple / Google / Outlook), built dependency-free in the site timezone.
+- DSGVO-clean: all data stays in WordPress.
+
 ## 4.74.0 — Whole calculation everywhere (not just the total)
 The price calculator now carries its full breakdown — session type, each add-on,
 usage license, travel km × rate, each with its amount — through the entire chain

@@ -2613,3 +2613,20 @@ body.nr-savedata .nr-hero__thumbs,body.nr-savedata .nr-hero__nav{display:none!im
 /* Whole-calculation line under "Your estimate" on the Enquire form */
 .nr-enquire__breakdown{display:block;margin-top:6px;font-family:var(--ff-mono,ui-monospace,monospace);font-size:10.5px;letter-spacing:.03em;color:var(--ink-3);line-height:1.6}
 .nr-enquire__breakdown:empty{display:none}
+
+/* Native booking slots ([nr_booking_slots]) */
+.nr-slots{border:1px solid var(--hair);background:var(--bg-2);padding:28px}
+.nr-slots__intro p{margin:8px 0 0;color:var(--ink-2);font-size:14px;line-height:1.6;max-width:56ch}
+.nr-slots__ok{margin:14px 0 0;color:#54d27a;font-size:14px}
+.nr-slots__err{margin:14px 0 0;color:var(--amber);font-size:14px}
+.nr-slots__empty{margin:14px 0 0;color:var(--ink-2);font-size:14px}
+.nr-slots__empty a,.nr-slots__ok a{color:var(--amber)}
+.nr-slots__grid{border:0;padding:0;margin:18px 0 4px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.nr-slots__grid > legend{padding:0;margin:0 0 8px}
+.nr-slots__slot{position:relative;display:block}
+.nr-slots__slot input{position:absolute;opacity:0;width:0;height:0}
+.nr-slots__slot span{display:block;border:1px solid var(--hair);padding:12px 14px;cursor:pointer;font-size:13px;color:var(--ink-2);transition:border-color .2s,background .2s,color .2s}
+.nr-slots__slot input:checked + span{border-color:var(--amber);background:rgba(242,160,61,.08);color:var(--ink)}
+.nr-slots__slot input:focus-visible + span{outline:2px solid var(--amber);outline-offset:2px}
+.nr-slots__fields{display:grid;gap:12px;margin:18px 0;max-width:520px}
+.nr-slots__fields input,.nr-slots__fields textarea{width:100%}

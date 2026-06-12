@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.74.0' );
+define( 'NR_THEME_VERSION', '4.75.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -385,6 +385,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'medium4.php',
 		'preshoot.php',
 			'booking.php',
+			'slots.php',
 			'invoices.php',
 		'admin-hub.php',
 	] as $nr_inc_file ) {

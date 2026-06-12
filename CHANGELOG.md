@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.74.0** · **103 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.75.0** · **104 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -161,7 +161,7 @@ dynamic OG share cards (GD, needs a bundled TTF) · dependency-free PDF estimate
 spam shield (fails open if unconfigured) · Leaflet map · before/after `[nr_compare]` · enquiry
 attribution + insights dashboard · keyword tags + multi-filter · series · video gallery plates ·
 Vienna district local-SEO pages (`[nr_district]`) · reference-image upload on the Enquire form ·
-pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
+pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_booking_slots]`, owner-managed slots + .ics invite, no third party) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
 
 ## 9. Gotchas
 
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_p
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.75.0 — 2026-06-12
+Native, self-hosted slot-booking tool (no Google, no plugin, no payment): new `inc/slots.php` + `nr_slot` CPT. Owner adds open slots under Obscura → Booking (date · times · duration · label) and manages them (Open/Booked + who, delete). Visitors use the `[nr_booking_slots]` block: pick a free future slot + name/email → booked instantly (server re-checks open → no double-booking; honeypot + Turnstile guard). Each booking is logged as a normal `nr_enquiry` (type "Booking", `_nr_date` = slot) so details box + invoicing apply; owner gets a notification, client gets a confirmation with a dependency-free `.ics` invite (site timezone). DSGVO-clean — data stays in WordPress. Stub-tested the .ics output + time validation.
 
 ## v4.74.0 — 2026-06-12
 The price calculator's full breakdown (type, each add-on, license, travel km × rate) now flows through the whole chain instead of collapsing to one total: shown in the quote modal and under "Your estimate" on the Enquire form, submitted as `estimate_breakdown`, stored as `_nr_breakdown`, listed in the owner email and the backend Enquiry-details box, itemised in the estimate PDF, and used as invoice line items (only when they still sum to the billed amount — an owner override falls back to a single summary line). Shared parser `nr_breakdown_items()` in pdf.php.

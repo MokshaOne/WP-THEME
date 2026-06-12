@@ -1,5 +1,13 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.75.4 — Booking slots: start/end time instead of typing times
+The Obscura → Booking add form no longer needs times typed by hand. Pick a
+**Start time** and **End time** (time pickers) and slots are generated
+**back-to-back by the duration** (e.g. 14:00–18:00 at 60 min → 14:00, 15:00, 16:00,
+17:00). A slot is only created if it finishes by the end time. Leave “End time”
+empty for a single slot at the start. Combines with the date range + weekdays from
+v4.75.3, so one submit can fill, say, every Tue + Thu 14:00–18:00 for two months.
+
 ## 4.75.3 — Recurring booking slots
 The Obscura → Booking add form can now create **recurring slots** in one go: a
 **“Repeat until”** date + **weekday** checkboxes generate a slot at each given time

@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.75.3** · **107 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.75.4** · **108 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.75.4 — 2026-06-12
+Booking slot creation now uses Start time + End time pickers instead of a typed comma list: slots are generated back-to-back by the duration (e.g. 14:00–18:00 at 60 min → 14/15/16/17:00), only when a slot finishes by the end time; empty end time = single slot. Combines with the v4.75.3 date-range + weekday recurrence.
 
 ## v4.75.3 — 2026-06-12
 Recurring booking slots: the Obscura → Booking add form gains a "Repeat until" date + weekday checkboxes — generates a slot at each time on every chosen weekday across the range (none ticked = every day). Empty "Repeat until" = single day (unchanged). De-dupes by exact start (safe to re-run), ~1-year span guard, 500/run cap; shows "N slots added".

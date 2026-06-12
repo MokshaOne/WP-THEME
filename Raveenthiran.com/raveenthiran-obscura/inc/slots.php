@@ -271,9 +271,11 @@ function nr_booking_admin_page() {
 							echo '<label style="display:inline-block;margin:0 12px 4px 0"><input type="checkbox" name="wd[]" value="' . (int) $nr_n . '"> ' . esc_html( $nr_lbl ) . '</label>';
 						}
 					?><p class="description"><?php esc_html_e( 'Only used with “Repeat until”. None ticked = every day in the range.', 'raveenthiran' ); ?></p></td></tr>
-				<tr><th><label for="nr_t"><?php esc_html_e( 'Times', 'raveenthiran' ); ?></label></th>
-					<td><input type="text" id="nr_t" name="times" placeholder="10:00, 14:00, 16:30" class="regular-text" required>
-						<p class="description"><?php esc_html_e( 'One or more start times, comma-separated.', 'raveenthiran' ); ?></p></td></tr>
+				<tr><th><label for="nr_st"><?php esc_html_e( 'Start time', 'raveenthiran' ); ?></label></th>
+					<td><input type="time" id="nr_st" name="start_t" required></td></tr>
+				<tr><th><label for="nr_et"><?php esc_html_e( 'End time', 'raveenthiran' ); ?></label></th>
+					<td><input type="time" id="nr_et" name="end_t">
+						<p class="description"><?php esc_html_e( 'Slots are generated from start to end, back-to-back by the duration below (e.g. 14:00–18:00 at 60 min → 14:00, 15:00, 16:00, 17:00). Leave empty for a single slot at the start time.', 'raveenthiran' ); ?></p></td></tr>
 				<tr><th><label for="nr_dur"><?php esc_html_e( 'Duration (min)', 'raveenthiran' ); ?></label></th>
 					<td><input type="number" id="nr_dur" name="dur" value="60" min="5" step="5" style="width:90px"></td></tr>
 				<tr><th><label for="nr_lbl"><?php esc_html_e( 'Label', 'raveenthiran' ); ?></label></th>
@@ -322,7 +324,24 @@ add_action( 'admin_post_nr_add_slots', function () {
 	$until = sanitize_text_field( wp_unslash( $_POST['until'] ?? '' ) );
 	$dur   = max( 5, (int) ( $_POST['dur'] ?? 60 ) );
 	$label = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
-	$times = array_filter( array_map( 'trim', explode( ',', (string) wp_unslash( $_POST['times'] ?? '' ) ) ) );
+	// Generate the per-day start times from a start→end range, stepped by the
+	// duration (back-to-back). No end time → a single slot at the start time.
+	$start_t = sanitize_text_field( wp_unslash( $_POST['start_t'] ?? '' ) );
+	$end_t   = sanitize_text_field( wp_unslash( $_POST['end_t'] ?? '' ) );
+	$times   = [];
+	if ( preg_match( '/^([01]?\d|2[0-3]):([0-5]\d)$/', $start_t ) ) {
+		if ( preg_match( '/^([01]?\d|2[0-3]):([0-5]\d)$/', $end_t ) ) {
+			list( $sh, $sm ) = array_map( 'intval', explode( ':', $start_t ) );
+			list( $eh, $em ) = array_map( 'intval', explode( ':', $end_t ) );
+			$cur = $sh * 60 + $sm; $stop = $eh * 60 + $em; $guard = 0;
+			while ( $cur + $dur <= $stop && $guard++ < 50 ) {
+				$times[] = sprintf( '%02d:%02d', intdiv( $cur, 60 ), $cur % 60 );
+				$cur += $dur;
+			}
+		} else {
+			$times = [ $start_t ];                                    // single slot
+		}
+	}
 	$wds   = array_values( array_filter( array_map( 'intval', (array) ( $_POST['wd'] ?? [] ) ), function ( $n ) { return $n >= 1 && $n <= 7; } ) );
 	$tz    = wp_timezone();
 

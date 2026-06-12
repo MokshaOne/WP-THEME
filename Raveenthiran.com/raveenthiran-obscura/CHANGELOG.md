@@ -1,5 +1,16 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.71.0 — Booking embed (Google Appointment Schedule)
+New `inc/booking.php` + `[nr_booking]` shortcode: drop a click-to-load Google
+**Appointment Schedule** (real booking page) on any page. The external Google iframe
+is only injected after the visitor clicks the Obscura-framed button — so there is **no
+third-party request and no LCP/CLS/privacy hit on page load** (DSGVO-friendly), and it
+falls back to the enquiry form when no calendar is set. Owner pastes the embed
+code/URL into Theme Settings → **Booking embed (Google)**; we extract + validate the
+src ourselves (only `calendar.google.com` / `calendar.app.google` allowed). Note: this
+needs an **Appointment Schedule** link, not the read-only `calendar/embed` view (which
+would also leak every event publicly).
+
 ## 4.70.3 — Desktop CLS: stop the hero title reflow (font-display:optional)
 The real desktop CLS cause: the hero headline is up to **176px on desktop vs 84px on
 mobile**, so when the web font swaps in, the giant title reflows (≈1.0 CLS on desktop,

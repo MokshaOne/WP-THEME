@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.70.3' );
+define( 'NR_THEME_VERSION', '4.71.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -384,6 +384,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'districts.php',
 		'medium4.php',
 		'preshoot.php',
+			'booking.php',
 		'admin-hub.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;

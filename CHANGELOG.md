@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.70.3** · **97 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.71.0** · **98 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -192,6 +192,9 @@ pre-shoot T-7/T-1 info emails (cron) · Press list as a 3-field repeater (`[nr_p
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.71.0 — 2026-06-12
+Booking embed: new `inc/booking.php` + `[nr_booking]` shortcode embeds a Google Calendar **Appointment Schedule** (real booking page) with **click-to-load** — the Google iframe loads only after the visitor clicks, so no third-party request / LCP / CLS / privacy hit on page load (DSGVO-friendly); falls back to the enquiry form when unset. Owner pastes the embed code/URL into Theme Settings → "Booking embed (Google)"; only `calendar.google.com` / `calendar.app.google` hosts are accepted. Needs an Appointment Schedule link, not the read-only `calendar/embed` view.
 
 ## v4.70.3 — 2026-06-12
 Desktop CLS: the hero headline is up to 176px on desktop vs 84px on mobile, so the web-font swap reflowed the giant title (~1.0 desktop, ~0.14 mobile — the observed asymmetry). The display weights (Inter Tight 300 + 700, both preloaded) now use font-display:optional → the title never swap-reflows (preloaded font used if it arrives in the block window, else fallback kept with no later swap). Body weights stay swap. Rides in the inlined font CSS, so it lands with v4.70.2 (preloader off) on one cache purge.

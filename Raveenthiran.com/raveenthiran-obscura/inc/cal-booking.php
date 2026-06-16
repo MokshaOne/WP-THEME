@@ -140,3 +140,28 @@ add_shortcode( 'nr_cal_inline', function ( $atts ) {
 	$a = shortcode_atts( [ 'key' => '' ], $atts, 'nr_cal_inline' );
 	return nr_cal_inline( $a['key'] );
 } );
+
+/* ── Phase 3: popup button — nr_cal_button() + [nr_cal_button key="…"] ──── */
+
+/**
+ * Render a Cal popup trigger for an event-type key. Returns '' for an unknown
+ * key (admin hint for editors). $label overrides the event's own label.
+ */
+function nr_cal_button( $key, $label = '' ) {
+	$ev = nr_cal_event( $key );
+	if ( ! $ev ) {
+		return current_user_can( 'edit_theme_options' )
+			? '<p class="nr-admin-hint">' . esc_html( sprintf( __( 'Cal: no event type “%s” — add it under Obscura → Buchung.', 'raveenthiran' ), $key ) ) . '</p>'
+			: '';
+	}
+	nr_cal_enqueue();
+	if ( $label !== '' ) $ev['label'] = $label;
+	ob_start();
+	get_template_part( 'parts/booking/cal-button', '', $ev );
+	return ob_get_clean();
+}
+
+add_shortcode( 'nr_cal_button', function ( $atts ) {
+	$a = shortcode_atts( [ 'key' => '', 'label' => '' ], $atts, 'nr_cal_button' );
+	return nr_cal_button( $a['key'], $a['label'] );
+} );

@@ -116,3 +116,27 @@ function nr_cal_enqueue() {
 		'events' => nr_cal_events(),
 	] );
 }
+
+/* ── Phase 2: inline embed — nr_cal_inline() + [nr_cal_inline key="…"] ──── */
+
+/**
+ * Render an inline Cal embed for an event-type key. Returns '' when the key is
+ * unknown (or an admin hint for editors). Enqueues Cal only when used.
+ */
+function nr_cal_inline( $key ) {
+	$ev = nr_cal_event( $key );
+	if ( ! $ev ) {
+		return current_user_can( 'edit_theme_options' )
+			? '<p class="nr-admin-hint">' . esc_html( sprintf( __( 'Cal: no event type “%s” — add it under Obscura → Buchung.', 'raveenthiran' ), $key ) ) . '</p>'
+			: '';
+	}
+	nr_cal_enqueue();
+	ob_start();
+	get_template_part( 'parts/booking/cal-inline', '', $ev );
+	return ob_get_clean();
+}
+
+add_shortcode( 'nr_cal_inline', function ( $atts ) {
+	$a = shortcode_atts( [ 'key' => '' ], $atts, 'nr_cal_inline' );
+	return nr_cal_inline( $a['key'] );
+} );

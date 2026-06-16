@@ -1,0 +1,21 @@
+/* Cal.com booking — Catalogue Noir. Loaded only on pages with a booking block. */
+
+/* Inline embed: reserve height so loading Cal causes no layout shift. */
+.nr-cal-inline{
+  min-height:600px;width:100%;
+  border:1px solid var(--hair);background:var(--bg-2);
+  position:relative;
+}
+.nr-cal-inline::before{
+  content:attr(data-loading);
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-3);pointer-events:none;
+}
+.nr-cal-inline[data-mounted]{border:0;background:transparent;min-height:0}
+.nr-cal-inline[data-mounted]::before{display:none}
+@media(max-width:900px){.nr-cal-inline{min-height:680px}}
+
+/* Popup trigger — sits on the shared .nr-btn; this is just a placement wrapper. */
+.nr-cal-cta{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.nr-cal-cta__note{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.06em;color:var(--ink-3)}

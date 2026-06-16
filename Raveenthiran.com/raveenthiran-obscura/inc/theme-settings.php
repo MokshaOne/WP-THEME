@@ -43,10 +43,6 @@ function nr_settings_defaults() {
 		'nr_available'       => '1',
 		'nr_avail_text'      => __( 'Available · 2026', 'raveenthiran' ),
 		'nr_booking_url'     => '',
-		'nr_booking_embed'   => '',
-		'nr_book_lead'       => '0',   // booking lead time (hours)
-		'nr_book_location'   => '',
-		'nr_book_intro'      => '',
 		'nr_inv_business'    => '',   // sender block: name / street / ZIP city (one per line)
 		'nr_inv_iban'        => '',
 		'nr_inv_bic'         => '',
@@ -522,9 +518,6 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Booking URL', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_booking_url', 60 ); ?>
 							<p class="description"><?php esc_html_e( 'Optional. If set, adds a "Book a time →" button on the Enquire page (e.g. a Cal.com link).', 'raveenthiran' ); ?></p></td></tr>
-						<tr><th><label><?php esc_html_e( 'Booking embed (Google)', 'raveenthiran' ); ?></label></th>
-							<td><?php nr_field_textarea( 'nr_booking_embed', 3 ); ?>
-								<p class="description"><?php esc_html_e( 'Optional. Paste the embed code or link of a Google Calendar Appointment Schedule (a real booking page — NOT the read-only calendar view). Place [nr_booking] on any page to show a click-to-load booking calendar. Falls back to the enquiry form when empty.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'WhatsApp number', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_whatsapp', 30 ); ?>
 							<p class="description"><?php esc_html_e( 'Optional. Digits only — adds a WhatsApp quick-contact button on the Enquire page.', 'raveenthiran' ); ?></p></td></tr>

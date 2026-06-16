@@ -99,6 +99,7 @@ add_action( 'wp_enqueue_scripts', function () {
 	$base = get_template_directory_uri();
 	wp_register_style( 'nr-cal', $base . '/assets/css/cal-booking.css', [ 'nr-theme' ], NR_THEME_VERSION );
 	wp_register_script( 'nr-cal', $base . '/assets/js/cal-embed.js', [], NR_THEME_VERSION, true );
+	wp_register_script( 'nr-cal-picker', $base . '/assets/js/cal-picker.js', [ 'nr-cal' ], NR_THEME_VERSION, true );
 } );
 
 /**
@@ -165,4 +166,39 @@ function nr_cal_button( $key, $label = '' ) {
 add_shortcode( 'nr_cal_button', function ( $atts ) {
 	$a = shortcode_atts( [ 'key' => '', 'label' => '' ], $atts, 'nr_cal_button' );
 	return nr_cal_button( $a['key'], $a['label'] );
+} );
+
+/* ── Phase 5: variable booking picker — nr_cal_picker() + [nr_cal_picker] ── */
+
+/**
+ * Render the variable booking configurator: shooting type + hours + add-on
+ * packages → live price, then the matching per-type Cal inline calendar (the
+ * picked hours become the Cal booking duration). Needs both the pricing data
+ * (nr_quote_data) and at least one Cal event whose key matches a type slug.
+ * Returns an admin hint for editors when nothing is bookable yet.
+ */
+function nr_cal_picker() {
+	if ( ! function_exists( 'nr_quote_data' ) ) return '';
+	$q = nr_quote_data();
+	if ( empty( $q['types'] ) ) return '';
+
+	// At least one shooting-type slug must map to a Cal event to be useful.
+	$events  = nr_cal_events();
+	$matched = false;
+	foreach ( $q['types'] as $t ) { if ( isset( $events[ $t['slug'] ] ) ) { $matched = true; break; } }
+	if ( ! $matched ) {
+		return current_user_can( 'edit_theme_options' )
+			? '<p class="nr-admin-hint">' . esc_html__( 'Cal picker: no shooting-type slug matches a Cal event yet. Add event types under Obscura → Buchung whose Key equals a pricing type slug (e.g. portrait, editorial).', 'raveenthiran' ) . '</p>'
+			: '';
+	}
+
+	nr_cal_enqueue();
+	wp_enqueue_script( 'nr-cal-picker' );
+	ob_start();
+	get_template_part( 'parts/booking/cal-picker' );
+	return ob_get_clean();
+}
+
+add_shortcode( 'nr_cal_picker', function () {
+	return nr_cal_picker();
 } );

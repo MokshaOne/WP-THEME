@@ -87,8 +87,10 @@ function nr_register_feature_acf_fields() {
                 'type' => 'repeater', 'layout' => 'table',
                 'sub_fields' => [
                     [ 'key' => 'field_qbp_type',  'label' => 'Type',       'name' => 'type',       'type' => 'text' ],
-                    [ 'key' => 'field_qbp_price',  'label' => 'Price (€)', 'name' => 'base_price',  'type' => 'number' ],
-                    [ 'key' => 'field_qbp_hours',  'label' => 'Hours',     'name' => 'hours',       'type' => 'number' ],
+                    [ 'key' => 'field_qbp_price',  'label' => 'Base / setup fee (€)', 'name' => 'base_price',  'type' => 'number', 'instructions' => 'Legacy estimate popover uses this. The booking picker bills hourly (below).' ],
+                    [ 'key' => 'field_qbp_hours',  'label' => 'Min hours',  'name' => 'hours',       'type' => 'number', 'default_value' => 2, 'instructions' => 'Starting / minimum hours in the booking picker.' ],
+                    [ 'key' => 'field_qbp_rate',   'label' => 'Hourly rate (€/h)', 'name' => 'hourly_rate', 'type' => 'number', 'instructions' => 'Drives the booking price. Leave blank to derive from Base ÷ Min hours.' ],
+                    [ 'key' => 'field_qbp_max',    'label' => 'Max hours',  'name' => 'max_hours',   'type' => 'number', 'instructions' => 'Booking picker ceiling. Blank = 10.' ],
                 ],
             ],
             [

@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.78.0** · **111 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.79.0** · **112 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -161,7 +161,7 @@ dynamic OG share cards (GD, needs a bundled TTF) · dependency-free PDF estimate
 spam shield (fails open if unconfigured) · Leaflet map · before/after `[nr_compare]` · enquiry
 attribution + insights dashboard · keyword tags + multi-filter · series · video gallery plates ·
 Vienna district local-SEO pages (`[nr_district]`) · reference-image upload on the Enquire form ·
-pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`[nr_cal_inline]` / `[nr_cal_button]`, `inc/cal-booking.php`, ACF-configured, lazy-loaded, origin-pinned to cal.m1o.at) · manual Kleinunternehmer invoicing (`inc/invoices.php`, bank-transfer PDF) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
+pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`[nr_cal_inline]` / `[nr_cal_button]`, `inc/cal-booking.php`, ACF-configured, lazy-loaded, origin-pinned to cal.m1o.at) · **variable booking picker** (`[nr_cal_picker]` — type · hours · packages → live price → per-type Cal calendar; hours set the Cal slot duration) · manual Kleinunternehmer invoicing (`inc/invoices.php`, bank-transfer PDF) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
 
 ## 9. Gotchas
 
@@ -185,6 +185,16 @@ pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`
   only when a block is on the page — inline via IntersectionObserver (no CLS), popup on
   first interaction; dark + amber UI; focus returns to the trigger. Bookings are seen in
   **Cal.com / the CRM** (Cal → n8n → Twenty), not in WP. New event types need no code.
+- **Variable booking picker (v4.79):** `[nr_cal_picker]` — a configurator (shooting
+  type · hours stepper · add-on packages → live price via `nr_quote_data()`) that
+  reveals the matching **per-type** Cal calendar on "Pick a time". The picked hours
+  set the Cal **duration** (`hours × 60`; needs multi-duration event types on
+  cal.m1o.at) and the scope (type/hours/packages/estimate) rides along as Cal
+  **notes + metadata** → n8n → CRM. Per-type ACF fields added to **Pricing & Quote**:
+  *Hourly rate (€/h)* (derives from Base ÷ Min hours when blank), *Min/Max hours*.
+  A type is bookable only when its slug matches a Cal `event_types` key; others stay
+  enquiry-only. `cal-embed.js` exposes `window.nrCal.mountInline()` (re-mounts on
+  scope change). New: `parts/booking/cal-picker.php`, `assets/js/cal-picker.js`.
 - **Invoicing** (`inc/invoices.php`, manual, unchanged): Invoice meta box on each enquiry →
   Create+send a Kleinunternehmer PDF (no VAT, § 6 Abs. 1 Z 27 UStG, gap-free numbers),
   pre-filled from the enquiry estimate; PDFs stored behind `.htaccess` deny.
@@ -200,6 +210,9 @@ pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.79.0 — 2026-06-16
+Variable booking picker bridging the estimate calculator to Cal.com. New shortcode `[nr_cal_picker]` (`nr_cal_picker()`): pick a shooting type, set hours (stepper + range, bounded per type), tick add-on packages → a live price (rate × hours + packages + licence + travel, all from `nr_quote_data()`); "Pick a time" reveals the matching **per-type** Cal inline calendar. The chosen hours set the Cal slot **duration** (`hours × 60` min — requires multi-duration event types on cal.m1o.at), and the full scope (type/hours/packages/estimate) is passed as Cal **notes + metadata** for Cal → n8n → CRM. New per-type ACF fields on **Pricing & Quote**: *Hourly rate (€/h)* (drives price; derives from Base ÷ Min hours when blank) + *Min/Max hours*. A shooting-type slug is bookable only when it matches a Cal `event_types` key; unmatched types still price up but stay enquiry-only (editor hint). `cal-embed.js` now exposes `window.nrCal.mountInline()` (dynamic calLink + config, re-mounts on scope change, no CLS). New files: `parts/booking/cal-picker.php`, `assets/js/cal-picker.js`.
 
 ## v4.78.0 — 2026-06-16
 Booking switched to self-hosted **Cal.com** (cal.m1o.at). Removed the native slot tool (`inc/slots.php`) and the Google embed (`inc/booking.php`) + their settings/CSS. New `inc/cal-booking.php`: ACF Options page **Obscura → Buchung** (`cal_origin` + `event_types` repeater) and shortcodes `[nr_cal_inline]` / `[nr_cal_button]` (parts under `parts/booking/`). `assets/js/cal-embed.js` lazy-loads Cal's embed.js from a hard-guarded origin (never cal.com/localhost) — inline via IntersectionObserver (no CLS, reserved min-height), popup on first hover/focus/click, focus returns to trigger; dark + amber UI. Loads only where a booking block is placed; new event types need no code. Processing (Cal → n8n → CRM) stays server-side. Invoicing module unchanged.

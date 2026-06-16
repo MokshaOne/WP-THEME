@@ -56,6 +56,21 @@
 		else { document.addEventListener( 'DOMContentLoaded', fn ); }
 	}
 
+	/* (Re)mount an inline embed with a dynamic calLink + config (used by the
+	   booking picker, whose duration/metadata change as the scope changes).
+	   Clearing the host first lets Cal build a fresh iframe on every change. */
+	function mountInline( el, link, config ) {
+		if ( ! el || ! link ) { return; }
+		try { el.innerHTML = ''; } catch ( e ) {}
+		el.setAttribute( 'data-mounted', '1' );
+		var conf = { theme: 'dark' };
+		if ( config ) { for ( var k in config ) { if ( config.hasOwnProperty( k ) ) { conf[ k ] = config[ k ]; } } }
+		boot()( 'inline', { elementOrSelector: el, calLink: link, config: conf } );
+	}
+
+	/* Public API for theme scripts (booking picker). */
+	window.nrCal = { boot: boot, mountInline: mountInline, origin: origin };
+
 	ready( function () {
 		/* Inline embeds — mount when near the viewport (no CLS). */
 		var inlines = Array.prototype.slice.call( document.querySelectorAll( '[data-nr-cal-inline]' ) );

@@ -1,5 +1,26 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.79.0 — Variable booking picker (calculator → Cal.com)
+A configurator that prices like the estimate calculator and hands the result
+straight to Cal.com — shortcode **`[nr_cal_picker]`** (helper `nr_cal_picker()`).
+- **Configure → price → book:** pick a *shooting type*, set *hours on set*
+  (stepper + range, bounded per type), tick *add-on packages* (+ optional licence
+  / travel) → a live total. "Pick a time" reveals the matching **per-type Cal
+  inline calendar**.
+- **Hours drive the booking length:** the chosen hours set the Cal slot
+  **duration** (`hours × 60` min — needs multi-duration event types on
+  cal.m1o.at). The full scope (type, hours, packages, estimate) is passed as
+  Cal **notes + metadata**, so it flows on to Cal → n8n → CRM.
+- **One pricing source:** reuses `nr_quote_data()`. New per-type ACF fields on
+  **Pricing & Quote** — *Hourly rate (€/h)* drives the price (derives from
+  *Base ÷ Min hours* when blank), plus *Min/Max hours* for the stepper bounds.
+- **Per-type mapping:** a shooting-type slug is bookable when it matches a Cal
+  **event_types** key (Obscura → Buchung). Unmatched types still price up but
+  stay enquiry-only; editors get a hint.
+- **New:** `parts/booking/cal-picker.php`, `assets/js/cal-picker.js`; `cal-embed.js`
+  now exposes `window.nrCal.mountInline()` (dynamic calLink + config, re-mounts on
+  scope change). No CLS — the calendar host reserves height and is revealed on demand.
+
 ## 4.78.0 — Booking switched to self-hosted Cal.com
 Full switch to **Cal.com (self-hosted, cal.m1o.at)** as the booking engine;
 processing (Cal webhook → n8n → CRM) is server-side, out of theme scope.

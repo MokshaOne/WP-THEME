@@ -55,10 +55,10 @@ function nr_quote_data() {
 
 	if ( ! is_array( $raw_types ) || empty( $raw_types ) ) {
 		$raw_types = [
-			[ 'type' => 'Portrait',   'base_price' => 450,  'hours' => 2 ],
-			[ 'type' => 'Editorial',  'base_price' => 1200, 'hours' => 6 ],
-			[ 'type' => 'Event',      'base_price' => 900,  'hours' => 4 ],
-			[ 'type' => 'Commercial', 'base_price' => 1800, 'hours' => 8 ],
+			[ 'type' => 'Portrait',   'base_price' => 450,  'hours' => 2, 'hourly_rate' => 225, 'max_hours' => 6  ],
+			[ 'type' => 'Editorial',  'base_price' => 1200, 'hours' => 6, 'hourly_rate' => 200, 'max_hours' => 10 ],
+			[ 'type' => 'Event',      'base_price' => 900,  'hours' => 4, 'hourly_rate' => 225, 'max_hours' => 12 ],
+			[ 'type' => 'Commercial', 'base_price' => 1800, 'hours' => 8, 'hourly_rate' => 225, 'max_hours' => 12 ],
 		];
 	}
 	if ( ! is_array( $raw_extras ) || empty( $raw_extras ) ) {
@@ -74,11 +74,21 @@ function nr_quote_data() {
 	foreach ( $raw_types as $r ) {
 		$label = trim( (string) ( $r['type'] ?? '' ) );
 		if ( $label === '' ) continue;
+		$base  = (float) ( $r['base_price'] ?? 0 );
+		$min_h = max( 1.0, (float) ( $r['hours'] ?? 0 ) );
+		// Hourly rate drives the booking price; derive from base ÷ min-hours when blank.
+		$rate  = (float) ( $r['hourly_rate'] ?? 0 );
+		if ( $rate <= 0 ) $rate = ( $min_h > 0 && $base > 0 ) ? round( $base / $min_h ) : 0;
+		$max_h = (float) ( $r['max_hours'] ?? 0 );
+		if ( $max_h < $min_h ) $max_h = max( $min_h + 4, 10 );
 		$types[] = [
 			'slug'  => sanitize_title( $label ),
 			'label' => $label,
-			'base'  => (float) ( $r['base_price'] ?? 0 ),
+			'base'  => $base,
 			'hours' => (float) ( $r['hours'] ?? 0 ),
+			'rate'  => $rate,
+			'min'   => $min_h,
+			'max'   => $max_h,
 		];
 	}
 

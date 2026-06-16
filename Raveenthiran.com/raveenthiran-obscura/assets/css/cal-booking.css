@@ -19,3 +19,68 @@
 /* Popup trigger — sits on the shared .nr-btn; this is just a placement wrapper. */
 .nr-cal-cta{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .nr-cal-cta__note{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.06em;color:var(--ink-3)}
+
+/* ── Variable booking picker — configurator + inline calendar ───────────── */
+.nr-cal-picker{border:1px solid var(--hair);background:var(--bg-2,var(--bg));display:flex;flex-direction:column}
+.nr-cal-picker__config{padding:24px 28px;display:flex;flex-direction:column;gap:22px}
+.nr-cal-picker__group{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+.nr-cal-picker__group > legend{padding:0;margin:0 0 2px}
+
+/* Type chips — same language as the estimate popover. */
+.nr-cal-picker__types{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.nr-cal-picker__type{display:flex;flex-direction:column;gap:5px;padding:13px 14px;border:1px solid var(--hair);cursor:pointer;transition:border-color .2s,background .2s;min-height:62px;justify-content:center}
+.nr-cal-picker__type:hover{border-color:var(--ink-3)}
+.nr-cal-picker__type.is-on{border-color:var(--amber);background:rgba(242,160,61,.08)}
+.nr-cal-picker__type.is-unbookable{opacity:.6}
+.nr-cal-picker__type-name{color:var(--ink);font-size:14px;font-weight:500;line-height:1.15}
+.nr-cal-picker__type-meta{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;color:var(--ink-2);letter-spacing:.04em}
+.nr-cal-picker__type.is-on .nr-cal-picker__type-meta{color:var(--amber)}
+
+/* Hours stepper + range. */
+.nr-cal-picker__stepper{display:flex;align-items:center;gap:14px}
+.nr-cal-picker__step{width:38px;height:38px;border:1px solid var(--hair);background:transparent;color:var(--ink);font-size:20px;line-height:1;cursor:pointer;transition:border-color .2s,color .2s}
+.nr-cal-picker__step:hover{border-color:var(--amber);color:var(--amber)}
+.nr-cal-picker__hours{font-family:var(--ff-mono,ui-monospace,monospace);font-size:26px;color:var(--ink);font-variant-numeric:tabular-nums;min-width:1.6ch;text-align:center}
+.nr-cal-picker__hours-unit{font-family:var(--ff-mono,ui-monospace,monospace);font-size:13px;color:var(--ink-3);margin-left:-8px}
+.nr-cal-picker__range{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none;margin-top:4px}
+.nr-cal-picker__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--amber);cursor:pointer}
+.nr-cal-picker__range::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--amber);cursor:pointer}
+
+/* Add-ons — reuse the popover checkbox styling. */
+.nr-cal-picker__extras{display:flex;flex-direction:column}
+.nr-cal-picker__extra{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--hair);cursor:pointer;font-size:14px;color:var(--ink-2);margin:0}
+.nr-cal-picker__extras .nr-cal-picker__extra:last-child{border-bottom:0}
+.nr-cal-picker__extra-box{width:16px;height:16px;border:1px solid var(--ink-3);flex:0 0 auto;position:relative;transition:all .18s}
+.nr-cal-picker__extra input{position:absolute;opacity:0;width:0;height:0}
+.nr-cal-picker__extra input:checked + .nr-cal-picker__extra-box{background:var(--amber);border-color:var(--amber)}
+.nr-cal-picker__extra input:checked + .nr-cal-picker__extra-box::after{content:"";position:absolute;left:5px;top:1px;width:4px;height:9px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.nr-cal-picker__extra:hover .nr-cal-picker__extra-box{border-color:var(--amber)}
+.nr-cal-picker__extra input:checked ~ .nr-cal-picker__extra-name{color:var(--ink)}
+.nr-cal-picker__extra-name{flex:1 1 auto}
+.nr-cal-picker__extra-price{font-family:var(--ff-mono,ui-monospace,monospace);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.nr-cal-picker__group--inline{gap:0}
+.nr-cal-picker__extra--wide{border-top:1px solid var(--hair);border-bottom:0;padding-top:14px}
+.nr-cal-picker__travel{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px}
+.nr-cal-picker__travel-input{display:flex;align-items:center;gap:8px}
+.nr-cal-picker__travel-input input{width:74px;background:transparent;border:1px solid var(--hair);color:var(--ink);padding:7px 9px;font-family:var(--ff-mono,ui-monospace,monospace);text-align:right}
+.nr-cal-picker__travel-input input:focus{outline:none;border-color:var(--amber)}
+.nr-cal-picker__travel-unit{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;color:var(--ink-3);white-space:nowrap}
+
+/* Footer — total + the reveal CTA. */
+.nr-cal-picker__foot{padding:16px 28px 22px;border-top:1px solid var(--hair);display:flex;flex-direction:column;gap:14px}
+.nr-cal-picker__total-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.nr-cal-picker__sum{font-family:var(--ff-mono,ui-monospace,monospace);font-size:30px;color:var(--amber);font-variant-numeric:tabular-nums;line-height:1}
+.nr-cal-picker__note{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;color:var(--ink-3);line-height:1.7;margin:0}
+.nr-cal-picker__go[disabled]{opacity:.45;cursor:not-allowed}
+.nr-cal-picker__hint{font-family:var(--ff-mono,ui-monospace,monospace);font-size:11px;color:var(--ink-3);margin:0}
+
+/* Inline calendar host — inherits .nr-cal-inline (height reserved, no CLS). */
+.nr-cal-picker__cal{border-top:1px solid var(--hair);margin-top:0}
+.nr-cal-picker__cal[hidden]{display:none}
+.nr-cal-picker__fallback{list-style:none;margin:0;padding:14px 28px;display:flex;flex-wrap:wrap;gap:16px}
+.nr-cal-picker__fallback a{color:var(--ink-2);border-bottom:1px solid var(--amber);padding-bottom:1px}
+
+@media(max-width:600px){
+  .nr-cal-picker__config,.nr-cal-picker__foot{padding-left:20px;padding-right:20px}
+  .nr-cal-picker__types{grid-template-columns:1fr}
+}

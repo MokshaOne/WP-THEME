@@ -12,7 +12,7 @@ $nr_label = isset( $args['label'] ) && $args['label'] !== '' ? (string) $args['l
 if ( $nr_link === '' ) return;
 ?>
 <span class="nr-cal-cta">
-	<button type="button" class="nr-btn nr-btn--primary" data-nr-cal-popup data-cal-link="<?php echo esc_attr( $nr_link ); ?>">
+	<button type="button" class="nr-btn nr-btn--primary" data-nr-cal-popup data-cal-link="<?php echo esc_attr( $nr_link ); ?>" aria-haspopup="dialog" aria-expanded="false">
 		<span><?php echo esc_html( $nr_label ); ?></span> <span aria-hidden="true">→</span>
 	</button>
 	<noscript>

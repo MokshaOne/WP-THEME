@@ -1,5 +1,26 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.78.0 — Booking switched to self-hosted Cal.com
+Full switch to **Cal.com (self-hosted, cal.m1o.at)** as the booking engine;
+processing (Cal webhook → n8n → CRM) is server-side, out of theme scope.
+- **Removed** the previous experiments: native slot booking (`inc/slots.php`,
+  CPT `nr_slot`, picker/popover/.ics/cancel/calculator/Booking admin) and the
+  Google Appointment Schedule embed (`inc/booking.php`, `[nr_booking]`); plus their
+  settings rows, defaults and CSS. (Generic `nr_booking_url` link-out + the
+  invoicing module stay.)
+- **New `inc/cal-booking.php`:** ACF Options page **Obscura → Buchung** (`cal_origin`
+  + `event_types` repeater: key/label/cal_link), config readers, on-demand enqueue.
+- **Shortcodes** `[nr_cal_inline key="…"]` (in-page calendar) and
+  `[nr_cal_button key="…" label="…"]` (popup CTA); helpers `nr_cal_inline()` /
+  `nr_cal_button()`; template parts under `parts/booking/`.
+- **`assets/js/cal-embed.js`:** origin-pinned lazy loader — inline mounts via
+  IntersectionObserver (no CLS, reserved min-height), popup loads `embed.js` on
+  first hover/focus/click then opens the modal; focus returns to the trigger on
+  close. **Origin is hard-guarded** to `cal.m1o.at` (never cal.com/localhost).
+- **Catalogue Noir:** Cal UI forced to dark + amber brand; `assets/css/cal-booking.css`.
+- Cal loads **only** on pages with a booking block — home/portfolio untouched.
+  New event types need **no code** (just an ACF repeater row).
+
 ## 4.77.0 — Booking: price calculator built in + more robust popover
 - **Calculator in the booking:** the slot form now includes the price calculator
   (session type · add-ons · usage license) with a live total. The estimate is

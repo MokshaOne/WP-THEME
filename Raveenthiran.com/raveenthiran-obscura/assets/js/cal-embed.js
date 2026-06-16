@@ -5,13 +5,16 @@
  *   • [data-nr-cal-inline] → loaded when scrolled near (IntersectionObserver);
  *     PHP reserves min-height so there is no layout shift.
  *   • [data-nr-cal-popup]  → embed.js loaded on first interaction
- *     (hover-intent / focus / click), then opened as a modal.
+ *     (hover-intent / focus / click), then opened as a modal. Focus returns to
+ *     the trigger when the modal closes.
  */
 (function () {
 	'use strict';
 	var cfg    = window.NR_CAL || {};
 	var origin = ( cfg.origin || 'https://cal.m1o.at' ).replace( /\/+$/, '' );
+	var accent = cfg.accent || '#F2A03D';
 	var booted = false;
+	var lastTrigger = null;          // popup button to refocus on close
 
 	/* Lazy bootstrap of the official Cal queue + script, pinned to our origin. */
 	function boot() {
@@ -33,7 +36,18 @@
 				p( cal, ar );
 			};
 		} )( window, origin + '/embed/embed.js', 'init' );
+
 		window.Cal( 'init', { origin: origin } );
+		/* Catalogue Noir: dark UI + amber brand. */
+		window.Cal( 'ui', { theme: 'dark', styles: { branding: { brandColor: accent } } } );
+		/* Return focus to the trigger when a modal closes. */
+		window.Cal( 'on', { action: '__closeIframe', callback: function () {
+			if ( lastTrigger ) {
+				lastTrigger.setAttribute( 'aria-expanded', 'false' );
+				try { lastTrigger.focus(); } catch ( e ) {}
+				lastTrigger = null;
+			}
+		} } );
 		return window.Cal;
 	}
 
@@ -72,6 +86,8 @@
 			btn.addEventListener( 'focus', prime, { once: true } );
 			btn.addEventListener( 'click', function ( e ) {
 				e.preventDefault();
+				lastTrigger = btn;
+				btn.setAttribute( 'aria-expanded', 'true' );
 				boot()( 'modal', { calLink: link, config: { theme: 'dark' } } );
 			} );
 		} );

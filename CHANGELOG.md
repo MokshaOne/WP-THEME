@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.77.0** · **110 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.78.0** · **111 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -161,7 +161,7 @@ dynamic OG share cards (GD, needs a bundled TTF) · dependency-free PDF estimate
 spam shield (fails open if unconfigured) · Leaflet map · before/after `[nr_compare]` · enquiry
 attribution + insights dashboard · keyword tags + multi-filter · series · video gallery plates ·
 Vienna district local-SEO pages (`[nr_district]`) · reference-image upload on the Enquire form ·
-pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_booking_slots]`, owner-managed slots + recurrence + embedded price calculator + .ics invite + tokenised cancel, no third party) · manual Kleinunternehmer invoicing (`inc/invoices.php`, bank-transfer PDF) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
+pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`[nr_cal_inline]` / `[nr_cal_button]`, `inc/cal-booking.php`, ACF-configured, lazy-loaded, origin-pinned to cal.m1o.at) · manual Kleinunternehmer invoicing (`inc/invoices.php`, bank-transfer PDF) · Press list as a 3-field repeater (`[nr_press]` / `[nr_featured]`).
 
 ## 9. Gotchas
 
@@ -177,23 +177,18 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 
 - **Performance:** Mobile ~95 (LCP 2.7s, CLS ~0.06); Desktop LCP 0.9s, CLS fix
   (`.nr-modal{display:none}`) live as of the full v4.70.3 deploy. A11y & SEO **100**.
-- **Booking + invoicing (built v4.71–v4.77):** native self-hosted slot booking
-  (`[nr_booking_slots]`, `inc/slots.php`, CPT `nr_slot`) — owner adds slots under
-  **Obscura → Booking** (date/range · weekdays · start–end time · duration · buffer),
-  visitor books a free slot instantly (no double-booking, honeypot, lead-time). The
-  slot form embeds the **price calculator** (type + add-ons + license; estimate
-  recomputed server-side → `_nr_est` + `_nr_breakdown`). Each booking is logged as an
-  `nr_enquiry` (type "Booking") and the client gets a confirmation with an **.ics**
-  invite + a **tokenised self-service cancel** link; the owner can **Release** a slot.
-  **Invoicing** (`inc/invoices.php`, manual): Invoice meta box on each enquiry →
+- **Booking — Cal.com (self-hosted, v4.78):** the native slot tool + Google embed
+  were removed; booking is now **self-hosted Cal.com** (`cal.m1o.at`). `inc/cal-booking.php`
+  + ACF Options page **Obscura → Buchung** (`cal_origin` + `event_types` key/label/cal_link).
+  Place `[nr_cal_inline key="…"]` (in-page calendar) or `[nr_cal_button key="…" label="…"]`
+  (popup). `assets/js/cal-embed.js` loads Cal's `embed.js` from the (hard-guarded) origin
+  only when a block is on the page — inline via IntersectionObserver (no CLS), popup on
+  first interaction; dark + amber UI; focus returns to the trigger. Bookings are seen in
+  **Cal.com / the CRM** (Cal → n8n → Twenty), not in WP. New event types need no code.
+- **Invoicing** (`inc/invoices.php`, manual, unchanged): Invoice meta box on each enquiry →
   Create+send a Kleinunternehmer PDF (no VAT, § 6 Abs. 1 Z 27 UStG, gap-free numbers),
-  pre-filled from the estimate/breakdown; PDFs stored behind `.htaccess` deny.
-  Booking shows in **Obscura → Booking** (slot status) and **Enquiries** (records).
-  The optional Google embed (`[nr_booking]`, v4.71) is off unless a Schedule URL is set.
+  pre-filled from the enquiry estimate; PDFs stored behind `.htaccess` deny.
 - **Backlogs complete:** IDEAS-200 and IDEAS-50-NEXT both fully shipped/closed.
-- **Known follow-up:** a test booking reportedly "did nothing" — most likely a partial
-  deploy (verify `theme.css?ver=` matches the active version) or the popover (now made
-  self-contained in v4.77.0). Confirm v4.77.0 is fully live + cache purged.
 - **Possible next polish (not started):** Awards as a multi-field editor (like Press);
   font subsetting (~260KB woff2); email deliverability (SPF/DKIM/DMARC) — needs DNS
   access; rotate the compromised App Password; optional buffer/no-show reminders.
@@ -205,6 +200,9 @@ pre-shoot T-7/T-1 info emails (cron) · native self-hosted slot booking (`[nr_bo
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.78.0 — 2026-06-16
+Booking switched to self-hosted **Cal.com** (cal.m1o.at). Removed the native slot tool (`inc/slots.php`) and the Google embed (`inc/booking.php`) + their settings/CSS. New `inc/cal-booking.php`: ACF Options page **Obscura → Buchung** (`cal_origin` + `event_types` repeater) and shortcodes `[nr_cal_inline]` / `[nr_cal_button]` (parts under `parts/booking/`). `assets/js/cal-embed.js` lazy-loads Cal's embed.js from a hard-guarded origin (never cal.com/localhost) — inline via IntersectionObserver (no CLS, reserved min-height), popup on first hover/focus/click, focus returns to trigger; dark + amber UI. Loads only where a booking block is placed; new event types need no code. Processing (Cal → n8n → CRM) stays server-side. Invoicing module unchanged.
 
 ## v4.77.0 — 2026-06-12
 Booking gains the price calculator (session type + add-ons + license, live total) directly in the slot form; the estimate is recomputed server-side from nr_quote_data (posted prices never trusted) and stored as `_nr_est` + `_nr_breakdown`, so it shows in the backend and pre-fills the invoice. Type selection is optional (free calls still book). The booking popover is now self-contained (own open/close, no dependency on the global modal JS — fixes "nothing happens"). Turnstile removed from the slot form (already server-validated against real slots + honeypot).

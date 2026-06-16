@@ -114,6 +114,7 @@ function nr_cal_enqueue() {
 	wp_localize_script( 'nr-cal', 'NR_CAL', [
 		'origin' => nr_cal_origin(),
 		'events' => nr_cal_events(),
+		'accent' => nr_opt( 'nr_accent', '#F2A03D' ),
 	] );
 }
 

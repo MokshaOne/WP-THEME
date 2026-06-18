@@ -7,6 +7,13 @@
       "env": {
         "TWENTY_FIRST_API_KEY": "${TWENTY_FIRST_API_KEY}"
       }
+    },
+    "n8n-mcp": {
+      "type": "http",
+      "url": "https://automation.m1o.at/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNTZlYjM1Ny00OWZhLTRiNjMtYTZhYS0zYmI1YjdlZjY5OWUiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6IjY2MzU3OGU4LTc4YzUtNDUxOS05ODhmLWUzMTU1YzNhYThmZiIsImlhdCI6MTc4MTc0NDA3Mn0.EQtKp-cO8M-Fq_OKDfHgUBW_96mH7fzIXxRPnveYpjU"
+      }
     }
   }
 }

@@ -5,7 +5,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SL_THEME_VERSION', '1.1.0' );
+define( 'SL_THEME_VERSION', '1.1.1' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults

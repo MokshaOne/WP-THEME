@@ -293,7 +293,7 @@ function sl_social_meta() {
 		$q = new WP_Query( [
 			'post_type'      => sl_pt(),
 			'posts_per_page' => 1,
-			'meta_key'       => 'featured_on_homepage',
+			'meta_key'       => sl_featured_key(),
 			'meta_value'     => '1',
 			'fields'         => 'ids',
 		] );

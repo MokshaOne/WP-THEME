@@ -33,8 +33,9 @@ function sl_pwa_serve_manifest() {
 	header( 'Content-Type: application/manifest+json; charset=utf-8' );
 
 	$name  = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-	$bg    = sl_opt( 'sl_color_bg', '#0A0A0B' );
-	$theme = sl_opt( 'sl_color_bg', '#0A0A0B' );
+	// Silence is monochrome by design — the canvas color is a constant, not a setting.
+	$bg    = '#0A0A0B';
+	$theme = '#0A0A0B';
 
 	$icons = [];
 	foreach ( [ 192, 512 ] as $size ) {

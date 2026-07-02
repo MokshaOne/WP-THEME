@@ -60,13 +60,22 @@ $sl_save_meta = function ( $post_id ) {
 	$ids = isset( $_POST['sl_gallery'] ) ? array_filter( array_map( 'absint', explode( ',', (string) $_POST['sl_gallery'] ) ) ) : [];
 	update_post_meta( $post_id, '_sl_gallery', $ids );
 
+	$values = [];
 	foreach ( [ 'sl_client' => '_sl_client', 'sl_year' => '_sl_year', 'sl_location' => '_sl_location' ] as $post_key => $meta_key ) {
-		update_post_meta( $post_id, $meta_key, sanitize_text_field( wp_unslash( $_POST[ $post_key ] ?? '' ) ) );
+		$values[ $meta_key ] = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ?? '' ) );
+		update_post_meta( $post_id, $meta_key, $values[ $meta_key ] );
 	}
-	update_post_meta( $post_id, '_sl_featured', isset( $_POST['sl_featured'] ) ? '1' : '0' );
+	$featured = isset( $_POST['sl_featured'] ) ? '1' : '0';
+	update_post_meta( $post_id, '_sl_featured', $featured );
+
 	if ( function_exists( 'sl_bridge_active' ) && sl_bridge_active() ) {
-		// keep Obscura's flag in sync so the bridged homepage query works
-		update_post_meta( $post_id, 'featured_on_homepage', isset( $_POST['sl_featured'] ) ? '1' : '0' );
+		// Two-way sync: also write Obscura's field keys, so edits made in
+		// Silence are still there if the owner switches back to Obscura.
+		update_post_meta( $post_id, 'project_gallery', $ids );
+		update_post_meta( $post_id, 'project_client',   $values['_sl_client'] );
+		update_post_meta( $post_id, 'project_year',     $values['_sl_year'] );
+		update_post_meta( $post_id, 'project_location', $values['_sl_location'] );
+		update_post_meta( $post_id, 'featured_on_homepage', $featured );
 	}
 };
 add_action( 'save_post_sl_project', $sl_save_meta );

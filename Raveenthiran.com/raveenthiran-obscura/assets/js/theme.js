@@ -744,14 +744,25 @@
     else if(e.key==='Escape'){ closePalette(); closeSheet(); }
   });
 
-  /* #56 hero pointer parallax (subtle; desktop, motion-on) */
+  /* #56 hero pointer parallax (subtle; desktop, motion-on)
+     + 2026 refresh: same mousemove drives the cursor-reactive hero glow
+     (--mx/--my, in % of the frame) so there is only one listener. */
   if ( window.matchMedia('(hover:hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ) {
     var frame=document.querySelector('.nr-hero__frame');
     if (frame) {
       window.addEventListener('mousemove', function(e){
         var dx=(e.clientX/window.innerWidth-0.5), dy=(e.clientY/window.innerHeight-0.5);
         frame.style.transform='translate3d('+(dx*-8).toFixed(1)+'px,'+(dy*-8).toFixed(1)+'px,0)';
+
+        var r = frame.getBoundingClientRect();
+        var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+        if (inside) {
+          frame.style.setProperty('--mx', (((e.clientX - r.left) / r.width) * 100).toFixed(1) + '%');
+          frame.style.setProperty('--my', (((e.clientY - r.top) / r.height) * 100).toFixed(1) + '%');
+        }
+        frame.classList.toggle('is-glowing', inside);
       }, { passive:true });
+      frame.addEventListener('mouseleave', function(){ frame.classList.remove('is-glowing'); }, { passive:true });
     }
   }
 })();

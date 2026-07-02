@@ -1,6 +1,8 @@
 /* =========================================================
    Catalogue Noir — theme stylesheet
-   raveenthiran · v3.0.0 · stoic minimal · no scroll
+   raveenthiran · v5.0.0 · stoic minimal · no scroll · 2026 Edition
+   (duotone ember/amber signal, cursor-reactive hero glow,
+   spring-eased motion vocabulary)
    ========================================================= */
 
 :root{
@@ -14,12 +16,15 @@
   --ink-5:rgba(242,239,233,.06);
   --amber:#F2A03D;
   --amber-soft:rgba(242,160,61,.18);
+  --amber-2:#C6491F;               /* ember — deep duotone counterpart for gradients/glow depth, 2026 refresh */
+  --glow:rgba(242,160,61,.35);     /* ambient spotlight tint (hero cursor-glow) */
   --hair:rgba(242,239,233,.14);
   --hair-soft:rgba(242,239,233,.06);
   --pad:40px;
   --bar-h:64px;
   --strip-h:64px;
   --ease:cubic-bezier(.65,.05,.2,1);
+  --ease-spring:cubic-bezier(.16,1,.3,1); /* snappier, more tactile — wipe + lamp + magnetic UI */
 
   /* motion vocabulary */
   --t-fast:.2s;
@@ -43,7 +48,7 @@
   --fs-h3:clamp(22px,2.4vw,32px);
   --fs-h2:clamp(36px,5vw,76px);
   --fs-h1:clamp(48px,7vw,108px);
-  --fs-display:clamp(64px,11vw,176px);
+  --fs-display:clamp(64px,11.5vw,188px);
 
   /* weight */
   --fw-light:300;
@@ -207,14 +212,16 @@ body:has(*:focus-visible) .nr-cur{opacity:.3}
 .nr-page{animation:pageIn .55s var(--ease)}
 @keyframes pageIn{from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)}}
 
-/* page-transition amber wipe */
+/* page-transition wipe — duotone ember→amber leading edge, spring easing */
 .nr-wipe{
-  position:fixed;inset:0;background:var(--bg);z-index:500;
-  transform:translateY(100%);transition:transform .5s var(--ease);pointer-events:none;
+  position:fixed;inset:0;z-index:500;
+  background:linear-gradient(165deg, var(--bg) 0%, var(--bg) 72%, rgba(242,160,61,.05) 100%);
+  transform:translateY(100%);transition:transform .55s var(--ease-spring);pointer-events:none;
 }
 .nr-wipe::before{
-  content:'';position:absolute;inset:0 0 auto 0;height:2px;background:var(--amber);
-  transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease);
+  content:'';position:absolute;inset:0 0 auto 0;height:2px;
+  background:linear-gradient(90deg, var(--amber-2), var(--amber));
+  transform:scaleX(0);transform-origin:left;transition:transform .55s var(--ease-spring);
 }
 body.is-wiping .nr-wipe{transform:translateY(0);pointer-events:auto}
 body.is-wiping .nr-wipe::before{transform:scaleX(1)}
@@ -274,11 +281,11 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   position:absolute;
   bottom:-2px;left:0;top:auto;
   height:2px;width:40px;
-  background:var(--amber);border-radius:999px;
+  background:linear-gradient(90deg, var(--amber-2), var(--amber));border-radius:999px;
   pointer-events:none;opacity:0;
   transform:translate3d(0,0,0);
-  transition:transform .42s cubic-bezier(.4,0,.2,1),
-             width .42s cubic-bezier(.4,0,.2,1),
+  transition:transform .42s var(--ease-spring),
+             width .42s var(--ease-spring),
              opacity .3s var(--ease);
   will-change:transform,width;
 }
@@ -320,8 +327,8 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   position:relative;overflow:hidden;
 }
 .nr-book-trigger::before,.nr-book::before{
-  content:'';position:absolute;inset:0;background:var(--amber);
-  transform:translateX(-101%);transition:transform .35s var(--ease);z-index:0;
+  content:'';position:absolute;inset:0;background:linear-gradient(115deg,var(--amber-2),var(--amber) 65%);
+  transform:translateX(-101%);transition:transform .35s var(--ease-spring);z-index:0;
 }
 .nr-book-trigger > *,.nr-book > *{position:relative;z-index:1}
 .nr-book-trigger:hover,.nr-book:hover{border-color:var(--amber);color:var(--bg)}
@@ -418,11 +425,11 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   position:relative;overflow:hidden;text-decoration:none;
 }
 .nr-btn::before{
-  content:'';position:absolute;inset:0;background:var(--amber);
-  transform:translateX(-101%);transition:transform .4s var(--ease);z-index:0;
+  content:'';position:absolute;inset:0;background:linear-gradient(115deg,var(--amber-2),var(--amber) 65%);
+  transform:translateX(-101%);transition:transform .4s var(--ease-spring);z-index:0;
 }
 .nr-btn > *{position:relative;z-index:1}
-.nr-btn:hover{border-color:var(--amber);color:var(--bg)}
+.nr-btn:hover{border-color:var(--amber);color:var(--bg);box-shadow:0 8px 32px -12px var(--glow)}
 .nr-btn:hover::before{transform:translateX(0)}
 .nr-btn--primary{background:var(--amber);border-color:var(--amber);color:var(--bg)}
 .nr-btn--primary::before{background:var(--bg)}
@@ -473,8 +480,8 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
    amber circle scales in from 0, foreground flips to bg color */
 .nr-icon-btn--fill::before,
 .nr-hero__arrow::before{
-  content:'';position:absolute;inset:0;background:var(--amber);border-radius:50%;
-  transform:scale(0);transition:transform .3s var(--ease);
+  content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--amber-2),var(--amber) 65%);border-radius:50%;
+  transform:scale(0);transition:transform .3s var(--ease-spring);
 }
 .nr-icon-btn--fill:hover,
 .nr-hero__arrow:hover{border-color:var(--amber);color:var(--bg)}
@@ -520,7 +527,7 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-project__plate:hover::before{border-color:transparent}
 .nr-hover-frame:hover::after,
 .nr-card:hover::after,
-.nr-project__plate:hover::after{transform:scale(1);opacity:1}
+.nr-project__plate:hover::after{transform:scale(1);opacity:1;box-shadow:0 0 40px -14px var(--glow)}
 
 /* =========================================================
    Page shells
@@ -568,6 +575,20 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
     linear-gradient(180deg, rgba(11,12,16,.5) 0%, transparent 22%, transparent 55%, rgba(11,12,16,.95) 100%);
 }
 
+/* Cursor-reactive ambient spotlight — 2026 refresh signature moment.
+   JS sets --mx/--my (% within .nr-hero__frame) and toggles .is-glowing
+   on mousemove; pure opacity/position, so idle state is a no-op. */
+.nr-hero__glow{
+  position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;
+  transition:opacity .6s var(--ease);
+  background:radial-gradient(620px circle at var(--mx,50%) var(--my,42%),
+    var(--glow) 0%, rgba(198,73,31,.14) 42%, transparent 72%);
+  mix-blend-mode:screen;
+}
+.nr-hero__frame.is-glowing .nr-hero__glow{opacity:1}
+body.nr-no-glow .nr-hero__glow{display:none}
+@media (pointer:coarse), (max-width:900px){ .nr-hero__glow{display:none} }
+
 .nr-hero__meta{
   position:absolute;z-index:10;
   font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;
@@ -590,7 +611,7 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-hero__rule{width:24px;height:1px;background:var(--ink-3);display:inline-block}
 .nr-hero__title{
   position:relative;
-  font-weight:300;font-size:clamp(64px,11vw,176px);line-height:.84;letter-spacing:-.05em;color:var(--ink);
+  font-weight:300;font-size:var(--fs-display);line-height:.84;letter-spacing:-.052em;color:var(--ink);
   transition:opacity .35s var(--ease), transform .35s var(--ease);
 }
 .nr-hero__title::before{
@@ -632,7 +653,7 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   transition:width .3s var(--ease),height .3s var(--ease),background .3s var(--ease),box-shadow .3s var(--ease);
 }
 .nr-hero__thumb:hover::after{background:var(--ink);width:9px;height:9px}
-.nr-hero__thumb.is-on::after{background:var(--amber);width:11px;height:11px;box-shadow:0 0 0 6px rgba(242,160,61,.14),0 0 24px rgba(242,160,61,.5)}
+.nr-hero__thumb.is-on::after{background:linear-gradient(135deg,var(--amber-2),var(--amber));width:11px;height:11px;box-shadow:0 0 0 6px rgba(242,160,61,.14),0 0 26px var(--glow)}
 .nr-hero__thumb.is-on::before{
   content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:24px;height:24px;border:1px solid var(--amber);border-radius:50%;opacity:.5;
@@ -703,8 +724,8 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 }
 .nr-card__foot{position:absolute;left:20px;right:20px;bottom:20px;display:flex;flex-direction:column;gap:6px;pointer-events:none;z-index:4}
 .nr-card__cat{font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
-.nr-card__cat::before{content:'';width:10px;height:1px;background:var(--amber);display:inline-block;transition:width .25s var(--ease)}
-.nr-card:hover .nr-card__cat::before{width:22px}
+.nr-card__cat::before{content:'';width:10px;height:1px;background:var(--amber);display:inline-block;transition:width .25s var(--ease),background .25s var(--ease)}
+.nr-card:hover .nr-card__cat::before{width:22px;background:linear-gradient(90deg,var(--amber-2),var(--amber))}
 .nr-card__title{font-weight:600;font-size:clamp(22px,2.4vw,32px);line-height:1.05;letter-spacing:-.02em;color:var(--ink)}
 .nr-card__title.is-em{font-weight:300}
 

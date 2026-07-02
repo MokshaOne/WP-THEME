@@ -59,3 +59,8 @@ So enquiries + auto-replies arrive instead of going to spam. **Theme Settings �
 ## 7. Performance (optional, recommended)
 - Paste the snippet in **`htaccess-snippet.txt`** into your site's root `.htaccess` (gzip + far-future caching for assets/fonts). This also covers minification's goal (smaller transfer) safely.
 - Put **Cloudflare** (free) in front of the domain for edge caching / lower TTFB.
+
+## 8. 2026 Edition — visual refresh (new in 5.0)
+A design-system refresh, no new settings required to see it — the homepage now ships with a **duotone ember/amber signal** (buttons, the nav "tube light," page-wipe, portfolio-card frames, and the hero dot-nav all pick up a subtle ember→amber gradient instead of flat amber) and spring-eased motion throughout.
+- **Cursor-reactive hero glow (new in 5.0)** — **Theme Settings → § Visual effects → Cursor-reactive hero glow**. **On by default**. A soft duotone spotlight follows the pointer across the homepage hero frame — desktop + motion-on only, pure CSS opacity so it's a no-op on touch, reduced-motion, or if turned off.
+- Nothing else changes structurally: all existing opt-in effects (WebGL melt, card distortion, line-reveal, interface sound, etc.) are untouched and keep their previous defaults.

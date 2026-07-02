@@ -1,8 +1,9 @@
 /* =========================================================
    Catalogue Noir — theme stylesheet
-   raveenthiran · v5.0.0 · stoic minimal · no scroll · 2026 Edition
-   (duotone ember/amber signal, cursor-reactive hero glow,
-   spring-eased motion vocabulary)
+   raveenthiran · v5.1.0 · stoic minimal · no scroll · 2026 Edition
+   (duotone ember/amber signal, cursor-reactive hero glow, scan-line
+   sweep, text-scramble title reveal, split-flap counter, layered
+   cursor trail, spring-eased motion vocabulary)
    ========================================================= */
 
 :root{
@@ -153,9 +154,20 @@ body::before{
 body::after{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:200;
   opacity:.07;mix-blend-mode:overlay;
+  animation:nrGrainFlicker 1.1s steps(4) infinite;
   background-image:
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
     repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px);
+}
+/* film-projector flicker — tiny position jitter on the grain layer only
+   (steps() keeps it a flicker, not a smooth pan); neutralized globally
+   under prefers-reduced-motion and hidden by .nr-no-grain (::after{display:none}). */
+@keyframes nrGrainFlicker{
+  0%{background-position:0 0, 0 0}
+  25%{background-position:-2% 1%, 0 0}
+  50%{background-position:1% -2%, 0 0}
+  75%{background-position:-1% -1%, 0 0}
+  100%{background-position:0 0, 0 0}
 }
 
 .skip-link{position:absolute;left:-9999px}
@@ -394,6 +406,20 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 .nr-cur.is-on-image .nr-cur__lbl{opacity:.85;color:var(--ink)}
 @media (pointer:coarse), (max-width:900px){ .nr-cur{display:none} }
 
+/* Trailing echo ring — a second, slower-lerping ring behind the main
+   cursor dot for a more dimensional feel. Hidden while the main cursor
+   is filled (is-on-link) so the two don't visually collide. */
+.nr-cur-trail{
+  position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid var(--hair);
+  border-radius:50%;pointer-events:none;z-index:299;transform:translate(-50%,-50%);
+  opacity:.5;transition:opacity .3s var(--ease),border-color .3s var(--ease);
+}
+.nr-cur.is-on-link ~ .nr-cur-trail,
+.nr-cur.is-on-image ~ .nr-cur-trail,
+.nr-cur-trail.is-hidden{opacity:0}
+@media (pointer:coarse), (max-width:900px){ .nr-cur-trail{display:none} }
+body.nr-no-cursor .nr-cur-trail{display:none}
+
 /* =========================================================
    Utilities — eyebrow / display / btn / reg
    ========================================================= */
@@ -589,6 +615,22 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 body.nr-no-glow .nr-hero__glow{display:none}
 @media (pointer:coarse), (max-width:900px){ .nr-hero__glow{display:none} }
 
+/* Contact-sheet-scanner motif — a faint amber line drifts down the
+   frame on a slow loop. Screen-blend + low opacity keeps it a texture,
+   not a distraction; reduced-motion collapses it to a single no-op frame. */
+.nr-hero__scan{
+  position:absolute;left:0;right:0;top:-140px;height:140px;z-index:9;pointer-events:none;
+  background:linear-gradient(180deg, transparent 0%, rgba(242,160,61,.05) 44%, rgba(242,160,61,.14) 50%, rgba(242,160,61,.05) 56%, transparent 100%);
+  mix-blend-mode:screen;
+  animation:nrScan 16s linear infinite;
+}
+@keyframes nrScan{
+  0%{top:-140px}
+  100%{top:100%}
+}
+body.nr-no-scan .nr-hero__scan{display:none}
+@media (pointer:coarse), (max-width:900px){ .nr-hero__scan{display:none} }
+
 .nr-hero__meta{
   position:absolute;z-index:10;
   font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;
@@ -632,8 +674,14 @@ body.nr-no-glow .nr-hero__glow{display:none}
   position:relative;z-index:30;
   font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
 }
-.nr-hero__counter{display:flex;align-items:baseline;gap:14px;min-width:220px}
-.nr-hero__counter-n{font-weight:300;font-size:46px;color:var(--ink);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.nr-hero__counter{display:flex;align-items:baseline;gap:14px;min-width:220px;perspective:200px}
+.nr-hero__counter-n{
+  font-weight:300;font-size:46px;color:var(--ink);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;
+  display:inline-block;transform-origin:50% 50%;backface-visibility:hidden;
+  transition:transform .28s var(--ease-spring),opacity .28s var(--ease-spring);
+}
+/* split-flap flip — toggled by JS for ~90ms while the digits swap underneath */
+.nr-hero__counter-n.is-flipping{transform:rotateX(80deg) translateY(4px);opacity:.2}
 .nr-hero__counter-bar, .nr-hero__counter-fill{display:none}
 .nr-hero__counter-total{color:var(--ink-3);font-size:22px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 

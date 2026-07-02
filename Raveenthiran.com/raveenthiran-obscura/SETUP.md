@@ -60,7 +60,10 @@ So enquiries + auto-replies arrive instead of going to spam. **Theme Settings �
 - Paste the snippet in **`htaccess-snippet.txt`** into your site's root `.htaccess` (gzip + far-future caching for assets/fonts). This also covers minification's goal (smaller transfer) safely.
 - Put **Cloudflare** (free) in front of the domain for edge caching / lower TTFB.
 
-## 8. 2026 Edition — visual refresh (new in 5.0)
-A design-system refresh, no new settings required to see it — the homepage now ships with a **duotone ember/amber signal** (buttons, the nav "tube light," page-wipe, portfolio-card frames, and the hero dot-nav all pick up a subtle ember→amber gradient instead of flat amber) and spring-eased motion throughout.
+## 8. 2026 Edition — visual refresh (new in 5.0 – 5.1)
+A design-system refresh, no new settings required to see most of it — the homepage now ships with a **duotone ember/amber signal** (buttons, the nav "tube light," page-wipe, portfolio-card frames, and the hero dot-nav all pick up a subtle ember→amber gradient instead of flat amber), spring-eased motion throughout, an animated film-grain flicker, and a second slower-trailing ring on the custom cursor for more depth.
 - **Cursor-reactive hero glow (new in 5.0)** — **Theme Settings → § Visual effects → Cursor-reactive hero glow**. **On by default**. A soft duotone spotlight follows the pointer across the homepage hero frame — desktop + motion-on only, pure CSS opacity so it's a no-op on touch, reduced-motion, or if turned off.
+- **Hero scan-line sweep (new in 5.1)** — **Theme Settings → § Visual effects → Hero scan-line sweep**. **On by default**. A faint amber line drifts down the hero frame on a slow 16s loop — a contact-sheet-scanner motif. Desktop only, very subtle (screen-blend), honors reduced-motion.
+- **Text-scramble title reveal (new in 5.1)** — the hero headline now decodes in from random glyphs (on first load and on every slide change) instead of just appearing. Always on when motion is allowed; instant under reduced-motion. No setting — it's core to the hero, like the existing Ken Burns.
+- **Split-flap plate counter (new in 5.1)** — the big "01 / 06" plate counter now does a brief odometer-style flip when the slide changes, instead of snapping straight to the new number.
 - Nothing else changes structurally: all existing opt-in effects (WebGL melt, card distortion, line-reveal, interface sound, etc.) are untouched and keep their previous defaults.

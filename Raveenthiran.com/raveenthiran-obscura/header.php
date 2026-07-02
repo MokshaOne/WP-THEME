@@ -63,6 +63,7 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 
 <?php /* ── custom cursor (desktop only) ─────────────────────── */ ?>
 <div class="nr-cur" aria-hidden="true"><span class="nr-cur__lbl">view</span></div>
+<div class="nr-cur-trail" aria-hidden="true"></div>
 
 <?php /* ── top bar ───────────────────────────────────────────── */ ?>
 <header class="nr-topbar" role="banner">

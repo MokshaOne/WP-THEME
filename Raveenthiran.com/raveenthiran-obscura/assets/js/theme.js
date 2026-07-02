@@ -30,16 +30,22 @@
 
   /* ---------- custom cursor ---------- */
   const cur = $('.nr-cur');
+  const curTrail = $('.nr-cur-trail');
   const curLbl = cur && cur.querySelector('.nr-cur__lbl');
   if (cur && window.matchMedia('(hover:hover)').matches) {
     // Smooth (lerp) follow instead of snapping to the pointer.
     let mx = window.innerWidth / 2, my = window.innerHeight / 2, cx = mx, cy = my;
+    let tx = mx, ty = my; // trailing ring — slower lerp, drawn behind the main dot
     window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
-    document.addEventListener('mouseenter', () => cur.style.opacity = '1');
-    document.addEventListener('mouseleave', () => cur.style.opacity = '0');
+    document.addEventListener('mouseenter', () => { cur.style.opacity = '1'; if (curTrail) curTrail.classList.remove('is-hidden'); });
+    document.addEventListener('mouseleave', () => { cur.style.opacity = '0'; if (curTrail) curTrail.classList.add('is-hidden'); });
     (function follow() {
       cx += (mx - cx) * 0.18; cy += (my - cy) * 0.18;
       cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+      if (curTrail) {
+        tx += (mx - tx) * 0.08; ty += (my - ty) * 0.08;
+        curTrail.style.transform = `translate(${tx}px, ${ty}px) translate(-50%, -50%)`;
+      }
       requestAnimationFrame(follow);
     })();
 
@@ -216,16 +222,45 @@
 
     let cur = 0, locked = false;
     const N = slides.length || plates.length || 1;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* text-scramble decode reveal — each word resolves out of random
+       glyphs instead of just appearing. Pure textContent writes, no
+       layout shift (span keeps the same character count throughout). */
+    const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#·/—';
+    function scrambleWord(span, real, delay) {
+      if (reduceMotion) { span.textContent = real; return; }
+      const len = real.length;
+      const settleAt = Math.ceil(len * 0.6) + 4; // frame index each char is "locked in" by
+      let frame = 0;
+      setTimeout(function step() {
+        let out = '';
+        for (let c = 0; c < len; c++) {
+          out += (real[c] === ' ' || frame >= settleAt + c) ? real[c]
+            : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        }
+        span.textContent = out;
+        frame++;
+        if (frame <= settleAt + len) setTimeout(step, 26); else span.textContent = real;
+      }, delay);
+    }
 
     function renderTitle(i) {
       if (!titleEl || !slides[i]) return;
       const parts = (slides[i].title || '').split(' ');
       titleEl.innerHTML = parts.map((p, k) => {
         const em = k % 2 === 1 ? ' is-em' : '';
-        return `<span class="nr-hero__word${em}">${escapeHtml(p)}</span>`;
+        return `<span class="nr-hero__word${em}"></span>`;
       }).join(' ');
+      $$('.nr-hero__word', titleEl).forEach((span, k) => scrambleWord(span, parts[k], k * 70));
     }
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    // Scramble-in the server-rendered first title on initial page load —
+    // the opening "wow" moment. Skipped entirely under reduced-motion.
+    $$('.nr-hero__word', hero).forEach((span, k) => {
+      scrambleWord(span, span.textContent, 260 + k * 70);
+    });
 
     function go(i) {
       if (locked) return;
@@ -246,6 +281,10 @@
         titleEl.style.transform = 'translateY(8px)';
       }
 
+      // split-flap flip on the big plate counter — rotate away just
+      // ahead of the digit swap, then settle back with the new number.
+      if (bigEl) setTimeout(() => bigEl.classList.add('is-flipping'), 230);
+
       setTimeout(() => {
         const s = slides[i] || {};
         renderTitle(i);
@@ -255,7 +294,10 @@
         if (yearEl && s.yr)     yearEl.textContent = s.yr;
         if (linkEl && s.url)    linkEl.setAttribute('href', s.url);
         if (currEl)             currEl.textContent = String(i + 1).padStart(2, '0');
-        if (bigEl)              bigEl.textContent  = String(i + 1).padStart(2, '0');
+        if (bigEl) {
+          bigEl.textContent = String(i + 1).padStart(2, '0');
+          requestAnimationFrame(() => requestAnimationFrame(() => bigEl.classList.remove('is-flipping')));
+        }
         if (fillEl)             fillEl.style.width = (((i + 1) / N) * 100) + '%';
         thumbs.forEach((t, k) => {
           t.classList.toggle('is-on', k === i);

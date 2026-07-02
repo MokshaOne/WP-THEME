@@ -123,6 +123,7 @@ function nr_settings_defaults() {
 		'nr_fx_ken'          => '1',
 		'nr_fx_anchors'      => '1',
 		'nr_fx_glow'         => '1',
+		'nr_fx_scan'         => '1',
 		'nr_fx_webgl'        => '0',
 		'nr_fx_viewtrans'    => '0',
 		'nr_fx_distort'      => '0',
@@ -709,6 +710,9 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Cursor-reactive hero glow', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_glow', __( 'A soft duotone spotlight that follows the cursor across the homepage hero (2026 refresh)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'On by default. Desktop + motion-on only; pure CSS/opacity, no layout impact when off or unsupported.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Hero scan-line sweep', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_scan', __( 'A faint amber scan-line drifts down the hero frame on a slow loop (contact-sheet-scanner motif, 2026 refresh)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'On by default. Desktop only, very subtle (screen-blend, low opacity); honors reduced-motion.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'WebGL hero transitions', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_webgl', __( 'Shader-based displacement dissolve between hero slides (desktop, motion-on)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Adds a lightweight WebGL canvas over the homepage hero for a premium "melt" transition. Falls back to the normal crossfade on older devices, reduced-motion, or if WebGL is unavailable — so it is always safe to leave on.', 'raveenthiran' ); ?></p></td></tr>
@@ -844,6 +848,7 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_ken',     '1' ) !== '1' ) $classes[] = 'nr-no-ken';
 	if ( get_option( 'nr_fx_anchors', '1' ) !== '1' ) $classes[] = 'nr-no-anchors';
 	if ( get_option( 'nr_fx_glow',    '1' ) !== '1' ) $classes[] = 'nr-no-glow';
+	if ( get_option( 'nr_fx_scan',    '1' ) !== '1' ) $classes[] = 'nr-no-scan';
 	if ( get_option( 'nr_fx_webgl',   '0' ) === '1' ) $classes[] = 'nr-has-webgl';
 	if ( get_option( 'nr_fx_distort', '0' ) === '1' ) $classes[] = 'nr-has-distort';
 	if ( get_option( 'nr_fx_lines',   '0' ) === '1' ) $classes[] = 'nr-has-lines';

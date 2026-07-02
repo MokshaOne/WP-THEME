@@ -49,6 +49,9 @@ function sl_settings_defaults() {
 		'sl_turnstile_site'   => '',
 		'sl_turnstile_secret' => '',
 
+		/* Content — Obscura bridge: auto | 1 (force Obscura) | 0 (force Silence) */
+		'sl_bridge'         => 'auto',
+
 		/* Motion — string "1"|"0", opt-out */
 		'sl_hero_interval'  => '7',
 		'sl_fx_fade'        => '1', // chrome falls silent after idle
@@ -190,6 +193,24 @@ function sl_settings_page() {
 				<tr><th><?php esc_html_e( 'Turnstile site key', 'raveenthiran-silence' ); ?></th><td><?php sl_setting_field( 'sl_turnstile_site' ); ?></td></tr>
 				<tr><th><?php esc_html_e( 'Turnstile secret key', 'raveenthiran-silence' ); ?></th><td><?php sl_setting_field( 'sl_turnstile_secret' ); ?>
 					<p class="description"><?php esc_html_e( 'Create a widget at Cloudflare → Turnstile. Leave blank to keep honeypot + rate-limit only.', 'raveenthiran-silence' ); ?></p></td></tr>
+			</table>
+
+			<h2><?php esc_html_e( '§ Content', 'raveenthiran-silence' ); ?></h2>
+			<table class="form-table" role="presentation">
+				<tr><th><?php esc_html_e( 'Obscura content', 'raveenthiran-silence' ); ?></th>
+					<td>
+						<?php $bridge = sl_opt( 'sl_bridge', 'auto' ); ?>
+						<select name="sl_bridge">
+							<option value="auto" <?php selected( $bridge, 'auto' ); ?>><?php esc_html_e( 'Auto — use Obscura projects/journal if they exist and no Silence ones do (recommended)', 'raveenthiran-silence' ); ?></option>
+							<option value="1"    <?php selected( $bridge, '1' ); ?>><?php esc_html_e( 'Always read Obscura content', 'raveenthiran-silence' ); ?></option>
+							<option value="0"    <?php selected( $bridge, '0' ); ?>><?php esc_html_e( 'Always use Silence content only', 'raveenthiran-silence' ); ?></option>
+						</select>
+						<p class="description">
+							<?php echo function_exists( 'sl_bridge_active' ) && sl_bridge_active()
+								? esc_html__( 'Bridge is ACTIVE — Silence is showing your existing Obscura projects, journal, galleries, and fields. Nothing is converted; switching back to Obscura leaves everything untouched.', 'raveenthiran-silence' )
+								: esc_html__( 'Bridge is inactive — Silence is using its own sl_ content. After changing this, visit Settings → Permalinks → Save once.', 'raveenthiran-silence' ); ?>
+						</p>
+					</td></tr>
 			</table>
 
 			<h2><?php esc_html_e( '§ Motion', 'raveenthiran-silence' ); ?></h2>

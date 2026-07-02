@@ -7,13 +7,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'add_meta_boxes', function () {
-	add_meta_box( 'sl_gallery', __( 'Gallery — plates', 'raveenthiran-silence' ), 'sl_gallery_box', 'sl_project', 'normal', 'high' );
-	add_meta_box( 'sl_details', __( 'Project details', 'raveenthiran-silence' ), 'sl_details_box', 'sl_project', 'side' );
+	add_meta_box( 'sl_gallery', __( 'Gallery — plates', 'raveenthiran-silence' ), 'sl_gallery_box', sl_pt(), 'normal', 'high' );
+	add_meta_box( 'sl_details', __( 'Project details', 'raveenthiran-silence' ), 'sl_details_box', sl_pt(), 'side' );
 } );
 
 function sl_gallery_box( $post ) {
 	wp_nonce_field( 'sl_meta_save', 'sl_meta_nonce' );
 	$ids = array_filter( array_map( 'absint', (array) get_post_meta( $post->ID, '_sl_gallery', true ) ) );
+	if ( ! $ids ) $ids = array_filter( array_map( 'absint', (array) get_post_meta( $post->ID, 'project_gallery', true ) ) ); // Obscura bridge
 	echo '<div id="sl-gallery-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">';
 	foreach ( $ids as $id ) {
 		$src = wp_get_attachment_image_url( $id, 'thumbnail' );
@@ -36,17 +37,22 @@ function sl_details_box( $post ) {
 		'_sl_year'     => __( 'Year', 'raveenthiran-silence' ),
 		'_sl_location' => __( 'Location', 'raveenthiran-silence' ),
 	];
+	$nr_map = [ '_sl_client' => 'project_client', '_sl_year' => 'project_year', '_sl_location' => 'project_location' ];
 	foreach ( $fields as $key => $label ) {
+		$v = get_post_meta( $post->ID, $key, true );
+		if ( $v === '' ) $v = get_post_meta( $post->ID, $nr_map[ $key ], true ); // Obscura bridge
 		printf(
 			'<p><label style="display:block;margin-bottom:2px"><strong>%s</strong></label><input type="text" class="widefat" name="%s" value="%s"></p>',
-			esc_html( $label ), esc_attr( ltrim( $key, '_' ) ), esc_attr( get_post_meta( $post->ID, $key, true ) )
+			esc_html( $label ), esc_attr( ltrim( $key, '_' ) ), esc_attr( $v )
 		);
 	}
-	echo '<p><label><input type="checkbox" name="sl_featured" value="1" ' . checked( get_post_meta( $post->ID, '_sl_featured', true ), '1', false ) . '> '
+	$feat = get_post_meta( $post->ID, '_sl_featured', true );
+	if ( $feat === '' ) $feat = get_post_meta( $post->ID, 'featured_on_homepage', true ); // Obscura bridge
+	echo '<p><label><input type="checkbox" name="sl_featured" value="1" ' . checked( $feat, '1', false ) . '> '
 		. esc_html__( 'Featured on homepage', 'raveenthiran-silence' ) . '</label></p>';
 }
 
-add_action( 'save_post_sl_project', function ( $post_id ) {
+$sl_save_meta = function ( $post_id ) {
 	if ( ! isset( $_POST['sl_meta_nonce'] ) || ! wp_verify_nonce( $_POST['sl_meta_nonce'], 'sl_meta_save' ) ) return;
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
@@ -58,18 +64,24 @@ add_action( 'save_post_sl_project', function ( $post_id ) {
 		update_post_meta( $post_id, $meta_key, sanitize_text_field( wp_unslash( $_POST[ $post_key ] ?? '' ) ) );
 	}
 	update_post_meta( $post_id, '_sl_featured', isset( $_POST['sl_featured'] ) ? '1' : '0' );
-} );
+	if ( function_exists( 'sl_bridge_active' ) && sl_bridge_active() ) {
+		// keep Obscura's flag in sync so the bridged homepage query works
+		update_post_meta( $post_id, 'featured_on_homepage', isset( $_POST['sl_featured'] ) ? '1' : '0' );
+	}
+};
+add_action( 'save_post_sl_project', $sl_save_meta );
+add_action( 'save_post_nr_project', $sl_save_meta );
 
 // wp.media picker for the gallery box (project edit screen only).
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
 	if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) return;
-	if ( get_current_screen()->post_type !== 'sl_project' ) return;
+	if ( get_current_screen()->post_type !== sl_pt() ) return;
 	wp_enqueue_media();
 } );
 
 add_action( 'admin_footer', function () {
 	$screen = get_current_screen();
-	if ( ! $screen || $screen->post_type !== 'sl_project' || $screen->base !== 'post' ) return;
+	if ( ! $screen || $screen->post_type !== sl_pt() || $screen->base !== 'post' ) return;
 	?>
 	<script>
 	(function(){
@@ -105,7 +117,7 @@ add_action( 'admin_footer', function () {
 		});
 
 		addBtn.addEventListener('click', function(){
-			var frame = wp.media({ title: '<?php echo esc_js( __( 'Project gallery', 'raveenthiran-silence' ) ); ?>', multiple: 'add', library: { type: 'image' } });
+			var frame = wp.media({ title: '<?php echo esc_js( __( 'Project gallery', 'raveenthiran-silence' ) ); ?>', multiple: 'add', library: { type: ['image','video'] } });
 			frame.on('open', function(){
 				var sel = frame.state().get('selection');
 				input.value.split(',').filter(Boolean).forEach(function(id){
@@ -115,7 +127,9 @@ add_action( 'admin_footer', function () {
 			frame.on('select', function(){
 				render(frame.state().get('selection').map(function(att){
 					var d = att.toJSON();
-					return { id: d.id, src: (d.sizes && d.sizes.thumbnail ? d.sizes.thumbnail.url : d.url) };
+					var src = d.sizes && d.sizes.thumbnail ? d.sizes.thumbnail.url
+						: (d.image && d.image.src ? d.image.src : (d.icon || d.url)); // videos: poster frame or dashicon
+					return { id: d.id, src: src };
 				}));
 			});
 			frame.open();

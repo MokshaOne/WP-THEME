@@ -31,7 +31,12 @@ A monochrome, single-screen portfolio. Install via **Appearance → Themes → A
 - **PWA** — installable/offline shell (set a Site Icon in the Customizer for a proper icon).
 - **SMTP + Turnstile** — see § Mail / § Security above.
 
-## 5. Notes
+## 5. Your existing Obscura content — automatic (new in 1.1)
+If the site already has Obscura projects/journal, **Silence shows them automatically** the moment you activate it — titles, featured images, galleries (incl. video plates), client/year/location fields, categories, and the "featured on homepage" flag are all read directly from Obscura's data. Nothing is converted or touched in the database: switch back to Obscura anytime and everything is exactly as it was.
+- Mode lives under **Appearance → Silence → § Content** (Auto / always Obscura / always Silence). After changing it: **Settings → Permalinks → Save once**.
+- Your projects appear at Silence's `/work` URLs; editing a bridged project uses Silence's own gallery/details boxes (values pre-filled from the Obscura fields).
+
+## 6. Notes
 - The design is **monochrome by intent** — no accent color anywhere on the site. The only place a color appears is the generated share card (configurable in § Identity).
 - Desktop is a fixed single screen (the Work index and reading pages scroll quietly inside it); ≤900px falls back to normal scrolling.
 - ACF is **not required** (native meta boxes); if ACF Pro is active it simply takes precedence over the bundled polyfill.

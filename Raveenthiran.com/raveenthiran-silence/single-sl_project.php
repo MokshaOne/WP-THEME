@@ -12,7 +12,7 @@ while ( have_posts() ) : the_post();
 	$total  = max( 1, count( $plates ) );
 
 	// prev / next within the collection (menu_order flow, matches the Index)
-	$all  = get_posts( [ 'post_type' => 'sl_project', 'posts_per_page' => -1, 'fields' => 'ids', 'orderby' => [ 'menu_order' => 'ASC', 'date' => 'DESC' ] ] );
+	$all  = get_posts( [ 'post_type' => sl_pt(), 'posts_per_page' => -1, 'fields' => 'ids', 'orderby' => [ 'menu_order' => 'ASC', 'date' => 'DESC' ] ] );
 	$pos  = array_search( get_the_ID(), $all, true );
 	$prev = ( $pos !== false && $pos > 0 ) ? $all[ $pos - 1 ] : null;
 	$next = ( $pos !== false && $pos < count( $all ) - 1 ) ? $all[ $pos + 1 ] : null;
@@ -22,11 +22,21 @@ while ( have_posts() ) : the_post();
 	<div class="sl-rail" data-rail tabindex="0" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
 		<?php if ( $plates ) : foreach ( $plates as $i => $id ) : ?>
 			<figure class="sl-rail__plate" data-plate-n="<?php echo (int) ( $i + 1 ); ?>">
-				<?php echo wp_get_attachment_image( $id, 'sl-plate', false, [
-					'loading'  => $i < 2 ? 'eager' : 'lazy',
-					'decoding' => 'async',
-					'sizes'    => '(max-width:900px) 96vw, 80vh',
-				] ); ?>
+				<?php if ( wp_attachment_is( 'video', $id ) ) :
+					// video plates (Obscura galleries support these) — muted loop, poster from its featured image
+					$poster = get_the_post_thumbnail_url( $id, 'sl-plate' );
+					printf(
+						'<video src="%s"%s muted loop autoplay playsinline preload="metadata"></video>',
+						esc_url( wp_get_attachment_url( $id ) ),
+						$poster ? ' poster="' . esc_url( $poster ) . '"' : ''
+					);
+				else :
+					echo wp_get_attachment_image( $id, 'sl-plate', false, [
+						'loading'  => $i < 2 ? 'eager' : 'lazy',
+						'decoding' => 'async',
+						'sizes'    => '(max-width:900px) 96vw, 80vh',
+					] );
+				endif; ?>
 				<?php $cap = wp_get_attachment_caption( $id ); if ( $cap ) : ?>
 					<figcaption><?php echo esc_html( $cap ); ?></figcaption>
 				<?php endif; ?>
@@ -57,7 +67,7 @@ while ( have_posts() ) : the_post();
 
 	<footer class="sl-project__foot sl-ui">
 		<div class="sl-project__id">
-			<a class="sl-project__back" href="<?php echo esc_url( get_post_type_archive_link( 'sl_project' ) ); ?>">← <?php esc_html_e( 'Index', 'raveenthiran-silence' ); ?></a>
+			<a class="sl-project__back" href="<?php echo esc_url( get_post_type_archive_link( sl_pt() ) ); ?>">← <?php esc_html_e( 'Index', 'raveenthiran-silence' ); ?></a>
 			<h1 class="sl-project__title"><?php the_title(); ?></h1>
 			<span class="sl-project__meta"><?php echo esc_html( trim( implode( ' · ', array_filter( [ $m['cat'], $m['client'], $m['yr'], $m['loc'] ] ) ), ' ·' ) ); ?></span>
 		</div>

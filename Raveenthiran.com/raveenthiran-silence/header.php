@@ -32,8 +32,8 @@ $sl_avail   = sl_opt( 'sl_availability', '' );
 			wp_nav_menu( [ 'theme_location' => 'primary', 'container' => false, 'items_wrap' => '%3$s', 'depth' => 1, 'fallback_cb' => false ] );
 		} else {
 			$items = [
-				[ __( 'Work', 'raveenthiran-silence' ),    get_post_type_archive_link( 'sl_project' ) ?: home_url( '/work' ),    is_post_type_archive( 'sl_project' ) || is_singular( 'sl_project' ) ],
-				[ __( 'Journal', 'raveenthiran-silence' ), get_post_type_archive_link( 'sl_journal' ) ?: home_url( '/journal' ), is_post_type_archive( 'sl_journal' ) || is_singular( 'sl_journal' ) ],
+				[ __( 'Work', 'raveenthiran-silence' ),    get_post_type_archive_link( sl_pt() ) ?: home_url( '/work' ),    is_post_type_archive( sl_pt() ) || is_singular( sl_pt() ) ],
+				[ __( 'Journal', 'raveenthiran-silence' ), get_post_type_archive_link( sl_jt() ) ?: home_url( '/journal' ), is_post_type_archive( sl_jt() ) || is_singular( sl_jt() ) ],
 				[ __( 'About', 'raveenthiran-silence' ),   sl_template_page_url( 'page-about.php', 'about' ),                    is_page_template( 'page-about.php' ) ],
 				[ __( 'Enquire', 'raveenthiran-silence' ), sl_template_page_url( 'page-enquire.php', 'enquire' ),                is_page_template( 'page-enquire.php' ) ],
 			];

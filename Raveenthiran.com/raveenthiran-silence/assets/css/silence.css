@@ -213,7 +213,8 @@ body.sl-no-drift .sl-plate img{animation:none !important}
 }
 .sl-rail::-webkit-scrollbar{display:none}
 .sl-rail__plate{flex:0 0 auto;scroll-snap-align:center;max-width:88vw}
-.sl-rail__plate img{
+.sl-rail__plate img,
+.sl-rail__plate video{
   max-height:74vh;max-width:88vw;width:auto;height:auto;
   object-fit:contain;
 }
@@ -344,7 +345,7 @@ picture{display:contents}
     overflow:visible;padding:12px var(--pad) 24px;scroll-snap-type:none;
   }
   .sl-rail__plate{max-width:100%}
-  .sl-rail__plate img{max-height:none;max-width:100%}
+  .sl-rail__plate img,.sl-rail__plate video{max-height:none;max-width:100%}
   .sl-rail__end{min-width:0;max-width:100%;padding:0}
   .sl-project__foot{position:relative;padding:16px var(--pad) 80px}
 

@@ -101,7 +101,7 @@ function sl_schema_markup_extended_render() {
     }
 
     // VisualArtwork auf einzelnen Projekten
-    if ( is_singular( 'sl_project' ) && $post ) {
+    if ( is_singular( sl_pt() ) && $post ) {
         $cover   = get_post_thumbnail_id( $post->ID );
         $gallery = function_exists( 'sl_project_gallery' ) ? sl_project_gallery( $post->ID ) : [];
         $images  = [];
@@ -201,7 +201,7 @@ function sl_serve_sitemap() {
     $urls = array_merge( $urls, $static );
 
     // Projekte
-    $projects = get_posts( [ 'post_type' => 'sl_project', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+    $projects = get_posts( [ 'post_type' => sl_pt(), 'posts_per_page' => -1, 'fields' => 'ids' ] );
     foreach ( $projects as $id ) {
         $imgs = [];
         if ( has_post_thumbnail( $id ) ) {
@@ -291,7 +291,7 @@ function sl_social_meta() {
 	if ( ! $image ) {
 		// Fallback to first featured project's hero, or site icon
 		$q = new WP_Query( [
-			'post_type'      => 'sl_project',
+			'post_type'      => sl_pt(),
 			'posts_per_page' => 1,
 			'meta_key'       => 'featured_on_homepage',
 			'meta_value'     => '1',
@@ -307,7 +307,7 @@ function sl_social_meta() {
 	}
 
 	$locale = get_locale() ?: 'en_US';
-	$type   = is_singular( 'sl_project' ) ? 'article' : ( is_singular() ? 'article' : 'website' );
+	$type   = is_singular( sl_pt() ) ? 'article' : ( is_singular() ? 'article' : 'website' );
 
 	echo "\n<!-- sl social meta -->\n";
 	printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $canonical ) );
@@ -323,7 +323,7 @@ function sl_social_meta() {
 	printf( '<meta property="og:locale" content="%s">' . "\n", esc_attr( $locale ) );
 	// #69 — prefer a composited 1200x630 share card for single projects.
 	$og_w = 2400; $og_h = 1600;
-	if ( is_singular( 'sl_project' ) && function_exists( 'sl_og_card_url' ) ) {
+	if ( is_singular( sl_pt() ) && function_exists( 'sl_og_card_url' ) ) {
 		$card = sl_og_card_url( get_queried_object_id() );
 		if ( $card ) { $image = $card; $og_w = 1200; $og_h = 630; }
 	}
@@ -363,12 +363,12 @@ function sl_breadcrumb_schema() {
 	$home  = home_url( '/' );
 	$items[] = [ 'name' => __( 'Home', 'raveenthiran-silence' ), 'item' => $home ];
 
-	if ( is_singular( 'sl_project' ) ) {
-		$archive = get_post_type_archive_link( 'sl_project' );
+	if ( is_singular( sl_pt() ) ) {
+		$archive = get_post_type_archive_link( sl_pt() );
 		if ( $archive ) $items[] = [ 'name' => __( 'Work', 'raveenthiran-silence' ), 'item' => $archive ];
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
-	} elseif ( is_post_type_archive( 'sl_project' ) ) {
-		$items[] = [ 'name' => __( 'Work', 'raveenthiran-silence' ), 'item' => get_post_type_archive_link( 'sl_project' ) ];
+	} elseif ( is_post_type_archive( sl_pt() ) ) {
+		$items[] = [ 'name' => __( 'Work', 'raveenthiran-silence' ), 'item' => get_post_type_archive_link( sl_pt() ) ];
 	} elseif ( is_page() ) {
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
 	} else {

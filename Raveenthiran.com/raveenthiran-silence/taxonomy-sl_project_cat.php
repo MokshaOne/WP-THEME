@@ -7,7 +7,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 
-$terms = get_terms( [ 'taxonomy' => 'sl_project_cat', 'hide_empty' => true ] );
+$terms = get_terms( [ 'taxonomy' => sl_tax(), 'hide_empty' => true ] );
 $count = 0;
 ?>
 
@@ -32,7 +32,7 @@ $count = 0;
 			<?php if ( have_posts() ) : while ( have_posts() ) : the_post();
 				$count++;
 				$m     = sl_project_meta();
-				$cats  = get_the_terms( get_the_ID(), 'sl_project_cat' );
+				$cats  = get_the_terms( get_the_ID(), sl_tax() );
 				$slugs = ( $cats && ! is_wp_error( $cats ) ) ? implode( ' ', wp_list_pluck( $cats, 'slug' ) ) : '';
 				$img   = get_the_post_thumbnail_url( get_the_ID(), 'sl-index' );
 				$n     = count( sl_project_gallery( get_the_ID() ) );

@@ -33,7 +33,7 @@ add_action( 'template_redirect', function () {
 
 function sl_og_serve( $post_id ) {
 	$post = get_post( $post_id );
-	if ( ! $post || $post->post_type !== 'sl_project' || ! has_post_thumbnail( $post_id ) ) {
+	if ( ! $post || $post->post_type !== sl_pt() || ! has_post_thumbnail( $post_id ) ) {
 		status_header( 404 ); exit;
 	}
 
@@ -94,7 +94,7 @@ function sl_og_render( $post_id, $src_path ) {
 	$pad = 64;
 	if ( $has_ttf ) {
 		$cat  = '';
-		$terms = wp_get_post_terms( $post_id, 'sl_project_cat', [ 'fields' => 'names' ] );
+		$terms = wp_get_post_terms( $post_id, sl_tax(), [ 'fields' => 'names' ] );
 		if ( ! is_wp_error( $terms ) && $terms ) $cat = $terms[0];
 		$yr   = get_post_meta( $post_id, 'project_year', true ) ?: get_the_date( 'Y', $post_id );
 		$eyebrow = strtoupper( trim( $cat . ( $cat && $yr ? '   ·   ' : '' ) . $yr ) );

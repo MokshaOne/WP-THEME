@@ -5,7 +5,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SL_THEME_VERSION', '1.0.0' );
+define( 'SL_THEME_VERSION', '1.1.0' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults
@@ -59,6 +59,7 @@ add_filter( 'style_loader_tag', function ( $tag, $handle ) {
    ============================================================= */
 $includes = [
 	'inc/acf-polyfill.php',  // get_field() etc. keep working without ACF
+	'inc/obscura-bridge.php',// read existing Obscura content, non-destructively
 	'inc/post-types.php',    // sl_project / sl_journal / sl_enquiry CPTs
 	'inc/gallery-meta.php',  // native gallery + project-details meta boxes
 	'inc/settings.php',      // Appearance → Silence
@@ -82,11 +83,16 @@ foreach ( $includes as $inc ) {
 /** Meta bundle for a project (client / year / location / category). */
 function sl_project_meta( $post_id = 0 ) {
 	$post_id = $post_id ?: get_the_ID();
-	$cats    = get_the_terms( $post_id, 'sl_project_cat' );
+	$cats    = get_the_terms( $post_id, sl_tax() );
+	// _sl_* first; fall back to Obscura's field keys (bridge / migrated sites)
+	$read = function ( $sl, $nr ) use ( $post_id ) {
+		$v = (string) get_post_meta( $post_id, $sl, true );
+		return $v !== '' ? $v : (string) get_post_meta( $post_id, $nr, true );
+	};
 	return [
-		'client' => (string) get_post_meta( $post_id, '_sl_client', true ),
-		'yr'     => (string) get_post_meta( $post_id, '_sl_year', true ),
-		'loc'    => (string) get_post_meta( $post_id, '_sl_location', true ),
+		'client' => $read( '_sl_client',   'project_client' ),
+		'yr'     => $read( '_sl_year',     'project_year' ),
+		'loc'    => $read( '_sl_location', 'project_location' ),
 		'cat'    => ( $cats && ! is_wp_error( $cats ) ) ? $cats[0]->name : '',
 	];
 }
@@ -95,6 +101,9 @@ function sl_project_meta( $post_id = 0 ) {
 function sl_project_gallery( $post_id = 0 ) {
 	$post_id = $post_id ?: get_the_ID();
 	$ids     = array_filter( array_map( 'absint', (array) get_post_meta( $post_id, '_sl_gallery', true ) ) );
+	if ( ! $ids ) { // Obscura stored its gallery (ID array) under project_gallery
+		$ids = array_filter( array_map( 'absint', (array) get_post_meta( $post_id, 'project_gallery', true ) ) );
+	}
 	$thumb   = (int) get_post_thumbnail_id( $post_id );
 	if ( $thumb && ! in_array( $thumb, $ids, true ) ) array_unshift( $ids, $thumb );
 	return array_values( $ids );

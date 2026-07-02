@@ -6,9 +6,9 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Preload the LCP plate (first featured project, WebP-aware).
-$sl_lcp = new WP_Query( [ 'post_type' => 'sl_project', 'posts_per_page' => 1, 'meta_key' => '_sl_featured', 'meta_value' => '1', 'fields' => 'ids', 'no_found_rows' => true ] );
+$sl_lcp = new WP_Query( [ 'post_type' => sl_pt(), 'posts_per_page' => 1, 'meta_key' => sl_featured_key(), 'meta_value' => '1', 'fields' => 'ids', 'no_found_rows' => true ] );
 if ( ! $sl_lcp->have_posts() ) {
-	$sl_lcp = new WP_Query( [ 'post_type' => 'sl_project', 'posts_per_page' => 1, 'fields' => 'ids', 'no_found_rows' => true ] );
+	$sl_lcp = new WP_Query( [ 'post_type' => sl_pt(), 'posts_per_page' => 1, 'fields' => 'ids', 'no_found_rows' => true ] );
 }
 $sl_lcp_id = $sl_lcp->have_posts() ? (int) get_post_thumbnail_id( $sl_lcp->posts[0] ) : 0;
 wp_reset_postdata();
@@ -36,14 +36,14 @@ if ( $sl_lcp_id ) {
 get_header();
 
 $q = new WP_Query( [
-	'post_type'      => 'sl_project',
+	'post_type'      => sl_pt(),
 	'posts_per_page' => 8,
-	'meta_key'       => '_sl_featured',
+	'meta_key'       => sl_featured_key(),
 	'meta_value'     => '1',
 	'orderby'        => [ 'menu_order' => 'ASC', 'date' => 'DESC' ],
 ] );
 if ( ! $q->have_posts() ) {
-	$q = new WP_Query( [ 'post_type' => 'sl_project', 'posts_per_page' => 8, 'orderby' => [ 'menu_order' => 'ASC', 'date' => 'DESC' ] ] );
+	$q = new WP_Query( [ 'post_type' => sl_pt(), 'posts_per_page' => 8, 'orderby' => [ 'menu_order' => 'ASC', 'date' => 'DESC' ] ] );
 }
 
 $slides = [];

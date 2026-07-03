@@ -36,4 +36,60 @@ add_action( 'acf/init', function () {
 			  'instructions' => 'Show this project in the fullscreen hero slideshow on the home page.' ],
 		],
 	] );
+
+	/* Pricing & Quote — identical keys to Obscura, so the calculator
+	   config is shared between the two themes. Targets the same
+	   "Pricing & Quote" options page inc/quote.php registers. */
+	acf_add_local_field_group( [
+		'key'      => 'group_quote_config',
+		'title'    => 'Quote Generator Configuration',
+		'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
+		'fields'   => [
+			[
+				'key' => 'field_quote_base_prices', 'label' => 'Base Prices by Shooting Type', 'name' => 'quote_base_prices',
+				'type' => 'repeater', 'layout' => 'table',
+				'sub_fields' => [
+					[ 'key' => 'field_qbp_type',  'label' => 'Type',       'name' => 'type',       'type' => 'text' ],
+					[ 'key' => 'field_qbp_price', 'label' => 'Price (€)',  'name' => 'base_price', 'type' => 'number' ],
+					[ 'key' => 'field_qbp_hours', 'label' => 'Hours',      'name' => 'hours',      'type' => 'number' ],
+				],
+			],
+			[
+				'key' => 'field_quote_extras', 'label' => 'Extras', 'name' => 'quote_extras',
+				'type' => 'repeater', 'layout' => 'table',
+				'sub_fields' => [
+					[ 'key' => 'field_qe_label', 'label' => 'Name',       'name' => 'label', 'type' => 'text' ],
+					[ 'key' => 'field_qe_price', 'label' => 'Add-on (€)', 'name' => 'price', 'type' => 'number' ],
+				],
+			],
+			[ 'key' => 'field_quote_travel_per_km', 'label' => 'Travel cost per km (€)', 'name' => 'travel_per_km', 'type' => 'number', 'default_value' => 0.42 ],
+		],
+	] );
+
+	acf_add_local_field_group( [
+		'key'      => 'group_license_config',
+		'title'    => 'License Calculator',
+		'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
+		'fields'   => [
+			[ 'key' => 'field_lic_base', 'label' => 'Base License Price (€)', 'name' => 'license_base_price', 'type' => 'number', 'default_value' => 150 ],
+		],
+	] );
+
+	/* FAQ — question/answer repeater on the Enquire page (same field
+	   name quote.php reads: faq_items). */
+	acf_add_local_field_group( [
+		'key'      => 'group_faq_items',
+		'title'    => 'FAQ',
+		'location' => [ [ [ 'param' => 'page_template', 'operator' => '==', 'value' => 'page-enquire.php' ] ] ],
+		'fields'   => [
+			[
+				'key' => 'field_faq_items', 'label' => 'Questions', 'name' => 'faq_items',
+				'type' => 'repeater', 'layout' => 'block',
+				'sub_fields' => [
+					[ 'key' => 'field_faq_q', 'label' => 'Question', 'name' => 'question', 'type' => 'text' ],
+					[ 'key' => 'field_faq_a', 'label' => 'Answer',   'name' => 'answer',   'type' => 'textarea', 'rows' => 3 ],
+				],
+			],
+		],
+	] );
 } );

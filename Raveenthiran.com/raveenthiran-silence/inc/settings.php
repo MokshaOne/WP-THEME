@@ -16,6 +16,14 @@ function nr_settings_defaults() {
 		'nr_location'       => 'Wien',
 		'nr_avail_text'     => 'Available · ' . date_i18n( 'Y' ),
 		'nr_about_lede'     => '',
+		'nr_about_bio'      => '',
+		'nr_studio'         => '', // studio address line (About + PDF estimate footer)
+		'nr_currency'       => '€',
+		'nr_stats_proj'     => '',
+		'nr_stats_cnty'     => '',
+		'nr_stats_pubs'     => '',
+		'nr_stats_awd'      => '',
+		'nr_clients_list'   => '',
 		'nr_accent'         => '#EBEAE6', // used only by OG share cards — the site itself is monochrome
 
 		/* Contact & elsewhere — shared */
@@ -66,7 +74,7 @@ function nr_settings_toggles() {
 add_action( 'admin_init', function () {
 	foreach ( array_keys( nr_settings_defaults() ) as $key ) {
 		$sanitize = 'sanitize_text_field';
-		if ( $key === 'nr_about_lede' ) $sanitize = 'sanitize_textarea_field';
+		if ( in_array( $key, [ 'nr_about_lede', 'nr_about_bio', 'nr_clients_list' ], true ) ) $sanitize = 'sanitize_textarea_field';
 		if ( $key === 'nr_tracking_script' ) {
 			// Analytics snippets need raw <script>; settings are already
 			// manage_options-gated, mirror WP's unfiltered_html rule.
@@ -132,6 +140,15 @@ function nr_sil_settings_page() {
 				<tr><th><?php esc_html_e( 'Availability note', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_avail_text' ); ?>
 					<p class="description"><?php esc_html_e( 'Shown top right. Leave empty to hide.', 'raveenthiran-silence' ); ?></p></td></tr>
 				<tr><th><?php esc_html_e( 'About lede', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_about_lede', 'textarea' ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'About bio', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_about_bio', 'textarea' ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'Studio address', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_studio' ); ?>
+					<p class="description"><?php esc_html_e( 'One line, e.g. Studio Krautwald · Gumpendorfer Str. 81 · 1060 Wien. Shown on About + the PDF estimate.', 'raveenthiran-silence' ); ?></p></td></tr>
+				<tr><th><?php esc_html_e( 'Stats — projects / countries / publications / awards', 'raveenthiran-silence' ); ?></th>
+					<td><?php nr_setting_field( 'nr_stats_proj' ); ?> <?php nr_setting_field( 'nr_stats_cnty' ); ?><br><br><?php nr_setting_field( 'nr_stats_pubs' ); ?> <?php nr_setting_field( 'nr_stats_awd' ); ?>
+					<p class="description"><?php esc_html_e( 'Shown as the stats row on About. Leave any empty to hide it.', 'raveenthiran-silence' ); ?></p></td></tr>
+				<tr><th><?php esc_html_e( 'Selected clients', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_clients_list', 'textarea' ); ?>
+					<p class="description"><?php esc_html_e( 'One client per line — the About page clients wall.', 'raveenthiran-silence' ); ?></p></td></tr>
+				<tr><th><?php esc_html_e( 'Currency', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_currency' ); ?></td></tr>
 				<tr><th><?php esc_html_e( 'Share-card accent', 'raveenthiran-silence' ); ?></th><td><?php nr_setting_field( 'nr_accent' ); ?>
 					<p class="description"><?php esc_html_e( 'Hex color used only on generated Open Graph share cards. The site itself stays monochrome.', 'raveenthiran-silence' ); ?></p></td></tr>
 			</table>

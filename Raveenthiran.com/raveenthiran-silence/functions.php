@@ -5,7 +5,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '2.0.0' );
+define( 'NR_THEME_VERSION', '3.0.0' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults
@@ -71,6 +71,13 @@ $includes = [
 	'inc/og-cards.php',      // generated 1200×630 share cards at /nr-og/<id>.jpg
 	'inc/webp.php',          // WebP twins for every sub-size + <picture> delivery
 	'inc/pwa.php',           // installable / offline shell (virtual sw + manifest)
+	'inc/quote.php',         // pricing data + FAQ + enquire URL + legacy redirects
+	'inc/pdf.php',           // dependency-free PDF estimate writer
+	'inc/series.php',        // nr_project_series taxonomy (+ /series/<slug> archives)
+	'inc/map.php',           // [nr_map] Leaflet map + per-project coordinates box
+	'inc/compare.php',       // [nr_compare] before/after slider
+	'inc/insights.php',      // enquiry attribution + dashboard widget
+	'inc/importer.php',      // bulk project importer (ZIP)
 ];
 foreach ( $includes as $inc ) {
 	$path = get_template_directory() . '/' . $inc;

@@ -66,6 +66,28 @@ add_action( 'init', function () {
 	] );
 } );
 
+add_action( 'init', function () {
+	register_post_type( 'nr_testimonial', [
+		'labels' => [
+			'name'          => __( 'Testimonials', 'raveenthiran-silence' ),
+			'singular_name' => __( 'Testimonial', 'raveenthiran-silence' ),
+		],
+		'public'              => false,
+		'show_ui'             => true,
+		'menu_icon'           => 'dashicons-format-quote',
+		'menu_position'       => 7,
+		'supports'            => [ 'title', 'editor' ],
+		'exclude_from_search' => true,
+	] );
+	register_taxonomy( 'nr_project_tag', 'nr_project', [
+		'labels'       => [ 'name' => __( 'Tags', 'raveenthiran-silence' ), 'singular_name' => __( 'Tag', 'raveenthiran-silence' ) ],
+		'hierarchical' => false,
+		'public'       => true,
+		'rewrite'      => [ 'slug' => 'work-tag', 'with_front' => false ],
+		'show_in_rest' => true,
+	] );
+} );
+
 // Flush rewrites once on theme switch so /work and /journal resolve.
 add_action( 'after_switch_theme', 'flush_rewrite_rules' );
 

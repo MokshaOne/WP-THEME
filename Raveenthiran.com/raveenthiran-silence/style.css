@@ -3,14 +3,14 @@ Theme Name: Silence — raveenthiran
 Theme URI: https://raveenthiran.com
 Author: Nishuthan Raveenthiran
 Author URI: https://raveenthiran.com
-Description: A monochrome, single-screen photography portfolio theme — Silence II. Instrument Serif display voice over a near-black canvas, bone-white type, no accent color: light itself is the signal. Full-bleed hero with curtain-wipe transitions, staggered serif headlines and a giant ghost numeral; a typographic project index whose preview plate trails the cursor (built for large collections); a horizontal plate viewer with parallax; and an interface that falls silent — the chrome fades away when you stop moving, leaving only the photograph. Shares Obscura's content schema and settings (nr_project, ACF-compatible fields), so both themes run on the same data.
-Version: 2.0.0
+Description: Silence III — a monochrome photography portfolio that scrolls like a film. Instrument Serif display voice over a near-black canvas; the homepage is a narrative (sticky opening plate, full-viewport work chapters with parallax, a pinned horizontal film strip, statement + stats, giant italic CTA); the Work index previews projects on a plate that trails the cursor; galleries flow vertically with alternating alignment. Full booking flow: live price calculator, PDF estimate auto-reply, FAQ. Shares Obscura's complete content schema, settings, and ACF fields (nr_project) — activate on an existing Obscura site and everything is already there. The chrome still falls silent when you stop moving.
+Version: 3.0.0
 Requires at least: 6.0
 Requires PHP: 8.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: raveenthiran-silence
-Tags: photography, portfolio, minimal, monochrome, editorial, single-page, full-screen, dark, no-scroll
+Tags: photography, portfolio, minimal, monochrome, editorial, dark
 */
 
 /* All visual styles live in assets/css/silence.css */

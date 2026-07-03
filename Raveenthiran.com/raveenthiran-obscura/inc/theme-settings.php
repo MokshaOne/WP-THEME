@@ -311,12 +311,14 @@ function nr_field_textarea( $key, $rows = 4 ) {
 	);
 }
 
-/* 3-column repeater (Year · Publisher · Link) for the Press list. The inputs
- * are NOT submitted; a hidden <textarea name="$key"> (the real option) is kept
- * in sync by JS as canonical "year | publisher | url" lines — so the existing
- * save pipeline and nr_recognition_list() parser are untouched. With JS off the
- * hidden textarea is still editable, so it degrades gracefully. */
-function nr_field_press_rows( $key ) {
+/* Column repeater for the recognition lists (Press, Awards). $cols defines the
+ * visible inputs; they are NOT submitted — a hidden <textarea name="$key"> (the
+ * real option) is kept in sync by JS as canonical " | "-joined lines, so the
+ * existing save pipeline and nr_recognition_list() parser are untouched. With
+ * JS off the hidden textarea is still editable, so it degrades gracefully.
+ * Each column: f (data-f id) · label · get (row key, or array of fallbacks) ·
+ * optional ph (placeholder) · type (input type) · cls (cell class). */
+function nr_field_rec_rows( $key, $cols ) {
 	$defs = nr_settings_defaults();
 	$raw  = get_option( $key, $defs[ $key ] ?? '' );
 	$rows = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( $key ) : [];
@@ -337,17 +339,22 @@ function nr_field_press_rows( $key ) {
 	<div class="nr-rep" data-rep>
 		<table class="nr-rep__t">
 			<thead><tr>
-				<th class="nr-rep__y"><?php esc_html_e( 'Year', 'raveenthiran' ); ?></th>
-				<th><?php esc_html_e( 'Publisher', 'raveenthiran' ); ?></th>
-				<th><?php esc_html_e( 'Link', 'raveenthiran' ); ?></th>
+				<?php foreach ( $cols as $c ) : ?>
+					<th class="<?php echo esc_attr( $c['cls'] ?? '' ); ?>"><?php echo esc_html( $c['label'] ); ?></th>
+				<?php endforeach; ?>
 				<th></th>
 			</tr></thead>
 			<tbody data-rep-body>
-				<?php foreach ( $rows as $r ) : $name = trim( $r['title'] ?: $r['org'] ); ?>
+				<?php foreach ( $rows as $r ) : ?>
 					<tr>
-						<td class="nr-rep__y"><input type="text" data-f="year" value="<?php echo esc_attr( $r['year'] ); ?>" placeholder="2025" aria-label="<?php esc_attr_e( 'Year', 'raveenthiran' ); ?>"></td>
-						<td><input type="text" data-f="name" value="<?php echo esc_attr( $name ); ?>" placeholder="<?php esc_attr_e( 'Publication', 'raveenthiran' ); ?>" aria-label="<?php esc_attr_e( 'Publisher', 'raveenthiran' ); ?>"></td>
-						<td><input type="url" data-f="url" value="<?php echo esc_attr( $r['url'] ); ?>" placeholder="https://…" aria-label="<?php esc_attr_e( 'Link', 'raveenthiran' ); ?>"></td>
+						<?php foreach ( $cols as $c ) :
+							$v = '';
+							foreach ( (array) $c['get'] as $g ) {
+								if ( trim( (string) ( $r[ $g ] ?? '' ) ) !== '' ) { $v = trim( (string) $r[ $g ] ); break; }
+							}
+						?>
+							<td class="<?php echo esc_attr( $c['cls'] ?? '' ); ?>"><input type="<?php echo esc_attr( $c['type'] ?? 'text' ); ?>" data-f="<?php echo esc_attr( $c['f'] ); ?>" value="<?php echo esc_attr( $v ); ?>" placeholder="<?php echo esc_attr( $c['ph'] ?? '' ); ?>" aria-label="<?php echo esc_attr( $c['label'] ); ?>"></td>
+						<?php endforeach; ?>
 						<td><button type="button" class="nr-rep__del" data-rep-del aria-label="<?php esc_attr_e( 'Remove row', 'raveenthiran' ); ?>">✕</button></td>
 					</tr>
 				<?php endforeach; ?>
@@ -362,42 +369,63 @@ function nr_field_press_rows( $key ) {
 		function rebuild( rep ) {
 			var lines = [];
 			rep.querySelectorAll( '[data-rep-body] tr' ).forEach( function ( tr ) {
-				var g = function ( f ) { var el = tr.querySelector( '[data-f="' + f + '"]' ); return el ? el.value.trim() : ''; };
-				var y = g( 'year' ), n = g( 'name' ), u = g( 'url' );
-				if ( ! y && ! n && ! u ) return;
-				var parts = [ y, n ];
-				if ( u ) parts.push( u );
-				lines.push( parts.join( ' | ' ) );
+				var vals = [];
+				tr.querySelectorAll( '[data-f]' ).forEach( function ( el ) { vals.push( el.value.trim() ); } );
+				if ( ! vals.some( function ( v ) { return v !== ''; } ) ) return;
+				while ( vals.length > 1 && vals[ vals.length - 1 ] === '' ) vals.pop();
+				lines.push( vals.join( ' | ' ) );
 			} );
 			rep.querySelector( '[data-rep-sync]' ).value = lines.join( '\n' );
 		}
-		document.querySelectorAll( '[data-rep]' ).forEach( function ( rep ) {
-			if ( rep.dataset.repInit ) return;
-			rep.dataset.repInit = '1';
-			var body = rep.querySelector( '[data-rep-body]' );
-			var tmpl = body.querySelector( 'tr' );
-			rep.addEventListener( 'input', function () { rebuild( rep ); } );
-			rep.addEventListener( 'click', function ( e ) {
-				if ( e.target.closest( '[data-rep-add]' ) ) {
-					e.preventDefault();
-					var clone = tmpl.cloneNode( true );
-					clone.querySelectorAll( 'input' ).forEach( function ( i ) { i.value = ''; } );
-					body.appendChild( clone );
-					var first = clone.querySelector( 'input' ); if ( first ) first.focus();
-					rebuild( rep );
-				} else if ( e.target.closest( '[data-rep-del]' ) ) {
-					e.preventDefault();
-					var rows = body.querySelectorAll( 'tr' );
-					if ( rows.length > 1 ) { e.target.closest( 'tr' ).remove(); }
-					else { e.target.closest( 'tr' ).querySelectorAll( 'input' ).forEach( function ( i ) { i.value = ''; } ); }
-					rebuild( rep );
-				}
+		function init() {
+			document.querySelectorAll( '[data-rep]' ).forEach( function ( rep ) {
+				if ( rep.dataset.repInit ) return;
+				rep.dataset.repInit = '1';
+				var body = rep.querySelector( '[data-rep-body]' );
+				var tmpl = body.querySelector( 'tr' );
+				rep.addEventListener( 'input', function () { rebuild( rep ); } );
+				rep.addEventListener( 'click', function ( e ) {
+					if ( e.target.closest( '[data-rep-add]' ) ) {
+						e.preventDefault();
+						var clone = tmpl.cloneNode( true );
+						clone.querySelectorAll( 'input' ).forEach( function ( i ) { i.value = ''; } );
+						body.appendChild( clone );
+						var first = clone.querySelector( 'input' ); if ( first ) first.focus();
+						rebuild( rep );
+					} else if ( e.target.closest( '[data-rep-del]' ) ) {
+						e.preventDefault();
+						var rows = body.querySelectorAll( 'tr' );
+						if ( rows.length > 1 ) { e.target.closest( 'tr' ).remove(); }
+						else { e.target.closest( 'tr' ).querySelectorAll( 'input' ).forEach( function ( i ) { i.value = ''; } ); }
+						rebuild( rep );
+					}
+				} );
+				rebuild( rep );
 			} );
-			rebuild( rep );
-		} );
+		}
+		// The script prints once, after the FIRST repeater — later repeaters on
+		// the same page don't exist yet at parse time, so init after DOM ready.
+		if ( document.readyState === 'loading' ) { document.addEventListener( 'DOMContentLoaded', init ); } else { init(); }
 	})();
 	</script>
 	<?php endif;
+}
+/* Press: Year · Publisher · Link → "year | publisher | url" lines. */
+function nr_field_press_rows( $key ) {
+	nr_field_rec_rows( $key, [
+		[ 'f' => 'year', 'label' => __( 'Year', 'raveenthiran' ), 'ph' => '2025', 'get' => 'year', 'cls' => 'nr-rep__y' ],
+		[ 'f' => 'name', 'label' => __( 'Publisher', 'raveenthiran' ), 'ph' => __( 'Publication', 'raveenthiran' ), 'get' => [ 'title', 'org' ] ],
+		[ 'f' => 'url', 'label' => __( 'Link', 'raveenthiran' ), 'ph' => 'https://…', 'type' => 'url', 'get' => 'url' ],
+	] );
+}
+/* Awards: Year · Award · Organisation · Link → "year | title | org | url" lines. */
+function nr_field_award_rows( $key ) {
+	nr_field_rec_rows( $key, [
+		[ 'f' => 'year', 'label' => __( 'Year', 'raveenthiran' ), 'ph' => '2025', 'get' => 'year', 'cls' => 'nr-rep__y' ],
+		[ 'f' => 'title', 'label' => __( 'Award', 'raveenthiran' ), 'ph' => __( 'Award title', 'raveenthiran' ), 'get' => 'title' ],
+		[ 'f' => 'org', 'label' => __( 'Organisation', 'raveenthiran' ), 'ph' => __( 'Awarding body', 'raveenthiran' ), 'get' => 'org' ],
+		[ 'f' => 'url', 'label' => __( 'Link', 'raveenthiran' ), 'ph' => 'https://…', 'type' => 'url', 'get' => 'url' ],
+	] );
 }
 function nr_field_color( $key ) {
 	$defs = nr_settings_defaults();
@@ -662,8 +690,8 @@ function nr_theme_settings_page() {
 				<summary><h2>§ Awards &amp; Press</h2></summary>
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Awards', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_textarea( 'nr_awards_list', 5 ); ?>
-							<p class="description"><?php esc_html_e( 'One per line as: year · title · organisation · url (url optional). Rendered as a list on the About page.', 'raveenthiran' ); ?></p></td></tr>
+						<td><?php nr_field_award_rows( 'nr_awards_list' ); ?>
+							<p class="description"><?php esc_html_e( 'Year, award title, awarding organisation and an optional link. Rendered as a list on the About page.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Press', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_press_rows( 'nr_press_list' ); ?>
 							<p class="description"><?php esc_html_e( 'Year, publisher and an optional link. The publisher shows as a clickable link on the site (Press wall, “As featured in”, and the About page).', 'raveenthiran' ); ?></p></td></tr>

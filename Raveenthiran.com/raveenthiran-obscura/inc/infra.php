@@ -108,8 +108,7 @@ add_action( 'template_redirect', function () {
 	if ( ! is_singular() && ! is_front_page() ) return;
 	$u = get_template_directory_uri() . '/assets/fonts/';
 	@headers_send_early_hints( [
-		'Link: <' . $u . 'inter-tight-500.woff2>; rel=preload; as=font; type=font/woff2; crossorigin',
-		'Link: <' . $u . 'inter-tight-700.woff2>; rel=preload; as=font; type=font/woff2; crossorigin',
+		'Link: <' . $u . 'inter-tight.woff2>; rel=preload; as=font; type=font/woff2; crossorigin',
 	] );
 }, 0 );
 

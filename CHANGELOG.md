@@ -5,7 +5,7 @@
 > how to ship & deploy it, the hard-won gotchas, and the current state — followed by
 > the full version history. If you only have this file, you have the project.
 
-**Current version: v4.79.0** · **112 releases** · Branch `claude/obscura-rebuild` · PR
+**Current version: v4.80.0** · **113 releases** · Branch `claude/obscura-rebuild` · PR
 [#13](https://github.com/MokshaOne/WP-THEME/pull/13) (draft) · Repo `mokshaone/wp-theme`.
 
 ---
@@ -199,9 +199,13 @@ pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`
   Create+send a Kleinunternehmer PDF (no VAT, § 6 Abs. 1 Z 27 UStG, gap-free numbers),
   pre-filled from the enquiry estimate; PDFs stored behind `.htaccess` deny.
 - **Backlogs complete:** IDEAS-200 and IDEAS-50-NEXT both fully shipped/closed.
-- **Possible next polish (not started):** Awards as a multi-field editor (like Press);
-  font subsetting (~260KB woff2); email deliverability (SPF/DKIM/DMARC) — needs DNS
-  access; rotate the compromised App Password; optional buffer/no-show reminders.
+- **Fonts (v4.80):** the woff2 files ARE the variable fonts, served once per family —
+  all `@font-face` weights point at `inter-tight.woff2` / `jetbrains-mono.woff2`
+  (7 requests ≈ 280KB → 2 ≈ 76KB). The per-weight blocks keep the `font-display`
+  split (optional on 300/700 = desktop-CLS fix) — don't merge them into one rule.
+- **Possible next polish (not started):** email deliverability (SPF/DKIM/DMARC) — needs
+  DNS access; rotate the compromised App Password; optional buffer/no-show reminders
+  (Cal.com settings, not code). Awards editor + font dedup shipped in v4.80.0.
 
 ---
 
@@ -210,6 +214,9 @@ pre-shoot T-7/T-1 info emails (cron) · self-hosted **Cal.com** booking embed (`
 Every shipped version of **raveenthiran-obscura**, newest first.
 
 ---
+
+## v4.80.0 — 2026-07-03
+Two backlog polish items. **Awards editor:** the Awards setting (§ Awards & Press) is now a 4-column repeater (Year · Award · Organisation · Link) with add/remove rows, replacing the free-text box — the Press repeater was generalised into a column-driven `nr_field_rec_rows()` (Press stays a 3-column wrapper, output unchanged); same option, same canonical `year | title | org | url` lines, same `nr_recognition_list()` parser, textarea fallback without JS; the shared repeater JS now initialises on DOMContentLoaded so the second repeater on the page (Press) wires up too. **Fonts — 7 requests → 2:** the per-weight woff2 files were byte-identical copies of the *variable* fonts (browsers fetched the same bytes 7× ≈ 280KB); all `@font-face` weights now point at single canonical files (`inter-tight.woff2`, `jetbrains-mono.woff2`, one fetch per family ≈ 76KB, `wght` clamped per declared weight), keeping the per-weight `font-display` split (optional on 300/700 = the v4.70.3 desktop-CLS fix). Head preload collapses 3 → 1; 103 Early-Hints likewise; editor CSS updated; OG-card TTFs untouched. Further glyph subsetting measured at ~6KB/family and skipped (already latin-subset; not worth shaping risk).
 
 ## v4.79.0 — 2026-06-16
 Variable booking picker bridging the estimate calculator to Cal.com. New shortcode `[nr_cal_picker]` (`nr_cal_picker()`): pick a shooting type, set hours (stepper + range, bounded per type), tick add-on packages → a live price (rate × hours + packages + licence + travel, all from `nr_quote_data()`); "Pick a time" reveals the matching **per-type** Cal inline calendar. The chosen hours set the Cal slot **duration** (`hours × 60` min — requires multi-duration event types on cal.m1o.at), and the full scope (type/hours/packages/estimate) is passed as Cal **notes + metadata** for Cal → n8n → CRM. New per-type ACF fields on **Pricing & Quote**: *Hourly rate (€/h)* (drives price; derives from Base ÷ Min hours when blank) + *Min/Max hours*. A shooting-type slug is bookable only when it matches a Cal `event_types` key; unmatched types still price up but stay enquiry-only (editor hint). `cal-embed.js` now exposes `window.nrCal.mountInline()` (dynamic calLink + config, re-mounts on scope change, no CLS). New files: `parts/booking/cal-picker.php`, `assets/js/cal-picker.js`.

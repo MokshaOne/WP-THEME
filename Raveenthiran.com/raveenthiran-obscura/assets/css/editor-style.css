@@ -1,8 +1,8 @@
 /* Obscura — block-editor styles so authoring matches the dark front end. */
-@font-face{font-family:'Inter Tight';font-weight:400;font-display:swap;src:url(../fonts/inter-tight-400.woff2) format('woff2')}
-@font-face{font-family:'Inter Tight';font-weight:500;font-display:swap;src:url(../fonts/inter-tight-500.woff2) format('woff2')}
-@font-face{font-family:'Inter Tight';font-weight:700;font-display:swap;src:url(../fonts/inter-tight-700.woff2) format('woff2')}
-@font-face{font-family:'JetBrains Mono';font-weight:400;font-display:swap;src:url(../fonts/jetbrains-mono-400.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-weight:400;font-display:swap;src:url(../fonts/inter-tight.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-weight:500;font-display:swap;src:url(../fonts/inter-tight.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-weight:700;font-display:swap;src:url(../fonts/inter-tight.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-weight:400;font-display:swap;src:url(../fonts/jetbrains-mono.woff2) format('woff2')}
 
 .editor-styles-wrapper{
   background:#0B0C10;

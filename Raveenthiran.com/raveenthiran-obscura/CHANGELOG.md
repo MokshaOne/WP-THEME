@@ -1,5 +1,29 @@
 # Changelog — Obscura (raveenthiran)
 
+## 4.80.0 — Awards row editor + one-request web fonts
+Two backlog polish items.
+- **Awards editor:** the Awards setting (§ Awards & Press) is now a 4-column
+  repeater — *Year · Award · Organisation · Link* — with add/remove rows,
+  replacing the free-text box. Built by generalising the Press repeater into
+  a column-driven `nr_field_rec_rows()` (Press is a 3-column wrapper, output
+  unchanged). Same option (`nr_awards_list`), same canonical
+  `year | title | org | url` lines, same `nr_recognition_list()` parser —
+  existing data appears pre-filled; without JS the hidden textarea remains
+  editable. Also fixed: the shared repeater JS now initialises on
+  DOMContentLoaded, so a second repeater further down the page (Press, which
+  now renders after Awards) gets wired up too.
+- **Fonts — 7 requests → 2:** the per-weight woff2 files were byte-identical
+  copies of the *variable* fonts, so browsers downloaded the same bytes 7×
+  (~280KB). All `@font-face` weights now point at single canonical files
+  (`inter-tight.woff2`, `jetbrains-mono.woff2`) — one fetch per family
+  (~76KB), each face clamping the `wght` axis to its declared weight. The
+  per-weight blocks stay, preserving the v4.70.3 `font-display` split
+  (optional on 300/700 = the desktop-CLS fix). Head preload collapses from
+  three links to one (it warms every weight now); the 103 Early-Hints Link
+  headers likewise. Editor CSS updated; OG-card TTFs untouched. Further
+  glyph subsetting was measured at only ~6KB/family (files are already
+  latin-subset) and skipped as not worth the shaping risk.
+
 ## 4.79.0 — Variable booking picker (calculator → Cal.com)
 A configurator that prices like the estimate calculator and hands the result
 straight to Cal.com — shortcode **`[nr_cal_picker]`** (helper `nr_cal_picker()`).

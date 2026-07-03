@@ -4,7 +4,7 @@
  *
  * Composites a 1200×630 card (the correct social ratio) per project:
  *   featured photo (cover-fit) → dark gradient → title + category·year + mark.
- * Served from a virtual endpoint /sl-og/<id>.jpg and cached to the uploads
+ * Served from a virtual endpoint /nr-og/<id>.jpg and cached to the uploads
  * dir (keyed on the post's modified time, so edits bust the cache).
  *
  * Fully defensive: if GD is missing, the source photo can't be read, or the
@@ -13,27 +13,27 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-const SL_OG_W = 1200;
-const SL_OG_H = 630;
+const NR_OG_W = 1200;
+const NR_OG_H = 630;
 
 /* Point a single project's og:image at the dynamic card (seo.php reads this). */
-function sl_og_card_url( $post_id ) {
+function nr_og_card_url( $post_id ) {
 	$post_id = (int) $post_id;
 	if ( ! $post_id || ! has_post_thumbnail( $post_id ) ) return '';
 	$v = substr( md5( (string) get_post_modified_time( 'U', true, $post_id ) ), 0, 8 );
-	return home_url( '/sl-og/' . $post_id . '.jpg?v=' . $v );
+	return home_url( '/nr-og/' . $post_id . '.jpg?v=' . $v );
 }
 
-/* ── Virtual endpoint: /sl-og/<id>.jpg ─────────────────────────── */
+/* ── Virtual endpoint: /nr-og/<id>.jpg ─────────────────────────── */
 add_action( 'template_redirect', function () {
 	$path = wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH );
-	if ( ! preg_match( '#/sl-og/(\d+)\.jpg$#', (string) $path, $m ) ) return;
-	sl_og_serve( (int) $m[1] );
+	if ( ! preg_match( '#/nr-og/(\d+)\.jpg$#', (string) $path, $m ) ) return;
+	nr_og_serve( (int) $m[1] );
 }, 0 );
 
-function sl_og_serve( $post_id ) {
+function nr_og_serve( $post_id ) {
 	$post = get_post( $post_id );
-	if ( ! $post || $post->post_type !== sl_pt() || ! has_post_thumbnail( $post_id ) ) {
+	if ( ! $post || $post->post_type !== 'nr_project' || ! has_post_thumbnail( $post_id ) ) {
 		status_header( 404 ); exit;
 	}
 
@@ -41,7 +41,7 @@ function sl_og_serve( $post_id ) {
 	if ( ! $src_path || ! file_exists( $src_path ) ) { status_header( 404 ); exit; }
 
 	$up    = wp_upload_dir();
-	$dir   = trailingslashit( $up['basedir'] ) . 'sl-og';
+	$dir   = trailingslashit( $up['basedir'] ) . 'nr-og';
 	$key   = $post_id . '-' . substr( md5( (string) get_post_modified_time( 'U', true, $post_id ) ), 0, 10 ) . '.jpg';
 	$cache = $dir . '/' . $key;
 
@@ -50,7 +50,7 @@ function sl_og_serve( $post_id ) {
 
 	if ( file_exists( $cache ) ) { readfile( $cache ); exit; }
 
-	$bytes = sl_og_render( $post_id, $src_path );
+	$bytes = nr_og_render( $post_id, $src_path );
 	if ( $bytes === null ) { // GD/render failed → stream the source photo
 		header( 'Content-Type: ' . ( get_post_mime_type( get_post_thumbnail_id( $post_id ) ) ?: 'image/jpeg' ) );
 		readfile( $src_path ); exit;
@@ -62,7 +62,7 @@ function sl_og_serve( $post_id ) {
 }
 
 /* Returns JPEG bytes, or null to signal "fall back to the raw photo". */
-function sl_og_render( $post_id, $src_path ) {
+function nr_og_render( $post_id, $src_path ) {
 	if ( ! function_exists( 'imagecreatetruecolor' ) || ! function_exists( 'imagecreatefromstring' ) ) return null;
 
 	$raw = @file_get_contents( $src_path );
@@ -70,20 +70,20 @@ function sl_og_render( $post_id, $src_path ) {
 	$photo = @imagecreatefromstring( $raw );
 	if ( ! $photo ) return null;
 
-	$canvas = imagecreatetruecolor( SL_OG_W, SL_OG_H );
+	$canvas = imagecreatetruecolor( NR_OG_W, NR_OG_H );
 
 	// cover-fit the photo
 	$sw = imagesx( $photo ); $sh = imagesy( $photo );
-	$scale = max( SL_OG_W / $sw, SL_OG_H / $sh );
+	$scale = max( NR_OG_W / $sw, NR_OG_H / $sh );
 	$dw = (int) ceil( $sw * $scale ); $dh = (int) ceil( $sh * $scale );
-	$dx = (int) ( ( SL_OG_W - $dw ) / 2 ); $dy = (int) ( ( SL_OG_H - $dh ) / 2 );
+	$dx = (int) ( ( NR_OG_W - $dw ) / 2 ); $dy = (int) ( ( NR_OG_H - $dh ) / 2 );
 	imagecopyresampled( $canvas, $photo, $dx, $dy, 0, 0, $dw, $dh, $sw, $sh );
 	imagedestroy( $photo );
 
 	// darken: flat veil + stronger bottom gradient for text legibility
-	sl_og_veil( $canvas );
+	nr_og_veil( $canvas );
 
-	$accent = sl_og_hex( $canvas, sl_opt( 'sl_accent', '#EBEAE6' ) );
+	$accent = nr_og_hex( $canvas, nr_opt( 'nr_accent', '#EBEAE6' ) );
 	$bone   = imagecolorallocate( $canvas, 242, 239, 233 );
 	$mut    = imagecolorallocate( $canvas, 196, 192, 184 );
 
@@ -94,28 +94,28 @@ function sl_og_render( $post_id, $src_path ) {
 	$pad = 64;
 	if ( $has_ttf ) {
 		$cat  = '';
-		$terms = wp_get_post_terms( $post_id, sl_tax(), [ 'fields' => 'names' ] );
+		$terms = wp_get_post_terms( $post_id, 'nr_project_cat', [ 'fields' => 'names' ] );
 		if ( ! is_wp_error( $terms ) && $terms ) $cat = $terms[0];
 		$yr   = get_post_meta( $post_id, 'project_year', true ) ?: get_the_date( 'Y', $post_id );
 		$eyebrow = strtoupper( trim( $cat . ( $cat && $yr ? '   ·   ' : '' ) . $yr ) );
 		$title   = html_entity_decode( get_the_title( $post_id ), ENT_QUOTES, 'UTF-8' );
 
 		// accent rule
-		imagefilledrectangle( $canvas, $pad, SL_OG_H - 232, $pad + 46, SL_OG_H - 229, $accent );
+		imagefilledrectangle( $canvas, $pad, NR_OG_H - 232, $pad + 46, NR_OG_H - 229, $accent );
 
-		if ( $eyebrow ) imagettftext( $canvas, 20, 0, $pad, SL_OG_H - 196, $mut, $font_m, $eyebrow );
+		if ( $eyebrow ) imagettftext( $canvas, 20, 0, $pad, NR_OG_H - 196, $mut, $font_m, $eyebrow );
 
 		// title — wrap to width, cap 3 lines
-		$lines = sl_og_wrap( $title, $font_b, 60, SL_OG_W - $pad * 2 );
+		$lines = nr_og_wrap( $title, $font_b, 60, NR_OG_W - $pad * 2 );
 		$lines = array_slice( $lines, 0, 3 );
-		$ly = SL_OG_H - 150 + ( 3 - count( $lines ) ) * 0; // baseline of first line
+		$ly = NR_OG_H - 150 + ( 3 - count( $lines ) ) * 0; // baseline of first line
 		foreach ( $lines as $ln ) {
 			imagettftext( $canvas, 60, 0, $pad, $ly, $bone, $font_b, $ln );
 			$ly += 74;
 		}
 
 		// studio wordmark, top-left
-		imagettftext( $canvas, 22, 0, $pad, 84, $bone, $font_b, (string) sl_opt( 'sl_studio', 'raveenthiran' ) );
+		imagettftext( $canvas, 22, 0, $pad, 84, $bone, $font_b, (string) nr_opt( 'nr_logo_text', 'raveenthiran' ) );
 	}
 
 	ob_start();
@@ -126,22 +126,22 @@ function sl_og_render( $post_id, $src_path ) {
 }
 
 /* dark veil + bottom gradient */
-function sl_og_veil( $im ) {
+function nr_og_veil( $im ) {
 	imagealphablending( $im, true );
 	// flat 22% darken
 	$veil = imagecolorallocatealpha( $im, 11, 12, 16, 100 );
-	imagefilledrectangle( $im, 0, 0, SL_OG_W, SL_OG_H, $veil );
+	imagefilledrectangle( $im, 0, 0, NR_OG_W, NR_OG_H, $veil );
 	// bottom gradient (last ~55%)
-	$start = (int) ( SL_OG_H * 0.42 );
-	for ( $y = $start; $y < SL_OG_H; $y++ ) {
-		$t = ( $y - $start ) / ( SL_OG_H - $start );
+	$start = (int) ( NR_OG_H * 0.42 );
+	for ( $y = $start; $y < NR_OG_H; $y++ ) {
+		$t = ( $y - $start ) / ( NR_OG_H - $start );
 		$a = (int) ( 110 - $t * 110 ); // 110→0 alpha (0 = opaque)
 		$c = imagecolorallocatealpha( $im, 11, 12, 16, max( 0, $a ) );
-		imagefilledrectangle( $im, 0, $y, SL_OG_W, $y, $c );
+		imagefilledrectangle( $im, 0, $y, NR_OG_W, $y, $c );
 	}
 }
 
-function sl_og_hex( $im, $hex ) {
+function nr_og_hex( $im, $hex ) {
 	$hex = ltrim( (string) $hex, '#' );
 	if ( strlen( $hex ) === 3 ) $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
 	if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) $hex = 'F2A03D';
@@ -149,7 +149,7 @@ function sl_og_hex( $im, $hex ) {
 }
 
 /* greedy word-wrap using the TTF metrics */
-function sl_og_wrap( $text, $font, $size, $maxw ) {
+function nr_og_wrap( $text, $font, $size, $maxw ) {
 	$words = preg_split( '/\s+/', trim( $text ) );
 	$lines = []; $cur = '';
 	foreach ( $words as $w ) {

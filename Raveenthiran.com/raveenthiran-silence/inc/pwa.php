@@ -4,7 +4,7 @@
  *
  * Serves a dynamic web-app manifest and a service worker from the SITE ROOT
  * (so the SW scope is the whole site) without needing rewrite-rule flushes:
- * we intercept /sl-manifest.json and /sl-sw.js on template_redirect. The SW
+ * we intercept /nr-manifest.json and /nr-sw.js on template_redirect. The SW
  * uses a cache-first strategy for the theme's static assets (fonts, CSS, JS)
  * and a network-first strategy for pages, with a lightweight offline fallback
  * so the site stays navigable on flaky mobile connections.
@@ -16,19 +16,19 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* Bump when the SW logic or precache list changes so clients pick up a new SW. */
-if ( ! defined( 'SL_PWA_VERSION' ) ) {
-	define( 'SL_PWA_VERSION', defined( 'SL_THEME_VERSION' ) ? SL_THEME_VERSION : '1' );
+if ( ! defined( 'NR_PWA_VERSION' ) ) {
+	define( 'NR_PWA_VERSION', defined( 'NR_THEME_VERSION' ) ? NR_THEME_VERSION : '1' );
 }
 
 /* ── Intercept the two virtual endpoints ──────────────────────── */
 add_action( 'template_redirect', function () {
 	$path = wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH );
 	$path = trim( (string) $path, '/' );
-	if ( $path === 'sl-manifest.json' ) { sl_pwa_serve_manifest(); }
-	if ( $path === 'sl-sw.js' )         { sl_pwa_serve_sw(); }
+	if ( $path === 'nr-manifest.json' ) { nr_pwa_serve_manifest(); }
+	if ( $path === 'nr-sw.js' )         { nr_pwa_serve_sw(); }
 }, 0 );
 
-function sl_pwa_serve_manifest() {
+function nr_pwa_serve_manifest() {
 	nocache_headers();
 	header( 'Content-Type: application/manifest+json; charset=utf-8' );
 
@@ -53,7 +53,7 @@ function sl_pwa_serve_manifest() {
 	$manifest = [
 		'name'             => $name,
 		'short_name'       => mb_substr( $name, 0, 18 ),
-		'description'      => sl_opt( 'sl_tagline', get_bloginfo( 'description' ) ),
+		'description'      => nr_opt( 'nr_tagline', get_bloginfo( 'description' ) ),
 		'start_url'        => home_url( '/?utm_source=pwa' ),
 		'scope'            => home_url( '/' ),
 		'display'          => 'standalone',
@@ -69,15 +69,15 @@ function sl_pwa_serve_manifest() {
 	exit;
 }
 
-function sl_pwa_serve_sw() {
+function nr_pwa_serve_sw() {
 	header( 'Content-Type: application/javascript; charset=utf-8' );
 	header( 'Service-Worker-Allowed: /' );
 	nocache_headers(); // never cache the SW script itself
 
-	$ver      = SL_PWA_VERSION;
+	$ver      = NR_PWA_VERSION;
 	$assets   = get_template_directory_uri() . '/assets/';
 	$home     = home_url( '/' );
-	$offline  = home_url( '/?sl_offline=1' );
+	$offline  = home_url( '/?nr_offline=1' );
 
 	/* Precache only the always-needed shell pieces. Images are cached at runtime. */
 	$precache = wp_json_encode( array_values( array_filter( [
@@ -87,7 +87,7 @@ function sl_pwa_serve_sw() {
 		$home,
 	] ) ), JSON_UNESCAPED_SLASHES );
 
-	$cache_name = 'sl-shell-' . $ver;
+	$cache_name = 'nr-shell-' . $ver;
 	?>
 const CACHE = '<?php echo esc_js( $cache_name ); ?>';
 const PRECACHE = <?php echo $precache; ?>;
@@ -147,7 +147,7 @@ self.addEventListener('fetch', (e) => {
 
 /* ── Head: manifest link + theme-color + SW registration ──────── */
 add_action( 'wp_head', function () {
-	$manifest = home_url( '/sl-manifest.json' );
+	$manifest = home_url( '/nr-manifest.json' );
 	echo '<link rel="manifest" href="' . esc_url( $manifest ) . '">' . "\n";
 	if ( function_exists( 'get_site_icon_url' ) && ( $ic = get_site_icon_url( 180 ) ) ) {
 		echo '<link rel="apple-touch-icon" href="' . esc_url( $ic ) . '">' . "\n";
@@ -157,7 +157,7 @@ add_action( 'wp_head', function () {
 }, 2 );
 
 add_action( 'wp_footer', function () {
-	$sw = home_url( '/sl-sw.js' );
+	$sw = home_url( '/nr-sw.js' );
 	?>
 <script>
 if ('serviceWorker' in navigator) {
@@ -169,9 +169,9 @@ if ('serviceWorker' in navigator) {
 	<?php
 }, 99 );
 
-/* ── Minimal offline notice injected when ?sl_offline=1 shell is shown ── */
+/* ── Minimal offline notice injected when ?nr_offline=1 shell is shown ── */
 add_action( 'wp_body_open', function () {
-	if ( empty( $_GET['sl_offline'] ) ) return;
+	if ( empty( $_GET['nr_offline'] ) ) return;
 	echo '<div style="position:fixed;inset:auto 0 0 0;z-index:9999;background:#0B0C10;color:#F2EFE9;'
 		. 'font:500 13px/1.4 system-ui,sans-serif;padding:12px 18px;text-align:center;border-top:1px solid rgba(242,160,61,.4)">'
 		. esc_html__( 'You appear to be offline — showing a cached version. Reconnect to load the latest.', 'raveenthiran-silence' )

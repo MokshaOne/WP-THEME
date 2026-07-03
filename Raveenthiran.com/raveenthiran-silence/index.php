@@ -6,10 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 ?>
 
-<section class="sl-sheet">
-	<div class="sl-sheet__inner">
+<section class="nr-sheet">
+	<div class="nr-sheet__inner">
 		<?php if ( have_posts() ) : ?>
-			<ol class="sl-journal">
+			<ol class="nr-journal">
 				<?php while ( have_posts() ) : the_post(); ?>
 					<li>
 						<a href="<?php the_permalink(); ?>">

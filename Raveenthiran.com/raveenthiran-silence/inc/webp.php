@@ -17,15 +17,15 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function sl_webp_ok() {
+function nr_webp_ok() {
 	static $ok = null;
 	if ( $ok === null ) $ok = function_exists( 'imagewebp' ) && function_exists( 'imagecreatefromjpeg' );
 	return $ok;
 }
 
 /* Create a .webp twin at $webp from a jpg/png $path. */
-function sl_webp_make( $path, $webp ) {
-	if ( ! sl_webp_ok() || ! file_exists( $path ) ) return false;
+function nr_webp_make( $path, $webp ) {
+	if ( ! nr_webp_ok() || ! file_exists( $path ) ) return false;
 	$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
 	$img = false;
 	if ( $ext === 'jpg' || $ext === 'jpeg' ) {
@@ -42,8 +42,8 @@ function sl_webp_make( $path, $webp ) {
 
 /* For an uploads JPG/PNG URL, return its .webp twin URL (generating it on
  * demand, capped per request to avoid timeouts), or '' if not available. */
-function sl_webp_twin_url( $url ) {
-	if ( ! sl_webp_ok() || ! is_string( $url ) || $url === '' ) return '';
+function nr_webp_twin_url( $url ) {
+	if ( ! nr_webp_ok() || ! is_string( $url ) || $url === '' ) return '';
 	if ( ! preg_match( '/\.(jpe?g|png)$/i', $url ) ) return '';
 	$up = wp_get_upload_dir();
 	if ( strpos( $url, $up['baseurl'] ) !== 0 ) return '';          // uploads only
@@ -54,19 +54,19 @@ function sl_webp_twin_url( $url ) {
 
 	static $made = 0;
 	if ( $made >= 8 ) return '';                                    // cap on-demand work
-	if ( sl_webp_make( $path, $webp ) ) { $made++; return $url . '.webp'; }
+	if ( nr_webp_make( $path, $webp ) ) { $made++; return $url . '.webp'; }
 	return '';
 }
 
 /* Swap every candidate of a srcset string to its webp twin (dropping any
  * candidate that has no twin). Returns '' if none could be converted. */
-function sl_webp_swap_srcset( $srcset ) {
+function nr_webp_swap_srcset( $srcset ) {
 	$out = [];
 	foreach ( explode( ',', (string) $srcset ) as $part ) {
 		$part = trim( $part );
 		if ( $part === '' ) continue;
 		$sp   = preg_split( '/\s+/', $part );
-		$twin = sl_webp_twin_url( $sp[0] );
+		$twin = nr_webp_twin_url( $sp[0] );
 		if ( $twin ) { $sp[0] = $twin; $out[] = implode( ' ', $sp ); }
 	}
 	return implode( ', ', $out );
@@ -75,19 +75,19 @@ function sl_webp_swap_srcset( $srcset ) {
 /* Generate twins for a new upload's sub-sizes (regardless of original format,
  * since the sub-sizes are the JPEGs that actually get served). */
 add_filter( 'wp_generate_attachment_metadata', function ( $metadata, $attachment_id ) {
-	if ( ! sl_webp_ok() ) return $metadata;
+	if ( ! nr_webp_ok() ) return $metadata;
 	$file = get_attached_file( $attachment_id );
 	if ( ! $file ) return $metadata;
 	$dir = trailingslashit( dirname( $file ) );
 	if ( preg_match( '/\.(jpe?g|png)$/i', $file ) && file_exists( $file ) ) {
-		sl_webp_make( $file, $file . '.webp' );
+		nr_webp_make( $file, $file . '.webp' );
 	}
 	if ( ! empty( $metadata['sizes'] ) ) {
 		foreach ( $metadata['sizes'] as $s ) {
 			if ( empty( $s['file'] ) ) continue;
 			$p = $dir . $s['file'];
 			if ( preg_match( '/\.(jpe?g|png)$/i', $p ) && file_exists( $p ) ) {
-				sl_webp_make( $p, $p . '.webp' );
+				nr_webp_make( $p, $p . '.webp' );
 			}
 		}
 	}
@@ -97,14 +97,14 @@ add_filter( 'wp_generate_attachment_metadata', function ( $metadata, $attachment
 /* Central delivery: wrap the <img> in <picture> with a webp <source>. */
 add_filter( 'wp_get_attachment_image', function ( $html, $attachment_id, $size, $icon, $attr ) {
 	if ( is_admin() || is_feed() || ! $html || strpos( $html, '<picture' ) !== false ) return $html;
-	if ( ! sl_webp_ok() ) return $html;
+	if ( ! nr_webp_ok() ) return $html;
 
 	$srcset = wp_get_attachment_image_srcset( $attachment_id, $size );
 	if ( $srcset ) {
-		$webpset = sl_webp_swap_srcset( $srcset );
+		$webpset = nr_webp_swap_srcset( $srcset );
 	} else {
 		$u   = wp_get_attachment_image_url( $attachment_id, $size );
-		$twin = $u ? sl_webp_twin_url( $u ) : '';
+		$twin = $u ? nr_webp_twin_url( $u ) : '';
 		$webpset = $twin ?: '';
 	}
 	if ( ! $webpset ) return $html;
@@ -125,12 +125,12 @@ add_action( 'admin_menu', function () {
 		__( 'Generate WebP', 'raveenthiran-silence' ),
 		__( 'Generate WebP', 'raveenthiran-silence' ),
 		'manage_options',
-		'sl-webp',
-		'sl_webp_admin_page'
+		'nr-webp',
+		'nr_webp_admin_page'
 	);
 } );
 
-function sl_webp_admin_page() {
+function nr_webp_admin_page() {
 	$total = (int) ( new WP_Query( [
 		'post_type'      => 'attachment',
 		'post_status'    => 'inherit',
@@ -142,25 +142,25 @@ function sl_webp_admin_page() {
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Generate WebP', 'raveenthiran-silence' ); ?></h1>
 		<p style="max-width:680px"><?php esc_html_e( 'Creates a smaller WebP version of every image size so the theme can serve WebP to supporting browsers (with a JPEG/AVIF fallback). Safe to run repeatedly — it skips files that already have a WebP twin.', 'raveenthiran-silence' ); ?></p>
-		<?php if ( ! sl_webp_ok() ) : ?>
+		<?php if ( ! nr_webp_ok() ) : ?>
 			<div class="notice notice-error"><p><?php esc_html_e( 'GD with WebP support is not available on this server — cannot generate WebP.', 'raveenthiran-silence' ); ?></p></div>
 		<?php else : ?>
 			<p><strong><?php printf( esc_html__( '%d image attachments found.', 'raveenthiran-silence' ), $total ); ?></strong></p>
-			<p><button id="sl-webp-go" class="button button-primary"><?php esc_html_e( 'Start generating', 'raveenthiran-silence' ); ?></button></p>
+			<p><button id="nr-webp-go" class="button button-primary"><?php esc_html_e( 'Start generating', 'raveenthiran-silence' ); ?></button></p>
 			<div style="max-width:520px;height:18px;background:#e5e5e5;border-radius:9px;overflow:hidden;margin:10px 0">
-				<div id="sl-webp-bar" style="height:100%;width:0;background:#F2A03D;transition:width .3s"></div>
+				<div id="nr-webp-bar" style="height:100%;width:0;background:#F2A03D;transition:width .3s"></div>
 			</div>
-			<p id="sl-webp-status" style="font-weight:600"></p>
+			<p id="nr-webp-status" style="font-weight:600"></p>
 			<p class="description"><?php esc_html_e( 'When it finishes, purge your page cache (W3TC) and Cloudflare so the new WebP images are served.', 'raveenthiran-silence' ); ?></p>
 			<script>
 			(function () {
-				var btn = document.getElementById('sl-webp-go');
-				var bar = document.getElementById('sl-webp-bar');
-				var st  = document.getElementById('sl-webp-status');
-				var nonce = '<?php echo esc_js( wp_create_nonce( 'sl_webp_bulk' ) ); ?>';
+				var btn = document.getElementById('nr-webp-go');
+				var bar = document.getElementById('nr-webp-bar');
+				var st  = document.getElementById('nr-webp-status');
+				var nonce = '<?php echo esc_js( wp_create_nonce( 'nr_webp_bulk' ) ); ?>';
 				var madeTotal = 0;
 				function run(offset) {
-					fetch(ajaxurl + '?action=sl_webp_bulk&nonce=' + nonce + '&offset=' + offset, { credentials: 'same-origin' })
+					fetch(ajaxurl + '?action=nr_webp_bulk&nonce=' + nonce + '&offset=' + offset, { credentials: 'same-origin' })
 						.then(function (r) { return r.json(); })
 						.then(function (d) {
 							if (!d || d.success === false) { st.textContent = 'Error — please reload and try again.'; btn.disabled = false; return; }
@@ -181,11 +181,11 @@ function sl_webp_admin_page() {
 	<?php
 }
 
-add_action( 'wp_ajax_sl_webp_bulk', function () {
-	if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $_GET['nonce'] ?? '', 'sl_webp_bulk' ) ) {
+add_action( 'wp_ajax_nr_webp_bulk', function () {
+	if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $_GET['nonce'] ?? '', 'nr_webp_bulk' ) ) {
 		wp_send_json_error();
 	}
-	if ( ! sl_webp_ok() ) wp_send_json_error();
+	if ( ! nr_webp_ok() ) wp_send_json_error();
 	@set_time_limit( 0);
 	$batch  = 20;
 	$offset = max( 0, (int) ( $_GET['offset'] ?? 0 ) );
@@ -217,7 +217,7 @@ add_action( 'wp_ajax_sl_webp_bulk', function () {
 		foreach ( $todo as $p ) {
 			if ( ! preg_match( '/\.(jpe?g|png)$/i', $p ) || ! file_exists( $p ) ) continue;
 			if ( file_exists( $p . '.webp' ) ) continue;        // skip already done
-			if ( sl_webp_make( $p, $p . '.webp' ) ) $images++;
+			if ( nr_webp_make( $p, $p . '.webp' ) ) $images++;
 		}
 	}
 

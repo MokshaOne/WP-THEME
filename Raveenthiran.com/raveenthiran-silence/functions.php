@@ -5,13 +5,13 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SL_THEME_VERSION', '1.2.0' );
+define( 'NR_THEME_VERSION', '2.0.0' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults
-   centralised in sl_settings_defaults() (inc/settings.php).
+   centralised in nr_settings_defaults() (inc/settings.php).
    ============================================================= */
-function sl_opt( $key, $default = '' ) {
+function nr_opt( $key, $default = '' ) {
 	$v = get_option( $key, null );
 	if ( $v === null || $v === '' ) return $default;
 	return $v;
@@ -29,8 +29,8 @@ add_action( 'after_setup_theme', function () {
 	register_nav_menus( [ 'primary' => __( 'Primary', 'raveenthiran-silence' ) ] );
 
 	// Plates keep their native aspect (no crop); index preview is capped.
-	add_image_size( 'sl-plate', 2400, 2400, false );
-	add_image_size( 'sl-index', 1400, 1400, false );
+	add_image_size( 'nr-plate', 2400, 2400, false );
+	add_image_size( 'nr-index', 1400, 1400, false );
 } );
 
 /* =============================================================
@@ -38,20 +38,20 @@ add_action( 'after_setup_theme', function () {
    ============================================================= */
 add_action( 'wp_enqueue_scripts', function () {
 	// @font-face only — tiny, inlined into <head> by the style loader below.
-	wp_enqueue_style( 'sl-fonts', get_template_directory_uri() . '/assets/css/fonts.css', [], SL_THEME_VERSION );
-	wp_enqueue_style( 'sl-theme', get_template_directory_uri() . '/assets/css/silence.css', [ 'sl-fonts' ], SL_THEME_VERSION );
-	wp_enqueue_script( 'sl-theme', get_template_directory_uri() . '/assets/js/silence.js', [], SL_THEME_VERSION, true );
+	wp_enqueue_style( 'nr-fonts', get_template_directory_uri() . '/assets/css/fonts.css', [], NR_THEME_VERSION );
+	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/silence.css', [ 'nr-fonts' ], NR_THEME_VERSION );
+	wp_enqueue_script( 'nr-theme', get_template_directory_uri() . '/assets/js/silence.js', [], NR_THEME_VERSION, true );
 } );
 
 // Inline the small @font-face sheet with absolute URLs (removes one
 // render-blocking request; same trick proven in Obscura).
 add_filter( 'style_loader_tag', function ( $tag, $handle ) {
-	if ( $handle !== 'sl-fonts' ) return $tag;
+	if ( $handle !== 'nr-fonts' ) return $tag;
 	$file = get_template_directory() . '/assets/css/fonts.css';
 	if ( ! is_readable( $file ) ) return $tag;
 	$css = file_get_contents( $file );
 	$css = str_replace( '../fonts/', esc_url( get_template_directory_uri() . '/assets/fonts/' ), $css );
-	return '<style id="sl-fonts-inline">' . $css . '</style>' . "\n";
+	return '<style id="nr-fonts-inline">' . $css . '</style>' . "\n";
 }, 10, 2 );
 
 /* =============================================================
@@ -59,8 +59,8 @@ add_filter( 'style_loader_tag', function ( $tag, $handle ) {
    ============================================================= */
 $includes = [
 	'inc/acf-polyfill.php',  // get_field() etc. keep working without ACF
-	'inc/obscura-bridge.php',// read existing Obscura content, non-destructively
-	'inc/post-types.php',    // sl_project / sl_journal / sl_enquiry CPTs
+	'inc/acf-fields.php',    // ACF Pro: same Project Details group as Obscura
+	'inc/post-types.php',    // nr_project / nr_journal / nr_enquiry CPTs
 	'inc/gallery-meta.php',  // native gallery + project-details meta boxes
 	'inc/settings.php',      // Appearance → Silence
 	'inc/activation.php',    // on switch: create pages + import Obscura settings
@@ -68,7 +68,7 @@ $includes = [
 	'inc/security.php',      // Cloudflare Turnstile spam shield (optional keys)
 	'inc/smtp.php',          // SMTP delivery + test button
 	'inc/seo.php',           // meta/OG/Twitter + JSON-LD schema + verification
-	'inc/og-cards.php',      // generated 1200×630 share cards at /sl-og/<id>.jpg
+	'inc/og-cards.php',      // generated 1200×630 share cards at /nr-og/<id>.jpg
 	'inc/webp.php',          // WebP twins for every sub-size + <picture> delivery
 	'inc/pwa.php',           // installable / offline shell (virtual sw + manifest)
 ];
@@ -82,37 +82,30 @@ foreach ( $includes as $inc ) {
    ============================================================= */
 
 /** Meta bundle for a project (client / year / location / category). */
-function sl_project_meta( $post_id = 0 ) {
+function nr_project_meta( $post_id = 0 ) {
 	$post_id = $post_id ?: get_the_ID();
-	$cats    = get_the_terms( $post_id, sl_tax() );
-	// _sl_* first; fall back to Obscura's field keys (bridge / migrated sites)
-	$read = function ( $sl, $nr ) use ( $post_id ) {
-		$v = (string) get_post_meta( $post_id, $sl, true );
-		return $v !== '' ? $v : (string) get_post_meta( $post_id, $nr, true );
-	};
+	$cats    = get_the_terms( $post_id, 'nr_project_cat' );
+	// Obscura's field keys are the single source of truth (shared schema)
 	return [
-		'client' => $read( '_sl_client',   'project_client' ),
-		'yr'     => $read( '_sl_year',     'project_year' ),
-		'loc'    => $read( '_sl_location', 'project_location' ),
+		'client' => (string) get_post_meta( $post_id, 'project_client', true ),
+		'yr'     => (string) get_post_meta( $post_id, 'project_year', true ),
+		'loc'    => (string) get_post_meta( $post_id, 'project_location', true ),
 		'cat'    => ( $cats && ! is_wp_error( $cats ) ) ? $cats[0]->name : '',
 	];
 }
 
 /** Gallery attachment IDs for a project (featured image prepended as plate 1). */
-function sl_project_gallery( $post_id = 0 ) {
+function nr_project_gallery( $post_id = 0 ) {
 	$post_id = $post_id ?: get_the_ID();
-	$ids     = array_filter( array_map( 'absint', (array) get_post_meta( $post_id, '_sl_gallery', true ) ) );
-	if ( ! $ids ) { // Obscura stored its gallery (ID array) under project_gallery
-		$ids = array_filter( array_map( 'absint', (array) get_post_meta( $post_id, 'project_gallery', true ) ) );
-	}
+	$ids     = array_filter( array_map( 'absint', (array) get_post_meta( $post_id, 'project_gallery', true ) ) );
 	$thumb   = (int) get_post_thumbnail_id( $post_id );
 	if ( $thumb && ! in_array( $thumb, $ids, true ) ) array_unshift( $ids, $thumb );
 	return array_values( $ids );
 }
 
 /** URL of the page using a given template, cached briefly. */
-function sl_template_page_url( $template, $fallback_slug ) {
-	$key = 'sl_tpl_' . md5( $template );
+function nr_template_page_url( $template, $fallback_slug ) {
+	$key = 'nr_tpl_' . md5( $template );
 	$url = wp_cache_get( $key );
 	if ( $url ) return $url;
 	$pages = get_pages( [ 'meta_key' => '_wp_page_template', 'meta_value' => $template, 'number' => 1 ] );
@@ -122,7 +115,7 @@ function sl_template_page_url( $template, $fallback_slug ) {
 }
 
 /** Neutral SVG placeholder plate (used before any photos exist). */
-function sl_placeholder( $label = '' ) {
+function nr_placeholder( $label = '' ) {
 	$label = strtoupper( $label ?: 'silence' );
 	$svg   = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1067'>"
 	       . "<rect width='1600' height='1067' fill='#141416'/>"
@@ -133,8 +126,8 @@ function sl_placeholder( $label = '' ) {
 
 /* Body classes for the two effect opt-outs (defaults on). */
 add_filter( 'body_class', function ( $classes ) {
-	if ( sl_opt( 'sl_fx_fade',  '1' ) !== '1' ) $classes[] = 'sl-no-fade';
-	if ( sl_opt( 'sl_fx_drift', '1' ) !== '1' ) $classes[] = 'sl-no-drift';
+	if ( nr_opt( 'nr_fx_fade',  '1' ) !== '1' ) $classes[] = 'nr-no-fade';
+	if ( nr_opt( 'nr_fx_drift', '1' ) !== '1' ) $classes[] = 'nr-no-drift';
 	return $classes;
 } );
 

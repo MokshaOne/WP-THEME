@@ -1,102 +1,92 @@
 <?php
 /**
- * Silence — native project meta boxes (no ACF, no plugins).
- * Gallery: wp.media multi-select stored as an ID array in _sl_gallery.
- * Details: client / year / location text fields.
+ * Silence — native project meta boxes (no-ACF fallback).
+ * Writes the exact same keys as Obscura / the ACF group: project_gallery
+ * (ID array), project_client, project_year, project_location,
+ * featured_on_homepage. When ACF Pro is active, its "Project Details"
+ * group (inc/acf-fields.php) renders instead and these boxes step aside.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/** True when real ACF is active (the polyfill doesn't count). */
+function nr_sil_has_acf() {
+	return class_exists( 'ACF' );
+}
+
 add_action( 'add_meta_boxes', function () {
-	add_meta_box( 'sl_gallery', __( 'Gallery — plates', 'raveenthiran-silence' ), 'sl_gallery_box', sl_pt(), 'normal', 'high' );
-	add_meta_box( 'sl_details', __( 'Project details', 'raveenthiran-silence' ), 'sl_details_box', sl_pt(), 'side' );
+	if ( nr_sil_has_acf() ) return; // ACF renders the same fields itself
+	add_meta_box( 'nr_gallery', __( 'Gallery — plates', 'raveenthiran-silence' ), 'nr_sil_gallery_box', 'nr_project', 'normal', 'high' );
+	add_meta_box( 'nr_details', __( 'Project details', 'raveenthiran-silence' ), 'nr_sil_details_box', 'nr_project', 'side' );
 } );
 
-function sl_gallery_box( $post ) {
-	wp_nonce_field( 'sl_meta_save', 'sl_meta_nonce' );
-	$ids = array_filter( array_map( 'absint', (array) get_post_meta( $post->ID, '_sl_gallery', true ) ) );
-	if ( ! $ids ) $ids = array_filter( array_map( 'absint', (array) get_post_meta( $post->ID, 'project_gallery', true ) ) ); // Obscura bridge
-	echo '<div id="sl-gallery-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">';
+function nr_sil_gallery_box( $post ) {
+	wp_nonce_field( 'nr_sil_meta_save', 'nr_sil_meta_nonce' );
+	$ids = array_filter( array_map( 'absint', (array) get_post_meta( $post->ID, 'project_gallery', true ) ) );
+	echo '<div id="nr-gallery-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">';
 	foreach ( $ids as $id ) {
 		$src = wp_get_attachment_image_url( $id, 'thumbnail' );
+		if ( ! $src && wp_attachment_is( 'video', $id ) ) $src = get_the_post_thumbnail_url( $id, 'thumbnail' );
 		if ( $src ) {
 			printf(
-				'<span class="sl-g-item" data-id="%1$d" title="%2$s" style="position:relative;cursor:pointer"><img src="%3$s" width="90" height="90" style="object-fit:cover;display:block;border:1px solid #ccc"></span>',
+				'<span class="nr-g-item" data-id="%1$d" title="%2$s" style="position:relative;cursor:pointer"><img src="%3$s" width="90" height="90" style="object-fit:cover;display:block;border:1px solid #ccc"></span>',
 				$id, esc_attr__( 'Click to remove', 'raveenthiran-silence' ), esc_url( $src )
 			);
 		}
 	}
 	echo '</div>';
-	printf( '<input type="hidden" id="sl-gallery-ids" name="sl_gallery" value="%s">', esc_attr( implode( ',', $ids ) ) );
-	printf( '<button type="button" class="button" id="sl-gallery-add">%s</button> ', esc_html__( 'Add / reorder images', 'raveenthiran-silence' ) );
-	echo '<p class="description">' . esc_html__( 'Selection order = display order. Click a thumbnail to remove it. The featured image is always shown as plate 01.', 'raveenthiran-silence' ) . '</p>';
+	printf( '<input type="hidden" id="nr-gallery-ids" name="nr_gallery" value="%s">', esc_attr( implode( ',', $ids ) ) );
+	printf( '<button type="button" class="button" id="nr-gallery-add">%s</button> ', esc_html__( 'Add / reorder images', 'raveenthiran-silence' ) );
+	echo '<p class="description">' . esc_html__( 'Selection order = display order. Click a thumbnail to remove it. The featured image is always shown as plate 01. Same field Obscura uses — the two themes share this gallery.', 'raveenthiran-silence' ) . '</p>';
 }
 
-function sl_details_box( $post ) {
+function nr_sil_details_box( $post ) {
 	$fields = [
-		'_sl_client'   => __( 'Client', 'raveenthiran-silence' ),
-		'_sl_year'     => __( 'Year', 'raveenthiran-silence' ),
-		'_sl_location' => __( 'Location', 'raveenthiran-silence' ),
+		'project_client'   => __( 'Client', 'raveenthiran-silence' ),
+		'project_year'     => __( 'Year', 'raveenthiran-silence' ),
+		'project_location' => __( 'Location', 'raveenthiran-silence' ),
 	];
-	$nr_map = [ '_sl_client' => 'project_client', '_sl_year' => 'project_year', '_sl_location' => 'project_location' ];
 	foreach ( $fields as $key => $label ) {
-		$v = get_post_meta( $post->ID, $key, true );
-		if ( $v === '' ) $v = get_post_meta( $post->ID, $nr_map[ $key ], true ); // Obscura bridge
 		printf(
 			'<p><label style="display:block;margin-bottom:2px"><strong>%s</strong></label><input type="text" class="widefat" name="%s" value="%s"></p>',
-			esc_html( $label ), esc_attr( ltrim( $key, '_' ) ), esc_attr( $v )
+			esc_html( $label ), esc_attr( $key ), esc_attr( get_post_meta( $post->ID, $key, true ) )
 		);
 	}
-	$feat = get_post_meta( $post->ID, '_sl_featured', true );
-	if ( $feat === '' ) $feat = get_post_meta( $post->ID, 'featured_on_homepage', true ); // Obscura bridge
-	echo '<p><label><input type="checkbox" name="sl_featured" value="1" ' . checked( $feat, '1', false ) . '> '
+	echo '<p><label><input type="checkbox" name="featured_on_homepage" value="1" ' . checked( get_post_meta( $post->ID, 'featured_on_homepage', true ), '1', false ) . '> '
 		. esc_html__( 'Featured on homepage', 'raveenthiran-silence' ) . '</label></p>';
 }
 
-$sl_save_meta = function ( $post_id ) {
-	if ( ! isset( $_POST['sl_meta_nonce'] ) || ! wp_verify_nonce( $_POST['sl_meta_nonce'], 'sl_meta_save' ) ) return;
+add_action( 'save_post_nr_project', function ( $post_id ) {
+	if ( ! isset( $_POST['nr_sil_meta_nonce'] ) || ! wp_verify_nonce( $_POST['nr_sil_meta_nonce'], 'nr_sil_meta_save' ) ) return;
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
-	$ids = isset( $_POST['sl_gallery'] ) ? array_filter( array_map( 'absint', explode( ',', (string) $_POST['sl_gallery'] ) ) ) : [];
-	update_post_meta( $post_id, '_sl_gallery', $ids );
+	$ids = isset( $_POST['nr_gallery'] ) ? array_filter( array_map( 'absint', explode( ',', (string) $_POST['nr_gallery'] ) ) ) : [];
+	update_post_meta( $post_id, 'project_gallery', $ids );
 
-	$values = [];
-	foreach ( [ 'sl_client' => '_sl_client', 'sl_year' => '_sl_year', 'sl_location' => '_sl_location' ] as $post_key => $meta_key ) {
-		$values[ $meta_key ] = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ?? '' ) );
-		update_post_meta( $post_id, $meta_key, $values[ $meta_key ] );
+	foreach ( [ 'project_client', 'project_year', 'project_location' ] as $key ) {
+		update_post_meta( $post_id, $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ?? '' ) ) );
 	}
-	$featured = isset( $_POST['sl_featured'] ) ? '1' : '0';
-	update_post_meta( $post_id, '_sl_featured', $featured );
+	update_post_meta( $post_id, 'featured_on_homepage', isset( $_POST['featured_on_homepage'] ) ? '1' : '0' );
+} );
 
-	if ( function_exists( 'sl_bridge_active' ) && sl_bridge_active() ) {
-		// Two-way sync: also write Obscura's field keys, so edits made in
-		// Silence are still there if the owner switches back to Obscura.
-		update_post_meta( $post_id, 'project_gallery', $ids );
-		update_post_meta( $post_id, 'project_client',   $values['_sl_client'] );
-		update_post_meta( $post_id, 'project_year',     $values['_sl_year'] );
-		update_post_meta( $post_id, 'project_location', $values['_sl_location'] );
-		update_post_meta( $post_id, 'featured_on_homepage', $featured );
-	}
-};
-add_action( 'save_post_sl_project', $sl_save_meta );
-add_action( 'save_post_nr_project', $sl_save_meta );
-
-// wp.media picker for the gallery box (project edit screen only).
+// wp.media picker for the gallery box (project edit screen only, no ACF).
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
+	if ( nr_sil_has_acf() ) return;
 	if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) return;
-	if ( get_current_screen()->post_type !== sl_pt() ) return;
+	if ( get_current_screen()->post_type !== 'nr_project' ) return;
 	wp_enqueue_media();
 } );
 
 add_action( 'admin_footer', function () {
+	if ( nr_sil_has_acf() ) return;
 	$screen = get_current_screen();
-	if ( ! $screen || $screen->post_type !== sl_pt() || $screen->base !== 'post' ) return;
+	if ( ! $screen || $screen->post_type !== 'nr_project' || $screen->base !== 'post' ) return;
 	?>
 	<script>
 	(function(){
-		var addBtn = document.getElementById('sl-gallery-add');
-		var grid   = document.getElementById('sl-gallery-grid');
-		var input  = document.getElementById('sl-gallery-ids');
+		var addBtn = document.getElementById('nr-gallery-add');
+		var grid   = document.getElementById('nr-gallery-grid');
+		var input  = document.getElementById('nr-gallery-ids');
 		if (!addBtn || !grid || !input || !window.wp || !wp.media) return;
 
 		function render(items){
@@ -104,7 +94,7 @@ add_action( 'admin_footer', function () {
 			input.value = items.map(function(i){ return i.id; }).join(',');
 			items.forEach(function(i){
 				var span = document.createElement('span');
-				span.className = 'sl-g-item';
+				span.className = 'nr-g-item';
 				span.dataset.id = i.id;
 				span.title = '<?php echo esc_js( __( 'Click to remove', 'raveenthiran-silence' ) ); ?>';
 				span.style.cssText = 'position:relative;cursor:pointer';
@@ -113,13 +103,13 @@ add_action( 'admin_footer', function () {
 			});
 		}
 		function current(){
-			return Array.prototype.map.call(grid.querySelectorAll('.sl-g-item'), function(el){
+			return Array.prototype.map.call(grid.querySelectorAll('.nr-g-item'), function(el){
 				return { id: el.dataset.id, src: el.querySelector('img').src };
 			});
 		}
 
 		grid.addEventListener('click', function(e){
-			var item = e.target.closest('.sl-g-item');
+			var item = e.target.closest('.nr-g-item');
 			if (!item) return;
 			item.remove();
 			render(current());

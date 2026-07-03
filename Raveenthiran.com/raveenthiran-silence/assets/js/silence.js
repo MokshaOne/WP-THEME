@@ -1,9 +1,10 @@
 /* ============================================================
-   Silence — silence.js
-   - hero slideshow (crossfade)
+   Silence II — silence.js · v2.0.0
+   - hero: curtain-wipe slides, serif word-stagger, ghost numeral,
+     autoplay hairline
    - the signature: chrome falls silent on idle
-   - index hover preview + category filter
-   - project rail (wheel → horizontal, keys, counter)
+   - index: cursor-trailing preview plate + row dimming + filters
+   - rail: wheel → horizontal, counter + ghost, progress, parallax
    ============================================================ */
 (function () {
   'use strict';
@@ -14,18 +15,49 @@
   const finePointer  = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   const pad2 = (n) => String(n).padStart(2, '0');
 
-  /* ---------- hero slideshow ---------- */
+  /* ---------- load intro — words rise, plate settles ---------- */
+  if (!reduceMotion && ($('.nr-hero') || $('.nr-index'))) {
+    document.body.classList.add('nr-intro');
+    const reveal = () => requestAnimationFrame(() =>
+      setTimeout(() => document.body.classList.remove('nr-intro'), 120));
+    (document.fonts && document.fonts.ready) ? document.fonts.ready.then(reveal) : reveal();
+  }
+
+  /* ---------- hero ---------- */
   const hero = $('[data-hero]');
   if (hero) {
     let slides = [];
-    try { slides = JSON.parse(($('#sl-hero-data') || {}).textContent || '[]') || []; } catch (e) { slides = []; }
+    try { slides = JSON.parse(($('#nr-hero-data') || {}).textContent || '[]') || []; } catch (e) { slides = []; }
 
-    const plates  = $$('.sl-plate', hero);
-    const titleEl = $('[data-hero-link]', hero);
+    const plates  = $$('.nr-plate', hero);
+    const titleEl = $('[data-hero-title]', hero);
     const metaEl  = $('[data-hero-meta]', hero);
     const iEl     = $('[data-hero-i]', hero);
+    const ghostEl = $('[data-hero-ghost]', hero);
+    const barEl   = $('[data-hero-bar]', hero);
     const N       = plates.length || 1;
+    const interval = Math.max(3, parseInt(hero.dataset.interval || '7', 10)) * 1000;
     let cur = 0, locked = false, timer = null;
+
+    // rebuild the word spans exactly as PHP renders them (last word italic)
+    function renderTitle(title) {
+      if (!titleEl) return;
+      const words = String(title || '').trim().split(/\s+/).filter(Boolean);
+      titleEl.innerHTML = words.map((w, k) => {
+        const italic = (k === words.length - 1 && words.length > 1) ? ' nr-w--i' : '';
+        const el = document.createElement('span');
+        el.textContent = w;
+        return `<span class="nr-w${italic}"><span class="nr-w__i" style="transition-delay:${k * 70}ms">${el.innerHTML}</span></span> `;
+      }).join('');
+    }
+
+    function restartBar() {
+      if (!barEl) return;
+      barEl.classList.remove('is-running');
+      barEl.style.setProperty('--nr-interval', (interval / 1000) + 's');
+      void barEl.offsetWidth; // restart the CSS animation
+      if (!reduceMotion && N > 1) barEl.classList.add('is-running');
+    }
 
     function go(i) {
       if (locked || N < 2) return;
@@ -33,22 +65,37 @@
       if (i === cur) return;
       locked = true;
 
-      plates.forEach((p, k) => {
-        p.classList.toggle('is-on', k === i);
-        p.setAttribute('aria-hidden', k === i ? 'false' : 'true');
-      });
-      hero.classList.add('is-swapping');
+      const from = plates[cur], to = plates[i];
 
-      // swap the caption mid-crossfade, while it's invisible
+      // curtain wipe: old plate holds underneath, new one unveils over it
+      from.classList.add('is-leaving');
+      from.classList.remove('is-on');
+      to.classList.add('is-entering', 'is-on');
+      to.setAttribute('aria-hidden', 'false');
+      from.setAttribute('aria-hidden', 'true');
+      void to.offsetWidth;
+      to.classList.remove('is-entering');
+
+      // caption drops out, swaps, staggers back in
+      hero.classList.add('is-swapping');
+      const swapMs = reduceMotion ? 0 : 460;
       setTimeout(() => {
         const s = slides[i] || {};
-        if (titleEl) { titleEl.textContent = s.title || ''; titleEl.href = s.url || '#'; }
+        renderTitle(s.title);
+        if (titleEl && s.url) titleEl.href = s.url;
         if (metaEl)  metaEl.textContent = s.meta || '';
         if (iEl)     iEl.textContent = pad2(i + 1);
-        hero.classList.remove('is-swapping');
+        if (ghostEl) ghostEl.textContent = pad2(i + 1);
+        requestAnimationFrame(() => requestAnimationFrame(() => hero.classList.remove('is-swapping')));
+      }, swapMs);
+
+      setTimeout(() => {
+        from.classList.remove('is-leaving');
         cur = i;
         locked = false;
-      }, reduceMotion ? 0 : 700);
+      }, reduceMotion ? 10 : 1050);
+
+      restartBar();
     }
 
     const prev = $('[data-hero-prev]', hero);
@@ -62,7 +109,6 @@
       if (e.key === 'ArrowRight') { go(cur + 1); arm(); }
     });
 
-    // touch swipe
     let sx = 0, sy = 0;
     hero.addEventListener('touchstart', (e) => { sx = e.changedTouches[0].clientX; sy = e.changedTouches[0].clientY; }, { passive: true });
     hero.addEventListener('touchend', (e) => {
@@ -70,30 +116,26 @@
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) { go(cur + (dx < 0 ? 1 : -1)); arm(); }
     }, { passive: true });
 
-    const interval = Math.max(3, parseInt(hero.dataset.interval || '7', 10)) * 1000;
     function arm() {
       if (timer) clearInterval(timer);
       if (!reduceMotion && N > 1) timer = setInterval(() => go(cur + 1), interval);
     }
     arm();
+    restartBar();
   }
 
-  /* ---------- the signature: chrome falls silent ----------
-     After a few idle seconds the .sl-ui chrome fades out and the
-     photograph is all that remains. Any input wakes it. Keyboard
-     focus inside the chrome always keeps it awake (a11y). */
+  /* ---------- the signature: chrome falls silent ---------- */
   (function fallSilent() {
-    if (document.body.classList.contains('sl-no-fade')) return;
+    if (document.body.classList.contains('nr-no-fade')) return;
     if (!finePointer || reduceMotion) return;
-    // only where the image is the page: home + single project
-    if (!$('.sl-hero') && !$('.sl-project')) return;
+    if (!$('.nr-hero') && !$('.nr-project')) return;
 
     const DELAY = 3500;
     let t = null;
 
     function hush() {
       const focused = document.activeElement;
-      if (focused && focused.closest && focused.closest('.sl-ui')) return; // keep chrome for keyboard users
+      if (focused && focused.closest && focused.closest('.nr-ui')) return; // keyboard users keep the chrome
       document.body.classList.add('is-quiet');
     }
     function wake() {
@@ -107,20 +149,32 @@
     wake();
   })();
 
-  /* ---------- index: hover preview + dimming ---------- */
+  /* ---------- index: cursor-trailing preview + filters ---------- */
   const index = $('[data-index]');
   if (index) {
-    const list    = $('[data-index-list]', index);
-    const preview = $('[data-index-preview]', index);
+    const list  = $('[data-index-list]', index);
+    const float = $('[data-index-float]', index);
+    const fImg  = float && float.querySelector('img');
 
-    if (list && preview && finePointer) {
+    if (list && float && fImg && finePointer && !reduceMotion) {
+      let mx = innerWidth / 2, my = innerHeight / 2, fx = mx, fy = my, vx = 0;
+      window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
+      (function follow() {
+        const nx = fx + (mx - fx) * 0.11;
+        vx = nx - fx; fx = nx;
+        fy += (my - fy) * 0.11;
+        const rot = Math.max(-6, Math.min(6, vx * 0.35));
+        float.style.transform = `translate(${fx}px, ${fy}px) translate(-50%, -50%) rotate(${rot}deg)`;
+        requestAnimationFrame(follow);
+      })();
+
       list.addEventListener('mouseover', (e) => {
         const a = e.target.closest('a[data-preview]');
         if (!a) return;
         list.classList.add('is-hovering');
         const src = a.dataset.preview;
         if (src) {
-          preview.style.backgroundImage = 'url("' + src + '")';
+          if (fImg.getAttribute('src') !== src) fImg.src = src;
           index.classList.add('has-preview');
         } else {
           index.classList.remove('has-preview');
@@ -132,10 +186,10 @@
       });
     }
 
-    // category filter (client-side, instant)
-    $$('.sl-filters button', index).forEach((btn) => {
+    // category filter (client-side, instant, renumbers)
+    $$('.nr-filters button', index).forEach((btn) => {
       btn.addEventListener('click', () => {
-        $$('.sl-filters button', index).forEach((b) => b.classList.toggle('is-on', b === btn));
+        $$('.nr-filters button', index).forEach((b) => b.classList.toggle('is-on', b === btn));
         const f = btn.dataset.filter || '';
         let n = 0;
         $$('li[data-cats]', list).forEach((li) => {
@@ -143,7 +197,7 @@
           li.classList.toggle('is-hidden', !show);
           if (show) {
             n++;
-            const num = li.querySelector('.sl-index__n');
+            const num = li.querySelector('.nr-index__n');
             if (num) num.textContent = pad2(n);
           }
         });
@@ -154,12 +208,14 @@
   /* ---------- project rail ---------- */
   const railPage = $('[data-rail-page]');
   if (railPage) {
-    const rail   = $('[data-rail]', railPage);
-    const iEl    = $('[data-rail-i]', railPage);
-    const plates = $$('.sl-rail__plate', railPage);
+    const rail    = $('[data-rail]', railPage);
+    const iEl     = $('[data-rail-i]', railPage);
+    const ghostEl = $('[data-rail-ghost]', railPage);
+    const barEl   = $('[data-rail-bar]', railPage);
+    const plates  = $$('.nr-rail__plate', railPage);
+    const mobile  = window.matchMedia('(max-width:900px)').matches;
 
     if (rail && finePointer) {
-      // vertical wheel drives the horizontal rail (desktop)
       rail.addEventListener('wheel', (e) => {
         if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
         e.preventDefault();
@@ -167,13 +223,40 @@
       }, { passive: false });
     }
 
-    if (rail && iEl && plates.length && 'IntersectionObserver' in window) {
+    if (rail && plates.length && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((en) => {
-          if (en.isIntersecting) iEl.textContent = pad2(parseInt(en.target.dataset.plateN || '1', 10));
+          if (en.isIntersecting) {
+            const n = pad2(parseInt(en.target.dataset.plateN || '1', 10));
+            if (iEl)     iEl.textContent = n;
+            if (ghostEl) ghostEl.textContent = n;
+          }
         });
-      }, { root: window.matchMedia('(max-width:900px)').matches ? null : rail, threshold: 0.6 });
+      }, { root: mobile ? null : rail, threshold: 0.6 });
       plates.forEach((p) => io.observe(p));
+    }
+
+    // progress hairline + plate parallax, one rAF-throttled scroll pass
+    if (rail && !mobile) {
+      let ticking = false;
+      const media = plates.map((p) => p.querySelector('img, video')).filter(Boolean);
+      function paint() {
+        ticking = false;
+        const max = rail.scrollWidth - rail.clientWidth;
+        if (barEl && max > 0) barEl.style.width = ((rail.scrollLeft / max) * 100) + '%';
+        if (!reduceMotion && finePointer) {
+          const mid = rail.clientWidth / 2;
+          media.forEach((m) => {
+            const r = m.getBoundingClientRect();
+            const off = (r.left + r.width / 2 - mid) / rail.clientWidth; // -0.5 … 0.5-ish
+            m.style.transform = `translateX(${(-off * 26).toFixed(1)}px)`;
+          });
+        }
+      }
+      rail.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+      }, { passive: true });
+      paint();
     }
 
     window.addEventListener('keydown', (e) => {

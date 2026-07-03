@@ -6,11 +6,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 ?>
 
-<section class="sl-sheet sl-404">
-	<div class="sl-sheet__inner">
+<section class="nr-sheet nr-404">
+	<div class="nr-sheet__inner">
 		<h1>404</h1>
 		<p><?php esc_html_e( 'Nothing here — only silence.', 'raveenthiran-silence' ); ?></p>
-		<p><a class="sl-back" href="<?php echo esc_url( home_url( '/' ) ); ?>">← <?php esc_html_e( 'Back to the work', 'raveenthiran-silence' ); ?></a></p>
+		<p><a class="nr-back" href="<?php echo esc_url( home_url( '/' ) ); ?>">← <?php esc_html_e( 'Back to the work', 'raveenthiran-silence' ); ?></a></p>
 	</div>
 </section>
 

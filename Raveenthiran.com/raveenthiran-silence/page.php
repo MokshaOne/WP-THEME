@@ -8,8 +8,8 @@ get_header();
 while ( have_posts() ) : the_post();
 ?>
 
-<article class="sl-sheet">
-	<div class="sl-sheet__inner sl-prose">
+<article class="nr-sheet">
+	<div class="nr-sheet__inner nr-prose">
 		<h1><?php the_title(); ?></h1>
 		<?php the_content(); ?>
 	</div>

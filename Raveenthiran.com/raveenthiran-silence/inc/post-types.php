@@ -1,14 +1,14 @@
 <?php
 /**
  * Silence — custom post types & taxonomies.
- * sl_project (public, /work), sl_journal (public, /journal),
- * sl_enquiry (private, auto-logged form submissions).
+ * nr_project (public, /work), nr_journal (public, /journal),
+ * nr_enquiry (private, auto-logged form submissions).
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'init', function () {
 
-	register_post_type( sl_pt(), [
+	register_post_type( 'nr_project', [
 		'labels' => [
 			'name'          => __( 'Projects', 'raveenthiran-silence' ),
 			'singular_name' => __( 'Project', 'raveenthiran-silence' ),
@@ -24,7 +24,7 @@ add_action( 'init', function () {
 		'show_in_rest' => true,
 	] );
 
-	register_taxonomy( sl_tax(), sl_pt(), [
+	register_taxonomy( 'nr_project_cat', 'nr_project', [
 		'labels' => [
 			'name'          => __( 'Categories', 'raveenthiran-silence' ),
 			'singular_name' => __( 'Category', 'raveenthiran-silence' ),
@@ -35,7 +35,7 @@ add_action( 'init', function () {
 		'show_in_rest' => true,
 	] );
 
-	register_post_type( sl_jt(), [
+	register_post_type( 'nr_journal', [
 		'labels' => [
 			'name'          => __( 'Journal', 'raveenthiran-silence' ),
 			'singular_name' => __( 'Entry', 'raveenthiran-silence' ),
@@ -49,7 +49,7 @@ add_action( 'init', function () {
 		'show_in_rest' => true,
 	] );
 
-	register_post_type( 'sl_enquiry', [
+	register_post_type( 'nr_enquiry', [
 		'labels' => [
 			'name'          => __( 'Enquiries', 'raveenthiran-silence' ),
 			'singular_name' => __( 'Enquiry', 'raveenthiran-silence' ),
@@ -72,7 +72,7 @@ add_action( 'after_switch_theme', 'flush_rewrite_rules' );
 // Order the /work archive by menu_order (drag order in admin), then date.
 add_action( 'pre_get_posts', function ( $q ) {
 	if ( is_admin() || ! $q->is_main_query() ) return;
-	if ( $q->is_post_type_archive( sl_pt() ) || $q->is_tax( sl_tax() ) ) {
+	if ( $q->is_post_type_archive( 'nr_project' ) || $q->is_tax( 'nr_project_cat' ) ) {
 		$q->set( 'posts_per_page', -1 ); // the index is a text list — show the whole collection
 		$q->set( 'orderby', [ 'menu_order' => 'ASC', 'date' => 'DESC' ] );
 	}

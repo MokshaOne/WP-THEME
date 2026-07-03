@@ -3,34 +3,34 @@
  * SEO module
  * - Extended schema.org (LocalBusiness with address, opening hours, geo).
  * - FAQPage schema on /faq, Article schema on journal posts,
- *   VisualArtwork on individual sl_project posts.
+ *   VisualArtwork on individual nr_project posts.
  * - /sitemap.xml route and custom robots.txt.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-add_action( 'wp_head', 'sl_schema_markup_extended', 6 );
+add_action( 'wp_head', 'nr_schema_markup_extended', 6 );
 
-function sl_schema_markup_extended() {
+function nr_schema_markup_extended() {
     try {
-        sl_schema_markup_extended_render();
+        nr_schema_markup_extended_render();
     } catch ( \Throwable $e ) {
         error_log( '[NR seo] schema markup failed: ' . $e->getMessage() );
     }
 }
 
-function sl_schema_markup_extended_render() {
+function nr_schema_markup_extended_render() {
     global $post;
 
     $name         = 'Nishuthan Raveenthiran';
     $site_url     = get_site_url();
-    $location     = sl_opt( 'sl_location', 'Wien, Austria' );
-    $instagram    = sl_opt( 'sl_instagram', '' );
-    $phone        = sl_opt( 'sl_seo_phone', '' );
-    $street       = sl_opt( 'sl_seo_street', '' );
-    $postal       = sl_opt( 'sl_seo_postal', '1010' );
-    $city         = sl_opt( 'sl_seo_city', 'Wien' );
-    $lat          = sl_opt( 'sl_seo_lat', '48.2082' );
-    $lng          = sl_opt( 'sl_seo_lng', '16.3738' );
+    $location     = nr_opt( 'nr_location', 'Wien, Austria' );
+    $instagram    = nr_opt( 'nr_instagram', '' );
+    $phone        = nr_opt( 'nr_phone', '' );
+    $street       = nr_opt( 'options_seo_street', '' );
+    $postal       = nr_opt( 'options_seo_postal_code', '1010' );
+    $city         = nr_opt( 'options_seo_city', 'Wien' );
+    $lat          = nr_opt( 'options_seo_lat', '48.2082' );
+    $lng          = nr_opt( 'options_seo_lng', '16.3738' );
     $hours_rows   = [];
 
     // LocalBusiness + Person auf Homepage und statischen Seiten
@@ -43,7 +43,7 @@ function sl_schema_markup_extended_render() {
                     '@id'         => $site_url . '/#person',
                     'name'        => $name,
                     'jobTitle'    => 'Photographer',
-                    'description' => sl_opt( 'sl_tagline', '' ) ?: 'Editorial & Commercial Photographer based in Vienna',
+                    'description' => nr_opt( 'nr_tagline', '' ) ?: 'Editorial & Commercial Photographer based in Vienna',
                     'url'         => $site_url,
                     'address'     => [
                         '@type'           => 'PostalAddress',
@@ -80,9 +80,9 @@ function sl_schema_markup_extended_render() {
         // #18 — sameAs from every configured social profile.
         $sameas = array_values( array_filter( [
             is_string( $instagram ) ? $instagram : '',
-            (string) sl_opt( 'sl_behance', '' ),
-            (string) sl_opt( 'sl_vimeo', '' ),
-            (string) sl_opt( 'sl_linkedin', '' ),
+            (string) nr_opt( 'nr_behance', '' ),
+            (string) nr_opt( 'nr_vimeo', '' ),
+            (string) nr_opt( 'nr_linkedin', '' ),
         ] ) );
         if ( $sameas ) $schema['@graph'][0]['sameAs'] = $sameas;
 
@@ -101,9 +101,9 @@ function sl_schema_markup_extended_render() {
     }
 
     // VisualArtwork auf einzelnen Projekten
-    if ( is_singular( sl_pt() ) && $post ) {
+    if ( is_singular( 'nr_project' ) && $post ) {
         $cover   = get_post_thumbnail_id( $post->ID );
-        $gallery = function_exists( 'sl_project_gallery' ) ? sl_project_gallery( $post->ID ) : [];
+        $gallery = function_exists( 'nr_project_gallery' ) ? nr_project_gallery( $post->ID ) : [];
         $images  = [];
         if ( is_array( $cover ) && ! empty( $cover['url'] ) ) {
             $images[] = $cover['url'];
@@ -129,8 +129,8 @@ function sl_schema_markup_extended_render() {
             'creator'         => [ '@type' => 'Person', 'name' => $name, 'url' => $site_url ],
             'url'             => get_permalink(),
             'artMedium'       => 'Photography',
-            'locationCreated' => get_post_meta( $post->ID, '_sl_location', true ) ?: $city,
-            'dateCreated'     => get_post_meta( $post->ID, '_sl_year', true ) ?: get_the_date( 'Y' ),
+            'locationCreated' => get_post_meta( $post->ID, 'project_location', true ) ?: $city,
+            'dateCreated'     => get_post_meta( $post->ID, 'project_year', true ) ?: get_the_date( 'Y' ),
         ];
         if ( ! empty( $images ) ) {
             // Richer ImageObject entries (caption + creator) instead of bare URLs.
@@ -143,7 +143,7 @@ function sl_schema_markup_extended_render() {
                 ];
             }, $images );
         }
-        if ( $client = get_post_meta( $post->ID, '_sl_client', true ) ) {
+        if ( $client = get_post_meta( $post->ID, 'project_client', true ) ) {
             $schema['contributor'] = [ '@type' => 'Organization', 'name' => $client ];
         }
 
@@ -152,9 +152,9 @@ function sl_schema_markup_extended_render() {
 
     // FAQPage Schema — FAQ now lives on the merged Enquire page.
     $is_enquire = ( is_page() && get_page_template_slug( get_queried_object_id() ) === 'page-enquire.php' ) || is_page( 'enquire' );
-    if ( $is_enquire && function_exists( 'sl_faq_items' ) ) {
+    if ( $is_enquire && function_exists( 'nr_faq_items' ) ) {
         $entities = [];
-        foreach ( sl_faq_items() as $item ) {
+        foreach ( nr_faq_items() as $item ) {
             if ( ! empty( $item['q'] ) && ! empty( $item['a'] ) ) {
                 $entities[] = [
                     '@type'          => 'Question',
@@ -175,17 +175,17 @@ function sl_schema_markup_extended_render() {
    FEATURE 16 — Sitemap.xml
    ============================================================================= */
 
-add_action( 'init', 'sl_register_sitemap_route' );
+add_action( 'init', 'nr_register_sitemap_route' );
 
-function sl_register_sitemap_route() {
-    add_rewrite_rule( '^sitemap\.xml$', 'index.php?sl_sitemap=1', 'top' );
-    add_rewrite_tag( '%sl_sitemap%', '1' );
+function nr_register_sitemap_route() {
+    add_rewrite_rule( '^sitemap\.xml$', 'index.php?nr_sitemap=1', 'top' );
+    add_rewrite_tag( '%nr_sitemap%', '1' );
 }
 
-add_action( 'template_redirect', 'sl_serve_sitemap' );
+add_action( 'template_redirect', 'nr_serve_sitemap' );
 
-function sl_serve_sitemap() {
-    if ( ! get_query_var( 'sl_sitemap' ) ) return;
+function nr_serve_sitemap() {
+    if ( ! get_query_var( 'nr_sitemap' ) ) return;
 
     header( 'Content-Type: application/xml; charset=UTF-8' );
 
@@ -201,20 +201,20 @@ function sl_serve_sitemap() {
     $urls = array_merge( $urls, $static );
 
     // Projekte
-    $projects = get_posts( [ 'post_type' => sl_pt(), 'posts_per_page' => -1, 'fields' => 'ids' ] );
+    $projects = get_posts( [ 'post_type' => 'nr_project', 'posts_per_page' => -1, 'fields' => 'ids' ] );
     foreach ( $projects as $id ) {
         $imgs = [];
         if ( has_post_thumbnail( $id ) ) {
-            $u = get_the_post_thumbnail_url( $id, 'sl-plate' );
+            $u = get_the_post_thumbnail_url( $id, 'nr-plate' );
             if ( $u ) $imgs[] = $u;
         }
-        $gallery = function_exists( 'sl_project_gallery' ) ? sl_project_gallery( $id ) : [];
+        $gallery = function_exists( 'nr_project_gallery' ) ? nr_project_gallery( $id ) : [];
         if ( is_array( $gallery ) ) {
             foreach ( $gallery as $g ) {
                 if ( is_array( $g ) && ! empty( $g['url'] ) ) {
                     $imgs[] = $g['url'];
                 } elseif ( is_numeric( $g ) ) {
-                    $gu = wp_get_attachment_image_url( (int) $g, 'sl-plate' );
+                    $gu = wp_get_attachment_image_url( (int) $g, 'nr-plate' );
                     if ( $gu ) $imgs[] = $gu;
                 }
             }
@@ -248,9 +248,9 @@ function sl_serve_sitemap() {
 }
 
 // robots.txt
-add_filter( 'robots_txt', 'sl_custom_robots_txt', 10, 2 );
+add_filter( 'robots_txt', 'nr_custom_robots_txt', 10, 2 );
 
-function sl_custom_robots_txt( $output, $public ) {
+function nr_custom_robots_txt( $output, $public ) {
     $site_url = get_site_url();
     return "User-agent: *\n"
          . "Disallow: /wp-admin/\n"
@@ -270,13 +270,13 @@ function sl_custom_robots_txt( $output, $public ) {
    Appended in v3.6 — sits next to the existing schema.org markup above.
    ============================================================================= */
 
-add_action( 'wp_head', 'sl_social_meta', 7 );
+add_action( 'wp_head', 'nr_social_meta', 7 );
 
-function sl_social_meta() {
+function nr_social_meta() {
 	$title    = wp_get_document_title();
 	$site_url = home_url( '/' );
 	$canonical = is_singular() ? get_permalink() : ( is_post_type_archive() ? get_post_type_archive_link( get_post_type() ) : $site_url );
-	$desc     = sl_opt( 'sl_tagline', __( 'Editorial, architectural, and portrait photography. Vienna.', 'raveenthiran-silence' ) );
+	$desc     = nr_opt( 'nr_tagline', __( 'Editorial, architectural, and portrait photography. Vienna.', 'raveenthiran-silence' ) );
 	if ( is_singular() && has_excerpt() ) {
 		$desc = wp_strip_all_tags( get_the_excerpt() );
 	} elseif ( is_singular() && ! is_front_page() ) {
@@ -286,19 +286,19 @@ function sl_social_meta() {
 
 	$image = '';
 	if ( is_singular() && has_post_thumbnail() ) {
-		$image = get_the_post_thumbnail_url( get_the_ID(), 'sl-plate' );
+		$image = get_the_post_thumbnail_url( get_the_ID(), 'nr-plate' );
 	}
 	if ( ! $image ) {
 		// Fallback to first featured project's hero, or site icon
 		$q = new WP_Query( [
-			'post_type'      => sl_pt(),
+			'post_type'      => 'nr_project',
 			'posts_per_page' => 1,
-			'meta_key'       => sl_featured_key(),
+			'meta_key'       => 'featured_on_homepage',
 			'meta_value'     => '1',
 			'fields'         => 'ids',
 		] );
 		if ( $q->have_posts() ) {
-			$image = get_the_post_thumbnail_url( $q->posts[0], 'sl-plate' );
+			$image = get_the_post_thumbnail_url( $q->posts[0], 'nr-plate' );
 		}
 		wp_reset_postdata();
 	}
@@ -307,7 +307,7 @@ function sl_social_meta() {
 	}
 
 	$locale = get_locale() ?: 'en_US';
-	$type   = is_singular( sl_pt() ) ? 'article' : ( is_singular() ? 'article' : 'website' );
+	$type   = is_singular( 'nr_project' ) ? 'article' : ( is_singular() ? 'article' : 'website' );
 
 	echo "\n<!-- sl social meta -->\n";
 	printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $canonical ) );
@@ -323,8 +323,8 @@ function sl_social_meta() {
 	printf( '<meta property="og:locale" content="%s">' . "\n", esc_attr( $locale ) );
 	// #69 — prefer a composited 1200x630 share card for single projects.
 	$og_w = 2400; $og_h = 1600;
-	if ( is_singular( sl_pt() ) && function_exists( 'sl_og_card_url' ) ) {
-		$card = sl_og_card_url( get_queried_object_id() );
+	if ( is_singular( 'nr_project' ) && function_exists( 'nr_og_card_url' ) ) {
+		$card = nr_og_card_url( get_queried_object_id() );
 		if ( $card ) { $image = $card; $og_w = 1200; $og_h = 630; }
 	}
 	if ( $image ) {
@@ -336,7 +336,7 @@ function sl_social_meta() {
 
 	// Twitter
 	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
-	$tw_handle = sl_opt( 'sl_twitter_handle', '' );
+	$tw_handle = nr_opt( 'nr_twitter_handle', '' );
 	if ( $tw_handle ) printf( '<meta name="twitter:site" content="@%s">' . "\n", esc_attr( ltrim( $tw_handle, '@' ) ) );
 	printf( '<meta name="twitter:title" content="%s">' . "\n", esc_attr( $title ) );
 	printf( '<meta name="twitter:description" content="%s">' . "\n", esc_attr( $desc ) );
@@ -344,31 +344,31 @@ function sl_social_meta() {
 
 	// Search Console / Bing / Yandex verification
 	foreach ( [
-		'google'   => 'sl_verify_google',
-		'msvalidate.01' => 'sl_verify_bing',
-		'yandex-verification' => 'sl_verify_yandex',
+		'google'   => 'nr_verify_google',
+		'msvalidate.01' => 'nr_verify_bing',
+		'yandex-verification' => 'nr_verify_yandex',
 	] as $name => $key ) {
-		$v = trim( (string) sl_opt( $key, '' ) );
+		$v = trim( (string) nr_opt( $key, '' ) );
 		if ( $v ) printf( '<meta name="%s" content="%s">' . "\n", esc_attr( $name ), esc_attr( $v ) );
 	}
 }
 
 /* BreadcrumbList JSON-LD — helps Google show breadcrumbs in SERPs */
-add_action( 'wp_head', 'sl_breadcrumb_schema', 8 );
+add_action( 'wp_head', 'nr_breadcrumb_schema', 8 );
 
-function sl_breadcrumb_schema() {
+function nr_breadcrumb_schema() {
 	if ( is_front_page() ) return;
 
 	$items = [];
 	$home  = home_url( '/' );
 	$items[] = [ 'name' => __( 'Home', 'raveenthiran-silence' ), 'item' => $home ];
 
-	if ( is_singular( sl_pt() ) ) {
-		$archive = get_post_type_archive_link( sl_pt() );
+	if ( is_singular( 'nr_project' ) ) {
+		$archive = get_post_type_archive_link( 'nr_project' );
 		if ( $archive ) $items[] = [ 'name' => __( 'Work', 'raveenthiran-silence' ), 'item' => $archive ];
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
-	} elseif ( is_post_type_archive( sl_pt() ) ) {
-		$items[] = [ 'name' => __( 'Work', 'raveenthiran-silence' ), 'item' => get_post_type_archive_link( sl_pt() ) ];
+	} elseif ( is_post_type_archive( 'nr_project' ) ) {
+		$items[] = [ 'name' => __( 'Work', 'raveenthiran-silence' ), 'item' => get_post_type_archive_link( 'nr_project' ) ];
 	} elseif ( is_page() ) {
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
 	} else {
@@ -389,12 +389,12 @@ function sl_breadcrumb_schema() {
 }
 
 /* Analytics / custom tracking script — injected into <head> from settings */
-add_action( 'wp_head', 'sl_inject_tracking_script', 100 );
+add_action( 'wp_head', 'nr_inject_tracking_script', 100 );
 
-function sl_inject_tracking_script() {
+function nr_inject_tracking_script() {
 	if ( is_admin() || is_user_logged_in() ) return; // don't track admins
-	if ( ( $_COOKIE['sl_consent'] ?? '' ) !== 'accepted' ) return; // #75 consent-gated
-	$script = (string) get_option( 'sl_tracking_script', '' );
+	if ( ( $_COOKIE['nr_consent'] ?? '' ) !== 'accepted' ) return; // #75 consent-gated
+	$script = (string) get_option( 'nr_tracking_script', '' );
 	if ( trim( $script ) === '' ) return;
 	echo "\n<!-- sl tracking -->\n" . $script . "\n";
 }

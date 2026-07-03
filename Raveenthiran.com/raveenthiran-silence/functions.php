@@ -5,7 +5,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SL_THEME_VERSION', '1.1.1' );
+define( 'SL_THEME_VERSION', '1.2.0' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults
@@ -63,6 +63,7 @@ $includes = [
 	'inc/post-types.php',    // sl_project / sl_journal / sl_enquiry CPTs
 	'inc/gallery-meta.php',  // native gallery + project-details meta boxes
 	'inc/settings.php',      // Appearance → Silence
+	'inc/activation.php',    // on switch: create pages + import Obscura settings
 	'inc/enquiry.php',       // enquiry form handler + mail
 	'inc/security.php',      // Cloudflare Turnstile spam shield (optional keys)
 	'inc/smtp.php',          // SMTP delivery + test button

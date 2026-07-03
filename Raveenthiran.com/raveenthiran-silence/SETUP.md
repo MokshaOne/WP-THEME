@@ -1,8 +1,17 @@
 # Silence — setup checklist
 
-A monochrome, single-screen portfolio. Install via **Appearance → Themes → Add New → Upload Theme**, activate, then:
+A monochrome, single-screen portfolio. Install via **Appearance → Themes → Add New → Upload Theme**, activate — and most of the setup happens for you.
 
-## 1. Pages — assign a Template (Page → Attributes → Template)
+## 0. On activation — automatic (new in 1.2)
+The moment you activate Silence it:
+- **Creates the About & Enquire pages** with the right templates assigned (if a page with that slug already exists — e.g. from Obscura — it reuses it and just assigns the template; nothing is duplicated).
+- **Imports your Obscura settings** — wordmark, tagline, location, availability, socials, enquiry email, SEO/verification, SMTP (incl. the app password) and Turnstile keys are copied into Silence's own options. Existing Silence values are never overwritten, so it's safe to re-run.
+- Shows a one-time summary in the admin telling you what it did.
+
+A green admin notice confirms it. **Then just do one thing: Settings → Permalinks → Save** (flushes rewrites so `/work`, `/journal`, `/sl-og/…` resolve). That's it.
+
+## 1. Pages (only if you skipped auto-setup or need to redo it)
+The two template pages are created for you on activation. To do it manually: create a Page, then **Page → Attributes → Template**:
 | Title | Slug | Template |
 |---|---|---|
 | About | `about` | **About** |

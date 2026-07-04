@@ -21,6 +21,13 @@ $nr_avail   = nr_opt( 'nr_avail_text', '' );
 
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'raveenthiran-silence' ); ?></a>
 
+<?php /* entrance counter — JS-driven, once per session; hidden for no-JS,
+        reduced-motion, returning visitors, and the nr_fx_loader opt-out */ ?>
+<div class="nr-loader" aria-hidden="true">
+	<span class="nr-loader__mark"><?php echo esc_html( $nr_studio ); ?></span>
+	<span class="nr-loader__n" data-loader-n>0</span>
+</div>
+
 <header class="nr-top nr-ui" role="banner">
 	<a class="nr-mark" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 		<em><?php echo esc_html( $nr_studio ); ?></em><?php if ( $nr_tagline ) : ?><span><?php echo esc_html( $nr_tagline ); ?></span><?php endif; ?>

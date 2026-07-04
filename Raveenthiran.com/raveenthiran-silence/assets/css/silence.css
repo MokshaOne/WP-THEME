@@ -145,6 +145,42 @@ body.nr-no-fade{cursor:auto}
 html.nr-js .nr-rise{opacity:0;transform:translateY(34px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
 html.nr-js .nr-rise.is-in{opacity:1;transform:none}
 
+/* =========================================================
+   Entrance counter — curtain + percentage, once per session
+   (the "preloader" pattern; JS drives the number, lifts the
+   curtain, and removes the node)
+   ========================================================= */
+.nr-loader{
+  position:fixed;inset:0;z-index:200;background:var(--bg);
+  display:none;align-items:flex-end;justify-content:space-between;
+  padding:0 var(--pad) 34px;
+  transition:transform 1s var(--ease-out);
+}
+html.nr-load .nr-loader{display:flex}
+@media (prefers-reduced-motion: reduce){ .nr-loader{display:none !important} }
+.nr-loader.is-done{transform:translateY(-100%)}
+.nr-loader__mark{font-family:var(--ff-serif);font-style:italic;font-size:22px;text-transform:lowercase}
+.nr-loader__n{
+  font-family:var(--ff-serif);font-style:italic;font-weight:400;
+  font-size:clamp(80px,14vw,220px);line-height:.8;
+  font-variant-numeric:tabular-nums;
+}
+body.nr-no-loader .nr-loader{display:none !important}
+
+/* scroll-scrubbed statement — words brighten as you read through
+   (the TextGradientScroll pattern, driven by scroll progress) */
+.nr-scrub .nr-sw{color:var(--ink-3);transition:color .35s linear}
+.nr-scrub .nr-sw.is-lit{color:var(--ink)}
+.nr-scrub em .nr-sw{font-style:italic}
+
+/* magnetic elements — transform set by JS, spring-back on leave */
+.nr-mag{display:inline-block;will-change:transform;transition:transform .5s var(--ease-out)}
+.nr-mag.is-magnet{transition:transform .12s linear}
+
+/* CTA letter stagger — letters lift in sequence on hover */
+.nr-cta__t .nr-ch{display:inline-block;transition:transform .45s var(--ease-out)}
+.nr-cta a:hover .nr-cta__t .nr-ch{transform:translateY(-.08em)}
+
 /* word-stagger headline pieces */
 .nr-w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
 .nr-w--i{font-style:italic}

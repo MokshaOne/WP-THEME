@@ -28,6 +28,130 @@
     (document.fonts && document.fonts.ready) ? document.fonts.ready.then(reveal) : reveal();
   }
 
+  /* ---------- entrance counter (preloader pattern) ---------- */
+  (function loader() {
+    const el = $('.nr-loader');
+    if (!el) return;
+    // the <head> bootstrap set html.nr-load only for first-time, motion-on visits
+    if (!document.documentElement.classList.contains('nr-load') ||
+        document.body.classList.contains('nr-no-loader')) { el.remove(); return; }
+    try { sessionStorage.setItem('nr_seen', '1'); } catch (e) {}
+    const nEl = $('[data-loader-n]', el);
+    const t0 = performance.now();
+    const MIN = 1000, MAX = 2600;
+    let assetsReady = false;
+    Promise.all([
+      (document.fonts && document.fonts.ready) || Promise.resolve(),
+      new Promise((res) => (document.readyState === 'complete') ? res() : window.addEventListener('load', res, { once: true })),
+    ]).then(() => { assetsReady = true; });
+
+    (function tick(now) {
+      const t = (now || performance.now()) - t0;
+      // ease toward 90 on a clock; the last 10% waits for real assets
+      let p = Math.min(90, Math.round((t / MIN) * 72 + Math.sqrt(t) * 0.6));
+      if (assetsReady) p = Math.min(100, Math.max(p, Math.round((t / (MIN * 0.9)) * 100)));
+      if (t > MAX) p = 100;
+      if (nEl) nEl.textContent = p;
+      if (p >= 100) {
+        el.classList.add('is-done');
+        setTimeout(() => { el.remove(); document.documentElement.classList.remove('nr-load'); }, 1050);
+      } else {
+        requestAnimationFrame(tick);
+      }
+    })();
+  })();
+
+  /* ---------- inertial scroll (Lenis pattern) ----------
+     Wheel input is eased through a lerp; keyboard, anchors, and the
+     native scrollbar stay untouched (we resync from scrollY whenever
+     the loop is idle). Desktop + motion-on + opt-out only. */
+  (function smoothScroll() {
+    if (mobile || !finePointer || reduceMotion) return;
+    if (document.body.classList.contains('nr-no-smooth')) return;
+
+    let target = window.scrollY, current = target, raf = null;
+    const max = () => document.documentElement.scrollHeight - window.innerHeight;
+    // the lerp IS the easing — native smooth scrolling would compound it
+    document.documentElement.style.scrollBehavior = 'auto';
+    const jump = (y) => window.scrollTo({ top: y, behavior: 'instant' });
+
+    function loop() {
+      current += (target - current) * 0.095;
+      if (Math.abs(target - current) < 0.5) {
+        current = target;
+        jump(current);
+        raf = null;
+        return;
+      }
+      jump(current);
+      raf = requestAnimationFrame(loop);
+    }
+    window.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) return;             // pinch-zoom etc.
+      if (e.target.closest('.nr-strip__pin') && mobile) return;
+      e.preventDefault();
+      if (!raf) { target = current = window.scrollY; } // resync after native scrolls
+      target = Math.max(0, Math.min(max(), target + e.deltaY));
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: false });
+  })();
+
+  /* ---------- scroll-scrubbed statement (TextGradientScroll pattern) ---------- */
+  const scrubs = [];
+  $$('.nr-statement p').forEach((par) => {
+    if (reduceMotion) return;
+    par.classList.remove('nr-rise');
+    par.classList.add('nr-scrub');
+    const walk = (node) => {
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          child.textContent.split(/(\s+)/).forEach((piece) => {
+            if (/^\s+$/.test(piece) || piece === '') { frag.appendChild(document.createTextNode(piece)); return; }
+            const w = document.createElement('span');
+            w.className = 'nr-sw';
+            w.textContent = piece;
+            frag.appendChild(w);
+          });
+          node.replaceChild(frag, child);
+        } else if (child.nodeType === 1) walk(child);
+      });
+    };
+    walk(par);
+    scrubs.push({ el: par, words: $$('.nr-sw', par) });
+  });
+
+  /* ---------- magnetic elements (Magnet pattern) ---------- */
+  if (finePointer && !reduceMotion) {
+    $$('.nr-nav a, .nr-filters button, .nr-cta a, .nr-enquire__send button, .nr-back').forEach((el) => {
+      el.classList.add('nr-mag');
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        el.classList.add('is-magnet');
+        el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.classList.remove('is-magnet');
+        el.style.transform = '';
+      });
+    });
+  }
+
+  /* ---------- CTA letter stagger ---------- */
+  $$('.nr-cta__t').forEach((t) => {
+    if (reduceMotion) return;
+    const text = t.textContent;
+    t.textContent = '';
+    text.split('').forEach((ch, i) => {
+      if (ch === ' ') { t.appendChild(document.createTextNode(' ')); return; }
+      const sp = document.createElement('span');
+      sp.className = 'nr-ch';
+      sp.style.transitionDelay = (i * 22) + 'ms';
+      sp.textContent = ch;
+      t.appendChild(sp);
+    });
+  });
+
   /* ---------- scroll reveals ---------- */
   const risers = $$('.nr-rise');
   if (risers.length && 'IntersectionObserver' in window) {
@@ -75,9 +199,18 @@
       const max = doc.scrollHeight - vh;
       pageBar.style.width = max > 0 ? ((doc.scrollTop || window.scrollY) / max * 100) + '%' : '0%';
     }
+
+    scrubs.forEach(({ el, words }) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      // progress 0→1 while the paragraph crosses the middle band of the viewport
+      const p = Math.min(1, Math.max(0, (vh * 0.82 - r.top) / (vh * 0.6)));
+      const lit = Math.round(p * words.length);
+      words.forEach((w, k) => w.classList.toggle('is-lit', k < lit));
+    });
   }
   function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }
-  if (parallaxes.length || (strip && stripTrack) || pageBar) {
+  if (parallaxes.length || (strip && stripTrack) || pageBar || scrubs.length) {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
     paint();

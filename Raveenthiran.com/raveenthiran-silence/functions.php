@@ -5,7 +5,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '3.0.0' );
+define( 'NR_THEME_VERSION', '3.1.0' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults
@@ -42,6 +42,13 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/silence.css', [ 'nr-fonts' ], NR_THEME_VERSION );
 	wp_enqueue_script( 'nr-theme', get_template_directory_uri() . '/assets/js/silence.js', [], NR_THEME_VERSION, true );
 } );
+
+// Pre-paint bootstrap: mark JS availability and whether the entrance
+// counter should show (first visit this session, motion allowed) —
+// runs before first paint so neither the loader nor the reveals flash.
+add_action( 'wp_head', function () {
+	?><script>(function(d){d.classList.add('nr-js');try{if(!sessionStorage.getItem('nr_seen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('nr-load');}catch(e){}})(document.documentElement);</script><?php
+}, 0 );
 
 // Inline the small @font-face sheet with absolute URLs (removes one
 // render-blocking request; same trick proven in Obscura).
@@ -133,8 +140,10 @@ function nr_placeholder( $label = '' ) {
 
 /* Body classes for the two effect opt-outs (defaults on). */
 add_filter( 'body_class', function ( $classes ) {
-	if ( nr_opt( 'nr_fx_fade',  '1' ) !== '1' ) $classes[] = 'nr-no-fade';
-	if ( nr_opt( 'nr_fx_drift', '1' ) !== '1' ) $classes[] = 'nr-no-drift';
+	if ( nr_opt( 'nr_fx_fade',   '1' ) !== '1' ) $classes[] = 'nr-no-fade';
+	if ( nr_opt( 'nr_fx_drift',  '1' ) !== '1' ) $classes[] = 'nr-no-drift';
+	if ( nr_opt( 'nr_fx_smooth', '1' ) !== '1' ) $classes[] = 'nr-no-smooth';
+	if ( nr_opt( 'nr_fx_loader', '1' ) !== '1' ) $classes[] = 'nr-no-loader';
 	return $classes;
 } );
 

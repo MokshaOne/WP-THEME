@@ -63,12 +63,14 @@ function nr_settings_defaults() {
 		'nr_hero_interval'  => '7',
 		'nr_fx_fade'        => '1', // chrome falls silent after idle
 		'nr_fx_drift'       => '1', // slow drift on the active hero plate
+		'nr_fx_smooth'      => '1', // inertial (Lenis-style) smooth scroll, desktop
+		'nr_fx_loader'      => '1', // percentage preloader, once per session
 	];
 }
 
 /** Checkbox-style keys whose unchecked state must persist as "0". */
 function nr_settings_toggles() {
-	return [ 'nr_fx_fade', 'nr_fx_drift', 'nr_smtp_enable' ];
+	return [ 'nr_fx_fade', 'nr_fx_drift', 'nr_fx_smooth', 'nr_fx_loader', 'nr_smtp_enable' ];
 }
 
 add_action( 'admin_init', function () {
@@ -220,6 +222,10 @@ function nr_sil_settings_page() {
 					<td><?php nr_setting_toggle( 'nr_fx_fade', __( 'Fade the chrome away after a few idle seconds, leaving only the photograph', 'raveenthiran-silence' ) ); ?></td></tr>
 				<tr><th><?php esc_html_e( 'Plate drift', 'raveenthiran-silence' ); ?></th>
 					<td><?php nr_setting_toggle( 'nr_fx_drift', __( 'Very slow scale drift on the active hero plate', 'raveenthiran-silence' ) ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'Inertial scroll', 'raveenthiran-silence' ); ?></th>
+					<td><?php nr_setting_toggle( 'nr_fx_smooth', __( 'Weighted, eased scrolling on desktop (Lenis-style). Keyboard, anchors, and the scrollbar keep working natively.', 'raveenthiran-silence' ) ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'Entrance counter', 'raveenthiran-silence' ); ?></th>
+					<td><?php nr_setting_toggle( 'nr_fx_loader', __( 'Percentage preloader with curtain lift, once per visit session', 'raveenthiran-silence' ) ); ?></td></tr>
 			</table>
 
 			<?php submit_button(); ?>

@@ -1,5 +1,5 @@
 /* ============================================================
-   Silence III — silence.js · v3.0.0 · the scroll edition
+   Silence III — silence.js · v3.2.0 · the scroll edition
    - load intro (serif words rise, opening plate settles)
    - scroll reveals (.nr-rise)
    - chapter parallax + pinned horizontal film strip
@@ -151,6 +151,32 @@
       t.appendChild(sp);
     });
   });
+
+  /* ---------- stat count-up (About) ---------- */
+  (function countUp() {
+    const nums = $$('[data-count-to]');
+    if (!nums.length || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const el = en.target; io.unobserve(el);
+        const to = parseInt(el.dataset.countTo || '0', 10);
+        const raw = el.dataset.countRaw || String(to);
+        if (reduceMotion || !to) { el.textContent = raw; return; }
+        // preserve any non-numeric prefix/suffix around the number (e.g. "+", "2020")
+        const m = raw.match(/^(\D*)(\d[\d.,]*)(\D*)$/);
+        const pre = m ? m[1] : '', post = m ? m[3] : '';
+        const t0 = performance.now(), dur = 1100;
+        (function step(now) {
+          const p = Math.min(1, (now - t0) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = pre + Math.round(to * eased).toLocaleString() + post;
+          if (p < 1) requestAnimationFrame(step); else el.textContent = raw;
+        })(t0);
+      });
+    }, { threshold: 0.5 });
+    nums.forEach((n) => io.observe(n));
+  })();
 
   /* ---------- scroll reveals ---------- */
   const risers = $$('.nr-rise');

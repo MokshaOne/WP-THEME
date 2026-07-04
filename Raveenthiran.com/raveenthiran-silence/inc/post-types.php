@@ -86,6 +86,14 @@ add_action( 'init', function () {
 		'rewrite'      => [ 'slug' => 'work-tag', 'with_front' => false ],
 		'show_in_rest' => true,
 	] );
+	// Journal categories — parity with Obscura's nr_journal_cat.
+	register_taxonomy( 'nr_journal_cat', 'nr_journal', [
+		'labels'       => [ 'name' => __( 'Journal categories', 'raveenthiran-silence' ), 'singular_name' => __( 'Journal category', 'raveenthiran-silence' ) ],
+		'hierarchical' => true,
+		'public'       => true,
+		'rewrite'      => [ 'slug' => 'journal-category', 'with_front' => false ],
+		'show_in_rest' => true,
+	] );
 } );
 
 // Flush rewrites once on theme switch so /work and /journal resolve.

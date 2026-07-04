@@ -5,7 +5,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '3.1.0' );
+define( 'NR_THEME_VERSION', '3.2.0' );
 
 /* =============================================================
    Option helper — every setting is a wp_options row, defaults

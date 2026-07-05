@@ -71,7 +71,7 @@
     'float b=texture2D(t,clamp(uv-vec2(amt,0.0),0.0,1.0)).b;',
     'return vec3(r,g,b);}',
     'void main(){',
-    'vec3 bg=vec3(0.043,0.047,0.063);',                // #0B0C10 frame canvas
+    'vec3 bg=vec3(0.039,0.043,0.055);',                // #0A0B0E void canvas
     'float p=smoothstep(0.0,1.0,uProg);',
     'float bump=sin(uProg*PI);',                       // 0 -> 1 -> 0 across the transition
     'vec2 n=vec2(noise(vUv*3.0+1.0),noise(vUv*3.0+5.0))-0.5;',

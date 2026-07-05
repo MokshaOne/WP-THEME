@@ -10,9 +10,9 @@ $nr_booking_url = nr_opt( 'nr_booking_url', home_url( '/booking' ) );
 $nr_logo_text   = nr_opt( 'nr_logo_text', 'raveenthiran' );
 $nr_logo_sub    = nr_opt( 'nr_logo_sub', 'studio · ' . date_i18n( 'Y' ) );
 $nr_book_label  = nr_opt( 'nr_book_label', __( 'Book a shoot', 'raveenthiran' ) );
-$nr_accent      = nr_opt( 'nr_accent', '#F2A03D' );
-$nr_color_bg    = nr_opt( 'nr_color_bg', '#0B0C10' );
-$nr_color_ink   = nr_opt( 'nr_color_ink', '#F2EFE9' );
+$nr_accent      = nr_opt( 'nr_accent', '#C8B79B' );
+$nr_color_bg    = nr_opt( 'nr_color_bg', '#0A0B0E' );
+$nr_color_ink   = nr_opt( 'nr_color_ink', '#ECE9E2' );
 $nr_current     = $nr_current ?? '';
 
 // hex → "r,g,b" so we can derive ink-2/3/4/hair as rgba() with the right hue
@@ -20,7 +20,7 @@ if ( ! function_exists( 'nr_hex_to_rgb_string' ) ) {
 	function nr_hex_to_rgb_string( $hex ) {
 		$hex = ltrim( (string) $hex, '#' );
 		if ( strlen( $hex ) === 3 ) $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-		if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) return '242,239,233';
+		if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) return '236,233,226';
 		return hexdec( substr( $hex, 0, 2 ) ) . ',' . hexdec( substr( $hex, 2, 2 ) ) . ',' . hexdec( substr( $hex, 4, 2 ) );
 	}
 }
@@ -30,19 +30,19 @@ $ink_rgb = nr_hex_to_rgb_string( $nr_color_ink );
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<meta name="theme-color" content="#0B0C10">
+	<meta name="theme-color" content="<?php echo esc_attr( $nr_color_bg ); ?>">
 	<style>
 	:root{
 		--amber:<?php echo esc_attr( $nr_accent ); ?>;
-		--amber-soft:rgba(242,160,61,.18);
+		--amber-soft:rgba(200,183,155,.14);
 		--bg:<?php echo esc_attr( $nr_color_bg ); ?>;
 		--ink:<?php echo esc_attr( $nr_color_ink ); ?>;
-		--ink-2:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.62);
-		--ink-3:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.42);
+		--ink-2:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.60);
+		--ink-3:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.40);
 		--ink-4:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.12);
-		--ink-5:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.06);
-		--hair:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.14);
-		--hair-soft:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.06);
+		--ink-5:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.055);
+		--hair:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.13);
+		--hair-soft:rgba(<?php echo esc_attr( $ink_rgb ); ?>,.055);
 	}
 	</style>
 	<?php wp_head(); ?>

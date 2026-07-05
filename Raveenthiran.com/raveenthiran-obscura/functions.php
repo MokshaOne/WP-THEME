@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '5.0.0' );
+define( 'NR_THEME_VERSION', '6.0.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -51,6 +51,16 @@ add_action( 'wp_enqueue_scripts', function () {
 		'nr-theme',
 		get_template_directory_uri() . '/assets/js/theme.js',
 		[],
+		NR_THEME_VERSION,
+		true
+	);
+
+	// Studio — scroll interactions for the light editorial layout
+	// (header state, reveals, scroll-to-top). Shared behaviours stay in theme.js.
+	wp_enqueue_script(
+		'nr-studio',
+		get_template_directory_uri() . '/assets/js/studio.js',
+		[ 'nr-theme' ],
 		NR_THEME_VERSION,
 		true
 	);

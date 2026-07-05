@@ -3,14 +3,14 @@ Theme Name: Obscura — raveenthiran
 Theme URI: https://raveenthiran.com
 Author: Nishuthan Raveenthiran
 Author URI: https://raveenthiran.com
-Description: A single-screen, no-scroll photography portfolio theme. Museum Void — a darkened night-gallery: cool graphite void canvas, marble-bone type, one travertine accent used only as engraved hairlines. No glow, no pulse — stoic, precise, wall-label typography. Inter Tight + JetBrains Mono. Fullscreen hero with an index-tick rail, quiet page transitions, refined editorial composition. Compatible with ACF Pro.
-Version: 5.0.0
+Description: Studio — a light, scrolling editorial photography theme. Warm paper canvas, warm near-black ink, one terracotta accent. Full-bleed imagery, an asymmetric work grid, and a true multipage architecture (home, work, project, studio, journal, enquire). Inter Tight + JetBrains Mono, self-hosted. Filterable portfolio, project galleries with EXIF, price-estimate popover, self-built WebP / PWA / SMTP. Compatible with ACF Pro.
+Version: 6.0.0
 Requires at least: 6.0
 Requires PHP: 8.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: raveenthiran
-Tags: photography, portfolio, minimal, editorial, single-page, full-screen, dark, no-scroll
+Tags: photography, portfolio, minimal, editorial, light, multipage, full-bleed, grid
 */
 
 /* All visual styles live in assets/css/theme.css */

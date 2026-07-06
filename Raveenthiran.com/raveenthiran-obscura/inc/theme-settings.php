@@ -20,12 +20,12 @@ function nr_settings_defaults() {
 		/* Branding */
 		'nr_logo_text'       => 'raveenthiran',
 		'nr_logo_sub'        => 'studio · ' . date( 'Y' ),
-		'nr_accent'          => '#DAC769',
-		'nr_book_label'      => __( 'Enquire', 'raveenthiran' ),
+		'nr_accent'          => '#F2A03D',
+		'nr_book_label'      => __( 'Book a shoot', 'raveenthiran' ),
 
 		/* Colors (in addition to accent above) */
-		'nr_color_bg'        => '#131313',
-		'nr_color_ink'       => '#E4E2E1',
+		'nr_color_bg'        => '#0B0C10',
+		'nr_color_ink'       => '#F2EFE9',
 
 		/* Studio */
 		'nr_studio'          => 'Studio Krautwald · Gumpendorfer Str. 81 · 1060 Wien',
@@ -326,7 +326,7 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'Small monospace text next to the wordmark, e.g. "studio · 2026".', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Accent color', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_color( 'nr_accent' ); ?>
-							<p class="description"><?php esc_html_e( 'The single accent — used sparingly for emphasis/links. Default: #DAC769 (gold). Applied site-wide via the --accent / --amber CSS variables.', 'raveenthiran' ); ?></p></td></tr>
+							<p class="description"><?php esc_html_e( 'The single accent. Applied site-wide via the --amber CSS variable.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Book CTA label', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_book_label', 30 ); ?></td></tr>
 				</table>
@@ -337,10 +337,10 @@ function nr_theme_settings_page() {
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Background', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_color( 'nr_color_bg' ); ?>
-							<p class="description"><?php esc_html_e( 'Page canvas. Default: #131313 (deep anthracite).', 'raveenthiran' ); ?></p></td></tr>
+							<p class="description"><?php esc_html_e( 'Page canvas. Default: #0B0C10 (warm near-black).', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Ink (text)', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_color( 'nr_color_ink' ); ?>
-							<p class="description"><?php esc_html_e( 'Primary text color. Default: #E4E2E1 (gallery off-white).', 'raveenthiran' ); ?></p></td></tr>
+							<p class="description"><?php esc_html_e( 'Primary text color. Default: #F2EFE9 (bone).', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 				<p class="description"><?php esc_html_e( 'Accent color is in the Branding section above.', 'raveenthiran' ); ?></p>
 			</details>

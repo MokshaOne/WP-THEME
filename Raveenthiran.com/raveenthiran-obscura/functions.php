@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '7.0.0' );
+define( 'NR_THEME_VERSION', '4.32.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -45,7 +45,6 @@ add_action( 'wp_enqueue_scripts', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-700.woff2' ) . '">' . "\n";
-		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'bodoni-moda-var.woff2' ) . '">' . "\n";
 	}, 1 );
 
 	wp_enqueue_script(
@@ -55,30 +54,6 @@ add_action( 'wp_enqueue_scripts', function () {
 		NR_THEME_VERSION,
 		true
 	);
-
-	// Studio — scroll interactions for the light editorial layout
-	// (header state, reveals, scroll-to-top). Shared behaviours stay in theme.js.
-	wp_enqueue_script(
-		'nr-studio',
-		get_template_directory_uri() . '/assets/js/studio.js',
-		[ 'nr-theme' ],
-		NR_THEME_VERSION,
-		true
-	);
-
-	// Magic — the award-grade motion layer (intro loader, inertia scroll,
-	// magnetic cursor, clip reveals, parallax). Pure enhancement; it disables
-	// itself under prefers-reduced-motion and on touch. Opt-out with the
-	// nr_fx_no_magic Theme Setting if a client ever wants it off.
-	if ( nr_opt( 'nr_fx_no_magic', '0' ) !== '1' ) {
-		wp_enqueue_script(
-			'nr-magic',
-			get_template_directory_uri() . '/assets/js/magic.js',
-			[ 'nr-studio' ],
-			NR_THEME_VERSION,
-			true
-		);
-	}
 
 	// #1 — optional WebGL hero transitions (off unless enabled in Theme Settings).
 	if ( is_front_page() && nr_opt( 'nr_fx_webgl', '0' ) === '1' ) {

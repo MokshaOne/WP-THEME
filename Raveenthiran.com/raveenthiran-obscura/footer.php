@@ -85,6 +85,9 @@ $nr_cta_title   = nr_opt( 'nr_footer_cta_title', __( "Let's make something<br>wo
 	</div>
 </footer>
 
+<?php /* ── mobile floating Enquire pill (customers: booking is always one tap) ── */ ?>
+<a class="st-fab" href="<?php echo esc_url( $nr_enquire ); ?>" data-no-transition><?php echo esc_html( nr_opt( 'nr_book_label', __( 'Enquire', 'raveenthiran' ) ) ); ?></a>
+
 <?php /* ── global feature parts (functional — kept) ───────────── */ ?>
 <?php get_template_part( 'parts/cookie-notice' ); ?>
 <?php get_template_part( 'parts/inquiry-modal' ); ?>

@@ -150,6 +150,45 @@
   tag('.st-hero__caption-t, .st-sec-title, .st-cta__title, .st-arc-title, .st-about__title, .st-project__title, .st-enquire__title, .st-jpost__title, .st-404__title, .st-intro__lead, .st-voice__q', 'st-mask');
   tag('.st-work__frame, .st-card__frame, .st-journal__frame, .st-jcard__frame, .st-project__figure, .st-about__portrait, .st-enquire__frame', 'st-clip');
 
+  /* 4b · Kinetic type — big titles split into per-character spans that
+     rise word by word. Accessible: the parent keeps an aria-label with
+     the original text; the spans are hidden from AT. */
+  function splitChars(el) {
+    var plain = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!plain || plain.length > 90) return;   // keep long leads on the mask wipe
+    el.setAttribute('aria-label', plain);
+    el.classList.add('st-split');
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (word) {
+            if (!word) return;
+            if (/^\s+$/.test(word)) { frag.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span');
+            w.className = 'st-w'; w.setAttribute('aria-hidden', 'true');
+            for (var i = 0; i < word.length; i++) {
+              var c = document.createElement('span');
+              c.className = 'st-ch'; c.textContent = word[i];
+              w.appendChild(c);
+            }
+            frag.appendChild(w);
+          });
+          node.replaceChild(frag, n);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR' && !n.classList.contains('st-cta__arrow')) {
+          walk(n);
+        }
+      });
+    })(el);
+    [].slice.call(el.querySelectorAll('.st-ch')).forEach(function (c, i) {
+      c.style.transitionDelay = Math.min(i * 20, 620) + 'ms';
+    });
+  }
+  [].slice.call(document.querySelectorAll(
+    '.st-hero__caption-t, .st-sec-title, .st-arc-title, .st-about__title, ' +
+    '.st-project__title, .st-enquire__title, .st-jpost__title, .st-404__title, .st-cta__title'
+  )).forEach(splitChars);
+
   var revEls = [].slice.call(document.querySelectorAll('.st-mask, .st-clip'));
   function kickReveals() {
     if (!('IntersectionObserver' in window)) { revEls.forEach(function (el) { el.classList.add('is-shown'); }); return; }
@@ -187,17 +226,85 @@
   document.body && document.body.appendChild(progressBar);
 
   /* ══════════════════════════════════════════════════════════
+     5b · Pinned horizontal reel — on the home page (wide screens)
+     the Selected Work grid becomes a film strip: vertical scroll
+     drives it sideways while the section stays pinned.
+     ══════════════════════════════════════════════════════════ */
+  var reel = { on: false, sec: null, grid: null, dist: 0, top: 0 };
+  (function setupReel() {
+    if (isTouch || window.innerWidth < 1000) return;
+    if (!document.body.classList.contains('nr-page-home')) return;
+    var sec = document.querySelector('.st-work');
+    var grid = sec && sec.querySelector('.st-work__grid');
+    if (!sec || !grid || grid.children.length < 3) return;
+    sec.classList.add('st-reel');
+    reel.sec = sec; reel.grid = grid;
+    function measure() {
+      if (window.innerWidth < 1000) {   // teardown when narrowed
+        sec.classList.remove('st-reel');
+        sec.style.height = ''; grid.style.transform = '';
+        reel.on = false; return;
+      }
+      sec.classList.add('st-reel');
+      grid.style.transform = '';
+      var visible = grid.parentElement.clientWidth;
+      reel.dist = Math.max(0, grid.scrollWidth - visible + 80);
+      sec.style.height = (window.innerHeight + reel.dist) + 'px';
+      reel.top = sec.getBoundingClientRect().top + window.scrollY;
+      reel.on = reel.dist > 40;
+    }
+    if (document.readyState === 'complete') measure();
+    else window.addEventListener('load', measure);
+    setTimeout(measure, 600);          // re-measure once media has sized
+    window.addEventListener('resize', measure);
+  })();
+
+  /* ══════════════════════════════════════════════════════════
+     5c · Page-exit curtain — internal navigation slides the ink
+     curtain up before leaving, mirroring the intro. bfcache-safe.
+     ══════════════════════════════════════════════════════════ */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (a.target === '_blank' || a.hasAttribute('download') || a.closest('[data-no-transition]')) return;
+    var href = a.getAttribute('href');
+    if (!href || href[0] === '#' || /^(mailto:|tel:)/.test(href)) return;
+    var url; try { url = new URL(a.href, location.href); } catch (_) { return; }
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname && url.hash) return;
+    e.preventDefault();
+    var ex = document.createElement('div');
+    ex.className = 'st-exit'; ex.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(ex);
+    raf(function () { raf(function () { ex.classList.add('is-on'); }); });
+    setTimeout(function () { location.href = url.href; }, 480);
+  });
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    var ex = document.querySelector('.st-exit');
+    if (ex) ex.remove();
+  });
+
+  /* ══════════════════════════════════════════════════════════
      6 · One rAF loop drives smooth scroll + cursor + magnets +
      parallax + marquee skew + progress.
      ══════════════════════════════════════════════════════════ */
   function frame() {
-    // smooth scroll
+    // smooth scroll — only write while actively smoothing; when idle,
+    // follow the browser so external scrolls (keyboard, scrollbar,
+    // anchors, tests) are never fought.
     if (smooth.on && !document.body.classList.contains('is-modal-open')) {
       var prev = smooth.cur;
-      smooth.cur = lerp(smooth.cur, smooth.tgt, 0.095);
-      if (Math.abs(smooth.tgt - smooth.cur) < 0.35) smooth.cur = smooth.tgt;
+      if (Math.abs(smooth.tgt - smooth.cur) > 0.35) {
+        smooth.cur = lerp(smooth.cur, smooth.tgt, 0.095);
+        if (Math.abs(smooth.tgt - smooth.cur) < 0.35) smooth.cur = smooth.tgt;
+        setBy = smooth.cur;
+        window.scrollTo(0, smooth.cur);
+      } else {
+        smooth.cur = smooth.tgt = window.scrollY;
+      }
       smooth.vel = smooth.cur - prev;
-      if (Math.abs(smooth.cur - window.scrollY) > 0.4) { setBy = smooth.cur; window.scrollTo(0, smooth.cur); }
     } else {
       smooth.vel = window.scrollY - smooth.cur;
       smooth.cur = window.scrollY;
@@ -234,6 +341,11 @@
     var skew = clamp(smooth.vel * 0.32, -7, 7);
     for (var q = 0; q < marquees.length; q++) {
       marquees[q].style.setProperty('--skew', skew.toFixed(2) + 'deg');
+    }
+    // horizontal work reel
+    if (reel.on && reel.grid) {
+      var rp = clamp((smooth.cur - reel.top) / reel.dist, 0, 1);
+      reel.grid.style.transform = 'translate3d(' + (-rp * reel.dist).toFixed(1) + 'px,0,0)';
     }
     // progress
     var mx = maxScroll();

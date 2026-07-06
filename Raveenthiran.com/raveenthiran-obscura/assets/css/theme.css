@@ -750,6 +750,62 @@ html.has-magic .nr-clients{transform:skewX(var(--skew,0deg));transition:transfor
 /* during load, hold the hero still under the curtain */
 html.is-loading .st-hero__img{animation:none}
 
+/* inertia scroll owns the easing — native CSS smooth would fight it */
+html.has-smooth{scroll-behavior:auto}
+
 /* magic revisit: reveal hero content with a gentle rise once curtain lifts */
 html.intro-reveal .st-hero__foot,html.intro-reveal .st-hero__head{animation:stRise 1s var(--ease) .15s both}
 @keyframes stRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* kinetic type — per-character rise (overrides the mask wipe) */
+html.has-magic .st-split{clip-path:none!important;transform:none!important}
+html.has-magic .st-split .st-w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
+html.has-magic .st-split .st-ch{display:inline-block;transform:translateY(118%) rotate(2.5deg);transition:transform .85s var(--ease);will-change:transform}
+html.has-magic .st-split.is-shown .st-ch{transform:none}
+
+/* page-exit curtain */
+.st-exit{position:fixed;inset:0;z-index:2000;background:var(--ink);transform:translateY(101%);transition:transform .48s var(--ease);pointer-events:none}
+.st-exit.is-on{transform:none}
+
+/* film grain — a whisper of animated photographic grain over everything */
+html.has-magic body::after{
+  content:'';position:fixed;inset:-120%;z-index:900;pointer-events:none;
+  opacity:.035;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .8 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  animation:stGrain 8s steps(9) infinite;
+}
+@keyframes stGrain{
+  0%,100%{transform:translate(0,0)} 11%{transform:translate(-3%,2%)} 22%{transform:translate(2%,-4%)}
+  33%{transform:translate(-4%,-2%)} 44%{transform:translate(3%,3%)} 55%{transform:translate(-2%,4%)}
+  66%{transform:translate(4%,-1%)} 77%{transform:translate(-3%,-4%)} 88%{transform:translate(2%,2%)}
+}
+
+/* pinned horizontal work reel (home · desktop · html.has-magic) */
+html.has-magic .st-reel{overflow:visible}
+html.has-magic .st-reel .st-wrap{
+  position:sticky;top:0;height:100svh;max-width:none;
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(20px,3vh,44px);
+  overflow:hidden;
+}
+html.has-magic .st-reel .st-sec-head{margin-bottom:0}
+html.has-magic .st-reel .st-work__grid{
+  display:flex;flex-wrap:nowrap;align-items:center;gap:clamp(24px,3vw,64px);
+  width:max-content;will-change:transform;
+}
+html.has-magic .st-reel .st-work__item{width:34vw;flex:0 0 auto;margin-top:0!important;grid-column:auto}
+html.has-magic .st-reel .st-work__item.is-wide{width:52vw}
+html.has-magic .st-reel .st-work__img{aspect-ratio:4/5;height:auto}
+html.has-magic .st-reel .st-work__item.is-wide .st-work__img{aspect-ratio:16/10}
+html.has-magic .st-reel .st-work__more{margin-top:0;justify-content:flex-start}
+
+/* mobile floating Enquire pill — always one thumb-tap from booking */
+.st-fab{
+  display:none;position:fixed;right:16px;bottom:16px;z-index:45;
+  padding:15px 24px;border-radius:999px;background:var(--ink);color:var(--paper);
+  font-family:var(--ff-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  box-shadow:0 12px 32px -8px rgba(23,19,14,.45);
+}
+.st-fab:active{transform:scale(.96)}
+@media (max-width:900px){
+  body:not(.nr-page-enquire) .st-fab{display:inline-flex}
+}

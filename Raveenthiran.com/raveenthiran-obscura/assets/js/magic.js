@@ -368,13 +368,11 @@
       var rp = clamp((smooth.cur - reel.top) / reel.dist, 0, 1);
       reel.grid.style.transform = 'translate3d(' + (-rp * reel.dist).toFixed(1) + 'px,0,0)';
     }
-    // gold dither rails — pixels drift with scroll, glow brighter with speed
+    // gold rails — glow gently brighter with scroll speed
     if (!railEls.length) railEls = [].slice.call(document.querySelectorAll('.st-rail'));
     if (railEls.length) {
-      var ry = (-smooth.cur * 0.08).toFixed(1) + 'px';
-      var ro = clamp(0.85 + Math.abs(smooth.vel) * 0.006, 0.85, 1);
+      var ro = clamp(0.8 + Math.abs(smooth.vel) * 0.008, 0.8, 1);
       for (var rr = 0; rr < railEls.length; rr++) {
-        railEls[rr].style.backgroundPositionY = ry;
         railEls[rr].style.opacity = ro.toFixed(3);
       }
     }

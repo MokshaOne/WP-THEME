@@ -798,20 +798,24 @@ html.has-magic .st-reel .st-work__img{aspect-ratio:4/5;height:auto}
 html.has-magic .st-reel .st-work__item.is-wide .st-work__img{aspect-ratio:16/10}
 html.has-magic .st-reel .st-work__more{margin-top:0;justify-content:flex-start}
 
-/* gold pixel-dither side rails — painted by studio.js on a tiny canvas
-   (8×8 Bayer ordered dither, deep gold dissolving into the paper).
-   z-index:-1 keeps them behind every section that has a background,
-   so photography and the dark CTA/footer glide over them. The plain
-   CSS gradient below is the no-JS / no-canvas fallback. */
+/* gold side rails — wide, silky gold→paper gradients breathing in
+   from both edges (elements created by studio.js). z-index:-1 keeps
+   them behind every section that has a background, so photography
+   and the dark CTA/footer glide over them. magic.js modulates their
+   glow with scroll velocity. */
 .st-rail{
-  position:fixed;top:0;bottom:0;width:clamp(48px,6vw,120px);
+  position:fixed;top:0;bottom:0;width:clamp(180px,22vw,460px);
   z-index:-1;pointer-events:none;
-  background:linear-gradient(90deg,rgba(201,156,61,.26) 0%,rgba(201,156,61,.1) 45%,rgba(246,243,236,0) 85%);
-  image-rendering:pixelated;
+  background:linear-gradient(90deg,
+    rgba(198,152,58,.30) 0%,
+    rgba(201,158,70,.20) 26%,
+    rgba(212,178,110,.11) 52%,
+    rgba(230,210,165,.045) 76%,
+    rgba(246,243,236,0) 100%);
 }
 .st-rail--l{left:0}
 .st-rail--r{right:0;transform:scaleX(-1)}
-@media (max-width:1200px){.st-rail{display:none}}
+@media (max-width:1000px){.st-rail{width:26vw;background:linear-gradient(90deg,rgba(198,152,58,.16),rgba(246,243,236,0))}}
 
 /* 3D hover tilt — frames lean toward the pointer (magic.js) */
 html.has-magic .st-tilt{transition:clip-path 1.15s var(--ease),transform .25s ease-out;transform-style:preserve-3d}

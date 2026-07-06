@@ -65,6 +65,60 @@
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
   });
 
+  /* ---------- gold pixel-dither side rails ----------
+     A tiny canvas paints an ordered-dither (8×8 Bayer) gradient —
+     deep gold at the outer edge dissolving pixel by pixel into the
+     paper toward the center. Upscaled with image-rendering:pixelated
+     for a chunky pixel-art read. Sits at z-index:-1, so photography
+     and dark sections pass over it. Static here; magic.js adds the
+     scroll drift. Runs for everyone (it's decoration, not motion). */
+  (function rails() {
+    if (!doc.body) return;
+    var left = doc.createElement('div');
+    var right = doc.createElement('div');
+    left.className = 'st-rail st-rail--l';
+    right.className = 'st-rail st-rail--r';
+    left.setAttribute('aria-hidden', 'true');
+    right.setAttribute('aria-hidden', 'true');
+    doc.body.appendChild(left); doc.body.appendChild(right);
+
+    var W = 28, H = 56;
+    var c = doc.createElement('canvas');
+    c.width = W; c.height = H;
+    var ctx = c.getContext('2d');
+    if (!ctx) return;
+    var B = [
+      [ 0,32, 8,40, 2,34,10,42],[48,16,56,24,50,18,58,26],
+      [12,44, 4,36,14,46, 6,38],[60,28,52,20,62,30,54,22],
+      [ 3,35,11,43, 1,33, 9,41],[51,19,59,27,49,17,57,25],
+      [15,47, 7,39,13,45, 5,37],[63,31,55,23,61,29,53,21]
+    ];
+    var deep = [168, 118, 34], gold = [201, 156, 61], pale = [246, 243, 236];
+    var mix = function (a, b, t) { return Math.round(a + (b - a) * t); };
+    var img = ctx.createImageData(W, H);
+    for (var y = 0; y < H; y++) {
+      for (var x = 0; x < W; x++) {
+        var t = x / (W - 1);                       // 0 outer edge → 1 center
+        var th = (B[y % 8][x % 8] + 0.5) / 64;
+        var alpha = Math.pow(1 - t, 1.6);          // dissolve density
+        var on = alpha > th;
+        var i = (y * W + x) * 4;
+        var col;
+        if (t < 0.35) { var k = t / 0.35; col = [mix(deep[0], gold[0], k), mix(deep[1], gold[1], k), mix(deep[2], gold[2], k)]; }
+        else { var k2 = (t - 0.35) / 0.65; col = [mix(gold[0], pale[0], k2), mix(gold[1], pale[1], k2), mix(gold[2], pale[2], k2)]; }
+        img.data[i] = col[0]; img.data[i + 1] = col[1]; img.data[i + 2] = col[2];
+        img.data[i + 3] = on ? 235 : 0;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    var url = 'url(' + c.toDataURL('image/png') + ')';
+    [left, right].forEach(function (r) {
+      r.style.backgroundImage = url;
+      r.style.backgroundSize = '100% 224px';       // 4px blocks at max width
+      r.style.backgroundRepeat = 'repeat-y';
+    });
+  })();
+
   /* ---------- mark ready (enables CSS transitions post-load) ---------- */
   requestAnimationFrame(function () { doc.documentElement.classList.add('st-ready'); });
 })();

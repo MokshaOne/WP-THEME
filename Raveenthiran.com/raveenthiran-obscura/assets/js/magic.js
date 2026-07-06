@@ -221,6 +221,7 @@
   // transform conflicts (grid cards get a clip+scale reveal instead).
   var paraImgs = [].slice.call(document.querySelectorAll('.st-project__figure img'));
   var marquees = [].slice.call(document.querySelectorAll('.nr-clients'));
+  var railEls = [];   // gold dither rails (built by studio.js) — resolved lazily in frame()
   var progressBar = document.createElement('div');
   progressBar.className = 'st-progress';
   document.body && document.body.appendChild(progressBar);
@@ -258,6 +259,26 @@
     setTimeout(measure, 600);          // re-measure once media has sized
     window.addEventListener('resize', measure);
   })();
+
+  /* ══════════════════════════════════════════════════════════
+     5b² · 3D hover tilt — work/journal cards lean gently toward
+     the pointer (fine pointer only, ±4°).
+     ══════════════════════════════════════════════════════════ */
+  if (finePointer && !isTouch) {
+    [].slice.call(document.querySelectorAll('.st-work__item, .st-card, .st-jcard')).forEach(function (card) {
+      var fr = card.querySelector('.st-work__frame, .st-card__frame, .st-jcard__frame');
+      if (!fr) return;
+      fr.classList.add('st-tilt');
+      card.addEventListener('mousemove', function (e) {
+        var r = fr.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        var rx = ((e.clientY - r.top) / r.height - 0.5) * -4;
+        var ry = ((e.clientX - r.left) / r.width - 0.5) * 4;
+        fr.style.transform = 'perspective(900px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function () { fr.style.transform = ''; });
+    });
+  }
 
   /* ══════════════════════════════════════════════════════════
      5c · Page-exit curtain — internal navigation slides the ink
@@ -346,6 +367,16 @@
     if (reel.on && reel.grid) {
       var rp = clamp((smooth.cur - reel.top) / reel.dist, 0, 1);
       reel.grid.style.transform = 'translate3d(' + (-rp * reel.dist).toFixed(1) + 'px,0,0)';
+    }
+    // gold dither rails — pixels drift with scroll, glow brighter with speed
+    if (!railEls.length) railEls = [].slice.call(document.querySelectorAll('.st-rail'));
+    if (railEls.length) {
+      var ry = (-smooth.cur * 0.08).toFixed(1) + 'px';
+      var ro = clamp(0.85 + Math.abs(smooth.vel) * 0.006, 0.85, 1);
+      for (var rr = 0; rr < railEls.length; rr++) {
+        railEls[rr].style.backgroundPositionY = ry;
+        railEls[rr].style.opacity = ro.toFixed(3);
+      }
     }
     // progress
     var mx = maxScroll();

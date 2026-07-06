@@ -202,7 +202,10 @@
         el.classList.add('is-shown');
         io.unobserve(el);
       });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+    // threshold 0 + isIntersecting: children of CSS multicol (the masonry
+    // gallery) report intersectionRatio 0 in Chromium even when fully
+    // visible, so any ratio-based threshold would never fire there.
     revEls.forEach(function (el) { io.observe(el); });
   }
   // if the loader is skipped (revisit), kick immediately on load
@@ -355,7 +358,9 @@
       var r = im.getBoundingClientRect();
       if (r.bottom > -80 && r.top < vh + 80) {
         var mid = r.top + r.height / 2 - vh / 2;
-        im.style.transform = 'translate3d(0,' + (-mid * 0.06).toFixed(1) + 'px,0)';
+        // slight over-scale so the drift never exposes gaps inside the
+        // masonry frames (figures are overflow:hidden for the clip reveal)
+        im.style.transform = 'scale(1.08) translate3d(0,' + (-mid * 0.035).toFixed(1) + 'px,0)';
       }
     }
     // marquee velocity skew (applied to the container, not the animated track)

@@ -122,7 +122,8 @@ $lede    = get_the_excerpt();
 						<source src="<?php echo esc_url( $p['url'] ); ?>" type="<?php echo esc_attr( $p['mime'] ); ?>">
 					</video>
 				<?php elseif ( $p['id'] ) :
-					echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [ 'alt' => $alt, 'sizes' => $p['orient'] === 'portrait' ? '(max-width:900px) 100vw, 60vw' : '(max-width:900px) 100vw, 88vw', 'loading' => $i === 0 ? 'eager' : 'lazy', 'decoding' => 'async' ] );
+					// masonry: ~1/3 column on desktop, 1/2 on tablets, full on phones
+					echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [ 'alt' => $alt, 'sizes' => '(max-width:640px) 100vw, (max-width:1100px) 48vw, 31vw', 'loading' => $i === 0 ? 'eager' : 'lazy', 'decoding' => 'async' ] );
 				else : ?>
 					<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="lazy" decoding="async">
 				<?php endif; ?>

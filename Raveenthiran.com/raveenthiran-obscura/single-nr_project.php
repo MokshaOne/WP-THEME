@@ -71,38 +71,44 @@ $lede    = get_the_excerpt();
 		endif; ?>
 	</div>
 
-	<?php /* ── header + meta ───────────────────────────────── */ ?>
+	<?php /* ── Aurelius editorial header — full-width serif title,
+	         horizontal meta band, then "The Concept" split row ── */ ?>
 	<header class="st-wrap st-project__head">
-		<div class="st-project__intro">
-			<nav class="st-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'raveenthiran' ); ?>">
-				<a href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><?php esc_html_e( 'Work', 'raveenthiran' ); ?></a>
-				<span aria-hidden="true">/</span>
-				<?php if ( $m['cat'] ) : ?><span><?php echo esc_html( $m['cat'] ); ?></span><span aria-hidden="true">/</span><?php endif; ?>
-				<span class="is-current"><?php the_title(); ?></span>
-			</nav>
-			<h1 class="st-project__title"><?php the_title(); ?></h1>
-			<?php if ( $lede ) : ?><p class="st-project__lede"><?php echo esc_html( $lede ); ?></p><?php endif; ?>
-		</div>
+		<nav class="st-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'raveenthiran' ); ?>">
+			<a href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><?php esc_html_e( 'Work', 'raveenthiran' ); ?></a>
+			<span aria-hidden="true">/</span>
+			<?php if ( $m['cat'] ) : ?><span><?php echo esc_html( $m['cat'] ); ?></span><span aria-hidden="true">/</span><?php endif; ?>
+			<span class="is-current"><?php the_title(); ?></span>
+		</nav>
+		<h1 class="st-project__title"><?php the_title(); ?></h1>
 
-		<aside class="st-project__meta">
+		<dl class="st-project__metaband">
 			<?php
 			$rows = [
 				[ nr_opt( 'nr_meta_client',     __( 'Client',     'raveenthiran' ) ), $m['client'] ?: '—' ],
 				[ nr_opt( 'nr_meta_year',       __( 'Year',       'raveenthiran' ) ), (string) $m['yr'] ],
-				[ nr_opt( 'nr_meta_location',   __( 'Location',   'raveenthiran' ) ), $m['loc'] ?: '—' ],
 				[ nr_opt( 'nr_meta_discipline', __( 'Discipline', 'raveenthiran' ) ), $m['cat'] ?: 'Editorial' ],
-				[ nr_opt( 'nr_meta_frames',     __( 'Frames',     'raveenthiran' ) ), function_exists( 'nr_field' ) ? ( nr_field( 'project_frames' ) ?: '—' ) : '—' ],
+				[ nr_opt( 'nr_meta_location',   __( 'Location',   'raveenthiran' ) ), $m['loc'] ?: '—' ],
 			];
+			$frames = function_exists( 'nr_field' ) ? nr_field( 'project_frames' ) : '';
+			if ( $frames ) $rows[] = [ nr_opt( 'nr_meta_frames', __( 'Frames', 'raveenthiran' ) ), $frames ];
 			$format = function_exists( 'nr_field' ) ? nr_field( 'project_format' ) : '';
 			if ( $format ) $rows[] = [ nr_opt( 'nr_meta_format', __( 'Format', 'raveenthiran' ) ), $format ];
 			$nr_series = function_exists( 'nr_project_series' ) ? nr_project_series( get_the_ID() ) : null;
 			if ( $nr_series ) $rows[] = [ __( 'Series', 'raveenthiran' ), $nr_series->name ];
 			foreach ( $rows as $r ) : ?>
-				<div class="st-project__meta-row"><span><?php echo esc_html( $r[0] ); ?></span><span class="st-project__meta-v"><?php echo esc_html( $r[1] ); ?></span></div>
+				<div><dt><?php echo esc_html( $r[0] ); ?></dt><dd><?php echo esc_html( $r[1] ); ?></dd></div>
 			<?php endforeach; ?>
-			<a class="st-btn st-btn--primary st-project__commission" href="<?php echo esc_url( add_query_arg( [ 'service' => sanitize_title( $m['cat'] ?: 'editorial' ), 'ref' => get_the_title() ], function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>"><?php echo esc_html( nr_opt( 'nr_cta_commission', __( 'Commission similar', 'raveenthiran' ) ) ); ?> →</a>
-		</aside>
+		</dl>
 	</header>
+
+	<section class="st-wrap st-concept">
+		<span class="st-concept__label"><?php echo esc_html( nr_opt( 'nr_concept_label', __( 'The Concept', 'raveenthiran' ) ) ); ?></span>
+		<div class="st-concept__body">
+			<?php if ( $lede ) : ?><p><?php echo esc_html( $lede ); ?></p><?php endif; ?>
+			<a class="st-btn st-btn--primary" href="<?php echo esc_url( add_query_arg( [ 'service' => sanitize_title( $m['cat'] ?: 'editorial' ), 'ref' => get_the_title() ], function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>"><?php echo esc_html( nr_opt( 'nr_cta_commission', __( 'Commission similar', 'raveenthiran' ) ) ); ?> →</a>
+		</div>
+	</section>
 
 	<?php /* ── plates ──────────────────────────────────────── */ ?>
 	<?php if ( ! empty( $plates ) ) : ?>

@@ -137,9 +137,12 @@ $intro_p   = nr_opt( 'nr_home_intro', __( 'Available for commissions and persona
 <?php /* ═══ SELECTED WORK ══════════════════════════════════════ */ ?>
 <section class="st-work" aria-label="<?php esc_attr_e( 'Selected projects', 'raveenthiran' ); ?>">
 	<div class="st-wrap">
-		<header class="st-sec-head" data-reveal>
-			<span class="st-eyebrow"><?php esc_html_e( 'Projects', 'raveenthiran' ); ?></span>
-			<h2 class="st-sec-title"><?php echo wp_kses( nr_opt( 'nr_home_work_title', __( 'Selected <em>work</em>', 'raveenthiran' ) ), [ 'em' => [] ] ); ?></h2>
+		<header class="st-sec-head st-sec-head--row" data-reveal>
+			<div>
+				<span class="st-eyebrow"><?php esc_html_e( 'Projects', 'raveenthiran' ); ?></span>
+				<h2 class="st-sec-title"><?php echo wp_kses( nr_opt( 'nr_home_work_title', __( 'Selected <em>work</em>', 'raveenthiran' ) ), [ 'em' => [] ] ); ?></h2>
+			</div>
+			<span class="st-count">01 — <?php echo esc_html( str_pad( (string) count( $works ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 		</header>
 
 		<div class="st-work__grid" data-reveal-stagger>

@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '6.5.0' );
+define( 'NR_THEME_VERSION', '7.0.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -45,6 +45,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-700.woff2' ) . '">' . "\n";
+		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'bodoni-moda-var.woff2' ) . '">' . "\n";
 	}, 1 );
 
 	wp_enqueue_script(

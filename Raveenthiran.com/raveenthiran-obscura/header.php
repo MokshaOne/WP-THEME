@@ -11,9 +11,9 @@ $nr_avail_text  = nr_opt( 'nr_avail_text', 'Available for 2026' );
 $nr_logo_text   = nr_opt( 'nr_logo_text', 'Raveenthiran' );
 $nr_logo_sub    = nr_opt( 'nr_logo_sub', 'Photography · Wien' );
 $nr_book_label  = nr_opt( 'nr_book_label', __( 'Enquire', 'raveenthiran' ) );
-$nr_accent      = nr_opt( 'nr_accent', '#B4552E' );
-$nr_color_bg    = nr_opt( 'nr_color_bg', '#F6F3EC' );
-$nr_color_ink   = nr_opt( 'nr_color_ink', '#17130E' );
+$nr_accent      = nr_opt( 'nr_accent', '#DAC769' );
+$nr_color_bg    = nr_opt( 'nr_color_bg', '#131313' );
+$nr_color_ink   = nr_opt( 'nr_color_ink', '#E4E2E1' );
 $nr_current     = $nr_current ?? '';
 
 // hex → "r,g,b" so we can derive ink-2/3/4/line as rgba() with the right hue
@@ -21,7 +21,7 @@ if ( ! function_exists( 'nr_hex_to_rgb_string' ) ) {
 	function nr_hex_to_rgb_string( $hex ) {
 		$hex = ltrim( (string) $hex, '#' );
 		if ( strlen( $hex ) === 3 ) $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-		if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) return '23,19,14';
+		if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) return '228,226,225';
 		return hexdec( substr( $hex, 0, 2 ) ) . ',' . hexdec( substr( $hex, 2, 2 ) ) . ',' . hexdec( substr( $hex, 4, 2 ) );
 	}
 }
@@ -47,8 +47,8 @@ $nr_nav_items = [
 	:root{
 		--accent:<?php echo esc_attr( $nr_accent ); ?>;
 		--amber:<?php echo esc_attr( $nr_accent ); ?>;
-		--accent-soft:rgba(180,85,46,.10);
-		--amber-soft:rgba(180,85,46,.10);
+		--accent-soft:rgba(218,199,105,.12);
+		--amber-soft:rgba(218,199,105,.12);
 		--paper:<?php echo esc_attr( $nr_color_bg ); ?>;
 		--bg:<?php echo esc_attr( $nr_color_bg ); ?>;
 		--ink:<?php echo esc_attr( $nr_color_ink ); ?>;

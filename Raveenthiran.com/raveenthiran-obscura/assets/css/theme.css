@@ -8,25 +8,27 @@
    ========================================================= */
 
 :root{
-  --paper:#F6F3EC;
-  --paper-2:#EFEBE1;
-  --paper-3:#E7E2D5;
-  --ink:#17130E;
-  --ink-2:rgba(23,19,14,.66);
-  --ink-3:rgba(23,19,14,.46);
-  --ink-4:rgba(23,19,14,.26);
-  --ink-5:rgba(23,19,14,.08);
-  --line:rgba(23,19,14,.16);
-  --line-soft:rgba(23,19,14,.09);
-  --hair:rgba(23,19,14,.16);
-  --hair-soft:rgba(23,19,14,.09);
-  --accent:#B4552E;
-  --amber:#B4552E;              /* alias — used by inc/theme.js modules */
-  --accent-soft:rgba(180,85,46,.10);
-  --amber-soft:rgba(180,85,46,.10);
+  /* Aurelius — cinematic anthracite gallery */
+  --paper:#131313;              /* deep anthracite canvas (var name kept for compat) */
+  --paper-2:#1A1A19;            /* raised surface */
+  --paper-3:#202020;            /* frame / plinth */
+  --deep:#0C0C0B;               /* curtain / CTA / footer — one step below canvas */
+  --ink:#E4E2E1;                /* gallery-light off-white */
+  --ink-2:rgba(228,226,225,.66);
+  --ink-3:rgba(228,226,225,.46);
+  --ink-4:rgba(228,226,225,.26);
+  --ink-5:rgba(228,226,225,.08);
+  --line:rgba(228,226,225,.16);
+  --line-soft:rgba(228,226,225,.09);
+  --hair:rgba(228,226,225,.16);
+  --hair-soft:rgba(228,226,225,.09);
+  --accent:#DAC769;             /* gold */
+  --amber:#DAC769;              /* alias — used by inc/theme.js modules */
+  --accent-soft:rgba(218,199,105,.12);
+  --amber-soft:rgba(218,199,105,.12);
   --bg:var(--paper);
 
-  --ff-display:'Inter Tight',system-ui,-apple-system,sans-serif;
+  --ff-display:'Bodoni Moda','Didot','Bodoni MT',Georgia,serif;
   --ff-body:'Inter Tight',system-ui,-apple-system,sans-serif;
   --ff-mono:'JetBrains Mono',ui-monospace,monospace;
 
@@ -766,6 +768,102 @@ html.has-smooth{scroll-behavior:auto}
 /* magic revisit: reveal hero content with a gentle rise once curtain lifts */
 html.intro-reveal .st-hero__foot,html.intro-reveal .st-hero__head{animation:stRise 1s var(--ease) .15s both}
 @keyframes stRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* =========================================================
+   AURELIUS — cinematic gallery skin (merged from the Stitch
+   "elite photographer showcase" kit). Deep anthracite canvas,
+   Bodoni Moda display serif, gold interactions. This section
+   deliberately sits late in the cascade and re-skins the base
+   components for the dark stage.
+   ========================================================= */
+
+/* display serif — every large title speaks Bodoni */
+h1,h2,
+.st-hero__caption-t,.st-sec-title,.st-arc-title,.st-project__title,
+.st-about__title,.st-enquire__title,.st-jpost__title,.st-404__title,
+.st-cta__title,.st-next__t,.st-work__t,.st-card__t,.st-journal__t,
+.st-jcard__t,.st-voice__q,.st-intro__lead,.st-list__t,.st-static__title,
+.st-loader__num,.st-foot__mark,.st-words__item blockquote,
+.nr-static h1,.nr-page-generic h1{
+  font-family:var(--ff-display);
+  font-weight:480;
+  letter-spacing:.004em;
+  line-height:1.06;
+}
+.st-approach__t,.st-recognition__title{font-family:var(--ff-display);font-weight:500;letter-spacing:.005em}
+em{font-style:italic;color:var(--accent)}
+::selection{background:var(--accent);color:#131313}
+
+/* header goes anthracite when solid */
+.st-head.is-solid{background:rgba(19,19,19,.88);backdrop-filter:blur(14px) saturate(1.05)}
+.st-mark__name{font-family:var(--ff-display);font-weight:560;letter-spacing:.02em;font-size:19px}
+
+/* loader + exit curtains sink one step below the canvas */
+.st-loader{background:var(--deep);color:var(--ink)}
+.st-loader__mark{color:var(--ink-3)}
+.st-loader__num i{color:var(--ink)}
+.st-exit{background:var(--deep)}
+
+/* closing CTA + footer — deep stage, gold voice */
+.st-cta{background:var(--deep);color:var(--ink)}
+.st-cta__title{color:var(--ink)}
+.st-cta .st-btn{border-color:var(--line);color:var(--ink)}
+.st-cta .st-btn::before{background:var(--accent)}
+.st-cta .st-btn:hover{color:#131313;border-color:var(--accent)}
+.st-cta .st-btn--primary{background:var(--accent);border-color:var(--accent);color:#131313}
+.st-cta .st-btn--primary::before{background:var(--ink)}
+.st-cta .st-btn--primary:hover{color:#131313}
+.st-foot{background:var(--deep)}
+.st-foot__mark{color:var(--ink)}
+.st-foot__legal a:hover,.st-foot__top:hover{color:var(--ink)}
+
+/* primary buttons carry the gold */
+.st-btn--primary{background:var(--accent);border-color:var(--accent);color:#131313}
+.st-btn--primary::before{background:var(--ink)}
+.st-btn--primary:hover{color:#131313}
+.st-fab{background:var(--accent);color:#131313;box-shadow:0 12px 32px -8px rgba(0,0,0,.6)}
+
+/* gold rails, tuned for the dark stage — screen-lifted shimmer */
+.st-rail{
+  mix-blend-mode:screen;
+  background:linear-gradient(90deg,
+    rgba(218,199,105,.17) 0%,
+    rgba(218,199,105,.11) 26%,
+    rgba(218,199,105,.055) 52%,
+    rgba(218,199,105,.02) 76%,
+    rgba(19,19,19,0) 100%);
+}
+@media (max-width:1000px){.st-rail{background:linear-gradient(90deg,rgba(218,199,105,.09),rgba(19,19,19,0))}}
+
+/* film grain — white noise lifted with screen on the dark canvas */
+html.has-magic body::after{
+  opacity:.05;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+}
+
+/* project page — Aurelius editorial header: full-width serif title,
+   horizontal meta band, then "The Concept" split row */
+.st-project__head{grid-template-columns:1fr;gap:0;padding-bottom:0}
+.st-project__metaband{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;
+  margin-top:clamp(28px,4vw,52px);padding:20px 0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line-soft);
+}
+.st-project__metaband>div{display:flex;flex-direction:column;gap:6px}
+.st-project__metaband dt{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+.st-project__metaband dd{margin:0;font-size:15px;font-weight:500;color:var(--ink)}
+.st-concept{
+  display:grid;grid-template-columns:minmax(160px,.8fr) 2.2fr;gap:clamp(24px,4vw,72px);
+  padding-top:clamp(32px,4.5vw,64px);padding-bottom:clamp(40px,5.5vw,80px);align-items:start;
+}
+.st-concept__label{font-family:var(--ff-display);font-size:clamp(20px,2vw,28px);font-weight:480;letter-spacing:.004em}
+.st-concept__body{display:flex;flex-direction:column;gap:26px}
+.st-concept__body p{color:var(--ink-2);font-size:var(--fs-body);line-height:1.75;max-width:60ch;margin:0}
+.st-concept__body .st-btn{align-self:flex-start}
+@media (max-width:800px){.st-concept{grid-template-columns:1fr;gap:18px}}
+
+/* selected-works counter — "01 — 24" gallery numbering */
+.st-count{font-family:var(--ff-mono);font-size:12px;letter-spacing:.18em;color:var(--accent);white-space:nowrap}
 
 /* kinetic type — per-character rise (overrides the mask wipe) */
 html.has-magic .st-split{clip-path:none!important;transform:none!important}

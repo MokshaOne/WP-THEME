@@ -6,7 +6,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '6.0.0' );
+define( 'NR_THEME_VERSION', '6.1.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -64,6 +64,20 @@ add_action( 'wp_enqueue_scripts', function () {
 		NR_THEME_VERSION,
 		true
 	);
+
+	// Magic — the award-grade motion layer (intro loader, inertia scroll,
+	// magnetic cursor, clip reveals, parallax). Pure enhancement; it disables
+	// itself under prefers-reduced-motion and on touch. Opt-out with the
+	// nr_fx_no_magic Theme Setting if a client ever wants it off.
+	if ( nr_opt( 'nr_fx_no_magic', '0' ) !== '1' ) {
+		wp_enqueue_script(
+			'nr-magic',
+			get_template_directory_uri() . '/assets/js/magic.js',
+			[ 'nr-studio' ],
+			NR_THEME_VERSION,
+			true
+		);
+	}
 
 	// #1 — optional WebGL hero transitions (off unless enabled in Theme Settings).
 	if ( is_front_page() && nr_opt( 'nr_fx_webgl', '0' ) === '1' ) {

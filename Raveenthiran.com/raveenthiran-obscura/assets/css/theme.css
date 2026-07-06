@@ -690,7 +690,66 @@ img.nr-lqip--done{filter:none;transform:none;transition:filter .45s,transform .4
 @view-transition{navigation:auto}
 
 @media print{
-  .st-head,.st-foot,.st-cta,.nr-sidebar,.nr-sidebar-backdrop,.nr-cookie,.nr-modal,.st-hero__scroll,.st-next{display:none!important}
+  .st-head,.st-foot,.st-cta,.nr-sidebar,.nr-sidebar-backdrop,.nr-cookie,.nr-modal,.st-hero__scroll,.st-next,.st-loader,.st-cursor,.st-progress{display:none!important}
   body{background:#fff;color:#000}
   .st-project__hero{height:auto}
 }
+
+/* =========================================================
+   Magic — the motion layer (added by assets/js/magic.js).
+   Everything is gated on html.has-magic, so no-JS and
+   reduced-motion users are unaffected.
+   ========================================================= */
+html.is-loading{overflow:hidden;height:100%}
+
+/* intro loader */
+.st-loader{position:fixed;inset:0;z-index:2000;background:var(--ink);color:var(--paper);display:grid;place-items:center;overflow:hidden}
+.st-loader.is-done{transition:transform 1s var(--ease);transform:translateY(-100%)}
+.st-loader__inner{display:flex;flex-direction:column;align-items:center;gap:20px}
+.st-loader__mark{font-family:var(--ff-mono);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:rgba(246,243,236,.5);overflow:hidden}
+.st-loader__num{display:inline-grid;font-size:clamp(72px,13vw,168px);font-weight:400;line-height:1;letter-spacing:-.03em}
+.st-loader__num i,.st-loader__num b{grid-area:1/1;font-style:normal}
+.st-loader__num b{visibility:hidden}
+.st-loader__num i{color:var(--paper)}
+.st-loader__num::after{content:'%';font-size:.28em;color:var(--accent);align-self:flex-start;margin-left:.1em}
+.st-loader__bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
+
+/* scroll progress */
+.st-progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;z-index:60;pointer-events:none}
+
+/* custom cursor (html.has-cursor) */
+html.has-cursor,html.has-cursor a,html.has-cursor button,html.has-cursor .st-work__item,html.has-cursor .st-card{cursor:none}
+html.has-cursor input,html.has-cursor textarea,html.has-cursor select{cursor:auto}
+.st-cursor{position:fixed;left:0;top:0;width:12px;height:12px;z-index:1000;pointer-events:none;will-change:transform}
+.st-cursor__dot{position:absolute;inset:0;border-radius:50%;background:#fff;mix-blend-mode:difference}
+.st-cursor__label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--ff-mono);font-weight:500;font-size:4.2px;letter-spacing:.1em;text-transform:uppercase;color:#fff;mix-blend-mode:difference;opacity:0;white-space:nowrap;transition:opacity .2s}
+.st-cursor.has-label .st-cursor__dot{background:#fff}
+.st-cursor.has-label .st-cursor__label{opacity:1}
+.st-cursor.is-down{opacity:.6}
+
+/* magnetic elements shouldn't animate their own transform via CSS (JS drives it) */
+html.has-magic .st-btn,html.has-magic .st-head__cta{will-change:transform}
+
+/* mask-wipe headings */
+html.has-magic .st-mask{clip-path:inset(0 0 105% 0);transform:translateY(18px);transition:clip-path 1.05s var(--ease),transform 1.05s var(--ease);will-change:clip-path,transform}
+html.has-magic .st-mask.is-shown{clip-path:inset(-15% 0 -15% 0);transform:none}
+
+/* clip-reveal media + settle-scale */
+html.has-magic .st-clip{overflow:hidden}
+html.has-magic .st-clip{clip-path:inset(0 0 100% 0);transition:clip-path 1.15s var(--ease)}
+html.has-magic .st-clip.is-shown{clip-path:inset(0 0 0 0)}
+html.has-magic .st-clip>img,html.has-magic .st-clip>picture>img,html.has-magic .st-clip>.nr-ph,html.has-magic .st-clip>div{transform:scale(1.18);transition:transform 1.35s var(--ease);will-change:transform}
+html.has-magic .st-clip.is-shown>img,html.has-magic .st-clip.is-shown>picture>img,html.has-magic .st-clip.is-shown>.nr-ph,html.has-magic .st-clip.is-shown>div{transform:scale(1)}
+
+/* hero: JS owns the transform; disable the CSS ken-burns to avoid conflict */
+html.has-magic .st-hero__img{animation:none;transform-origin:center}
+
+/* marquee velocity skew */
+html.has-magic .nr-clients{transform:skewX(var(--skew,0deg));transition:transform .25s linear}
+
+/* during load, hold the hero still under the curtain */
+html.is-loading .st-hero__img{animation:none}
+
+/* magic revisit: reveal hero content with a gentle rise once curtain lifts */
+html.intro-reveal .st-hero__foot,html.intro-reveal .st-hero__head{animation:stRise 1s var(--ease) .15s both}
+@keyframes stRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}

@@ -939,3 +939,113 @@ html.has-magic .st-tilt{transition:clip-path 1.15s var(--ease),transform .25s ea
 @media (max-width:900px){
   body:not(.nr-page-enquire) .st-fab{display:inline-flex}
 }
+
+/* =========================================================
+   STITCH FIDELITY — exact Aurelius design-kit language
+   (from the owner's Stitch code export). Gold duo, bold
+   Bodoni display, Inter-caps labels, shimmer sweeps,
+   letter-spacing hovers, gold ring cursor, glass overlay,
+   floating form labels, styled scrollbar.
+   ========================================================= */
+:root{
+  --accent-2:#F7E382;            /* tertiary-fixed — bright gold for active states */
+  --paper-2:#1B1C1C;             /* surface-container-low */
+  --paper-3:#1F2020;             /* surface-container */
+}
+
+/* scrollbar (webkit) — dark track, gold on hover */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:#353535}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* display voice — bold Bodoni, tight tracking (Stitch display-lg) */
+.st-hero__caption-t,.st-cta__title,.st-arc-title,.st-about__title,
+.st-project__title,.st-enquire__title,.st-jpost__title,.st-404__title,.st-next__t{
+  font-weight:700;letter-spacing:-.02em;line-height:1.06;
+}
+.st-hero__caption-t{text-transform:uppercase;line-height:1.04}
+.st-sec-title{font-weight:500;letter-spacing:-.01em}
+.st-work__t,.st-card__t,.st-journal__t,.st-jcard__t{font-weight:500}
+
+/* wordmark — uppercase, tracking-tight, widens on hover */
+.st-mark__name{text-transform:uppercase;letter-spacing:-.01em;font-weight:500;transition:letter-spacing .5s var(--ease)}
+.st-mark:hover .st-mark__name{letter-spacing:.06em}
+.st-foot__mark{text-transform:uppercase;letter-spacing:-.01em;transition:letter-spacing .5s var(--ease)}
+.st-foot__mark:hover{letter-spacing:.08em}
+
+/* label voice — Inter caps 600/.2em (Stitch label-caps; mono stays
+   only on photographic data: EXIF captions, loader counter) */
+.st-eyebrow,.st-nav a,.st-head__cta,.st-btn,.nr-chip,.st-link,
+.st-field__l,.st-project__metaband dt,.st-count,.st-avail,.st-crumbs,
+.st-foot__col h4,.st-foot__base,.st-hero__scroll,.st-fab,
+.st-jcard__meta,.st-journal__meta,.st-work__m,.st-card__m,.st-work__n{
+  font-family:'Inter Tight',system-ui,sans-serif;
+  font-weight:600;letter-spacing:.2em;
+}
+.st-eyebrow{font-size:12px}
+.st-nav a,.st-head__cta{font-size:12px}
+
+/* nav — active + hover speak bright gold (Stitch tertiary-fixed) */
+.st-nav a[aria-current="page"]{color:var(--accent-2);border-bottom:1px solid rgba(247,227,130,.5);padding-bottom:2px}
+.st-nav a[aria-current="page"]::after{display:none}
+.st-nav a:hover{color:var(--accent)}
+.st-head--over:not(.is-solid) .st-nav a[aria-current="page"]{color:var(--accent-2)}
+.st-link:hover{color:var(--accent-2)}
+.st-card:hover .st-card__t,.st-work__item:hover .st-work__t,
+.st-jcard:hover .st-jcard__t,.st-journal__item:hover .st-journal__t{color:var(--accent)}
+
+/* shimmer-gold sweep — diagonal gleam crossing on hover */
+.st-btn,.st-head__cta,.st-fab{position:relative;overflow:hidden}
+.st-btn::after,.st-head__cta::after,.st-fab::after{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(247,227,130,.14) 50%,rgba(255,255,255,0) 100%);
+  transform:rotate(30deg) translate(-100%,-100%);opacity:0;
+  transition:transform 1s var(--ease),opacity 1s var(--ease);pointer-events:none;z-index:2;
+}
+.st-btn:hover::after,.st-head__cta:hover::after,.st-fab:hover::after{
+  transform:rotate(30deg) translate(100%,100%);opacity:1;
+}
+
+/* letter-spacing hover on buttons (Stitch tracking-widest → .25em) */
+.st-btn{transition:color .35s var(--ease),letter-spacing .7s var(--ease)}
+.st-btn:hover{letter-spacing:.26em}
+
+/* cursor — gold ring, filled softly on hover (Stitch custom-cursor) */
+.st-cursor__dot{background:transparent;border:1.5px solid var(--accent-2);mix-blend-mode:normal;transition:background .3s var(--ease)}
+.st-cursor.is-hover .st-cursor__dot{background:rgba(247,227,130,.22);border-color:transparent}
+.st-cursor__label{color:var(--accent-2);mix-blend-mode:normal;font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:.12em}
+
+/* glass-panel overlay on the wide work card — caption slides up */
+@media (hover:hover) and (min-width:1000px){
+  .st-work__item.is-wide{position:relative}
+  .st-work__item.is-wide .st-work__cap{
+    position:absolute;left:0;right:0;bottom:0;z-index:3;margin:0;padding:26px 30px;
+    background:rgba(19,19,19,.4);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-top:1px solid rgba(228,226,225,.06);
+    transform:translateY(101%);transition:transform .8s var(--ease);
+  }
+  .st-work__item.is-wide:hover .st-work__cap{transform:none}
+  .st-work__item.is-wide .st-work__t{color:var(--ink)}
+}
+
+/* floating form labels (Stitch input-field) — fields tagged st-float */
+.st-float{position:relative;display:block}
+.st-float input,.st-float textarea{padding-top:20px;padding-bottom:12px}
+.st-float .st-field__l{
+  position:absolute;left:0;top:22px;pointer-events:none;
+  transition:top .3s var(--ease),font-size .3s var(--ease),color .3s var(--ease);
+}
+.st-float input:focus ~ .st-field__l,
+.st-float input:not(:placeholder-shown) ~ .st-field__l,
+.st-float textarea:focus ~ .st-field__l,
+.st-float textarea:not(:placeholder-shown) ~ .st-field__l{
+  top:-4px;font-size:9px;color:var(--accent-2);
+}
+.st-float input:focus,.st-float textarea:focus{border-color:var(--accent-2)}
+
+/* year chip pills on cards get the Stitch outline treatment */
+.st-card__m,.st-work__m{color:var(--ink-3)}
+
+/* frames sit on Stitch surface-container-low */
+.st-card__frame,.st-work__frame,.st-journal__frame,.st-jcard__frame,.st-enquire__frame{background:var(--paper-2)}

@@ -73,11 +73,13 @@ $email = nr_opt( 'nr_email', '' );
 				<input type="hidden" name="nr_referrer" value="" data-nr-referrer>
 
 				<div class="st-form__row">
-					<label class="st-field"><span class="st-field__l"><?php esc_html_e( 'Name', 'raveenthiran' ); ?></span>
-						<input type="text" name="name" autocomplete="name" required placeholder="<?php esc_attr_e( 'Your full name', 'raveenthiran' ); ?>">
+					<label class="st-field st-float">
+						<input type="text" name="name" autocomplete="name" required placeholder=" ">
+						<span class="st-field__l"><?php esc_html_e( 'Full name', 'raveenthiran' ); ?></span>
 					</label>
-					<label class="st-field"><span class="st-field__l"><?php esc_html_e( 'Email', 'raveenthiran' ); ?></span>
-						<input type="email" name="email" autocomplete="email" inputmode="email" spellcheck="false" required placeholder="<?php esc_attr_e( 'you@example.com', 'raveenthiran' ); ?>">
+					<label class="st-field st-float">
+						<input type="email" name="email" autocomplete="email" inputmode="email" spellcheck="false" required placeholder=" ">
+						<span class="st-field__l"><?php esc_html_e( 'Email address', 'raveenthiran' ); ?></span>
 					</label>
 				</div>
 
@@ -103,8 +105,9 @@ $email = nr_opt( 'nr_email', '' );
 					</label>
 				</div>
 
-				<label class="st-field st-field--wide"><span class="st-field__l"><?php esc_html_e( 'Tell me about the project', 'raveenthiran' ); ?></span>
-					<textarea name="notes" rows="5" placeholder="<?php esc_attr_e( 'A few sentences — a place, a person, an hour of the day.', 'raveenthiran' ); ?>"><?php echo $ref ? esc_textarea( sprintf( __( 'Re: %s — I saw this project and would like something in the same spirit.', 'raveenthiran' ), $ref ) ) : ''; ?></textarea>
+				<label class="st-field st-field--wide st-float">
+					<textarea name="notes" rows="5" placeholder=" "><?php echo $ref ? esc_textarea( sprintf( __( 'Re: %s — I saw this project and would like something in the same spirit.', 'raveenthiran' ), $ref ) ) : ''; ?></textarea>
+					<span class="st-field__l"><?php esc_html_e( 'Project scope & details', 'raveenthiran' ); ?></span>
 				</label>
 
 				<?php if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field(); ?>

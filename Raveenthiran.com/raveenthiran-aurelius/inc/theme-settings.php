@@ -124,7 +124,7 @@ function nr_settings_defaults() {
 		'nr_fx_wipe'         => '1',
 		'nr_fx_ken'          => '1',
 		'nr_fx_anchors'      => '1',
-		'nr_fx_webgl'        => '0',
+		'nr_fx_webgl'        => '1',
 		'nr_fx_viewtrans'    => '0',
 		'nr_fx_distort'      => '0',
 		'nr_fx_lines'        => '0',
@@ -717,9 +717,9 @@ function nr_theme_settings_page() {
 						<td><?php nr_field_toggle( 'nr_fx_ken', __( 'Slow scale on the active hero image', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Section anchors', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_anchors', __( 'Big faded §-numerals in corner of sub-pages', 'raveenthiran' ) ); ?></td></tr>
-					<tr><th><label><?php esc_html_e( 'WebGL hero transitions', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_webgl', __( 'Shader-based displacement dissolve between hero slides (desktop, motion-on)', 'raveenthiran' ) ); ?>
-							<p class="description"><?php esc_html_e( 'Off by default. Adds a lightweight WebGL canvas over the homepage hero for a premium "melt" transition. Falls back to the normal crossfade on older devices, reduced-motion, or if WebGL is unavailable — so it is always safe to leave on.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'WebGL 3D hero', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_webgl', __( 'Render the homepage hero photo as a 3D plane that reacts to cursor & scroll', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'On by default. A WebGL canvas fades in over the hero photo once it has loaded: the image becomes a subtly displaced 3D surface with a gold pointer light, chromatic edges and film grain. The plain photo still paints first, and it falls back to that image on reduced-motion, Save-Data, low-memory devices, or if WebGL is unavailable — always safe to leave on.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Shared-element page morph', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_viewtrans', __( 'Morph a portfolio card into the project hero on navigation (View Transitions)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Uses the browser View Transitions API for an Awwwards-style card→page morph; browsers without support simply navigate normally. Try it on, click a project from the portfolio.', 'raveenthiran' ); ?></p></td></tr>
@@ -851,7 +851,7 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_wipe',    '1' ) !== '1' ) $classes[] = 'nr-no-wipe';
 	if ( get_option( 'nr_fx_ken',     '1' ) !== '1' ) $classes[] = 'nr-no-ken';
 	if ( get_option( 'nr_fx_anchors', '1' ) !== '1' ) $classes[] = 'nr-no-anchors';
-	if ( get_option( 'nr_fx_webgl',   '0' ) === '1' ) $classes[] = 'nr-has-webgl';
+	if ( get_option( 'nr_fx_webgl',   '1' ) === '1' ) $classes[] = 'nr-has-webgl';
 	if ( get_option( 'nr_fx_distort', '0' ) === '1' ) $classes[] = 'nr-has-distort';
 	if ( get_option( 'nr_fx_lines',   '0' ) === '1' ) $classes[] = 'nr-has-lines';
 	if ( get_option( 'nr_fx_sound',   '0' ) === '1' ) $classes[] = 'nr-has-sound';

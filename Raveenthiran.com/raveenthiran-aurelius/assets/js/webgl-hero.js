@@ -1,101 +1,117 @@
 /**
- * #1 — WebGL hero transitions (progressive enhancement).
+ * Aurelius — WebGL 3D hero (progressive enhancement).
  *
- * Draws the homepage hero slides into a single <canvas> over the existing
- * .nr-hero__frame and dissolves between them with a displacement + chromatic
- * "melt" shader. Driven by the `nr:hero` event that theme.js fires on every
- * slide change, so it stays perfectly in sync with the slider, thumbnails,
- * auto-advance, swipe and keyboard nav.
+ * Renders the front-page hero photo as a subdivided plane in true perspective.
+ * The mesh is displaced in Z by a slow travelling wave plus a Gaussian "bulge"
+ * that follows the pointer, and the whole plane tilts a few degrees toward the
+ * cursor — so the image reads as a physical surface catching light, not a flat
+ * picture. The fragment stage adds a gold rim-light around the pointer, edge
+ * chromatic aberration, animated film grain and a vignette, all matched to the
+ * theme's plate grade. Scroll eases the camera back for depth on exit.
  *
- * Hard rules — this layer must never make the hero worse:
- *   • opt-in only (enqueued solely when Theme Settings → WebGL is on);
- *   • bails on prefers-reduced-motion, coarse/low-power fallbacks, or any
- *     WebGL failure — leaving the native CSS crossfade untouched;
- *   • the native <img> in plate 0 paints the LCP; we only hide the plates
- *     (class nr-gl-on) AFTER the first texture is uploaded and drawn, so the
- *     swap to the canvas is visually seamless and costs nothing up front.
+ * Hard rules (never make the hero worse):
+ *   • bails on prefers-reduced-motion, missing WebGL, Save-Data, or low memory;
+ *   • the native <img> paints the LCP — the canvas is only revealed AFTER the
+ *     texture uploads, and on any failure the native image is left untouched;
+ *   • zero dependencies, procedural noise (no extra requests), CSP-safe.
  *
- * Raw WebGL, zero dependencies. Procedural noise — no extra image requests.
+ * Mounts on .st-hero__media / .st-hero__img. Opt-out: Theme Settings → WebGL.
  */
 (function () {
   'use strict';
 
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  // Desktop enhancement only — the mobile hero uses object-fit:cover + native crossfade.
-  if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) return;
+  var mq = function (q) { return window.matchMedia && window.matchMedia(q).matches; };
+  if (mq('(prefers-reduced-motion: reduce)')) return;
   if (!window.WebGLRenderingContext) return;
+  try {
+    var conn = navigator.connection || {};
+    if (conn.saveData) return;
+    if (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 4) return;
+  } catch (e) {}
 
-  var hero = document.querySelector('[data-hero]');
-  if (!hero) return;
-  var frame = hero.querySelector('.nr-hero__frame');
-  if (!frame) return;
+  var media = document.querySelector('.st-hero__media');
+  if (!media) return;
+  var img = media.querySelector('.st-hero__img') || media.querySelector('img');
+  var src = img && (img.currentSrc || img.src);
+  if (!src) return; // placeholder hero (no photo) → leave the CSS gradient
 
-  var plates = Array.prototype.slice.call(frame.querySelectorAll('.nr-hero__plate'));
-  var imgs = plates.map(function (p) { return p.querySelector('img'); });
-  if (imgs.length < 2 || imgs.some(function (im) { return !im; })) return; // need real photos
-
-  /* ---- GL context ------------------------------------------------ */
+  /* ---- context -------------------------------------------------- */
   var canvas = document.createElement('canvas');
-  canvas.className = 'nr-hero__gl';
-  var gl = canvas.getContext('webgl', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' })
+  canvas.className = 'st-hero__gl';
+  canvas.setAttribute('aria-hidden', 'true');
+  var gl = canvas.getContext('webgl', { antialias: true, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' })
         || canvas.getContext('experimental-webgl');
-  if (!gl) return; // no WebGL → keep native crossfade
+  if (!gl) return;
+  media.insertBefore(canvas, media.firstChild);
 
-  frame.insertBefore(canvas, frame.firstChild);
-  // gradient overlay above the canvas so titles stay legible
-  var grad = document.createElement('div');
-  grad.className = 'nr-hero__gradient nr-hero__gl-grad';
-  frame.insertBefore(grad, canvas.nextSibling);
+  /* ---- mesh (grid) ---------------------------------------------- */
+  var COLS = 64, ROWS = 44;
+  var pos = [], uv = [], idx = [];
+  for (var y = 0; y <= ROWS; y++) {
+    for (var x = 0; x <= COLS; x++) {
+      pos.push((x / COLS) * 2 - 1, (y / ROWS) * 2 - 1);
+      uv.push(x / COLS, y / ROWS);
+    }
+  }
+  var W = COLS + 1;
+  for (var yy = 0; yy < ROWS; yy++) {
+    for (var xx = 0; xx < COLS; xx++) {
+      var a = yy * W + xx, b = a + 1, c = a + W, d = c + 1;
+      idx.push(a, b, c, b, d, c);
+    }
+  }
 
-  /* ---- shaders --------------------------------------------------- */
-  var VERT =
-    'attribute vec2 p;varying vec2 vUv;void main(){vUv=p*0.5+0.5;gl_Position=vec4(p,0.0,1.0);}';
+  var VERT = [
+    'attribute vec2 aPos;attribute vec2 aUv;',
+    'uniform mat4 uMVP;uniform float uTime;uniform vec2 uMouse;uniform float uAmp;uniform float uBulge;',
+    'varying vec2 vUv;varying float vZ;varying float vRim;',
+    'void main(){',
+    '  vUv=aUv;',
+    '  float wave=sin(aPos.x*3.0+uTime*0.6)*0.5+cos(aPos.y*2.4-uTime*0.5)*0.5;',
+    '  float d=distance(aPos,uMouse);',
+    '  float bulge=exp(-d*d*2.2)*uBulge;',      // pointer gaussian
+    '  float z=wave*uAmp + bulge;',
+    '  vZ=z; vRim=exp(-d*d*3.0);',              // rim brightest near pointer
+    '  gl_Position=uMVP*vec4(aPos.x,aPos.y,z,1.0);',
+    '}'
+  ].join('\n');
 
   var FRAG = [
     'precision highp float;',
-    'varying vec2 vUv;',
-    'uniform sampler2D uA;uniform sampler2D uB;',
-    'uniform float uProg;uniform float uRA;uniform float uRB;uniform float uPlane;',
-    'const float PI=3.14159265;',
+    'varying vec2 vUv;varying float vZ;varying float vRim;',
+    'uniform sampler2D uTex;uniform float uTime;uniform float uRatio;uniform float uPlane;uniform vec2 uMouse;',
     'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
-    'float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);',
-    'float a=hash(i),b=hash(i+vec2(1.0,0.0)),c=hash(i+vec2(0.0,1.0)),d=hash(i+vec2(1.0,1.0));',
-    'return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}',
-    // object-fit: contain mapping (matches the native .nr-hero__plate look)
-    'vec2 containUv(vec2 uv,float r){float a=r/uPlane;vec2 s=a>1.0?vec2(1.0,a):vec2(1.0/a,1.0);return (uv-0.5)*s+0.5;}',
-    'float inBox(vec2 uv){vec2 b=step(vec2(0.0),uv)*step(uv,vec2(1.0));return b.x*b.y;}',
-    'vec3 sampleCA(sampler2D t,vec2 uv,float amt){',
-    'vec2 c=clamp(uv,0.0,1.0);',
-    'float r=texture2D(t,clamp(uv+vec2(amt,0.0),0.0,1.0)).r;',
-    'float g=texture2D(t,c).g;',
-    'float b=texture2D(t,clamp(uv-vec2(amt,0.0),0.0,1.0)).b;',
-    'return vec3(r,g,b);}',
+    // cover mapping so the photo fills the frame at any aspect
+    'vec2 coverUv(vec2 uvv){float a=uRatio/uPlane;vec2 s=a>1.0?vec2(1.0/a,1.0):vec2(1.0,a);return (uvv-0.5)*s+0.5;}',
+    'vec3 sampleCA(vec2 uvv,float amt){',
+    '  float r=texture2D(uTex,uvv+vec2(amt,0.0)).r;',
+    '  float g=texture2D(uTex,uvv).g;',
+    '  float b=texture2D(uTex,uvv-vec2(amt,0.0)).b;',
+    '  return vec3(r,g,b);',
+    '}',
     'void main(){',
-    'vec3 bg=vec3(0.039,0.043,0.055);',                // #0A0B0E void canvas
-    'float p=smoothstep(0.0,1.0,uProg);',
-    'float bump=sin(uProg*PI);',                       // 0 -> 1 -> 0 across the transition
-    'vec2 n=vec2(noise(vUv*3.0+1.0),noise(vUv*3.0+5.0))-0.5;',
-    'vec2 warp=n*0.13*bump;',
-    'float ca=0.012*bump;',
-    'vec2 uvA=containUv(vUv+warp*(1.0-p),uRA);',
-    'vec2 uvB=containUv(vUv-warp*p,uRB);',
-    'vec3 a=mix(bg,sampleCA(uA,uvA,ca),inBox(uvA));',
-    'vec3 b=mix(bg,sampleCA(uB,uvB,ca),inBox(uvB));',
-    'vec3 col=mix(a,b,p);',
-    // match the CSS plate grade: contrast 1.06 · saturate .94 · brightness .86
-    'col=(col-0.5)*1.06+0.5;',
-    'col=mix(vec3(dot(col,vec3(0.299,0.587,0.114))),col,0.94);',
-    'col*=0.86;',
-    'col*=1.0-0.14*bump;',                             // brief shutter darken at mid-point
-    'gl_FragColor=vec4(col,1.0);}'
+    '  vec2 uvv=coverUv(vUv);',
+    '  float edge=distance(vUv,vec2(0.5))*2.0;',      // 0 centre → ~1.4 corners
+    '  float ca=0.004+edge*0.006;',                   // chromatic aberration grows outward
+    '  vec3 col=sampleCA(uvv,ca);',
+    // plate grade — contrast 1.05 · saturate .96 · brightness .9
+    '  col=(col-0.5)*1.05+0.5;',
+    '  col=mix(vec3(dot(col,vec3(0.299,0.587,0.114))),col,0.96);',
+    '  col*=0.9;',
+    // depth shading from the displacement + gold rim light near the pointer
+    '  col*=1.0+vZ*0.35;',
+    '  vec3 gold=vec3(0.86,0.78,0.41);',
+    '  col+=gold*vRim*0.18;',
+    // animated film grain
+    '  float g=hash(vUv*vec2(920.0,540.0)+fract(uTime)*97.0)-0.5;',
+    '  col+=g*0.045;',
+    // vignette
+    '  col*=1.0-edge*edge*0.28;',
+    '  gl_FragColor=vec4(col,1.0);',
+    '}'
   ].join('\n');
 
-  function compile(type, src) {
-    var s = gl.createShader(type);
-    gl.shaderSource(s, src); gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { gl.deleteShader(s); return null; }
-    return s;
-  }
+  function compile(t, s) { var sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null; }
   var vs = compile(gl.VERTEX_SHADER, VERT), fs = compile(gl.FRAGMENT_SHADER, FRAG);
   if (!vs || !fs) { cleanup(); return; }
   var prog = gl.createProgram();
@@ -103,153 +119,132 @@
   if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { cleanup(); return; }
   gl.useProgram(prog);
 
-  var buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  var loc = gl.getAttribLocation(prog, 'p');
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  function buffer(data, attr, size) {
+    var bf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    var l = gl.getAttribLocation(prog, attr);
+    gl.enableVertexAttribArray(l);
+    gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0);
+  }
+  buffer(pos, 'aPos', 2);
+  buffer(uv, 'aUv', 2);
+  var ibo = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
 
-  var U = {
-    uA: gl.getUniformLocation(prog, 'uA'),
-    uB: gl.getUniformLocation(prog, 'uB'),
-    uProg: gl.getUniformLocation(prog, 'uProg'),
-    uRA: gl.getUniformLocation(prog, 'uRA'),
-    uRB: gl.getUniformLocation(prog, 'uRB'),
-    uPlane: gl.getUniformLocation(prog, 'uPlane')
+  var U = {};
+  ['uMVP', 'uTime', 'uMouse', 'uAmp', 'uBulge', 'uTex', 'uRatio', 'uPlane'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+  gl.uniform1i(U.uTex, 0);
+
+  /* ---- matrix helpers (mat4, column-major) ---------------------- */
+  function mul(a, b) {
+    var o = new Float32Array(16);
+    for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) {
+      o[c * 4 + r] = a[0 * 4 + r] * b[c * 4 + 0] + a[1 * 4 + r] * b[c * 4 + 1] + a[2 * 4 + r] * b[c * 4 + 2] + a[3 * 4 + r] * b[c * 4 + 3];
+    }
+    return o;
+  }
+  function perspective(fovy, aspect, near, far) {
+    var f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
+    return new Float32Array([f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (far + near) * nf, -1, 0, 0, 2 * far * near * nf, 0]);
+  }
+  function translate(x, y, z) { return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]); }
+  function rotX(a) { var c = Math.cos(a), s = Math.sin(a); return new Float32Array([1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]); }
+  function rotY(a) { var c = Math.cos(a), s = Math.sin(a); return new Float32Array([c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]); }
+  function scale(x, y, z) { return new Float32Array([x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1]); }
+
+  /* camera distance chosen so a plane of half-height = tan(fov/2)*D fills view */
+  var FOV = 42 * Math.PI / 180, CAM = 2.6;
+  var planeAspect = 1.6, imgRatio = 1.6;
+
+  function mvp(tiltX, tiltY, camZ) {
+    var halfH = Math.tan(FOV / 2) * CAM * 1.14;         // 1.14 = slight overscan (no edge gaps)
+    var halfW = halfH * planeAspect;
+    var model = mul(mul(rotX(tiltX), rotY(tiltY)), scale(halfW, halfH, halfH));
+    var view = translate(0, 0, -camZ);
+    var proj = perspective(FOV, planeAspect, 0.1, 20);
+    return mul(proj, mul(view, model));
+  }
+
+  /* ---- texture -------------------------------------------------- */
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([20, 18, 14, 255]));
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  var ready = false;
+  var loader = new Image();
+  loader.decoding = 'async';
+  try { loader.crossOrigin = 'anonymous'; } catch (e) {}
+  loader.onload = function () {
+    try {
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, loader);
+      imgRatio = (loader.naturalWidth || 3) / (loader.naturalHeight || 2);
+      ready = true;
+      media.classList.add('st-gl-on');   // reveal canvas over the native img
+    } catch (e) { cleanup(); }
   };
-  gl.uniform1i(U.uA, 0);
-  gl.uniform1i(U.uB, 1);
+  loader.onerror = function () { cleanup(); };
+  loader.src = src;
 
-  /* ---- textures (lazy, per slide) -------------------------------- */
-  var texCache = {}; // index -> {tex, ratio, ready}
-
-  function makeTex() {
-    var t = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, t);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([14, 15, 18, 255]));
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    return t;
-  }
-
-  function ensureTex(i, cb) {
-    if (texCache[i] && texCache[i].ready) { cb && cb(texCache[i]); return; }
-    if (!texCache[i]) texCache[i] = { tex: makeTex(), ratio: 1.5, ready: false };
-    var entry = texCache[i];
-
-    var srcImg = imgs[i];
-    var url = srcImg.currentSrc || srcImg.src;
-    if (!url) { cb && cb(entry); return; }
-
-    var loader = new Image();
-    loader.decoding = 'async';
-    // same-origin uploads — no crossOrigin needed; set anonymous defensively for CDNs
-    try { loader.crossOrigin = 'anonymous'; } catch (e) {}
-    loader.onload = function () {
-      try {
-        gl.bindTexture(gl.TEXTURE_2D, entry.tex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, loader);
-        entry.ratio = (loader.naturalWidth || 3) / (loader.naturalHeight || 2);
-        entry.ready = true;
-      } catch (e) { entry.ready = false; }
-      cb && cb(entry);
-    };
-    loader.onerror = function () { cb && cb(entry); };
-    loader.src = url;
-  }
-
-  /* ---- sizing ---------------------------------------------------- */
-  var planeAspect = 1.5;
+  /* ---- sizing --------------------------------------------------- */
   function resize() {
-    var r = frame.getBoundingClientRect();
+    var r = media.getBoundingClientRect();
     if (!r.width || !r.height) return;
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(r.width * dpr);
     canvas.height = Math.round(r.height * dpr);
     planeAspect = canvas.width / canvas.height;
     gl.viewport(0, 0, canvas.width, canvas.height);
-    if (!transitioning) draw(curIndex, curIndex, 0);
   }
-
-  /* ---- render ---------------------------------------------------- */
-  function draw(fromI, toI, progress) {
-    var A = texCache[fromI], B = texCache[toI];
-    if (!A || !B) return;
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, A.tex);
-    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, B.tex);
-    gl.uniform1f(U.uProg, progress);
-    gl.uniform1f(U.uRA, A.ratio);
-    gl.uniform1f(U.uRB, B.ratio);
-    gl.uniform1f(U.uPlane, planeAspect);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  }
-
-  /* ---- transition state machine ---------------------------------- */
-  var curIndex = 0;
-  var transitioning = false;
-  var DURATION = 900;
-
-  function runTransition(fromI, toI) {
-    ensureTex(fromI, function () {
-      ensureTex(toI, function () {
-        if (!texCache[fromI].ready || !texCache[toI].ready) { curIndex = toI; return; }
-        transitioning = true;
-        var start = performance.now();
-        (function step(now) {
-          var t = Math.min(1, (now - start) / DURATION);
-          draw(fromI, toI, t);
-          if (t < 1) {
-            requestAnimationFrame(step);
-          } else {
-            transitioning = false;
-            curIndex = toI;
-            draw(toI, toI, 0);
-          }
-        })(start);
-      });
-    });
-  }
-
-  /* ---- boot ------------------------------------------------------ */
   resize();
-  if ('ResizeObserver' in window) { new ResizeObserver(resize).observe(frame); }
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(media);
   else window.addEventListener('resize', resize, { passive: true });
 
-  // Upload slide 0, draw it, THEN reveal the canvas (protects LCP).
-  ensureTex(0, function () {
-    if (!texCache[0] || !texCache[0].ready) { cleanup(); return; } // tainted/failed → native
-    draw(0, 0, 0);
-    frame.classList.add('nr-gl-on');
-    // warm the next slide so the first transition is instant
-    if (imgs[1]) ensureTex(1);
-  });
-
-  hero.addEventListener('nr:hero', function (e) {
-    if (!frame.classList.contains('nr-gl-on')) return; // not active → native handles it
-    var d = e.detail || {};
-    var from = typeof d.from === 'number' ? d.from : curIndex;
-    var to = typeof d.to === 'number' ? d.to : curIndex;
-    if (from === to) return;
-    runTransition(from, to);
-  });
-
-  // Pause work when the hero scrolls out of view.
+  /* ---- input ---------------------------------------------------- */
+  var mx = 0, my = 0, tmx = 0, tmy = 0, inView = true;
+  window.addEventListener('mousemove', function (e) {
+    var r = media.getBoundingClientRect();
+    tmx = ((e.clientX - r.left) / r.width) * 2 - 1;
+    tmy = -(((e.clientY - r.top) / r.height) * 2 - 1);
+  }, { passive: true });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (ents) {
-      ents.forEach(function (en) { if (en.isIntersecting && !transitioning) draw(curIndex, curIndex, 0); });
-    }, { threshold: 0 }).observe(frame);
+    new IntersectionObserver(function (ents) { ents.forEach(function (en) { inView = en.isIntersecting; }); }, { threshold: 0 }).observe(media);
   }
+
+  /* ---- loop ----------------------------------------------------- */
+  var t0 = performance.now();
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    if (!ready || !inView) return;
+    var t = (now - t0) / 1000;
+    mx += (tmx - mx) * 0.06; my += (tmy - my) * 0.06;
+    var sc = window.scrollY || 0;
+    var vh = window.innerHeight || 1;
+    var scrollK = Math.min(sc / vh, 1);
+    gl.uniform1f(U.uTime, t);
+    gl.uniform2f(U.uMouse, mx * 0.9, my * 0.9);
+    gl.uniform1f(U.uAmp, 0.05);
+    gl.uniform1f(U.uBulge, 0.14);
+    gl.uniform1f(U.uRatio, imgRatio);
+    gl.uniform1f(U.uPlane, planeAspect);
+    gl.uniformMatrix4fv(U.uMVP, false, mvp(my * 0.10 - scrollK * 0.06, mx * 0.12, CAM + scrollK * 0.9));
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
+  }
+  var raf = requestAnimationFrame(frame);
 
   function cleanup() {
     try {
+      if (typeof raf === 'number') cancelAnimationFrame(raf);
       if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
-      if (grad && grad.parentNode) grad.parentNode.removeChild(grad);
-      frame.classList.remove('nr-gl-on');
+      media.classList.remove('st-gl-on');
     } catch (e) {}
   }
 })();

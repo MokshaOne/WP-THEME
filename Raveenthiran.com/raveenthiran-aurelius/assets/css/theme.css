@@ -200,12 +200,19 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 @keyframes stKen{from{transform:scale(1.06)}to{transform:scale(1)}}
 .st-hero__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,12,10,.28) 0%,transparent 24%,transparent 50%,rgba(14,12,10,.72) 100%)}
 .st-hero__head{position:absolute;top:calc(var(--head-h) + 26px);left:var(--gut)}
-.st-hero__foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:clamp(28px,4vw,54px)}
-.st-hero__caption{display:flex;flex-direction:column;gap:6px;max-width:70%}
-.st-hero__caption-t{font-size:clamp(30px,4.6vw,60px);font-weight:400;letter-spacing:-.03em;line-height:1}
-.st-hero__caption-m{font-family:var(--ff-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.72)}
-.st-hero__caption:hover .st-hero__caption-t{color:#fff;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
-.st-hero__scroll{display:inline-flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--ff-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.st-hero__foot{display:grid;grid-template-columns:1.4fr .9fr;align-items:end;gap:clamp(28px,5vw,72px);padding-bottom:clamp(28px,4vw,54px)}
+.st-hero__lead{display:flex;flex-direction:column;gap:clamp(18px,2vw,26px)}
+.st-hero__title{font-size:clamp(46px,8.4vw,132px);font-weight:400;letter-spacing:-.03em;line-height:.9;margin:0}
+.st-hero__title em{font-style:italic}
+.st-hero__now{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.st-hero__now-k{padding:3px 9px;border:1px solid rgba(255,255,255,.28);border-radius:100px;color:rgba(255,255,255,.9)}
+.st-hero__now-t{color:#fff}
+.st-hero__now:hover .st-hero__now-t{text-decoration:underline;text-underline-offset:4px}
+.st-hero__aside{display:flex;flex-direction:column;align-items:flex-start;gap:22px;padding-bottom:4px}
+.st-hero__lede{font-family:var(--ff-body,inherit);font-size:clamp(14px,1.05vw,16px);line-height:1.62;color:rgba(255,255,255,.82);max-width:38ch;text-transform:none;letter-spacing:0}
+.st-btn--ghost{color:#fff;border-color:rgba(255,255,255,.34)}
+.st-btn--ghost:hover{border-color:#fff}
+.st-hero__scroll{display:inline-flex;flex-direction:column;align-items:flex-start;gap:10px;font-family:var(--ff-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.7)}
 .st-hero__scroll i{width:1px;height:38px;background:linear-gradient(rgba(255,255,255,.7),transparent);animation:stScroll 1.8s var(--ease) infinite}
 @keyframes stScroll{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
@@ -662,6 +669,8 @@ img.nr-lqip--done{filter:none;transform:none;transition:filter .45s,transform .4
    Responsive
    ========================================================= */
 @media (max-width:1000px){
+  .st-hero__foot{grid-template-columns:1fr;gap:30px}
+  .st-hero__lede{max-width:52ch}
   .st-intro__grid{grid-template-columns:1fr;gap:32px}
   .st-work__grid{grid-template-columns:repeat(6,1fr)}
   .st-work__item{grid-column:span 6}
@@ -678,7 +687,8 @@ img.nr-lqip--done{filter:none;transform:none;transition:filter .45s,transform .4
 @media (max-width:640px){
   :root{--head-h:64px}
   .st-work__grid,.st-journal__grid,.st-journal-grid,.st-grid,.st-grid--three{grid-template-columns:1fr}
-  .st-hero__caption{max-width:100%}
+  .st-hero__foot{grid-template-columns:1fr;gap:26px}
+  .st-hero__aside{gap:16px}
   .st-hero__scroll{display:none}
   .st-cta__row,.st-form__row{grid-template-columns:1fr}
   .st-form__row{display:flex;flex-direction:column}
@@ -779,7 +789,7 @@ html.intro-reveal .st-hero__foot,html.intro-reveal .st-hero__head{animation:stRi
 
 /* display serif — every large title speaks Bodoni */
 h1,h2,
-.st-hero__caption-t,.st-sec-title,.st-arc-title,.st-project__title,
+.st-hero__title,.st-sec-title,.st-arc-title,.st-project__title,
 .st-about__title,.st-enquire__title,.st-jpost__title,.st-404__title,
 .st-cta__title,.st-next__t,.st-work__t,.st-card__t,.st-journal__t,
 .st-jcard__t,.st-voice__q,.st-intro__lead,.st-list__t,.st-static__title,
@@ -960,11 +970,11 @@ html.has-magic .st-tilt{transition:clip-path 1.15s var(--ease),transform .25s ea
 ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 
 /* display voice — bold Bodoni, tight tracking (Stitch display-lg) */
-.st-hero__caption-t,.st-cta__title,.st-arc-title,.st-about__title,
+.st-hero__title,.st-cta__title,.st-arc-title,.st-about__title,
 .st-project__title,.st-enquire__title,.st-jpost__title,.st-404__title,.st-next__t{
   font-weight:700;letter-spacing:-.02em;line-height:1.06;
 }
-.st-hero__caption-t{text-transform:uppercase;line-height:1.04}
+.st-hero__title{text-transform:uppercase;line-height:.9}
 .st-sec-title{font-weight:500;letter-spacing:-.01em}
 .st-work__t,.st-card__t,.st-journal__t,.st-jcard__t{font-weight:500}
 

@@ -104,13 +104,13 @@
     window.addEventListener('mousedown', function () { cursor.classList.add('is-down'); });
     window.addEventListener('mouseup', function () { cursor.classList.remove('is-down'); });
 
-    var hoverSel = 'a, button, .st-work__item, .st-card, .st-jcard, .st-hero__caption, .st-next, [data-cursor]';
+    var hoverSel = 'a, button, .st-work__item, .st-card, .st-jcard, .st-hero__now, .st-next, [data-cursor]';
     document.addEventListener('mouseover', function (e) {
       var t = e.target.closest && e.target.closest(hoverSel);
       if (!t) return;
       var label = t.getAttribute('data-cursor');
       if (!label) {
-        if (t.matches('.st-work__item, .st-card, .st-jcard, .st-hero__caption, .st-next')) label = 'View';
+        if (t.matches('.st-work__item, .st-card, .st-jcard, .st-hero__now, .st-next')) label = 'View';
         else label = '';
       }
       cScale = label ? 3.4 : 2.2;
@@ -147,7 +147,7 @@
      blocks rise. Marked here, animated by IntersectionObserver.
      ══════════════════════════════════════════════════════════ */
   function tag(list, cls) { [].slice.call(document.querySelectorAll(list)).forEach(function (el) { el.classList.add(cls); }); }
-  tag('.st-hero__caption-t, .st-sec-title, .st-cta__title, .st-arc-title, .st-about__title, .st-project__title, .st-enquire__title, .st-jpost__title, .st-404__title, .st-intro__lead, .st-voice__q', 'st-mask');
+  tag('.st-sec-title, .st-cta__title, .st-arc-title, .st-about__title, .st-project__title, .st-enquire__title, .st-jpost__title, .st-404__title, .st-intro__lead, .st-voice__q', 'st-mask');
   tag('.st-work__frame, .st-card__frame, .st-journal__frame, .st-jcard__frame, .st-project__figure, .st-about__portrait, .st-enquire__frame', 'st-clip');
 
   /* 4b · Kinetic type — big titles split into per-character spans that
@@ -185,7 +185,7 @@
     });
   }
   [].slice.call(document.querySelectorAll(
-    '.st-hero__caption-t, .st-sec-title, .st-arc-title, .st-about__title, ' +
+    '.st-hero__title, .st-sec-title, .st-arc-title, .st-about__title, ' +
     '.st-project__title, .st-enquire__title, .st-jpost__title, .st-404__title, .st-cta__title'
   )).forEach(splitChars);
 

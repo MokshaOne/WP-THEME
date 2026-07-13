@@ -56,6 +56,8 @@ function nr_settings_defaults() {
 
 		/* Page-specific copy */
 		'nr_hero_eyebrow'    => __( 'Featured work', 'raveenthiran' ),
+		'nr_home_hero_title' => __( 'Quiet, <em>exact</em><br>pictures.', 'raveenthiran' ),
+		'nr_home_hero_lede'  => __( 'Editorial, portrait and architecture photography, made in Vienna and carried worldwide. A small, careful body of work — chosen slowly, printed exactly.', 'raveenthiran' ),
 
 		'nr_work_eyebrow'    => __( 'Portfolio', 'raveenthiran' ),
 		'nr_work_title'      => __( 'The complete <em>portfolio.</em>', 'raveenthiran' ),
@@ -415,6 +417,12 @@ function nr_theme_settings_page() {
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Eyebrow', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_hero_eyebrow', 40 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Hero headline', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_home_hero_title', 60 ); ?>
+							<p class="description"><?php esc_html_e( 'Large opening line over the featured image. <em>…</em> italicises, <br> breaks a line.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Hero intro text', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_home_hero_lede', 3 ); ?>
+							<p class="description"><?php esc_html_e( 'Short paragraph beside the headline, above the “Explore the work” button.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Auto-advance', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_hero_auto', __( 'Cycle through slides automatically', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Auto-advance interval (ms)', 'raveenthiran' ); ?></label></th>

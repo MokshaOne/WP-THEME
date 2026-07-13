@@ -85,11 +85,14 @@ if ( $q->have_posts() ) {
 	}
 }
 
-$hero      = $works[0] ?? [];
-$nr_studio = nr_opt( 'nr_studio', 'Vienna · worldwide' );
-$nr_name   = nr_opt( 'nr_logo_text', 'Raveenthiran' );
-$statement = nr_opt( 'nr_home_statement', __( 'A Vienna photographer making <em>quiet, exact pictures</em> — editorial, portrait and architecture, for people who care how a room felt.', 'raveenthiran' ) );
-$intro_p   = nr_opt( 'nr_home_intro', __( 'Available for commissions and personal work across Europe. Selected projects below; the full archive lives in Work.', 'raveenthiran' ) );
+$hero       = $works[0] ?? [];
+$nr_studio  = nr_opt( 'nr_studio', 'Vienna · worldwide' );
+$nr_name    = nr_opt( 'nr_logo_text', 'Raveenthiran' );
+$statement  = nr_opt( 'nr_home_statement', __( 'A Vienna photographer making <em>quiet, exact pictures</em> — editorial, portrait and architecture, for people who care how a room felt.', 'raveenthiran' ) );
+$intro_p    = nr_opt( 'nr_home_intro', __( 'Available for commissions and personal work across Europe. Selected projects below; the full archive lives in Work.', 'raveenthiran' ) );
+$hero_title = nr_opt( 'nr_home_hero_title', __( 'Quiet, <em>exact</em><br>pictures.', 'raveenthiran' ) );
+$hero_lede  = nr_opt( 'nr_home_hero_lede', __( 'Editorial, portrait and architecture photography, made in Vienna and carried worldwide. A small, careful body of work — chosen slowly, printed exactly.', 'raveenthiran' ) );
+$work_url   = get_post_type_archive_link( 'nr_project' ) ?: home_url( '/portfolio' );
 ?>
 
 <?php /* ═══ HERO ═══════════════════════════════════════════════ */ ?>
@@ -115,11 +118,22 @@ $intro_p   = nr_opt( 'nr_home_intro', __( 'Available for commissions and persona
 	</div>
 
 	<div class="st-wrap st-hero__foot">
-		<a class="st-hero__caption" href="<?php echo esc_url( $hero['url'] ?? '#' ); ?>">
-			<span class="st-hero__caption-t"><?php echo esc_html( $hero['title'] ?? '' ); ?></span>
-			<span class="st-hero__caption-m"><?php echo esc_html( ( $hero['cat'] ?? '' ) . ' · ' . ( $hero['loc'] ?? '' ) . ' · ' . ( $hero['yr'] ?? '' ) ); ?></span>
-		</a>
-		<span class="st-hero__scroll" aria-hidden="true"><?php esc_html_e( 'Scroll', 'raveenthiran' ); ?><i></i></span>
+		<div class="st-hero__lead">
+			<h1 class="st-hero__title"><?php echo wp_kses( $hero_title, [ 'em' => [], 'br' => [] ] ); ?></h1>
+			<?php if ( ! empty( $hero['title'] ) ) : ?>
+				<a class="st-hero__now" href="<?php echo esc_url( $hero['url'] ?? '#' ); ?>">
+					<span class="st-hero__now-k"><?php esc_html_e( 'On view', 'raveenthiran' ); ?></span>
+					<span class="st-hero__now-t"><?php echo esc_html( $hero['title'] ); ?></span>
+					<span class="st-hero__now-m"><?php echo esc_html( trim( ( $hero['cat'] ?? '' ) . ' · ' . ( $hero['yr'] ?? '' ), ' ·' ) ); ?></span>
+				</a>
+			<?php endif; ?>
+		</div>
+
+		<div class="st-hero__aside">
+			<p class="st-hero__lede"><?php echo esc_html( $hero_lede ); ?></p>
+			<a class="st-btn st-btn--ghost" href="<?php echo esc_url( $work_url ); ?>"><?php esc_html_e( 'Explore the work', 'raveenthiran' ); ?> <span aria-hidden="true">→</span></a>
+			<span class="st-hero__scroll" aria-hidden="true"><?php esc_html_e( 'Scroll', 'raveenthiran' ); ?><i></i></span>
+		</div>
 	</div>
 </section>
 

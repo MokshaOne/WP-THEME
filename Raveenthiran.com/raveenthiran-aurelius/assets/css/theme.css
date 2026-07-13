@@ -762,6 +762,11 @@ html.has-magic .st-clip{clip-path:inset(0 0 100% 0);transition:clip-path 1.15s v
 html.has-magic .st-clip.is-shown{clip-path:inset(0 0 0 0)}
 html.has-magic .st-clip>img,html.has-magic .st-clip>picture>img,html.has-magic .st-clip>.nr-ph,html.has-magic .st-clip>div{transform:scale(1.18);transition:transform 1.35s var(--ease);will-change:transform}
 html.has-magic .st-clip.is-shown>img,html.has-magic .st-clip.is-shown>picture>img,html.has-magic .st-clip.is-shown>.nr-ph,html.has-magic .st-clip.is-shown>div{transform:scale(1)}
+/* signature — a gold "shutter" light sweeps across each frame as it reveals */
+html.has-magic .st-clip{position:relative}
+html.has-magic .st-clip::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:linear-gradient(105deg,transparent 42%,rgba(247,227,130,.28) 48%,rgba(247,227,130,.62) 50%,rgba(247,227,130,.28) 52%,transparent 58%);transform:translateX(-130%)}
+html.has-magic .st-clip.is-shown::after{animation:stShutter 1.05s var(--ease) .28s 1}
+@keyframes stShutter{0%{transform:translateX(-130%);opacity:0}18%{opacity:1}100%{transform:translateX(130%);opacity:0}}
 
 /* hero: JS owns the transform; disable the CSS ken-burns to avoid conflict */
 html.has-magic .st-hero__img{animation:none;transform-origin:center}

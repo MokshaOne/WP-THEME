@@ -189,7 +189,9 @@
     '.st-project__title, .st-enquire__title, .st-jpost__title, .st-404__title, .st-cta__title'
   )).forEach(splitChars);
 
-  var revEls = [].slice.call(document.querySelectorAll('.st-mask, .st-clip'));
+  // .st-split is included so kinetic-only headings (e.g. the hero title, which
+  // is not a mask target) still receive .is-shown and rise into view.
+  var revEls = [].slice.call(document.querySelectorAll('.st-mask, .st-clip, .st-split'));
   function kickReveals() {
     if (!('IntersectionObserver' in window)) { revEls.forEach(function (el) { el.classList.add('is-shown'); }); return; }
     var io = new IntersectionObserver(function (ents) {

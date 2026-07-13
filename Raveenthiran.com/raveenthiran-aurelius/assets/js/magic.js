@@ -232,6 +232,36 @@
   document.body && document.body.appendChild(progressBar);
 
   /* ══════════════════════════════════════════════════════════
+     5a² · Atmosphere — cinematic film grain (always) + a gold
+     cursor spotlight that lights the anthracite (fine pointer),
+     plus 3D mouse-parallax on the hero (image / veil / headline
+     drift at different depths toward the pointer).
+     ══════════════════════════════════════════════════════════ */
+  var grain = document.createElement('div');
+  grain.className = 'st-grain'; grain.setAttribute('aria-hidden', 'true');
+  document.body && document.body.appendChild(grain);
+
+  var spot = null, px = window.innerWidth / 2, py = window.innerHeight / 2, spx = px, spy = py;
+  if (finePointer && !isTouch) {
+    root.classList.add('has-spot');
+    spot = document.createElement('div');
+    spot.className = 'st-spot'; spot.setAttribute('aria-hidden', 'true');
+    document.body && document.body.appendChild(spot);
+    window.addEventListener('mousemove', function (e) { px = e.clientX; py = e.clientY; }, { passive: true });
+  }
+  // hero depth layers — [element, depth] (px of drift at screen edge)
+  var heroLayers = [];
+  if (finePointer && !isTouch) {
+    var hl = function (sel, d, rot) { var el = document.querySelector(sel); if (el) heroLayers.push([el, d, rot || 0]); };
+    hl('.st-hero__img', 26, 0);
+    hl('.st-hero__title', -18, 1);
+    hl('.st-hero__now', -10, 0);
+    hl('.st-hero__aside', -6, 0);
+    if (heroLayers.length) root.classList.add('has-hero3d');
+  }
+  var hero3d = document.querySelector('.st-hero');
+
+  /* ══════════════════════════════════════════════════════════
      5b · Pinned horizontal reel — on the home page (wide screens)
      the Selected Work grid becomes a film strip: vertical scroll
      drives it sideways while the section stays pinned.
@@ -349,11 +379,34 @@
       m._mx = lerp(m._mx, m._tx, 0.2); m._my = lerp(m._my, m._ty, 0.2);
       m.style.transform = (Math.abs(m._mx) < 0.05 && Math.abs(m._my) < 0.05) ? '' : 'translate(' + m._mx.toFixed(2) + 'px,' + m._my.toFixed(2) + 'px)';
     }
-    // parallax (only near viewport)
-    var vh = window.innerHeight;
-    if (heroImg) {
+    // atmosphere — spotlight follows the pointer (eased)
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var nx = 0, ny = 0;
+    if (finePointer && !isTouch) {
+      spx = lerp(spx, px, 0.12); spy = lerp(spy, py, 0.12);
+      nx = clamp((px - vw / 2) / (vw / 2), -1, 1);
+      ny = clamp((py - vh / 2) / (vh / 2), -1, 1);
+      if (spot) { spot.style.setProperty('--mx', spx.toFixed(1) + 'px'); spot.style.setProperty('--my', spy.toFixed(1) + 'px'); }
+    }
+    // hero 3D — layers drift toward the pointer at their own depth; the image
+    // element also carries its scroll-parallax scale so the two never fight.
+    var heroVisible = hero3d ? (function () { var b = hero3d.getBoundingClientRect(); return b.bottom > 0 && b.top < vh; })() : false;
+    if (heroImg && (!heroLayers.length || !heroVisible)) {
       var hr = heroImg.getBoundingClientRect();
       if (hr.bottom > 0 && hr.top < vh) heroImg.style.transform = 'scale(1.12) translate3d(0,' + (smooth.cur * 0.12) + 'px,0)';
+    }
+    if (heroLayers.length && heroVisible) {
+      for (var h = 0; h < heroLayers.length; h++) {
+        var el = heroLayers[h][0], depth = heroLayers[h][1], rot = heroLayers[h][2];
+        el._dx = lerp(el._dx || 0, nx * depth, 0.08);
+        el._dy = lerp(el._dy || 0, ny * depth, 0.08);
+        if (el === heroImg) {
+          el.style.transform = 'scale(1.14) translate3d(' + el._dx.toFixed(1) + 'px,' + (smooth.cur * 0.12 + el._dy).toFixed(1) + 'px,0)';
+        } else {
+          var ry = rot ? ' rotateY(' + (nx * rot).toFixed(2) + 'deg)' : '';
+          el.style.transform = 'perspective(1200px) translate3d(' + el._dx.toFixed(1) + 'px,' + el._dy.toFixed(1) + 'px,0)' + ry;
+        }
+      }
     }
     for (var j = 0; j < paraImgs.length; j++) {
       var im = paraImgs[j];

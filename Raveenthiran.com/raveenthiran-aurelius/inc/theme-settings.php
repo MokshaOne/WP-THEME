@@ -135,6 +135,10 @@ function nr_settings_defaults() {
 		/* Performance */
 		'nr_perf_async_css'  => '0',
 
+		/* PWA — installable app */
+		'nr_pwa_install'       => '1',
+		'nr_pwa_install_label' => __( 'Install app', 'raveenthiran' ),
+
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
 

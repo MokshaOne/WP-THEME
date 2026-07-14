@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '1.6.0' );
+define( 'NR_THEME_VERSION', '1.7.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -83,8 +83,10 @@ add_action( 'wp_enqueue_scripts', function () {
 		);
 	}
 
-	// #1 — optional WebGL hero transitions (off unless enabled in Theme Settings).
-	if ( is_front_page() && nr_opt( 'nr_fx_webgl', '1' ) === '1' ) {
+	// WebGL 3D imagery — every hero photo across the site becomes a displaced
+	// 3D plane. Desktop only (the script itself bails on mobile / reduced-motion
+	// / low-power), so phones keep the plain fast image. Opt-out in Settings.
+	if ( nr_opt( 'nr_fx_webgl', '1' ) === '1' ) {
 		wp_enqueue_script(
 			'nr-webgl-hero',
 			get_template_directory_uri() . '/assets/js/webgl-hero.js',

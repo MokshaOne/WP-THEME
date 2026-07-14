@@ -779,11 +779,12 @@ html.has-magic .st-clip.is-shown::after{animation:stShutter 1.05s var(--ease) .2
 html.has-hero3d .st-hero__img,html.has-hero3d .st-hero__title,html.has-hero3d .st-hero__now,html.has-hero3d .st-hero__aside{will-change:transform}
 @media (prefers-reduced-motion:reduce){.st-grain,.st-spot{display:none}}
 
-/* WebGL 3D hero — canvas fades in over the native <img> once its texture
-   uploads, so the plain image still paints the LCP first. */
-.st-hero__gl{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity .7s var(--ease)}
-.st-hero__media.st-gl-on .st-hero__gl{opacity:1}
-.st-hero__media.st-gl-on .st-hero__img{opacity:0;transition:opacity .7s var(--ease)}
+/* WebGL 3D imagery (site-wide, desktop only) — the canvas fades in over the
+   native <img> once its texture uploads, so the plain image still paints the
+   LCP first. One rule serves every hero (home, project, journal, next, about,
+   enquire); the JS fades the underlying <img> out per instance. */
+.st-gl{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity .7s var(--ease);pointer-events:none}
+.st-gl-on>.st-gl{opacity:1}
 
 /* hero: JS owns the transform; disable the CSS ken-burns to avoid conflict */
 html.has-magic .st-hero__img{animation:none;transform-origin:center}

@@ -237,10 +237,6 @@
      plus 3D mouse-parallax on the hero (image / veil / headline
      drift at different depths toward the pointer).
      ══════════════════════════════════════════════════════════ */
-  var grain = document.createElement('div');
-  grain.className = 'st-grain'; grain.setAttribute('aria-hidden', 'true');
-  document.body && document.body.appendChild(grain);
-
   var spot = null, px = window.innerWidth / 2, py = window.innerHeight / 2, spx = px, spy = py;
   if (finePointer && !isTouch) {
     root.classList.add('has-spot');

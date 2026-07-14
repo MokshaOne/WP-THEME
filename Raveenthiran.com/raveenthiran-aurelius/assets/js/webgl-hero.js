@@ -49,25 +49,27 @@
   function rotY(a) { var c = Math.cos(a), s = Math.sin(a); return new Float32Array([c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]); }
   function scale(x, y, z) { return new Float32Array([x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1]); }
 
+  // Calm at rest: no idle wobble. The surface carries a fixed, gentle dome
+  // (a curved-screen feel) and responds only to the pointer (a smooth bulge)
+  // — every bit of motion is a direct answer to the viewer's input.
   var VERT = [
     'attribute vec2 aPos;attribute vec2 aUv;',
-    'uniform mat4 uMVP;uniform float uTime;uniform vec2 uMouse;uniform float uAmp;uniform float uBulge;',
+    'uniform mat4 uMVP;uniform vec2 uMouse;uniform float uBulge;uniform float uCurve;',
     'varying vec2 vUv;varying float vZ;varying float vRim;',
     'void main(){',
     '  vUv=aUv;',
-    '  float wave=sin(aPos.x*3.0+uTime*0.6)*0.5+cos(aPos.y*2.4-uTime*0.5)*0.5;',
     '  float d=distance(aPos,uMouse);',
     '  float bulge=exp(-d*d*2.2)*uBulge;',
-    '  float z=wave*uAmp + bulge;',
-    '  vZ=z; vRim=exp(-d*d*3.0);',
-    '  gl_Position=uMVP*vec4(aPos.x,aPos.y,z,1.0);',
+    '  float curve=-(aPos.x*aPos.x+aPos.y*aPos.y*0.4)*uCurve;',   // fixed, subtle dome
+    '  vZ=bulge; vRim=exp(-d*d*3.0);',                            // shading follows the pointer
+    '  gl_Position=uMVP*vec4(aPos.x,aPos.y,curve+bulge,1.0);',
     '}'
   ].join('\n');
 
   var FRAG = [
     'precision highp float;',
     'varying vec2 vUv;varying float vZ;varying float vRim;',
-    'uniform sampler2D uTex;uniform float uTime;uniform float uRatio;uniform float uPlane;',
+    'uniform sampler2D uTex;uniform float uRatio;uniform float uPlane;',
     'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'vec2 coverUv(vec2 uvv){float a=uRatio/uPlane;vec2 s=a>1.0?vec2(1.0/a,1.0):vec2(1.0,a);return (uvv-0.5)*s+0.5;}',
     'vec3 sampleCA(vec2 uvv,float amt){',
@@ -79,17 +81,17 @@
     'void main(){',
     '  vec2 uvv=coverUv(vUv);',
     '  float edge=distance(vUv,vec2(0.5))*2.0;',
-    '  float ca=0.004+edge*0.006;',
+    '  float ca=0.0018+edge*0.004;',                 // restrained edge aberration
     '  vec3 col=sampleCA(uvv,ca);',
     '  col=(col-0.5)*1.05+0.5;',
     '  col=mix(vec3(dot(col,vec3(0.299,0.587,0.114))),col,0.96);',
     '  col*=0.9;',
-    '  col*=1.0+vZ*0.35;',
+    '  col*=1.0+vZ*0.30;',                           // gentle highlight under the pointer
     '  vec3 gold=vec3(0.86,0.78,0.41);',
-    '  col+=gold*vRim*0.18;',
-    '  float g=hash(vUv*vec2(920.0,540.0)+fract(uTime)*97.0)-0.5;',
-    '  col+=g*0.045;',
-    '  col*=1.0-edge*edge*0.28;',
+    '  col+=gold*vRim*0.14;',                        // gold rim follows the pointer
+    '  float g=hash(vUv*vec2(920.0,540.0))-0.5;',    // STATIC grain — no per-frame flicker
+    '  col+=g*0.028;',
+    '  col*=1.0-edge*edge*0.28;',                    // vignette
     '  gl_FragColor=vec4(col,1.0);',
     '}'
   ].join('\n');
@@ -101,7 +103,7 @@
     var src = img && (img.currentSrc || img.src);
     if (!src) return;
     opts = opts || {};
-    var amp = opts.amp || 0.05, bulge = opts.bulge || 0.14, tilt = opts.tilt || 1;
+    var curve = opts.curve || 0.12, bulge = opts.bulge || 0.14, tilt = opts.tilt || 1;
 
     // position the canvas correctly even inside statically-positioned frames
     var cs = window.getComputedStyle(media);
@@ -136,7 +138,7 @@
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
 
     var U = {};
-    ['uMVP', 'uTime', 'uMouse', 'uAmp', 'uBulge', 'uTex', 'uRatio', 'uPlane'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    ['uMVP', 'uMouse', 'uBulge', 'uCurve', 'uTex', 'uRatio', 'uPlane'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
     gl.uniform1i(U.uTex, 0);
 
     var planeAspect = 1.6, imgRatio = 1.6;
@@ -193,16 +195,14 @@
       new IntersectionObserver(function (ents) { ents.forEach(function (en) { inView = en.isIntersecting; }); }, { threshold: 0 }).observe(media);
     }
 
-    var t0 = performance.now(), raf = 0;
-    function frame(now) {
+    var raf = 0;
+    function frame() {
       raf = requestAnimationFrame(frame);
       if (!ready || !inView) return;
-      var t = (now - t0) / 1000;
       mx += (tmx - mx) * 0.06; my += (tmy - my) * 0.06;
       var scrollK = Math.min((window.scrollY || 0) / (window.innerHeight || 1), 1);
-      gl.uniform1f(U.uTime, t);
       gl.uniform2f(U.uMouse, mx * 0.9, my * 0.9);
-      gl.uniform1f(U.uAmp, amp); gl.uniform1f(U.uBulge, bulge);
+      gl.uniform1f(U.uBulge, bulge); gl.uniform1f(U.uCurve, curve);
       gl.uniform1f(U.uRatio, imgRatio); gl.uniform1f(U.uPlane, planeAspect);
       gl.uniformMatrix4fv(U.uMVP, false, mvp(my * 0.10 * tilt - scrollK * 0.06, mx * 0.12 * tilt, CAM + scrollK * 0.9));
       gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -223,12 +223,12 @@
 
   /* ---- mount on every hero photograph on the page --------------- */
   var TARGETS = [
-    ['.st-hero__media',     '.st-hero__img',          { amp: 0.05,  bulge: 0.14, tilt: 1 }],
-    ['.st-project__hero',   '.st-project__hero-img',  { amp: 0.045, bulge: 0.12, tilt: 1 }],
-    ['.st-jpost__hero',     '.st-jpost__hero-img',    { amp: 0.045, bulge: 0.12, tilt: 1 }],
-    ['.st-next__media',     '.st-next__img',          { amp: 0.04,  bulge: 0.10, tilt: 0.8 }],
-    ['.st-about__portrait', '.st-about__portrait-img',{ amp: 0.03,  bulge: 0.09, tilt: 0.7 }],
-    ['.st-enquire__frame',  'img',                    { amp: 0.03,  bulge: 0.09, tilt: 0.7 }]
+    ['.st-hero__media',     '.st-hero__img',          { curve: 0.13, bulge: 0.14, tilt: 1 }],
+    ['.st-project__hero',   '.st-project__hero-img',  { curve: 0.11, bulge: 0.12, tilt: 1 }],
+    ['.st-jpost__hero',     '.st-jpost__hero-img',    { curve: 0.11, bulge: 0.12, tilt: 1 }],
+    ['.st-next__media',     '.st-next__img',          { curve: 0.09, bulge: 0.10, tilt: 0.8 }],
+    ['.st-about__portrait', '.st-about__portrait-img',{ curve: 0.07, bulge: 0.09, tilt: 0.7 }],
+    ['.st-enquire__frame',  'img',                    { curve: 0.07, bulge: 0.09, tilt: 0.7 }]
   ];
   function boot() {
     TARGETS.forEach(function (t) {

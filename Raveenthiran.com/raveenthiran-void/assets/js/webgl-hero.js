@@ -228,7 +228,11 @@
     ['.st-jpost__hero',     '.st-jpost__hero-img',    { curve: 0.11, bulge: 0.12, tilt: 1 }],
     ['.st-next__media',     '.st-next__img',          { curve: 0.09, bulge: 0.10, tilt: 0.8 }],
     ['.st-about__portrait', '.st-about__portrait-img',{ curve: 0.07, bulge: 0.09, tilt: 0.7 }],
-    ['.st-enquire__frame',  'img',                    { curve: 0.07, bulge: 0.09, tilt: 0.7 }]
+    ['.st-enquire__frame',  'img',                    { curve: 0.07, bulge: 0.09, tilt: 0.7 }],
+    /* VOID presentation frames */
+    ['.void-single-center .void-frame', 'img',        { curve: 0.10, bulge: 0.12, tilt: 1 }],
+    ['.void-home-plate-img', 'img',                   { curve: 0.06, bulge: 0.10, tilt: 0.8 }],
+    ['.void-about-portrait', 'img',                   { curve: 0.06, bulge: 0.09, tilt: 0.7 }]
   ];
   function boot() {
     TARGETS.forEach(function (t) {

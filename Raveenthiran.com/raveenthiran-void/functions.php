@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '1.0.0' );
+define( 'NR_THEME_VERSION', '1.1.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
@@ -43,6 +43,11 @@ add_action( 'wp_enqueue_scripts', function () {
 	// fonts.css (~2.5KB of @font-face) is inlined into <head> below to drop a
 	// render-blocking request; only the main stylesheet loads externally.
 	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/theme.css', [], NR_THEME_VERSION );
+	// VOID presentation layer — the "Obsidian & Gilt" spatial design (.void-*).
+	// Loaded after the base so it owns the look; the base keeps the .nr-* feature
+	// components (modals, forms, FAQ, compare, map) styled.
+	wp_enqueue_style( 'void-skin', get_template_directory_uri() . '/assets/css/void.css', [ 'nr-theme' ], NR_THEME_VERSION );
+	wp_enqueue_script( 'void-skin', get_template_directory_uri() . '/assets/js/void.js', [], NR_THEME_VERSION, true );
 	// Preload the above-the-fold faces (Syne variable display/body + Inter body fallback).
 	add_action( 'wp_head', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';

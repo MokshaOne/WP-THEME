@@ -1,0 +1,78 @@
+/* ==========================================================================
+   moksha1one — master layer: scroll-mode system + identity on top of VOID.
+   ========================================================================== */
+
+/* ---------- NO-SCROLL (home / contact) ---------- */
+html.mk-lock, html.mk-lock body { height: 100%; overflow: hidden; }
+
+/* ---------- HORIZONTAL ---------- */
+.mk-h { position: relative; }
+.mk-h__track { display: flex; align-items: stretch; }
+.mk-panel {
+	flex: 0 0 auto; height: 100vh; box-sizing: border-box;
+	display: flex; flex-direction: column; justify-content: center;
+	padding: clamp(100px,12vh,150px) clamp(28px,6vw,96px) clamp(80px,10vh,120px);
+	position: relative;
+}
+
+/* desktop scroll-hijack: the track is pinned and translated by JS while the
+   body (given a tall height in JS) supplies a native, 1:1 scrollbar. */
+html.mk-h-on .mk-h { position: fixed; inset: 0; overflow: hidden; z-index: 1; }
+html.mk-h-on .mk-h__track { height: 100vh; will-change: transform; }
+
+/* touch / reduced-motion: native horizontal scroll with gentle snap */
+.mk-h--native {
+	height: 100vh; overflow-x: auto; overflow-y: hidden;
+	scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+}
+.mk-h--native .mk-h__track { height: 100vh; }
+.mk-h--native .mk-panel { scroll-snap-align: start; }
+.mk-h--native::-webkit-scrollbar { height: 3px; }
+.mk-h--native::-webkit-scrollbar-thumb { background: var(--void-gold); }
+
+/* horizontal progress rail */
+.mk-progress {
+	position: fixed; left: 0; bottom: 0; width: 100%; height: 2px; z-index: 120;
+	transform: scaleX(0); transform-origin: left;
+	background: linear-gradient(90deg, var(--void-gold-deep), var(--void-gold));
+	box-shadow: 0 0 12px rgba(242,202,80,.5);
+}
+
+/* panel furniture — index + a hairline "rail" that reads as a filmstrip */
+.mk-panel__index { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .3em; color: var(--void-gold); opacity: .7; margin-bottom: 18px; }
+.mk-panel__rail { position: absolute; top: 50%; right: 0; width: clamp(40px,6vw,90px); height: 1px; background: var(--void-hair); }
+.mk-panel--intro { justify-content: center; }
+.mk-panel--intro .void-display-hero { text-align: left; }
+
+/* a scroll hint on horizontal pages */
+.mk-hint {
+	position: fixed; bottom: 34px; left: 50%; transform: translateX(-50%); z-index: 110;
+	display: inline-flex; align-items: center; gap: 12px;
+	font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .28em;
+	text-transform: uppercase; color: var(--void-ink-3); pointer-events: none;
+}
+.mk-hint i { width: 42px; height: 1px; background: var(--void-gold); position: relative; overflow: hidden; }
+.mk-hint i::after { content: ''; position: absolute; inset: 0; width: 40%; background: #fff;
+	animation: mkHint 2.4s var(--ease, cubic-bezier(.7,0,.2,1)) infinite; }
+@keyframes mkHint { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+@media (max-width: 900px) { .mk-hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .mk-hint i::after { animation: none; } }
+
+/* ---------- identity: the moksha wordmark carries a soft gilt light ---------- */
+.void-wordmark { background: linear-gradient(92deg, var(--void-gold) 0%, #fff 55%, var(--void-gold) 100%);
+	-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.void-wordmark-sub { -webkit-text-fill-color: var(--void-ink-3); }
+
+/* horizontal work panels: a specimen plate that fills the panel height */
+.mk-work { display: grid; grid-template-columns: minmax(280px, 30vw) auto; gap: clamp(24px,4vw,64px); align-items: center; }
+@media (max-width: 720px) { .mk-work { grid-template-columns: 1fr; } }
+.mk-work__frame { position: relative; height: min(64vh, 620px); aspect-ratio: 3/4; overflow: hidden; border: 1px solid var(--void-hair); background: #000; }
+.mk-work__frame img, .mk-work__frame .nr-ph { width: 100%; height: 100%; object-fit: cover; }
+.mk-work__meta { max-width: 34ch; }
+.mk-work__title { font-size: clamp(30px,4vw,64px); font-weight: 800; letter-spacing: -.02em; text-transform: uppercase; line-height: .95; margin: 12px 0 16px; }
+.mk-work__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.mk-work__tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--void-gold); border: 1px solid rgba(242,202,80,.3); padding: 4px 9px; }
+
+/* ---------- Magic Control gates ---------- */
+html.mk-no-orb .void-home-orb { display: none; }
+html.mk-no-hint .mk-hint { display: none; }

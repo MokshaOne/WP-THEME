@@ -139,6 +139,18 @@ function nr_settings_defaults() {
 		'nr_pwa_install'       => '1',
 		'nr_pwa_install_label' => __( 'Install app', 'raveenthiran' ),
 
+		/* VOID — spatial HUD controls */
+		'nr_void_hero1'        => 'SILENT',
+		'nr_void_hero2'        => 'LIGHT',
+		'nr_void_status'       => 'STATUS: ARCHIVE_ONLINE',
+		'nr_void_hero_cta'     => __( 'ENTER THE ARCHIVE', 'raveenthiran' ),
+		'nr_void_sub'          => '// VOID',
+		'nr_void_cta'          => __( 'Enquire', 'raveenthiran' ),
+		'nr_void_lat'          => '48.2082° N',
+		'nr_void_long'         => '16.3738° E',
+		'nr_void_archive_title'=> 'SYSTEM ARCHIVE 0x4F',
+		'nr_void_encryption'   => 'AES-256',
+
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
 
@@ -435,6 +447,34 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Max featured projects', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_hero_max', 10 ); ?>
 							<p class="description"><?php esc_html_e( 'How many featured projects (featured_on_homepage = 1) to show on the hero. Default: 6.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ VOID System (spatial HUD)</h2></summary>
+				<table class="form-table" role="presentation">
+					<tr><td colspan="2"><p class="description"><?php esc_html_e( 'Only used by the VOID theme. Drives the Singularity home, the tactical HUD nav/footer and the archive header. Per-project HUD data (coordinates, technical bars, classification) lives on each Project under “VOID — Specimen Controls”.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Home headline — line 1', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_hero1', 24 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Home headline — line 2 (gold)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_hero2', 24 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Home status line', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_status', 40 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Home entry button', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_hero_cta', 30 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Wordmark suffix', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_sub', 16 ); ?>
+							<p class="description"><?php esc_html_e( 'Small mono text beside the logo, e.g. // VOID.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Nav CTA label', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_cta', 20 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Coordinates — latitude', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_lat', 20 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Coordinates — longitude', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_long', 20 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Archive title', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_archive_title', 30 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Archive encryption label', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_void_encryption', 20 ); ?></td></tr>
 				</table>
 			</details>
 

@@ -165,6 +165,34 @@ function nr_register_feature_acf_fields() {
     ] );
 
     /* =========================================================
+       VOID SPECIMEN CONTROLS (nr_project) — drives the VOID theme's
+       dossier HUD (coordinates, classification, technical readouts).
+       These are extra fields on the SAME nr_project post, so content
+       stays shared with Obscura / Aurelius; they simply go unused by
+       those themes. Works with or without ACF (see acf-polyfill.php).
+       ========================================================= */
+    acf_add_local_field_group( [
+        'key'        => 'group_void_specimen',
+        'title'      => 'VOID — Specimen Controls',
+        'location'   => [ [ [ 'param' => 'post_type', 'operator' => '==', 'value' => 'nr_project' ] ] ],
+        'menu_order' => -9,
+        'position'   => 'normal',
+        'fields'     => [
+            [ 'key' => 'field_void_coords',         'label' => 'Vector / Coordinates', 'name' => 'void_coords',         'type' => 'text',
+              'instructions' => 'Shown on the dossier frame (e.g. "48.2082° N / 16.3738° E" or a place). Falls back to Location.' ],
+            [ 'key' => 'field_void_classification', 'label' => 'Classification Tag',    'name' => 'void_classification', 'type' => 'text',
+              'instructions' => 'Left corner tag on the specimen card + dossier (e.g. DATA_STREAM, EDITORIAL). Falls back to the category.' ],
+            [ 'key' => 'field_void_material',       'label' => 'Material / Medium',     'name' => 'void_material',       'type' => 'text',
+              'instructions' => 'e.g. "35mm film · silver gelatin". Optional; added to the meta rows.' ],
+            [ 'key' => 'field_void_certified',      'label' => 'VOID Certified',        'name' => 'void_certified',      'type' => 'true_false', 'ui' => 1, 'default_value' => 1,
+              'instructions' => 'Show the "VOID CERTIFIED" watermark on the dossier frame.' ],
+            [ 'key' => 'field_void_fidelity', 'label' => 'HUD — Fidelity %', 'name' => 'void_fidelity', 'type' => 'number', 'min' => 0, 'max' => 100, 'default_value' => 96, 'append' => '%' ],
+            [ 'key' => 'field_void_clarity',  'label' => 'HUD — Clarity %',  'name' => 'void_clarity',  'type' => 'number', 'min' => 0, 'max' => 100, 'default_value' => 88, 'append' => '%' ],
+            [ 'key' => 'field_void_depth',    'label' => 'HUD — Depth %',    'name' => 'void_depth',    'type' => 'number', 'min' => 0, 'max' => 100, 'default_value' => 74, 'append' => '%' ],
+        ],
+    ] );
+
+    /* =========================================================
        QUOTE GENERATOR (Site Settings)
        ========================================================= */
     acf_add_local_field_group( [

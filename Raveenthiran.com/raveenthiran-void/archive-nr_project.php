@@ -42,9 +42,10 @@ $count = (int) ( wp_count_posts( 'nr_project' )->publish ?? 0 );
 			$slugs = wp_get_post_terms( get_the_ID(), 'nr_project_cat', [ 'fields' => 'slugs' ] );
 			$slugs = is_wp_error( $slugs ) ? [] : $slugs;
 			$num  = ! empty( $m['n'] ) ? $m['n'] : str_pad( (string) $i, 3, '0', STR_PAD_LEFT );
+			$cls  = function_exists( 'nr_field' ) ? ( nr_field( 'void_classification' ) ?: ( $m['cat'] ?? 'DATA_STREAM' ) ) : ( $m['cat'] ?? 'DATA_STREAM' );
 		?>
 			<a href="<?php the_permalink(); ?>" class="void-specimen-card nr-card" data-cats="<?php echo esc_attr( implode( ',', $slugs ) ); ?>">
-				<span class="void-card-tag void-card-tag-left"><?php echo esc_html( $m['cat'] ?? 'DATA_STREAM' ); ?></span>
+				<span class="void-card-tag void-card-tag-left"><?php echo esc_html( strtoupper( $cls ) ); ?></span>
 				<span class="void-card-tag void-card-tag-right">SPECIMEN_<?php echo esc_html( $num ); ?></span>
 				<div class="void-card-media">
 					<?php

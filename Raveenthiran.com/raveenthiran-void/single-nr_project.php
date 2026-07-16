@@ -23,13 +23,24 @@ $hero_id = has_post_thumbnail() ? (int) get_post_thumbnail_id() : ( $plates[0] ?
 $num  = ! empty( $m['n'] ) ? $m['n'] : str_pad( (string) get_the_ID(), 3, '0', STR_PAD_LEFT );
 $lede = get_the_excerpt();
 
+$vf = function_exists( 'nr_field' ) ? function ( $k, $d = '' ) { $v = nr_field( $k ); return ( $v === null || $v === '' || $v === false ) ? $d : $v; } : function ( $k, $d = '' ) { return $d; };
+
+$classification = $vf( 'void_classification', $m['cat'] ?? 'DATA_STREAM' );
+$coords         = $vf( 'void_coords', $m['loc'] ?? nr_opt( 'nr_void_lat', '48.2082° N' ) );
+$certified      = $vf( 'void_certified', '1' ) !== '0';
+$bars = [
+	[ 'FIDELITY', (int) $vf( 'void_fidelity', 96 ) ],
+	[ 'CLARITY',  (int) $vf( 'void_clarity', 88 ) ],
+	[ 'DEPTH',    (int) $vf( 'void_depth', 74 ) ],
+];
+
 $rows = array_filter( [
 	'CLIENT'     => $m['client'] ?? '',
 	'YEAR'       => (string) ( $m['yr'] ?? '' ),
 	'DISCIPLINE' => $m['cat'] ?? '',
 	'LOCATION'   => $m['loc'] ?? '',
-	'FRAMES'     => function_exists( 'nr_field' ) ? nr_field( 'project_frames' ) : '',
-	'FORMAT'     => function_exists( 'nr_field' ) ? nr_field( 'project_format' ) : '',
+	'FRAMES'     => $vf( 'project_frames' ),
+	'MATERIAL'   => $vf( 'void_material' ),
 ] );
 
 $next = get_adjacent_post( false, '', false );
@@ -83,7 +94,7 @@ $prev = get_adjacent_post( false, '', true );
 
 		<!-- CENTER · primary frame -->
 		<div class="void-single-center">
-			<span class="void-floating-tag void-floating-tag-tr">SPECIMEN_<?php echo esc_html( $num ); ?></span>
+			<span class="void-floating-tag void-floating-tag-tr"><?php echo esc_html( strtoupper( $classification ) ); ?></span>
 			<div class="void-frame">
 				<?php
 				if ( $hero_id && function_exists( 'nr_image_or_placeholder' ) ) nr_image_or_placeholder( get_the_ID(), 'nr-hero', get_the_title() );
@@ -91,18 +102,18 @@ $prev = get_adjacent_post( false, '', true );
 				?>
 				<div class="void-frame-coords">
 					<span class="void-mono"><?php esc_html_e( 'VECTOR', 'raveenthiran' ); ?></span>
-					<p><?php echo esc_html( ( $m['loc'] ?? nr_opt( 'nr_void_lat', '48.2082° N' ) ) ); ?></p>
+					<p><?php echo esc_html( $coords ); ?></p>
 				</div>
+				<?php if ( $certified ) : ?>
 				<div class="void-frame-watermark">0x<?php echo esc_html( $num ); ?><span><?php esc_html_e( 'VOID CERTIFIED', 'raveenthiran' ); ?></span></div>
+				<?php endif; ?>
 			</div>
 		</div>
 
 		<!-- RIGHT · HUD readouts -->
 		<div class="void-single-right">
 			<div class="void-hud-head"><h3><?php esc_html_e( 'TECHNICAL', 'raveenthiran' ); ?></h3><span>REV_3.1</span></div>
-			<?php
-			$bars = [ [ 'FIDELITY', 96 ], [ 'CLARITY', 88 ], [ 'DEPTH', 74 ] ];
-			foreach ( $bars as $b ) : ?>
+			<?php foreach ( $bars as $b ) : ?>
 				<div class="void-hud-bar">
 					<div class="void-hud-bar-top"><?php echo esc_html( $b[0] ); ?></div>
 					<div class="void-bar-track"><span class="void-bar-fill" style="width:<?php echo (int) $b[1]; ?>%"></span></div>

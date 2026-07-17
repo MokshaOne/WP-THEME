@@ -34,14 +34,24 @@ $bars = [
 	[ 'DEPTH',    (int) $vf( 'void_depth', 74 ) ],
 ];
 
+/* every project-level ACF field from the shared Obscura schema */
 $rows = array_filter( [
-	'CLIENT'     => $m['client'] ?? '',
-	'YEAR'       => (string) ( $m['yr'] ?? '' ),
+	'CLIENT'     => $m['client'] ?? $vf( 'project_client' ),
+	'YEAR'       => (string) ( $m['yr'] ?? $vf( 'project_year' ) ),
 	'DISCIPLINE' => $m['cat'] ?? '',
-	'LOCATION'   => $m['loc'] ?? '',
+	'LOCATION'   => $m['loc'] ?? $vf( 'project_location' ),
+	'EDITION'    => $vf( 'project_edition' ),
+	'FORMAT'     => $vf( 'project_format' ),
 	'FRAMES'     => $vf( 'project_frames' ),
 	'MATERIAL'   => $vf( 'void_material' ),
 ] );
+
+/* optional looping video preview (ACF project_video_preview) */
+$video_url = '';
+$vraw = $vf( 'project_video_preview' );
+if ( $vraw ) {
+	$video_url = is_array( $vraw ) ? ( $vraw['url'] ?? '' ) : ( is_numeric( $vraw ) ? (string) wp_get_attachment_url( (int) $vraw ) : (string) $vraw );
+}
 
 $next = get_adjacent_post( false, '', false );
 $prev = get_adjacent_post( false, '', true );
@@ -96,10 +106,17 @@ $prev = get_adjacent_post( false, '', true );
 		<div class="void-single-center">
 			<span class="void-floating-tag void-floating-tag-tr"><?php echo esc_html( strtoupper( $classification ) ); ?></span>
 			<div class="void-frame">
-				<?php
-				if ( $hero_id && function_exists( 'nr_image_or_placeholder' ) ) nr_image_or_placeholder( get_the_ID(), 'nr-hero', get_the_title() );
-				elseif ( $hero_id ) echo wp_get_attachment_image( $hero_id, 'nr-hero', false, [ 'alt' => get_the_title(), 'class' => 'void-hero-img' ] );
-				?>
+				<?php if ( $video_url ) :
+					$poster = $hero_id ? esc_url( (string) wp_get_attachment_image_url( $hero_id, 'nr-hero' ) ) : '';
+					?>
+					<video class="void-hero-video" autoplay muted loop playsinline preload="metadata"<?php echo $poster ? ' poster="' . $poster . '"' : ''; ?>>
+						<source src="<?php echo esc_url( $video_url ); ?>" type="video/mp4">
+					</video>
+				<?php elseif ( $hero_id && function_exists( 'nr_image_or_placeholder' ) ) :
+					nr_image_or_placeholder( get_the_ID(), 'nr-hero', get_the_title() );
+				elseif ( $hero_id ) :
+					echo wp_get_attachment_image( $hero_id, 'nr-hero', false, [ 'alt' => get_the_title(), 'class' => 'void-hero-img' ] );
+				endif; ?>
 				<div class="void-frame-coords">
 					<span class="void-mono"><?php esc_html_e( 'VECTOR', 'raveenthiran' ); ?></span>
 					<p><?php echo esc_html( $coords ); ?></p>

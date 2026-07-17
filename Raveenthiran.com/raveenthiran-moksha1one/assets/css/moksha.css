@@ -110,3 +110,6 @@ html.mk-m-none, html.mk-m-none body { max-width: 100%; overflow-x: hidden; }
 /* stoic 3D depth on the horizontal filmstrip (JS sets per-panel transform) */
 html.mk-h-on .mk-h__track { transform-style: preserve-3d; }
 html.mk-h-on .mk-panel { will-change: transform, opacity; backface-visibility: hidden; transform-origin: center center; }
+
+/* project video preview (ACF project_video_preview) fills the dossier frame */
+.void-single-center .void-frame > video { position: static; display: block; width: 100%; height: auto; max-height: 78vh; object-fit: contain; margin: auto; }

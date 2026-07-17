@@ -78,3 +78,31 @@ html.mk-h-on .mk-h__track { height: 100vh; will-change: transform; }
 /* ---------- Magic Control gates ---------- */
 html.mk-no-orb .void-home-orb { display: none; }
 html.mk-no-hint .mk-hint { display: none; }
+
+/* ==========================================================================
+   FIX — single-project gallery must show FULL photographs (never crop a
+   photographer's frame). Masonry columns, natural aspect, no clip corner.
+   ========================================================================== */
+.void-plate-stack { display: block; columns: 2; column-gap: 22px; margin-top: 44px; }
+@media (max-width: 820px) { .void-plate-stack { columns: 1; } }
+.void-plate-stack .void-frame--plate {
+	aspect-ratio: auto; height: auto; clip-path: none; overflow: visible;
+	break-inside: avoid; margin: 0 0 22px; display: block; border: 1px solid var(--void-hair);
+}
+.void-plate-stack .void-frame--plate img,
+.void-plate-stack .void-frame--plate .nr-img {
+	position: static; display: block; width: 100%; height: auto; object-fit: contain; transition: none;
+}
+.void-plate-stack .void-frame--plate:hover img { transform: none; }
+.void-plate-stack .void-frame-watermark { display: none; } /* keep the photograph clean */
+
+/* the main dossier frame: let tall/portrait heroes breathe instead of a hard
+   16:10 crop — cap height, contain, centred on the void ground. */
+.void-single-center .void-frame { aspect-ratio: auto; height: auto; max-height: 78vh; display: flex; }
+.void-single-center .void-frame > img,
+.void-single-center .void-frame > .nr-img { position: static; width: 100%; height: auto; max-height: 78vh; object-fit: contain; margin: auto; }
+
+/* guard: no horizontal overflow on vertical / no-scroll pages (was making
+   phones zoom out to the desktop layout) */
+html.mk-m-v, html.mk-m-v body,
+html.mk-m-none, html.mk-m-none body { max-width: 100%; overflow-x: hidden; }

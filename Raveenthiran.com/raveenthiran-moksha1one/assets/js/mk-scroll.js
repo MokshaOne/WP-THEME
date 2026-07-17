@@ -73,6 +73,9 @@
 			if ( p ) window.scrollTo( { top: clamp( p.offsetLeft, 0, maxX ), behavior: 'smooth' } );
 		} );
 
+		// stoic 3D depth: panels ease through space as they pass the centre —
+		// a restrained rotateY + scale + dim, scaled by the Magic intensity.
+		var depthOn = ! reduce && ( intensity > 0 );
 		( function frame() {
 			raf( frame );
 			var y = window.scrollY || window.pageYOffset || 0;
@@ -80,6 +83,18 @@
 			if ( Math.abs( cur - y ) < 0.4 ) cur = y;
 			track.style.transform = 'translate3d(' + ( -cur ) + 'px,0,0)';
 			progress.style.transform = 'scaleX(' + ( maxX ? cur / maxX : 0 ) + ')';
+
+			if ( depthOn ) {
+				var I = intensity / 100, vw = window.innerWidth;
+				for ( var pi = 0; pi < panels.length; pi++ ) {
+					var pnl = panels[ pi ];
+					var d = clamp( ( pnl.offsetLeft - cur + pnl.offsetWidth / 2 - vw / 2 ) / vw, -1, 1 );
+					var ad = Math.abs( d );
+					// stoic ceilings: ≤5° turn, ≤5% shrink, ≤42% dim — calm, not flashy
+					pnl.style.transform = 'perspective(1600px) rotateY(' + ( -d * 5 * I ).toFixed( 2 ) + 'deg) scale(' + ( 1 - ad * 0.05 * I ).toFixed( 3 ) + ')';
+					pnl.style.opacity = ( 1 - ad * 0.42 ).toFixed( 3 );
+				}
+			}
 		} )();
 		return;
 	}

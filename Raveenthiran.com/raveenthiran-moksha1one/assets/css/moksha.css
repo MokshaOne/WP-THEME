@@ -106,3 +106,7 @@ html.mk-no-hint .mk-hint { display: none; }
    phones zoom out to the desktop layout) */
 html.mk-m-v, html.mk-m-v body,
 html.mk-m-none, html.mk-m-none body { max-width: 100%; overflow-x: hidden; }
+
+/* stoic 3D depth on the horizontal filmstrip (JS sets per-panel transform) */
+html.mk-h-on .mk-h__track { transform-style: preserve-3d; }
+html.mk-h-on .mk-panel { will-change: transform, opacity; backface-visibility: hidden; transform-origin: center center; }

@@ -66,6 +66,50 @@ $stats = array_filter( [
 			</div>
 		</div>
 	</div>
+
+	<?php /* ── Recognition — Awards & Press (nr_recognition_list) ─────── */ ?>
+	<?php
+	$mk_awards = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( 'nr_awards_list' ) : [];
+	$mk_press  = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( 'nr_press_list' )  : [];
+	// ACF options-page repeaters, if present, take precedence / augment
+	if ( function_exists( 'get_field' ) ) {
+		foreach ( (array) get_field( 'awards_list', 'option' ) as $r ) {
+			$t = trim( (string) ( $r['award_title'] ?? '' ) ); if ( $t === '' ) continue;
+			$mk_awards[] = [ 'year' => $r['year'] ?? '', 'title' => $t, 'org' => $r['organisation'] ?? '', 'url' => $r['award_url'] ?? '' ];
+		}
+		foreach ( (array) get_field( 'press_list', 'option' ) as $r ) {
+			$t = trim( (string) ( $r['pr_title'] ?? '' ) ); $o = trim( (string) ( $r['medium'] ?? '' ) ); if ( $t === '' && $o === '' ) continue;
+			$mk_press[] = [ 'year' => $r['year'] ?? '', 'title' => $t, 'org' => $o, 'url' => $r['pr_url'] ?? '' ];
+		}
+	}
+	$mk_reco = array_filter( [
+		[ 'label' => __( 'AWARDS', 'raveenthiran' ), 'items' => $mk_awards ],
+		[ 'label' => __( 'PRESS',  'raveenthiran' ), 'items' => $mk_press ],
+	], fn( $g ) => ! empty( $g['items'] ) );
+	if ( $mk_reco ) : ?>
+	<div class="mk-reco">
+		<?php foreach ( $mk_reco as $g ) : ?>
+			<div class="mk-reco__col">
+				<span class="void-label-luxury"><?php echo esc_html( $g['label'] ); ?></span>
+				<ul class="mk-reco__list">
+					<?php foreach ( $g['items'] as $row ) :
+						$title = trim( $row['title'] ?: $row['org'] );
+						$sub   = ( $row['title'] && $row['org'] ) ? $row['org'] : '';
+						$open  = ! empty( $row['url'] ); ?>
+						<li class="mk-reco__item">
+							<span class="mk-reco__year"><?php echo esc_html( $row['year'] ); ?></span>
+							<span class="mk-reco__body">
+								<?php if ( $open ) : ?><a href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $title ); ?> <span aria-hidden="true">↗</span></a>
+								<?php else : ?><span class="mk-reco__title"><?php echo esc_html( $title ); ?></span><?php endif; ?>
+								<?php if ( $sub ) : ?><span class="mk-reco__org"><?php echo esc_html( $sub ); ?></span><?php endif; ?>
+							</span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<?php endif; ?>
 </section>
 
 <?php get_footer(); ?>

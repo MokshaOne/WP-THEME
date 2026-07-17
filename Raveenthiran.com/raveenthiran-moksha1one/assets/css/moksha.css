@@ -113,3 +113,16 @@ html.mk-h-on .mk-panel { will-change: transform, opacity; backface-visibility: h
 
 /* project video preview (ACF project_video_preview) fills the dossier frame */
 .void-single-center .void-frame > video { position: static; display: block; width: 100%; height: auto; max-height: 78vh; object-fit: contain; margin: auto; }
+
+/* ---------- Recognition — Awards & Press (About) ---------- */
+.mk-reco { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px,4vw,64px); margin-top: clamp(44px,6vw,80px); border-top: 1px solid var(--void-hair); padding-top: 40px; }
+@media (max-width: 720px) { .mk-reco { grid-template-columns: 1fr; gap: 36px; } }
+.mk-reco__col { display: flex; flex-direction: column; gap: 10px; }
+.mk-reco__list { list-style: none; margin: 12px 0 0; padding: 0; }
+.mk-reco__item { display: grid; grid-template-columns: 60px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--void-hair); align-items: baseline; }
+.mk-reco__item:first-child { border-top: 0; }
+.mk-reco__year { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .1em; color: var(--void-gold); }
+.mk-reco__body { display: flex; flex-direction: column; gap: 3px; }
+.mk-reco__body a, .mk-reco__title { font-size: clamp(15px,1.2vw,18px); color: var(--void-ink); }
+.mk-reco__body a:hover { color: var(--void-gold); }
+.mk-reco__org { font-size: 11px; color: var(--void-ink-3); text-transform: uppercase; letter-spacing: .14em; }

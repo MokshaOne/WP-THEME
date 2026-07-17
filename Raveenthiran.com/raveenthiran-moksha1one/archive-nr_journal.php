@@ -1,59 +1,60 @@
 <?php
 /**
- * Journal archive — Studio: scrolling editorial grid + category filter.
- * Keeps the theme.js filter hooks (.nr-chip / [data-portfolio] .nr-card).
+ * moksha1one — Journal / Chronicle (HORIZONTAL scroll). Intro panel → one
+ * panel per entry → closing panel. Vertical wheel drives the horizontal
+ * track (mk-scroll.js); native swipe on touch. Data via nr_journal.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 $nr_current = 'journal';
 get_header();
 
-$nr_jcats = get_terms( [ 'taxonomy' => 'nr_journal_cat', 'hide_empty' => true ] );
+$count = (int) ( wp_count_posts( 'nr_journal' )->publish ?? 0 );
 ?>
-<section class="st-page nr-journal-archive">
-	<header class="st-wrap st-arc-head">
-		<div class="st-arc-head__text">
-			<span class="st-eyebrow"><?php echo esc_html( nr_opt( 'nr_journal_eyebrow', __( 'Journal', 'raveenthiran' ) ) ); ?></span>
-			<h1 class="st-arc-title"><?php echo wp_kses( nr_opt( 'nr_journal_title', __( 'Notes &amp; <em>field work</em>', 'raveenthiran' ) ), [ 'em' => [], 'b' => [], 'strong' => [] ] ); ?></h1>
-		</div>
-		<?php if ( ! is_wp_error( $nr_jcats ) && count( $nr_jcats ) > 1 ) : ?>
-			<div class="st-filters">
-				<div class="nr-chips" data-group="main" role="tablist" aria-label="<?php esc_attr_e( 'Filter journal', 'raveenthiran' ); ?>">
-					<button type="button" class="nr-chip is-on" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'raveenthiran' ); ?></button>
-					<?php foreach ( $nr_jcats as $c ) : ?>
-						<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
-					<?php endforeach; ?>
-				</div>
-			</div>
-		<?php endif; ?>
-	</header>
 
-	<div class="st-wrap">
-		<?php if ( have_posts() ) : ?>
-			<div class="st-journal-grid st-grid--journal" data-portfolio data-reveal-stagger>
-				<?php while ( have_posts() ) : the_post();
-					$terms   = wp_get_post_terms( get_the_ID(), 'nr_journal_cat', [ 'fields' => 'slugs' ] );
-					$tn      = wp_get_post_terms( get_the_ID(), 'nr_journal_cat', [ 'fields' => 'names' ] );
-					$catname = ( ! is_wp_error( $tn ) && $tn ) ? $tn[0] : __( 'Journal', 'raveenthiran' );
-				?>
-					<a class="nr-card st-jcard" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $terms ?: [] ) ); ?>">
-						<div class="st-jcard__frame">
-							<?php if ( has_post_thumbnail() ) :
-								echo get_the_post_thumbnail( get_the_ID(), 'nr-card', [ 'alt' => get_the_title(), 'loading' => 'lazy', 'decoding' => 'async', 'class' => 'st-jcard__img', 'sizes' => '(max-width:700px) 100vw, 32vw' ] );
-							else :
-								echo nr_placeholder( strtolower( get_the_title() ), false, '4/3' );
-							endif; ?>
-						</div>
-						<span class="st-jcard__meta"><?php echo esc_html( get_the_date( 'M Y' ) . ' · ' . $catname ); ?></span>
-						<h2 class="st-jcard__t"><?php the_title(); ?></h2>
-						<p class="st-jcard__x"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 22 ) ); ?></p>
-						<span class="st-link st-jcard__more"><?php esc_html_e( 'Read', 'raveenthiran' ); ?> →</span>
-					</a>
-				<?php endwhile; ?>
-			</div>
-			<?php the_posts_pagination( [ 'mid_size' => 1, 'prev_text' => __( '← Newer', 'raveenthiran' ), 'next_text' => __( 'Older →', 'raveenthiran' ), 'class' => 'st-pager' ] ); ?>
-		<?php else : ?>
-			<p class="st-muted st-empty"><?php esc_html_e( 'No journal entries yet.', 'raveenthiran' ); ?></p>
+<div class="mk-h" data-mk-h>
+	<div class="mk-h__track">
+
+		<section class="mk-panel mk-panel--intro">
+			<span class="mk-panel__index">00 / <?php echo esc_html( str_pad( (string) $count, 2, '0', STR_PAD_LEFT ) ); ?></span>
+			<p class="void-eyebrow"><span class="void-rule"></span><?php echo esc_html( nr_opt( 'nr_journal_eyebrow', 'CHRONICLE' ) ); ?></p>
+			<h1 class="void-display-hero" style="text-align:left"><?php echo esc_html( nr_opt( 'nr_journal_title', 'FIELD NOTES' ) ); ?></h1>
+			<p class="void-mono" style="margin-top:18px;max-width:46ch"><?php echo esc_html( nr_opt( 'nr_journal_intro', 'Notes from the field — travel sideways through the chronicle.' ) ); ?></p>
+		</section>
+
+		<?php if ( have_posts() ) : $i = 0; while ( have_posts() ) : the_post(); $i++;
+			$jcat = wp_get_post_terms( get_the_ID(), 'nr_journal_cat', [ 'fields' => 'names' ] );
+			$jcat = ( ! is_wp_error( $jcat ) && $jcat ) ? $jcat[0] : __( 'Journal', 'raveenthiran' );
+		?>
+			<section class="mk-panel">
+				<span class="mk-panel__index"><?php echo esc_html( str_pad( (string) $i, 2, '0', STR_PAD_LEFT ) ); ?> / <?php echo esc_html( str_pad( (string) $count, 2, '0', STR_PAD_LEFT ) ); ?></span>
+				<a class="mk-work" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
+					<div class="mk-work__frame">
+						<?php
+						if ( has_post_thumbnail() ) the_post_thumbnail( 'nr-card', [ 'alt' => get_the_title() ] );
+						elseif ( function_exists( 'nr_placeholder' ) ) echo nr_placeholder( strtolower( get_the_title() ), false, '4/5' );
+						?>
+					</div>
+					<div class="mk-work__meta">
+						<span class="void-label-luxury"><?php echo esc_html( get_the_date( 'M Y' ) . ' · ' . strtoupper( $jcat ) ); ?></span>
+						<h2 class="mk-work__title"><?php the_title(); ?></h2>
+						<p class="void-mono" style="text-transform:none;letter-spacing:0;line-height:1.6;color:var(--void-ink-2)"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 24 ) ); ?></p>
+						<span class="void-btn void-btn-outline" style="margin-top:24px"><?php esc_html_e( 'READ ENTRY', 'raveenthiran' ); ?> →</span>
+					</div>
+				</a>
+			</section>
+		<?php endwhile; else : ?>
+			<section class="mk-panel"><p class="void-empty"><?php esc_html_e( 'No journal entries yet.', 'raveenthiran' ); ?></p></section>
 		<?php endif; ?>
+
+		<section class="mk-panel mk-panel--intro">
+			<p class="void-eyebrow"><span class="void-rule"></span><?php esc_html_e( 'END OF CHRONICLE', 'raveenthiran' ); ?></p>
+			<h2 class="void-h1-huge void-h1-uncap"><?php esc_html_e( 'Let\'s make', 'raveenthiran' ); ?><br><span class="void-gold-ital"><?php esc_html_e( 'the next one.', 'raveenthiran' ); ?></span></h2>
+			<a class="void-btn void-btn-gold" style="margin-top:28px;align-self:flex-start" href="<?php echo esc_url( function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ); ?>"><?php esc_html_e( 'INITIATE ENQUIRY', 'raveenthiran' ); ?> →</a>
+		</section>
+
 	</div>
-</section>
+</div>
+
+<span class="mk-hint"><?php esc_html_e( 'SCROLL TO TRAVEL', 'raveenthiran' ); ?> <i></i></span>
+
 <?php get_footer(); ?>

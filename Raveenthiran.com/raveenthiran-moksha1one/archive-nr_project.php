@@ -34,21 +34,21 @@ $enquire = function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/
 			<section class="mk-panel">
 				<span class="mk-panel__index"><?php echo esc_html( $num ); ?> / <?php echo esc_html( str_pad( (string) $count, 2, '0', STR_PAD_LEFT ) ); ?></span>
 				<a class="mk-work" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
-					<span class="mk-work__frame">
+					<div class="mk-work__frame">
 						<?php
 						if ( function_exists( 'nr_image_or_placeholder' ) ) nr_image_or_placeholder( get_the_ID(), 'nr-card', get_the_title() );
 						elseif ( has_post_thumbnail() ) the_post_thumbnail( 'nr-card', [ 'alt' => get_the_title() ] );
 						?>
-					</span>
-					<span class="mk-work__meta">
+					</div>
+					<div class="mk-work__meta">
 						<span class="void-label-luxury"><?php echo esc_html( strtoupper( $m['cat'] ?? 'SPECIMEN' ) ); ?></span>
-						<span class="mk-work__title" style="display:block"><?php the_title(); ?></span>
+						<h2 class="mk-work__title"><?php the_title(); ?></h2>
 						<span class="void-mono"><?php echo esc_html( trim( ( $m['loc'] ?? '' ) . ' · ' . ( $m['yr'] ?? '' ), ' ·' ) ); ?></span>
 						<?php if ( $tags ) : ?>
 							<span class="mk-work__tags"><?php foreach ( array_slice( $tags, 0, 4 ) as $t ) printf( '<span class="mk-work__tag">%s</span>', esc_html( $t ) ); ?></span>
 						<?php endif; ?>
 						<span class="void-btn void-btn-outline" style="margin-top:24px"><?php esc_html_e( 'OPEN SPECIMEN', 'raveenthiran' ); ?> →</span>
-					</span>
+					</div>
 				</a>
 			</section>
 		<?php endwhile; else : ?>

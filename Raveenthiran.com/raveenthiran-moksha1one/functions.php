@@ -11,7 +11,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '0.1.0' );
+define( 'NR_THEME_VERSION', '0.1.1' );
 
 /* ─────────────────────────────────────────────────────────────
  * Per-page scroll mode → body class (drives assets/js/mk-scroll.js)
@@ -342,19 +342,41 @@ function nr_placeholder( $label = 'photo', $dark = true, $aspect = '3/4' ) {
  * Print thumbnail OR placeholder if missing.
  */
 function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true ) {
+	$fill = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+	$att  = 0;
+
+	// 1) WP featured image
 	if ( has_post_thumbnail( $post_id ) ) {
-		echo get_the_post_thumbnail( $post_id, $size, [
+		$att = (int) get_post_thumbnail_id( $post_id );
+	}
+	// 2) ACF cover image
+	if ( ! $att && function_exists( 'nr_field' ) ) {
+		$cover = nr_field( 'project_cover', $post_id );
+		$att = is_array( $cover ) ? (int) ( $cover['ID'] ?? $cover['id'] ?? 0 ) : ( is_numeric( $cover ) ? (int) $cover : 0 );
+	}
+	// 3) first gallery image
+	if ( ! $att && function_exists( 'nr_field' ) ) {
+		$gal = nr_field( 'project_gallery', $post_id );
+		if ( is_array( $gal ) && ! empty( $gal ) ) {
+			$first = $gal[0];
+			$att = is_array( $first ) ? (int) ( $first['ID'] ?? $first['id'] ?? 0 ) : ( is_numeric( $first ) ? (int) $first : 0 );
+		}
+	}
+
+	if ( $att ) {
+		echo wp_get_attachment_image( $att, $size, false, [
 			'class'    => 'nr-img',
-			'style'    => 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover',
-			'alt'      => esc_attr( get_the_title( $post_id ) ),
+			'style'    => $fill,
+			'alt'      => esc_attr( $label ?: get_the_title( $post_id ) ),
 			'loading'  => 'lazy',
 			'decoding' => 'async',
 		] );
-	} else {
-		echo '<div style="position:absolute;inset:0">';
-		echo nr_placeholder( $label ?: get_the_title( $post_id ), $dark );
-		echo '</div>';
+		return;
 	}
+	// 4) placeholder
+	echo '<div style="' . esc_attr( $fill ) . '">';
+	if ( function_exists( 'nr_placeholder' ) ) echo nr_placeholder( $label ?: get_the_title( $post_id ), $dark );
+	echo '</div>';
 }
 
 /* ─────────────────────────────────────────────────────────────

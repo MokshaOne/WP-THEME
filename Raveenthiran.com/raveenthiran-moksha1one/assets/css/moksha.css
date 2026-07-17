@@ -63,13 +63,15 @@ html.mk-h-on .mk-h__track { height: 100vh; will-change: transform; }
 	-webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .void-wordmark-sub { -webkit-text-fill-color: var(--void-ink-3); }
 
-/* horizontal work panels: a specimen plate that fills the panel height */
-.mk-work { display: grid; grid-template-columns: minmax(280px, 30vw) auto; gap: clamp(24px,4vw,64px); align-items: center; }
-@media (max-width: 720px) { .mk-work { grid-template-columns: 1fr; } }
-.mk-work__frame { position: relative; height: min(64vh, 620px); aspect-ratio: 3/4; overflow: hidden; border: 1px solid var(--void-hair); background: #000; }
-.mk-work__frame img, .mk-work__frame .nr-ph { width: 100%; height: 100%; object-fit: cover; }
-.mk-work__meta { max-width: 34ch; }
-.mk-work__title { font-size: clamp(30px,4vw,64px); font-weight: 800; letter-spacing: -.02em; text-transform: uppercase; line-height: .95; margin: 12px 0 16px; }
+/* horizontal work panels: a specimen plate (frame sized by its aspect) beside
+   a bounded meta column so long titles wrap instead of clipping into the next
+   panel. */
+.mk-work { display: grid; grid-template-columns: auto min(42ch, 44vw); gap: clamp(28px,4vw,64px); align-items: center; }
+@media (max-width: 720px) { .mk-work { grid-template-columns: 1fr; } .mk-work__frame { height: 52vh; } .mk-work__meta { width: auto; } }
+.mk-work__frame { position: relative; height: min(66vh, 640px); aspect-ratio: 4/5; overflow: hidden; border: 1px solid var(--void-hair); background: #000; }
+.mk-work__frame img, .mk-work__frame .nr-img, .mk-work__frame .nr-ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mk-work__meta { min-width: 0; }
+.mk-work__title { font-family: var(--ff-display, inherit); font-size: clamp(26px,2.8vw,46px); font-weight: 800; letter-spacing: -.02em; text-transform: uppercase; line-height: .98; margin: 12px 0 14px; overflow-wrap: break-word; text-wrap: balance; }
 .mk-work__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .mk-work__tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--void-gold); border: 1px solid rgba(242,202,80,.3); padding: 4px 9px; }
 

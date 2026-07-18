@@ -40,11 +40,10 @@
 		var track = wrap && wrap.querySelector( '.mk-h__track' );
 		if ( ! wrap || ! track ) return;
 
-		// Touch / reduced-motion → native horizontal scroll with snap (CSS).
-		if ( isTouch || reduce ) {
-			wrap.classList.add( 'mk-h--native' );
-			return;
-		}
+		// Touch / reduced-motion / narrow → leave the panels as a natural
+		// vertical stack (CSS default, matches the 901px breakpoint). Best UX
+		// on phones, and forms stay fully scrollable.
+		if ( isTouch || reduce || window.innerWidth <= 900 ) return;
 
 		root.classList.add( 'mk-h-on' );
 		var progress = document.createElement( 'div' );

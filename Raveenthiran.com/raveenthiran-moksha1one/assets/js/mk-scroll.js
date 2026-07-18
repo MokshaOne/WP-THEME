@@ -22,11 +22,58 @@
 
 	/* ---------- Magic Control → root flags + intensity var ---------- */
 	var fx = MK.fx || {};
-	if ( fx.orb === false )   root.classList.add( 'mk-no-orb' );
-	if ( fx.hint === false )  root.classList.add( 'mk-no-hint' );
-	if ( fx.tilt === false )  root.classList.add( 'mk-no-tilt' );
+	if ( fx.orb === false )    root.classList.add( 'mk-no-orb' );
+	if ( fx.hint === false )   root.classList.add( 'mk-no-hint' );
+	if ( fx.tilt === false )   root.classList.add( 'mk-no-tilt' );
+	if ( fx.trails === false ) root.classList.add( 'mk-no-trail' );
 	var intensity = typeof fx.intensity === 'number' ? fx.intensity : 100;
 	root.style.setProperty( '--mk-i', ( intensity / 100 ).toFixed( 2 ) );
+
+	/* ---------- Cursor light trail (stoic gilt) ----------
+	 * A restrained trail of gilt sparks that eases behind the pointer and fades
+	 * fast — presence, not spectacle. Desktop + fine pointer only; off under
+	 * reduced-motion, touch, zero intensity, or the Magic Control toggle. Runs
+	 * on every page mode, so it's set up here before the mode branches return. */
+	if ( fx.trails !== false && ! reduce && ! isTouch && intensity > 0 && mq( '(pointer: fine)' ) ) {
+		( function trail() {
+			var cv = document.createElement( 'canvas' );
+			cv.className = 'mk-trail';
+			cv.setAttribute( 'aria-hidden', 'true' );
+			var cx = cv.getContext( '2d' );
+			var dpr = Math.min( window.devicePixelRatio || 1, 2 );
+			function resize() {
+				cv.width = window.innerWidth * dpr; cv.height = window.innerHeight * dpr;
+				cv.style.width = window.innerWidth + 'px'; cv.style.height = window.innerHeight + 'px';
+				cx.setTransform( dpr, 0, 0, dpr, 0, 0 );
+			}
+			var I = clamp( intensity / 100, 0, 2 );
+			var pts = [], MAX = 16, active = false, px = 0, py = 0, ex = 0, ey = 0;
+			window.addEventListener( 'mousemove', function ( e ) {
+				px = e.clientX; py = e.clientY;
+				if ( ! active ) { ex = px; ey = py; active = true; document.body.appendChild( cv ); resize(); }
+			}, { passive: true } );
+			window.addEventListener( 'resize', function () { if ( active ) resize(); } );
+			( function loop() {
+				raf( loop );
+				if ( ! active ) return;
+				ex = lerp( ex, px, 0.28 ); ey = lerp( ey, py, 0.28 );
+				pts.push( { x: ex, y: ey, a: 1 } );
+				if ( pts.length > MAX ) pts.shift();
+				cx.clearRect( 0, 0, cv.width, cv.height );
+				cx.globalCompositeOperation = 'lighter';
+				for ( var i = 0; i < pts.length; i++ ) {
+					var p = pts[ i ];
+					p.a *= 0.86;
+					var r = ( 1 + ( i / pts.length ) * 5 ) * ( 0.6 + 0.4 * I );
+					var g = cx.createRadialGradient( p.x, p.y, 0, p.x, p.y, r );
+					g.addColorStop( 0, 'rgba(242,202,80,' + ( p.a * 0.5 * I ).toFixed( 3 ) + ')' );
+					g.addColorStop( 1, 'rgba(242,202,80,0)' );
+					cx.fillStyle = g;
+					cx.beginPath(); cx.arc( p.x, p.y, r, 0, Math.PI * 2 ); cx.fill();
+				}
+			} )();
+		} )();
+	}
 
 	/* ---------- NO-SCROLL (home / contact) ---------- */
 	if ( MK.mode === 'none' ) {

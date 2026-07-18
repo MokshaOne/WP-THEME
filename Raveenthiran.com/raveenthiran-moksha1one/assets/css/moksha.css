@@ -68,9 +68,14 @@ html.mk-lock, html.mk-lock body { height: 100%; overflow: hidden; }
 .mk-work__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .mk-work__tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--void-gold); border: 1px solid rgba(242,202,80,.3); padding: 4px 9px; }
 
+/* ---------- Cursor light trail (stoic gilt) ---------- */
+.mk-trail { position: fixed; inset: 0; z-index: 90; pointer-events: none; mix-blend-mode: screen; }
+@media (max-width: 900px), (pointer: coarse), (prefers-reduced-motion: reduce) { .mk-trail { display: none; } }
+
 /* ---------- Magic Control gates ---------- */
 html.mk-no-orb .void-home-orb { display: none; }
 html.mk-no-hint .mk-hint { display: none; }
+html.mk-no-trail .mk-trail { display: none; }
 
 /* ==========================================================================
    FIX — single-project gallery must show FULL photographs (never crop a

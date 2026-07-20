@@ -124,3 +124,91 @@ add_action( 'in_admin_header', function () {
 		esc_html__( 'Dashboard', 'raveenthiran' )
 	);
 }, 20 );
+
+/* =============================================================
+   Per-CPT horizontal filmstrip — every theme post type gets a front-end-style
+   slider of its entries at the top of its list screen (the native list table
+   stays below for search / bulk / filters). Reflects the site's own look.
+   ============================================================= */
+function nr_cpt_strip_types() {
+	return [
+		'nr_project'     => [ 'icon' => 'dashicons-camera',        'label' => __( 'Project', 'raveenthiran' ) ],
+		'nr_journal'     => [ 'icon' => 'dashicons-book',          'label' => __( 'Journal entry', 'raveenthiran' ) ],
+		'nr_testimonial' => [ 'icon' => 'dashicons-format-quote',  'label' => __( 'Testimonial', 'raveenthiran' ) ],
+		'nr_enquiry'     => [ 'icon' => 'dashicons-email',         'label' => __( 'Enquiry', 'raveenthiran' ) ],
+	];
+}
+
+add_action( 'admin_notices', function () {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || $screen->base !== 'edit' ) return;
+	$pt    = $screen->post_type;
+	$types = nr_cpt_strip_types();
+	if ( ! isset( $types[ $pt ] ) ) return;
+
+	$obj   = get_post_type_object( $pt );
+	$cfg   = $types[ $pt ];
+	$icon  = $cfg['icon'];
+
+	$q = new WP_Query( [
+		'post_type'      => $pt,
+		'post_status'    => [ 'publish', 'future', 'draft', 'pending', 'private' ],
+		'posts_per_page' => 40,
+		'orderby'        => [ 'menu_order' => 'ASC', 'date' => 'DESC' ],
+		'no_found_rows'  => true,
+	] );
+
+	$plural = $obj ? $obj->labels->name : $pt;
+	?>
+	<div class="nr-cpt-strip" data-nr-strip>
+		<div class="nr-cpt-strip__head">
+			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span>FILMSTRIP // <?php echo esc_html( strtoupper( $plural ) ); ?></span>
+			<span class="nr-cpt-strip__hint"><?php echo esc_html( $q->post_count ); ?> <?php esc_html_e( 'shown', 'raveenthiran' ); ?> · <?php esc_html_e( 'scroll sideways', 'raveenthiran' ); ?> →</span>
+		</div>
+		<div class="nr-cpt-rail">
+			<a class="nr-cpt-card nr-cpt-card--add" href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . $pt ) ); ?>">
+				<span class="nr-cpt-add__plus">+</span>
+				<span class="nr-cpt-add__label"><?php printf( esc_html__( 'New %s', 'raveenthiran' ), esc_html( $cfg['label'] ) ); ?></span>
+			</a>
+			<?php while ( $q->have_posts() ) : $q->the_post(); $id = get_the_ID();
+				$status = get_post_status( $id );
+				$edit   = get_edit_post_link( $id );
+				// meta line: first relevant term, else the date
+				$meta = '';
+				if ( $pt === 'nr_project' && function_exists( 'nr_project_meta' ) ) {
+					$pm = nr_project_meta( $id );
+					$meta = trim( ( $pm['cat'] ?? '' ) . ( ! empty( $pm['yr'] ) ? ' · ' . $pm['yr'] : '' ), ' ·' );
+				}
+				if ( $meta === '' ) $meta = get_the_date();
+				?>
+				<a class="nr-cpt-card" href="<?php echo esc_url( $edit ); ?>">
+					<span class="nr-cpt-card__status nr-st-<?php echo esc_attr( $status ); ?>"><?php echo esc_html( $status === 'publish' ? __( 'live', 'raveenthiran' ) : $status ); ?></span>
+					<span class="nr-cpt-card__frame">
+						<?php if ( has_post_thumbnail( $id ) ) : ?>
+							<?php echo get_the_post_thumbnail( $id, 'nr-thumb', [ 'loading' => 'lazy', 'decoding' => 'async' ] ); ?>
+						<?php else : ?>
+							<span class="nr-cpt-card__ph"><span class="dashicons <?php echo esc_attr( $icon ); ?>"></span></span>
+						<?php endif; ?>
+					</span>
+					<span class="nr-cpt-card__body">
+						<span class="nr-cpt-card__title"><?php echo esc_html( get_the_title() ?: __( '(untitled)', 'raveenthiran' ) ); ?></span>
+						<span class="nr-cpt-card__meta"><?php echo esc_html( $meta ); ?></span>
+					</span>
+				</a>
+			<?php endwhile; wp_reset_postdata(); ?>
+		</div>
+	</div>
+	<script>
+	(function(){
+		var rail=document.querySelector('[data-nr-strip] .nr-cpt-rail');
+		if(!rail)return;
+		// vertical wheel travels sideways — the front-end filmstrip feeling
+		rail.addEventListener('wheel',function(e){
+			if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;
+			if((e.deltaY<0&&rail.scrollLeft===0)||(e.deltaY>0&&Math.ceil(rail.scrollLeft+rail.clientWidth)>=rail.scrollWidth))return;
+			e.preventDefault();rail.scrollLeft+=e.deltaY;
+		},{passive:false});
+	})();
+	</script>
+	<?php
+} );

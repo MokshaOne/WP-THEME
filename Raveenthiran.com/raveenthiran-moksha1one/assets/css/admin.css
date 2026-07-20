@@ -185,3 +185,36 @@ select option{background:var(--v-surf)}
 .nr-back-dash:hover{background:rgba(242,202,80,.12);border-color:var(--v-gold);color:#fff}
 #wpadminbar #wp-admin-bar-nr-back-dash>.ab-item{color:var(--v-gold)!important;font-weight:600}
 #wpadminbar #wp-admin-bar-nr-back-dash:hover>.ab-item{color:#fff!important}
+
+/* ==========================================================================
+   Per-CPT horizontal filmstrip on list screens (inc/admin-ui.php)
+   ========================================================================== */
+.nr-cpt-strip{margin:14px 20px 22px 0;padding:18px 20px 20px;background:linear-gradient(150deg,#141311 0%,#0d0d0d 70%);border:1px solid var(--v-hair);border-radius:12px}
+.nr-cpt-strip__head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 14px;flex-wrap:wrap}
+.nr-cpt-strip__hint{font-family:var(--v-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--v-ink3)}
+.nr-cpt-rail{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;padding:4px 4px 14px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#2a2620 #0a0a0a}
+.nr-cpt-rail::-webkit-scrollbar{height:10px}
+.nr-cpt-rail::-webkit-scrollbar-thumb{background:#2a2620;border-radius:6px}
+.nr-cpt-rail::-webkit-scrollbar-track{background:#0a0a0a}
+.nr-cpt-card{position:relative;flex:0 0 auto;width:210px;display:flex;flex-direction:column;scroll-snap-align:start;
+	background:var(--v-surf2);border:1px solid var(--v-hair);border-radius:10px;overflow:hidden;text-decoration:none;
+	transition:transform .2s cubic-bezier(.2,.7,.2,1),border-color .2s ease,box-shadow .2s ease}
+.nr-cpt-card:hover{transform:translateY(-4px);border-color:var(--v-hair-gold);box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.nr-cpt-card__frame{position:relative;display:block;aspect-ratio:4/5;background:#0a0a0a;overflow:hidden}
+.nr-cpt-card__frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.nr-cpt-card__ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 30%,#1a1710,#0a0a0a)}
+.nr-cpt-card__ph .dashicons{width:42px;height:42px;font-size:42px;color:rgba(242,202,80,.35)}
+.nr-cpt-card__status{position:absolute;top:10px;left:10px;z-index:2;font-family:var(--v-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#0a0a0a;background:var(--v-gold);padding:3px 8px;border-radius:999px}
+.nr-cpt-card__status.nr-st-draft,.nr-cpt-card__status.nr-st-pending{background:#3a352a;color:var(--v-gold)}
+.nr-cpt-card__status.nr-st-future{background:#2a3550;color:#9db8ff}
+.nr-cpt-card__status.nr-st-private{background:#3a2a2a;color:#e0a0a0}
+.nr-cpt-card__body{padding:12px 13px 14px;display:flex;flex-direction:column;gap:4px}
+.nr-cpt-card__title{font-size:14px;font-weight:700;line-height:1.25;color:var(--v-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nr-cpt-card:hover .nr-cpt-card__title{color:#fff}
+.nr-cpt-card__meta{font-family:var(--v-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--v-ink3)}
+/* add-new card */
+.nr-cpt-card--add{width:150px;align-items:center;justify-content:center;gap:12px;border-style:dashed;border-color:var(--v-hair-gold);background:transparent;color:var(--v-gold)}
+.nr-cpt-card--add:hover{background:rgba(242,202,80,.06);transform:translateY(-4px)}
+.nr-cpt-add__plus{font-size:38px;font-weight:300;line-height:1;color:var(--v-gold)}
+.nr-cpt-add__label{font-family:var(--v-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--v-ink2)}
+@media (max-width:782px){.nr-cpt-strip{margin-right:0}.nr-cpt-card{width:170px}}

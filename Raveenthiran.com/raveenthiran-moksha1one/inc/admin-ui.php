@@ -11,12 +11,95 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* =============================================================
    Load the whole-backend skin on every admin screen + login.
    ============================================================= */
-add_action( 'admin_enqueue_scripts', function () {
-	wp_enqueue_style( 'nr-admin-skin', get_template_directory_uri() . '/assets/css/admin.css', [], defined( 'NR_THEME_VERSION' ) ? NR_THEME_VERSION : null );
+function nr_admin_assets() {
+	$ver = defined( 'NR_THEME_VERSION' ) ? NR_THEME_VERSION : null;
+	// the real theme faces (Syne + JetBrains Mono + Inter Tight) so the backend
+	// reads in the same type as the front end
+	wp_enqueue_style( 'nr-admin-fonts', get_template_directory_uri() . '/assets/css/fonts.css', [], $ver );
+	wp_enqueue_style( 'nr-admin-skin', get_template_directory_uri() . '/assets/css/admin.css', [ 'nr-admin-fonts' ], $ver );
+}
+add_action( 'admin_enqueue_scripts', 'nr_admin_assets' );
+add_action( 'login_enqueue_scripts', 'nr_admin_assets' );
+
+/* =============================================================
+   Login screen — full VOID rebrand (logo → moksha wordmark, obsidian
+   canvas + orb, gilt button). Styling lives in assets/css/admin.css.
+   ============================================================= */
+add_filter( 'login_headerurl', function () { return home_url( '/' ); } );
+add_filter( 'login_headertext', function () { return get_bloginfo( 'name' ); } );
+add_action( 'login_message', function ( $msg ) {
+	// a small mono eyebrow above the form, matching the site HUD
+	return '<p class="nr-login-eyebrow">// ' . esc_html( strtoupper( nr_opt( 'nr_void_sub', 'MOKSHA·ONE' ) ) ) . '</p>' . $msg;
 } );
-add_action( 'login_enqueue_scripts', function () {
-	wp_enqueue_style( 'nr-admin-skin', get_template_directory_uri() . '/assets/css/admin.css', [], defined( 'NR_THEME_VERSION' ) ? NR_THEME_VERSION : null );
+
+/* =============================================================
+   Admin bar — drop the WordPress logo, warm the greeting.
+   ============================================================= */
+add_action( 'admin_bar_menu', function ( $bar ) {
+	$bar->remove_node( 'wp-logo' );
+	$bar->remove_node( 'wp-logo-external' );
+}, 999 );
+/* "Howdy, X" → "Studio · X" (front-of-house tone) */
+add_filter( 'gettext', function ( $translated, $text, $domain ) {
+	if ( is_admin() && $domain === 'default' && strpos( $text, 'Howdy' ) === 0 ) {
+		return str_replace( 'Howdy', 'Studio', $translated );
+	}
+	return $translated;
+}, 10, 3 );
+
+/* =============================================================
+   Admin footer — replace the WordPress credit with the studio's own.
+   ============================================================= */
+add_filter( 'admin_footer_text', function () {
+	return '<span style="color:var(--v-ink3)">moksha1one <span style="color:var(--v-gold)">✦</span> ' . esc_html__( 'Studio control center', 'raveenthiran' ) . '</span>';
 } );
+add_filter( 'update_footer', function () {
+	return 'v' . ( defined( 'NR_THEME_VERSION' ) ? NR_THEME_VERSION : '' );
+}, 11 );
+
+/* =============================================================
+   Comments — the studio doesn't run a comment section. Remove it
+   everywhere: menu, toolbar, support, columns, feeds.
+   ============================================================= */
+add_action( 'admin_menu', function () {
+	remove_menu_page( 'edit-comments.php' );
+	remove_submenu_page( 'options-general.php', 'options-discussion.php' );
+}, 999 );
+add_action( 'admin_bar_menu', function ( $bar ) { $bar->remove_node( 'comments' ); }, 999 );
+add_action( 'init', function () {
+	foreach ( get_post_types() as $pt ) {
+		if ( post_type_supports( $pt, 'comments' ) )  remove_post_type_support( $pt, 'comments' );
+		if ( post_type_supports( $pt, 'trackbacks' ) ) remove_post_type_support( $pt, 'trackbacks' );
+	}
+}, 100 );
+add_filter( 'comments_open', '__return_false', 20 );
+add_filter( 'pings_open', '__return_false', 20 );
+add_filter( 'comments_array', '__return_empty_array', 20 );
+// drop the "Comments" column from every list table
+add_action( 'admin_init', function () {
+	foreach ( [ 'edit-post', 'edit-page' ] as $sc ) {
+		add_filter( 'manage_' . $sc . '_columns', function ( $cols ) { unset( $cols['comments'] ); return $cols; } );
+	}
+} );
+// remove the dashboard "Recent Comments" + discussion widgets handled below
+
+/* =============================================================
+   Dashboard — clear the stock WordPress widgets so only the studio's
+   own (Studio overview, Enquiry insights) sit under the tiles.
+   ============================================================= */
+add_action( 'wp_dashboard_setup', function () {
+	$core = [
+		'dashboard_activity','dashboard_right_now','dashboard_quick_press',
+		'dashboard_primary','dashboard_secondary','dashboard_site_health',
+		'dashboard_incoming_links','dashboard_plugins','dashboard_recent_drafts',
+		'dashboard_recent_comments','welcome_panel',
+	];
+	foreach ( $core as $id ) {
+		remove_meta_box( $id, 'dashboard', 'normal' );
+		remove_meta_box( $id, 'dashboard', 'side' );
+	}
+	remove_action( 'welcome_panel', 'wp_welcome_panel' );
+}, 20 );
 
 /* =============================================================
    Helper — resolve an admin menu slug to a real URL (mirrors core).
@@ -132,12 +215,23 @@ add_action( 'in_admin_header', function () {
    ============================================================= */
 function nr_cpt_strip_types() {
 	return [
+		'post'           => [ 'icon' => 'dashicons-admin-post',    'label' => __( 'Post', 'raveenthiran' ) ],
+		'page'           => [ 'icon' => 'dashicons-admin-page',    'label' => __( 'Page', 'raveenthiran' ) ],
 		'nr_project'     => [ 'icon' => 'dashicons-camera',        'label' => __( 'Project', 'raveenthiran' ) ],
 		'nr_journal'     => [ 'icon' => 'dashicons-book',          'label' => __( 'Journal entry', 'raveenthiran' ) ],
 		'nr_testimonial' => [ 'icon' => 'dashicons-format-quote',  'label' => __( 'Testimonial', 'raveenthiran' ) ],
 		'nr_enquiry'     => [ 'icon' => 'dashicons-email',         'label' => __( 'Enquiry', 'raveenthiran' ) ],
 	];
 }
+
+/* flag the strip screens so CSS can hide the native table by default */
+add_filter( 'admin_body_class', function ( $classes ) {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( $screen && $screen->base === 'edit' && isset( nr_cpt_strip_types()[ $screen->post_type ] ) ) {
+		$classes .= ' nr-strip-screen';
+	}
+	return $classes;
+} );
 
 add_action( 'admin_notices', function () {
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
@@ -153,19 +247,25 @@ add_action( 'admin_notices', function () {
 	$q = new WP_Query( [
 		'post_type'      => $pt,
 		'post_status'    => [ 'publish', 'future', 'draft', 'pending', 'private' ],
-		'posts_per_page' => 40,
+		'posts_per_page' => 60,
 		'orderby'        => [ 'menu_order' => 'ASC', 'date' => 'DESC' ],
 		'no_found_rows'  => true,
 	] );
 
 	$plural = $obj ? $obj->labels->name : $pt;
 	?>
-	<div class="nr-cpt-strip" data-nr-strip>
+	<div class="nr-cpt-strip" data-nr-strip data-nr-pt="<?php echo esc_attr( $pt ); ?>">
 		<div class="nr-cpt-strip__head">
-			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span>FILMSTRIP // <?php echo esc_html( strtoupper( $plural ) ); ?></span>
-			<span class="nr-cpt-strip__hint"><?php echo esc_html( $q->post_count ); ?> <?php esc_html_e( 'shown', 'raveenthiran' ); ?> · <?php esc_html_e( 'scroll sideways', 'raveenthiran' ); ?> →</span>
+			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span>GALLERY // <?php echo esc_html( strtoupper( $plural ) ); ?></span>
+			<div class="nr-cpt-strip__tools">
+				<span class="nr-cpt-strip__hint"><?php echo esc_html( $q->post_count ); ?> <?php esc_html_e( 'shown', 'raveenthiran' ); ?></span>
+				<div class="nr-view-toggle" role="group" aria-label="<?php esc_attr_e( 'View', 'raveenthiran' ); ?>">
+					<button type="button" class="nr-view-btn is-on" data-view="grid"><span class="dashicons dashicons-grid-view"></span> <?php esc_html_e( 'Cards', 'raveenthiran' ); ?></button>
+					<button type="button" class="nr-view-btn" data-view="list"><span class="dashicons dashicons-list-view"></span> <?php esc_html_e( 'List', 'raveenthiran' ); ?></button>
+				</div>
+			</div>
 		</div>
-		<div class="nr-cpt-rail">
+		<div class="nr-cpt-grid">
 			<a class="nr-cpt-card nr-cpt-card--add" href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . $pt ) ); ?>">
 				<span class="nr-cpt-add__plus">+</span>
 				<span class="nr-cpt-add__label"><?php printf( esc_html__( 'New %s', 'raveenthiran' ), esc_html( $cfg['label'] ) ); ?></span>
@@ -173,7 +273,7 @@ add_action( 'admin_notices', function () {
 			<?php while ( $q->have_posts() ) : $q->the_post(); $id = get_the_ID();
 				$status = get_post_status( $id );
 				$edit   = get_edit_post_link( $id );
-				// meta line: first relevant term, else the date
+				// meta line: project category · year, else the date
 				$meta = '';
 				if ( $pt === 'nr_project' && function_exists( 'nr_project_meta' ) ) {
 					$pm = nr_project_meta( $id );
@@ -200,14 +300,17 @@ add_action( 'admin_notices', function () {
 	</div>
 	<script>
 	(function(){
-		var rail=document.querySelector('[data-nr-strip] .nr-cpt-rail');
-		if(!rail)return;
-		// vertical wheel travels sideways — the front-end filmstrip feeling
-		rail.addEventListener('wheel',function(e){
-			if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;
-			if((e.deltaY<0&&rail.scrollLeft===0)||(e.deltaY>0&&Math.ceil(rail.scrollLeft+rail.clientWidth)>=rail.scrollWidth))return;
-			e.preventDefault();rail.scrollLeft+=e.deltaY;
-		},{passive:false});
+		var strip=document.querySelector('[data-nr-strip]'); if(!strip)return;
+		var pt=strip.getAttribute('data-nr-pt')||'x', key='nrView:'+pt, body=document.body;
+		function apply(v){
+			body.classList.toggle('nr-view-list', v==='list');
+			strip.querySelectorAll('.nr-view-btn').forEach(function(b){ b.classList.toggle('is-on', b.getAttribute('data-view')===v); });
+		}
+		var saved=null; try{ saved=localStorage.getItem(key); }catch(e){}
+		apply(saved==='list'?'list':'grid');
+		strip.querySelectorAll('.nr-view-btn').forEach(function(b){
+			b.addEventListener('click',function(){ var v=b.getAttribute('data-view'); apply(v); try{ localStorage.setItem(key,v); }catch(e){} });
+		});
 	})();
 	</script>
 	<?php

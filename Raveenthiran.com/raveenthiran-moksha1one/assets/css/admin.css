@@ -10,8 +10,16 @@
 	--v-hair:rgba(255,255,255,.09); --v-hair-gold:rgba(242,202,80,.22);
 	--v-gold:#f2ca50; --v-gold-deep:#d4af37;
 	--v-ink:#e8e6e0; --v-ink2:#b8b5ad; --v-ink3:#87847c;
-	--v-mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+	--v-mono:'JetBrains Mono','SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+	--v-sans:'Inter Tight',-apple-system,'Segoe UI',Roboto,sans-serif;
+	--v-display:'Syne','Inter Tight',-apple-system,'Segoe UI',sans-serif;
 }
+
+/* ---------- type: the backend reads in the theme's own faces ---------- */
+body.wp-admin,body.wp-admin #wpbody-content,body.wp-admin .wrap,body.login{font-family:var(--v-sans)}
+body.wp-admin #adminmenu,body.wp-admin #wpadminbar{font-family:var(--v-sans)}
+.wrap h1,.wrap h2,.postbox-header .hndle,.nr-adm-title,.nr-dash__title,.nr-cpt-card__title{font-family:var(--v-display);font-weight:800}
+.nr-adm-eyebrow,.nr-chapter,.nr-cpt-strip__hint,.nr-cpt-card__meta,.nr-cpt-card__status,.nr-back-dash,.nr-cpt-add__label{font-family:var(--v-mono)}
 
 /* ---------- canvas ---------- */
 html.wp-toolbar{background:var(--v-bg)}
@@ -69,16 +77,25 @@ body.wp-admin{background:var(--v-bg);color:var(--v-ink2)}
 .wp-editor-container,.wp-editor-area{background:var(--v-bg2);color:var(--v-ink);border-color:var(--v-hair)}
 #wp-content-editor-tools,.wp-editor-tabs .wp-switch-editor{background:var(--v-surf);color:var(--v-ink2);border-color:var(--v-hair)}
 
-/* ---------- list tables ---------- */
-.wp-list-table,.widefat{background:var(--v-surf);border:1px solid var(--v-hair);color:var(--v-ink2)}
-.wp-list-table thead th,.wp-list-table thead td,.wp-list-table tfoot th,.wp-list-table tfoot td,.widefat thead th{background:var(--v-surf2);color:var(--v-ink);border-color:var(--v-hair)}
-.wp-list-table tbody th,.wp-list-table tbody td,.widefat td,.widefat th{border-color:var(--v-hair);color:var(--v-ink2)}
-.wp-list-table.striped>tbody>:nth-child(odd),.striped>tbody>:nth-child(odd),ul.striped>:nth-child(odd),.alternate{background:var(--v-bg2)}
-.wp-list-table tbody tr:hover,.wp-list-table tbody tr:hover td{background:#17140d}
-.wp-list-table a.row-title,.wp-list-table strong a,.row-title{color:var(--v-ink)!important}
+/* ---------- list tables — EVERY row uniform obsidian, white text ---------- */
+.wp-list-table,.widefat{background:#0d0d0d;border:1px solid var(--v-hair);color:var(--v-ink)}
+.wp-list-table thead th,.wp-list-table thead td,.wp-list-table tfoot th,.wp-list-table tfoot td,.widefat thead th,.widefat tfoot th{background:#141311;color:#fff;border-color:var(--v-hair)}
+/* uniform rows: kill the zebra striping and any alternate shading */
+.wp-list-table tbody tr,.wp-list-table tbody th,.wp-list-table tbody td,.widefat tbody tr,.widefat td,.widefat th,
+.wp-list-table.striped>tbody>:nth-child(odd),.striped>tbody>:nth-child(odd),ul.striped>:nth-child(odd),.alternate,
+.wp-list-table tbody tr:nth-child(odd),.wp-list-table tbody tr:nth-child(even){background:#0d0d0d;color:var(--v-ink)}
+.wp-list-table tbody th,.wp-list-table tbody td,.widefat td,.widefat th{border-color:var(--v-hair);color:var(--v-ink)}
+.wp-list-table tbody tr:hover,.wp-list-table tbody tr:hover th,.wp-list-table tbody tr:hover td{background:#151310}
+.wp-list-table a.row-title,.wp-list-table strong a,.row-title,.wp-list-table td strong{color:#fff!important}
 .wp-list-table a.row-title:hover{color:var(--v-gold)!important}
-.wp-list-table .column-title a,.wp-list-table a{color:var(--v-gold)}
-.wp-list-table th.sortable a,.wp-list-table th.sorted a{color:var(--v-ink2)}
+.wp-list-table .column-title a,.wp-list-table td a{color:var(--v-gold)}
+.wp-list-table td,.wp-list-table th,.wp-list-table td .row-actions,.wp-list-table .column-date,.wp-list-table .column-author,.wp-list-table .column-author a{color:var(--v-ink)}
+.wp-list-table .row-actions{color:var(--v-ink3)} .wp-list-table .row-actions a{color:var(--v-ink3)} .wp-list-table .row-actions a:hover{color:var(--v-gold)}
+.wp-list-table th.sortable a,.wp-list-table th.sorted a{color:#fff}
+.wp-list-table th.check-column input,.wp-list-table td.check-column input{background:#0d0d0d;border-color:var(--v-hair)}
+.wp-list-table .subsubsub{color:var(--v-ink3)}
+/* keep the "featured image / thumb" cells from washing out */
+.wp-list-table .column-thumbnail img,.wp-list-table td img{border-radius:4px}
 .subsubsub{color:var(--v-ink3)} .subsubsub a{color:var(--v-ink2)} .subsubsub a.current{color:var(--v-gold);font-weight:600}
 .tablenav,.tablenav .tablenav-pages{color:var(--v-ink3)}
 .tablenav-pages a,.tablenav-pages span.current,.pagination-links a{background:var(--v-surf);border:1px solid var(--v-hair);color:var(--v-ink2)}
@@ -190,13 +207,19 @@ select option{background:var(--v-surf)}
    Per-CPT horizontal filmstrip on list screens (inc/admin-ui.php)
    ========================================================================== */
 .nr-cpt-strip{margin:14px 20px 22px 0;padding:18px 20px 20px;background:linear-gradient(150deg,#141311 0%,#0d0d0d 70%);border:1px solid var(--v-hair);border-radius:12px}
-.nr-cpt-strip__head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 14px;flex-wrap:wrap}
+.nr-cpt-strip__head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px;flex-wrap:wrap}
+.nr-cpt-strip__tools{display:flex;align-items:center;gap:16px}
 .nr-cpt-strip__hint{font-family:var(--v-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--v-ink3)}
-.nr-cpt-rail{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;padding:4px 4px 14px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#2a2620 #0a0a0a}
-.nr-cpt-rail::-webkit-scrollbar{height:10px}
-.nr-cpt-rail::-webkit-scrollbar-thumb{background:#2a2620;border-radius:6px}
-.nr-cpt-rail::-webkit-scrollbar-track{background:#0a0a0a}
-.nr-cpt-card{position:relative;flex:0 0 auto;width:210px;display:flex;flex-direction:column;scroll-snap-align:start;
+/* view toggle (Cards / List) */
+.nr-view-toggle{display:inline-flex;border:1px solid var(--v-hair);border-radius:999px;overflow:hidden}
+.nr-view-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:0;cursor:pointer;
+	padding:6px 14px;font-family:var(--v-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--v-ink3)}
+.nr-view-btn .dashicons{font-size:16px;width:16px;height:16px}
+.nr-view-btn.is-on{background:var(--v-gold);color:#0a0a0a;font-weight:700}
+.nr-view-btn:not(.is-on):hover{color:var(--v-gold)}
+/* responsive card grid — wraps to many rows so you see the whole set */
+.nr-cpt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.nr-cpt-card{position:relative;display:flex;flex-direction:column;
 	background:var(--v-surf2);border:1px solid var(--v-hair);border-radius:10px;overflow:hidden;text-decoration:none;
 	transition:transform .2s cubic-bezier(.2,.7,.2,1),border-color .2s ease,box-shadow .2s ease}
 .nr-cpt-card:hover{transform:translateY(-4px);border-color:var(--v-hair-gold);box-shadow:0 14px 34px rgba(0,0,0,.5)}
@@ -213,8 +236,50 @@ select option{background:var(--v-surf)}
 .nr-cpt-card:hover .nr-cpt-card__title{color:#fff}
 .nr-cpt-card__meta{font-family:var(--v-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--v-ink3)}
 /* add-new card */
-.nr-cpt-card--add{width:150px;align-items:center;justify-content:center;gap:12px;border-style:dashed;border-color:var(--v-hair-gold);background:transparent;color:var(--v-gold)}
+.nr-cpt-card--add{align-items:center;justify-content:center;gap:12px;min-height:150px;border-style:dashed;border-color:var(--v-hair-gold);background:transparent;color:var(--v-gold)}
 .nr-cpt-card--add:hover{background:rgba(242,202,80,.06);transform:translateY(-4px)}
 .nr-cpt-add__plus{font-size:38px;font-weight:300;line-height:1;color:var(--v-gold)}
 .nr-cpt-add__label{font-family:var(--v-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--v-ink2)}
-@media (max-width:782px){.nr-cpt-strip{margin-right:0}.nr-cpt-card{width:170px}}
+@media (max-width:782px){.nr-cpt-strip{margin-right:0}.nr-cpt-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+
+/* Cards vs List: the native table is hidden while the card grid is shown,
+   and vice-versa. Toggled by the buttons in the strip header (per post type,
+   remembered in localStorage). The search box stays visible in both. */
+body.nr-strip-screen:not(.nr-view-list) #posts-filter .wp-list-table,
+body.nr-strip-screen:not(.nr-view-list) #posts-filter .tablenav,
+body.nr-strip-screen:not(.nr-view-list) .wp-list-table.pages,
+body.nr-strip-screen:not(.nr-view-list) #wpbody-content .tablenav.top,
+body.nr-strip-screen:not(.nr-view-list) #wpbody-content .tablenav.bottom{display:none}
+body.nr-strip-screen.nr-view-list .nr-cpt-grid{display:none}
+body.nr-strip-screen.nr-view-list .nr-cpt-strip{padding-bottom:14px}
+
+/* ==========================================================================
+   LOGIN — full VOID rebrand (obsidian canvas + gilt orb + wordmark)
+   ========================================================================== */
+body.login{background:var(--v-bg);color:var(--v-ink2);position:relative;overflow:hidden}
+body.login::before{content:'';position:fixed;top:50%;left:50%;width:min(80vw,720px);height:min(80vw,720px);transform:translate(-50%,-55%);border-radius:50%;background:radial-gradient(circle,rgba(242,202,80,.10) 0%,transparent 70%);z-index:0;pointer-events:none}
+body.login::after{content:'';position:fixed;top:50%;left:50%;width:min(58vw,520px);height:min(58vw,520px);transform:translate(-50%,-55%);border-radius:50%;border:1px dashed rgba(242,202,80,.18);z-index:0;pointer-events:none}
+body.login #login{position:relative;z-index:2;width:340px;padding:6% 0 0}
+/* wordmark instead of the WP logo */
+body.login h1{margin-bottom:6px;text-align:center}
+body.login h1 a{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;text-indent:0!important;overflow:visible!important;line-height:1.08!important;text-align:center;white-space:normal!important;
+	font-family:var(--v-display)!important;font-weight:800!important;font-size:clamp(20px,5.5vw,27px)!important;letter-spacing:-.02em!important;
+	background-color:transparent!important;background-size:auto!important;
+	background-image:linear-gradient(92deg,var(--v-gold) 0%,#fff 55%,var(--v-gold) 100%)!important;
+	-webkit-background-clip:text!important;background-clip:text!important;
+	color:transparent!important;-webkit-text-fill-color:transparent!important}
+.nr-login-eyebrow{text-align:center;font-family:var(--v-mono);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--v-gold);margin:0 0 20px}
+/* form card */
+body.login form{background:var(--v-surf);border:1px solid var(--v-hair);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+body.login form label{color:var(--v-ink2)}
+body.login input[type=text],body.login input[type=password],body.login input[type=email]{background:var(--v-bg2);border:1px solid var(--v-hair);color:var(--v-ink);border-radius:6px}
+body.login input:focus{border-color:var(--v-gold);box-shadow:0 0 0 1px var(--v-gold),0 0 14px rgba(242,202,80,.18)}
+body.login .button-primary{background:var(--v-gold)!important;border-color:var(--v-gold)!important;color:#0a0a0a!important;font-weight:700;border-radius:6px;text-shadow:none;box-shadow:none;width:100%;height:42px}
+body.login .button-primary:hover{background:#fff!important;border-color:#fff!important}
+body.login #nav,body.login #backtoblog{text-align:center}
+body.login #nav a,body.login #backtoblog a{color:var(--v-ink3)!important}
+body.login #nav a:hover,body.login #backtoblog a:hover{color:var(--v-gold)!important}
+body.login .privacy-policy-page-link a{color:var(--v-ink3)!important}
+body.login .wp-pwd .button.wp-hide-pw{background:transparent;border:0}
+body.login .wp-pwd .button.wp-hide-pw .dashicons{color:var(--v-ink3)}
+body.login #login_error,body.login .message,body.login .notice{background:var(--v-surf2);border-left-color:var(--v-gold);color:var(--v-ink)}

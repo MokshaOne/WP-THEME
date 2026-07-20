@@ -2,33 +2,34 @@
 /**
  * moksha1one — the master theme. A magical, heavily-3D experience built on
  * everything the raveenthiran.com themes learned (Obscura + Aurelius + VOID):
- * a no-scroll singularity home, horizontal-scroll archives, vertical singles,
- * a WebGL 3D layer everywhere, and a "Magic Control" panel that steers all of
- * it. Standalone sibling: registers the same nr_* CPTs, taxonomies, ACF
- * fields, shortcodes and Theme Settings, so all content is shared.
+ * the WHOLE SITE is one continuous horizontal slider (home, about, contact,
+ * enquire, portfolio, journal, and both single types all ride the same
+ * wheel-driven filmstrip on desktop, stacking vertically on touch), a WebGL 3D
+ * layer everywhere, and a "Magic Control" panel that steers all of it.
+ * Standalone sibling: registers the same nr_* CPTs, taxonomies, ACF fields,
+ * shortcodes and Theme Settings, so all content is shared.
  * functions.php
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '0.4.0' );
+define( 'NR_THEME_VERSION', '0.5.0' );
 
 /* ─────────────────────────────────────────────────────────────
- * Per-page scroll mode → body class (drives assets/js/mk-scroll.js)
- *   mk-mode-none  home · contact          (single viewport, no scroll)
- *   mk-mode-h     portfolio · journal · about · enquire (horizontal)
- *   mk-mode-v     single project / journal + everything else (vertical)
+ * Scroll mode → body class (drives assets/js/mk-scroll.js)
+ *   mk-mode-h  EVERY page — one continuous horizontal slider on desktop,
+ *              graceful vertical stack on touch / narrow / reduced-motion.
  * ───────────────────────────────────────────────────────────── */
 if ( ! function_exists( 'mk_scroll_mode' ) ) {
+	/**
+	 * moksha1one is a single, continuous HORIZONTAL slider: every page rides the
+	 * same wheel-driven filmstrip on desktop and falls back to a natural vertical
+	 * stack on touch / narrow / reduced-motion. Templates that carry the .mk-h
+	 * markup (all of the primary ones) get the pinned track; anything else simply
+	 * scrolls vertically as a graceful default.
+	 */
 	function mk_scroll_mode() {
-		if ( is_front_page() ) return 'none';
-		if ( is_page_template( 'page-contact.php' ) || is_page( 'contact' ) ) return 'none';
-		if ( is_singular( [ 'nr_project', 'nr_journal', 'post' ] ) ) return 'v';
-		if ( is_post_type_archive( 'nr_project' ) || is_post_type_archive( 'nr_journal' )
-			|| is_tax( [ 'nr_project_cat', 'nr_project_tag', 'nr_project_series', 'nr_journal_cat' ] ) ) return 'h';
-		if ( is_page_template( 'page-about.php' ) || is_page( 'about' ) ) return 'h';
-		if ( is_page_template( 'page-enquire.php' ) || is_page( [ 'enquire', 'book', 'book-me' ] ) ) return 'h';
-		return 'v';
+		return 'h';
 	}
 }
 add_filter( 'body_class', function ( $c ) {

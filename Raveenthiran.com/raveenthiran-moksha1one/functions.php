@@ -13,7 +13,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '0.8.0' );
+define( 'NR_THEME_VERSION', '0.9.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Scroll mode → body class (drives assets/js/mk-scroll.js)
@@ -304,6 +304,41 @@ function nr_project_meta() {
 		'yr'     => nr_field( 'project_year', $id ) ?: get_the_date( 'Y', $id ),
 		'client' => nr_field( 'project_client', $id ) ?: '',
 		'loc'    => nr_field( 'project_location', $id ) ?: nr_opt( 'nr_location', 'Vienna' ),
+	];
+}
+
+/**
+ * Testimonials — pull the nr_testimonial CPT for the front end. Each entry
+ * carries ACF fields (client_role, client_avatar, project_link, rating,
+ * show_on_homepage); the quote itself is the post content/excerpt.
+ */
+function nr_testimonials( $limit = 12, $homepage_only = false ) {
+	$args = [
+		'post_type'      => 'nr_testimonial',
+		'posts_per_page' => $limit,
+		'orderby'        => [ 'menu_order' => 'ASC', 'date' => 'DESC' ],
+		'no_found_rows'  => true,
+	];
+	if ( $homepage_only ) {
+		$args['meta_key']   = 'show_on_homepage';
+		$args['meta_value'] = '1';
+	}
+	$q = new WP_Query( $args );
+	return $q->posts;
+}
+
+/** One testimonial's normalised data (quote + author + role + avatar + stars). */
+function nr_testimonial_data( $post ) {
+	$id    = is_object( $post ) ? $post->ID : (int) $post;
+	$quote = has_excerpt( $id ) ? get_the_excerpt( $id ) : wp_strip_all_tags( get_post_field( 'post_content', $id ) );
+	$av    = nr_field( 'client_avatar', $id );
+	$avid  = is_array( $av ) ? ( $av['ID'] ?? 0 ) : ( is_numeric( $av ) ? (int) $av : 0 );
+	return [
+		'quote'  => trim( (string) $quote ),
+		'name'   => get_the_title( $id ),
+		'role'   => (string) nr_field( 'client_role', $id ),
+		'avatar' => $avid,
+		'rating' => (int) ( nr_field( 'rating', $id ) ?: 5 ),
 	];
 }
 

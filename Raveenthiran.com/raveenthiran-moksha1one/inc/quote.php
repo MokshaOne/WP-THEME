@@ -19,12 +19,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * ───────────────────────────────────────────────────────────── */
 add_action( 'acf/init', function () {
 	if ( ! function_exists( 'acf_add_options_page' ) ) return;
+	// One discoverable, top-level home for EVERY ACF content group (hero, about,
+	// CTA, FAQ, availability, quote, license, local SEO, newsletter, awards,
+	// press). It was buried under Appearance → "Pricing & Quote" even though it
+	// holds all site content — now it sits in the main menu as "Site Content".
 	acf_add_options_page( [
-		'page_title'  => __( 'Pricing & Quote', 'raveenthiran' ),
-		'menu_title'  => __( 'Pricing & Quote', 'raveenthiran' ),
+		'page_title'  => __( 'moksha1one — Site Content', 'raveenthiran' ),
+		'menu_title'  => __( 'Site Content', 'raveenthiran' ),
 		'menu_slug'   => 'nr-site-settings',
-		'parent_slug' => 'themes.php',
 		'capability'  => 'manage_options',
+		'position'    => 59,
+		'icon_url'    => 'dashicons-layout',
 		'redirect'    => false,
 	] );
 } );

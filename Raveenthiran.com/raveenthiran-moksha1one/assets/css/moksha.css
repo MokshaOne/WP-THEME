@@ -204,6 +204,27 @@ html.mk-h-on .mk-panel { will-change: transform, opacity; backface-visibility: h
 .mk-article__col p { margin: 0 0 1.1em; }
 .mk-article__col img { max-width: 100%; height: auto; }
 
+/* ---------- About: statement pull-quote (ACF about_statement) ---------- */
+.mk-statement__q { margin: 22px 0 0; max-width: 20ch; font-family: var(--ff-display, inherit); font-weight: 800; font-style: italic; font-size: clamp(30px,4.4vw,64px); line-height: 1.05; letter-spacing: -.02em; color: var(--void-ink); }
+.mk-statement__q::before { content: '“'; color: var(--void-gold); }
+.mk-statement__q::after { content: '”'; color: var(--void-gold); }
+
+/* ---------- About: testimonials (nr_testimonial CPT) ---------- */
+.mk-tstm { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(20px,2.6vw,40px); margin-top: 24px; max-width: 1000px; }
+@media (max-width: 820px) { .mk-tstm { grid-template-columns: 1fr; } }
+.mk-tstm__item { margin: 0; display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--void-hair); padding-left: 20px; }
+.mk-tstm__stars { color: var(--void-gold); letter-spacing: .12em; font-size: 13px; }
+.mk-tstm__q { margin: 0; font-size: clamp(15px,1.3vw,18px); line-height: 1.6; color: var(--void-ink-2); }
+.mk-tstm__q::before { content: ''; }
+.mk-tstm__by { display: flex; align-items: center; gap: 12px; }
+.mk-tstm__av { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; filter: grayscale(1); }
+.mk-tstm__by > span { display: flex; flex-direction: column; }
+.mk-tstm__name { font-weight: 700; color: var(--void-ink); font-size: 14px; }
+.mk-tstm__role { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--void-ink-3); }
+
+/* ---------- About: closing CTA block (ACF cta_*) ---------- */
+.mk-cta .void-display-hero { max-width: 16ch; }
+
 /* ---------- About stats (horizontal panel) ---------- */
 .mk-stats { display: flex; flex-wrap: wrap; gap: clamp(28px,4vw,64px); margin-top: 26px; }
 .mk-stat { display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--void-hair); padding-left: 20px; }

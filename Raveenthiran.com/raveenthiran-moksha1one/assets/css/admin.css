@@ -1,0 +1,187 @@
+/* ==========================================================================
+   moksha1one — WHOLE-BACKEND skin. The wp-admin wears the same "Obsidian &
+   Gilt" look as the front end: obsidian canvas, gilt-gold accents, mono HUD
+   labels. Loaded on every admin screen + the login page. Chrome only — it
+   recolours, never restructures, and the block-editor canvas (its own iframe)
+   is left untouched so writing stays normal.
+   ========================================================================== */
+:root{
+	--v-bg:#0a0a0a; --v-bg2:#0d0d0d; --v-surf:#121212; --v-surf2:#161513;
+	--v-hair:rgba(255,255,255,.09); --v-hair-gold:rgba(242,202,80,.22);
+	--v-gold:#f2ca50; --v-gold-deep:#d4af37;
+	--v-ink:#e8e6e0; --v-ink2:#b8b5ad; --v-ink3:#87847c;
+	--v-mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+}
+
+/* ---------- canvas ---------- */
+html.wp-toolbar{background:var(--v-bg)}
+body.wp-admin{background:var(--v-bg);color:var(--v-ink2)}
+#wpwrap,#wpcontent,#wpbody,#wpbody-content{background:var(--v-bg)}
+#wpbody-content{padding-bottom:60px}
+#wpfooter{color:var(--v-ink3);border-top:1px solid var(--v-hair)}
+#wpfooter a{color:var(--v-ink3)} #wpfooter a:hover{color:var(--v-gold)}
+.wrap a,.nr-settings a{color:var(--v-gold)} .wrap a:hover{color:#fff}
+
+/* ---------- headings ---------- */
+.wrap h1,.wrap h2,.wrap h3,#wpbody-content h1,#wpbody-content h2.hndle,.postbox-header .hndle{color:var(--v-ink)}
+.wrap .wp-heading-inline{color:#fff;font-weight:800;letter-spacing:-.01em}
+.wrap p,.wrap li,.wrap td,.wrap label,.wrap .description,.wrap dd,.wrap dt{color:var(--v-ink2)}
+.wrap .description,p.description{color:var(--v-ink3)}
+
+/* ---------- admin bar (top) ---------- */
+#wpadminbar{background:#080808;border-bottom:1px solid var(--v-hair-gold)}
+#wpadminbar .ab-item,#wpadminbar a.ab-item,#wpadminbar>#wp-toolbar span.ab-label,#wpadminbar>#wp-toolbar span.noticon,#wpadminbar .ab-icon,#wpadminbar .ab-icon::before,#wpadminbar .ab-item::before{color:var(--v-ink2)}
+#wpadminbar .ab-top-menu>li:hover>.ab-item,#wpadminbar .ab-top-menu>li.hover>.ab-item,#wpadminbar.nojq .quicklinks .ab-top-menu>li>.ab-item:focus,#wpadminbar .ab-top-menu>li>.ab-item:focus{background:#151310;color:var(--v-gold)}
+#wpadminbar .ab-submenu,#wpadminbar .ab-sub-wrapper,#wpadminbar .quicklinks .menupop ul li a{background:#0d0d0d;color:var(--v-ink2)}
+#wpadminbar .quicklinks .menupop ul li a:hover{color:var(--v-gold)}
+
+/* ---------- left admin menu ---------- */
+#adminmenuback,#adminmenuwrap,#adminmenu,#adminmenu .wp-submenu{background:#0d0d0d}
+#adminmenu a{color:var(--v-ink2)}
+#adminmenu div.wp-menu-image::before{color:var(--v-ink3)}
+#adminmenu li.menu-top:hover,#adminmenu li.opensub>a.menu-top,#adminmenu li>a.menu-top:focus{background:#151310;color:var(--v-gold)}
+#adminmenu li.menu-top:hover div.wp-menu-image::before,#adminmenu li.opensub>a.menu-top div.wp-menu-image::before{color:var(--v-gold)}
+#adminmenu .wp-submenu a{color:var(--v-ink3)}
+#adminmenu .wp-submenu a:hover,#adminmenu .wp-submenu a:focus{color:var(--v-gold)}
+/* current item */
+#adminmenu li.current a.menu-top,#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,#adminmenu .wp-has-current-submenu .wp-submenu .wp-submenu-head,#adminmenu .wp-menu-arrow,#adminmenu a.wp-has-current-submenu:focus+.wp-submenu{background:#1a1710;color:var(--v-gold)}
+#adminmenu li.current div.wp-menu-image::before,#adminmenu a.current:hover div.wp-menu-image::before,#adminmenu li.wp-has-current-submenu div.wp-menu-image::before{color:var(--v-gold)}
+#adminmenu li.current a.menu-top,#adminmenu li a.menu-top.wp-has-current-submenu{box-shadow:inset 3px 0 0 var(--v-gold)}
+#adminmenu .wp-submenu li.current a,#adminmenu .wp-submenu li.current a:hover{color:var(--v-gold);font-weight:600}
+#adminmenu .awaiting-mod,#adminmenu .update-plugins{background:var(--v-gold);color:#0a0a0a}
+#collapse-button{color:var(--v-ink3)}
+.folded #adminmenu li.menu-top .wp-submenu.sub-open,.folded #adminmenu li.opensub .wp-submenu{background:#0d0d0d}
+
+/* ---------- notices ---------- */
+.notice,div.updated,div.error,.notice-info,.notice-success,.notice-warning,.notice-error{background:var(--v-surf2);color:var(--v-ink);border-left-color:var(--v-gold)}
+.notice p,div.updated p,div.error p{color:var(--v-ink)}
+.notice-success{border-left-color:#4ad07d} .notice-error,div.error{border-left-color:#e0563f} .notice-warning{border-left-color:var(--v-gold)}
+.notice a{color:var(--v-gold)}
+
+/* ---------- metaboxes / postboxes ---------- */
+.postbox,.stuffbox,.welcome-panel{background:var(--v-surf);border:1px solid var(--v-hair);color:var(--v-ink2)}
+.postbox-header{border-bottom:1px solid var(--v-hair)}
+.postbox .hndle,.postbox-header .hndle{color:var(--v-ink);border-color:var(--v-hair)}
+.postbox .handlediv,.postbox .handle-order-higher,.postbox .handle-order-lower{color:var(--v-ink3)}
+.postbox .inside{color:var(--v-ink2)}
+#poststuff h2,#poststuff h3,.metabox-holder h2.hndle{color:var(--v-ink)}
+#post-body-content,#titlediv #title{background:var(--v-bg2);color:var(--v-ink);border-color:var(--v-hair)}
+.wp-editor-container,.wp-editor-area{background:var(--v-bg2);color:var(--v-ink);border-color:var(--v-hair)}
+#wp-content-editor-tools,.wp-editor-tabs .wp-switch-editor{background:var(--v-surf);color:var(--v-ink2);border-color:var(--v-hair)}
+
+/* ---------- list tables ---------- */
+.wp-list-table,.widefat{background:var(--v-surf);border:1px solid var(--v-hair);color:var(--v-ink2)}
+.wp-list-table thead th,.wp-list-table thead td,.wp-list-table tfoot th,.wp-list-table tfoot td,.widefat thead th{background:var(--v-surf2);color:var(--v-ink);border-color:var(--v-hair)}
+.wp-list-table tbody th,.wp-list-table tbody td,.widefat td,.widefat th{border-color:var(--v-hair);color:var(--v-ink2)}
+.wp-list-table.striped>tbody>:nth-child(odd),.striped>tbody>:nth-child(odd),ul.striped>:nth-child(odd),.alternate{background:var(--v-bg2)}
+.wp-list-table tbody tr:hover,.wp-list-table tbody tr:hover td{background:#17140d}
+.wp-list-table a.row-title,.wp-list-table strong a,.row-title{color:var(--v-ink)!important}
+.wp-list-table a.row-title:hover{color:var(--v-gold)!important}
+.wp-list-table .column-title a,.wp-list-table a{color:var(--v-gold)}
+.wp-list-table th.sortable a,.wp-list-table th.sorted a{color:var(--v-ink2)}
+.subsubsub{color:var(--v-ink3)} .subsubsub a{color:var(--v-ink2)} .subsubsub a.current{color:var(--v-gold);font-weight:600}
+.tablenav,.tablenav .tablenav-pages{color:var(--v-ink3)}
+.tablenav-pages a,.tablenav-pages span.current,.pagination-links a{background:var(--v-surf);border:1px solid var(--v-hair);color:var(--v-ink2)}
+.tablenav-pages span.current{border-color:var(--v-gold);color:var(--v-gold)}
+
+/* ---------- tabs ---------- */
+.nav-tab-wrapper,.wp-filter{border-bottom:1px solid var(--v-hair)}
+.nav-tab{background:var(--v-surf);border:1px solid var(--v-hair);color:var(--v-ink2)}
+.nav-tab-active,.nav-tab:hover{background:var(--v-surf2);color:var(--v-gold);border-bottom-color:var(--v-surf2)}
+
+/* ---------- form fields (chrome; block-editor iframe unaffected) ---------- */
+#wpbody-content input[type=text],#wpbody-content input[type=search],#wpbody-content input[type=email],#wpbody-content input[type=url],#wpbody-content input[type=tel],#wpbody-content input[type=number],#wpbody-content input[type=password],#wpbody-content input[type=date],#wpbody-content textarea,#wpbody-content select{
+	background:var(--v-bg2);border:1px solid var(--v-hair);color:var(--v-ink);border-radius:5px;box-shadow:none}
+#wpbody-content input:focus,#wpbody-content textarea:focus,#wpbody-content select:focus{border-color:var(--v-gold);box-shadow:0 0 0 1px var(--v-gold),0 0 14px rgba(242,202,80,.16);outline:0;color:#fff}
+#wpbody-content input::placeholder,#wpbody-content textarea::placeholder{color:#5c5a55}
+#wpbody-content input[type=checkbox],#wpbody-content input[type=radio]{background:var(--v-bg2);border-color:var(--v-hair)}
+#wpbody-content input[type=checkbox]:checked,#wpbody-content input[type=radio]:checked{background:var(--v-gold);border-color:var(--v-gold)}
+#wpbody-content input[type=checkbox]:checked::before{color:#0a0a0a}
+#wpbody-content input[type=radio]:checked::before{background:#0a0a0a}
+#wpbody-content input[type=range]{accent-color:var(--v-gold)}
+.form-table th{color:var(--v-ink2)}
+select option{background:var(--v-surf)}
+
+/* ---------- buttons ---------- */
+.button,.button-secondary{background:transparent;border:1px solid var(--v-hair-gold);color:var(--v-gold);border-radius:5px;text-shadow:none;box-shadow:none;transition:all .2s ease}
+.button:hover,.button-secondary:hover{background:rgba(242,202,80,.1);border-color:var(--v-gold);color:#fff}
+.button-primary,#wpbody-content .button-primary{background:var(--v-gold);border:1px solid var(--v-gold);color:#0a0a0a;font-weight:700;border-radius:5px;text-shadow:none;box-shadow:none}
+.button-primary:hover,#wpbody-content .button-primary:hover{background:#fff;border-color:#fff;color:#0a0a0a}
+.button:disabled,.button[disabled]{opacity:.5}
+.wp-core-ui .button-link{color:var(--v-gold)}
+
+/* ---------- scrollbars ---------- */
+#adminmenu::-webkit-scrollbar,#wpbody-content ::-webkit-scrollbar{width:10px;height:10px}
+#adminmenu::-webkit-scrollbar-thumb,#wpbody-content ::-webkit-scrollbar-thumb{background:#2a2620;border-radius:6px}
+#adminmenu::-webkit-scrollbar-track,#wpbody-content ::-webkit-scrollbar-track{background:#0a0a0a}
+
+/* ==========================================================================
+   moksha1one Theme Settings page — chaptered VOID furniture on top of the
+   global skin above.
+   ========================================================================== */
+.nr-settings,.nr-settings p,.nr-settings label,.nr-settings td,.nr-settings th,.nr-settings li{color:var(--v-ink2)}
+.nr-settings .description{color:var(--v-ink3)}
+.nr-settings a:hover{color:#fff}
+
+.nr-adm-head{padding:14px 0 6px;margin:0 0 8px;border-bottom:1px solid var(--v-hair)}
+.nr-adm-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--v-mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--v-gold)}
+.nr-adm-rule{display:inline-block;width:34px;height:1px;background:var(--v-gold)}
+.nr-adm-title{font-size:40px;font-weight:800;letter-spacing:-.02em;color:#fff;margin:12px 0 8px;line-height:1}
+.nr-adm-gold{color:var(--v-gold);font-style:italic;font-weight:800}
+.nr-adm-lede{max-width:820px;font-size:14px;line-height:1.65;color:var(--v-ink3)}
+
+.nr-settings .nr-chapter{display:flex;align-items:center;gap:14px;margin:38px 0 14px;padding:0;font-size:13px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:var(--v-ink);border:0}
+.nr-settings .nr-chapter::after{content:'';flex:1;height:1px;background:var(--v-hair)}
+.nr-chapter__n{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid var(--v-hair-gold);color:var(--v-gold);font-family:var(--v-mono);font-size:12px;letter-spacing:0;border-radius:50%}
+
+.nr-settings details{background:var(--v-surf);border:1px solid var(--v-hair);border-radius:8px;margin:0 0 12px;padding:6px 22px;transition:border-color .3s ease}
+.nr-settings details[open]{border-color:var(--v-hair-gold);background:var(--v-surf2)}
+.nr-settings summary{cursor:pointer;list-style:none;outline:0;padding:12px 0}
+.nr-settings summary::-webkit-details-marker{display:none}
+.nr-settings summary h2{display:inline-block;margin:0;font-size:15px;font-weight:700;letter-spacing:.05em;color:var(--v-ink)}
+.nr-settings details[open] summary h2{color:var(--v-gold)}
+.nr-settings summary::before{content:'+';display:inline-block;width:18px;color:var(--v-gold);font-family:var(--v-mono);font-weight:400}
+.nr-settings details[open] summary::before{content:'\2013'}
+
+.nr-settings .form-table{margin-top:0}
+.nr-settings .form-table th{width:250px;color:var(--v-ink2);font-weight:600;font-size:13px}
+.nr-settings .form-table td,.nr-settings .form-table th{border-top:1px solid var(--v-hair);padding:16px 10px}
+.nr-settings .form-table tr:first-child td,.nr-settings .form-table tr:first-child th{border-top:0}
+.nr-settings textarea{font-family:var(--v-mono);font-size:12.5px;line-height:1.6}
+.nr-settings p.submit{border-top:1px solid var(--v-hair);padding-top:22px;margin-top:26px}
+.nr-settings .wp-picker-container .wp-color-result.button{border-color:var(--v-hair-gold)}
+
+/* ==========================================================================
+   Dashboard — Windows-11 tile mosaic (rendered by inc/admin-ui.php)
+   ========================================================================== */
+.nr-dash{margin:0 0 8px;padding:22px 20px 6px}
+.nr-dash__head{margin:0 0 22px}
+.nr-dash__title{font-size:34px;font-weight:800;letter-spacing:-.02em;color:#fff;margin:12px 0 8px;line-height:1}
+.nr-dash__lede{max-width:760px;color:var(--v-ink3);font-size:14px;line-height:1.6}
+.nr-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));grid-auto-rows:132px;gap:14px}
+.nr-tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+	padding:18px;border:1px solid var(--v-hair);border-radius:12px;text-decoration:none;
+	background:linear-gradient(150deg,#161513 0%,#101010 60%,#0c0c0c 100%);
+	transition:transform .22s cubic-bezier(.2,.7,.2,1),border-color .22s ease,box-shadow .22s ease}
+.nr-tile::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 120% at 100% 0%,rgba(242,202,80,.14),transparent 55%);opacity:0;transition:opacity .25s ease}
+.nr-tile:hover{transform:translateY(-4px);border-color:var(--v-hair-gold);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.nr-tile:hover::after{opacity:1}
+.nr-tile--big{grid-column:span 2}
+@media (max-width:782px){.nr-tile--big{grid-column:span 1}}
+.nr-tile__ico{display:inline-flex;color:var(--v-gold)}
+.nr-tile__ico .dashicons{width:34px;height:34px;font-size:34px}
+.nr-tile__ico img{width:30px;height:30px;filter:brightness(0) saturate(100%) invert(83%) sepia(46%) saturate(700%) hue-rotate(347deg) brightness(102%) contrast(94%)}
+.nr-tile__label{font-size:16px;font-weight:700;letter-spacing:.01em;color:var(--v-ink)}
+.nr-tile:hover .nr-tile__label{color:#fff}
+.nr-tile__go{position:absolute;top:16px;right:18px;color:var(--v-gold);font-size:18px;opacity:0;transform:translateX(-6px);transition:all .22s ease}
+.nr-tile:hover .nr-tile__go{opacity:1;transform:translateX(0)}
+.nr-tile--big .nr-tile__label{font-size:19px}
+
+/* ---------- "Back to dashboard" button (sub-pages) ---------- */
+.nr-back-dash{display:inline-flex;align-items:center;gap:8px;margin:16px 0 0 22px;padding:7px 15px;
+	font-family:var(--v-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+	color:var(--v-gold);text-decoration:none;border:1px solid var(--v-hair-gold);border-radius:999px;
+	background:rgba(242,202,80,.04);transition:all .2s ease}
+.nr-back-dash:hover{background:rgba(242,202,80,.12);border-color:var(--v-gold);color:#fff}
+#wpadminbar #wp-admin-bar-nr-back-dash>.ab-item{color:var(--v-gold)!important;font-weight:600}
+#wpadminbar #wp-admin-bar-nr-back-dash:hover>.ab-item{color:#fff!important}

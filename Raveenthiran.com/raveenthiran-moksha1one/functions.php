@@ -13,7 +13,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '0.5.0' );
+define( 'NR_THEME_VERSION', '0.6.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Scroll mode → body class (drives assets/js/mk-scroll.js)
@@ -402,6 +402,7 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'performance.php',
 		'seo.php',
 		'theme-settings.php',
+		'admin-ui.php',
 		'quote.php',
 		'tier1.php',
 		'tier2.php',

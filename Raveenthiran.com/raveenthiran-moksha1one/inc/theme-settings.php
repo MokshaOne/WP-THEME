@@ -213,7 +213,7 @@ function nr_settings_default_filter( $value ) { return $value; }
    ============================================================= */
 add_action( 'admin_menu', function () {
 	add_theme_page(
-		__( 'Theme Settings — Catalogue Noir', 'raveenthiran' ),
+		__( 'moksha1one — Theme Settings', 'raveenthiran' ),
 		__( 'Theme Settings', 'raveenthiran' ),
 		'manage_options',
 		'nr-theme-settings',
@@ -334,14 +334,19 @@ function nr_theme_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) return;
 	?>
 	<div class="wrap nr-settings">
-		<h1><?php esc_html_e( 'Theme Settings — Catalogue Noir', 'raveenthiran' ); ?></h1>
-		<p class="description" style="max-width:780px"><?php esc_html_e( 'Full control over visible site copy, brand color, and visual effects. Every field here maps to a value that templates read on render. Some fields support inline <em> tags for bold emphasis.', 'raveenthiran' ); ?></p>
+		<header class="nr-adm-head">
+			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span>THEME CONTROL // moksha·one</span>
+			<h1 class="nr-adm-title">moksha1one <span class="nr-adm-gold">Settings</span></h1>
+			<p class="nr-adm-lede"><?php esc_html_e( 'Every field here maps to a value the templates read on render — site copy, brand accent, the magic layer and the system plumbing. Grouped into four chapters. Some title fields accept inline <em> for emphasis.', 'raveenthiran' ); ?></p>
+		</header>
 
 		<form method="post" action="options.php" class="nr-settings-form">
 			<?php settings_fields( 'nr_theme_settings_group' ); ?>
 
+			<h2 class="nr-chapter"><span class="nr-chapter__n">I</span> Identity</h2>
+
 			<details open class="nr-settings__group">
-				<summary><h2>§ Branding</h2></summary>
+				<summary><h2>§ Brand &amp; accent</h2></summary>
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Wordmark text', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_logo_text', 30 ); ?>
@@ -358,28 +363,13 @@ function nr_theme_settings_page() {
 			</details>
 
 			<details open class="nr-settings__group">
-				<summary><h2>§ Colors</h2></summary>
-				<table class="form-table" role="presentation">
-					<tr><th><label><?php esc_html_e( 'Background', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_color( 'nr_color_bg' ); ?>
-							<p class="description"><?php esc_html_e( 'Page canvas. Default: #131313 (deep anthracite).', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Ink (text)', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_color( 'nr_color_ink' ); ?>
-							<p class="description"><?php esc_html_e( 'Primary text color. Default: #E4E2E1 (gallery off-white).', 'raveenthiran' ); ?></p></td></tr>
-				</table>
-				<p class="description"><?php esc_html_e( 'Accent color is in the Branding section above.', 'raveenthiran' ); ?></p>
-			</details>
-
-			<details open class="nr-settings__group">
-				<summary><h2>§ Studio</h2></summary>
+				<summary><h2>§ Studio &amp; contact</h2></summary>
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Studio address', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_studio', 60 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Location (short)', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_location', 30 ); ?>
-							<p class="description"><?php esc_html_e( 'e.g. "Wien, Austria".', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Coordinates', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_text( 'nr_coords', 30 ); ?></td></tr>
+							<p class="description"><?php esc_html_e( 'e.g. "Wien, Austria". Map coordinates live under Home · Singularity (VOID) → latitude / longitude.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Email', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_email', 40 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Phone', 'raveenthiran' ); ?></label></th>
@@ -435,32 +425,12 @@ function nr_theme_settings_page() {
 				</table>
 			</details>
 
-			<details open class="nr-settings__group">
-				<summary><h2>§ Showcase (home)</h2></summary>
-				<table class="form-table" role="presentation">
-					<tr><th><label><?php esc_html_e( 'Eyebrow', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_text( 'nr_hero_eyebrow', 40 ); ?></td></tr>
-					<tr><th><label><?php esc_html_e( 'Hero headline', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_text( 'nr_home_hero_title', 60 ); ?>
-							<p class="description"><?php esc_html_e( 'Large opening line over the featured image. <em>…</em> italicises, <br> breaks a line.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Hero intro text', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_textarea( 'nr_home_hero_lede', 3 ); ?>
-							<p class="description"><?php esc_html_e( 'Short paragraph beside the headline, above the “Explore the work” button.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Auto-advance', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_hero_auto', __( 'Cycle through slides automatically', 'raveenthiran' ) ); ?></td></tr>
-					<tr><th><label><?php esc_html_e( 'Auto-advance interval (ms)', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_text( 'nr_hero_interval', 10 ); ?>
-							<p class="description"><?php esc_html_e( 'How long each slide stays visible. 9000 = 9 seconds.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Max featured projects', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_text( 'nr_hero_max', 10 ); ?>
-							<p class="description"><?php esc_html_e( 'How many featured projects (featured_on_homepage = 1) to show on the hero. Default: 6.', 'raveenthiran' ); ?></p></td></tr>
-				</table>
-			</details>
+			<h2 class="nr-chapter"><span class="nr-chapter__n">II</span> Home &amp; magic</h2>
 
 			<details open class="nr-settings__group">
-				<summary><h2>§ VOID System (spatial HUD)</h2></summary>
+				<summary><h2>§ Home · Singularity (VOID)</h2></summary>
 				<table class="form-table" role="presentation">
-					<tr><td colspan="2"><p class="description"><?php esc_html_e( 'Only used by the VOID theme. Drives the Singularity home, the tactical HUD nav/footer and the archive header. Per-project HUD data (coordinates, technical bars, classification) lives on each Project under “VOID — Specimen Controls”.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><td colspan="2"><p class="description"><?php esc_html_e( 'Drives the Singularity home panel, the HUD nav/footer and the archive header — and the latitude / longitude are the single source for every coordinate shown on the site (home, contact, footer). Per-project HUD data (coordinates, technical bars, classification) lives on each Project under “VOID — Specimen Controls”.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Home headline — line 1', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_void_hero1', 24 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Home headline — line 2 (gold)', 'raveenthiran' ); ?></label></th>
@@ -503,6 +473,8 @@ function nr_theme_settings_page() {
 				</table>
 			</details>
 
+			<h2 class="nr-chapter"><span class="nr-chapter__n">III</span> Pages &amp; copy</h2>
+
 			<details open class="nr-settings__group">
 				<summary><h2>§ Work (portfolio archive)</h2></summary>
 				<table class="form-table" role="presentation">
@@ -518,7 +490,7 @@ function nr_theme_settings_page() {
 			</details>
 
 			<details open class="nr-settings__group">
-				<summary><h2>§ Studio (about)</h2></summary>
+				<summary><h2>§ About page</h2></summary>
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Eyebrow', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_about_eyebrow', 40 ); ?></td></tr>
@@ -665,6 +637,8 @@ function nr_theme_settings_page() {
 				</table>
 			</details>
 
+			<h2 class="nr-chapter"><span class="nr-chapter__n">IV</span> System &amp; effects</h2>
+
 			<details open class="nr-settings__group">
 				<summary><h2>§ Extras</h2></summary>
 				<table class="form-table" role="presentation">
@@ -766,7 +740,7 @@ function nr_theme_settings_page() {
 						<td>
 							<?php $mode = get_option( 'nr_color_mode', 'dark' ); ?>
 							<select name="nr_color_mode">
-								<option value="dark"   <?php selected( $mode, 'dark' ); ?>><?php esc_html_e( 'Dark — Catalogue Noir (default)', 'raveenthiran' ); ?></option>
+								<option value="dark"   <?php selected( $mode, 'dark' ); ?>><?php esc_html_e( 'Dark — Obsidian & Gilt (default)', 'raveenthiran' ); ?></option>
 								<option value="light"  <?php selected( $mode, 'light' ); ?>><?php esc_html_e( 'Light — bone-on-cream inversion', 'raveenthiran' ); ?></option>
 								<option value="system" <?php selected( $mode, 'system' ); ?>><?php esc_html_e( 'System — follow OS preference', 'raveenthiran' ); ?></option>
 							</select>
@@ -811,17 +785,6 @@ function nr_theme_settings_page() {
 			<?php submit_button( __( 'Save settings', 'raveenthiran' ) ); ?>
 		</form>
 	</div>
-
-	<style>
-	.nr-settings details{background:#fff;border:1px solid #ddd;border-radius:4px;margin-bottom:14px;padding:10px 18px}
-	.nr-settings details[open]{border-color:#2c3338}
-	.nr-settings summary{cursor:pointer;list-style:none;outline:0}
-	.nr-settings summary h2{display:inline-block;margin:0;font-size:16px;letter-spacing:.04em}
-	.nr-settings details summary::before{content:'▸';display:inline-block;margin-right:8px;transition:transform .2s}
-	.nr-settings details[open] summary::before{transform:rotate(90deg)}
-	.nr-settings .form-table th{width:240px}
-	.nr-settings textarea{font-family:Consolas,monospace;font-size:13px}
-	</style>
 	<?php
 }
 

@@ -13,7 +13,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '0.12.1' );
+define( 'NR_THEME_VERSION', '0.12.2' );
 
 /* ─────────────────────────────────────────────────────────────
  * Scroll mode → body class (drives assets/js/mk-scroll.js)
@@ -267,16 +267,25 @@ function nr_recognition_list( $option_key ) {
 		$line = trim( $line );
 		if ( $line === '' ) continue;
 		$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
-		$row = [
-			'year' => $parts[0] ?? '',
-			'title' => $parts[1] ?? '',
-			'org'   => $parts[2] ?? '',
-			'url'   => $parts[3] ?? '',
-		];
-		// Skip ghost rows (blank / punctuation-only lines) so an empty
-		// Awards or Press list hides cleanly instead of showing a stray dash.
-		if ( $row['year'] === '' && $row['title'] === '' && $row['org'] === '' ) continue;
-		$out[] = $row;
+
+		// Pull the URL out of whichever slot it landed in, keep the rest as text.
+		$url = ''; $text = [];
+		foreach ( $parts as $p ) {
+			if ( $p === '' ) continue;
+			if ( preg_match( '#^https?://#i', $p ) ) { $url = $p; }
+			else { $text[] = $p; }
+		}
+		// A leading 4-digit token is the year; the rest is title then org.
+		$year = '';
+		if ( isset( $text[0] ) && preg_match( '/^\d{4}$/', $text[0] ) ) { $year = array_shift( $text ); }
+		$title = $text[0] ?? '';
+		$org   = $text[1] ?? '';
+
+		// Skip ghost rows (blank / dash / punctuation-only) so an empty list
+		// hides cleanly instead of showing a stray "-".
+		if ( $url === '' && preg_replace( '/[\s\-–—·|.]/u', '', $title . $org ) === '' ) continue;
+
+		$out[] = [ 'year' => $year, 'title' => $title, 'org' => $org, 'url' => $url ];
 	}
 	return $out;
 }

@@ -26,13 +26,43 @@ $stats = array_filter( [
 	'AWARDS'       => nr_opt( 'nr_stats_awd', '' ),
 ] );
 
-/* recognition — text lists + ACF option repeaters */
-$awards = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( 'nr_awards_list' ) : [];
-$press  = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( 'nr_press_list' )  : [];
+/* recognition — ONE source per section (ACF repeater takes precedence; the
+   nr_*_list textarea is only a fallback), then de-duplicated so nothing shows
+   twice. Awards and Press never merge into each other. */
+$awards = [];
 if ( function_exists( 'get_field' ) ) {
-	foreach ( (array) get_field( 'awards_list', 'option' ) as $r ) { $t = trim( (string) ( $r['award_title'] ?? '' ) ); if ( $t !== '' ) $awards[] = [ 'year' => $r['year'] ?? '', 'title' => $t, 'org' => $r['organisation'] ?? '', 'url' => $r['award_url'] ?? '' ]; }
-	foreach ( (array) get_field( 'press_list', 'option' ) as $r ) { $t = trim( (string) ( $r['pr_title'] ?? '' ) ); $o = trim( (string) ( $r['medium'] ?? '' ) ); if ( $t !== '' || $o !== '' ) $press[] = [ 'year' => $r['year'] ?? '', 'title' => $t, 'org' => $o, 'url' => $r['pr_url'] ?? '' ]; }
+	foreach ( (array) get_field( 'awards_list', 'option' ) as $r ) {
+		$t = trim( (string) ( $r['award_title'] ?? '' ) );
+		if ( $t === '' ) continue;
+		$awards[] = [ 'year' => trim( (string) ( $r['year'] ?? '' ) ), 'title' => $t, 'org' => trim( (string) ( $r['organisation'] ?? '' ) ), 'url' => trim( (string) ( $r['award_url'] ?? '' ) ) ];
+	}
 }
+if ( ! $awards && function_exists( 'nr_recognition_list' ) ) $awards = nr_recognition_list( 'nr_awards_list' );
+
+$press = [];
+if ( function_exists( 'get_field' ) ) {
+	foreach ( (array) get_field( 'press_list', 'option' ) as $r ) {
+		$t = trim( (string) ( $r['pr_title'] ?? '' ) );
+		$o = trim( (string) ( $r['medium'] ?? '' ) );
+		if ( $t === '' && $o === '' ) continue;
+		$press[] = [ 'year' => trim( (string) ( $r['year'] ?? '' ) ), 'title' => ( $t !== '' ? $t : $o ), 'org' => ( $t !== '' && $o !== '' ? $o : '' ), 'url' => trim( (string) ( $r['pr_url'] ?? '' ) ) ];
+	}
+}
+if ( ! $press && function_exists( 'nr_recognition_list' ) ) $press = nr_recognition_list( 'nr_press_list' );
+
+/* drop repeats within a list (same title, case/space-insensitive) */
+$nr_dedupe = function ( array $rows ) {
+	$seen = []; $out = [];
+	foreach ( $rows as $row ) {
+		$k = strtolower( preg_replace( '/\s+/', ' ', trim( (string) ( $row['title'] ?? '' ) ) ) );
+		if ( $k === '' || isset( $seen[ $k ] ) ) continue;
+		$seen[ $k ] = 1; $out[] = $row;
+	}
+	return $out;
+};
+$awards = $nr_dedupe( $awards );
+$press  = $nr_dedupe( $press );
+
 $reco = array_filter( [
 	[ 'label' => __( 'AWARDS', 'raveenthiran' ), 'items' => $awards ],
 	[ 'label' => __( 'PRESS',  'raveenthiran' ), 'items' => $press ],

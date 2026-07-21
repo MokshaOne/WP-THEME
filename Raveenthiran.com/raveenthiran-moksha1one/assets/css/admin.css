@@ -195,6 +195,22 @@ select option{background:var(--v-surf)}
 .nr-tile:hover .nr-tile__go{opacity:1;transform:translateX(0)}
 .nr-tile--big .nr-tile__label{font-size:19px}
 
+/* ==========================================================================
+   TILE-FIRST admin — no left sidebar. Navigate via the dashboard tiles, the
+   context bar, and the top-bar "✦ Control" dropdown. Pure CSS: if it ever
+   fails to load, the native menu simply reappears (safe fallback).
+   ========================================================================== */
+#adminmenumain,#adminmenuback,#adminmenuwrap{display:none!important}
+#wpcontent,#wpfooter{margin-left:0!important}
+.folded #wpcontent,.folded #wpfooter,.auto-fold #wpcontent,.auto-fold #wpfooter{margin-left:0!important}
+@media screen and (max-width:960px){#wpcontent,#wpfooter{margin-left:0!important}}
+/* top-bar Control menu */
+#wpadminbar #wp-admin-bar-nr-nav>.ab-item{color:var(--v-gold)!important;font-weight:700}
+#wpadminbar #wp-admin-bar-nr-nav:hover>.ab-item{color:#fff!important}
+#wpadminbar #wp-admin-bar-nr-nav .ab-submenu{min-width:180px}
+#wpadminbar #wp-admin-bar-nr-nav .ab-submenu .ab-item{color:var(--v-ink2)!important}
+#wpadminbar #wp-admin-bar-nr-nav .ab-submenu .ab-item:hover{color:var(--v-gold)!important;background:#151310!important}
+
 /* ---------- context bar (every classic sub-screen) ---------- */
 .nr-ctxbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
 	margin:14px 20px 4px 0;padding:0 0 14px;border-bottom:1px solid var(--v-hair)}

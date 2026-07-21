@@ -408,6 +408,31 @@ add_action( 'admin_bar_menu', function ( $bar ) {
 	] );
 }, 8 );
 
+/* Tile-first admin has no left sidebar — this top-bar "✦ Control" dropdown is
+   the always-available nav (works everywhere, including the block editor). */
+add_action( 'admin_bar_menu', function ( $bar ) {
+	if ( ! is_admin() ) return;
+	$bar->add_node( [ 'id' => 'nr-nav', 'title' => '✦ ' . __( 'Control', 'raveenthiran' ), 'href' => admin_url( 'admin.php?page=nr-control' ), 'meta' => [ 'class' => 'nr-nav-top' ] ] );
+	$items = [
+		[ __( 'Dashboard', 'raveenthiran' ),     'index.php',                         'edit_dashboard' ],
+		[ __( 'Site Content', 'raveenthiran' ),  'admin.php?page=nr-control',         'manage_options' ],
+		[ __( 'Content fields', 'raveenthiran' ),'admin.php?page=nr-site-settings',   'manage_options' ],
+		[ __( 'Theme settings', 'raveenthiran' ),'admin.php?page=nr-theme-settings',  'manage_options' ],
+		[ __( 'Projects', 'raveenthiran' ),      'edit.php?post_type=nr_project',     'edit_posts' ],
+		[ __( 'Journal', 'raveenthiran' ),       'edit.php?post_type=nr_journal',     'edit_posts' ],
+		[ __( 'Testimonials', 'raveenthiran' ),  'edit.php?post_type=nr_testimonial', 'edit_posts' ],
+		[ __( 'Enquiries', 'raveenthiran' ),     'edit.php?post_type=nr_enquiry',     'edit_posts' ],
+		[ __( 'Pages', 'raveenthiran' ),         'edit.php?post_type=page',           'edit_pages' ],
+		[ __( 'Media', 'raveenthiran' ),         'upload.php',                        'upload_files' ],
+		[ __( 'Users', 'raveenthiran' ),         'users.php',                         'list_users' ],
+		[ __( 'Settings', 'raveenthiran' ),      'options-general.php',               'manage_options' ],
+	];
+	foreach ( $items as $it ) {
+		if ( ! current_user_can( $it[2] ) ) continue;
+		$bar->add_node( [ 'id' => 'nr-nav-' . sanitize_key( $it[0] ), 'parent' => 'nr-nav', 'title' => $it[0], 'href' => admin_url( $it[1] ) ] );
+	}
+}, 9 );
+
 add_action( 'in_admin_header', function () {
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 	if ( ! $screen || $screen->id === 'dashboard' ) return;          // not on the board itself

@@ -144,6 +144,16 @@ add_action( 'in_admin_header', function () {
 }, 15 );
 
 /* =============================================================
+   Strip the "Screen Options" + "Help" tabs on every screen, and the empty
+   default widget scaffold on the dashboard — the tile board is the dashboard.
+   ============================================================= */
+add_filter( 'screen_options_show_screen', '__return_false' );
+add_action( 'in_admin_header', function () {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( $screen && method_exists( $screen, 'remove_help_tabs' ) ) $screen->remove_help_tabs();
+}, 1 );
+
+/* =============================================================
    Comments — the studio doesn't run a comment section. Remove it
    everywhere: menu, toolbar, support, columns, feeds.
    ============================================================= */

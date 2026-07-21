@@ -204,6 +204,15 @@ select option{background:var(--v-surf)}
 #wpcontent,#wpfooter{margin-left:0!important}
 .folded #wpcontent,.folded #wpfooter,.auto-fold #wpcontent,.auto-fold #wpfooter{margin-left:0!important}
 @media screen and (max-width:960px){#wpcontent,#wpfooter{margin-left:0!important}}
+/* no Screen Options / Help tabs on any screen */
+#screen-meta-links,#screen-meta{display:none!important}
+/* dashboard: drop the default "Dashboard" title + the empty widget columns —
+   the tile board (rendered above) is the whole dashboard */
+body.index-php #dashboard-widgets-wrap,
+body.index-php #dashboard-widgets,
+body.index-php #wpbody-content .wrap > h1,
+body.index-php #wpbody-content .wrap .welcome-panel{display:none!important}
+
 /* top-bar Control menu */
 #wpadminbar #wp-admin-bar-nr-nav>.ab-item{color:var(--v-gold)!important;font-weight:700}
 #wpadminbar #wp-admin-bar-nr-nav:hover>.ab-item{color:#fff!important}

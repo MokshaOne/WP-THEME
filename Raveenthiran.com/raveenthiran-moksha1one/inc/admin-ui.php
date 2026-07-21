@@ -314,64 +314,54 @@ add_action( 'in_admin_header', function () {
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 	if ( ! $screen || $screen->id !== 'dashboard' ) return;
 
-	global $menu;
-	if ( empty( $menu ) || ! is_array( $menu ) ) return;
-
-	// Which slugs deserve a larger "feature" tile (mosaic rhythm).
-	$feature = [ 'edit.php?post_type=nr_project', 'edit.php?post_type=nr_journal', 'themes.php', 'upload.php' ];
-
-	$tiles = [];
-	$seen  = [];
-	foreach ( $menu as $row ) {
-		if ( empty( $row[0] ) ) continue;                                   // separators
-		if ( ! empty( $row[4] ) && strpos( $row[4], 'wp-menu-separator' ) !== false ) continue;
-		$cap  = $row[1] ?? 'read';
-		if ( ! current_user_can( $cap ) ) continue;
-		$slug = $row[2] ?? '';
-		if ( $slug === 'index.php' || $slug === '' ) continue;              // skip Dashboard itself
-		// strip the notification bubbles from the label
-		$label = trim( preg_replace( '/<span[^>]*>.*?<\/span>/s', '', $row[0] ) );
-		$label = wp_strip_all_tags( $label );
-		if ( $label === '' ) continue;
-		$seen[ $slug ] = true;
-		$tiles[] = [
-			'label' => $label,
-			'url'   => nr_admin_menu_url( $slug ),
-			'icon'  => nr_admin_menu_icon( $row[6] ?? '' ),
-			'big'   => in_array( $slug, $feature, true ) || $slug === 'nr-control',
-		];
-	}
-
-	// The hub's children (CPTs, Content fields, Theme Settings, tools) are
-	// submenus now — surface them on the board too, with their own icons.
-	global $submenu;
-	$hub_icons = [
-		'nr-site-settings'                   => 'dashicons-layout',
-		'nr-theme-settings'                  => 'dashicons-admin-generic',
-		'edit.php?post_type=nr_project'      => 'dashicons-camera',
-		'edit.php?post_type=nr_journal'      => 'dashicons-book',
-		'edit.php?post_type=nr_testimonial'  => 'dashicons-format-quote',
-		'edit.php?post_type=nr_enquiry'      => 'dashicons-email',
-		'nr-import'                          => 'dashicons-upload',
-		'nr-webp'                            => 'dashicons-images-alt2',
+	// Curated, categorised board — ordered by daily usefulness, not menu order.
+	// [ label, raw-admin-slug, dashicon, sub, capability, big? ]
+	$groups = [
+		__( 'Studio', 'raveenthiran' ) => [
+			[ 'Projects',     'edit.php?post_type=nr_project',     'dashicons-camera',       __( 'Portfolio specimens', 'raveenthiran' ), 'edit_posts', true ],
+			[ 'Journal',      'edit.php?post_type=nr_journal',     'dashicons-book',         __( 'Writing & entries', 'raveenthiran' ),   'edit_posts', true ],
+			[ 'Testimonials', 'edit.php?post_type=nr_testimonial', 'dashicons-format-quote', __( 'Client voices', 'raveenthiran' ),       'edit_posts', false ],
+			[ 'Enquiries',    'edit.php?post_type=nr_enquiry',     'dashicons-email',        __( 'Incoming briefs', 'raveenthiran' ),     'edit_posts', false ],
+		],
+		__( 'Library', 'raveenthiran' ) => [
+			[ 'Media', 'upload.php',              'dashicons-admin-media', __( 'Images & files', 'raveenthiran' ),   'upload_files', false ],
+			[ 'Pages', 'edit.php?post_type=page', 'dashicons-admin-page',  __( 'Standalone pages', 'raveenthiran' ), 'edit_pages',   false ],
+			[ 'Posts', 'edit.php',                'dashicons-admin-post',  __( 'Blog posts', 'raveenthiran' ),       'edit_posts',   false ],
+		],
+		__( 'Site', 'raveenthiran' ) => [
+			[ 'Content fields', 'admin.php?page=nr-site-settings',  'dashicons-layout',        __( 'Hero, About, CTA, FAQ, Awards, Press…', 'raveenthiran' ), 'manage_options', true ],
+			[ 'Theme settings', 'admin.php?page=nr-theme-settings', 'dashicons-admin-generic', __( 'Branding, Magic Control, copy, mail…', 'raveenthiran' ),   'manage_options', false ],
+			[ 'Appearance',     'themes.php',                       'dashicons-admin-appearance', __( 'Active theme & upload', 'raveenthiran' ),              'switch_themes',  false ],
+		],
+		__( 'System', 'raveenthiran' ) => [
+			[ 'Users',        'users.php',           'dashicons-admin-users',    __( 'Studio accounts', 'raveenthiran' ),  'list_users',     false ],
+			[ 'Plugins',      'plugins.php',         'dashicons-admin-plugins',  __( 'Installed plugins', 'raveenthiran' ), 'activate_plugins', false ],
+			[ 'Settings',     'options-general.php', 'dashicons-admin-settings', __( 'WordPress core', 'raveenthiran' ),    'manage_options', false ],
+			[ 'Tools',        'tools.php',           'dashicons-admin-tools',    __( 'Site health & data', 'raveenthiran' ),'manage_options', false ],
+			[ 'Import',       'admin.php?page=nr-import', 'dashicons-upload',     __( 'Bulk-import projects', 'raveenthiran' ),'edit_posts',   false ],
+			[ 'Generate WebP','admin.php?page=nr-webp',   'dashicons-images-alt2',__( 'Bake WebP twins', 'raveenthiran' ),     'manage_options', false ],
+		],
 	];
-	if ( ! empty( $submenu['nr-control'] ) ) {
-		foreach ( $submenu['nr-control'] as $row ) {
-			$slug = $row[2] ?? '';
-			if ( $slug === '' || $slug === 'nr-control' || isset( $seen[ $slug ] ) ) continue;
-			if ( ! current_user_can( $row[1] ?? 'read' ) ) continue;
-			$label = wp_strip_all_tags( trim( preg_replace( '/<span[^>]*>.*?<\/span>/s', '', $row[0] ) ) );
-			if ( $label === '' ) continue;
-			$seen[ $slug ] = true;
-			$tiles[] = [
-				'label' => $label,
-				'url'   => nr_admin_menu_url( $slug ),
-				'icon'  => nr_admin_menu_icon( $hub_icons[ $slug ] ?? '' ),
-				'big'   => in_array( $slug, $feature, true ),
-			];
-		}
+
+	// remember which top-level slugs the curated board already covers, so any
+	// remaining plugin menu (ACF, Performance, …) lands in a "More" group.
+	$covered = [ 'index.php', 'nr-control', 'edit.php', 'upload.php', 'edit.php?post_type=page',
+		'themes.php', 'plugins.php', 'users.php', 'tools.php', 'options-general.php',
+		'edit.php?post_type=nr_project', 'edit.php?post_type=nr_journal',
+		'edit.php?post_type=nr_testimonial', 'edit.php?post_type=nr_enquiry' ];
+	$more = [];
+	global $menu;
+	foreach ( (array) $menu as $row ) {
+		if ( empty( $row[0] ) ) continue;
+		if ( ! empty( $row[4] ) && strpos( $row[4], 'wp-menu-separator' ) !== false ) continue;
+		$slug = $row[2] ?? '';
+		if ( $slug === '' || in_array( $slug, $covered, true ) ) continue;
+		if ( ! current_user_can( $row[1] ?? 'read' ) ) continue;
+		$label = wp_strip_all_tags( trim( preg_replace( '/<span[^>]*>.*?<\/span>/s', '', $row[0] ) ) );
+		if ( $label === '' ) continue;
+		$more[] = [ $label, $slug, ( is_string( $row[6] ?? '' ) && strpos( (string) ( $row[6] ?? '' ), 'dashicons-' ) === 0 ) ? $row[6] : 'dashicons-admin-generic', '', ( $row[1] ?? 'read' ), false ];
 	}
-	if ( ! $tiles ) return;
+	if ( $more ) $groups[ __( 'More', 'raveenthiran' ) ] = $more;
 
 	$user = wp_get_current_user();
 	?>
@@ -379,17 +369,24 @@ add_action( 'in_admin_header', function () {
 		<header class="nr-dash__head">
 			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span>CONTROL CENTER // moksha·one</span>
 			<h2 class="nr-dash__title"><?php printf( esc_html__( 'Welcome back, %s', 'raveenthiran' ), esc_html( $user->display_name ) ); ?><span class="nr-adm-gold">.</span></h2>
-			<p class="nr-dash__lede"><?php esc_html_e( 'Everything in one board — pick a tile to jump in. The full menu stays on the left as the sidebar for each section.', 'raveenthiran' ); ?></p>
+			<p class="nr-dash__lede"><?php esc_html_e( 'Everything in one board, grouped by what you use most. No sidebar — pick a tile, or use ✦ Control in the top bar.', 'raveenthiran' ); ?></p>
 		</header>
-		<div class="nr-tiles">
-			<?php foreach ( $tiles as $t ) : ?>
-				<a class="nr-tile<?php echo $t['big'] ? ' nr-tile--big' : ''; ?>" href="<?php echo esc_url( $t['url'] ); ?>">
-					<span class="nr-tile__ico"><?php echo $t['icon']; // safe: dashicon span / esc'd img ?></span>
-					<span class="nr-tile__label"><?php echo esc_html( $t['label'] ); ?></span>
-					<span class="nr-tile__go" aria-hidden="true">→</span>
-				</a>
-			<?php endforeach; ?>
-		</div>
+		<?php $gi = 0; foreach ( $groups as $glabel => $tiles ) :
+			$vis = array_filter( $tiles, fn( $t ) => current_user_can( $t[4] ) );
+			if ( ! $vis ) continue;
+			$gi++; ?>
+			<h2 class="nr-chapter"><span class="nr-chapter__n"><?php echo esc_html( (string) $gi ); ?></span> <?php echo esc_html( $glabel ); ?></h2>
+			<div class="nr-tiles">
+				<?php foreach ( $vis as $t ) : ?>
+					<a class="nr-tile<?php echo ! empty( $t[5] ) ? ' nr-tile--big' : ''; ?>" href="<?php echo esc_url( admin_url( $t[1] ) ); ?>">
+						<span class="nr-tile__ico"><span class="dashicons <?php echo esc_attr( $t[2] ); ?>"></span></span>
+						<span class="nr-tile__label"><?php echo esc_html( $t[0] ); ?></span>
+						<?php if ( ! empty( $t[3] ) ) : ?><span class="nr-tile__sub"><?php echo esc_html( $t[3] ); ?></span><?php endif; ?>
+						<span class="nr-tile__go" aria-hidden="true">→</span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
 	</div>
 	<?php
 } );

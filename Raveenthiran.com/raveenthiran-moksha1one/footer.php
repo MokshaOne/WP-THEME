@@ -13,6 +13,11 @@ $nr_long = nr_opt( 'nr_void_long', '16.3738° E' );
 		<span class="void-footer-brand">VOID ARCHIVE // <?php bloginfo( 'name' ); ?></span>
 		<span class="void-dot-row"><span></span><span></span><span></span></span>
 	</div>
+	<?php
+	$nr_nl_footer = function_exists( 'get_field' ) ? get_field( 'newsletter_show_footer', 'option' ) : true;
+	if ( $nr_nl_footer && function_exists( 'nr_newsletter_form' ) ) : ?>
+		<div class="void-footer-news"><?php echo nr_newsletter_form( true ); // phpcs:ignore ?></div>
+	<?php endif; ?>
 	<div class="void-footer-right">
 		<span><?php echo esc_html( $nr_lat ); ?></span>
 		<span><?php echo esc_html( $nr_long ); ?></span>
@@ -24,6 +29,15 @@ $nr_long = nr_opt( 'nr_void_long', '16.3738° E' );
 <?php get_template_part( 'parts/cookie-notice' ); ?>
 <?php get_template_part( 'parts/inquiry-modal' ); ?>
 <?php get_template_part( 'parts/quote-popover' ); ?>
+
+<?php
+/* newsletter status banner */
+if ( isset( $_GET['nr_nl'] ) ) :
+	$nlok = $_GET['nr_nl'] === '1';
+	?>
+	<div class="nr-status <?php echo $nlok ? 'nr-status--ok' : 'nr-status--error'; ?>" role="status" aria-live="polite"><?php echo esc_html( $nlok ? __( 'Subscribed — thank you.', 'raveenthiran' ) : __( 'Please enter a valid email.', 'raveenthiran' ) ); ?></div>
+	<script>setTimeout(function(){var s=document.querySelector('.nr-status');if(s)s.remove();},5000);</script>
+<?php endif; ?>
 
 <?php
 /* form submission status banner */

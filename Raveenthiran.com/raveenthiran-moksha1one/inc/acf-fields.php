@@ -241,12 +241,14 @@ function nr_register_feature_acf_fields() {
        ========================================================= */
     acf_add_local_field_group( [
         'key'      => 'group_newsletter_config',
-        'title'    => 'Newsletter / Brevo',
+        'title'    => 'Newsletter',
         'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
         'fields'   => [
-            [ 'key' => 'field_nl_api_key',    'label' => 'Brevo API Key',     'name' => 'brevo_api_key',            'type' => 'password' ],
-            [ 'key' => 'field_nl_list_id',    'label' => 'Brevo List ID',     'name' => 'brevo_list_id',            'type' => 'number' ],
-            [ 'key' => 'field_nl_show_footer','label' => 'Show in Footer',    'name' => 'newsletter_show_footer',   'type' => 'true_false', 'default_value' => 1, 'ui' => 1 ],
+            [ 'key' => 'field_nl_show_footer','label' => 'Show signup in footer', 'name' => 'newsletter_show_footer', 'type' => 'true_false', 'default_value' => 1, 'ui' => 1 ],
+            [ 'key' => 'field_nl_heading',    'label' => 'Heading',              'name' => 'newsletter_heading',     'type' => 'text', 'default_value' => 'Stay in the loop' ],
+            [ 'key' => 'field_nl_note',       'label' => 'Note',                 'name' => 'newsletter_note',        'type' => 'text', 'default_value' => 'Occasional new work & print releases. No spam.' ],
+            [ 'key' => 'field_nl_notify',     'label' => 'Send subscribers to',  'name' => 'newsletter_notify',      'type' => 'text',
+              'instructions' => 'Optional. Where new sign-ups are emailed. Blank = the studio email. Delivered through your Mail (SMTP) settings — no third-party service.' ],
         ],
     ] );
 

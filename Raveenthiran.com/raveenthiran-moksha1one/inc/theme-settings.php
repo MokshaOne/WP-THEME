@@ -144,7 +144,7 @@ function nr_settings_defaults() {
 		'nr_void_hero2'        => 'LIGHT',
 		'nr_void_status'       => 'STATUS: ARCHIVE_ONLINE',
 		'nr_void_hero_cta'     => __( 'ENTER THE ARCHIVE', 'raveenthiran' ),
-		'nr_void_sub'          => '// VOID',
+		'nr_void_sub'          => '',
 		'nr_void_cta'          => __( 'Enquire', 'raveenthiran' ),
 		'nr_void_lat'          => '48.2082° N',
 		'nr_void_long'         => '16.3738° E',

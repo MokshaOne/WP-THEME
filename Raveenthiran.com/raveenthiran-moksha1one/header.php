@@ -10,7 +10,7 @@ $nr_color_bg  = nr_opt( 'nr_color_bg', '#0a0a0a' );
 $nr_color_ink = nr_opt( 'nr_color_ink', '#e2e2e2' );
 $nr_current   = $nr_current ?? '';
 $nr_wordmark  = nr_opt( 'nr_logo_text', 'raveenthiran' );
-$nr_word_sub  = nr_opt( 'nr_void_sub', '// moksha·one' );
+$nr_word_sub  = trim( (string) nr_opt( 'nr_void_sub', '' ) );
 $nr_cta_label = nr_opt( 'nr_void_cta', __( 'Enquire', 'raveenthiran' ) );
 $nr_enquire   = function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' );
 $nr_lat       = nr_opt( 'nr_void_lat', '48.2082° N' );
@@ -46,7 +46,7 @@ $nr_nav_items = [
 <nav class="void-nav" role="banner">
 	<div class="void-nav-brand">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="void-wordmark" aria-label="<?php bloginfo( 'name' ); ?>">
-			<?php echo esc_html( $nr_wordmark ); ?><span class="void-wordmark-sub"><?php echo esc_html( $nr_word_sub ); ?></span>
+			<?php echo esc_html( $nr_wordmark ); ?><?php if ( $nr_word_sub !== '' ) : ?><span class="void-wordmark-sub"><?php echo esc_html( $nr_word_sub ); ?></span><?php endif; ?>
 		</a>
 	</div>
 	<div class="void-nav-links" aria-label="<?php esc_attr_e( 'Primary', 'raveenthiran' ); ?>">

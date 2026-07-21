@@ -220,6 +220,29 @@ select option{background:var(--v-surf)}
 #minor-publishing{border-bottom:1px solid var(--v-hair)}
 #post-body-content .postbox,.edit-tags-php .postbox{border-radius:10px}
 
+/* ---------- no app store: hide the wp.org browser, keep Upload ---------- */
+/* Themes → Add New */
+body.theme-install-php .wp-filter,
+body.theme-install-php .theme-browser,
+body.theme-install-php .theme-install-overwrite,
+body.theme-install-php .themes-bulk-actions,
+body.theme-install-php .no-themes,
+body.theme-install-php .theme-count{display:none!important}
+body.theme-install-php .upload-theme{display:block!important;max-width:720px;margin:8px 0 0}
+/* Plugins → Add New */
+body.plugin-install-php .wp-filter,
+body.plugin-install-php #plugin-filter .plugin-card,
+body.plugin-install-php .plugin-install-search,
+body.plugin-install-php .plugin-group,
+body.plugin-install-php .the-list,
+body.plugin-install-php br.clear,
+body.plugin-install-php .tablenav.top,
+body.plugin-install-php .tablenav.bottom{display:none!important}
+body.plugin-install-php .upload-plugin{display:block!important;max-width:720px}
+/* the "Add New" title button on the list screens points at Upload now — keep it,
+   but drop the wp.org "Add New Theme" ghost card at the end of the theme grid */
+body.themes-php .theme.add-new-theme{display:none!important}
+
 /* ---------- taxonomy screens: the add-term form as a VOID card ---------- */
 .edit-tags-php #col-left .col-wrap{background:linear-gradient(150deg,#161513 0%,#0f0f0f 70%);border:1px solid var(--v-hair);border-radius:10px;padding:20px}
 .edit-tags-php #col-left .form-wrap h2{font-family:var(--v-display);font-weight:800;color:var(--v-ink)}

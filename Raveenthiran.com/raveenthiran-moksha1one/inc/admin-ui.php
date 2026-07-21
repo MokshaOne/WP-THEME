@@ -58,6 +58,35 @@ add_filter( 'update_footer', function () {
 }, 11 );
 
 /* =============================================================
+   No app store — the studio installs its own theme + plugins by zip, it
+   doesn't browse the wordpress.org directory. Neutralise the store feeds
+   (so nothing is fetched/listed) but keep the "Upload" forms working.
+   ============================================================= */
+$nr_empty_api = function () {
+	return (object) [ 'info' => [ 'page' => 1, 'pages' => 0, 'results' => 0 ], 'themes' => [], 'plugins' => [] ];
+};
+add_filter( 'themes_api_result',  $nr_empty_api, 99 );
+add_filter( 'plugins_api_result', $nr_empty_api, 99 );
+
+/* drop the wp.org tabs from the Add-New screens (keeps the Upload views) */
+add_action( 'admin_menu', function () {
+	remove_submenu_page( 'themes.php', 'theme-install.php' );
+	remove_submenu_page( 'plugins.php', 'plugin-install.php' );
+}, 999 );
+
+/* the store screens open straight on the Upload form */
+add_action( 'admin_head', function () {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen ) return;
+	if ( $screen->id === 'theme-install' ) {
+		echo '<script>document.addEventListener("DOMContentLoaded",function(){document.body.classList.add("show-upload-theme");});</script>';
+	}
+	if ( $screen->id === 'plugin-install' ) {
+		echo '<script>document.addEventListener("DOMContentLoaded",function(){var b=document.querySelector(".upload-view-toggle");if(b&&b.getAttribute("aria-expanded")!=="true")b.click();});</script>';
+	}
+} );
+
+/* =============================================================
    Comments — the studio doesn't run a comment section. Remove it
    everywhere: menu, toolbar, support, columns, feeds.
    ============================================================= */

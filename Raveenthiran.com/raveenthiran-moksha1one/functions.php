@@ -13,7 +13,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '0.12.2' );
+define( 'NR_THEME_VERSION', '0.12.3' );
 
 /* ─────────────────────────────────────────────────────────────
  * Scroll mode → body class (drives assets/js/mk-scroll.js)

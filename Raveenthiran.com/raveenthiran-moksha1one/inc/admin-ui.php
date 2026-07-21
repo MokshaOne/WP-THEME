@@ -77,6 +77,11 @@ add_action( 'admin_menu', function () {
 	remove_submenu_page( 'themes.php', 'nav-menus.php' );                 // Menus
 	remove_submenu_page( 'themes.php', 'edit.php?post_type=wp_block' );   // Patterns
 
+	// Tools → hide the first three (Available Tools, Import, Export)
+	remove_submenu_page( 'tools.php', 'tools.php' );                      // Available Tools
+	remove_submenu_page( 'tools.php', 'import.php' );                     // Import
+	remove_submenu_page( 'tools.php', 'export.php' );                     // Export
+
 	// Customize + Fonts carry dynamic query args, so match them by substring.
 	global $submenu;
 	if ( ! empty( $submenu['themes.php'] ) ) {

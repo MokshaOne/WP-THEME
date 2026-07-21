@@ -15,15 +15,16 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'admin_menu', function () {
+	// lives under the single "Site Content" control hub (inc/admin-ui.php)
 	add_submenu_page(
-		'edit.php?post_type=nr_project',
+		'nr-control',
 		__( 'Import Projects', 'raveenthiran' ),
 		__( 'Import', 'raveenthiran' ),
 		'edit_posts',
 		'nr-import',
 		'nr_import_render_page'
 	);
-} );
+}, 12 );
 
 function nr_import_render_page() {
 	$done = isset( $_GET['nr_imported'] ) ? (int) $_GET['nr_imported'] : -1;
@@ -73,7 +74,7 @@ function nr_handle_import() {
 	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'nr_import', '_nr_import_nonce' ) ) {
 		wp_die( esc_html__( 'Unauthorized.', 'raveenthiran' ) );
 	}
-	$back = admin_url( 'edit.php?post_type=nr_project&page=nr-import' );
+	$back = admin_url( 'admin.php?page=nr-import' );
 	$fail = function ( $msg ) use ( $back ) {
 		wp_safe_redirect( add_query_arg( [ 'nr_imported' => 0, 'nr_images' => 0, 'nr_skipped' => 0, 'nr_err' => rawurlencode( $msg ) ], $back ) );
 		exit;

@@ -189,6 +189,7 @@ select option{background:var(--v-surf)}
 .nr-tile__ico .dashicons{width:34px;height:34px;font-size:34px}
 .nr-tile__ico img{width:30px;height:30px;filter:brightness(0) saturate(100%) invert(83%) sepia(46%) saturate(700%) hue-rotate(347deg) brightness(102%) contrast(94%)}
 .nr-tile__label{font-size:16px;font-weight:700;letter-spacing:.01em;color:var(--v-ink)}
+.nr-tile__sub{font-size:11.5px;line-height:1.45;color:var(--v-ink3);margin-top:2px}
 .nr-tile:hover .nr-tile__label{color:#fff}
 .nr-tile__go{position:absolute;top:16px;right:18px;color:var(--v-gold);font-size:18px;opacity:0;transform:translateX(-6px);transition:all .22s ease}
 .nr-tile:hover .nr-tile__go{opacity:1;transform:translateX(0)}

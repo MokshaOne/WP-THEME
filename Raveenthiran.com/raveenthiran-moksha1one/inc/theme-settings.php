@@ -209,17 +209,19 @@ foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 function nr_settings_default_filter( $value ) { return $value; }
 
 /* =============================================================
-   Admin menu — top-level "Theme Settings" page
+   Admin menu — Theme Settings lives under the single "Site Content"
+   control hub (see inc/admin-ui.php), not scattered under Appearance.
    ============================================================= */
 add_action( 'admin_menu', function () {
-	add_theme_page(
+	add_submenu_page(
+		'nr-control',
 		__( 'moksha1one — Theme Settings', 'raveenthiran' ),
 		__( 'Theme Settings', 'raveenthiran' ),
 		'manage_options',
 		'nr-theme-settings',
 		'nr_theme_settings_page'
 	);
-} );
+}, 11 );
 
 /* register all options so they're saveable */
 add_action( 'admin_init', function () {
@@ -258,7 +260,9 @@ function nr_settings_sanitize_raw_html( $v ) {
    Enqueue color picker on our settings page only
    ============================================================= */
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
-	if ( $hook !== 'appearance_page_nr-theme-settings' ) return;
+	// page hook changed when the screen moved under the "Site Content" hub —
+	// match by slug so the color picker loads wherever the page is parented
+	if ( strpos( (string) $hook, 'nr-theme-settings' ) === false ) return;
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'wp-color-picker' );
 	add_action( 'admin_footer', function () {
@@ -840,7 +844,7 @@ add_action( 'admin_post_nr_reseed_pages', function () {
 	if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'nr_reseed_pages' ) ) wp_die( 'no' );
 	delete_option( 'nr_pages_seeded' );
 	nr_autocreate_template_pages();
-	wp_safe_redirect( admin_url( 'themes.php?page=nr-theme-settings&seeded=1' ) );
+	wp_safe_redirect( admin_url( 'admin.php?page=nr-theme-settings&seeded=1' ) );
 	exit;
 } );
 

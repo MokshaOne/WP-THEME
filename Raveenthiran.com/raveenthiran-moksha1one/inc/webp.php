@@ -121,14 +121,16 @@ add_filter( 'wp_get_attachment_image', function ( $html, $attachment_id, $size, 
  * WebP sources. This admin page bakes a .webp twin for every jpg/png sub-size
  * of every image (batched via AJAX so it never times out on shared hosting). */
 add_action( 'admin_menu', function () {
-	add_management_page(
+	// lives under the single "Site Content" control hub (inc/admin-ui.php)
+	add_submenu_page(
+		'nr-control',
 		__( 'Generate WebP', 'raveenthiran' ),
 		__( 'Generate WebP', 'raveenthiran' ),
 		'manage_options',
 		'nr-webp',
 		'nr_webp_admin_page'
 	);
-} );
+}, 12 );
 
 function nr_webp_admin_page() {
 	$total = (int) ( new WP_Query( [

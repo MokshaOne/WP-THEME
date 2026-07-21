@@ -102,6 +102,99 @@ add_action( 'wp_dashboard_setup', function () {
 }, 20 );
 
 /* =============================================================
+   ONE control hub — a single top-level "Site Content" menu that is the
+   place to steer the whole site. Its landing page is a tile board linking
+   to every area; Theme Settings and the ACF content fields become its
+   sub-pages (re-parented from Appearance / their own top level).
+   ============================================================= */
+add_action( 'admin_menu', function () {
+	add_menu_page(
+		__( 'Site Content', 'raveenthiran' ),
+		__( 'Site Content', 'raveenthiran' ),
+		'manage_options',
+		'nr-control',
+		'nr_control_hub_render',
+		'dashicons-layout',
+		3
+	);
+	// rename the auto-created first sub-item to "Overview"
+	global $submenu;
+	if ( isset( $submenu['nr-control'][0][0] ) ) $submenu['nr-control'][0][0] = __( 'Overview', 'raveenthiran' );
+}, 9 );
+
+/* All theme CPTs move under the hub — one place to steer. The engine
+   registrations stay untouched; this filter re-parents their menus. */
+add_filter( 'register_post_type_args', function ( $args, $pt ) {
+	if ( in_array( $pt, [ 'nr_project', 'nr_journal', 'nr_testimonial', 'nr_enquiry' ], true ) ) {
+		$args['show_in_menu'] = 'nr-control';
+	}
+	return $args;
+}, 10, 2 );
+
+/* Fixed, sensible order inside the hub: Overview → content → collections → tools */
+add_action( 'admin_menu', function () {
+	global $submenu;
+	if ( empty( $submenu['nr-control'] ) ) return;
+	$order = [ 'nr-control', 'nr-site-settings', 'nr-theme-settings',
+		'edit.php?post_type=nr_project', 'edit.php?post_type=nr_journal',
+		'edit.php?post_type=nr_testimonial', 'edit.php?post_type=nr_enquiry',
+		'nr-import', 'nr-webp' ];
+	usort( $submenu['nr-control'], function ( $a, $b ) use ( $order ) {
+		$ia = array_search( $a[2] ?? '', $order, true ); $ib = array_search( $b[2] ?? '', $order, true );
+		return ( $ia === false ? 99 : $ia ) <=> ( $ib === false ? 99 : $ib );
+	} );
+}, 999 );
+
+/** The steering board — grouped tiles to every content + system area. */
+function nr_control_hub_render() {
+	if ( ! current_user_can( 'manage_options' ) ) return;
+	$groups = [
+		__( 'Content', 'raveenthiran' ) => [
+			[ 'Content fields',  'admin.php?page=nr-site-settings',  'dashicons-layout',          __( 'Hero, About, CTA, FAQ, Awards, Press, SEO, Newsletter…', 'raveenthiran' ) ],
+			[ 'Theme settings',  'admin.php?page=nr-theme-settings', 'dashicons-admin-generic',   __( 'Branding, colours, Magic Control, page copy, mail…', 'raveenthiran' ) ],
+		],
+		__( 'Collections', 'raveenthiran' ) => [
+			[ 'Projects',     'edit.php?post_type=nr_project',     'dashicons-camera',        __( 'Portfolio specimens', 'raveenthiran' ) ],
+			[ 'Journal',      'edit.php?post_type=nr_journal',     'dashicons-book',          __( 'Writing & entries', 'raveenthiran' ) ],
+			[ 'Testimonials', 'edit.php?post_type=nr_testimonial', 'dashicons-format-quote',  __( 'Client voices', 'raveenthiran' ) ],
+			[ 'Enquiries',    'edit.php?post_type=nr_enquiry',     'dashicons-email',         __( 'Incoming briefs', 'raveenthiran' ) ],
+		],
+		__( 'Library', 'raveenthiran' ) => [
+			[ 'Pages', 'edit.php?post_type=page', 'dashicons-admin-page',  __( 'Standalone pages', 'raveenthiran' ) ],
+			[ 'Posts', 'edit.php',                'dashicons-admin-post',  __( 'Blog posts', 'raveenthiran' ) ],
+			[ 'Media', 'upload.php',              'dashicons-admin-media', __( 'Images & files', 'raveenthiran' ) ],
+		],
+		__( 'System', 'raveenthiran' ) => [
+			[ 'Users',    'users.php',            'dashicons-admin-users',    __( 'Studio accounts', 'raveenthiran' ) ],
+			[ 'Tools',    'tools.php',            'dashicons-admin-tools',    __( 'Import / export', 'raveenthiran' ) ],
+			[ 'Settings', 'options-general.php',  'dashicons-admin-settings', __( 'WordPress core', 'raveenthiran' ) ],
+		],
+	];
+	?>
+	<div class="wrap nr-settings">
+		<header class="nr-adm-head">
+			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span>CONTROL CENTER // moksha·one</span>
+			<h1 class="nr-adm-title">Site <span class="nr-adm-gold">Content</span></h1>
+			<p class="nr-adm-lede"><?php esc_html_e( 'One place to steer everything — content, collections, settings and system. Pick a tile.', 'raveenthiran' ); ?></p>
+		</header>
+		<?php $gi = 0; foreach ( $groups as $label => $tiles ) : $gi++; ?>
+			<h2 class="nr-chapter"><span class="nr-chapter__n"><?php echo esc_html( (string) $gi ); ?></span> <?php echo esc_html( $label ); ?></h2>
+			<div class="nr-tiles">
+				<?php foreach ( $tiles as $t ) : ?>
+					<a class="nr-tile" href="<?php echo esc_url( admin_url( $t[1] ) ); ?>">
+						<span class="nr-tile__ico"><span class="dashicons <?php echo esc_attr( $t[2] ); ?>"></span></span>
+						<span class="nr-tile__label"><?php echo esc_html( $t[0] ); ?></span>
+						<span class="nr-tile__sub"><?php echo esc_html( $t[3] ); ?></span>
+						<span class="nr-tile__go" aria-hidden="true">→</span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<?php
+}
+
+/* =============================================================
    Helper — resolve an admin menu slug to a real URL (mirrors core).
    ============================================================= */
 function nr_admin_menu_url( $slug ) {
@@ -142,6 +235,7 @@ add_action( 'in_admin_header', function () {
 	$feature = [ 'edit.php?post_type=nr_project', 'edit.php?post_type=nr_journal', 'themes.php', 'upload.php' ];
 
 	$tiles = [];
+	$seen  = [];
 	foreach ( $menu as $row ) {
 		if ( empty( $row[0] ) ) continue;                                   // separators
 		if ( ! empty( $row[4] ) && strpos( $row[4], 'wp-menu-separator' ) !== false ) continue;
@@ -153,12 +247,43 @@ add_action( 'in_admin_header', function () {
 		$label = trim( preg_replace( '/<span[^>]*>.*?<\/span>/s', '', $row[0] ) );
 		$label = wp_strip_all_tags( $label );
 		if ( $label === '' ) continue;
+		$seen[ $slug ] = true;
 		$tiles[] = [
 			'label' => $label,
 			'url'   => nr_admin_menu_url( $slug ),
 			'icon'  => nr_admin_menu_icon( $row[6] ?? '' ),
-			'big'   => in_array( $slug, $feature, true ),
+			'big'   => in_array( $slug, $feature, true ) || $slug === 'nr-control',
 		];
+	}
+
+	// The hub's children (CPTs, Content fields, Theme Settings, tools) are
+	// submenus now — surface them on the board too, with their own icons.
+	global $submenu;
+	$hub_icons = [
+		'nr-site-settings'                   => 'dashicons-layout',
+		'nr-theme-settings'                  => 'dashicons-admin-generic',
+		'edit.php?post_type=nr_project'      => 'dashicons-camera',
+		'edit.php?post_type=nr_journal'      => 'dashicons-book',
+		'edit.php?post_type=nr_testimonial'  => 'dashicons-format-quote',
+		'edit.php?post_type=nr_enquiry'      => 'dashicons-email',
+		'nr-import'                          => 'dashicons-upload',
+		'nr-webp'                            => 'dashicons-images-alt2',
+	];
+	if ( ! empty( $submenu['nr-control'] ) ) {
+		foreach ( $submenu['nr-control'] as $row ) {
+			$slug = $row[2] ?? '';
+			if ( $slug === '' || $slug === 'nr-control' || isset( $seen[ $slug ] ) ) continue;
+			if ( ! current_user_can( $row[1] ?? 'read' ) ) continue;
+			$label = wp_strip_all_tags( trim( preg_replace( '/<span[^>]*>.*?<\/span>/s', '', $row[0] ) ) );
+			if ( $label === '' ) continue;
+			$seen[ $slug ] = true;
+			$tiles[] = [
+				'label' => $label,
+				'url'   => nr_admin_menu_url( $slug ),
+				'icon'  => nr_admin_menu_icon( $hub_icons[ $slug ] ?? '' ),
+				'big'   => in_array( $slug, $feature, true ),
+			];
+		}
 	}
 	if ( ! $tiles ) return;
 

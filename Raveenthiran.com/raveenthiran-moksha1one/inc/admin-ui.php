@@ -68,13 +68,13 @@ $nr_empty_api = function () {
 add_filter( 'themes_api_result',  $nr_empty_api, 99 );
 add_filter( 'plugins_api_result', $nr_empty_api, 99 );
 
-/* drop the wp.org tabs from the Add-New screens (keeps the Upload views) */
+/* drop the wp.org "Add New" screens + their submenu links entirely */
 add_action( 'admin_menu', function () {
 	remove_submenu_page( 'themes.php', 'theme-install.php' );
 	remove_submenu_page( 'plugins.php', 'plugin-install.php' );
 }, 999 );
 
-/* the store screens open straight on the Upload form */
+/* the store screens (if reached by URL) open straight on the Upload form */
 add_action( 'admin_head', function () {
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 	if ( ! $screen ) return;
@@ -85,6 +85,40 @@ add_action( 'admin_head', function () {
 		echo '<script>document.addEventListener("DOMContentLoaded",function(){var b=document.querySelector(".upload-view-toggle");if(b&&b.getAttribute("aria-expanded")!=="true")b.click();});</script>';
 	}
 } );
+
+/* Pull the uploader one level up: render the zip-upload form right on the
+   Themes / Plugins list screens (as a VOID card), so there's no "Add New"
+   detour. The native "Add New" title buttons are hidden via CSS. */
+add_action( 'in_admin_header', function () {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen ) return;
+
+	if ( $screen->id === 'themes' && current_user_can( 'upload_themes' ) ) {
+		?>
+		<div class="nr-upload">
+			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span><?php esc_html_e( 'INSTALL THEME (.ZIP)', 'raveenthiran' ); ?></span>
+			<form method="post" enctype="multipart/form-data" class="nr-upload__form" action="<?php echo esc_url( admin_url( 'update.php?action=upload-theme' ) ); ?>">
+				<?php wp_nonce_field( 'theme-upload' ); ?>
+				<input type="file" name="themezip" accept=".zip" required>
+				<?php submit_button( __( 'Upload &amp; install', 'raveenthiran' ), 'primary', 'install-theme-submit', false ); ?>
+			</form>
+		</div>
+		<?php
+	}
+
+	if ( $screen->id === 'plugins' && current_user_can( 'upload_plugins' ) ) {
+		?>
+		<div class="nr-upload">
+			<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span><?php esc_html_e( 'INSTALL PLUGIN (.ZIP)', 'raveenthiran' ); ?></span>
+			<form method="post" enctype="multipart/form-data" class="nr-upload__form" action="<?php echo esc_url( admin_url( 'update.php?action=upload-plugin' ) ); ?>">
+				<?php wp_nonce_field( 'plugin-upload' ); ?>
+				<input type="file" name="pluginzip" accept=".zip" required>
+				<?php submit_button( __( 'Upload &amp; install', 'raveenthiran' ), 'primary', 'install-plugin-submit', false ); ?>
+			</form>
+		</div>
+		<?php
+	}
+}, 15 );
 
 /* =============================================================
    Comments — the studio doesn't run a comment section. Remove it

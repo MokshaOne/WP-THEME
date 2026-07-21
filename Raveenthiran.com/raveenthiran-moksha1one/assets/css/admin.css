@@ -239,9 +239,19 @@ body.plugin-install-php br.clear,
 body.plugin-install-php .tablenav.top,
 body.plugin-install-php .tablenav.bottom{display:none!important}
 body.plugin-install-php .upload-plugin{display:block!important;max-width:720px}
-/* the "Add New" title button on the list screens points at Upload now — keep it,
-   but drop the wp.org "Add New Theme" ghost card at the end of the theme grid */
+/* hide the "Add New / Add Theme / Add Plugin" title buttons completely — the
+   uploader is pulled up onto the list screen instead (below) */
+body.themes-php .wrap > .page-title-action,
+body.plugins-php .wrap > .page-title-action,
 body.themes-php .theme.add-new-theme{display:none!important}
+
+/* the zip uploader, one level up: a VOID card on the Themes / Plugins list */
+.nr-upload{margin:14px 20px 18px 0;padding:16px 20px;border:1px solid var(--v-hair);border-radius:12px;
+	background:linear-gradient(150deg,#161513 0%,#0d0d0d 70%);display:flex;flex-direction:column;gap:12px}
+.nr-upload__form{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nr-upload__form input[type=file]{color:var(--v-ink2);font-size:13px;max-width:100%}
+.nr-upload__form input[type=file]::file-selector-button{background:transparent;border:1px solid var(--v-hair-gold);color:var(--v-gold);border-radius:6px;padding:7px 14px;margin-right:12px;cursor:pointer;font-family:var(--v-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:all .2s ease}
+.nr-upload__form input[type=file]::file-selector-button:hover{background:rgba(242,202,80,.12);color:#fff}
 
 /* ---------- taxonomy screens: the add-term form as a VOID card ---------- */
 .edit-tags-php #col-left .col-wrap{background:linear-gradient(150deg,#161513 0%,#0f0f0f 70%);border:1px solid var(--v-hair);border-radius:10px;padding:20px}

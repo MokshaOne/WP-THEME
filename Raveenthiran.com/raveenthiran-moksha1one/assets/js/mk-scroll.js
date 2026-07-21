@@ -75,6 +75,40 @@
 		} )();
 	}
 
+	/* ---------- Magnetic buttons + stoic frame tilt (mk_fx_tilt) ----------
+	 * Gold/outline buttons lean gently toward the pointer (≤6px), and work
+	 * frames tilt in 3D under the cursor (≤4°) — both scaled by the Magic
+	 * intensity, desktop fine-pointer only, off with the tilt toggle. */
+	if ( fx.tilt !== false && ! reduce && ! isTouch && intensity > 0 && mq( '(pointer: fine)' ) ) {
+		( function tiltLayer() {
+			var I = clamp( intensity / 100, 0, 2 );
+
+			// magnetic buttons
+			var btns = [].slice.call( document.querySelectorAll( '.void-btn, .st-btn' ) );
+			btns.forEach( function ( b ) {
+				b.addEventListener( 'mousemove', function ( e ) {
+					var r = b.getBoundingClientRect();
+					var mxp = ( e.clientX - r.left ) / r.width - 0.5;
+					var myp = ( e.clientY - r.top ) / r.height - 0.5;
+					b.style.transform = 'translate(' + ( mxp * 6 * I ).toFixed( 1 ) + 'px,' + ( myp * 4 * I ).toFixed( 1 ) + 'px)';
+				} );
+				b.addEventListener( 'mouseleave', function () { b.style.transform = ''; } );
+			} );
+
+			// stoic 3D tilt on specimen frames
+			var frames = [].slice.call( document.querySelectorAll( '.mk-work__frame, .mk-plate__frame, .void-home-plate' ) );
+			frames.forEach( function ( f ) {
+				f.addEventListener( 'mousemove', function ( e ) {
+					var r = f.getBoundingClientRect();
+					var fx2 = ( e.clientX - r.left ) / r.width - 0.5;
+					var fy2 = ( e.clientY - r.top ) / r.height - 0.5;
+					f.style.transform = 'perspective(1100px) rotateY(' + ( fx2 * 4 * I ).toFixed( 2 ) + 'deg) rotateX(' + ( -fy2 * 4 * I ).toFixed( 2 ) + 'deg) translateZ(0)';
+				} );
+				f.addEventListener( 'mouseleave', function () { f.style.transform = ''; } );
+			} );
+		} )();
+	}
+
 	/* ---------- NO-SCROLL (home / contact) ---------- */
 	if ( MK.mode === 'none' ) {
 		root.classList.add( 'mk-lock' );
@@ -139,6 +173,9 @@
 					// stoic ceilings: ≤5° turn, ≤5% shrink, ≤42% dim — calm, not flashy
 					pnl.style.transform = 'perspective(1600px) rotateY(' + ( -d * 5 * I ).toFixed( 2 ) + 'deg) scale(' + ( 1 - ad * 0.05 * I ).toFixed( 3 ) + ')';
 					pnl.style.opacity = ( 1 - ad * 0.42 ).toFixed( 3 );
+					// inner parallax: children read --mk-d and drift at their own
+					// depth (headline slower, frame faster) — pure CSS from here.
+					pnl.style.setProperty( '--mk-d', ( d * I ).toFixed( 3 ) );
 				}
 			}
 		} )();

@@ -109,6 +109,26 @@ html.mk-m-none, html.mk-m-none body { max-width: 100%; overflow-x: hidden; }
 html.mk-h-on .mk-h__track { transform-style: preserve-3d; }
 html.mk-h-on .mk-panel { will-change: transform, opacity; backface-visibility: hidden; transform-origin: center center; }
 
+/* inner parallax — JS writes --mk-d (−1…1 × intensity) per panel; layers
+   drift at their own depth as the filmstrip travels. Calm offsets only. */
+html.mk-h-on .mk-panel .void-eyebrow,
+html.mk-h-on .mk-panel .mk-panel__index { transform: translateX(calc(var(--mk-d, 0) * -34px)); }
+html.mk-h-on .mk-panel .void-display-hero,
+html.mk-h-on .mk-panel .void-h1-huge { transform: translateX(calc(var(--mk-d, 0) * -20px)); }
+html.mk-h-on .mk-panel .mk-work__meta,
+html.mk-h-on .mk-panel .mk-stats,
+html.mk-h-on .mk-panel .mk-reco__list { transform: translateX(calc(var(--mk-d, 0) * 26px)); }
+@media (prefers-reduced-motion: reduce) {
+	html.mk-h-on .mk-panel .void-eyebrow, html.mk-h-on .mk-panel .mk-panel__index,
+	html.mk-h-on .mk-panel .void-display-hero, html.mk-h-on .mk-panel .void-h1-huge,
+	html.mk-h-on .mk-panel .mk-work__meta, html.mk-h-on .mk-panel .mk-stats,
+	html.mk-h-on .mk-panel .mk-reco__list { transform: none; }
+}
+
+/* magnetic buttons + hover tilt ease back into place */
+.void-btn, .st-btn { transition: transform .22s cubic-bezier(.2,.7,.2,1), color .3s ease, border-color .3s ease, background .3s ease, filter .3s ease; }
+.mk-work__frame, .mk-plate__frame, .void-home-plate { transition: transform .3s cubic-bezier(.2,.7,.2,1); transform-style: preserve-3d; }
+
 /* project video preview (ACF project_video_preview) fills the dossier frame */
 .void-single-center .void-frame > video { position: static; display: block; width: 100%; height: auto; max-height: 78vh; object-fit: contain; margin: auto; }
 

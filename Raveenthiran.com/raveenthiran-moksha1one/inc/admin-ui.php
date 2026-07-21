@@ -369,7 +369,9 @@ add_action( 'in_admin_header', function () {
 		if ( ! current_user_can( $row[1] ?? 'read' ) ) continue;
 		$label = wp_strip_all_tags( trim( preg_replace( '/<span[^>]*>.*?<\/span>/s', '', $row[0] ) ) );
 		if ( $label === '' ) continue;
-		$more[] = [ $label, $slug, ( is_string( $row[6] ?? '' ) && strpos( (string) ( $row[6] ?? '' ), 'dashicons-' ) === 0 ) ? $row[6] : 'dashicons-admin-generic', '', ( $row[1] ?? 'read' ), false ];
+		// resolve the real URL now — plugin menus often use a non-.php slug
+		// (e.g. "performance"), which must become admin.php?page=… not /performance
+		$more[] = [ $label, nr_admin_menu_url( $slug ), ( is_string( $row[6] ?? '' ) && strpos( (string) ( $row[6] ?? '' ), 'dashicons-' ) === 0 ) ? $row[6] : 'dashicons-admin-generic', '', ( $row[1] ?? 'read' ), false ];
 	}
 	if ( $more ) $groups[ __( 'More', 'raveenthiran' ) ] = $more;
 
@@ -387,8 +389,12 @@ add_action( 'in_admin_header', function () {
 			$gi++; ?>
 			<h2 class="nr-chapter"><span class="nr-chapter__n"><?php echo esc_html( (string) $gi ); ?></span> <?php echo esc_html( $glabel ); ?></h2>
 			<div class="nr-tiles">
-				<?php foreach ( $vis as $t ) : ?>
-					<a class="nr-tile<?php echo ! empty( $t[5] ) ? ' nr-tile--big' : ''; ?>" href="<?php echo esc_url( admin_url( $t[1] ) ); ?>">
+				<?php foreach ( $vis as $t ) :
+					// curated tiles carry an admin path; "More" tiles carry a
+					// fully-resolved URL — use it as-is, else map through admin_url()
+					$href = ( strpos( $t[1], '://' ) !== false ) ? $t[1] : admin_url( $t[1] );
+					?>
+					<a class="nr-tile<?php echo ! empty( $t[5] ) ? ' nr-tile--big' : ''; ?>" href="<?php echo esc_url( $href ); ?>">
 						<span class="nr-tile__ico"><span class="dashicons <?php echo esc_attr( $t[2] ); ?>"></span></span>
 						<span class="nr-tile__label"><?php echo esc_html( $t[0] ); ?></span>
 						<?php if ( ! empty( $t[3] ) ) : ?><span class="nr-tile__sub"><?php echo esc_html( $t[3] ); ?></span><?php endif; ?>

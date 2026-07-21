@@ -68,10 +68,28 @@ $nr_empty_api = function () {
 add_filter( 'themes_api_result',  $nr_empty_api, 99 );
 add_filter( 'plugins_api_result', $nr_empty_api, 99 );
 
-/* drop the wp.org "Add New" screens + their submenu links entirely */
+/* trim the Appearance menu: drop the wp.org "Add New" screen and the surfaces
+   the studio doesn't use (Patterns, Customize, Menus, Fonts). Themes and the
+   Theme File Editor stay. */
 add_action( 'admin_menu', function () {
 	remove_submenu_page( 'themes.php', 'theme-install.php' );
 	remove_submenu_page( 'plugins.php', 'plugin-install.php' );
+	remove_submenu_page( 'themes.php', 'nav-menus.php' );                 // Menus
+	remove_submenu_page( 'themes.php', 'edit.php?post_type=wp_block' );   // Patterns
+
+	// Customize + Fonts carry dynamic query args, so match them by substring.
+	global $submenu;
+	if ( ! empty( $submenu['themes.php'] ) ) {
+		foreach ( $submenu['themes.php'] as $i => $row ) {
+			$slug = $row[2] ?? '';
+			if ( strpos( $slug, 'customize.php' ) !== false            // Customize
+			  || strpos( $slug, 'wp_block' ) !== false                 // Patterns (fallback)
+			  || strpos( $slug, 'nav-menus.php' ) !== false            // Menus (fallback)
+			  || stripos( $slug, 'font' ) !== false ) {                // Fonts
+				unset( $submenu['themes.php'][ $i ] );
+			}
+		}
+	}
 }, 999 );
 
 /* the store screens (if reached by URL) open straight on the Upload form */

@@ -195,14 +195,35 @@ select option{background:var(--v-surf)}
 .nr-tile:hover .nr-tile__go{opacity:1;transform:translateX(0)}
 .nr-tile--big .nr-tile__label{font-size:19px}
 
-/* ---------- "Back to dashboard" button (sub-pages) ---------- */
-.nr-back-dash{display:inline-flex;align-items:center;gap:8px;margin:16px 0 0 22px;padding:7px 15px;
+/* ---------- context bar (every classic sub-screen) ---------- */
+.nr-ctxbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+	margin:14px 20px 4px 0;padding:0 0 14px;border-bottom:1px solid var(--v-hair)}
+.nr-ctxbar .nr-adm-eyebrow{margin:0}
+.nr-back-dash{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;
 	font-family:var(--v-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
 	color:var(--v-gold);text-decoration:none;border:1px solid var(--v-hair-gold);border-radius:999px;
 	background:rgba(242,202,80,.04);transition:all .2s ease}
 .nr-back-dash:hover{background:rgba(242,202,80,.12);border-color:var(--v-gold);color:#fff}
 #wpadminbar #wp-admin-bar-nr-back-dash>.ab-item{color:var(--v-gold)!important;font-weight:600}
 #wpadminbar #wp-admin-bar-nr-back-dash:hover>.ab-item{color:#fff!important}
+
+/* ---------- metaboxes read like dashboard tiles ---------- */
+.postbox{background:linear-gradient(150deg,#161513 0%,#0f0f0f 70%)!important;border:1px solid var(--v-hair)!important;border-radius:10px!important;overflow:hidden;transition:border-color .25s ease}
+.postbox:hover{border-color:var(--v-hair-gold)!important}
+.postbox-header{border-bottom:1px solid var(--v-hair)!important}
+.postbox-header .hndle,.postbox .hndle{font-family:var(--v-display);font-weight:700;font-size:14px;letter-spacing:.02em;color:var(--v-ink)}
+.postbox:hover .postbox-header .hndle{color:var(--v-gold)}
+.postbox .handlediv:hover .toggle-indicator::before{color:var(--v-gold)}
+/* publish / submit box — the primary action reads gold */
+#submitdiv .postbox-header .hndle,#submitdiv .hndle{color:var(--v-gold)}
+#major-publishing-actions{background:transparent;border-top:1px solid var(--v-hair)}
+#minor-publishing{border-bottom:1px solid var(--v-hair)}
+#post-body-content .postbox,.edit-tags-php .postbox{border-radius:10px}
+
+/* ---------- taxonomy screens: the add-term form as a VOID card ---------- */
+.edit-tags-php #col-left .col-wrap{background:linear-gradient(150deg,#161513 0%,#0f0f0f 70%);border:1px solid var(--v-hair);border-radius:10px;padding:20px}
+.edit-tags-php #col-left .form-wrap h2{font-family:var(--v-display);font-weight:800;color:var(--v-ink)}
+.edit-tags-php .form-field input,.edit-tags-php .form-field textarea,.edit-tags-php .form-field select{background:var(--v-bg2);border:1px solid var(--v-hair);color:var(--v-ink)}
 
 /* ==========================================================================
    Per-CPT horizontal filmstrip on list screens (inc/admin-ui.php)

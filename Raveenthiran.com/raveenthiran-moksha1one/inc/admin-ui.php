@@ -324,13 +324,24 @@ add_action( 'admin_bar_menu', function ( $bar ) {
 
 add_action( 'in_admin_header', function () {
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-	if ( ! $screen || $screen->id === 'dashboard' ) return; // not on the board itself
-	printf(
-		'<a class="nr-back-dash" href="%s">%s %s</a>',
-		esc_url( admin_url( 'index.php' ) ),
-		'&larr;',
-		esc_html__( 'Dashboard', 'raveenthiran' )
-	);
+	if ( ! $screen || $screen->id === 'dashboard' ) return;          // not on the board itself
+	if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) return; // ignore the block editor
+
+	// section label for the eyebrow — post type, taxonomy, or the menu title
+	$label = '';
+	if ( ! empty( $screen->post_type ) && ( $pto = get_post_type_object( $screen->post_type ) ) ) {
+		$label = $pto->labels->name;
+	} elseif ( ! empty( $screen->taxonomy ) && ( $tx = get_taxonomy( $screen->taxonomy ) ) ) {
+		$label = $tx->labels->name;
+	} else {
+		$label = wp_strip_all_tags( (string) ( $GLOBALS['title'] ?? $screen->id ) );
+	}
+	?>
+	<div class="nr-ctxbar">
+		<span class="nr-adm-eyebrow"><span class="nr-adm-rule"></span><?php echo esc_html( strtoupper( $label ) ); ?></span>
+		<a class="nr-back-dash" href="<?php echo esc_url( admin_url( 'admin.php?page=nr-control' ) ); ?>">&larr; <?php esc_html_e( 'Site Content', 'raveenthiran' ); ?></a>
+	</div>
+	<?php
 }, 20 );
 
 /* =============================================================

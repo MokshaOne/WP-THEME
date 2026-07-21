@@ -6,37 +6,11 @@ add_action( 'acf/init', 'nr_register_feature_acf_fields' );
 function nr_register_feature_acf_fields() {
     if ( ! function_exists( 'acf_add_local_field_group' ) ) return;
 
-    /* =========================================================
-       HERO — all fields for parts/hero.php
-       ========================================================= */
-    acf_add_local_field_group( [
-        'key'      => 'group_hero_settings',
-        'title'    => 'Hero Section',
-        'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
-        'fields'   => [
-            [ 'key' => 'field_hero_headline',       'label' => 'Hero Headline (H1)',       'name' => 'hero_headline',       'type' => 'text',
-              'instructions' => 'Main title. Use <em>word</em> for italic accent. HTML br tag allowed for line breaks.' ],
-            [ 'key' => 'field_hero_overline',       'label' => 'Hero Overline',            'name' => 'hero_overline',       'type' => 'text' ],
-            [ 'key' => 'field_hero_subline',        'label' => 'Hero Subline / Tagline',   'name' => 'hero_subline',        'type' => 'text' ],
-            [ 'key' => 'field_hero_cta_label',      'label' => 'Hero CTA Button Label',    'name' => 'hero_cta_label',      'type' => 'text' ],
-            [ 'key' => 'field_hero_cta_url',        'label' => 'Hero CTA Button URL',      'name' => 'hero_cta_url',        'type' => 'url' ],
-            [ 'key' => 'field_hero_available_text', 'label' => '"Currently Available" Text','name' => 'hero_available_text', 'type' => 'text' ],
-            [ 'key' => 'field_stat_projects',       'label' => 'Stat — Projects',          'name' => 'stat_projects',       'type' => 'text' ],
-            [ 'key' => 'field_stat_countries',      'label' => 'Stat — Countries',         'name' => 'stat_countries',      'type' => 'text' ],
-            [ 'key' => 'field_stat_since',          'label' => 'Stat — Since (Year)',      'name' => 'stat_since',          'type' => 'text' ],
-            [
-                'key'        => 'field_hero_images',
-                'label'      => 'Hero Slide Images',
-                'name'       => 'hero_images',
-                'type'       => 'repeater',
-                'layout'     => 'block',
-                'instructions' => 'Add images for the hero carousel. First image loads eagerly.',
-                'sub_fields' => [
-                    [ 'key' => 'field_hero_slide_image', 'label' => 'Image', 'name' => 'image', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'medium' ],
-                ],
-            ],
-        ],
-    ] );
+    /* NOTE: the old "Hero Section" group (hero_headline/overline/subline/
+       cta/available_text, stat_projects/countries/since, hero_images) was
+       removed in v0.12.1 — moksha1one's home is the VOID Singularity, driven
+       by nr_void_hero1/2/status/hero_cta, and the About stats come from the
+       nr_stats_* Theme Settings. Those ACF fields had zero readers. */
 
     /* =========================================================
        ABOUT — extra fields beyond functions.php base group
@@ -47,8 +21,9 @@ function nr_register_feature_acf_fields() {
         'location' => [ [ [ 'param' => 'options_page', 'operator' => '==', 'value' => 'nr-site-settings' ] ] ],
         'fields'   => [
             [ 'key' => 'field_about_statement', 'label' => 'About Statement / Pull Quote', 'name' => 'about_statement', 'type' => 'text',
-              'instructions' => 'Short italic quote shown in the about section (optional).' ],
-            [ 'key' => 'field_about_phone',     'label' => 'Phone Number',                 'name' => 'phone',           'type' => 'text' ],
+              'instructions' => 'Short italic quote shown on the About page (optional).' ],
+            /* removed redundant "phone" (v0.12.1) — the studio phone lives once
+               in Theme Settings → nr_phone; Local SEO falls back to it. */
         ],
     ] );
 

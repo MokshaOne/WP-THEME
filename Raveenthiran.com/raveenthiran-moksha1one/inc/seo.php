@@ -25,12 +25,15 @@ function nr_schema_markup_extended_render() {
     $site_url     = get_site_url();
     $location     = get_field( 'base_location', 'option' ) ?: 'Wien, Austria';
     $instagram    = get_field( 'instagram_url', 'option' );
-    $phone        = get_field( 'seo_phone', 'option' );
+    // Phone + coordinates fall back to the single source used elsewhere on the
+    // site (Theme Settings nr_phone, VOID nr_void_lat/long) so nothing is
+    // entered twice; the numeric lat/lng are parsed from the display strings.
+    $phone        = get_field( 'seo_phone', 'option' ) ?: nr_opt( 'nr_phone', '' );
     $street       = get_field( 'seo_street', 'option' );
     $postal       = get_field( 'seo_postal_code', 'option' ) ?: '1010';
-    $city         = get_field( 'seo_city', 'option' ) ?: 'Wien';
-    $lat          = get_field( 'seo_lat', 'option' ) ?: '48.2082';
-    $lng          = get_field( 'seo_lng', 'option' ) ?: '16.3738';
+    $city         = get_field( 'seo_city', 'option' ) ?: nr_opt( 'nr_location', 'Wien' );
+    $lat          = get_field( 'seo_lat', 'option' ) ?: preg_replace( '/[^0-9.\-]/', '', (string) nr_opt( 'nr_void_lat', '48.2082' ) ) ?: '48.2082';
+    $lng          = get_field( 'seo_lng', 'option' ) ?: preg_replace( '/[^0-9.\-]/', '', (string) nr_opt( 'nr_void_long', '16.3738' ) ) ?: '16.3738';
     $hours_rows   = get_field( 'seo_opening_hours', 'option' );
 
     // LocalBusiness + Person auf Homepage und statischen Seiten

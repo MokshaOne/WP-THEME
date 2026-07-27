@@ -8,7 +8,7 @@ WebGL, PWA, SMTP, OG cards, PDF estimates) is **untouched** — v2 is additive a
 
 | Area | Change | Files |
 |------|--------|-------|
-| **Type** | Integrated **Avoiste Laverta** (self-hosted woff2+woff) as `--ff-hero`; applied to the homepage hero + page titles at its natural 400 weight with relaxed tracking. Syne remains `--ff-display` for everything smaller. | `assets/fonts/avoiste-laverta.*`, `assets/css/fonts.css`, `assets/css/theme.css`, `assets/css/moksha.css`, `functions.php` (preload) |
+| **Type** | Wired **Avoiste Laverta** as `--ff-hero`; applied to the homepage hero + page titles at its natural 400 weight with relaxed tracking. Syne remains `--ff-display` for everything smaller. The `@font-face` + preload are emitted from `functions.php` **only when the font is present**, so it's a clean local drop-in (see below). | `assets/css/theme.css`, `assets/css/moksha.css`, `functions.php`, `assets/fonts/AVOISTE-README.md` |
 | **Design** | **Obsidian film-grain** overlay — a static SVG-noise data-URI layer (no external asset, ~0 network cost) over the dark canvas. Token `--grain-opacity` (default `.038`). | `assets/css/moksha.css` |
 | **Authoring** | **Canvas (free build)** page template — write raw HTML/CSS/JS in the editor, renders verbatim inside the site chrome (wpautop stripped). | `page-canvas.php`, `assets/css/moksha.css` |
 | **Authoring** | **Blank Canvas (zero chrome)** page template — you own the whole `<body>`; a hand-coded page with a WP URL + CMS behind it. | `page-blank.php` |
@@ -18,6 +18,12 @@ WebGL, PWA, SMTP, OG cards, PDF estimates) is **untouched** — v2 is additive a
 
 **The "build freely in WordPress" problem you raised is solved by the two Canvas templates** — no
 new PHP file per page, no deploy; the freedom of a static HTML file, inside WordPress.
+
+### Note on the Avoiste font (licensed asset, public repo)
+The font files are **not committed** — this repo is public, and licensed Envato assets shouldn't be
+redistributed through it. The wiring is present and graceful: drop `avoiste-laverta.woff2` (+ optional
+`.woff`) into `assets/fonts/` on your install and the hero type activates automatically; without them
+the hero falls back to Syne with no errors. See `assets/fonts/AVOISTE-README.md`.
 
 ## ⏳ Deferred (blocked in this environment, trivial to finish)
 - **Self-host Leaflet** (GDPR + perf) — the agent proxy blocks `unpkg.com`, so the two library

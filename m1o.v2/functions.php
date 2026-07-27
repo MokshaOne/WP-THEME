@@ -96,7 +96,16 @@ add_action( 'wp_enqueue_scripts', function () {
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'syne-var.woff2' ) . '">' . "\n";
 		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
 		// M1O v2 — the couture hero face (Avoiste Laverta) is above the fold.
-		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'avoiste-laverta.woff2' ) . '">' . "\n";
+		// It's a licensed asset and NOT bundled in the (public) repo — supply it
+		// per-install in assets/fonts/. Declare + preload it only when present;
+		// otherwise the hero falls back to Syne via --ff-hero, with no 404.
+		if ( file_exists( get_template_directory() . '/assets/fonts/avoiste-laverta.woff2' ) ) {
+			echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'avoiste-laverta.woff2' ) . '">' . "\n";
+			$woff  = file_exists( get_template_directory() . '/assets/fonts/avoiste-laverta.woff' )
+				? ", url('" . esc_url( $u . 'avoiste-laverta.woff' ) . "') format('woff')" : '';
+			echo "<style id=\"nr-avoiste\">@font-face{font-family:'Avoiste Laverta';font-style:normal;font-weight:400;font-display:swap;"
+				. "src:url('" . esc_url( $u . 'avoiste-laverta.woff2' ) . "') format('woff2')" . $woff . "}</style>\n";
+		}
 	}, 1 );
 
 	wp_enqueue_script(

@@ -1,1 +1,6 @@
 /vendor/
+
+# Licensed assets (Envato Elements etc.) — supplied per-install, never committed
+# to this public repo. See m1o.v2/assets/fonts/AVOISTE-README.md
+m1o.v2/assets/fonts/avoiste-laverta.woff2
+m1o.v2/assets/fonts/avoiste-laverta.woff

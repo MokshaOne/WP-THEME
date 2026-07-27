@@ -6,7 +6,7 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
 - **Free-build pages** — two new page templates let you hand-code pages inside WordPress:
   - **Canvas (free build)** → *Page → Attributes → Template → "Canvas (free build)"*. Write raw HTML/CSS/JS in the editor (Custom HTML block or the Code editor) — it renders verbatim, full-bleed, inside the normal header/footer.
   - **Blank Canvas (zero chrome)** → same menu, pick *"Blank Canvas"*. You own the entire `<body>` — no theme header/footer at all. The closest thing to a hand-coded static page, but with a WordPress URL + CMS. Great for experiments and one-off art-directed layouts.
-- **Couture headline font** — the largest headlines (homepage hero + page titles) now use **Avoiste Laverta**, self-hosted. Everything smaller stays on Syne. To revert, clear the `--ff-hero` CSS variable.
+- **Couture headline font** — the largest headlines (homepage hero + page titles) use **Avoiste Laverta**. It's a licensed asset kept out of this public repo, so **drop `avoiste-laverta.woff2` (+ optional `.woff`) into `assets/fonts/`** on your install to activate it (details in `assets/fonts/AVOISTE-README.md`). Without it the hero cleanly falls back to Syne. Revert anytime by clearing the `--ff-hero` CSS variable.
 - **Obsidian film-grain** — a subtle static grain layer removes the "flat black" look. Tune or disable via the `--grain-opacity` CSS variable (default `.038`; set `0` to turn off).
 - **Reduced-motion hardening** — all animation now degrades cleanly for visitors who set "reduce motion".
 - **Still pending your files:** self-hosted Leaflet for the map (drop `leaflet.js` + `leaflet.css` into `assets/vendor/leaflet/` — currently still loads from the unpkg CDN). See CHANGELOG-M1O-V2.md.

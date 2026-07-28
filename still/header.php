@@ -22,7 +22,7 @@ $still_home_intro = ( is_front_page() && ! is_paged() );
 <div id="intro" aria-hidden="true">
 	<div class="intro__in">
 		<div class="boot" id="boot">
-			<div class="boot__row"><span><?php esc_html_e( 'Initializing', 'still' ); ?></span><span id="pct">0%</span></div>
+			<div class="boot__row"><span><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span><span id="pct">0</span></div>
 			<div class="bar"><div class="bar__fill" id="fill"></div></div>
 		</div>
 		<div class="term" id="term"></div>

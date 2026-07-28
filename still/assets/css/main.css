@@ -75,7 +75,7 @@ body.intro .panel{min-height:100%}
 .panel__go:hover{border-color:var(--fg)}
 .thumbs{display:flex;gap:1.2rem;margin-top:2.5rem;flex-wrap:wrap}
 .thumbs a{width:clamp(90px,10vw,150px)}
-.thumbs .frame{aspect-ratio:4/5;border:1px solid var(--line);background:#0d0d0d;overflow:hidden;display:grid;place-items:center;transition:transform .4s}
+.thumbs .frame{position:relative;aspect-ratio:4/5;border:1px solid var(--line);background:#0d0d0d;overflow:hidden;display:grid;place-items:center;transition:transform .4s}
 .thumbs a:hover .frame{transform:translateY(-6px)}
 .thumbs .frame img{width:100%;height:100%;object-fit:cover}
 .thumbs .frame .ph{font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;color:#3a3a3a}

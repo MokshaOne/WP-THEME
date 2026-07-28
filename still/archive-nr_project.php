@@ -23,7 +23,7 @@ get_header(); ?>
 	<?php if ( have_posts() ) : ?>
 		<div class="work-grid">
 			<?php while ( have_posts() ) : the_post();
-				$still_terms = get_the_terms( get_the_ID(), 'work_category' );
+				$still_terms = get_the_terms( get_the_ID(), 'nr_project_cat' );
 				$still_cat   = ( $still_terms && ! is_wp_error( $still_terms ) ) ? $still_terms[0]->name : '';
 			?>
 			<div class="item tilt-wrap">

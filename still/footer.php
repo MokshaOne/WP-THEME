@@ -16,9 +16,9 @@ $still_items = still_nav_items();
 	<?php foreach ( $still_items as $it ) :
 		$active = '';
 		if ( ! is_front_page() ) {
-			if ( 'work' === $it['key'] && ( is_post_type_archive( 'work' ) || is_singular( 'work' ) || is_tax( 'work_category' ) ) ) {
+			if ( 'work' === $it['key'] && ( is_post_type_archive( 'nr_project' ) || is_singular( 'nr_project' ) || is_tax( 'nr_project_cat' ) || is_tax( 'nr_project_tag' ) || is_tax( 'nr_project_series' ) ) ) {
 				$active = ' active';
-			} elseif ( 'journal' === $it['key'] && ( is_home() || is_singular( 'post' ) || is_category() || is_tag() ) ) {
+			} elseif ( 'journal' === $it['key'] && ( is_post_type_archive( 'nr_journal' ) || is_singular( 'nr_journal' ) || is_tax( 'nr_journal_cat' ) || is_home() || is_singular( 'post' ) ) ) {
 				$active = ' active';
 			} elseif ( 'studio' === $it['key'] && is_page( array( 'about', 'studio' ) ) ) {
 				$active = ' active';

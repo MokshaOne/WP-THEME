@@ -11,7 +11,7 @@ get_header(); ?>
 
 <main id="main" class="page-wrap">
 <?php while ( have_posts() ) : the_post();
-	$still_terms = get_the_terms( get_the_ID(), 'work_category' ); ?>
+	$still_terms = get_the_terms( get_the_ID(), 'nr_project_cat' ); ?>
 	<article>
 		<header class="page-head">
 			<span class="label"><?php echo esc_html( ( $still_terms && ! is_wp_error( $still_terms ) ) ? $still_terms[0]->name : __( 'Project', 'still' ) ); ?></span>

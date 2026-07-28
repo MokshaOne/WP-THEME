@@ -32,7 +32,7 @@ $still_i = 0;
 
 		<?php if ( 'work' === $it['key'] ) :
 			$still_q = new WP_Query( array(
-				'post_type'      => 'work',
+				'post_type'      => 'nr_project',
 				'posts_per_page' => 4,
 				'no_found_rows'  => true,
 				'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'DESC' ),
@@ -40,20 +40,14 @@ $still_i = 0;
 			if ( $still_q->have_posts() ) : ?>
 			<div class="thumbs">
 				<?php while ( $still_q->have_posts() ) : $still_q->the_post(); ?>
-					<a href="<?php the_permalink(); ?>"><span class="frame"><?php
-						if ( has_post_thumbnail() ) {
-							the_post_thumbnail( 'still-card', array( 'alt' => esc_attr( get_the_title() ) ) );
-						} else {
-							echo '<span class="ph">' . esc_html__( 'Photo', 'still' ) . '</span>';
-						}
-					?></span></a>
+					<a href="<?php the_permalink(); ?>"><span class="frame"><?php still_cover( get_the_ID(), 'still-card' ); ?></span></a>
 				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
 			<?php endif;
 		endif; ?>
 
 		<?php if ( 'journal' === $it['key'] ) :
-			$still_j = new WP_Query( array( 'post_type' => 'post', 'posts_per_page' => 3, 'no_found_rows' => true ) );
+			$still_j = new WP_Query( array( 'post_type' => 'nr_journal', 'posts_per_page' => 3, 'no_found_rows' => true ) );
 			if ( $still_j->have_posts() ) : ?>
 			<div class="thumbs" style="display:block;margin-top:2rem">
 				<?php while ( $still_j->have_posts() ) : $still_j->the_post(); ?>

@@ -190,6 +190,16 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .stats .n{font-weight:100;font-size:clamp(1.8rem,4vw,3rem)}
 .stats .k{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-top:.4rem}
 
+/* harmonise engine-injected UI (PWA install button, etc.) to Still's palette */
+.nr-pwa-install{border-color:var(--line)!important;background:rgba(10,10,10,.72)!important;color:var(--fg)!important;font-family:var(--mono)!important}
+.nr-pwa-install:hover{background:var(--fg)!important;color:#000!important}
+
+/* enquire / contact aside — a quiet detail list for balance */
+.detail-list{display:grid;gap:0;margin-top:2.6rem}
+.detail-list .row{border-top:1px solid var(--line);padding:1.15rem 0}
+.detail-list dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mut);margin-bottom:.35rem}
+.detail-list dd{font-size:1rem;font-weight:300}
+
 /* reveals */
 [data-rise]{opacity:0;transform:translateY(30px);transition:opacity 1.2s,transform 1.2s}
 [data-rise].in{opacity:1;transform:none}

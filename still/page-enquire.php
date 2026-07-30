@@ -35,7 +35,11 @@ $still_sent    = isset( $_GET['nr_sent'] ) ? sanitize_text_field( wp_unslash( $_
 	<div class="two-col">
 		<div>
 			<?php if ( $still_email ) : ?><p class="page-lead" style="margin-top:0"><a href="mailto:<?php echo esc_attr( $still_email ); ?>"><?php echo esc_html( $still_email ); ?></a></p><?php endif; ?>
-			<?php if ( $still_studio ) : ?><p class="label" style="margin-top:1.6rem"><?php echo esc_html( $still_studio ); ?></p><?php endif; ?>
+			<dl class="detail-list">
+				<div class="row"><dt><?php esc_html_e( 'Response', 'still' ); ?></dt><dd><?php esc_html_e( 'Within 24 hours', 'still' ); ?></dd></div>
+				<div class="row"><dt><?php esc_html_e( 'Based in', 'still' ); ?></dt><dd><?php echo esc_html( $still_studio ?: 'Vienna' ); ?></dd></div>
+				<div class="row"><dt><?php esc_html_e( 'Available', 'still' ); ?></dt><dd><?php esc_html_e( 'Worldwide · Commissions 2026', 'still' ); ?></dd></div>
+			</dl>
 		</div>
 
 		<form class="still-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">

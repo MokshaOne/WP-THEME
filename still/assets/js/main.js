@@ -133,3 +133,32 @@
 
 	b1();
 })();
+
+/* ── price engine (enquire) — runs on any page with [data-price-engine] ── */
+(function () {
+	'use strict';
+	var form = document.querySelector('[data-price-engine]');
+	if (!form) return;
+	var cur = form.getAttribute('data-currency') || '€';
+	function money(n) { return cur + Math.round(n).toLocaleString(); }
+	function compute() {
+		var t = form.querySelector('input[name="project_type"]:checked');
+		var total = t ? (parseFloat(t.getAttribute('data-base')) || 0) : 0;
+		var parts = [];
+		if (t) { parts.push(t.value); }
+		[].forEach.call(form.querySelectorAll('input[name="addons[]"]:checked'), function (x) {
+			total += parseFloat(x.getAttribute('data-price')) || 0; parts.push(x.value);
+		});
+		var lic = form.querySelector('input[name="license"]');
+		if (lic && lic.checked) { total += parseFloat(lic.getAttribute('data-price')) || 0; parts.push('Commercial license'); }
+		var km = form.querySelector('input[name="travel_km"]');
+		if (km) { var k = parseFloat(km.value) || 0; if (k > 0) { total += k * (parseFloat(km.getAttribute('data-per-km')) || 0); parts.push(Math.round(k) + ' km'); } }
+		var out = form.querySelector('[data-estimate]'); if (out) out.textContent = money(total);
+		var hid = form.querySelector('[data-estimate-input]'); if (hid) hid.value = money(total);
+		var bd = form.querySelector('[data-breakdown]'); if (bd) bd.value = parts.join(' · ');
+		var sl = form.querySelector('[data-slug]'); if (sl && t) sl.value = t.getAttribute('data-slug') || '';
+	}
+	form.addEventListener('change', compute);
+	form.addEventListener('input', function (e) { if (e.target.name === 'travel_km') compute(); });
+	compute();
+})();

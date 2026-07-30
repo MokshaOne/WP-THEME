@@ -200,6 +200,19 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .detail-list dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mut);margin-bottom:.35rem}
 .detail-list dd{font-size:1rem;font-weight:300}
 
+/* price engine (enquire) */
+.field--inline{flex-direction:row;flex-wrap:wrap;gap:1.8rem;align-items:center}
+.toggle{display:inline-flex;align-items:center;gap:.7rem;cursor:pointer;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.toggle:has(input:checked){color:var(--fg)}
+.toggle input,.km input{accent-color:#fff}
+.km{display:inline-flex;align-items:center;gap:.8rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.km input{width:82px;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--fg);font-family:var(--sans);font-size:1rem;padding:.4rem 0}
+.km input:focus{outline:none;border-color:var(--fg)}
+.estimate{display:flex;align-items:baseline;gap:1.2rem;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.6rem 0;margin:.4rem 0 .2rem}
+.estimate__k{font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+.estimate__v{font-weight:100;font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.02em;line-height:1;margin-right:auto}
+.estimate__note{flex-basis:100%;font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+
 /* reveals */
 [data-rise]{opacity:0;transform:translateY(30px);transition:opacity 1.2s,transform 1.2s}
 [data-rise].in{opacity:1;transform:none}

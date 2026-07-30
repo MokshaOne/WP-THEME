@@ -98,8 +98,7 @@ function still_nav_items() {
 		array( 'key' => 'work',    'label' => __( 'Work', 'still' ),    'url' => still_work_url(),                       'desc' => __( 'Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.', 'still' ) ),
 		array( 'key' => 'studio',  'label' => __( 'Studio', 'still' ),  'url' => still_page_url( 'about', 'about' ),     'desc' => __( 'A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.', 'still' ) ),
 		array( 'key' => 'journal', 'label' => __( 'Journal', 'still' ), 'url' => still_journal_url(),                    'desc' => __( 'Notes from the field — process, film, and the occasional long essay.', 'still' ) ),
-		array( 'key' => 'contact', 'label' => __( 'Contact', 'still' ), 'url' => still_page_url( 'contact', 'contact' ), 'desc' => __( 'Studio details, availability and the ways to reach me.', 'still' ) ),
-		array( 'key' => 'enquire', 'label' => __( 'Enquire', 'still' ), 'url' => still_page_url( 'enquire', 'enquire' ), 'desc' => __( 'Commissions, editorial and personal series. Start a project.', 'still' ) ),
+		array( 'key' => 'enquire', 'label' => __( 'Enquire', 'still' ), 'url' => still_page_url( 'enquire', 'enquire' ), 'desc' => __( 'Commissions and editorial — studio details, a price estimate, and the form. A reply within 24 hours.', 'still' ) ),
 	);
 	return apply_filters( 'still_nav_items', $items );
 }

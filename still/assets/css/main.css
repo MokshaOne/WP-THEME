@@ -51,6 +51,24 @@ body.intro.entered .brand-fixed{opacity:1}
 @keyframes glow{0%{opacity:0}50%{opacity:1}100%{opacity:.28}}
 @keyframes cue{0%,100%{transform:scaleY(.3);opacity:.35}50%{transform:scaleY(1);opacity:1}}
 
+/* ── loader responsiveness ── */
+.titlewrap{padding-inline:1rem}
+.bigtitle{max-width:100%}
+.term div{overflow-wrap:anywhere;word-break:break-word}
+@media(max-width:640px){
+	.intro__in{width:88vw}
+	.boot__row{flex-wrap:wrap;gap:.3rem;font-size:.6rem}
+	.bigtitle{font-size:5.6vw;letter-spacing:.05em;text-indent:.05em}
+	.bigtitle .ch{min-width:.46em}
+	.term{font-size:.68rem;line-height:1.9}
+	.enter-big{font-size:.62rem;letter-spacing:.4em;text-indent:.4em;bottom:1.8rem}
+	.enter-big .chev{height:42px}
+}
+@media(max-width:380px){
+	.bigtitle{font-size:5.1vw;letter-spacing:.02em;text-indent:.02em}
+	.bigtitle .ch{min-width:.44em}
+}
+
 /* ══ HOME — monumental teaser panels ══ */
 #home{position:relative}
 body.intro #home{position:fixed;inset:0;transform:translateX(100%);transition:transform 1.2s cubic-bezier(.76,0,.24,1);height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory}

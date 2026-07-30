@@ -126,6 +126,11 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 /* single — restrained hero: centred, capped, never towering */
 .single-hero{max-width:860px;margin:clamp(2.5rem,5vw,4rem) auto;border:1px solid var(--line);overflow:hidden}
 .single-hero img{width:100%;display:block;max-height:78vh;object-fit:cover}
+/* project gallery (ACF project_gallery) — restrained masonry */
+.project-gallery{columns:2 360px;column-gap:clamp(1.4rem,3vw,2.6rem);margin-top:clamp(2.5rem,5vw,4rem);max-width:1080px}
+@media(max-width:640px){.project-gallery{columns:1}}
+.project-gallery figure{break-inside:avoid;margin:0 0 clamp(1.4rem,3vw,2.6rem)}
+.project-gallery img{width:100%;height:auto;display:block;border:1px solid var(--line)}
 .single-meta{display:flex;gap:1.5rem;flex-wrap:wrap;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-top:1.4rem}
 .prose{max-width:72ch;font-weight:300}
 .prose p{margin:0 0 1.4rem;color:#cbc9c5}

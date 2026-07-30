@@ -84,10 +84,11 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .page-title{font-weight:100;font-size:clamp(2.6rem,8vw,6.5rem);letter-spacing:-.02em;line-height:.98;text-transform:uppercase}
 .page-lead{margin-top:1.8rem;max-width:52ch;color:var(--mut);font-size:1.06rem;font-weight:300}
 
-/* work archive — masonry, unlimited */
-.work-grid{columns:3 320px;column-gap:clamp(1.4rem,3vw,3rem)}
-@media(max-width:640px){.work-grid{columns:1}}
-.work-grid .item{break-inside:avoid;margin-bottom:clamp(1.4rem,3vw,3rem)}
+/* work archive — masonry, unlimited. Restrained: more, smaller columns + air. */
+.work-grid{columns:4 230px;column-gap:clamp(1.8rem,3.5vw,3.5rem);max-width:1180px;margin:0 auto}
+@media(max-width:900px){.work-grid{columns:3 200px}}
+@media(max-width:560px){.work-grid{columns:2 140px;column-gap:1.2rem}}
+.work-grid .item{break-inside:avoid;margin-bottom:clamp(1.8rem,3.5vw,3.5rem)}
 .work-card{display:block}
 .work-card .frame{position:relative;overflow:hidden;background:#0b0b0b;border:1px solid var(--line)}
 .work-card .frame img{width:100%;height:auto;display:block;transition:transform 1s cubic-bezier(.22,.61,.2,1);filter:grayscale(0)}
@@ -104,8 +105,9 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .journal-item .date{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);white-space:nowrap}
 .journal-item .ex{grid-column:1/-1;color:var(--mut);max-width:60ch;margin-top:.5rem;font-weight:300}
 
-/* single */
-.single-hero{margin:clamp(2.5rem,5vw,4rem) 0;border:1px solid var(--line);overflow:hidden}
+/* single — restrained hero: centred, capped, never towering */
+.single-hero{max-width:860px;margin:clamp(2.5rem,5vw,4rem) auto;border:1px solid var(--line);overflow:hidden}
+.single-hero img{width:100%;display:block;max-height:78vh;object-fit:cover}
 .single-meta{display:flex;gap:1.5rem;flex-wrap:wrap;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-top:1.4rem}
 .prose{max-width:72ch;font-weight:300}
 .prose p{margin:0 0 1.4rem;color:#cbc9c5}

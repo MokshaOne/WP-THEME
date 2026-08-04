@@ -179,41 +179,42 @@
 	});
 })();
 
-/* ── horizontal subpages: vertical scroll drives sideways movement ── */
+/* ── horizontal subpages: full-page native scroll-snap panels; the wheel /
+   trackpad drives sideways movement. Tall panels (form / faq) scroll
+   vertically inside themselves first, then hand back to the filmstrip.
+   Phones + reduced-motion revert to a plain vertical stack (see CSS). ── */
 (function () {
 	'use strict';
 	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
-	var hxs = [].slice.call(document.querySelectorAll('.hx'));
-	if (!hxs.length) return;
+	var tracks = [].slice.call(document.querySelectorAll('.hx__track'));
+	if (!tracks.length) return;
 	function active() { return window.innerWidth > 820 && !reduce; }
-	function layout() {
-		hxs.forEach(function (hx) {
-			var track = hx.querySelector('.hx__track');
-			if (!track) return;
-			if (!active()) { hx.style.height = ''; track.style.transform = ''; return; }
-			var dist = Math.max(0, track.scrollWidth - window.innerWidth);
-			hx.style.height = (dist + window.innerHeight) + 'px';
+
+	tracks.forEach(function (track) {
+		track.addEventListener('wheel', function (e) {
+			if (!active()) return;                       // vertical mode: let it be
+			if (e.ctrlKey) return;                       // pinch-zoom
+			// Let a tall inner panel consume vertical intent until it bottoms out.
+			var panel = e.target.closest && e.target.closest('.hx-panel--form, .hx-panel--faq');
+			if (panel && panel.scrollHeight > panel.clientHeight + 1) {
+				var atTop = panel.scrollTop <= 0;
+				var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+				if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return;
+			}
+			// Trackpads already send deltaX for sideways swipes — leave those alone.
+			var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+			if (!d) return;
+			track.scrollLeft += d;
+			e.preventDefault();
+		}, { passive: false });
+
+		// Keyboard: arrows / page keys page the filmstrip when it's focused.
+		track.setAttribute('tabindex', '-1');
+		track.addEventListener('keydown', function (e) {
+			if (!active()) return;
+			var step = window.innerWidth;
+			if (e.key === 'ArrowRight' || e.key === 'PageDown') { track.scrollBy({ left: step, behavior: 'smooth' }); e.preventDefault(); }
+			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { track.scrollBy({ left: -step, behavior: 'smooth' }); e.preventDefault(); }
 		});
-		render();
-	}
-	function render() {
-		if (!active()) return;
-		hxs.forEach(function (hx) {
-			var track = hx.querySelector('.hx__track');
-			if (!track) return;
-			var dist = Math.max(0, track.scrollWidth - window.innerWidth);
-			var top = -hx.getBoundingClientRect().top;
-			var p = Math.min(Math.max(top, 0), dist);
-			track.style.transform = 'translate3d(' + (-p) + 'px,0,0)';
-		});
-	}
-	var ticking = false;
-	window.addEventListener('scroll', function () {
-		if (ticking) return; ticking = true;
-		requestAnimationFrame(function () { render(); ticking = false; });
-	}, { passive: true });
-	var rt;
-	window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(layout, 150); });
-	window.addEventListener('load', layout);
-	layout();
+	});
 })();

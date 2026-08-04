@@ -151,3 +151,86 @@ add_action( 'admin_enqueue_scripts', function () {
 add_action( 'login_enqueue_scripts', function () {
 	wp_enqueue_style( 'still-admin', get_template_directory_uri() . '/assets/css/admin-still.css', array(), STILL_VER );
 } );
+
+/* ── Legal pages: auto-create Impressum / AGB / Datenschutz with demo data ──
+ * Austrian photographer boilerplate (DEMO — must be reviewed before publishing).
+ * Created once on theme activation if the slug doesn't already exist. */
+function still_legal_content( $slug ) {
+	switch ( $slug ) {
+		case 'impressum':
+			return <<<'HTML'
+<p><em>Hinweis: Diese Seite ist eine unverbindliche Muster-Vorlage (Demo) und ersetzt keine Rechtsberatung. Bitte vor Veröffentlichung prüfen lassen.</em></p>
+<h2>Impressum</h2>
+<p>Offenlegung gemäß § 5 E-Commerce-Gesetz (ECG) und § 25 Mediengesetz.</p>
+<p><strong>Nishuthan Raveenthiran</strong><br>Fotograf<br>[Straße und Hausnummer]<br>[PLZ] Wien<br>Österreich</p>
+<p>E-Mail: office@raveenthiran.com<br>Telefon: [+43 …]<br>Web: raveenthiran.com</p>
+<p>UID-Nummer: [ATU… – sofern vorhanden]<br>Berufsbezeichnung: Fotograf (verliehen in Österreich)<br>Mitgliedschaft: Wirtschaftskammer Wien</p>
+<p>Es gelten die gewerberechtlichen Vorschriften (GewO), abrufbar unter www.ris.bka.gv.at.</p>
+<h3>Verbraucherstreitbeilegung</h3>
+<p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: https://ec.europa.eu/consumers/odr. Wir sind nicht verpflichtet, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+<h3>Urheberrecht</h3>
+<p>Alle Inhalte und Fotografien dieser Website sind urheberrechtlich geschützt (© Nishuthan Raveenthiran). Jede Verwertung außerhalb der Grenzen des Urheberrechts bedarf der schriftlichen Zustimmung.</p>
+HTML;
+		case 'agb':
+			return <<<'HTML'
+<p><em>Hinweis: Muster-AGB (Demo). Vor Verwendung anwaltlich prüfen lassen.</em></p>
+<h2>Allgemeine Geschäftsbedingungen</h2>
+<h3>1. Geltungsbereich</h3>
+<p>Diese AGB gelten für alle Aufträge und Verträge zwischen Nishuthan Raveenthiran („Fotograf") und dem Auftraggeber über fotografische Leistungen.</p>
+<h3>2. Vertragsabschluss</h3>
+<p>Angebote sind freibleibend. Ein Vertrag kommt mit schriftlicher Auftragsbestätigung oder mit Beginn der Leistungserbringung zustande. Über das Enquire-Formular errechnete Preise sind unverbindliche Schätzungen.</p>
+<h3>3. Preise und Zahlung</h3>
+<p>Es gelten die vereinbarten Preise zzgl. gesetzlicher Umsatzsteuer. Reisekosten werden gesondert verrechnet. Rechnungen sind innerhalb von 14 Tagen ohne Abzug zahlbar.</p>
+<h3>4. Nutzungsrechte und Urheberrecht</h3>
+<p>Der Fotograf bleibt Urheber aller Aufnahmen. Nutzungsrechte werden im vereinbarten Umfang (Zweck, Dauer, Gebiet) eingeräumt und gehen erst nach vollständiger Bezahlung über. Bearbeitung oder Weitergabe an Dritte bedürfen der Zustimmung.</p>
+<h3>5. Termine, Storno und Wetter</h3>
+<p>Termine können bis 7 Tage vor dem Shooting kostenfrei verschoben werden. Bei Absage innerhalb von 48 Stunden wird das volle Honorar fällig. Outdoor-Termine können wetterbedingt einvernehmlich verlegt werden.</p>
+<h3>6. Haftung</h3>
+<p>Der Fotograf haftet nur für Vorsatz und grobe Fahrlässigkeit. Für technische Ausfälle oder Datenverlust wird im gesetzlich zulässigen Rahmen keine Haftung übernommen.</p>
+<h3>7. Gerichtsstand und Recht</h3>
+<p>Es gilt österreichisches Recht. Gerichtsstand ist Wien.</p>
+HTML;
+		case 'datenschutz':
+			return <<<'HTML'
+<p><em>Hinweis: Muster-Datenschutzerklärung (Demo). Vor Veröffentlichung prüfen lassen.</em></p>
+<h2>Datenschutzerklärung</h2>
+<h3>Verantwortlicher</h3>
+<p>Nishuthan Raveenthiran, [Adresse], Wien. E-Mail: office@raveenthiran.com.</p>
+<h3>Erhebung und Verarbeitung</h3>
+<p>Wir verarbeiten personenbezogene Daten nur, soweit dies zur Bereitstellung der Website und unserer Leistungen erforderlich ist. Bei Nutzung des Enquire-/Kontaktformulars werden Name, E-Mail-Adresse und Ihre Nachricht zur Bearbeitung der Anfrage gespeichert (Art. 6 Abs. 1 lit. b DSGVO).</p>
+<h3>Cookies</h3>
+<p>Diese Website verwendet technisch notwendige Cookies. Ein Hinweisbanner erfragt Ihre Zustimmung; Ihre Auswahl wird lokal in Ihrem Browser gespeichert. Es werden keine Tracking- oder Werbe-Cookies ohne Einwilligung gesetzt.</p>
+<h3>Speicherdauer</h3>
+<p>Anfragen werden gelöscht, sobald sie nicht mehr benötigt werden und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+<h3>Ihre Rechte</h3>
+<p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch sowie ein Beschwerderecht bei der Österreichischen Datenschutzbehörde (www.dsb.gv.at).</p>
+<h3>Kontakt</h3>
+<p>Für Anliegen zum Datenschutz: office@raveenthiran.com.</p>
+HTML;
+	}
+	return '';
+}
+
+add_action( 'after_switch_theme', function () {
+	if ( get_option( 'still_legal_seeded' ) ) {
+		return;
+	}
+	$pages = array(
+		'impressum'   => __( 'Impressum', 'still' ),
+		'agb'         => __( 'AGB', 'still' ),
+		'datenschutz' => __( 'Datenschutz', 'still' ),
+	);
+	foreach ( $pages as $slug => $title ) {
+		if ( get_page_by_path( $slug ) ) {
+			continue;
+		}
+		wp_insert_post( array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_name'    => $slug,
+			'post_title'   => $title,
+			'post_content' => still_legal_content( $slug ),
+		) );
+	}
+	update_option( 'still_legal_seeded', '1' );
+} );

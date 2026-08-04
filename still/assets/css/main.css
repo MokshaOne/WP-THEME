@@ -214,6 +214,25 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .estimate__v{font-weight:600;font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.02em;line-height:1;margin-right:auto}
 .estimate__note{flex-basis:100%;font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
 
+/* cookie consent bar (sits above the dock) */
+#cookie-bar{position:fixed;left:50%;bottom:5.5rem;transform:translateX(-50%);z-index:85;max-width:min(680px,92vw);display:none;align-items:center;gap:1.4rem;flex-wrap:wrap;justify-content:space-between;padding:1rem 1.4rem;background:#111114;border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+#cookie-bar.show{display:flex}
+#cookie-bar p{font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--mut);line-height:1.65;flex:1 1 240px;text-transform:none}
+#cookie-bar a{color:var(--fg);border-bottom:1px solid var(--line)}
+#cookie-bar a:hover{color:var(--accent)}
+#cookie-bar .cookie-actions{display:flex;gap:.6rem}
+#cookie-bar button{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;padding:.7rem 1.2rem;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--fg);transition:.25s}
+#cookie-bar button.accept{background:var(--fg);color:#000;border-color:var(--fg)}
+#cookie-bar button.accept:hover{background:var(--accent);border-color:var(--accent);color:#000}
+#cookie-bar button.decline:hover{border-color:var(--fg)}
+@media(max-width:600px){#cookie-bar{bottom:4.8rem;left:1rem;right:1rem;transform:none;max-width:none}}
+
+/* about-page footer block (studio + socials + legal) */
+.about-footer{margin-top:clamp(4rem,9vw,7rem);border-top:1px solid var(--line);padding-top:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.2rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.about-footer a{color:var(--mut)}
+.about-footer a:hover{color:var(--accent)}
+.about-footer .legal{display:flex;gap:1.2rem;flex-wrap:wrap}
+
 /* reveals */
 [data-rise]{opacity:0;transform:translateY(30px);transition:opacity 1.2s,transform 1.2s}
 [data-rise].in{opacity:1;transform:none}

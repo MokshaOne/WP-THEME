@@ -52,5 +52,20 @@ $still_stats = array(
 		<?php endforeach; ?>
 	</div>
 	<?php endif; ?>
+
+	<footer class="about-footer">
+		<span>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html( $still_name ); ?></span>
+		<div class="legal">
+			<?php
+			foreach ( array( 'Instagram' => nr_opt( 'nr_instagram', '' ), 'LinkedIn' => nr_opt( 'nr_linkedin', '' ), 'Behance' => nr_opt( 'nr_behance', '' ), 'Vimeo' => nr_opt( 'nr_vimeo', '' ) ) as $k => $u ) {
+				if ( $u ) { echo '<a href="' . esc_url( $u ) . '" target="_blank" rel="noopener">' . esc_html( $k ) . '</a>'; }
+			}
+			?>
+			<a href="<?php echo esc_url( still_page_url( 'impressum', 'impressum' ) ); ?>"><?php esc_html_e( 'Impressum', 'still' ); ?></a>
+			<a href="<?php echo esc_url( still_page_url( 'agb', 'agb' ) ); ?>"><?php esc_html_e( 'AGB', 'still' ); ?></a>
+			<a href="<?php echo esc_url( still_page_url( 'datenschutz', 'datenschutz' ) ); ?>"><?php esc_html_e( 'Datenschutz', 'still' ); ?></a>
+		</div>
+		<span><?php echo esc_html( nr_opt( 'nr_location', 'Vienna, AT' ) ); ?></span>
+	</footer>
 </main>
 <?php get_footer(); ?>

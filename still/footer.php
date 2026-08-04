@@ -36,6 +36,20 @@ $still_items = still_nav_items();
 	endforeach; ?>
 </nav>
 
+<div id="cookie-bar" role="dialog" aria-label="<?php esc_attr_e( 'Cookie notice', 'still' ); ?>">
+	<p><?php
+		printf(
+			/* translators: %s: link to the privacy page */
+			esc_html__( 'This site uses minimal cookies for basic functionality and, if you enquire, to handle your message. See %s.', 'still' ),
+			'<a href="' . esc_url( still_page_url( 'datenschutz', 'datenschutz' ) ) . '">' . esc_html__( 'Privacy', 'still' ) . '</a>'
+		);
+	?></p>
+	<div class="cookie-actions">
+		<button type="button" class="decline"><?php esc_html_e( 'Decline', 'still' ); ?></button>
+		<button type="button" class="accept"><?php esc_html_e( 'Accept', 'still' ); ?></button>
+	</div>
+</div>
+
 <?php wp_footer(); ?>
 </body>
 </html>

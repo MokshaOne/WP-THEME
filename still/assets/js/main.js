@@ -162,3 +162,19 @@
 	form.addEventListener('input', function (e) { if (e.target.name === 'travel_km') compute(); });
 	compute();
 })();
+
+/* ── cookie consent — minimal, remembered in localStorage ── */
+(function () {
+	'use strict';
+	var bar = document.getElementById('cookie-bar');
+	if (!bar) return;
+	var KEY = 'still_cookie';
+	try { if (localStorage.getItem(KEY)) return; } catch (e) {}
+	setTimeout(function () { bar.classList.add('show'); }, 800);
+	bar.addEventListener('click', function (e) {
+		var b = e.target.closest('button');
+		if (!b) return;
+		try { localStorage.setItem(KEY, b.classList.contains('accept') ? 'accepted' : 'declined'); } catch (e) {}
+		bar.classList.remove('show');
+	});
+})();

@@ -97,7 +97,6 @@ function still_nav_items() {
 	$items = array(
 		array( 'key' => 'work',    'label' => __( 'Work', 'still' ),    'url' => still_work_url(),                       'desc' => __( 'Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.', 'still' ) ),
 		array( 'key' => 'studio',  'label' => __( 'Studio', 'still' ),  'url' => still_page_url( 'about', 'about' ),     'desc' => __( 'A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.', 'still' ) ),
-		array( 'key' => 'journal', 'label' => __( 'Journal', 'still' ), 'url' => still_journal_url(),                    'desc' => __( 'Notes from the field — process, film, and the occasional long essay.', 'still' ) ),
 		array( 'key' => 'enquire', 'label' => __( 'Enquire', 'still' ), 'url' => still_page_url( 'enquire', 'enquire' ), 'desc' => __( 'Commissions and editorial — studio details, a price estimate, and the form. A reply within 24 hours.', 'still' ) ),
 	);
 	return apply_filters( 'still_nav_items', $items );
@@ -117,3 +116,38 @@ function still_cover( $id, $size = 'still-card' ) {
 		echo '<span class="ph">' . esc_html__( 'Photo', 'still' ) . '</span>';
 	}
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * Refinements — remove Journal, trim ACF, black-and-white backend
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* Keep nr_project (Work) alive; retire the Journal content type + taxonomy. */
+add_action( 'init', function () {
+	if ( post_type_exists( 'nr_journal' ) )       { unregister_post_type( 'nr_journal' ); }
+	if ( taxonomy_exists( 'nr_journal_cat' ) )     { unregister_taxonomy( 'nr_journal_cat' ); }
+}, 30 );
+
+/* Drop the sci-fi "VOID — Specimen Controls" ACF group; keep the useful ones. */
+add_action( 'acf/init', function () {
+	if ( function_exists( 'acf_remove_local_field_group' ) ) {
+		acf_remove_local_field_group( 'group_void_specimen' );
+	}
+}, 20 );
+
+/* Black-and-white backend: a grayscale admin colour scheme, made the default,
+ * plus overrides that neutralise the engine's gold accents in wp-admin. */
+add_action( 'admin_init', function () {
+	wp_admin_css_color(
+		'still',
+		__( 'Still · B&W', 'still' ),
+		get_template_directory_uri() . '/assets/css/admin-scheme.css',
+		array( '#0f0f10', '#17171a', '#000000', '#f6f6f7' )
+	);
+} );
+add_filter( 'get_user_option_admin_color', function () { return 'still'; } );
+add_action( 'admin_enqueue_scripts', function () {
+	wp_enqueue_style( 'still-admin', get_template_directory_uri() . '/assets/css/admin-still.css', array(), STILL_VER );
+}, 100 );
+add_action( 'login_enqueue_scripts', function () {
+	wp_enqueue_style( 'still-admin', get_template_directory_uri() . '/assets/css/admin-still.css', array(), STILL_VER );
+} );

@@ -13,6 +13,14 @@ $still_home_intro = ( is_front_page() && ! is_paged() );
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php wp_head(); ?>
+	<noscript><style>
+		/* Scroll always available: without JS, skip the intro and let the page scroll normally. */
+		#intro{display:none!important}
+		.brand-fixed{opacity:1!important}
+		body.intro{overflow:auto!important}
+		body.intro #home{position:static!important;transform:none!important;height:auto!important;overflow:visible!important}
+		body.intro .panel{min-height:78vh!important}
+	</style></noscript>
 </head>
 <body <?php body_class( $still_home_intro ? 'intro' : '' ); ?>>
 <?php wp_body_open(); ?>

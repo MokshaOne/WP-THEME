@@ -1,0 +1,25 @@
+/* Still — neutralise the engine's gold accents in wp-admin (black & white). */
+
+/* CSS-variable-based gold used by the engine's admin/theme-settings UI */
+:root,body,.wrap,#wpbody-content{
+	--accent:#141416 !important; --amber:#141416 !important; --void-gold:#141416 !important;
+	--nr-gold:#141416 !important; --gold:#141416 !important; --gold-deep:#000 !important;
+}
+
+/* inline-styled gold → ink */
+[style*="#f2ca50"],[style*="#F2CA50"],[style*="#d4af37"],[style*="#D4AF37"],
+[style*="#daa520"],[style*="#DAA520"],[style*="#dac769"],[style*="#DAC769"]{
+	color:#141416 !important;
+}
+[style*="background:#f2ca50"],[style*="background-color:#f2ca50"],
+[style*="background:#d4af37"],[style*="background-color:#d4af37"]{
+	background:#141416 !important; color:#fff !important;
+}
+
+/* engine Site-Control / Theme-Settings panels: gold buttons & rules → mono */
+.nr-control .button-primary,.nr-admin .button-primary,.nr-settings .button-primary{
+	background:#141416 !important; border-color:#141416 !important; color:#fff !important;
+}
+.nr-control a,.nr-admin a,.nr-settings a{color:#141416}
+.nr-control a:hover,.nr-admin a:hover,.nr-settings a:hover{color:#000}
+.nr-chapter,.nr-settings__group summary h2{color:#111 !important}

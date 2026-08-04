@@ -234,3 +234,10 @@ add_action( 'after_switch_theme', function () {
 	}
 	update_option( 'still_legal_seeded', '1' );
 } );
+
+/* Horizontal Work archive: show more per page so the filmstrip is worthwhile. */
+add_action( 'pre_get_posts', function ( $q ) {
+	if ( ! is_admin() && $q->is_main_query() && $q->is_post_type_archive( 'nr_project' ) ) {
+		$q->set( 'posts_per_page', 24 );
+	}
+} );

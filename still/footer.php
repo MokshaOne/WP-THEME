@@ -16,9 +16,9 @@ $still_items = still_nav_items();
 	<?php foreach ( $still_items as $it ) :
 		$active = '';
 		if ( ! is_front_page() ) {
-			if ( 'work' === $it['key'] && ( is_post_type_archive( 'nr_project' ) || is_singular( 'nr_project' ) || is_tax( 'nr_project_cat' ) || is_tax( 'nr_project_tag' ) || is_tax( 'nr_project_series' ) ) ) {
+			if ( 'work' === $it['key'] && ( is_post_type_archive( 'work' ) || is_singular( 'work' ) || is_tax( 'work_category' ) ) ) {
 				$active = ' active';
-			} elseif ( 'journal' === $it['key'] && ( is_post_type_archive( 'nr_journal' ) || is_singular( 'nr_journal' ) || is_tax( 'nr_journal_cat' ) || is_home() || is_singular( 'post' ) ) ) {
+			} elseif ( 'journal' === $it['key'] && ( is_home() || is_singular( 'post' ) || is_category() || is_tag() ) ) {
 				$active = ' active';
 			} elseif ( 'studio' === $it['key'] && is_page( array( 'about', 'studio' ) ) ) {
 				$active = ' active';
@@ -35,20 +35,6 @@ $still_items = still_nav_items();
 		);
 	endforeach; ?>
 </nav>
-
-<div id="cookie-bar" role="dialog" aria-label="<?php esc_attr_e( 'Cookie notice', 'still' ); ?>">
-	<p><?php
-		printf(
-			/* translators: %s: link to the privacy page */
-			esc_html__( 'This site uses minimal cookies for basic functionality and, if you enquire, to handle your message. See %s.', 'still' ),
-			'<a href="' . esc_url( still_page_url( 'datenschutz', 'datenschutz' ) ) . '">' . esc_html__( 'Privacy', 'still' ) . '</a>'
-		);
-	?></p>
-	<div class="cookie-actions">
-		<button type="button" class="decline"><?php esc_html_e( 'Decline', 'still' ); ?></button>
-		<button type="button" class="accept"><?php esc_html_e( 'Accept', 'still' ); ?></button>
-	</div>
-</div>
 
 <?php wp_footer(); ?>
 </body>

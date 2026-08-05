@@ -1,17 +1,20 @@
-/* Still — cinematic intro (front page), austere dock, scroll reveals.
-   Stoic build: slower, quieter, monumental. Vanilla, no dependencies. */
+/* Still — theme interactions: cinematic intro (front page), dock nav,
+   3D card tilt, scroll reveals. Vanilla, no dependencies. */
 (function () {
 	'use strict';
 	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
-	var $ = function (s) { return document.querySelector(s); };
-	var $$ = function (s) { return [].slice.call(document.querySelectorAll(s)); };
-	function after(ms, fn) { setTimeout(fn, reduce ? Math.min(ms, 140) : ms); }
+	var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+	var $ = function (s, c) { return (c || document).querySelector(s); };
+	var $$ = function (s, c) { return [].slice.call((c || document).querySelectorAll(s)); };
+	function after(ms, fn) { setTimeout(fn, reduce ? Math.min(ms, 120) : ms); }
 
-	var intro = $('#intro'), home = $('#home'), dock = $('#dock');
+	var intro = $('#intro');
+	var home = $('#home');
+	var dock = $('#dock');
 	var panels = $$('.panel');
 
-	/* ── scroll reveals (any page) ── */
-	(function () {
+	/* ── scroll reveals (works on any page) ── */
+	(function reveals() {
 		var els = $$('[data-rise]');
 		if (!els.length) return;
 		if (!('IntersectionObserver' in window) || reduce) { els.forEach(function (e) { e.classList.add('in'); }); return; }
@@ -22,199 +25,158 @@
 		els.forEach(function (e) { io.observe(e); });
 	})();
 
-	/* ── dock nav (global) ── */
-	function dockNav() {
+	/* ── 3D tilt on cards (skip reduced-motion / touch) ── */
+	(function tilt() {
+		if (reduce || coarse) return;
+		$$('.tilt-wrap').forEach(function (w) {
+			var c = w.querySelector('.tilt-el');
+			if (!c) return;
+			w.addEventListener('mousemove', function (e) {
+				var r = w.getBoundingClientRect();
+				var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+				c.style.transform = 'rotateY(' + (px * 8).toFixed(2) + 'deg) rotateX(' + (-py * 8).toFixed(2) + 'deg) translateZ(6px)';
+			});
+			w.addEventListener('mouseleave', function () { c.style.transform = ''; });
+		});
+	})();
+
+	/* ── dock (global nav) ── */
+	function dockScrollNav() {
 		if (!dock) return;
+		// On the home, dock items smooth-scroll to the matching teaser panel.
 		dock.querySelectorAll('a[data-key]').forEach(function (a) {
 			a.addEventListener('click', function (e) {
-				var t = document.getElementById('panel-' + a.getAttribute('data-key'));
-				if (t) { e.preventDefault(); t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
+				var target = document.getElementById('panel-' + a.getAttribute('data-key'));
+				if (target) { e.preventDefault(); target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
 			});
 		});
+		// active state follows the visible panel
 		if ('IntersectionObserver' in window && panels.length) {
 			var io = new IntersectionObserver(function (es) {
 				es.forEach(function (en) {
 					if (en.isIntersecting) {
-						var k = en.target.getAttribute('data-key');
-						dock.querySelectorAll('a[data-key]').forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-key') === k); });
+						var key = en.target.getAttribute('data-key');
+						dock.querySelectorAll('a[data-key]').forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-key') === key); });
 					}
 				});
-			}, { root: (document.body.classList.contains('intro') ? home : null), threshold: 0.6 });
+			}, { root: (document.body.classList.contains('intro') ? home : null), threshold: 0.55 });
 			panels.forEach(function (p) { io.observe(p); });
 		}
 	}
 
-	if (!intro) { if (home) dockNav(); return; }
+	/* ── if not the cinematic home, just show the dock and wire nav ── */
+	if (!intro) {
+		if (home) dockScrollNav();   // static home fallback (no intro)
+		return;
+	}
 
-	/* ══ CINEMATIC INTRO ══ */
+	/* ══ CINEMATIC INTRO (front page) ══ */
 	var boot = $('#boot'), fill = $('#fill'), pct = $('#pct'),
-		term = $('#term'), titlewrap = $('#titlewrap'), bigtitle = $('#bigtitle'), enterbig = $('#enterbig');
+		term = $('#term'), titlewrap = $('#titlewrap'),
+		bigtitle = $('#bigtitle'), enterbig = $('#enterbig');
 	var state = 'boot';
 
-	function b1() {
+	function boot1() {
 		requestAnimationFrame(function () { if (fill) fill.style.width = '100%'; });
-		var t0 = performance.now(), dur = reduce ? 150 : 3400;
+		var t0 = performance.now(), dur = reduce ? 150 : 2800;
 		(function tick() {
 			var p = Math.min(1, (performance.now() - t0) / dur);
-			if (pct) pct.textContent = Math.round(p * 100);
-			if (p < 1) requestAnimationFrame(tick); else after(700, b2);
+			if (pct) pct.textContent = Math.round(p * 100) + '%';
+			if (p < 1) requestAnimationFrame(tick); else after(520, boot2);
 		})();
 	}
 
-	function b2() {
+	function boot2() {
 		if (boot) boot.classList.add('hide');
 		if (term) term.classList.add('show');
-		var pr = 'visitor@' + (location.hostname || 'raveenthiran') + ':~$ ';
+		var prompt = 'visitor@' + (location.hostname || 'raveenthiran') + ':~$ ';
 		var typed = 'portfolio';
-		term.innerHTML = '<div><span class="muted">' + pr + '</span><span id="ty"></span><span class="cursor"></span></div>';
-		var ty = $('#ty'), i = 0;
+		var logs = [
+			'<span class="muted">› resolving archive…</span>',
+			'<span class="muted">› compositing interface…</span>',
+			'<span class="ok">✓ ready</span>'
+		];
+		term.innerHTML = '<div><span class="muted">' + prompt + '</span><span id="typed"></span><span class="cursor"></span></div>';
+		var tEl = $('#typed'), i = 0;
 		(function type() {
-			if (i <= typed.length) { ty.textContent = typed.slice(0, i++); after(140, type); }
-			else after(900, ok);
+			if (i <= typed.length) { tEl.textContent = typed.slice(0, i++); after(120, type); }
+			else after(620, runLogs);
 		})();
-		function ok() {
-			term.innerHTML = '<div><span class="muted">' + pr + '</span>portfolio</div>';
-			after(700, function () {
-				var d = document.createElement('div'); d.innerHTML = '<span class="muted">ready.</span>'; term.appendChild(d);
-				after(1100, b3);
-			});
+		function runLogs() {
+			term.innerHTML = '<div><span class="muted">' + prompt + '</span>portfolio</div>';
+			var j = 0;
+			(function next() {
+				if (j < logs.length) { var d = document.createElement('div'); d.innerHTML = logs[j++]; term.appendChild(d); after(500, next); }
+				else after(850, boot3);
+			})();
 		}
 	}
 
-	function decode(done) {
+	function epicTitle(done) {
 		var target = (bigtitle.getAttribute('data-text') || 'RAVEENTHIRAN').toUpperCase();
-		var pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#*';
-		var sp = [];
+		var pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/<>*+';
+		var spans = [];
 		bigtitle.innerHTML = '';
 		for (var k = 0; k < target.length; k++) {
-			var s = document.createElement('span'); s.className = 'ch';
-			s.textContent = target[k] === ' ' ? ' ' : pool[(Math.random() * pool.length) | 0];
-			bigtitle.appendChild(s); sp.push(s);
+			var s = document.createElement('span');
+			s.className = 'ch';
+			s.textContent = target[k] === ' ' ? ' ' : pool[(Math.random() * pool.length) | 0];
+			bigtitle.appendChild(s); spans.push(s);
 		}
-		if (reduce) { sp.forEach(function (s, k) { s.textContent = target[k] === ' ' ? ' ' : target[k]; s.classList.add('lock'); }); done && done(); return; }
-		var start = performance.now(), settle = 560, per = 180;
+		if (reduce) {
+			spans.forEach(function (s, k) { s.textContent = target[k] === ' ' ? ' ' : target[k]; s.classList.add('lock'); });
+			titlewrap.classList.add('decoded'); done && done(); return;
+		}
+		var start = performance.now(), settle = 420, per = 140;
 		(function run(now) {
-			var t = now - start, all = true;
+			var t = now - start, allDone = true;
 			for (var k = 0; k < target.length; k++) {
-				var la = settle + k * per;
-				if (t >= la) { if (!sp[k].classList.contains('lock')) { sp[k].textContent = target[k] === ' ' ? ' ' : target[k]; sp[k].classList.add('lock'); } }
-				else { all = false; sp[k].textContent = pool[(Math.random() * pool.length) | 0]; }
+				var lockAt = settle + k * per;
+				if (t >= lockAt) {
+					if (!spans[k].classList.contains('lock')) { spans[k].textContent = target[k] === ' ' ? ' ' : target[k]; spans[k].classList.add('lock'); }
+				} else { allDone = false; spans[k].textContent = pool[(Math.random() * pool.length) | 0]; }
 			}
-			if (!all) requestAnimationFrame(run); else done && done();
+			if (!allDone) requestAnimationFrame(run);
+			else { titlewrap.classList.add('decoded'); done && done(); }
 		})(start);
 	}
 
-	function b3() {
+	function boot3() {
 		if (term) term.classList.remove('show');
-		after(320, function () {
+		after(240, function () {
 			titlewrap.classList.add('show');
-			decode(function () { after(1100, function () { enterbig.classList.add('show'); state = 'ready'; arm(); }); });
+			epicTitle(function () {
+				after(520, function () { enterbig.classList.add('show'); state = 'ready'; arm(); });
+			});
 		});
 	}
 
 	var evs = ['wheel', 'touchstart', 'keydown', 'click'];
-	function arm() { evs.forEach(function (e) { window.addEventListener(e, go, { passive: true }); }); }
-	function go(e) {
+	function arm() { evs.forEach(function (ev) { window.addEventListener(ev, tryEnter, { passive: true }); }); }
+	function tryEnter(e) {
 		if (state !== 'ready') return;
 		if (e.type === 'keydown' && ['Enter', ' ', 'ArrowDown', 'PageDown'].indexOf(e.key) === -1) return;
-		state = 'in';
-		evs.forEach(function (ev) { window.removeEventListener(ev, go); });
+		state = 'entering';
+		evs.forEach(function (ev) { window.removeEventListener(ev, tryEnter); });
 		home.classList.add('in'); intro.classList.add('gone');
-		after(1200, function () {
+		after(1000, function () {
 			intro.style.display = 'none';
 			document.body.classList.add('entered');
-			dockNav();
-			var shown = false;
-			function show() { if (!shown) { shown = true; dock.classList.add('show'); } }
-			home.addEventListener('scroll', function () { if (home.scrollTop > 40) show(); });
-			after(1600, show);
+			state = 'home';
+			dockScrollNav();
+			armDockReveal();
 		});
 	}
 
-	b1();
-})();
-
-/* ── price engine (enquire) — runs on any page with [data-price-engine] ── */
-(function () {
-	'use strict';
-	var form = document.querySelector('[data-price-engine]');
-	if (!form) return;
-	var cur = form.getAttribute('data-currency') || '€';
-	function money(n) { return cur + Math.round(n).toLocaleString(); }
-	function compute() {
-		var t = form.querySelector('input[name="project_type"]:checked');
-		var total = t ? (parseFloat(t.getAttribute('data-base')) || 0) : 0;
-		var parts = [];
-		if (t) { parts.push(t.value); }
-		[].forEach.call(form.querySelectorAll('input[name="addons[]"]:checked'), function (x) {
-			total += parseFloat(x.getAttribute('data-price')) || 0; parts.push(x.value);
-		});
-		var lic = form.querySelector('input[name="license"]');
-		if (lic && lic.checked) { total += parseFloat(lic.getAttribute('data-price')) || 0; parts.push('Commercial license'); }
-		var km = form.querySelector('input[name="travel_km"]');
-		if (km) { var k = parseFloat(km.value) || 0; if (k > 0) { total += k * (parseFloat(km.getAttribute('data-per-km')) || 0); parts.push(Math.round(k) + ' km'); } }
-		var out = form.querySelector('[data-estimate]'); if (out) out.textContent = money(total);
-		var hid = form.querySelector('[data-estimate-input]'); if (hid) hid.value = money(total);
-		var bd = form.querySelector('[data-breakdown]'); if (bd) bd.value = parts.join(' · ');
-		var sl = form.querySelector('[data-slug]'); if (sl && t) sl.value = t.getAttribute('data-slug') || '';
+	function armDockReveal() {
+		if (!dock) return;
+		var shown = false;
+		function show() { if (!shown) { shown = true; dock.classList.add('show'); } }
+		home.addEventListener('scroll', function () { if (home.scrollTop > 40) show(); });
+		after(1400, show); // discoverable even without scroll
 	}
-	form.addEventListener('change', compute);
-	form.addEventListener('input', function (e) { if (e.target.name === 'travel_km') compute(); });
-	compute();
-})();
 
-/* ── cookie consent — minimal, remembered in localStorage ── */
-(function () {
-	'use strict';
-	var bar = document.getElementById('cookie-bar');
-	if (!bar) return;
-	var KEY = 'still_cookie';
-	try { if (localStorage.getItem(KEY)) return; } catch (e) {}
-	setTimeout(function () { bar.classList.add('show'); }, 800);
-	bar.addEventListener('click', function (e) {
-		var b = e.target.closest('button');
-		if (!b) return;
-		try { localStorage.setItem(KEY, b.classList.contains('accept') ? 'accepted' : 'declined'); } catch (e) {}
-		bar.classList.remove('show');
-	});
-})();
-
-/* ── horizontal subpages: full-page native scroll-snap panels; the wheel /
-   trackpad drives sideways movement. Tall panels (form / faq) scroll
-   vertically inside themselves first, then hand back to the filmstrip.
-   Phones + reduced-motion revert to a plain vertical stack (see CSS). ── */
-(function () {
-	'use strict';
-	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
-	var tracks = [].slice.call(document.querySelectorAll('.hx__track'));
-	if (!tracks.length) return;
-	function active() { return window.innerWidth > 820 && !reduce; }
-
-	tracks.forEach(function (track) {
-		track.addEventListener('wheel', function (e) {
-			if (!active()) return;                       // vertical mode: let it be
-			if (e.ctrlKey) return;                       // pinch-zoom
-			// Let a tall inner panel consume vertical intent until it bottoms out.
-			var panel = e.target.closest && e.target.closest('.hx-panel--form, .hx-panel--faq');
-			if (panel && panel.scrollHeight > panel.clientHeight + 1) {
-				var atTop = panel.scrollTop <= 0;
-				var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
-				if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return;
-			}
-			// Trackpads already send deltaX for sideways swipes — leave those alone.
-			var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-			if (!d) return;
-			track.scrollLeft += d;
-			e.preventDefault();
-		}, { passive: false });
-
-		// Keyboard: arrows / page keys page the filmstrip when it's focused.
-		track.setAttribute('tabindex', '-1');
-		track.addEventListener('keydown', function (e) {
-			if (!active()) return;
-			var step = window.innerWidth;
-			if (e.key === 'ArrowRight' || e.key === 'PageDown') { track.scrollBy({ left: step, behavior: 'smooth' }); e.preventDefault(); }
-			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { track.scrollBy({ left: -step, behavior: 'smooth' }); e.preventDefault(); }
-		});
-	});
+	// GO
+	document.body.classList.add('js-intro');
+	boot1();
 })();

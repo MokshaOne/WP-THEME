@@ -180,3 +180,36 @@
 	document.body.classList.add('js-intro');
 	boot1();
 })();
+
+/* ── price engine (Enquire) — isolated + guarded: only runs if the form is on
+   the page, so it can never affect the intro / home / work. Computes a live
+   estimate and writes it (plus a breakdown) into hidden fields for the email. */
+(function () {
+	'use strict';
+	var form = document.querySelector('[data-price-engine]');
+	if (!form) return;
+	var cur = form.getAttribute('data-currency') || '€';
+	function money(n) { return cur + Math.round(n).toLocaleString(); }
+	function num(el, attr) { return el ? (parseFloat(el.getAttribute(attr)) || 0) : 0; }
+
+	function compute() {
+		var parts = [], total = 0;
+		var type = form.querySelector('input[name="project_type"]:checked');
+		if (type) { total += num(type, 'data-base'); parts.push(type.value); }
+		[].forEach.call(form.querySelectorAll('input[name="addons[]"]:checked'), function (x) {
+			total += num(x, 'data-price'); parts.push(x.value);
+		});
+		var lic = form.querySelector('input[name="license"]');
+		if (lic && lic.checked) { total += num(lic, 'data-price'); parts.push('Commercial licence'); }
+		var km = form.querySelector('input[name="travel_km"]');
+		if (km) { var k = parseFloat(km.value) || 0; if (k > 0) { total += k * num(km, 'data-per-km'); parts.push(Math.round(k) + ' km'); } }
+
+		var out = form.querySelector('[data-estimate]'); if (out) out.textContent = money(total);
+		var hid = form.querySelector('[data-estimate-input]'); if (hid) hid.value = money(total);
+		var bd = form.querySelector('[data-breakdown]'); if (bd) bd.value = parts.join(' · ');
+	}
+
+	form.addEventListener('change', compute);
+	form.addEventListener('input', function (e) { if (e.target && e.target.name === 'travel_km') compute(); });
+	compute();
+})();

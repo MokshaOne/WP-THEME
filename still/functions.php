@@ -80,14 +80,110 @@ add_action( 'init', function () {
 	) );
 } );
 
-/* Larger archives so galleries breathe; flush rewrites once. */
+/* Larger archives so galleries breathe; flush rewrites once. Also make sure an
+   "Enquire" page exists so the dock link + the price-engine template resolve. */
 add_action( 'after_switch_theme', function () {
 	if ( ! get_option( 'still_flushed' ) ) {
 		flush_rewrite_rules();
 		update_option( 'still_flushed', '1' );
 	}
+	if ( ! get_page_by_path( 'enquire' ) ) {
+		wp_insert_post( array(
+			'post_title'   => __( 'Enquire', 'still' ),
+			'post_name'    => 'enquire',
+			'post_status'  => 'publish',
+			'post_type'    => 'page',
+			'post_content' => '',
+		) );
+	}
 } );
 add_action( 'switch_theme', function () { delete_option( 'still_flushed' ); } );
+
+/* ── Enquiry: pricing model, FAQ, and the mail handler ──────────────────
+   All three are LIGHTWEIGHT + optional: the front-end price engine and the
+   enquire template read these; nothing here runs unless the Enquire page /
+   form is used, so it cannot affect the intro, home, or work pages. Every
+   value is filterable, so prices/FAQ can be tuned without touching markup. */
+
+/** Pricing config for the live estimate. Filter 'still_quote_data' to edit. */
+function still_quote_data() {
+	return apply_filters( 'still_quote_data', array(
+		'currency' => '€',
+		'types'    => array(
+			array( 'slug' => 'portrait',   'label' => __( 'Portrait', 'still' ),   'base' => 450 ),
+			array( 'slug' => 'editorial',  'label' => __( 'Editorial', 'still' ),  'base' => 1200 ),
+			array( 'slug' => 'event',      'label' => __( 'Event', 'still' ),      'base' => 900 ),
+			array( 'slug' => 'commercial', 'label' => __( 'Commercial', 'still' ), 'base' => 1800 ),
+		),
+		'extras'   => array(
+			array( 'slug' => 'retouch', 'label' => __( 'Advanced retouching', 'still' ), 'price' => 180 ),
+			array( 'slug' => 'express', 'label' => __( 'Express delivery', 'still' ),    'price' => 240 ),
+			array( 'slug' => 'second',  'label' => __( 'Second shooter', 'still' ),      'price' => 300 ),
+			array( 'slug' => 'makeup',  'label' => __( 'Hair & makeup', 'still' ),       'price' => 350 ),
+		),
+		'license'  => 150,   // commercial usage licence, flat
+		'per_km'   => 0.42,  // travel, per km
+	) );
+}
+
+/** FAQ shown under the enquiry form. Filter 'still_faq_items' to edit. */
+function still_faq_items() {
+	return apply_filters( 'still_faq_items', array(
+		array( 'q' => __( 'How do we get started?', 'still' ),          'a' => __( 'Send an enquiry with a few details about your project. I reply within 24 hours with availability and a firm quote.', 'still' ) ),
+		array( 'q' => __( 'Is the estimate final?', 'still' ),          'a' => __( 'It is indicative — a fast way to gauge scope. The final quote is confirmed by email once we have talked through the details.', 'still' ) ),
+		array( 'q' => __( 'Do you travel?', 'still' ),                  'a' => __( 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.', 'still' ) ),
+		array( 'q' => __( 'When do I receive the images?', 'still' ),   'a' => __( 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.', 'still' ) ),
+		array( 'q' => __( 'How does licensing work?', 'still' ),        'a' => __( 'Personal use is included. Commercial usage is a flat licence added to the project.', 'still' ) ),
+	) );
+}
+
+/** Handle the enquiry form (admin-post.php?action=still_enquiry). */
+function still_handle_enquiry() {
+	$back = wp_get_referer() ? wp_get_referer() : home_url( '/' );
+
+	// Nonce.
+	if ( empty( $_POST['still_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['still_nonce'] ) ), 'still_enquiry' ) ) {
+		wp_safe_redirect( add_query_arg( 'enquiry', 'error', $back ) );
+		exit;
+	}
+	// Honeypot — bots fill this; pretend success and drop it.
+	if ( ! empty( $_POST['still_company'] ) ) {
+		wp_safe_redirect( add_query_arg( 'enquiry', 'sent', $back ) );
+		exit;
+	}
+
+	$name     = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
+	$email    = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+	$notes    = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
+	$type     = sanitize_text_field( wp_unslash( $_POST['project_type'] ?? '' ) );
+	$date     = sanitize_text_field( wp_unslash( $_POST['preferred_date'] ?? '' ) );
+	$estimate = sanitize_text_field( wp_unslash( $_POST['estimate'] ?? '' ) );
+	$break    = sanitize_text_field( wp_unslash( $_POST['breakdown'] ?? '' ) );
+
+	if ( '' === $name || ! is_email( $email ) || '' === $notes ) {
+		wp_safe_redirect( add_query_arg( 'enquiry', 'error', $back ) );
+		exit;
+	}
+
+	$rows = array( __( 'Name', 'still' ) => $name, __( 'Email', 'still' ) => $email );
+	if ( $type )     { $rows[ __( 'Project', 'still' ) ]        = $type; }
+	if ( $date )     { $rows[ __( 'Preferred date', 'still' ) ] = $date; }
+	if ( $estimate ) { $rows[ __( 'Estimate', 'still' ) ]       = $estimate; }
+	if ( $break )    { $rows[ __( 'Breakdown', 'still' ) ]      = $break; }
+
+	$body = '';
+	foreach ( $rows as $k => $v ) { $body .= $k . ': ' . $v . "\n"; }
+	$body .= "\n" . __( 'Message', 'still' ) . ":\n" . $notes . "\n";
+
+	$subject = sprintf( '[%s] %s', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ), __( 'New enquiry', 'still' ) );
+	$headers = array( 'Reply-To: ' . $name . ' <' . $email . '>' );
+	$ok      = wp_mail( get_option( 'admin_email' ), $subject, $body, $headers );
+
+	wp_safe_redirect( add_query_arg( 'enquiry', $ok ? 'sent' : 'error', $back ) );
+	exit;
+}
+add_action( 'admin_post_still_enquiry', 'still_handle_enquiry' );
+add_action( 'admin_post_nopriv_still_enquiry', 'still_handle_enquiry' );
 
 /* ── URL helpers ───────────────────────────────────────────────────── */
 

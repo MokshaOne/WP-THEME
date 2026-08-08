@@ -260,7 +260,10 @@
 	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
 	var tracks = [].slice.call(document.querySelectorAll('.hx__track'));
 	if (!tracks.length) return;
-	function active() { return window.innerWidth > 820 && !reduce; }
+	// Desktop: convert vertical wheel to sideways. Mobile (<=820) uses native
+	// touch-swipe on the track. Reduce-Motion does NOT disable this — otherwise
+	// a wheel user could get stuck on a full-height horizontal panel.
+	function active() { return window.innerWidth > 820; }
 
 	tracks.forEach(function (track) {
 		track.addEventListener('wheel', function (e) {
@@ -283,9 +286,9 @@
 		track.setAttribute('tabindex', '-1');
 		track.addEventListener('keydown', function (e) {
 			if (!active()) return;
-			var step = window.innerWidth;
-			if (e.key === 'ArrowRight' || e.key === 'PageDown') { track.scrollBy({ left: step, behavior: 'smooth' }); e.preventDefault(); }
-			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { track.scrollBy({ left: -step, behavior: 'smooth' }); e.preventDefault(); }
+			var step = window.innerWidth, beh = reduce ? 'auto' : 'smooth';
+			if (e.key === 'ArrowRight' || e.key === 'PageDown') { track.scrollBy({ left: step, behavior: beh }); e.preventDefault(); }
+			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { track.scrollBy({ left: -step, behavior: beh }); e.preventDefault(); }
 		});
 	});
 })();

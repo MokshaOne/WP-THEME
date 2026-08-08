@@ -266,14 +266,9 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 	.hx-panel--media img{max-height:66vh}
 	.hx-cue{left:var(--gut);right:auto}
 }
-/* only reduced-motion falls back to a vertical stack */
-@media(prefers-reduced-motion:reduce){
-	.hx{height:auto}
-	.hx__track{display:block;height:auto;overflow:visible;scroll-snap-type:none}
-	.hx-panel{flex:none;width:auto;height:auto;min-height:auto;padding:3.5rem var(--gut);scroll-snap-align:none;overflow:visible}
-	.hx-panel--media img{max-height:none;width:100%}
-	.hx-cue{display:none}
-}
+/* NOTE: subpages stay HORIZONTAL for everyone — including Reduce-Motion —
+   because horizontal is the intended design. (Native snap is instant, so it
+   does not cause the motion Reduce-Motion guards against.) */
 
 /* reveals */
 [data-rise]{opacity:0;transform:translateY(30px);transition:opacity 1s,transform 1s}

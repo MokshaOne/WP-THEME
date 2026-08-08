@@ -97,24 +97,92 @@ add_action( 'init', function () {
 	) );
 } );
 
-/* Larger archives so galleries breathe; flush rewrites once. Also make sure an
-   "Enquire" page exists so the dock link + the price-engine template resolve. */
-add_action( 'after_switch_theme', function () {
-	if ( ! get_option( 'still_flushed' ) ) {
-		flush_rewrite_rules();
-		update_option( 'still_flushed', '1' );
+/* Make sure the Studio (About) + Enquire pages actually exist, so the dock
+   links never dead-end on an empty page. Runs on activation AND once on a
+   normal load (guarded by an option) in case the theme was already active
+   when this code arrived. Flush rewrites once. */
+function still_ensure_pages() {
+	$pages = array(
+		'about'   => array(
+			'title'   => __( 'Studio', 'still' ),
+			'content' => "I'm a photographer based in Vienna, working across Europe on portraiture, architecture and editorial commissions.\n\nThis is placeholder text — edit this page (Pages → Studio) to tell your story.",
+		),
+		'enquire' => array( 'title' => __( 'Enquire', 'still' ), 'content' => '' ),
+	);
+	foreach ( $pages as $slug => $p ) {
+		if ( ! get_page_by_path( $slug ) ) {
+			wp_insert_post( array(
+				'post_title'   => $p['title'],
+				'post_name'    => $slug,
+				'post_status'  => 'publish',
+				'post_type'    => 'page',
+				'post_content' => $p['content'],
+			) );
+		}
 	}
-	if ( ! get_page_by_path( 'enquire' ) ) {
-		wp_insert_post( array(
-			'post_title'   => __( 'Enquire', 'still' ),
-			'post_name'    => 'enquire',
-			'post_status'  => 'publish',
-			'post_type'    => 'page',
-			'post_content' => '',
-		) );
+}
+add_action( 'after_switch_theme', function () {
+	flush_rewrite_rules();
+	update_option( 'still_flushed', '1' );
+	still_ensure_pages();
+} );
+add_action( 'switch_theme', function () { delete_option( 'still_flushed' ); delete_option( 'still_pages_ready' ); } );
+// Belt-and-braces: ensure the pages exist even without a fresh theme switch.
+add_action( 'wp_loaded', function () {
+	if ( get_option( 'still_pages_ready' ) ) { return; }
+	still_ensure_pages();
+	update_option( 'still_pages_ready', '1' );
+} );
+
+/* ── Project fields — structured data on each Work item, native meta box
+   (no ACF plugin). Client / Role / Year / Location / Website. Shown on the
+   single-project page. Backend-only + a defensive front-end read, so it
+   cannot affect the intro, home, or scroll. ── */
+function still_project_fields() {
+	return apply_filters( 'still_project_fields', array(
+		'client'   => __( 'Client', 'still' ),
+		'role'     => __( 'Role', 'still' ),
+		'year'     => __( 'Year', 'still' ),
+		'location' => __( 'Location', 'still' ),
+		'website'  => __( 'Website', 'still' ),
+	) );
+}
+add_action( 'add_meta_boxes', function () {
+	add_meta_box( 'still_project', __( 'Project details', 'still' ), 'still_project_box', 'work', 'side', 'high' );
+} );
+function still_project_box( $post ) {
+	wp_nonce_field( 'still_project_save', 'still_project_nonce' );
+	echo '<div style="display:grid;gap:.7rem">';
+	foreach ( still_project_fields() as $key => $label ) {
+		$val = get_post_meta( $post->ID, '_still_' . $key, true );
+		printf(
+			'<label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#777">%s<input type="text" name="still_%s" value="%s" style="width:100%%;margin-top:4px"></label>',
+			esc_html( $label ), esc_attr( $key ), esc_attr( $val )
+		);
+	}
+	echo '</div>';
+}
+add_action( 'save_post_work', function ( $post_id ) {
+	if ( ! isset( $_POST['still_project_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['still_project_nonce'] ) ), 'still_project_save' ) ) { return; }
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return; }
+	if ( ! current_user_can( 'edit_post', $post_id ) ) { return; }
+	foreach ( array_keys( still_project_fields() ) as $key ) {
+		$raw = isset( $_POST[ 'still_' . $key ] ) ? wp_unslash( $_POST[ 'still_' . $key ] ) : '';
+		$val = ( 'website' === $key ) ? esc_url_raw( $raw ) : sanitize_text_field( $raw );
+		if ( '' === $val ) { delete_post_meta( $post_id, '_still_' . $key ); }
+		else { update_post_meta( $post_id, '_still_' . $key, $val ); }
 	}
 } );
-add_action( 'switch_theme', function () { delete_option( 'still_flushed' ); } );
+/** Return the filled-in project fields as label => value (skips empties). */
+function still_project_meta( $post_id = 0 ) {
+	$post_id = $post_id ? $post_id : get_the_ID();
+	$out = array();
+	foreach ( still_project_fields() as $key => $label ) {
+		$v = get_post_meta( $post_id, '_still_' . $key, true );
+		if ( '' !== $v ) { $out[ $key ] = array( 'label' => $label, 'value' => $v ); }
+	}
+	return $out;
+}
 
 /* ── Enquiry: pricing model, FAQ, and the mail handler ──────────────────
    All three are LIGHTWEIGHT + optional: the front-end price engine and the
@@ -233,8 +301,6 @@ function still_nav_items() {
 	$items = array(
 		array( 'key' => 'work',    'label' => __( 'Work', 'still' ),    'url' => still_work_url(),        'desc' => __( 'Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.', 'still' ) ),
 		array( 'key' => 'studio',  'label' => __( 'Studio', 'still' ),  'url' => still_page_url( 'about', 'about' ), 'desc' => __( 'A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.', 'still' ) ),
-		array( 'key' => 'journal', 'label' => __( 'Journal', 'still' ), 'url' => still_journal_url(),     'desc' => __( 'Notes from the field — process, film, and the occasional long essay.', 'still' ) ),
-		array( 'key' => 'contact', 'label' => __( 'Contact', 'still' ), 'url' => still_page_url( 'contact', 'contact' ), 'desc' => __( 'Studio details, availability and the ways to reach me.', 'still' ) ),
 		array( 'key' => 'enquire', 'label' => __( 'Enquire', 'still' ), 'url' => still_page_url( 'enquire', 'enquire' ), 'desc' => __( 'Commissions, editorial and personal series. Start a project.', 'still' ) ),
 	);
 	return apply_filters( 'still_nav_items', $items );

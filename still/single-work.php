@@ -33,6 +33,22 @@ get_header(); ?>
 			<div class="hx-panel hx-panel--media"><figure><?php the_post_thumbnail( 'still-hero', array( 'alt' => esc_attr( get_the_title() ) ) ); ?></figure></div>
 		<?php endif; ?>
 
+		<?php $still_meta = function_exists( 'still_project_meta' ) ? still_project_meta() : array(); if ( $still_meta ) : ?>
+			<section class="hx-panel hx-panel--contact">
+				<dl class="contact-list">
+					<?php foreach ( $still_meta as $key => $f ) : ?>
+						<div class="row"><span class="k"><?php echo esc_html( $f['label'] ); ?></span>
+						<?php if ( 'website' === $key ) : ?>
+							<a href="<?php echo esc_url( $f['value'] ); ?>" target="_blank" rel="noopener"><?php echo esc_html( preg_replace( '#^https?://#', '', untrailingslashit( $f['value'] ) ) ); ?></a>
+						<?php else : ?>
+							<span><?php echo esc_html( $f['value'] ); ?></span>
+						<?php endif; ?>
+						</div>
+					<?php endforeach; ?>
+				</dl>
+			</section>
+		<?php endif; ?>
+
 		<?php if ( $still_has_content ) : ?>
 			<section class="hx-panel hx-panel--wide"><div class="prose"><?php the_content(); ?></div></section>
 		<?php endif; ?>

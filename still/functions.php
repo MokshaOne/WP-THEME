@@ -66,6 +66,54 @@ function still_intro_video() {
 	return apply_filters( 'still_intro_video', $url );
 }
 
+/* ── ACF / Theme-Settings readers (ported from the obscura engine) ───────
+   Your existing content is stored in ACF fields (project meta) and Theme
+   Settings options (about/stats). These guarded helpers read that data with
+   no plugin required, so the recovered projects + Studio show their real
+   content. If the ACF plugin is active, its real get_field() takes over. */
+if ( ! function_exists( 'get_field' ) ) {
+	function get_field( $selector, $post_id = false, $format = true ) {
+		if ( 'option' === $post_id || 'options' === $post_id ) {
+			$v = get_option( 'options_' . $selector, null );
+			return ( false === $v ) ? null : $v;
+		}
+		$pid = $post_id ? $post_id : get_the_ID();
+		if ( ! $pid ) { return null; }
+		$v = get_post_meta( $pid, $selector, true );
+		return ( '' === $v ) ? null : $v;
+	}
+}
+if ( ! function_exists( 'nr_opt' ) ) {
+	function nr_opt( $key, $default = '' ) { $v = get_option( $key, $default ); return ( '' === $v ) ? $default : $v; }
+}
+if ( ! function_exists( 'nr_field' ) ) {
+	function nr_field( $key, $post_id = false ) {
+		if ( function_exists( 'get_field' ) ) { return get_field( $key, $post_id ); }
+		return get_post_meta( $post_id ? $post_id : get_the_ID(), $key, true );
+	}
+}
+/** Normalise an ACF image/gallery value (ID, or array with ID/id) to an int. */
+function still_attid( $v ) {
+	if ( is_array( $v ) ) { return (int) ( $v['ID'] ?? $v['id'] ?? 0 ); }
+	return (int) $v;
+}
+/** A project's cover attachment ID: project_cover → featured image. */
+function still_project_cover( $id = 0 ) {
+	$id = $id ? $id : get_the_ID();
+	$cover = still_attid( nr_field( 'project_cover', $id ) );
+	if ( ! $cover && has_post_thumbnail( $id ) ) { $cover = (int) get_post_thumbnail_id( $id ); }
+	return $cover;
+}
+/** A project's gallery as an array of attachment IDs. */
+function still_project_gallery( $id = 0 ) {
+	$id = $id ? $id : get_the_ID();
+	$g  = nr_field( 'project_gallery', $id );
+	if ( ! is_array( $g ) ) { return array(); }
+	$out = array();
+	foreach ( $g as $item ) { $gid = still_attid( $item ); if ( $gid ) { $out[] = $gid; } }
+	return $out;
+}
+
 /* ── Content engine: Work (portfolio) — unlimited entries, native gallery ── */
 add_action( 'init', function () {
 
@@ -147,6 +195,15 @@ add_action( 'init', function () {
 			'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
 			'rewrite'      => array( 'slug' => $type ),
 		) );
+		// The obscura project category, so recovered projects keep their categories.
+		if ( 'nr_project' === $type && ! taxonomy_exists( 'nr_project_cat' ) ) {
+			register_taxonomy( 'nr_project_cat', 'nr_project', array(
+				'labels'       => array( 'name' => __( 'Project Categories', 'still' ) ),
+				'public'       => true,
+				'hierarchical' => true,
+				'show_ui'      => true,
+			) );
+		}
 	}
 }, 8 );
 // Show recovered posts alongside new ones in the /work/ archive.

@@ -83,6 +83,11 @@ $still_sent  = isset( $_GET['enquiry'] ) ? sanitize_key( wp_unslash( $_GET['enqu
 		</form>
 
 		<aside class="enquire-side">
+			<div class="side-estimate" aria-hidden="true">
+				<span class="estimate__k"><?php esc_html_e( 'Estimate', 'still' ); ?></span>
+				<span class="estimate__v" data-estimate>—</span>
+				<span class="estimate__note"><?php esc_html_e( 'Updates as you choose. Final quote by email.', 'still' ); ?></span>
+			</div>
 			<div class="contact-list">
 				<div class="row"><span class="k"><?php esc_html_e( 'Email', 'still' ); ?></span><a href="mailto:<?php echo esc_attr( $still_email ); ?>"><?php echo esc_html( $still_email ); ?></a></div>
 				<div class="row"><span class="k"><?php esc_html_e( 'Studio', 'still' ); ?></span><span><?php esc_html_e( 'Vienna, AT', 'still' ); ?></span></div>

@@ -188,9 +188,27 @@
 	'use strict';
 	var form = document.querySelector('[data-price-engine]');
 	if (!form) return;
+	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
 	var cur = form.getAttribute('data-currency') || '€';
+	// Every estimate readout on the page (the inline one + the sticky sidebar mirror).
+	var outs = [].slice.call(document.querySelectorAll('[data-estimate]'));
 	function money(n) { return cur + Math.round(n).toLocaleString(); }
 	function num(el, attr) { return el ? (parseFloat(el.getAttribute(attr)) || 0) : 0; }
+
+	// Count-up: tween the displayed number to a new total (skipped for reduced-motion).
+	var shown = 0, raf = null;
+	function paint(v) { var t = money(v); outs.forEach(function (o) { o.textContent = t; }); }
+	function animateTo(total) {
+		if (reduce || shown === total) { shown = total; paint(total); return; }
+		if (raf) cancelAnimationFrame(raf);
+		var from = shown, delta = total - from, t0 = performance.now(), dur = 420;
+		(function step(now) {
+			var p = Math.min(1, (now - t0) / dur);
+			var e = 1 - Math.pow(1 - p, 3); // easeOutCubic
+			paint(from + delta * e);
+			if (p < 1) raf = requestAnimationFrame(step); else { shown = total; paint(total); }
+		})(t0);
+	}
 
 	function compute() {
 		var parts = [], total = 0;
@@ -204,7 +222,7 @@
 		var km = form.querySelector('input[name="travel_km"]');
 		if (km) { var k = parseFloat(km.value) || 0; if (k > 0) { total += k * num(km, 'data-per-km'); parts.push(Math.round(k) + ' km'); } }
 
-		var out = form.querySelector('[data-estimate]'); if (out) out.textContent = money(total);
+		animateTo(total);
 		var hid = form.querySelector('[data-estimate-input]'); if (hid) hid.value = money(total);
 		var bd = form.querySelector('[data-breakdown]'); if (bd) bd.value = parts.join(' · ');
 	}

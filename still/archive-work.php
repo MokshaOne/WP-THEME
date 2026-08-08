@@ -20,13 +20,13 @@ get_header(); ?>
 		<?php endif; ?>
 	</header>
 
-	<?php if ( have_posts() ) : ?>
+	<?php if ( have_posts() ) : $still_n = ( max( 1, (int) get_query_var( "paged" ) ) - 1 ) * (int) get_option( "posts_per_page" ); ?>
 		<div class="work-grid">
-			<?php while ( have_posts() ) : the_post();
+			<?php while ( have_posts() ) : the_post(); $still_n++;
 				$still_terms = get_the_terms( get_the_ID(), 'work_category' );
 				$still_cat   = ( $still_terms && ! is_wp_error( $still_terms ) ) ? $still_terms[0]->name : '';
 			?>
-			<div class="item tilt-wrap">
+			<div class="item tilt-wrap" data-rise>
 				<a class="work-card tilt-el" href="<?php the_permalink(); ?>">
 					<span class="frame"><?php
 						if ( has_post_thumbnail() ) {
@@ -36,7 +36,8 @@ get_header(); ?>
 						}
 					?></span>
 					<span class="m">
-						<h3><?php the_title(); ?></h3>
+							<span class="idx"><?php echo esc_html( still_pad( $still_n ) ); ?></span>
+							<h3><?php the_title(); ?></h3>
 						<?php if ( $still_cat ) : ?><span class="cat"><?php echo esc_html( $still_cat ); ?></span><?php endif; ?>
 					</span>
 				</a>

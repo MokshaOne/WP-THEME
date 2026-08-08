@@ -23,6 +23,7 @@ $still_i = 0;
 <div id="home">
 <?php foreach ( $still_items as $it ) : $still_i++; ?>
 	<section class="panel" id="panel-<?php echo esc_attr( $it['key'] ); ?>" data-key="<?php echo esc_attr( $it['key'] ); ?>">
+		<span class="panel__ghost" aria-hidden="true"><?php echo esc_html( still_pad( $still_i ) ); ?></span>
 		<span class="panel__idx"><?php echo esc_html( still_pad( $still_i ) . ' — ' . $it['label'] ); ?></span>
 		<h2 class="panel__name"><?php echo esc_html( $it['label'] ); ?><?php echo 'enquire' === $it['key'] ? '<em>.</em>' : ''; ?></h2>
 		<div class="panel__row">

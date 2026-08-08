@@ -176,9 +176,27 @@
 		after(1400, show); // discoverable even without scroll
 	}
 
+	/* ══ VIDEO-SEQUENCE INTRO ══ — plays the intro video, reveals the
+	   "scroll right" cue, then the same rightward slide into home. Falls back
+	   to the animated sequence if the video is missing or can't play. */
+	function videoIntro() {
+		var v = document.getElementById('introvid');
+		function ready() { if (state === 'boot') { state = 'ready'; enterbig.classList.add('show'); arm(); } }
+		if (!v) { ready(); return; }
+		var p = v.play && v.play();
+		if (p && p.catch) { p.catch(function () {}); }
+		v.addEventListener('ended', ready);
+		v.addEventListener('error', ready);
+		// let the viewer scroll on past the video at any point…
+		after(1400, ready);
+		// …and a hard safety net in case 'ended' never fires
+		after(reduce ? 300 : 12000, ready);
+	}
+
 	// GO
 	document.body.classList.add('js-intro');
-	boot1();
+	if (intro.getAttribute('data-mode') === 'video') { videoIntro(); }
+	else { boot1(); }
 })();
 
 /* ── price engine (Enquire) — isolated + guarded: only runs if the form is on
@@ -230,4 +248,44 @@
 	form.addEventListener('change', compute);
 	form.addEventListener('input', function (e) { if (e.target && e.target.name === 'travel_km') compute(); });
 	compute();
+})();
+
+/* ── horizontal subpages — wheel / trackpad drives the filmstrip sideways.
+   Isolated + guarded: only runs where an .hx__track exists. Tall panels
+   (prose / form / faq) consume vertical intent until they bottom out, then
+   hand back to the sideways scroll. Touch swipe is native; reduced-motion
+   and phones-in-reduced-motion fall back to the vertical stack (see CSS). ── */
+(function () {
+	'use strict';
+	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+	var tracks = [].slice.call(document.querySelectorAll('.hx__track'));
+	if (!tracks.length) return;
+	function active() { return window.innerWidth > 820 && !reduce; }
+
+	tracks.forEach(function (track) {
+		track.addEventListener('wheel', function (e) {
+			if (!active()) return;              // touch/reduced-motion: native behaviour
+			if (e.ctrlKey) return;              // pinch-zoom
+			// let a tall inner panel take the vertical scroll until it reaches an edge
+			var panel = e.target.closest && e.target.closest('.hx-panel--wide, .hx-panel--form, .hx-panel--faq');
+			if (panel && panel.scrollHeight > panel.clientHeight + 1) {
+				var atTop = panel.scrollTop <= 0;
+				var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+				if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return;
+			}
+			var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+			if (!d) return;
+			track.scrollLeft += d;
+			e.preventDefault();
+		}, { passive: false });
+
+		// keyboard paging when the filmstrip has focus
+		track.setAttribute('tabindex', '-1');
+		track.addEventListener('keydown', function (e) {
+			if (!active()) return;
+			var step = window.innerWidth;
+			if (e.key === 'ArrowRight' || e.key === 'PageDown') { track.scrollBy({ left: step, behavior: 'smooth' }); e.preventDefault(); }
+			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { track.scrollBy({ left: -step, behavior: 'smooth' }); e.preventDefault(); }
+		});
+	});
 })();

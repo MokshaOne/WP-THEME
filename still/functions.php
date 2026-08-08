@@ -49,6 +49,23 @@ add_action( 'wp_enqueue_scripts', function () {
 	) );
 } );
 
+/**
+ * Intro video source, if any. Drop `intro.mp4` (or .webm) into
+ * assets/video/ and the cinematic intro plays it, then scrolls right into
+ * home. With no file present the intro falls back to the animated boot /
+ * terminal / name-decode sequence. Override the URL via the filter.
+ */
+function still_intro_video() {
+	$url = '';
+	foreach ( array( 'intro.mp4', 'intro.webm', 'intro.mov' ) as $f ) {
+		if ( file_exists( get_template_directory() . '/assets/video/' . $f ) ) {
+			$url = get_template_directory_uri() . '/assets/video/' . $f;
+			break;
+		}
+	}
+	return apply_filters( 'still_intro_video', $url );
+}
+
 /* ── Content engine: Work (portfolio) — unlimited entries, native gallery ── */
 add_action( 'init', function () {
 

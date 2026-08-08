@@ -18,19 +18,31 @@ $still_home_intro = ( is_front_page() && ! is_paged() );
 <?php wp_body_open(); ?>
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'still' ); ?></a>
 
-<?php if ( $still_home_intro ) : ?>
-<div id="intro" aria-hidden="true">
-	<div class="intro__in">
-		<div class="boot" id="boot">
-			<div class="boot__row"><span><?php esc_html_e( 'Initializing', 'still' ); ?></span><span id="pct">0%</span></div>
-			<div class="bar"><div class="bar__fill" id="fill"></div></div>
-		</div>
-		<div class="term" id="term"></div>
-		<div class="titlewrap" id="titlewrap">
+<?php if ( $still_home_intro ) :
+	$still_intro_vid = function_exists( 'still_intro_video' ) ? still_intro_video() : '';
+	?>
+<div id="intro" aria-hidden="true"<?php echo $still_intro_vid ? ' data-mode="video"' : ''; ?>>
+	<?php if ( $still_intro_vid ) : ?>
+		<video id="introvid" class="intro-vid" autoplay muted playsinline preload="auto">
+			<source src="<?php echo esc_url( $still_intro_vid ); ?>">
+		</video>
+		<div class="intro-veil" aria-hidden="true"></div>
+		<div class="titlewrap show decoded" id="titlewrap">
 			<h1 class="bigtitle" id="bigtitle" data-text="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h1>
 		</div>
-	</div>
-	<div class="enter-big" id="enterbig"><span><?php esc_html_e( 'Scroll', 'still' ); ?></span><span class="chev"></span></div>
+	<?php else : ?>
+		<div class="intro__in">
+			<div class="boot" id="boot">
+				<div class="boot__row"><span><?php esc_html_e( 'Initializing', 'still' ); ?></span><span id="pct">0%</span></div>
+				<div class="bar"><div class="bar__fill" id="fill"></div></div>
+			</div>
+			<div class="term" id="term"></div>
+			<div class="titlewrap" id="titlewrap">
+				<h1 class="bigtitle" id="bigtitle" data-text="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h1>
+			</div>
+		</div>
+	<?php endif; ?>
+	<div class="enter-big" id="enterbig"><span><?php esc_html_e( 'Scroll right', 'still' ); ?></span><span class="chev"></span></div>
 </div>
 <?php endif; ?>
 

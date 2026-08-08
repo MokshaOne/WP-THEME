@@ -12,6 +12,16 @@ $still_home_intro = ( is_front_page() && ! is_paged() );
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<?php if ( $still_home_intro ) : ?>
+	<script>
+	/* Intro fail-safe: never trap the visitor behind a black overlay.
+	   main.js clears this timer when it initialises; if the script is missing
+	   or stale, the intro is revealed-away after a few seconds instead. */
+	document.documentElement.className += ' js';
+	window.__stillFail = setTimeout(function () { document.documentElement.className += ' still-fallback'; }, 6000);
+	</script>
+	<noscript><style>#intro{display:none!important}body.intro #home{position:relative!important;transform:none!important;height:auto!important;overflow:visible!important}body.intro,body.intro.entered{overflow:auto!important}</style></noscript>
+	<?php endif; ?>
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class( $still_home_intro ? 'intro' : '' ); ?>>

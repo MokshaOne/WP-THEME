@@ -2,6 +2,8 @@
    3D card tilt, scroll reveals. Vanilla, no dependencies. */
 (function () {
 	'use strict';
+	// main.js is running — cancel the header's intro fail-safe timer.
+	if (window.__stillFail) { clearTimeout(window.__stillFail); }
 	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
 	var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
 	var $ = function (s, c) { return (c || document).querySelector(s); };

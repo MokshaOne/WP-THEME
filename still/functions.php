@@ -97,6 +97,17 @@ add_action( 'init', function () {
 	) );
 } );
 
+/* Self-heal permalinks: when the theme is UPDATED by replacing files (not
+   deactivate/reactivate), after_switch_theme never fires, so the 'work'
+   archive + single rewrite rules are missing and /work/ 404s. This runs once
+   per rewrite-version, right after the CPT is registered, to flush them.
+   Bump the version string to force a re-flush on a future change. */
+add_action( 'init', function () {
+	if ( '3' === get_option( 'still_rewrite_v' ) ) { return; }
+	flush_rewrite_rules( false );
+	update_option( 'still_rewrite_v', '3' );
+}, 11 );
+
 /* Make sure the Studio (About) + Enquire pages actually exist, so the dock
    links never dead-end on an empty page. Runs on activation AND once on a
    normal load (guarded by an option) in case the theme was already active

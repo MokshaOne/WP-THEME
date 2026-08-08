@@ -108,6 +108,56 @@ add_action( 'init', function () {
 	update_option( 'still_rewrite_v', '3' );
 }, 11 );
 
+/* ── Legacy content recovery ────────────────────────────────────────────
+   Older projects created under the previous engine live under a different
+   post type (e.g. nr_project) than this theme's `work`. Nothing was deleted —
+   this surfaces that content again WITHOUT touching any data: if such posts
+   exist, register the type (so it shows in wp-admin) and fold it into the
+   /work/ archive so the portfolio reappears. Detection is cached in an option;
+   filter 'still_legacy_types' to add other slugs. */
+function still_legacy_types() {
+	return apply_filters( 'still_legacy_types', array( 'nr_project', 'project', 'portfolio', 'projects' ) );
+}
+function still_legacy_found() {
+	$cached = get_option( 'still_legacy_found', null );
+	if ( is_array( $cached ) ) { return $cached; }
+	global $wpdb;
+	if ( ! $wpdb ) { return array(); }
+	$types = still_legacy_types();
+	$ph    = implode( ',', array_fill( 0, count( $types ), '%s' ) );
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$rows  = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT post_type FROM {$wpdb->posts} WHERE post_type IN ($ph) AND post_status <> 'trash'", $types ) );
+	$found = array_values( array_intersect( $types, (array) $rows ) );
+	update_option( 'still_legacy_found', $found );
+	return $found;
+}
+add_action( 'init', function () {
+	foreach ( still_legacy_found() as $type ) {
+		if ( post_type_exists( $type ) ) { continue; }
+		register_post_type( $type, array(
+			'labels'       => array(
+				'name'          => __( 'Projects (recovered)', 'still' ),
+				'singular_name' => __( 'Project', 'still' ),
+				'menu_name'     => __( 'Projects (recovered)', 'still' ),
+			),
+			'public'       => true,
+			'show_ui'      => true,
+			'menu_icon'    => 'dashicons-images-alt2',
+			'has_archive'  => false,
+			'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'rewrite'      => array( 'slug' => $type ),
+		) );
+	}
+}, 8 );
+// Show recovered posts alongside new ones in the /work/ archive.
+add_action( 'pre_get_posts', function ( $q ) {
+	if ( is_admin() || ! $q->is_main_query() ) { return; }
+	if ( $q->is_post_type_archive( 'work' ) ) {
+		$found = still_legacy_found();
+		if ( $found ) { $q->set( 'post_type', array_merge( array( 'work' ), $found ) ); }
+	}
+} );
+
 /* Make sure the Studio (About) + Enquire pages actually exist, so the dock
    links never dead-end on an empty page. Runs on activation AND once on a
    normal load (guarded by an option) in case the theme was already active
@@ -137,7 +187,12 @@ add_action( 'after_switch_theme', function () {
 	update_option( 'still_flushed', '1' );
 	still_ensure_pages();
 } );
-add_action( 'switch_theme', function () { delete_option( 'still_flushed' ); delete_option( 'still_pages_ready' ); } );
+add_action( 'switch_theme', function () {
+	delete_option( 'still_flushed' );
+	delete_option( 'still_pages_ready' );
+	delete_option( 'still_rewrite_v' );
+	delete_option( 'still_legacy_found' );
+} );
 // Belt-and-braces: ensure the pages exist even without a fresh theme switch.
 add_action( 'wp_loaded', function () {
 	if ( get_option( 'still_pages_ready' ) ) { return; }

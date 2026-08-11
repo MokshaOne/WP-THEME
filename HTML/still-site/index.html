@@ -1,7 +1,8 @@
 <!doctype html>
 <!--
-  Still — static homepage (safe-zone frontpage). Self-contained site; deploy at
-  web root on easyname (index.html + /work/ /about/ /enquire/ + /assets/).
+  Still — static homepage (safe-zone frontpage). Self-contained; all links are
+  RELATIVE, so it runs when opened locally, from a subfolder, or at the web
+  root. On easyname, upload the CONTENTS of this folder into your web root.
   Content stays managed in WordPress; repoint links to your WP pages when ready.
 -->
 <html lang="en">
@@ -17,7 +18,7 @@
 	window.__stillFail = setTimeout(function(){ document.documentElement.className += ' still-fallback'; }, 6000);
 	</script>
 	<noscript><style>#intro{display:none!important}body.intro #home{position:relative!important;transform:none!important;height:auto!important;overflow:visible!important}body.intro,body.intro.entered{overflow:auto!important}</style></noscript>
-	<link rel="stylesheet" href="/assets/css/main.css">
+	<link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body class="intro">
 <a class="skip-link" href="#home">Skip to content</a>
@@ -36,7 +37,7 @@
 	<div class="enter-big" id="enterbig"><span>Scroll right</span><span class="chev"></span></div>
 </div>
 
-<a class="brand-fixed" href="/">Raveenthiran</a>
+<a class="brand-fixed" href="index.html">Raveenthiran</a>
 
 <div id="home">
 	<section class="panel" id="panel-work" data-key="work">
@@ -45,13 +46,13 @@
 		<h2 class="panel__name">Work</h2>
 		<div class="panel__row">
 			<p class="panel__desc">Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.</p>
-			<a class="panel__go" href="/work/">Open portfolio →</a>
+			<a class="panel__go" href="work/index.html">Open portfolio →</a>
 		</div>
 		<div class="thumbs">
-			<a href="/work/nachtdienst/"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(135deg,#141416,#0a0a0c 60%,#050506)"><span class="ph-plate__t">nachtdienst</span></span></span></a>
-			<a href="/work/a-house-in-mariahilf/"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(120deg,#17140f,#0c0a08 55%,#050505)"><span class="ph-plate__t">a house in mariahilf</span></span></span></a>
-			<a href="/work/the-vienna-notebook/"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(150deg,#101418,#08090c 60%,#050506)"><span class="ph-plate__t">the vienna notebook</span></span></span></a>
-			<a href="/work/naschmarkt-at-dawn/"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(120deg,#181410,#0b0906 58%,#050504)"><span class="ph-plate__t">naschmarkt at dawn</span></span></span></a>
+			<a href="work/nachtdienst/index.html"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(135deg,#141416,#0a0a0c 60%,#050506)"><span class="ph-plate__t">nachtdienst</span></span></span></a>
+			<a href="work/a-house-in-mariahilf/index.html"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(120deg,#17140f,#0c0a08 55%,#050505)"><span class="ph-plate__t">a house in mariahilf</span></span></span></a>
+			<a href="work/the-vienna-notebook/index.html"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(150deg,#101418,#08090c 60%,#050506)"><span class="ph-plate__t">the vienna notebook</span></span></span></a>
+			<a href="work/naschmarkt-at-dawn/index.html"><span class="frame"><span class="ph-plate ph-plate--sm" style="--g:linear-gradient(120deg,#181410,#0b0906 58%,#050504)"><span class="ph-plate__t">naschmarkt at dawn</span></span></span></a>
 		</div>
 	</section>
 
@@ -61,7 +62,7 @@
 		<h2 class="panel__name">Studio</h2>
 		<div class="panel__row">
 			<p class="panel__desc">A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.</p>
-			<a class="panel__go" href="/about/">Read more →</a>
+			<a class="panel__go" href="about/index.html">Read more →</a>
 		</div>
 	</section>
 
@@ -71,17 +72,17 @@
 		<h2 class="panel__name">Enquire<em>.</em></h2>
 		<div class="panel__row">
 			<p class="panel__desc">Commissions, editorial and personal series. Start a project.</p>
-			<a class="panel__go" href="/enquire/">Start a project →</a>
+			<a class="panel__go" href="enquire/index.html">Start a project →</a>
 		</div>
 		<div class="mini-stage" aria-hidden="true"><div class="cube"><f></f><f></f><f></f><f></f><f></f><f></f></div></div>
 	</section>
 </div>
 
 <nav id="dock" aria-label="Primary">
-	<a href="/work/" data-key="work">Work</a>
-	<a href="/about/" data-key="studio">Studio</a>
-	<a href="/enquire/" data-key="enquire">Enquire</a>
+	<a href="work/index.html" data-key="work">Work</a>
+	<a href="about/index.html" data-key="studio">Studio</a>
+	<a href="enquire/index.html" data-key="enquire">Enquire</a>
 </nav>
-<script src="/assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>

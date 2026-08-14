@@ -292,3 +292,4 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .ph-plate__t{position:relative;font-family:var(--mono);font-size:clamp(1.4rem,5vw,3rem);color:rgba(255,255,255,.06);text-transform:lowercase;letter-spacing:.02em;text-align:center;padding:0 1rem}
 .thumbs .ph-plate--sm{width:100%;aspect-ratio:4/5;max-height:none}
 .thumbs .ph-plate--sm .ph-plate__t{font-size:.6rem;letter-spacing:.18em;color:rgba(255,255,255,.14)}
+.thumbs .frame img{width:100%;height:100%;object-fit:cover;display:block}

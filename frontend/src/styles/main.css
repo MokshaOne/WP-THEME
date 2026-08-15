@@ -289,3 +289,45 @@ body.intro #dock.show{transform:translate(-50%,0);opacity:1}
 .ph-plate{position:relative;display:grid;place-items:center;width:min(60vh,calc(100vw - 2*var(--gut)));aspect-ratio:3/2;max-height:78vh;background:#0d0d0d;border:1px solid var(--line);overflow:hidden}
 .ph-plate__t{position:relative;font-family:var(--mono);font-size:clamp(1.4rem,5vw,3rem);color:rgba(255,255,255,.06);text-transform:lowercase;letter-spacing:.02em;text-align:center;padding:0 1rem}
 .thumbs .frame img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Still — Feinschliff v1  (scoped refinement layer; safe to tweak/revert)
+   ══════════════════════════════════════════════════════════════════════ */
+:root{
+	/* motion + spacing tokens */
+	--ease:cubic-bezier(.19,1,.22,1);
+	--dur:.5s;
+	--s1:.5rem; --s2:.9rem; --s3:1.4rem; --s4:2.25rem; --s5:3.5rem; --s6:5.5rem;
+}
+
+/* Typografie — feineres Tracking, ruhigere Leading */
+.label{letter-spacing:.3em}
+.page-title,.panel__name{letter-spacing:-.035em;line-height:.94}
+.bigtitle{letter-spacing:.12em}
+.panel__idx,.single-meta,.contact-list .k,.hx-panel--media figcaption{letter-spacing:.22em}
+
+/* Prose — Lesbarkeit */
+.prose{max-width:68ch;line-height:1.78}
+.prose p + p{margin-top:1.15em}
+
+/* Rhythmus / Abstände */
+.page-head{margin-bottom:clamp(2rem,5vw,4rem)}
+.panel__desc{max-width:46ch;line-height:1.7}
+
+/* Motion — konsistente Übergänge über alle interaktiven Elemente */
+.panel__go,.cta,.entry-nav a,.book,.menu a,.brand-fixed,.contact-list a,.faq summary{
+	transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease),
+		background var(--dur) var(--ease),gap .3s var(--ease),transform .3s var(--ease);
+}
+
+/* Dock — etwas dichter, ruhigeres Hover */
+#dock{gap:.15rem}
+#dock a{transition:color .28s var(--ease),background .28s var(--ease),transform .28s var(--ease)}
+
+/* Work-Archiv & Projekt — Bild/Caption ruhiger, weichere Hairlines */
+.hx-panel--media figcaption{opacity:.82}
+.hx-panel--media img{border-color:rgba(255,255,255,.10)}
+.ph-plate{border-color:rgba(255,255,255,.10)}
+
+/* Fokus — sichtbar, im Still-Ton */
+:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}

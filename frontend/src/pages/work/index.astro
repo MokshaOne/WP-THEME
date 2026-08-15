@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getProjects } from '../../lib/wp';
+
+const projects = await getProjects();
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<Base title="Work — Raveenthiran" description="Selected photography projects — portraiture, editorial, architecture and street. Vienna, working across Europe." active="work">
+	<main id="main" class="hx">
+		<div class="hx__track">
+
+			<section class="hx-panel hx-panel--head">
+				<div class="page-head">
+					<span class="label">Portfolio</span>
+					<h1 class="page-title">Work</h1>
+					<div class="page-lead">Selected projects. Scroll sideways through the archive.</div>
+				</div>
+			</section>
+
+			{projects.map((p, i) => (
+				<a class="hx-panel hx-panel--media" href={`/work/${p.slug}/`}>
+					<figure>
+						{p.image
+							? <img src={p.image} alt={p.title} loading="lazy" />
+							: <span class="ph-plate"><span class="ph-plate__t">{p.title.toLowerCase()}</span></span>}
+						<figcaption>
+							<span class="idx">{pad(i + 1)}</span>
+							<span>{p.title}</span>
+							{p.category && <span>·&nbsp; {p.category}</span>}
+						</figcaption>
+					</figure>
+				</a>
+			))}
+
+		</div>
+		<span class="hx-cue">Scroll <i></i></span>
+	</main>
+</Base>

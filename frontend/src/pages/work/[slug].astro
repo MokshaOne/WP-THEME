@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getProjects, getProject } from '../../lib/wp';
+
+// One static page per project, generated from WordPress at build time.
+export async function getStaticPaths() {
+	const projects = await getProjects();
+	return projects.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const p = (await getProject(slug!))!;
+
+const meta = [
+	['Client', p.client],
+	['Role', p.role],
+	['Year', p.year],
+	['Location', p.location],
+].filter(([, v]) => v);
+---
+<Base title={`${p.title} — Raveenthiran`} description={`${p.title} — ${p.category || 'project'} photography by Nishuthan Raveenthiran.`} active="work">
+	<main id="main" class="hx">
+		<div class="hx__track">
+
+			<section class="hx-panel hx-panel--head">
+				<div class="page-head">
+					<span class="label">{p.category || 'Project'}</span>
+					<h1 class="page-title">{p.title}</h1>
+					<div class="single-meta">
+						{p.year && <span>{p.year}</span>}
+						{p.category && <span>{p.category}</span>}
+					</div>
+				</div>
+			</section>
+
+			{p.image && (
+				<div class="hx-panel hx-panel--media"><figure><img src={p.image} alt={p.title} /></figure></div>
+			)}
+
+			{(meta.length || p.website) && (
+				<section class="hx-panel hx-panel--contact">
+					<dl class="contact-list">
+						{meta.map(([k, v]) => (
+							<div class="row"><span class="k">{k}</span><span>{v}</span></div>
+						))}
+						{p.website && (
+							<div class="row"><span class="k">Website</span>
+								<a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
+							</div>
+						)}
+					</dl>
+				</section>
+			)}
+
+			{p.content && (
+				<section class="hx-panel hx-panel--wide"><div class="prose" set:html={p.content} /></section>
+			)}
+
+			<section class="hx-panel hx-panel--end">
+				<nav class="entry-nav">
+					<a href="/work/">← All work</a>
+					<a href="/enquire/">Enquire about a shoot →</a>
+				</nav>
+			</section>
+
+		</div>
+		<span class="hx-cue">Scroll <i></i></span>
+	</main>
+</Base>

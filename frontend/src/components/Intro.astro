@@ -1,0 +1,18 @@
+---
+// Cinematic name-decode intro (home only). Driven by src/scripts/still.js.
+export interface Props { name?: string }
+const { name = 'Raveenthiran' } = Astro.props;
+---
+<div id="intro" aria-hidden="true">
+	<div class="intro__in">
+		<div class="boot" id="boot">
+			<div class="boot__row"><span>Initializing</span><span id="pct">0%</span></div>
+			<div class="bar"><div class="bar__fill" id="fill"></div></div>
+		</div>
+		<div class="term" id="term"></div>
+		<div class="titlewrap" id="titlewrap">
+			<h1 class="bigtitle" id="bigtitle" data-text={name}>{name}</h1>
+		</div>
+	</div>
+	<div class="enter-big" id="enterbig"><span>Scroll right</span><span class="chev"></span></div>
+</div>

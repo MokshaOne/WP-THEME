@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import Intro from '../components/Intro.astro';
+import { getProjects } from '../lib/wp';
+
+const projects = await getProjects();
+const thumbs = projects.slice(0, 4);
+---
+<Base
+	title="Raveenthiran — Photography"
+	description="Portraiture, architecture and the quiet spaces between. Selected work by Nishuthan Raveenthiran — Vienna, working across Europe."
+	bodyClass="intro"
+	intro={true}
+>
+	<Intro name="Raveenthiran" />
+
+	<div id="home">
+		<section class="panel" id="panel-work" data-key="work">
+			<span class="panel__ghost" aria-hidden="true">01</span>
+			<span class="panel__idx">01 — Work</span>
+			<h2 class="panel__name">Work</h2>
+			<div class="panel__row">
+				<p class="panel__desc">Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.</p>
+				<a class="panel__go" href="/work/">Open portfolio →</a>
+			</div>
+			<div class="thumbs" id="wp-thumbs">
+				{thumbs.map((p) => (
+					<a href={`/work/${p.slug}/`}>
+						<span class="frame">
+							{p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : <span class="ph">Photo</span>}
+						</span>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section class="panel" id="panel-studio" data-key="studio">
+			<span class="panel__ghost" aria-hidden="true">02</span>
+			<span class="panel__idx">02 — Studio</span>
+			<h2 class="panel__name">Studio</h2>
+			<div class="panel__row">
+				<p class="panel__desc">A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.</p>
+				<a class="panel__go" href="/about/">Read more →</a>
+			</div>
+		</section>
+
+		<section class="panel" id="panel-enquire" data-key="enquire">
+			<span class="panel__ghost" aria-hidden="true">03</span>
+			<span class="panel__idx">03 — Enquire</span>
+			<h2 class="panel__name">Enquire<em>.</em></h2>
+			<div class="panel__row">
+				<p class="panel__desc">Commissions, editorial and personal series. Start a project.</p>
+				<a class="panel__go" href="/enquire/">Start a project →</a>
+			</div>
+			<div class="mini-stage" aria-hidden="true"><div class="cube"><f></f><f></f><f></f><f></f><f></f><f></f></div></div>
+		</section>
+	</div>
+</Base>

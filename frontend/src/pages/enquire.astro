@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+
+const EMAIL = 'hello@raveenthiran.com'; // ← your studio email
+const CUR = '€';
+const types = [
+	{ label: 'Portrait', base: 450 },
+	{ label: 'Editorial', base: 1200 },
+	{ label: 'Event', base: 900 },
+	{ label: 'Commercial', base: 1800 },
+];
+const extras = [
+	{ label: 'Advanced retouching', price: 180 },
+	{ label: 'Express delivery', price: 240 },
+	{ label: 'Second shooter', price: 300 },
+	{ label: 'Hair & makeup', price: 350 },
+];
+const faq: [string, string][] = [
+	['How do we get started?', 'Send an enquiry with a few details about your project. I reply within 24 hours with availability and a firm quote.'],
+	['Is the estimate final?', 'It is indicative — a fast way to gauge scope. The final quote is confirmed by email once we have talked through the details.'],
+	['Do you travel?', 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.'],
+	['When do I receive the images?', 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.'],
+	['How does licensing work?', 'Personal use is included. Commercial usage is a flat licence added to the project.'],
+];
+const money = (n: number) => CUR + n.toLocaleString('en-US');
+---
+<Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
+	<main id="main" class="hx">
+		<div class="hx__track">
+
+			<section class="hx-panel hx-panel--head">
+				<div class="page-head">
+					<span class="label">Enquire</span>
+					<h1 class="page-title">Start a project</h1>
+					<p class="page-lead">Tell me what you have in mind. Get an instant estimate; a firm quote follows within 24 hours.</p>
+				</div>
+			</section>
+
+			<section class="hx-panel hx-panel--contact">
+				<dl class="contact-list">
+					<div class="row"><span class="k">Email</span><a href={`mailto:${EMAIL}`}>{EMAIL}</a></div>
+					<div class="row"><span class="k">Studio</span><span>Vienna, AT</span></div>
+					<div class="row"><span class="k">Response</span><span>Within 24 hours</span></div>
+				</dl>
+			</section>
+
+			<section class="hx-panel hx-panel--form">
+				<form class="still-form" method="post" action={`mailto:${EMAIL}`} data-price-engine data-currency={CUR} data-mailto={EMAIL}>
+					<input type="hidden" name="estimate" value="" data-estimate-input />
+					<input type="hidden" name="breakdown" value="" data-breakdown />
+					<div class="hp" aria-hidden="true" style="position:absolute;left:-9999px"><label>Company<input type="text" name="still_company" tabindex="-1" autocomplete="off" /></label></div>
+
+					<div class="field">
+						<span class="field-label">Project type</span>
+						<div class="chips">
+							{types.map((t, i) => (
+								<label class="chip"><input type="radio" name="project_type" value={t.label} data-base={t.base} checked={i === 0} /><span>{t.label} · {money(t.base)}</span></label>
+							))}
+						</div>
+					</div>
+
+					<div class="field">
+						<span class="field-label">Add-ons</span>
+						<div class="chips">
+							{extras.map((x) => (
+								<label class="chip"><input type="checkbox" name="addons[]" value={x.label} data-price={x.price} /><span>{x.label} · +{money(x.price)}</span></label>
+							))}
+						</div>
+					</div>
+
+					<div class="field field--inline">
+						<label class="chip"><input type="checkbox" name="license" value="1" data-price="150" /><span>Commercial licence · +{money(150)}</span></label>
+						<label class="km"><span>Travel (km)</span><input type="number" name="travel_km" min="0" step="1" value="0" data-per-km="0.42" /></label>
+					</div>
+
+					<div class="estimate">
+						<span class="estimate__k">Estimate</span>
+						<output class="estimate__v" data-estimate>—</output>
+						<span class="estimate__note">Indicative — final quote confirmed by email.</span>
+					</div>
+
+					<div class="field"><label for="f-name">Name</label><input id="f-name" type="text" name="name" required /></div>
+					<div class="field"><label for="f-email">Email</label><input id="f-email" type="email" name="email" required /></div>
+					<div class="field"><label for="f-date">Preferred date</label><input id="f-date" type="date" name="preferred_date" /></div>
+					<div class="field"><label for="f-notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
+
+					<button type="submit" class="form-submit">Send enquiry →</button>
+				</form>
+			</section>
+
+			<section class="hx-panel hx-panel--faq">
+				<div class="faq" aria-label="Frequently asked questions">
+					<h2 class="faq-title">Questions</h2>
+					{faq.map(([q, a]) => (
+						<details><summary>{q}</summary><div class="a"><p>{a}</p></div></details>
+					))}
+				</div>
+			</section>
+
+		</div>
+		<span class="hx-cue">Scroll <i></i></span>
+	</main>
+</Base>
+
+<script is:inline>
+	/* Static fallback: compose a pre-filled email from the form (no WP backend). */
+	(function () {
+		var f = document.querySelector('.still-form[data-mailto]');
+		if (!f) return;
+		f.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var to = f.getAttribute('data-mailto');
+			var g = function (n) { var el = f.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
+			var type = (f.querySelector('input[name="project_type"]:checked') || {}).value || '';
+			var addons = [].slice.call(f.querySelectorAll('input[name="addons[]"]:checked')).map(function (x) { return x.value; }).join(', ');
+			var body = ['Name: ' + g('name'), 'Email: ' + g('email'), 'Preferred date: ' + g('preferred_date'), 'Project type: ' + type, 'Add-ons: ' + addons, 'Estimate: ' + g('estimate'), '', g('notes')].join('\n');
+			window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Project enquiry — ' + (g('name') || '')) + '&body=' + encodeURIComponent(body);
+		});
+	})();
+</script>

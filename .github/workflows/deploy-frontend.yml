@@ -4,7 +4,9 @@ name: Deploy frontend to easyname
 # uploads the static output to easyname over FTPS. Runs on push to frontend/**,
 # on a manual trigger, and nightly (so new WordPress content goes live daily).
 #
-# Required repository secrets (Settings → Secrets and variables → Actions):
+# The upload step is SKIPPED (job stays green) until the FTP secrets are set, so
+# an unconfigured repo never shows a red check. Add these under
+# Settings → Secrets and variables → Actions:
 #   FTP_SERVER      easyname FTP host, e.g. ftp.raveenthiran.com
 #   FTP_USERNAME    easyname FTP user
 #   FTP_PASSWORD    easyname FTP password
@@ -35,7 +37,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -49,7 +51,20 @@ jobs:
           WP_BASE: ${{ secrets.WP_BASE }}
         run: npm run build
 
+      - name: Check FTP config
+        id: cfg
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          if [ -n "$FTP_SERVER" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Deploy skipped::FTP secrets are not set yet — built dist/ but did not upload. Add FTP_SERVER / FTP_USERNAME / FTP_PASSWORD to enable deploy."
+          fi
+
       - name: Deploy dist/ to easyname (FTPS)
+        if: steps.cfg.outputs.ready == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}

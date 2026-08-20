@@ -3,36 +3,57 @@ import Base from '../../layouts/Base.astro';
 import { getProjects } from '../../lib/wp';
 
 const projects = await getProjects();
-const pad = (n: number) => String(n).padStart(2, '0');
+const categories = Array.from(new Set(projects.map((p) => p.category).filter(Boolean))).sort();
+const grads = [
+	'linear-gradient(135deg,#17171a,#0b0b0d)', 'linear-gradient(120deg,#1a1712,#0d0b09)',
+	'linear-gradient(150deg,#12161a,#090a0d)', 'linear-gradient(120deg,#1a1410,#0c0906)',
+	'linear-gradient(160deg,#141418,#08080b)', 'linear-gradient(135deg,#1b1113,#0d0708)',
+];
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 ---
-<Base title="Work — Raveenthiran" description="Selected photography projects — portraiture, editorial, architecture and street. Vienna, working across Europe." active="work">
-	<main id="main" class="hx">
-		<div class="hx__track">
+<Base title="Work — Raveenthiran" description="Selected photography projects — Vienna, working across Europe." active="work">
+	<div class="page" data-work>
+		<div class="page-head">
+			<h1 class="page-title">Work</h1>
+			<p class="eyebrow"><span data-count>{projects.length}</span> projects</p>
+		</div>
 
-			<section class="hx-panel hx-panel--head">
-				<div class="page-head">
-					<span class="label">Portfolio</span>
-					<h1 class="page-title">Work</h1>
-					<div class="page-lead">Selected projects. Scroll sideways through the archive.</div>
-				</div>
-			</section>
+		<div class="filters" role="toolbar" aria-label="Filter projects">
+			<button class="filter-btn is-on" data-filter="*">All</button>
+			{categories.map((c) => <button class="filter-btn" data-filter={slug(c)}>{c}</button>)}
+			<span class="filters__spacer"></span>
+			<div class="view-toggle" role="tablist" aria-label="View">
+				<button class="is-on" data-view="grid" role="tab" aria-selected="true">Grid</button>
+				<button data-view="index" role="tab" aria-selected="false">Index</button>
+			</div>
+		</div>
 
+		<div class="grid" data-grid>
 			{projects.map((p, i) => (
-				<a class="hx-panel hx-panel--media" href={`/work/${p.slug}/`}>
-					<figure>
-						{p.image
-							? <img src={p.image} alt={p.title} loading="lazy" />
-							: <span class="ph-plate"><span class="ph-plate__t">{p.title.toLowerCase()}</span></span>}
-						<figcaption>
-							<span class="idx">{pad(i + 1)}</span>
-							<span>{p.title}</span>
-							{p.category && <span>·&nbsp; {p.category}</span>}
-						</figcaption>
-					</figure>
+				<a class="tile" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
+					{p.image
+						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" />
+						: <div class="tile__ph" style={`background:${grads[i % grads.length]}`}><span>{p.title.toLowerCase()}</span></div>}
+					<div class="tile__meta">
+						<span class="tile__t">{p.title}</span>
+						<span class="tile__c">{p.category}{p.year ? ` · ${p.year}` : ''}</span>
+					</div>
 				</a>
 			))}
-
 		</div>
-		<span class="hx-cue">Scroll <i></i></span>
-	</main>
+
+		<div class="index" data-index hidden>
+			{projects.map((p) => (
+				<a class="index-row" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
+					<span class="t">{p.title}</span>
+					<span class="c">{p.category}</span>
+					<span class="y">{p.year}</span>
+				</a>
+			))}
+		</div>
+
+		<p class="empty" data-empty hidden>No projects in this category yet.</p>
+	</div>
 </Base>
+
+<script src="../../scripts/work.js"></script>

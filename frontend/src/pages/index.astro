@@ -1,58 +1,67 @@
 ---
 import Base from '../layouts/Base.astro';
-import Intro from '../components/Intro.astro';
 import { getProjects } from '../lib/wp';
 
-const projects = await getProjects();
-const thumbs = projects.slice(0, 4);
+const projects = (await getProjects()).slice(0, 6);
+const grads = [
+	'linear-gradient(135deg,#17171a,#0b0b0d 60%,#080809)',
+	'linear-gradient(120deg,#1a1712,#0d0b09 55%,#080706)',
+	'linear-gradient(150deg,#12161a,#090a0d 60%,#070709)',
+	'linear-gradient(120deg,#1a1410,#0c0906 58%,#070604)',
+	'linear-gradient(160deg,#141418,#08080b 60%,#070708)',
+	'linear-gradient(135deg,#1b1113,#0d0708 55%,#080505)',
+];
 ---
 <Base
 	title="Raveenthiran — Photography"
-	description="Portraiture, architecture and the quiet spaces between. Selected work by Nishuthan Raveenthiran — Vienna, working across Europe."
-	bodyClass="intro"
-	intro={true}
+	description="Selected photography by Nishuthan Raveenthiran — Vienna, working across Europe."
+	active=""
 >
-	<Intro name="Raveenthiran" />
+	<section class="hero" data-hero>
+		{projects.map((p, i) => (
+			<div class={`hero__slide${i === 0 ? ' is-on' : ''}`} data-slide={i}>
+				{p.image
+					? <img class="hero__media" src={p.image} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} />
+					: <div class="hero__ph" style={`background:${grads[i % grads.length]}`}><span>{p.title.toLowerCase()}</span></div>}
+				<div class="hero__scrim"></div>
+			</div>
+		))}
 
-	<div id="home">
-		<section class="panel" id="panel-work" data-key="work">
-			<span class="panel__ghost" aria-hidden="true">01</span>
-			<span class="panel__idx">01 — Work</span>
-			<h2 class="panel__name">Work</h2>
-			<div class="panel__row">
-				<p class="panel__desc">Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.</p>
-				<a class="panel__go" href="/work/">Open portfolio →</a>
+		<div class="hero__cap">
+			<h1 class="hero__title" data-hero-title>{projects[0]?.title}</h1>
+			<div class="hero__meta">
+				<div class="eyebrow" data-hero-cat>{projects[0]?.category}</div>
+				<a href={`/work/${projects[0]?.slug}/`} data-hero-link>View project <span>→</span></a>
 			</div>
-			<div class="thumbs" id="wp-thumbs">
-				{thumbs.map((p) => (
-					<a href={`/work/${p.slug}/`}>
-						<span class="frame">
-							{p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : <span class="ph">Photo</span>}
-						</span>
-					</a>
-				))}
-			</div>
-		</section>
+		</div>
 
-		<section class="panel" id="panel-studio" data-key="studio">
-			<span class="panel__ghost" aria-hidden="true">02</span>
-			<span class="panel__idx">02 — Studio</span>
-			<h2 class="panel__name">Studio</h2>
-			<div class="panel__row">
-				<p class="panel__desc">A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.</p>
-				<a class="panel__go" href="/about/">Read more →</a>
-			</div>
-		</section>
-
-		<section class="panel" id="panel-enquire" data-key="enquire">
-			<span class="panel__ghost" aria-hidden="true">03</span>
-			<span class="panel__idx">03 — Enquire</span>
-			<h2 class="panel__name">Enquire<em>.</em></h2>
-			<div class="panel__row">
-				<p class="panel__desc">Commissions, editorial and personal series. Start a project.</p>
-				<a class="panel__go" href="/enquire/">Start a project →</a>
-			</div>
-			<div class="mini-stage" aria-hidden="true"><div class="cube"><f></f><f></f><f></f><f></f><f></f><f></f></div></div>
-		</section>
-	</div>
+		<div class="hero__dots">
+			{projects.map((_p, i) => <button class={`hero__dot${i === 0 ? ' is-on' : ''}`} data-dot={i} aria-label={`Slide ${i + 1}`}></button>)}
+		</div>
+	</section>
 </Base>
+
+<script is:inline define:vars={{ data: projects.map((p) => ({ title: p.title, category: p.category, slug: p.slug })) }}>
+	(function () {
+		var hero = document.querySelector('[data-hero]');
+		if (!hero || data.length < 2) return;
+		var slides = hero.querySelectorAll('.hero__slide');
+		var dots = hero.querySelectorAll('.hero__dot');
+		var titleEl = hero.querySelector('[data-hero-title]');
+		var catEl = hero.querySelector('[data-hero-cat]');
+		var linkEl = hero.querySelector('[data-hero-link]');
+		var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+		var i = 0, timer = null;
+		function go(n) {
+			i = (n + data.length) % data.length;
+			slides.forEach(function (s, k) { s.classList.toggle('is-on', k === i); });
+			dots.forEach(function (d, k) { d.classList.toggle('is-on', k === i); });
+			titleEl.textContent = data[i].title;
+			catEl.textContent = data[i].category;
+			linkEl.setAttribute('href', '/work/' + data[i].slug + '/');
+		}
+		function arm() { if (!reduce) timer = setInterval(function () { go(i + 1); }, 5200); }
+		dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); clearInterval(timer); arm(); }); });
+		arm();
+	})();
+</script>

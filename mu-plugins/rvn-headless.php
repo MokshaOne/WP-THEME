@@ -95,8 +95,8 @@ add_action( 'save_post_work', function ( $post_id ) {
 	}
 } );
 
-/* ── Expose the project fields on the REST API for the headless frontend.
-   GET /wp-json/wp/v2/work returns a `project` object on every item. ── */
+/* ── Expose project fields + gallery on the REST API for the headless frontend.
+   GET /wp-json/wp/v2/work returns `project` (details) and `gallery` (images). ── */
 add_action( 'rest_api_init', function () {
 	register_rest_field( 'work', 'project', array(
 		'get_callback' => function ( $post ) {
@@ -112,6 +112,31 @@ add_action( 'rest_api_init', function () {
 		'schema' => array(
 			'description' => 'Structured project details (client, role, year, location, website).',
 			'type'        => 'object',
+			'context'     => array( 'view', 'edit', 'embed' ),
+		),
+	) );
+
+	register_rest_field( 'work', 'gallery', array(
+		'get_callback' => function ( $post ) {
+			$featured = (int) get_post_thumbnail_id( $post['id'] );
+			$images   = get_attached_media( 'image', $post['id'] );
+			$out = array();
+			foreach ( $images as $img ) {
+				if ( (int) $img->ID === $featured ) { continue; } // featured shown as hero
+				$src = wp_get_attachment_image_src( $img->ID, 'large' );
+				if ( ! $src ) { continue; }
+				$out[] = array(
+					'src'    => $src[0],
+					'w'      => (int) $src[1],
+					'h'      => (int) $src[2],
+					'srcset' => (string) wp_get_attachment_image_srcset( $img->ID, 'large' ),
+				);
+			}
+			return $out;
+		},
+		'schema' => array(
+			'description' => 'Additional images attached to the project (excludes the featured image).',
+			'type'        => 'array',
 			'context'     => array( 'view', 'edit', 'embed' ),
 		),
 	) );

@@ -1,17 +1,19 @@
 ---
-import '../styles/main.css';
-import Dock from '../components/Dock.astro';
+import '../styles/theme.css';
 
 export interface Props {
 	title: string;
 	description?: string;
-	bodyClass?: string;
 	active?: string;
-	intro?: boolean;
 }
-const { title, description = '', bodyClass = 'still', active = '', intro = false } = Astro.props;
-const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050505'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23f4f3f1'/%3E%3C/svg%3E";
-const noscriptCss = "#intro{display:none!important}body.intro #home{position:relative!important;transform:none!important;height:auto!important;overflow:visible!important}body.intro,body.intro.entered{overflow:auto!important}";
+const { title, description = '', active = '' } = Astro.props;
+const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0b'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23ecebe8'/%3E%3C/svg%3E";
+const nav = [
+	{ key: 'work', label: 'Work', href: '/work/' },
+	{ key: 'studio', label: 'Studio', href: '/about/' },
+	{ key: 'enquire', label: 'Enquire', href: '/enquire/' },
+];
+const year = new Date().getFullYear();
 ---
 <!doctype html>
 <html lang="en">
@@ -20,23 +22,29 @@ const noscriptCss = "#intro{display:none!important}body.intro #home{position:rel
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>{title}</title>
 	{description && <meta name="description" content={description} />}
-	<meta name="theme-color" content="#050505" />
+	<meta name="theme-color" content="#0a0a0b" />
 	<link rel="icon" href={favicon} />
-	{intro && (
-		<script is:inline>
-			document.documentElement.className += ' js';
-			window.__stillFail = setTimeout(function () { document.documentElement.className += ' still-fallback'; }, 6000);
-		</script>
-	)}
-	{intro && <noscript set:html={`<style>${noscriptCss}</style>`} />}
 </head>
-<body class={bodyClass}>
+<body>
 	<a class="skip-link" href="#main">Skip to content</a>
-	<a class="brand-fixed" href="/">Raveenthiran</a>
-	<slot />
-	<Dock active={active} />
-	<script>
-		import '../scripts/still.js';
-	</script>
+
+	<header class="site-header">
+		<a class="wordmark" href="/">Raveenthiran</a>
+		<nav class="nav" aria-label="Primary">
+			{nav.map((n) => (
+				<a href={n.href} aria-current={active === n.key ? 'page' : undefined}>{n.label}</a>
+			))}
+		</nav>
+	</header>
+
+	<main id="main">
+		<slot />
+	</main>
+
+	<footer class="site-footer">
+		<span>© {year} Nishuthan Raveenthiran</span>
+		<span>Vienna · working across Europe</span>
+		<a href="/enquire/">Enquire →</a>
+	</footer>
 </body>
 </html>

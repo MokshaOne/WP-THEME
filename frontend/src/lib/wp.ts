@@ -8,6 +8,13 @@
  */
 const WP_BASE = (import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2';
 
+export interface GalleryImage {
+	src: string;
+	w: number;
+	h: number;
+	srcset?: string;
+}
+
 export interface Project {
 	slug: string;
 	title: string;
@@ -17,18 +24,19 @@ export interface Project {
 	role: string;
 	location: string;
 	website: string;
-	image: string;   // featured image URL ('' if none)
-	content: string; // rendered HTML body ('' if none)
+	image: string;            // featured image URL ('' if none)
+	content: string;          // rendered HTML body ('' if none)
+	gallery: GalleryImage[];  // additional images attached to the project
 }
 
 /* ── offline / first-run fallback ── */
 const SAMPLE: Project[] = [
-	{ slug: 'nachtdienst',           title: 'Nachtdienst',           category: 'Editorial',    year: '2024', client: 'SZ Magazin',   role: 'Photography', location: 'Wien', website: '', image: '', content: '' },
-	{ slug: 'a-house-in-mariahilf',  title: 'A House in Mariahilf',  category: 'Editorial',    year: '2024', client: 'Apartamento',  role: 'Photography', location: 'Wien', website: '', image: '', content: '' },
-	{ slug: 'the-vienna-notebook',   title: 'The Vienna Notebook',   category: 'Portrait',     year: '2024', client: 'NYT Magazine', role: 'Photography', location: 'Wien', website: '', image: '', content: '' },
-	{ slug: 'naschmarkt-at-dawn',    title: 'Naschmarkt at Dawn',    category: 'Street',       year: '2023', client: 'Personal',     role: 'Photography', location: 'Wien', website: '', image: '', content: '' },
-	{ slug: 'belvedere-after-hours', title: 'Belvedere After Hours', category: 'Architecture', year: '2023', client: 'Belvedere',    role: 'Photography', location: 'Wien', website: '', image: '', content: '' },
-	{ slug: 'rote-bar',              title: 'Rote Bar',              category: 'Event',        year: '2023', client: 'Hotel Sacher', role: 'Photography', location: 'Wien', website: '', image: '', content: '' },
+	{ slug: 'nachtdienst',           title: 'Nachtdienst',           category: 'Editorial',    year: '2024', client: 'SZ Magazin',   role: 'Photography', location: 'Wien', website: '', image: '', content: '', gallery: [] },
+	{ slug: 'a-house-in-mariahilf',  title: 'A House in Mariahilf',  category: 'Editorial',    year: '2024', client: 'Apartamento',  role: 'Photography', location: 'Wien', website: '', image: '', content: '', gallery: [] },
+	{ slug: 'the-vienna-notebook',   title: 'The Vienna Notebook',   category: 'Portrait',     year: '2024', client: 'NYT Magazine', role: 'Photography', location: 'Wien', website: '', image: '', content: '', gallery: [] },
+	{ slug: 'naschmarkt-at-dawn',    title: 'Naschmarkt at Dawn',    category: 'Street',       year: '2023', client: 'Personal',     role: 'Photography', location: 'Wien', website: '', image: '', content: '', gallery: [] },
+	{ slug: 'belvedere-after-hours', title: 'Belvedere After Hours', category: 'Architecture', year: '2023', client: 'Belvedere',    role: 'Photography', location: 'Wien', website: '', image: '', content: '', gallery: [] },
+	{ slug: 'rote-bar',              title: 'Rote Bar',              category: 'Event',        year: '2023', client: 'Hotel Sacher', role: 'Photography', location: 'Wien', website: '', image: '', content: '', gallery: [] },
 ];
 
 function decode(s: string): string {
@@ -52,6 +60,11 @@ function mapProject(p: any): Project {
 		category = t ? t.name : '';
 	} catch {}
 	const f = (p.project || {}) as Record<string, string>;
+	const gallery: GalleryImage[] = Array.isArray(p.gallery)
+		? p.gallery
+				.filter((g: any) => g && g.src)
+				.map((g: any) => ({ src: g.src, w: +g.w || 0, h: +g.h || 0, srcset: g.srcset || '' }))
+		: [];
 	return {
 		slug: p.slug,
 		title: decode(p.title && p.title.rendered),
@@ -63,6 +76,7 @@ function mapProject(p: any): Project {
 		website: f.website || '',
 		image,
 		content: (p.content && p.content.rendered) || '',
+		gallery,
 	};
 }
 

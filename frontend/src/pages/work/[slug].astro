@@ -2,7 +2,6 @@
 import Base from '../../layouts/Base.astro';
 import { getProjects, getProject } from '../../lib/wp';
 
-// One static page per project, generated from WordPress at build time.
 export async function getStaticPaths() {
 	const projects = await getProjects();
 	return projects.map((p) => ({ params: { slug: p.slug } }));
@@ -11,59 +10,72 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const p = (await getProject(slug!))!;
 
-const meta = [
+const meta = ([
 	['Client', p.client],
 	['Role', p.role],
 	['Year', p.year],
 	['Location', p.location],
-].filter(([, v]) => v);
+] as [string, string][]).filter(([, v]) => v);
+
+// Demo placeholders when a project has no gallery yet (offline / first run).
+const items = p.gallery.length
+	? p.gallery.map((g) => ({ src: g.src, srcset: g.srcset || '', label: '' }))
+	: Array.from({ length: 6 }, (_v, i) => ({ src: '', srcset: '', label: `${p.title} · plate ${String(i + 1).padStart(2, '0')}` }));
 ---
 <Base title={`${p.title} — Raveenthiran`} description={`${p.title} — ${p.category || 'project'} photography by Nishuthan Raveenthiran.`} active="work">
-	<main id="main" class="hx">
-		<div class="hx__track">
+	<div class="proj__hero">
+		{p.image
+			? <img src={p.image} alt={p.title} />
+			: <div class="proj__ph"><span>{p.title.toLowerCase()}</span></div>}
+	</div>
 
-			<section class="hx-panel hx-panel--head">
-				<div class="page-head">
-					<span class="label">{p.category || 'Project'}</span>
-					<h1 class="page-title">{p.title}</h1>
-					<div class="single-meta">
-						{p.year && <span>{p.year}</span>}
-						{p.category && <span>{p.category}</span>}
-					</div>
-				</div>
-			</section>
-
-			{p.image && (
-				<div class="hx-panel hx-panel--media"><figure><img src={p.image} alt={p.title} /></figure></div>
-			)}
-
-			{(meta.length || p.website) && (
-				<section class="hx-panel hx-panel--contact">
-					<dl class="contact-list">
-						{meta.map(([k, v]) => (
-							<div class="row"><span class="k">{k}</span><span>{v}</span></div>
-						))}
-						{p.website && (
-							<div class="row"><span class="k">Website</span>
-								<a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
-							</div>
-						)}
-					</dl>
-				</section>
-			)}
-
-			{p.content && (
-				<section class="hx-panel hx-panel--wide"><div class="prose" set:html={p.content} /></section>
-			)}
-
-			<section class="hx-panel hx-panel--end">
-				<nav class="entry-nav">
-					<a href="/work/">← All work</a>
-					<a href="/enquire/">Enquire about a shoot →</a>
-				</nav>
-			</section>
-
+	<div class="proj__head">
+		<div>
+			<p class="eyebrow">{p.category || 'Project'}</p>
+			<h1 class="proj__title">{p.title}</h1>
+			{p.content
+				? <div class="proj__body" set:html={p.content} />
+				: <div class="proj__body"><p>A {(p.category || 'photographic').toLowerCase()} series{p.location ? ` made in ${p.location}` : ''}{p.year ? `, ${p.year}` : ''}. The full edit lives in the gallery below.</p></div>}
 		</div>
-		<span class="hx-cue">Scroll <i></i></span>
-	</main>
+		<div>
+			{(meta.length || p.website) && (
+				<dl class="meta-dl">
+					{meta.map(([k, v]) => <div class="row"><span class="k">{k}</span><span>{v}</span></div>)}
+					{p.website && (
+						<div class="row"><span class="k">Website</span>
+							<a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
+						</div>
+					)}
+				</dl>
+			)}
+		</div>
+	</div>
+
+	<div class="gallery" data-gallery>
+		{items.map((it, i) => (
+			<figure data-i={i} data-src={it.src} data-label={it.label}>
+				{it.src
+					? <img src={it.src} srcset={it.srcset} sizes="(max-width:640px) 96vw, 48vw" alt={`${p.title} — ${i + 1}`} loading="lazy" />
+					: <span class="g-ph">{String(i + 1).padStart(2, '0')}</span>}
+			</figure>
+		))}
+	</div>
+
+	<nav class="entry-nav">
+		<a href="/work/">← All work</a>
+		<a href="/enquire/">Enquire about a shoot →</a>
+	</nav>
+
+	<!-- lightbox -->
+	<div class="lb" data-lb aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
+		<div class="lb__bar">
+			<span data-lb-count>1 / {items.length}</span>
+			<button class="lb__close" data-lb-close aria-label="Close">✕</button>
+		</div>
+		<button class="lb__nav lb__prev" data-lb-prev aria-label="Previous">←</button>
+		<div data-lb-stage></div>
+		<button class="lb__nav lb__next" data-lb-next aria-label="Next">→</button>
+	</div>
 </Base>
+
+<script src="../../scripts/lightbox.js"></script>

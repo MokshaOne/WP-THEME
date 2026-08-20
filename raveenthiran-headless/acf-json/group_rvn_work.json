@@ -3,6 +3,24 @@
 	"title": "Project details",
 	"fields": [
 		{
+			"key": "field_rvn_gallery",
+			"label": "Gallery",
+			"name": "gallery",
+			"type": "gallery",
+			"instructions": "The project's photos (7–12). Click Add to Gallery to select multiple, drag to reorder. The featured image is the cover; these are the gallery shown on the project page.",
+			"required": 0,
+			"return_format": "id",
+			"library": "all",
+			"min": 0,
+			"max": 0,
+			"min_size": "",
+			"max_size": "",
+			"mime_types": "",
+			"insert": "append",
+			"preview_size": "medium",
+			"show_in_rest": 1
+		},
+		{
 			"key": "field_rvn_client",
 			"label": "Client",
 			"name": "client",

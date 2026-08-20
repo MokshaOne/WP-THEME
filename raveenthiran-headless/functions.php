@@ -137,14 +137,30 @@ add_action( 'rest_api_init', function () {
 
 	register_rest_field( 'work', 'gallery', array(
 		'get_callback' => function ( $post ) {
-			$featured = (int) get_post_thumbnail_id( $post['id'] );
-			$images   = get_attached_media( 'image', $post['id'] );
 			$out = array();
-			foreach ( $images as $img ) {
-				if ( (int) $img->ID === $featured ) { continue; }
-				$rec = rvn_image( $img->ID, 'large' );
-				if ( $rec ) { $out[] = $rec; }
+
+			// 1) ACF Gallery field (curated + ordered). return_format = id.
+			if ( function_exists( 'get_field' ) ) {
+				$g = get_field( 'gallery', $post['id'] );
+				if ( is_array( $g ) ) {
+					foreach ( $g as $item ) {
+						$aid = is_array( $item ) ? (int) ( $item['ID'] ?? $item['id'] ?? 0 ) : (int) $item;
+						$rec = $aid ? rvn_image( $aid, 'large' ) : null;
+						if ( $rec ) { $out[] = $rec; }
+					}
+				}
 			}
+
+			// 2) Fallback: images attached to the post (excluding the featured one).
+			if ( empty( $out ) ) {
+				$featured = (int) get_post_thumbnail_id( $post['id'] );
+				foreach ( get_attached_media( 'image', $post['id'] ) as $img ) {
+					if ( (int) $img->ID === $featured ) { continue; }
+					$rec = rvn_image( $img->ID, 'large' );
+					if ( $rec ) { $out[] = $rec; }
+				}
+			}
+
 			return $out;
 		},
 		'schema' => array( 'type' => 'array', 'context' => array( 'view', 'edit', 'embed' ) ),

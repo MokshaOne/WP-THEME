@@ -1,0 +1,60 @@
+name: Deploy frontend to easyname
+
+# Builds the Astro site (pulling live content from WordPress at wp.m1o.at) and
+# uploads the static output to easyname over FTPS. Runs on push to frontend/**,
+# on a manual trigger, and nightly (so new WordPress content goes live daily).
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   FTP_SERVER      easyname FTP host, e.g. ftp.raveenthiran.com
+#   FTP_USERNAME    easyname FTP user
+#   FTP_PASSWORD    easyname FTP password
+# Optional:
+#   FTP_SERVER_DIR  target dir on the host (default "./"), e.g. /html/ or /raveenthiran.com/
+#   WP_BASE         override the WordPress REST base (default is baked into wp.ts)
+
+on:
+  push:
+    branches: [ "Theme-folder", "claude/headless-wordpress-easyname-8eu9fj" ]
+    paths: [ "frontend/**", ".github/workflows/deploy-frontend.yml" ]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"   # 04:00 UTC daily rebuild
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build (pulls content from WordPress)
+        working-directory: frontend
+        env:
+          WP_BASE: ${{ secrets.WP_BASE }}
+        run: npm run build
+
+      - name: Deploy dist/ to easyname (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./frontend/dist/
+          server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}

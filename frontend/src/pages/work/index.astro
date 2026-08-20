@@ -11,7 +11,6 @@ const grads = [
 	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
 	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
 ];
-const ratios = ['4/5', '1/1', '3/4', '4/5', '5/6', '1/1'];
 ---
 <Base title="Work — Raveenthiran" description="Selected photography — portraiture, weddings, street. Filter by album." active="work">
 	<div class="page" data-work>
@@ -32,10 +31,10 @@ const ratios = ['4/5', '1/1', '3/4', '4/5', '5/6', '1/1'];
 
 		<div class="masonry" data-grid>
 			{projects.map((p, i) => (
-				<a class="tile" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
+				<a class={`tile${p.featured_home ? ' tile--feat' : ''}`} href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
 					{p.image
 						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
-						: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:${ratios[i % ratios.length]}`} transition:name={`cover-${p.slug}`}><span>{p.title.toLowerCase()}</span></div>}
+						: <div class="tile__ph" style={`background:${grads[i % grads.length]}`} transition:name={`cover-${p.slug}`}><span>{p.title.toLowerCase()}</span></div>}
 					<div class="tile__meta">
 						<span class="tile__meta-l">
 							<span class="tile__t">{p.title}</span>

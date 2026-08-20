@@ -3,24 +3,26 @@ import Base from '../../layouts/Base.astro';
 import { getProjects } from '../../lib/wp';
 
 const projects = await getProjects();
-const categories = Array.from(new Set(projects.map((p) => p.category).filter(Boolean))).sort();
-const grads = [
-	'linear-gradient(135deg,#17171a,#0b0b0d)', 'linear-gradient(120deg,#1a1712,#0d0b09)',
-	'linear-gradient(150deg,#12161a,#090a0d)', 'linear-gradient(120deg,#1a1410,#0c0906)',
-	'linear-gradient(160deg,#141418,#08080b)', 'linear-gradient(135deg,#1b1113,#0d0708)',
-];
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const albums = Array.from(new Set(projects.map((p) => p.category).filter(Boolean))).sort();
+const count = (cat: string) => projects.filter((p) => p.category === cat).length;
+const grads = [
+	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
+	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
+	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
+];
+const ratios = ['4/5', '1/1', '3/4', '4/5', '5/6', '1/1'];
 ---
-<Base title="Work — Raveenthiran" description="Selected photography projects — Vienna, working across Europe." active="work">
+<Base title="Work — Raveenthiran" description="Selected photography — portraiture, weddings, street. Filter by album." active="work">
 	<div class="page" data-work>
-		<div class="page-head">
+		<div class="page-head" data-reveal>
 			<h1 class="page-title">Work</h1>
-			<p class="eyebrow"><span data-count>{projects.length}</span> projects</p>
+			<p class="eyebrow"><span>{projects.length}</span> projects</p>
 		</div>
 
-		<div class="filters" role="toolbar" aria-label="Filter projects">
+		<div class="filters" role="toolbar" aria-label="Filter by album" data-reveal>
 			<button class="filter-btn is-on" data-filter="*">All</button>
-			{categories.map((c) => <button class="filter-btn" data-filter={slug(c)}>{c}</button>)}
+			{albums.map((c) => <button class="filter-btn" data-filter={slug(c)}>{c}<sup>{count(c)}</sup></button>)}
 			<span class="filters__spacer"></span>
 			<div class="view-toggle" role="tablist" aria-label="View">
 				<button class="is-on" data-view="grid" role="tab" aria-selected="true">Grid</button>
@@ -28,12 +30,12 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 			</div>
 		</div>
 
-		<div class="grid" data-grid>
+		<div class="masonry" data-grid>
 			{projects.map((p, i) => (
 				<a class="tile" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
 					{p.image
-						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" />
-						: <div class="tile__ph" style={`background:${grads[i % grads.length]}`}><span>{p.title.toLowerCase()}</span></div>}
+						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
+						: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:${ratios[i % ratios.length]}`} transition:name={`cover-${p.slug}`}><span>{p.title.toLowerCase()}</span></div>}
 					<div class="tile__meta">
 						<span class="tile__t">{p.title}</span>
 						<span class="tile__c">{p.category}{p.year ? ` · ${p.year}` : ''}</span>
@@ -52,8 +54,6 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 			))}
 		</div>
 
-		<p class="empty" data-empty hidden>No projects in this category yet.</p>
+		<p class="empty" data-empty hidden>Nothing in this album yet.</p>
 	</div>
 </Base>
-
-<script src="../../scripts/work.js"></script>

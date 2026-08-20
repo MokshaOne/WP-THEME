@@ -4,8 +4,8 @@ import Base from '../layouts/Base.astro';
 const EMAIL = 'hello@raveenthiran.com'; // ← your studio email
 const CUR = '€';
 const types = [
-	{ label: 'Portrait', base: 450 }, { label: 'Editorial', base: 1200 },
-	{ label: 'Event', base: 900 }, { label: 'Commercial', base: 1800 },
+	{ label: 'Portrait', base: 450 }, { label: 'Wedding', base: 1800 },
+	{ label: 'Event', base: 900 }, { label: 'Editorial', base: 1200 },
 ];
 const extras = [
 	{ label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 },
@@ -21,12 +21,12 @@ const money = (n: number) => CUR + n.toLocaleString('en-US');
 ---
 <Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
 	<div class="page">
-		<div class="page-head">
+		<div class="page-head" data-reveal>
 			<h1 class="page-title">Start a project</h1>
 			<p class="page-lead">Tell me what you have in mind. Get an instant estimate; a firm quote follows within 24 hours.</p>
 		</div>
 
-		<div style="display:grid;grid-template-columns:1fr 320px;gap:3rem clamp(2rem,6vw,5rem);align-items:start">
+		<div class="two-col" data-reveal>
 			<form class="form" method="post" action={`mailto:${EMAIL}`} data-price-engine data-currency={CUR} data-mailto={EMAIL}>
 				<input type="hidden" name="estimate" value="" data-estimate-input />
 				<input type="hidden" name="breakdown" value="" data-breakdown />
@@ -78,16 +78,8 @@ const money = (n: number) => CUR + n.toLocaleString('en-US');
 			</aside>
 		</div>
 
-		<div class="faq">
+		<div class="faq" data-reveal>
 			{faq.map(([q, a]) => <details><summary>{q}</summary><div class="a"><p>{a}</p></div></details>)}
 		</div>
 	</div>
 </Base>
-
-<script src="../scripts/price.js"></script>
-
-<style>
-	@media (max-width: 820px) {
-		.page > div:nth-child(2) { grid-template-columns: 1fr !important; }
-	}
-</style>

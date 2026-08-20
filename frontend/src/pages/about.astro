@@ -3,29 +3,23 @@ import Base from '../layouts/Base.astro';
 ---
 <Base title="Studio — Raveenthiran" description="The studio of Nishuthan Raveenthiran — a photographic practice based in Vienna, working across Europe." active="studio">
 	<div class="page">
-		<div class="page-head">
+		<div class="page-head" data-reveal>
 			<h1 class="page-title">Studio</h1>
 			<p class="eyebrow">Vienna · Europe</p>
 		</div>
 
-		<div style="display:grid;grid-template-columns:1.3fr 1fr;gap:2.5rem clamp(2rem,6vw,5rem);align-items:start">
+		<div class="two-col" data-reveal>
 			<div class="prose">
-				<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on editorial, portrait and architectural commissions. The work favours available light, restraint, and the quiet spaces between moments.</p>
-				<p>Selected clients include SZ Magazin, Apartamento, the NYT Magazine and the Belvedere. Personal series run alongside commissioned work and often become its foundation.</p>
-				<p>For commissions, editorial and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>
+				<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, wedding and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p>
+				<p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. The archive is organised by album; browse it under <strong>Work</strong>.</p>
+				<p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>
 			</div>
 			<dl class="contact-list">
-				<div class="row"><span class="k">Projects</span><span>120+</span></div>
-				<div class="row"><span class="k">Countries</span><span>14</span></div>
-				<div class="row"><span class="k">Publications</span><span>30+</span></div>
 				<div class="row"><span class="k">Based in</span><span>Vienna, AT</span></div>
+				<div class="row"><span class="k">Working</span><span>Across Europe</span></div>
+				<div class="row"><span class="k">Focus</span><span>Portrait · Wedding · Street</span></div>
+				<div class="row"><span class="k">Response</span><span>Within 24 hours</span></div>
 			</dl>
 		</div>
 	</div>
 </Base>
-
-<style>
-	@media (max-width: 800px) {
-		.page > div:last-child { grid-template-columns: 1fr !important; }
-	}
-</style>

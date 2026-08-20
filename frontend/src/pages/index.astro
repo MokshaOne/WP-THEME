@@ -2,37 +2,33 @@
 import Base from '../layouts/Base.astro';
 import { getProjects } from '../lib/wp';
 
-const projects = (await getProjects()).slice(0, 6);
+const all = await getProjects();
+const featured = all.filter((p) => p.featured_home);
+const projects = (featured.length ? featured : all).slice(0, 6);
 const grads = [
-	'linear-gradient(135deg,#17171a,#0b0b0d 60%,#080809)',
-	'linear-gradient(120deg,#1a1712,#0d0b09 55%,#080706)',
-	'linear-gradient(150deg,#12161a,#090a0d 60%,#070709)',
-	'linear-gradient(120deg,#1a1410,#0c0906 58%,#070604)',
-	'linear-gradient(160deg,#141418,#08080b 60%,#070708)',
-	'linear-gradient(135deg,#1b1113,#0d0708 55%,#080505)',
+	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
+	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
+	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
 ];
 ---
 <Base
 	title="Raveenthiran — Photography"
-	description="Selected photography by Nishuthan Raveenthiran — Vienna, working across Europe."
-	active=""
+	description="Selected photography by Nishuthan Raveenthiran — portraiture, weddings, street and the quiet spaces between. Vienna, working across Europe."
 >
 	<section class="hero" data-hero>
 		{projects.map((p, i) => (
-			<div class={`hero__slide${i === 0 ? ' is-on' : ''}`} data-slide={i}>
+			<div class={`hero__slide${i === 0 ? ' is-on' : ''}`} data-slide={i} data-title={p.title} data-cat={p.category} data-slug={p.slug}>
 				{p.image
-					? <img class="hero__media" src={p.image} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} />
+					? <img class="hero__media" src={p.image} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
 					: <div class="hero__ph" style={`background:${grads[i % grads.length]}`}><span>{p.title.toLowerCase()}</span></div>}
 				<div class="hero__scrim"></div>
 			</div>
 		))}
 
-		<div class="hero__cap">
+		<div class="hero__inner">
+			<div class="hero__eyebrow" data-hero-eyebrow>{projects[0]?.category}</div>
 			<h1 class="hero__title" data-hero-title>{projects[0]?.title}</h1>
-			<div class="hero__meta">
-				<div class="eyebrow" data-hero-cat>{projects[0]?.category}</div>
-				<a href={`/work/${projects[0]?.slug}/`} data-hero-link>View project <span>→</span></a>
-			</div>
+			<a class="hero__cta" href={`/work/${projects[0]?.slug}/`} data-hero-link>View project →</a>
 		</div>
 
 		<div class="hero__dots">
@@ -40,28 +36,3 @@ const grads = [
 		</div>
 	</section>
 </Base>
-
-<script is:inline define:vars={{ data: projects.map((p) => ({ title: p.title, category: p.category, slug: p.slug })) }}>
-	(function () {
-		var hero = document.querySelector('[data-hero]');
-		if (!hero || data.length < 2) return;
-		var slides = hero.querySelectorAll('.hero__slide');
-		var dots = hero.querySelectorAll('.hero__dot');
-		var titleEl = hero.querySelector('[data-hero-title]');
-		var catEl = hero.querySelector('[data-hero-cat]');
-		var linkEl = hero.querySelector('[data-hero-link]');
-		var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
-		var i = 0, timer = null;
-		function go(n) {
-			i = (n + data.length) % data.length;
-			slides.forEach(function (s, k) { s.classList.toggle('is-on', k === i); });
-			dots.forEach(function (d, k) { d.classList.toggle('is-on', k === i); });
-			titleEl.textContent = data[i].title;
-			catEl.textContent = data[i].category;
-			linkEl.setAttribute('href', '/work/' + data[i].slug + '/');
-		}
-		function arm() { if (!reduce) timer = setInterval(function () { go(i + 1); }, 5200); }
-		dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); clearInterval(timer); arm(); }); });
-		arm();
-	})();
-</script>

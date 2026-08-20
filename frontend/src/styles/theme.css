@@ -106,6 +106,47 @@ body.ovl-open .ovl__inner{transform:none}
 
 main{min-height:60vh}
 
+/* scroll progress (gold hairline) */
+.progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--gold);z-index:100;transition:width .1s linear}
+
+/* header goes light while over the cinematic hero */
+body.header-light .site-header .toggle span{background:#fff}
+body.header-light .theme-toggle{color:#fff}
+body.header-light .monogram{color:var(--gold-2)}
+
+/* ── CINEMATIC HERO (master) — full-screen featured slideshow ── */
+.cine{position:relative;height:100vh;height:100dvh;overflow:hidden;background:#0b0a09}
+.cine__slide{position:absolute;inset:0;opacity:0;transition:opacity 1.5s var(--ease)}
+.cine__slide.on{opacity:1;z-index:1}
+.cine__media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;transform:scale(1.05);transition:transform 7s linear}
+.cine__slide.on .cine__media{transform:scale(1.13)}
+.cine__ph{position:absolute;inset:0}
+.cine__scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.04) 32%,rgba(0,0,0,.12) 62%,rgba(0,0,0,.78))}
+.cine__inner{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;max-width:var(--wide);margin:0 auto;padding:0 var(--gut) clamp(5rem,13vh,8rem);color:#fff}
+.cine__eyebrow{font-family:var(--label);font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-2);font-weight:600;margin-bottom:1.1rem}
+.cine__title{font-family:var(--serif);font-weight:500;font-size:clamp(2.6rem,7.5vw,6.4rem);line-height:1.02;color:#fff;max-width:16ch;text-shadow:0 2px 40px rgba(0,0,0,.35)}
+.cine__cta{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.7rem;font-family:var(--label);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:#fff;border-bottom:1px solid rgba(255,255,255,.45);padding-bottom:.4rem;width:max-content;transition:gap var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.cine__cta:hover{gap:1.1rem;border-color:var(--gold-2)}
+.cine__ui{position:absolute;left:0;right:0;bottom:clamp(1.6rem,4vh,2.6rem);z-index:4;display:flex;align-items:center;justify-content:space-between;max-width:var(--wide);margin:0 auto;padding:0 var(--gut)}
+.cine__count{font-family:var(--label);font-size:.78rem;letter-spacing:.14em;color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums;font-weight:600}
+.cine__count b{color:#fff}
+.cine__arrows{display:flex;gap:1.3rem}
+.cine__arrows button{color:#fff;opacity:.65;font-size:1.1rem;letter-spacing:.1em;transition:opacity var(--dur) var(--ease)}
+.cine__arrows button:hover{opacity:1;color:var(--gold-2)}
+.cine__scroll{position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(1.5rem,4vh,2.4rem);z-index:4;font-family:var(--label);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.65);display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.cine__scroll::after{content:"";width:1px;height:28px;background:linear-gradient(#fff,transparent);animation:scrollcue 2.2s var(--ease) infinite}
+@keyframes scrollcue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media(max-width:640px){.cine__scroll{display:none}}
+@media(prefers-reduced-motion:reduce){.cine__slide.on .cine__media{transform:scale(1.05)}.cine__scroll::after{animation:none}}
+
+/* home intro divider between hero and gallery */
+.home-intro{text-align:center;max-width:820px;margin:0 auto;padding:clamp(4.5rem,11vh,8rem) var(--gut) clamp(2.5rem,6vh,4rem)}
+.home-intro .eyebrow{display:block;margin-bottom:1.2rem}
+.home-intro__lede{font-family:var(--serif);font-weight:500;font-size:clamp(1.6rem,3.6vw,2.7rem);line-height:1.28;color:var(--ink)}
+.home-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;max-width:var(--wide);margin:0 auto clamp(1.5rem,4vw,2.5rem);padding:0 var(--gut)}
+.home-section-head h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.1rem);color:var(--ink)}
+.home-section-head a{font-family:var(--label);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600}
+
 /* ── generic page shell ── */
 .page{padding:clamp(8rem,15vh,11rem) var(--gut) clamp(4rem,9vh,7rem);max-width:var(--maxw);margin:0 auto}
 .page--wide{max-width:var(--wide)}

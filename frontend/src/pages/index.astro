@@ -1,32 +1,65 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getProjects } from '../lib/wp';
+import { getProjects, getSite } from '../lib/wp';
 
 const all = await getProjects();
+const site = await getSite();
 const featured = all.filter((p) => p.featured_home);
-const projects = (featured.length ? featured : all).slice(0, 6);
-const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const slides = (featured.length ? featured : all).slice(0, 6);
+const recent = all.slice(0, 8);
 const grads = [
 	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
 	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
 	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
 ];
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 <Base
 	title="Raveenthiran — Photography"
 	description="Selected photography by Nishuthan Raveenthiran — portraiture, weddings, street and the quiet spaces between. Vienna, working across Europe."
 >
-	<section class="home-hero" data-reveal>
-		<h1 class="home-hero__title">A photography practice in <a href="/about/">Vienna</a>, keeping the portraits, weddings and quiet moments that last.</h1>
-		<p class="home-hero__desc">Nishuthan Raveenthiran</p>
+	<section class="cine" data-cine>
+		{slides.map((p, i) => (
+			<div class={`cine__slide${i === 0 ? ' on' : ''}`} data-slide={i} data-title={p.title} data-cat={p.category} data-slug={p.slug}>
+				{p.image
+					? <img class="cine__media" src={p.image} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+					: <div class="cine__ph" style={`background:${grads[i % grads.length]}`}></div>}
+				<div class="cine__scrim"></div>
+			</div>
+		))}
+
+		<div class="cine__inner">
+			<span class="cine__eyebrow" data-cine-eyebrow>{slides[0]?.category}</span>
+			<h1 class="cine__title" data-cine-title>{slides[0]?.title}</h1>
+			<a class="cine__cta" href={`/work/${slides[0]?.slug}/`} data-cine-link>View project →</a>
+		</div>
+
+		<div class="cine__ui">
+			<span class="cine__count"><b data-cine-cur>01</b> / {pad(slides.length)}</span>
+			<div class="cine__arrows">
+				<button data-cine-prev aria-label="Previous">← Prev</button>
+				<button data-cine-next aria-label="Next">Next →</button>
+			</div>
+		</div>
+		<span class="cine__scroll">Scroll</span>
 	</section>
 
+	<section class="home-intro" data-reveal>
+		<span class="eyebrow">Vienna · Photography</span>
+		<p class="home-intro__lede">{site.studio.lede}</p>
+	</section>
+
+	<div class="home-section-head" data-reveal>
+		<h2>Selected work</h2>
+		<a href="/work/">All work →</a>
+	</div>
+
 	<div class="masonry stagger">
-		{projects.map((p, i) => (
+		{recent.map((p, i) => (
 			<a class="tile" href={`/work/${p.slug}/`} data-reveal>
 				<div class="tile__frame">
 					{p.image
-						? <img class="tile__img" src={p.image} alt={p.title} loading={i < 2 ? 'eager' : 'lazy'} transition:name={`cover-${p.slug}`} />
+						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
 						: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
 				</div>
 				<div class="tile__cap">

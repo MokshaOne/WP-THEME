@@ -1,0 +1,104 @@
+{
+	"key": "group_rvn_work",
+	"title": "Project details",
+	"fields": [
+		{
+			"key": "field_rvn_client",
+			"label": "Client",
+			"name": "client",
+			"type": "text",
+			"instructions": "Optional. Leave empty for personal / TFP work.",
+			"required": 0,
+			"show_in_rest": 1,
+			"wrapper": { "width": "50" }
+		},
+		{
+			"key": "field_rvn_year",
+			"label": "Year",
+			"name": "year",
+			"type": "number",
+			"instructions": "Year the work was shot (e.g. 2026).",
+			"required": 0,
+			"min": 1900,
+			"max": 2100,
+			"show_in_rest": 1,
+			"wrapper": { "width": "50" }
+		},
+		{
+			"key": "field_rvn_location",
+			"label": "Location",
+			"name": "location",
+			"type": "text",
+			"instructions": "City / venue (e.g. Wien).",
+			"required": 0,
+			"show_in_rest": 1,
+			"wrapper": { "width": "50" }
+		},
+		{
+			"key": "field_rvn_website",
+			"label": "Website",
+			"name": "website",
+			"type": "url",
+			"instructions": "Optional external link.",
+			"required": 0,
+			"show_in_rest": 1,
+			"wrapper": { "width": "50" }
+		},
+		{
+			"key": "field_rvn_credits",
+			"label": "Credits",
+			"name": "credits",
+			"type": "textarea",
+			"instructions": "One per line, as \"Role — Name\". E.g.\nModel — Jane Doe\nMUA — …\nStyling — …\nAgency — …",
+			"required": 0,
+			"rows": 5,
+			"new_lines": "",
+			"show_in_rest": 1
+		},
+		{
+			"key": "field_rvn_featured_home",
+			"label": "Feature on homepage",
+			"name": "featured_home",
+			"type": "true_false",
+			"instructions": "Show this project in the homepage hero selection.",
+			"required": 0,
+			"ui": 1,
+			"show_in_rest": 1
+		},
+		{
+			"key": "field_rvn_seo_desc",
+			"label": "SEO description",
+			"name": "seo_description",
+			"type": "textarea",
+			"instructions": "Optional. ~155 characters for search/social preview.",
+			"required": 0,
+			"rows": 2,
+			"maxlength": 200,
+			"show_in_rest": 1
+		},
+		{
+			"key": "field_rvn_og_image",
+			"label": "Social / OG image",
+			"name": "og_image",
+			"type": "image",
+			"instructions": "Optional. Falls back to the featured image if empty.",
+			"required": 0,
+			"return_format": "id",
+			"preview_size": "medium",
+			"library": "all",
+			"show_in_rest": 1
+		}
+	],
+	"location": [
+		[
+			{ "param": "post_type", "operator": "==", "value": "work" }
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"active": true,
+	"show_in_rest": 1,
+	"description": "Structured details for Work projects, exposed to the headless frontend via the REST 'project' field."
+}

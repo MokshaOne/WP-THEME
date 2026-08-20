@@ -1,26 +1,23 @@
 <?php
 /**
  * Plugin Name: Raveenthiran — Headless CMS
- * Description: Self-contained content model for the headless setup: registers
- *              the Work custom post type, the Work Categories taxonomy, the
- *              "Project details" meta box, and exposes the project fields on
- *              the REST API. Theme-independent — the WordPress install on the
- *              NAS can run any theme (or the default one); the frontend lives
- *              in the separate Astro project.
+ * Description: Self-contained content model for the headless setup: Work CPT,
+ *              Category + Service taxonomies, and a normalized REST contract
+ *              (project details, credits, gallery, seo) that reads ACF first
+ *              and falls back to legacy meta / attached media — so older
+ *              projects keep working. Theme-independent.
  * Author:      Raveenthiran
- * Version:     2.0.0
+ * Version:     4.0.0
  *
- * Install: drop this file into  wp-content/mu-plugins/rvn-headless.php  on the
- * NAS. mu-plugins auto-activate. After installing, switch the site theme to a
- * default/minimal theme and save Settings → Permalinks once (rewrite flush).
- *
- * Meta keys stay `_still_<field>` so existing project data entered under the
- * Still theme is preserved.
+ * Install: put this file in wp-content/mu-plugins/ on the NAS (auto-activates).
+ * Fields are edited via the ACF field group (acf-json/group_work_project.json).
+ * The gallery is simply the images ATTACHED to the project (upload the feature
+ * image + 7–12 photos to the post) — no ACF Pro required.
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-/* ── Custom post type: Work (portfolio) + Categories taxonomy ── */
+/* ── Post type + taxonomies ─────────────────────────────────────────────── */
 add_action( 'init', function () {
 
 	if ( ! post_type_exists( 'work' ) ) {
@@ -43,77 +40,103 @@ add_action( 'init', function () {
 		) );
 	}
 
+	// Primary album (Street, Wedding, Portrait …) — the main site filter.
 	if ( ! taxonomy_exists( 'work_category' ) ) {
 		register_taxonomy( 'work_category', 'work', array(
-			'labels'            => array( 'name' => __( 'Categories', 'rvn' ), 'singular_name' => __( 'Category', 'rvn' ) ),
+			'labels'            => array( 'name' => __( 'Albums', 'rvn' ), 'singular_name' => __( 'Album', 'rvn' ) ),
 			'public'            => true,
 			'hierarchical'      => true,
 			'show_admin_column' => true,
 			'show_in_rest'      => true,
-			'rewrite'           => array( 'slug' => 'work-category', 'with_front' => false ),
+			'rewrite'           => array( 'slug' => 'album', 'with_front' => false ),
+		) );
+	}
+
+	// Reusable service tags (Available Light, Analog, Retouching …).
+	if ( ! taxonomy_exists( 'work_service' ) ) {
+		register_taxonomy( 'work_service', 'work', array(
+			'labels'            => array( 'name' => __( 'Services', 'rvn' ), 'singular_name' => __( 'Service', 'rvn' ) ),
+			'public'            => true,
+			'hierarchical'      => false,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+			'rewrite'           => array( 'slug' => 'service', 'with_front' => false ),
 		) );
 	}
 } );
 
-/* ── Project fields (native meta box, no ACF). Keys => labels. ── */
-function rvn_project_fields() {
-	return apply_filters( 'rvn_project_fields', array(
-		'client'   => __( 'Client', 'rvn' ),
-		'role'     => __( 'Role', 'rvn' ),
-		'year'     => __( 'Year', 'rvn' ),
-		'location' => __( 'Location', 'rvn' ),
-		'website'  => __( 'Website', 'rvn' ),
-	) );
+/* ── Helpers ────────────────────────────────────────────────────────────── */
+
+/** Read an ACF field if ACF is active, else the legacy `_still_<key>` meta. */
+function rvn_field( $post_id, $acf_key, $legacy_key = '' ) {
+	if ( function_exists( 'get_field' ) ) {
+		$v = get_field( $acf_key, $post_id );
+		if ( $v !== null && $v !== '' && $v !== false ) { return $v; }
+	}
+	if ( $legacy_key ) {
+		$v = get_post_meta( $post_id, $legacy_key, true );
+		if ( $v !== '' ) { return $v; }
+	}
+	return '';
 }
 
-add_action( 'add_meta_boxes', function () {
-	add_meta_box( 'rvn_project', __( 'Project details', 'rvn' ), 'rvn_project_box', 'work', 'side', 'high' );
-} );
-
-function rvn_project_box( $post ) {
-	wp_nonce_field( 'rvn_project_save', 'rvn_project_nonce' );
-	echo '<div style="display:grid;gap:.7rem">';
-	foreach ( rvn_project_fields() as $key => $label ) {
-		$val = get_post_meta( $post->ID, '_still_' . $key, true );
-		printf(
-			'<label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#777">%s<input type="text" name="rvn_%s" value="%s" style="width:100%%;margin-top:4px"></label>',
-			esc_html( $label ), esc_attr( $key ), esc_attr( $val )
-		);
+/** Normalize credits into [{role,name,url}]. Accepts an ACF repeater (array of
+ *  rows) OR a textarea with one "Role — Name" per line (ACF-free friendly). */
+function rvn_credits( $post_id ) {
+	$raw = function_exists( 'get_field' ) ? get_field( 'credits', $post_id ) : '';
+	$out = array();
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			$role = isset( $row['role'] ) ? trim( (string) $row['role'] ) : '';
+			$name = isset( $row['name'] ) ? trim( (string) $row['name'] ) : '';
+			$url  = isset( $row['url'] ) ? trim( (string) $row['url'] ) : '';
+			if ( $role || $name ) { $out[] = array( 'role' => $role, 'name' => $name, 'url' => $url ); }
+		}
+	} elseif ( is_string( $raw ) && $raw !== '' ) {
+		foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $line ) {
+			$line = trim( $line );
+			if ( $line === '' ) { continue; }
+			$parts = preg_split( '/\s*(?:—|–|-|:)\s*/u', $line, 2 );
+			$out[] = array( 'role' => trim( $parts[0] ), 'name' => isset( $parts[1] ) ? trim( $parts[1] ) : '', 'url' => '' );
+		}
 	}
-	echo '</div>';
+	return $out;
 }
 
-add_action( 'save_post_work', function ( $post_id ) {
-	if ( ! isset( $_POST['rvn_project_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['rvn_project_nonce'] ) ), 'rvn_project_save' ) ) { return; }
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return; }
-	if ( ! current_user_can( 'edit_post', $post_id ) ) { return; }
-	foreach ( array_keys( rvn_project_fields() ) as $key ) {
-		$raw = isset( $_POST[ 'rvn_' . $key ] ) ? wp_unslash( $_POST[ 'rvn_' . $key ] ) : '';
-		$val = ( 'website' === $key ) ? esc_url_raw( $raw ) : sanitize_text_field( $raw );
-		if ( '' === $val ) { delete_post_meta( $post_id, '_still_' . $key ); }
-		else { update_post_meta( $post_id, '_still_' . $key, $val ); }
-	}
-} );
+/** Build a responsive image record from an attachment id. */
+function rvn_image( $id, $size = 'large' ) {
+	$src = wp_get_attachment_image_src( $id, $size );
+	if ( ! $src ) { return null; }
+	return array(
+		'src'    => $src[0],
+		'w'      => (int) $src[1],
+		'h'      => (int) $src[2],
+		'srcset' => (string) wp_get_attachment_image_srcset( $id, $size ),
+		'alt'    => (string) get_post_meta( $id, '_wp_attachment_image_alt', true ),
+	);
+}
 
-/* ── Expose project fields + gallery on the REST API for the headless frontend.
-   GET /wp-json/wp/v2/work returns `project` (details) and `gallery` (images). ── */
+/* ── REST contract: project / gallery / seo ─────────────────────────────── */
 add_action( 'rest_api_init', function () {
+
 	register_rest_field( 'work', 'project', array(
 		'get_callback' => function ( $post ) {
-			$out = array();
-			foreach ( array_keys( rvn_project_fields() ) as $key ) {
-				$value = get_post_meta( $post['id'], '_still_' . $key, true );
-				if ( '' !== $value && null !== $value ) {
-					$out[ $key ] = $value;
-				}
-			}
-			return $out;
+			$id = $post['id'];
+			$services = array();
+			$terms = wp_get_post_terms( $id, 'work_service', array( 'fields' => 'names' ) );
+			if ( ! is_wp_error( $terms ) ) { $services = array_values( $terms ); }
+			return array(
+				'client'        => (string) rvn_field( $id, 'client',   '_still_client' ),
+				'year'          => (string) rvn_field( $id, 'year',     '_still_year' ),
+				'location'      => (string) rvn_field( $id, 'location', '_still_location' ),
+				'website'       => (string) rvn_field( $id, 'website',  '_still_website' ),
+				'services'      => $services,
+				'credits'       => rvn_credits( $id ),
+				'featured_home' => (bool) ( function_exists( 'get_field' ) ? get_field( 'featured_home', $id ) : false ),
+			);
 		},
-		'schema' => array(
-			'description' => 'Structured project details (client, role, year, location, website).',
-			'type'        => 'object',
-			'context'     => array( 'view', 'edit', 'embed' ),
-		),
+		'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ),
+			'description' => 'Project details (client, year, location, website, services, credits, featured_home).' ),
 	) );
 
 	register_rest_field( 'work', 'gallery', array(
@@ -122,22 +145,26 @@ add_action( 'rest_api_init', function () {
 			$images   = get_attached_media( 'image', $post['id'] );
 			$out = array();
 			foreach ( $images as $img ) {
-				if ( (int) $img->ID === $featured ) { continue; } // featured shown as hero
-				$src = wp_get_attachment_image_src( $img->ID, 'large' );
-				if ( ! $src ) { continue; }
-				$out[] = array(
-					'src'    => $src[0],
-					'w'      => (int) $src[1],
-					'h'      => (int) $src[2],
-					'srcset' => (string) wp_get_attachment_image_srcset( $img->ID, 'large' ),
-				);
+				if ( (int) $img->ID === $featured ) { continue; } // featured is the cover/hero
+				$rec = rvn_image( $img->ID, 'large' );
+				if ( $rec ) { $out[] = $rec; }
 			}
 			return $out;
 		},
-		'schema' => array(
-			'description' => 'Additional images attached to the project (excludes the featured image).',
-			'type'        => 'array',
-			'context'     => array( 'view', 'edit', 'embed' ),
-		),
+		'schema' => array( 'type' => 'array', 'context' => array( 'view', 'edit', 'embed' ),
+			'description' => 'Images attached to the project (excludes the featured/cover image).' ),
+	) );
+
+	register_rest_field( 'work', 'seo', array(
+		'get_callback' => function ( $post ) {
+			$desc = (string) rvn_field( $post['id'], 'seo_description' );
+			$ogid = function_exists( 'get_field' ) ? get_field( 'og_image', $post['id'] ) : 0;
+			$og   = '';
+			if ( is_array( $ogid ) && isset( $ogid['id'] ) ) { $ogid = $ogid['id']; }
+			if ( $ogid ) { $rec = rvn_image( (int) $ogid, 'large' ); $og = $rec ? $rec['src'] : ''; }
+			return array( 'description' => $desc, 'og_image' => $og );
+		},
+		'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ),
+			'description' => 'Per-project SEO description and social image.' ),
 	) );
 } );

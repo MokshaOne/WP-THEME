@@ -1,25 +1,47 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getSite } from '../lib/wp';
+
+const site = await getSite();
+const s = site.studio;
+const c = site.contact;
+const igHandle = c.instagram ? '@' + c.instagram.replace(/\/+$/, '').split('/').pop() : '';
 ---
-<Base title="Studio — Raveenthiran" description="The studio of Nishuthan Raveenthiran — a photographic practice based in Vienna, working across Europe." active="studio">
+<Base title="Studio — Raveenthiran" description={s.lede} active="studio">
 	<div class="page">
 		<div class="page-head" data-reveal>
 			<h1 class="page-title">Studio</h1>
-			<p class="eyebrow">Vienna · Europe</p>
+			<p class="eyebrow">{c.location}</p>
 		</div>
 
+		<p class="studio-lede" data-reveal>{s.lede}</p>
+
 		<div class="two-col" data-reveal>
-			<div class="prose">
-				<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, wedding and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p>
-				<p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. The archive is organised by album; browse it under <strong>Work</strong>.</p>
-				<p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>
+			<div class="prose" set:html={s.bio} />
+			<div>
+				{s.portrait && <img class="studio-portrait" src={s.portrait} alt="Nishuthan Raveenthiran" loading="lazy" />}
+				<dl class="contact-list">
+					<div class="row"><span class="k">Email</span><a href={`mailto:${c.email}`}>{c.email}</a></div>
+					<div class="row"><span class="k">Studio</span><span>{c.location}</span></div>
+					<div class="row"><span class="k">Response</span><span>{c.response}</span></div>
+					{c.instagram && <div class="row"><span class="k">Instagram</span><a href={c.instagram} target="_blank" rel="noopener">{igHandle}</a></div>}
+				</dl>
 			</div>
-			<dl class="contact-list">
-				<div class="row"><span class="k">Based in</span><span>Vienna, AT</span></div>
-				<div class="row"><span class="k">Working</span><span>Across Europe</span></div>
-				<div class="row"><span class="k">Focus</span><span>Portrait · Wedding · Street</span></div>
-				<div class="row"><span class="k">Response</span><span>Within 24 hours</span></div>
-			</dl>
 		</div>
+
+		{s.stats.length > 0 && (
+			<div class="stats" data-reveal>
+				{s.stats.map((st) => (
+					<div class="stat"><span class="stat__v">{st.value}</span><span class="stat__k">{st.label}</span></div>
+				))}
+			</div>
+		)}
+
+		{s.clients.length > 0 && (
+			<div class="clients-block" data-reveal>
+				<p class="eyebrow">Selected clients</p>
+				<div class="clients">{s.clients.map((cl) => <span class="client">{cl}</span>)}</div>
+			</div>
+		)}
 	</div>
 </Base>

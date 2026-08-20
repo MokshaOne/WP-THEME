@@ -1,0 +1,77 @@
+{
+	"key": "group_rvn_site",
+	"title": "Site settings",
+	"fields": [
+		{ "key": "field_rvn_tab_studio", "label": "Studio", "name": "", "type": "tab", "placement": "top" },
+		{
+			"key": "field_rvn_studio_lede", "label": "Studio — lede", "name": "studio_lede", "type": "text",
+			"instructions": "Short one-line intro shown large on the Studio page.", "required": 0
+		},
+		{
+			"key": "field_rvn_studio_bio", "label": "Studio — bio", "name": "studio_bio", "type": "wysiwyg",
+			"instructions": "The main studio / about text.", "required": 0, "tabs": "all", "toolbar": "basic", "media_upload": 0
+		},
+		{
+			"key": "field_rvn_studio_portrait", "label": "Studio — portrait", "name": "studio_portrait", "type": "image",
+			"instructions": "Optional portrait shown on the Studio page.", "required": 0, "return_format": "url", "preview_size": "medium", "library": "all"
+		},
+		{
+			"key": "field_rvn_studio_stats", "label": "Studio — stats", "name": "studio_stats", "type": "repeater",
+			"instructions": "Small figures (e.g. Projects / 120+).", "required": 0, "layout": "table", "button_label": "Add stat",
+			"sub_fields": [
+				{ "key": "field_rvn_stat_label", "label": "Label", "name": "label", "type": "text" },
+				{ "key": "field_rvn_stat_value", "label": "Value", "name": "value", "type": "text" }
+			]
+		},
+		{
+			"key": "field_rvn_studio_clients", "label": "Studio — selected clients", "name": "studio_clients", "type": "textarea",
+			"instructions": "One per line (e.g. SZ Magazin).", "required": 0, "rows": 5
+		},
+
+		{ "key": "field_rvn_tab_contact", "label": "Contact", "name": "", "type": "tab", "placement": "top" },
+		{ "key": "field_rvn_contact_email", "label": "Email", "name": "contact_email", "type": "email", "required": 0 },
+		{ "key": "field_rvn_contact_location", "label": "Studio location", "name": "contact_location", "type": "text", "required": 0 },
+		{ "key": "field_rvn_contact_response", "label": "Response time", "name": "contact_response", "type": "text", "required": 0, "default_value": "Within 24 hours" },
+		{ "key": "field_rvn_contact_instagram", "label": "Instagram URL", "name": "contact_instagram", "type": "url", "required": 0 },
+
+		{ "key": "field_rvn_tab_pricing", "label": "Price calculator", "name": "", "type": "tab", "placement": "top" },
+		{ "key": "field_rvn_currency", "label": "Currency symbol", "name": "currency", "type": "text", "required": 0, "default_value": "€", "wrapper": { "width": "25" } },
+		{ "key": "field_rvn_licence", "label": "Commercial licence", "name": "licence_price", "type": "number", "required": 0, "wrapper": { "width": "25" } },
+		{ "key": "field_rvn_perkm", "label": "Travel per km", "name": "per_km", "type": "number", "required": 0, "step": "0.01", "wrapper": { "width": "25" } },
+		{
+			"key": "field_rvn_types", "label": "Project types", "name": "project_types", "type": "repeater",
+			"instructions": "Shoot types and their base price.", "required": 0, "layout": "table", "button_label": "Add type",
+			"sub_fields": [
+				{ "key": "field_rvn_type_label", "label": "Label", "name": "label", "type": "text" },
+				{ "key": "field_rvn_type_base", "label": "Base price", "name": "base", "type": "number" }
+			]
+		},
+		{
+			"key": "field_rvn_addons", "label": "Add-ons", "name": "addons", "type": "repeater",
+			"instructions": "Optional extras and their price.", "required": 0, "layout": "table", "button_label": "Add add-on",
+			"sub_fields": [
+				{ "key": "field_rvn_addon_label", "label": "Label", "name": "label", "type": "text" },
+				{ "key": "field_rvn_addon_price", "label": "Price", "name": "price", "type": "number" }
+			]
+		},
+
+		{ "key": "field_rvn_tab_faq", "label": "FAQ", "name": "", "type": "tab", "placement": "top" },
+		{
+			"key": "field_rvn_faq", "label": "FAQ", "name": "faq", "type": "repeater",
+			"instructions": "Questions shown under the enquiry form.", "required": 0, "layout": "block", "button_label": "Add question",
+			"sub_fields": [
+				{ "key": "field_rvn_faq_q", "label": "Question", "name": "question", "type": "text" },
+				{ "key": "field_rvn_faq_a", "label": "Answer", "name": "answer", "type": "textarea", "rows": 3 }
+			]
+		}
+	],
+	"location": [
+		[ { "param": "options_page", "operator": "==", "value": "rvn-site" } ]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"active": true,
+	"description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ."
+}

@@ -184,3 +184,94 @@ add_action( 'after_setup_theme', function () {
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'title-tag' );
 } );
+
+/* ── Site settings: ACF options page (edit the Studio bio, contact, price
+   calculator and FAQ from WordPress) + a REST endpoint the Astro build reads. ── */
+add_action( 'acf/init', function () {
+	if ( function_exists( 'acf_add_options_page' ) ) {
+		acf_add_options_page( array(
+			'page_title' => 'Site settings',
+			'menu_title' => 'Site settings',
+			'menu_slug'  => 'rvn-site',
+			'capability' => 'edit_posts',
+			'redirect'   => false,
+			'icon_url'   => 'dashicons-admin-customizer',
+			'position'   => 3,
+		) );
+	}
+} );
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'rvn/v1', '/site', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => 'rvn_site_payload',
+	) );
+} );
+
+/** Read an ACF options value with a fallback. */
+function rvn_site_opt( $key, $default = '' ) {
+	if ( ! function_exists( 'get_field' ) ) { return $default; }
+	$v = get_field( $key, 'option' );
+	return ( $v === null || $v === false || $v === '' ) ? $default : $v;
+}
+
+/** Normalized site payload for the headless frontend. */
+function rvn_site_payload() {
+	$rows_kv = function ( $key, $a = 'label', $b = 'value' ) {
+		$out = array();
+		foreach ( (array) rvn_site_opt( $key, array() ) as $r ) {
+			$la = isset( $r[ $a ] ) ? trim( (string) $r[ $a ] ) : '';
+			$lb = isset( $r[ $b ] ) ? $r[ $b ] : '';
+			if ( $la !== '' ) { $out[] = array( $a => $la, $b => $lb ); }
+		}
+		return $out;
+	};
+	$lines = function ( $key ) {
+		$out = array();
+		$raw = rvn_site_opt( $key, '' );
+		if ( is_string( $raw ) && $raw !== '' ) {
+			foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $l ) { $l = trim( $l ); if ( $l !== '' ) { $out[] = $l; } }
+		}
+		return $out;
+	};
+
+	$types = array();
+	foreach ( $rows_kv( 'project_types', 'label', 'base' ) as $r ) { $types[] = array( 'label' => $r['label'], 'base' => (float) $r['base'] ); }
+	$addons = array();
+	foreach ( $rows_kv( 'addons', 'label', 'price' ) as $r ) { $addons[] = array( 'label' => $r['label'], 'price' => (float) $r['price'] ); }
+	$stats = array();
+	foreach ( $rows_kv( 'studio_stats', 'label', 'value' ) as $r ) { $stats[] = array( 'label' => $r['label'], 'value' => (string) $r['value'] ); }
+	$faq = array();
+	foreach ( (array) rvn_site_opt( 'faq', array() ) as $r ) {
+		$q = isset( $r['question'] ) ? trim( (string) $r['question'] ) : '';
+		if ( $q === '' ) { continue; }
+		$faq[] = array( 'q' => $q, 'a' => isset( $r['answer'] ) ? (string) $r['answer'] : '' );
+	}
+	$portrait = rvn_site_opt( 'studio_portrait', '' );
+	if ( is_array( $portrait ) ) { $portrait = $portrait['url'] ?? ''; }
+
+	return array(
+		'studio'  => array(
+			'lede'     => (string) rvn_site_opt( 'studio_lede', '' ),
+			'bio'      => (string) rvn_site_opt( 'studio_bio', '' ),
+			'portrait' => (string) $portrait,
+			'stats'    => $stats,
+			'clients'  => $lines( 'studio_clients' ),
+		),
+		'contact' => array(
+			'email'     => (string) rvn_site_opt( 'contact_email', '' ),
+			'location'  => (string) rvn_site_opt( 'contact_location', '' ),
+			'response'  => (string) rvn_site_opt( 'contact_response', '' ),
+			'instagram' => (string) rvn_site_opt( 'contact_instagram', '' ),
+		),
+		'pricing' => array(
+			'currency' => (string) rvn_site_opt( 'currency', '€' ),
+			'types'    => $types,
+			'addons'   => $addons,
+			'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
+			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
+		),
+		'faq'     => $faq,
+	);
+}

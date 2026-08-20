@@ -116,3 +116,80 @@ export async function getProject(slug: string): Promise<Project | undefined> {
 	if (data && data.length) return mapProject(data[0]);
 	return SAMPLE.find((p) => p.slug === slug);
 }
+
+/* ── Site settings (editable in WordPress → Site settings) ── */
+export interface SiteStat { label: string; value: string }
+export interface PriceType { label: string; base: number }
+export interface AddOn { label: string; price: number }
+export interface Faq { q: string; a: string }
+export interface Site {
+	studio: { lede: string; bio: string; portrait: string; stats: SiteStat[]; clients: string[] };
+	contact: { email: string; location: string; response: string; instagram: string };
+	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; licence: number; per_km: number };
+	faq: Faq[];
+}
+
+const SITE_FALLBACK: Site = {
+	studio: {
+		lede: 'A practice of looking slowly — and keeping only what lasts.',
+		bio: '<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, wedding and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p><p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. Each project is kept as an album; the archive lives under Work.</p><p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>',
+		portrait: '',
+		stats: [
+			{ label: 'Projects', value: '120+' }, { label: 'Countries', value: '14' },
+			{ label: 'Publications', value: '30+' }, { label: 'Based in', value: 'Vienna, AT' },
+		],
+		clients: ['SZ Magazin', 'Apartamento', 'NYT Magazine', 'Belvedere', 'Hotel Sacher'],
+	},
+	contact: { email: 'hello@raveenthiran.com', location: 'Vienna, AT', response: 'Within 24 hours', instagram: '' },
+	pricing: {
+		currency: '€',
+		types: [ { label: 'Portrait', base: 450 }, { label: 'Wedding', base: 1800 }, { label: 'Event', base: 900 }, { label: 'Editorial', base: 1200 } ],
+		addons: [ { label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 }, { label: 'Second shooter', price: 300 }, { label: 'Hair & makeup', price: 350 } ],
+		licence: 150, per_km: 0.42,
+	},
+	faq: [
+		{ q: 'How do we get started?', a: 'Send an enquiry with a few details about your project. I reply within 24 hours with availability and a firm quote.' },
+		{ q: 'Is the estimate final?', a: 'It is indicative — a fast way to gauge scope. The final quote is confirmed by email once we have talked through the details.' },
+		{ q: 'Do you travel?', a: 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.' },
+		{ q: 'When do I receive the images?', a: 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.' },
+	],
+};
+
+function pick<T>(v: T | undefined | null | '', fb: T): T { return (v === undefined || v === null || v === '' ) ? fb : v; }
+function arr<T>(v: T[] | undefined | null, fb: T[]): T[] { return Array.isArray(v) && v.length ? v : fb; }
+
+export async function getSite(): Promise<Site> {
+	const base = WP_BASE.replace(/\/wp\/v2\/?$/, '');
+	try {
+		const r = await fetch(base + '/rvn/v1/site', { mode: 'cors', credentials: 'omit' });
+		if (!r.ok) throw new Error('HTTP ' + r.status);
+		const d: any = await r.json();
+		const F = SITE_FALLBACK;
+		return {
+			studio: {
+				lede: pick(d?.studio?.lede, F.studio.lede),
+				bio: pick(d?.studio?.bio, F.studio.bio),
+				portrait: pick(d?.studio?.portrait, ''),
+				stats: arr(d?.studio?.stats, F.studio.stats),
+				clients: arr(d?.studio?.clients, F.studio.clients),
+			},
+			contact: {
+				email: pick(d?.contact?.email, F.contact.email),
+				location: pick(d?.contact?.location, F.contact.location),
+				response: pick(d?.contact?.response, F.contact.response),
+				instagram: pick(d?.contact?.instagram, ''),
+			},
+			pricing: {
+				currency: pick(d?.pricing?.currency, F.pricing.currency),
+				types: arr(d?.pricing?.types, F.pricing.types),
+				addons: arr(d?.pricing?.addons, F.pricing.addons),
+				licence: pick(d?.pricing?.licence, F.pricing.licence),
+				per_km: pick(d?.pricing?.per_km, F.pricing.per_km),
+			},
+			faq: arr(d?.faq, F.faq),
+		};
+	} catch (e) {
+		console.warn('[wp] site settings fallback —', (e as Error).message);
+		return SITE_FALLBACK;
+	}
+}

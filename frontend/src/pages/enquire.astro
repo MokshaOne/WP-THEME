@@ -1,29 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getSite } from '../lib/wp';
 
-const EMAIL = 'hello@raveenthiran.com'; // ← your studio email
-const CUR = '€';
-const types = [
-	{ label: 'Portrait', base: 450 }, { label: 'Wedding', base: 1800 },
-	{ label: 'Event', base: 900 }, { label: 'Editorial', base: 1200 },
-];
-const extras = [
-	{ label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 },
-	{ label: 'Second shooter', price: 300 }, { label: 'Hair & makeup', price: 350 },
-];
-const faq: [string, string][] = [
-	['How do we get started?', 'Send an enquiry with a few details about your project. I reply within 24 hours with availability and a firm quote.'],
-	['Is the estimate final?', 'It is indicative — a fast way to gauge scope. The final quote is confirmed by email once we have talked through the details.'],
-	['Do you travel?', 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.'],
-	['When do I receive the images?', 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.'],
-];
-const money = (n: number) => CUR + n.toLocaleString('en-US');
+const site = await getSite();
+const CUR = site.pricing.currency || '€';
+const EMAIL = site.contact.email;
+const types = site.pricing.types;
+const extras = site.pricing.addons;
+const licence = site.pricing.licence;
+const perKm = site.pricing.per_km;
+const faq = site.faq;
+const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
 ---
 <Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
 	<div class="page">
 		<div class="page-head" data-reveal>
 			<h1 class="page-title">Start a project</h1>
-			<p class="page-lead">Tell me what you have in mind. Get an instant estimate; a firm quote follows within 24 hours.</p>
+			<p class="page-lead">Tell me what you have in mind. Get an instant estimate — a firm quote follows by email within 24 hours.</p>
 		</div>
 
 		<div class="two-col" data-reveal>
@@ -33,7 +26,7 @@ const money = (n: number) => CUR + n.toLocaleString('en-US');
 				<div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
 
 				<div class="field">
-					<span class="field-label">Project type</span>
+					<span class="field-label">01 · Project type</span>
 					<div class="chips">
 						{types.map((t, i) => (
 							<label class="chip"><input type="radio" name="project_type" value={t.label} data-base={t.base} checked={i === 0} /><span>{t.label} · {money(t.base)}</span></label>
@@ -41,45 +34,56 @@ const money = (n: number) => CUR + n.toLocaleString('en-US');
 					</div>
 				</div>
 
-				<div class="field">
-					<span class="field-label">Add-ons</span>
-					<div class="chips">
-						{extras.map((x) => (
-							<label class="chip"><input type="checkbox" name="addons[]" value={x.label} data-price={x.price} /><span>{x.label} · +{money(x.price)}</span></label>
-						))}
+				{extras.length > 0 && (
+					<div class="field">
+						<span class="field-label">02 · Add-ons</span>
+						<div class="chips">
+							{extras.map((x) => (
+								<label class="chip"><input type="checkbox" name="addons[]" value={x.label} data-price={x.price} /><span>{x.label} · +{money(x.price)}</span></label>
+							))}
+						</div>
 					</div>
-				</div>
+				)}
 
 				<div class="field field--inline">
-					<label class="chip"><input type="checkbox" name="license" value="1" data-price="150" /><span>Commercial licence · +{money(150)}</span></label>
-					<label class="km"><span>Travel (km)</span><input type="number" name="travel_km" min="0" step="1" value="0" data-per-km="0.42" /></label>
+					{licence > 0 && (
+						<label class="chip"><input type="checkbox" name="license" value="1" data-price={licence} /><span>Commercial licence · +{money(licence)}</span></label>
+					)}
+					{perKm > 0 && (
+						<label class="km"><span>Travel (km)</span><input type="number" name="travel_km" min="0" step="1" value="0" data-per-km={perKm} /></label>
+					)}
 				</div>
 
-				<div class="estimate">
-					<span class="estimate__k">Estimate</span>
-					<output class="estimate__v" data-estimate>—</output>
-					<span class="estimate__note">Indicative — final quote confirmed by email.</span>
+				<div class="field">
+					<span class="field-label">03 · Your details</span>
+					<div class="field"><label for="f-name">Name</label><input id="f-name" type="text" name="name" required /></div>
+					<div class="field"><label for="f-email">Email</label><input id="f-email" type="email" name="email" required /></div>
+					<div class="field"><label for="f-date">Preferred date</label><input id="f-date" type="date" name="preferred_date" /></div>
+					<div class="field"><label for="f-notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
 				</div>
-
-				<div class="field"><label for="f-name">Name</label><input id="f-name" type="text" name="name" required /></div>
-				<div class="field"><label for="f-email">Email</label><input id="f-email" type="email" name="email" required /></div>
-				<div class="field"><label for="f-date">Preferred date</label><input id="f-date" type="date" name="preferred_date" /></div>
-				<div class="field"><label for="f-notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
 
 				<button type="submit" class="btn">Send enquiry →</button>
 			</form>
 
-			<aside>
+			<aside class="enquire-side">
+				<div class="big-estimate">
+					<span class="k">Estimate</span>
+					<output class="v" data-estimate>—</output>
+					<span class="note">Indicative — the final quote is confirmed by email once we’ve talked through the details.</span>
+				</div>
 				<dl class="contact-list">
 					<div class="row"><span class="k">Email</span><a href={`mailto:${EMAIL}`}>{EMAIL}</a></div>
-					<div class="row"><span class="k">Studio</span><span>Vienna, AT</span></div>
-					<div class="row"><span class="k">Response</span><span>Within 24 hours</span></div>
+					<div class="row"><span class="k">Studio</span><span>{site.contact.location}</span></div>
+					<div class="row"><span class="k">Response</span><span>{site.contact.response}</span></div>
 				</dl>
 			</aside>
 		</div>
 
-		<div class="faq" data-reveal>
-			{faq.map(([q, a]) => <details><summary>{q}</summary><div class="a"><p>{a}</p></div></details>)}
-		</div>
+		{faq.length > 0 && (
+			<div class="faq" data-reveal>
+				<h2 class="page-title" style="font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem">Questions</h2>
+				{faq.map((f) => <details><summary>{f.q}</summary><div class="a"><p>{f.a}</p></div></details>)}
+			</div>
+		)}
 	</div>
 </Base>

@@ -15,8 +15,9 @@ export interface Props {
 	description?: string;
 	active?: string;
 	ogImage?: string;
+	preload?: string;
 }
-const { title, description = '', active = '', ogImage = '' } = Astro.props;
+const { title, description = '', active = '', ogImage = '', preload = '' } = Astro.props;
 
 const site = await getSite();
 const projects = await getProjects();
@@ -28,12 +29,33 @@ const igHandle = site.contact.instagram
 	? '@' + site.contact.instagram.replace(/\/+$/, '').split('/').pop()
 	: '';
 const year = new Date().getFullYear();
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 const nav = [
 	{ key: 'work', label: 'Work', href: '/work/' },
 	{ key: 'studio', label: 'Studio', href: '/about/' },
 	{ key: 'enquire', label: 'Enquire', href: '/enquire/' },
 ];
+
+const jsonld = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'ProfessionalService',
+			'@id': (Astro.site || '') + '#studio',
+			name: 'Raveenthiran Photography',
+			image: ogImage || undefined,
+			email: site.contact.email,
+			url: Astro.site,
+			areaServed: 'Europe',
+			address: { '@type': 'PostalAddress', addressLocality: 'Vienna', addressCountry: 'AT' },
+			geo: { '@type': 'GeoCoordinates', latitude: 48.2082, longitude: 16.3738 },
+			founder: { '@type': 'Person', name: 'Nishuthan Raveenthiran', jobTitle: 'Photographer' },
+			sameAs: site.contact.instagram ? [site.contact.instagram] : undefined,
+		},
+		{ '@type': 'WebSite', url: Astro.site, name: 'Raveenthiran', inLanguage: 'en' },
+	],
+};
 
 const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23ffffff'/%3E%3Ccircle cx='24' cy='24' r='17' fill='none' stroke='%23d7b065' stroke-width='2'/%3E%3Cpath d='M7 24h34M24 7v17' stroke='%23d7b065' stroke-width='2'/%3E%3C/svg%3E";
 ---
@@ -44,11 +66,21 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>{title}</title>
 	{description && <meta name="description" content={description} />}
+	<link rel="canonical" href={canonical} />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Raveenthiran" />
 	<meta property="og:title" content={title} />
+	<meta property="og:url" content={canonical} />
 	{description && <meta property="og:description" content={description} />}
 	{ogImage && <meta property="og:image" content={ogImage} />}
+	<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+	<meta name="twitter:title" content={title} />
+	{description && <meta name="twitter:description" content={description} />}
+	{ogImage && <meta name="twitter:image" content={ogImage} />}
 	<meta name="theme-color" content="#ffffff" />
+	{preload && <link rel="preload" as="image" href={preload} fetchpriority="high" />}
 	<link rel="icon" href={favicon} />
+	<script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
 	<script is:inline>
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 		document.documentElement.classList.add('preloading');
@@ -62,23 +94,31 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	</div>
 	<div class="progress" data-progress></div>
 
-	<!-- full-screen overlay menu -->
+	<!-- full-screen cinematic overlay menu -->
 	<div class="ovl" data-ovl aria-hidden="true">
+		<button class="ovl__close" data-ovl-toggle aria-label="Close menu"><span></span><span></span></button>
 		<div class="ovl__inner">
-			<p class="ovl__welcome">A photography practice in Vienna — read the <a href="/about/">studio</a> or <a href="/enquire/">start a project</a>.</p>
+			<p class="ovl__welcome">A photography practice in Vienna, working across Europe.</p>
 			<nav class="ovl__nav" aria-label="Primary">
-				{nav.map((n) => <a href={n.href} aria-current={active === n.key ? 'page' : undefined}>{n.label}</a>)}
+				{nav.map((n, i) => (
+					<a href={n.href} aria-current={active === n.key ? 'page' : undefined}><span class="ovl__num">0{i + 1}</span>{n.label}</a>
+				))}
 			</nav>
 			{albums.length > 0 && (
-				<p class="ovl__albums">
-					{albums.map((a) => <a href={`/work/#${slugify(a)}`}>{a}</a>)}
-				</p>
+				<div class="ovl__albums">
+					<span class="ovl__albums-k">Albums</span>
+					<p>{albums.map((a) => <a href={`/work/#${slugify(a)}`}>{a}</a>)}</p>
+				</div>
 			)}
+			<div class="ovl__foot">
+				<a class="ovl__email" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+				{site.contact.instagram && <a href={site.contact.instagram} target="_blank" rel="noopener">Instagram ↗</a>}
+			</div>
 		</div>
 	</div>
 
 	<header class="site-header">
-		<a class="monogram" href="/" aria-label="Raveenthiran — home">
+		<a class="monogram" data-magnetic href="/" aria-label="Raveenthiran — home">
 			<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 24h38M24 5v19" stroke="currentColor" stroke-width="1.4"/></svg>
 		</a>
 		<button class="toggle" data-ovl-toggle aria-label="Menu" aria-expanded="false">
@@ -95,7 +135,7 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	</main>
 
 	<footer class="site-footer">
-		<a class="monogram monogram--foot" href="/" aria-label="Raveenthiran — home">
+		<a class="monogram monogram--foot" data-magnetic href="/" aria-label="Raveenthiran — home">
 			<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 24h38M24 5v19" stroke="currentColor" stroke-width="1.4"/></svg>
 		</a>
 		<span class="foot__rule" aria-hidden="true"></span>

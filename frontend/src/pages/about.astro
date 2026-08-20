@@ -9,7 +9,8 @@ const igHandle = c.instagram ? '@' + c.instagram.replace(/\/+$/, '').split('/').
 ---
 <Base title="Studio — Raveenthiran" description={s.lede} active="studio">
 	<div class="page">
-		<div class="page-head" data-reveal>
+		<div class="page-head studio-head" data-reveal>
+			<span class="flourish studio-flourish" aria-hidden="true">Vienna</span>
 			<span class="eyebrow">{c.location}</span>
 			<h1 class="page-title">The Studio</h1>
 		</div>
@@ -30,9 +31,9 @@ const igHandle = c.instagram ? '@' + c.instagram.replace(/\/+$/, '').split('/').
 		</div>
 
 		{s.stats.length > 0 && (
-			<div class="stats" data-reveal>
+			<div class="stats" data-reveal data-countup>
 				{s.stats.map((st) => (
-					<div class="stat"><span class="stat__v">{st.value}</span><span class="stat__k">{st.label}</span></div>
+					<div class="stat"><span class="stat__v" data-count={st.value}>{st.value}</span><span class="stat__k">{st.label}</span></div>
 				))}
 			</div>
 		)}

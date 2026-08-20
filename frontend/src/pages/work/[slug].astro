@@ -27,8 +27,8 @@ const kind = (p.category || 'photographic').toLowerCase();
 const article = /^[aeiou]/.test(kind) ? 'An' : 'A';
 
 const items = p.gallery.length
-	? p.gallery.map((g) => ({ src: g.src, srcset: g.srcset || '', label: '' }))
-	: Array.from({ length: 8 }, (_v, i) => ({ src: '', srcset: '', label: `${p.title} · plate ${String(i + 1).padStart(2, '0')}` }));
+	? p.gallery.map((g) => ({ src: g.src, srcset: g.srcset || '', w: g.w || 0, h: g.h || 0, label: '' }))
+	: Array.from({ length: 8 }, (_v, i) => ({ src: '', srcset: '', w: 0, h: 0, label: `${p.title} · plate ${String(i + 1).padStart(2, '0')}` }));
 ---
 <Base title={`${p.title} — Raveenthiran`} description={`${p.title} — ${p.category || 'project'} photography by Nishuthan Raveenthiran.`} active="work" ogImage={p.ogImage}>
 	<div class="proj__hero">
@@ -74,7 +74,7 @@ const items = p.gallery.length
 		{items.map((it, i) => (
 			<figure data-i={i} data-src={it.src} data-label={it.label}>
 				{it.src
-					? <img src={it.src} srcset={it.srcset} sizes="(max-width:640px) 96vw, 48vw" alt={`${p.title} — ${i + 1}`} loading="lazy" />
+					? <img src={it.src} srcset={it.srcset} sizes="(max-width:640px) 96vw, 48vw" width={it.w || undefined} height={it.h || undefined} alt={`${p.title} — ${i + 1}`} loading="lazy" />
 					: <span class="g-ph">{String(i + 1).padStart(2, '0')}</span>}
 			</figure>
 		))}

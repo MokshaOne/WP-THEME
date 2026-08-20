@@ -17,12 +17,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <Base
 	title="Raveenthiran — Photography"
 	description="Selected photography by Nishuthan Raveenthiran — portraiture, weddings, street and the quiet spaces between. Vienna, working across Europe."
+	ogImage={slides[0]?.image}
+	preload={slides[0]?.image}
 >
 	<section class="cine" data-cine>
 		{slides.map((p, i) => (
 			<div class={`cine__slide${i === 0 ? ' on' : ''}`} data-slide={i} data-title={p.title} data-cat={p.category} data-slug={p.slug}>
 				{p.image
-					? <img class="cine__media" src={p.image} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+					? <img class="cine__media" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
 					: <div class="cine__ph" style={`background:${grads[i % grads.length]}`}></div>}
 				<div class="cine__scrim"></div>
 			</div>
@@ -59,7 +61,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 			<a class="tile" href={`/work/${p.slug}/`} data-reveal>
 				<div class="tile__frame">
 					{p.image
-						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
+						? <img class="tile__img" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading="lazy" transition:name={`cover-${p.slug}`} />
 						: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
 				</div>
 				<div class="tile__cap">

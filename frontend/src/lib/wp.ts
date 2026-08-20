@@ -29,6 +29,8 @@ export interface Project {
 	credits: Credit[];
 	featured_home: boolean;
 	image: string;            // featured image URL ('' if none)
+	imageW?: number;          // featured image width (undefined if unknown)
+	imageH?: number;          // featured image height (undefined if unknown)
 	content: string;          // rendered HTML body ('' if none)
 	gallery: GalleryImage[];  // additional images attached to the project
 	ogImage: string;
@@ -56,8 +58,13 @@ function decode(s: string): string {
 }
 
 function mapProject(p: any): Project {
-	let image = '';
-	try { image = p._embedded['wp:featuredmedia'][0].source_url || ''; } catch {}
+	let image = '', imageW = 0, imageH = 0;
+	try {
+		const fm = p._embedded['wp:featuredmedia'][0];
+		image = fm.source_url || '';
+		const md = fm.media_details || {};
+		imageW = +md.width || 0; imageH = +md.height || 0;
+	} catch {}
 	let category = '';
 	try {
 		const terms = ([] as any[]).concat(...(p._embedded['wp:term'] || []));
@@ -87,6 +94,8 @@ function mapProject(p: any): Project {
 		credits,
 		featured_home: !!f.featured_home,
 		image,
+		imageW,
+		imageH,
 		content: (p.content && p.content.rendered) || '',
 		gallery,
 		ogImage: seo.og_image || image || '',

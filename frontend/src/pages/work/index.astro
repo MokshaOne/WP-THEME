@@ -33,7 +33,7 @@ const grads = [
 				<a class="tile" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
 					<div class="tile__frame">
 						{p.image
-							? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
+							? <img class="tile__img" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading="lazy" transition:name={`cover-${p.slug}`} />
 							: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
 					</div>
 					<div class="tile__cap">

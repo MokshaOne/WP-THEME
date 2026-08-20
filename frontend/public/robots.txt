@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://raveenthiran.com/sitemap-index.xml

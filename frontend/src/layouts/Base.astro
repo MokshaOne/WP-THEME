@@ -51,11 +51,15 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	<link rel="icon" href={favicon} />
 	<script is:inline>
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+		document.documentElement.classList.add('preloading');
 	</script>
 	<ClientRouter />
 </head>
 <body>
 	<a class="skip-link" href="#main">Skip to content</a>
+	<div class="preloader" data-preloader aria-hidden="true">
+		<svg class="preloader__mark" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="1.4" pathLength="1"/><path d="M5 24h38M24 5v19" stroke="currentColor" stroke-width="1.4" pathLength="1"/></svg>
+	</div>
 	<div class="progress" data-progress></div>
 
 	<!-- full-screen overlay menu -->

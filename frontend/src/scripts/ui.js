@@ -56,11 +56,13 @@
 		var eyebrowEl = hero.querySelector('[data-cine-eyebrow]');
 		var linkEl = hero.querySelector('[data-cine-link]');
 		var curEl = hero.querySelector('[data-cine-cur]');
+		var progEl = hero.querySelector('[data-cine-prog]');
 		var prev = hero.querySelector('[data-cine-prev]');
 		var next = hero.querySelector('[data-cine-next]');
 		if (!slides.length) return;
 		var i = 0;
 		function pad(n) { return n < 10 ? '0' + n : '' + n; }
+		function preload(n) { var s = slides[(n + slides.length) % slides.length]; var im = s && s.querySelector('img'); if (im && im.dataset.src) { var x = new Image(); x.src = im.dataset.src; } }
 		function go(n) {
 			i = (n + slides.length) % slides.length;
 			slides.forEach(function (s, k) { s.classList.toggle('on', k === i); });
@@ -69,11 +71,14 @@
 			if (eyebrowEl) eyebrowEl.textContent = s.getAttribute('data-cat') || '';
 			if (linkEl) linkEl.setAttribute('href', '/work/' + s.getAttribute('data-slug') + '/');
 			if (curEl) curEl.textContent = pad(i + 1);
+			if (progEl) { progEl.classList.remove('run'); void progEl.offsetWidth; if (!reduce && slides.length > 1) progEl.classList.add('run'); }
+			preload(i + 1);
 		}
 		function arm() { if (heroTimer) clearInterval(heroTimer); if (!reduce && slides.length > 1) heroTimer = setInterval(function () { go(i + 1); }, 6000); }
 		if (prev) prev.addEventListener('click', function () { go(i - 1); arm(); });
 		if (next) next.addEventListener('click', function () { go(i + 1); arm(); });
-		arm();
+		hero._cineNav = function (d) { go(i + d); arm(); };
+		go(0); arm();
 	}
 
 	/* ── scroll progress + header-light over cine hero ── */
@@ -225,11 +230,24 @@
 		if (e.key === 'Escape' && document.body.classList.contains('ovl-open')) {
 			var b = document.querySelector('[data-ovl-toggle]'); if (b) b.click();
 		}
-		if (!LB.open) return;
+		if (!LB.open) {
+			if (document.body.classList.contains('ovl-open')) return;
+			var hero = document.querySelector('[data-cine]');
+			if (hero && hero._cineNav && window.scrollY < hero.offsetHeight) {
+				if (e.key === 'ArrowLeft') hero._cineNav(-1);
+				else if (e.key === 'ArrowRight') hero._cineNav(1);
+			}
+			return;
+		}
 		if (e.key === 'Escape') lbClose();
 		else if (e.key === 'ArrowLeft') lbStep(-1);
 		else if (e.key === 'ArrowRight') lbStep(1);
 	});
+
+	/* preloader — reveal once the first page is ready (only shown on hard load) */
+	function hidePreloader() { setTimeout(function () { document.documentElement.classList.remove('preloading'); }, 550); }
+	if (document.readyState === 'complete') hidePreloader();
+	else window.addEventListener('load', hidePreloader);
 	// keep theme across view transitions (before paint)
 	document.addEventListener('astro:after-swap', function () {
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}

@@ -4,10 +4,17 @@ import { getProjects, getProject } from '../../lib/wp';
 
 export async function getStaticPaths() {
 	const projects = await getProjects();
-	return projects.map((p) => ({ params: { slug: p.slug } }));
+	return projects.map((p, i) => ({
+		params: { slug: p.slug },
+		props: {
+			prev: projects[(i - 1 + projects.length) % projects.length],
+			next: projects[(i + 1) % projects.length],
+		},
+	}));
 }
 
 const { slug } = Astro.params;
+const { prev, next } = Astro.props;
 const p = (await getProject(slug!))!;
 
 const meta = ([
@@ -73,8 +80,17 @@ const items = p.gallery.length
 		))}
 	</div>
 
+	{next && next.slug !== p.slug && (
+		<a class="next-proj" href={`/work/${next.slug}/`} aria-label={`Next project: ${next.title}`}>
+			<span class="next-proj__k">Next project</span>
+			<span class="next-proj__t">{next.title}</span>
+			<span class="next-proj__c">{next.category}{next.year ? ` · ${next.year}` : ''} →</span>
+		</a>
+	)}
+
 	<nav class="entry-nav">
 		<a href="/work/">← All work</a>
+		{prev && prev.slug !== p.slug ? <a href={`/work/${prev.slug}/`}>← {prev.title}</a> : <span></span>}
 		<a href="/enquire/">Enquire about a shoot →</a>
 	</nav>
 

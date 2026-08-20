@@ -32,36 +32,34 @@ const items = p.gallery.length
 
 	<div class="proj__head">
 		<div data-reveal>
-			<p class="eyebrow">{p.category || 'Project'}</p>
-			<h1 class="proj__title">{p.title}</h1>
-			{p.content
-				? <div class="proj__body" set:html={p.content} />
-				: <div class="proj__body"><p>{article} {kind} series{p.location ? ` made in ${p.location}` : ''}{p.year ? `, ${p.year}` : ''}. Selected frames below.</p></div>}
+			<div class="meta-pairs">
+				{meta.map(([k, v]) => <div class="pair"><span class="k">{k}</span><span class="v">{v}</span></div>)}
+				{p.website && (
+					<div class="pair"><span class="k">Website</span>
+						<span class="v"><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span>
+					</div>
+				)}
+			</div>
 			{p.services.length > 0 && (
 				<div class="services">{p.services.map((s) => <span class="service">{s}</span>)}</div>
-			)}
-		</div>
-		<div data-reveal>
-			{meta.length > 0 && (
-				<dl class="meta-dl">
-					{meta.map(([k, v]) => <div class="row"><span class="k">{k}</span><span>{v}</span></div>)}
-					{p.website && (
-						<div class="row"><span class="k">Website</span>
-							<a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
-						</div>
-					)}
-				</dl>
 			)}
 			{p.credits.length > 0 && (
 				<div class="credits">
 					{p.credits.map((c) => (
 						<div class="row">
 							<span class="cr-role">{c.role}</span>
-							<span>{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span>
+							<span class="cr-name">{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span>
 						</div>
 					))}
 				</div>
 			)}
+		</div>
+		<div data-reveal>
+			<span class="eyebrow proj__eyebrow">{p.category || 'Project'}</span>
+			<h1 class="proj__title">{p.title}</h1>
+			{p.content
+				? <div class="proj__body" set:html={p.content} />
+				: <div class="proj__body"><p>{article} {kind} series{p.location ? ` made in ${p.location}` : ''}{p.year ? `, ${p.year}` : ''}. Selected frames below.</p></div>}
 		</div>
 	</div>
 

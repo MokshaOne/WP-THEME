@@ -5,6 +5,7 @@ import { getProjects } from '../lib/wp';
 const all = await getProjects();
 const featured = all.filter((p) => p.featured_home);
 const projects = (featured.length ? featured : all).slice(0, 6);
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 const grads = [
 	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
 	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
@@ -15,24 +16,24 @@ const grads = [
 	title="Raveenthiran — Photography"
 	description="Selected photography by Nishuthan Raveenthiran — portraiture, weddings, street and the quiet spaces between. Vienna, working across Europe."
 >
-	<section class="hero" data-hero>
-		{projects.map((p, i) => (
-			<div class={`hero__slide${i === 0 ? ' is-on' : ''}`} data-slide={i} data-title={p.title} data-cat={p.category} data-slug={p.slug}>
-				{p.image
-					? <img class="hero__media" src={p.image} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
-					: <div class="hero__ph" style={`background:${grads[i % grads.length]}`}><span>{p.title.toLowerCase()}</span></div>}
-				<div class="hero__scrim"></div>
-			</div>
-		))}
-
-		<div class="hero__inner">
-			<div class="hero__eyebrow" data-hero-eyebrow>{projects[0]?.category}</div>
-			<h1 class="hero__title" data-hero-title>{projects[0]?.title}</h1>
-			<a class="hero__cta" href={`/work/${projects[0]?.slug}/`} data-hero-link>View project →</a>
-		</div>
-
-		<div class="hero__dots">
-			{projects.map((_p, i) => <button class={`hero__dot${i === 0 ? ' is-on' : ''}`} data-dot={i} aria-label={`Slide ${i + 1}`}><i></i></button>)}
-		</div>
+	<section class="home-hero" data-reveal>
+		<h1 class="home-hero__title">A photography practice in <a href="/about/">Vienna</a>, keeping the portraits, weddings and quiet moments that last.</h1>
+		<p class="home-hero__desc">Nishuthan Raveenthiran</p>
 	</section>
+
+	<div class="masonry stagger">
+		{projects.map((p, i) => (
+			<a class="tile" href={`/work/${p.slug}/`} data-reveal>
+				<div class="tile__frame">
+					{p.image
+						? <img class="tile__img" src={p.image} alt={p.title} loading={i < 2 ? 'eager' : 'lazy'} transition:name={`cover-${p.slug}`} />
+						: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
+				</div>
+				<div class="tile__cap">
+					<span class="tile__t">{p.title}</span>
+					<span class="tile__c">{p.category || 'Series'}</span>
+				</div>
+			</a>
+		))}
+	</div>
 </Base>

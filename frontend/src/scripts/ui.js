@@ -20,6 +20,20 @@
 		});
 	}
 
+	/* ── overlay menu ── */
+	function initOverlay() {
+		var btn = document.querySelector('[data-ovl-toggle]');
+		var ovl = document.querySelector('[data-ovl]');
+		if (!btn || !ovl) return;
+		function set(open) {
+			document.body.classList.toggle('ovl-open', open);
+			btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+			ovl.setAttribute('aria-hidden', open ? 'false' : 'true');
+		}
+		btn.addEventListener('click', function () { set(!document.body.classList.contains('ovl-open')); });
+		[].forEach.call(ovl.querySelectorAll('a'), function (a) { a.addEventListener('click', function () { set(false); }); });
+	}
+
 	/* ── scroll reveal ── */
 	function initReveal() {
 		var els = [].slice.call(document.querySelectorAll('[data-reveal]'));
@@ -187,6 +201,9 @@
 
 	/* ── document-level (once) ── */
 	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape' && document.body.classList.contains('ovl-open')) {
+			var b = document.querySelector('[data-ovl-toggle]'); if (b) b.click();
+		}
 		if (!LB.open) return;
 		if (e.key === 'Escape') lbClose();
 		else if (e.key === 'ArrowLeft') lbStep(-1);
@@ -197,6 +214,6 @@
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 	});
 
-	function boot() { initTheme(); initReveal(); initHero(); initWork(); initLightbox(); initPrice(); }
+	function boot() { initTheme(); initOverlay(); initReveal(); initHero(); initWork(); initLightbox(); initPrice(); }
 	document.addEventListener('astro:page-load', boot);
 })();

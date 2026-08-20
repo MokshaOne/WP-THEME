@@ -13,34 +13,32 @@ const grads = [
 ];
 ---
 <Base title="Work — Raveenthiran" description="Selected photography — portraiture, weddings, street. Filter by album." active="work">
-	<div class="page" data-work>
+	<div class="page page--wide" data-work>
 		<div class="page-head" data-reveal>
-			<h1 class="page-title">Work</h1>
-			<p class="eyebrow"><span>{projects.length}</span> projects</p>
+			<span class="eyebrow">{projects.length} projects · Vienna</span>
+			<h1 class="page-title">Selected Work</h1>
 		</div>
 
 		<div class="filters" role="toolbar" aria-label="Filter by album" data-reveal>
 			<button class="filter-btn is-on" data-filter="*">All</button>
 			{albums.map((c) => <button class="filter-btn" data-filter={slug(c)}>{c}<sup>{count(c)}</sup></button>)}
-			<span class="filters__spacer"></span>
-			<div class="view-toggle" role="tablist" aria-label="View">
-				<button class="is-on" data-view="grid" role="tab" aria-selected="true">Grid</button>
-				<button data-view="index" role="tab" aria-selected="false">Index</button>
-			</div>
+		</div>
+		<div class="view-toggle" role="tablist" aria-label="View" data-reveal>
+			<button class="is-on" data-view="grid" role="tab" aria-selected="true">Grid</button>
+			<button data-view="index" role="tab" aria-selected="false">Index</button>
 		</div>
 
-		<div class="masonry" data-grid>
+		<div class="masonry stagger" data-grid>
 			{projects.map((p, i) => (
-				<a class={`tile${p.featured_home ? ' tile--feat' : ''}`} href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
-					{p.image
-						? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
-						: <div class="tile__ph" style={`background:${grads[i % grads.length]}`} transition:name={`cover-${p.slug}`}><span>{p.title.toLowerCase()}</span></div>}
-					<div class="tile__meta">
-						<span class="tile__meta-l">
-							<span class="tile__t">{p.title}</span>
-							<span class="tile__c">{p.category}{p.year ? ` · ${p.year}` : ''}</span>
-						</span>
-						<span class="tile__view">View ↗</span>
+				<a class="tile" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
+					<div class="tile__frame">
+						{p.image
+							? <img class="tile__img" src={p.image} alt={p.title} loading="lazy" transition:name={`cover-${p.slug}`} />
+							: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
+					</div>
+					<div class="tile__cap">
+						<span class="tile__t">{p.title}</span>
+						<span class="tile__c">{p.category}{p.year ? ` · ${p.year}` : ''}</span>
 					</div>
 				</a>
 			))}

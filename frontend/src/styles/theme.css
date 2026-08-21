@@ -345,6 +345,7 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 .enq input::placeholder, .enq textarea::placeholder { color: #5f5a51; }
 .enq textarea { margin-top: 14px; resize: vertical; }
 .enq input:focus, .enq textarea:focus { border-color: var(--ink); outline: none; }
+.enq input:focus-visible, .enq textarea:focus-visible { box-shadow: 0 0 0 2px var(--canvas), 0 0 0 4px var(--ink); }
 .enq__est { padding: 44px 28px; display: flex; flex-direction: column; gap: 26px; background: var(--panel); }
 .est__name { font-family: var(--font-display); font-size: 28px; letter-spacing: 0.02em; }
 .est__lines { display: grid; grid-template-columns: 1fr auto; gap: 12px 20px; font-size: 12px; letter-spacing: 0.1em; border-top: var(--hair); border-bottom: var(--hair); padding: 20px 0; }

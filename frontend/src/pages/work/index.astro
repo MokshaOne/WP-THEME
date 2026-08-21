@@ -27,7 +27,7 @@ const to = years.length ? Math.max(...years) : new Date().getFullYear();
 	<section class="masonry" data-work-grid>
 		{projects.map((p, i) => (
 			<a class="card" href={`/work/${p.slug}/`} data-cat={up(p.category)}>
-				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-zoom loading={i < 3 ? 'eager' : 'lazy'} /></div>
+				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-zoom loading={i < 3 ? 'eager' : 'lazy'} transition:name={`cover-${p.slug}`} /></div>
 				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span><span class="c">{up(p.category)}</span></div>
 			</a>
 		))}

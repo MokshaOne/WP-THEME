@@ -11,6 +11,8 @@ const licence = site.pricing.licence;
 const perKm = site.pricing.per_km;
 const faq = site.faq;
 const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
+const WP_BASE = (import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2';
+const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 ---
 <Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
 	<div class="page">
@@ -21,7 +23,7 @@ const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
 		</div>
 
 		<div class="two-col" data-reveal>
-			<form class="form" method="post" action={`mailto:${EMAIL}`} data-price-engine data-currency={CUR} data-mailto={EMAIL}>
+			<form class="form" method="post" action={`mailto:${EMAIL}`} data-price-engine data-currency={CUR} data-mailto={EMAIL} data-endpoint={endpoint}>
 				<input type="hidden" name="estimate" value="" data-estimate-input />
 				<input type="hidden" name="breakdown" value="" data-breakdown />
 				<div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
@@ -63,7 +65,8 @@ const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
 					<div class="field"><label for="f-notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
 				</div>
 
-				<button type="submit" class="btn">Send enquiry →</button>
+				<button type="submit" class="btn" data-submit>Send enquiry →</button>
+				<p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
 			</form>
 
 			<aside class="enquire-side">

@@ -239,13 +239,39 @@
 		form.addEventListener('input', function (e) { if (e.target && e.target.name === 'travel_km') compute(); });
 		compute();
 		var to = form.getAttribute('data-mailto');
-		if (to) form.addEventListener('submit', function (e) {
-			e.preventDefault();
-			var g = function (n) { var el = form.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
+		var endpoint = form.getAttribute('data-endpoint');
+		var statusEl = form.querySelector('[data-form-status]');
+		var submitBtn = form.querySelector('[data-submit]');
+		function g(n) { var el = form.querySelector('[name="' + n + '"]'); return el ? el.value : ''; }
+		function fields() {
 			var type = (form.querySelector('input[name="project_type"]:checked') || {}).value || '';
 			var addons = [].slice.call(form.querySelectorAll('input[name="addons[]"]:checked')).map(function (x) { return x.value; }).join(', ');
-			var body = ['Name: ' + g('name'), 'Email: ' + g('email'), 'Preferred date: ' + g('preferred_date'), 'Project type: ' + type, 'Add-ons: ' + addons, 'Estimate: ' + g('estimate'), '', g('notes')].join('\n');
-			window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Project enquiry — ' + (g('name') || '')) + '&body=' + encodeURIComponent(body);
+			return { name: g('name'), email: g('email'), project_type: type, addons: addons, estimate: g('estimate'), preferred_date: g('preferred_date'), notes: g('notes'), company: g('company') };
+		}
+		function setStatus(msg, ok) {
+			if (!statusEl) return;
+			statusEl.hidden = false; statusEl.textContent = msg;
+			statusEl.classList.toggle('is-ok', !!ok); statusEl.classList.toggle('is-err', ok === false);
+		}
+		function mailtoFallback(f) {
+			var body = ['Name: ' + f.name, 'Email: ' + f.email, 'Preferred date: ' + f.preferred_date, 'Project type: ' + f.project_type, 'Add-ons: ' + f.addons, 'Estimate: ' + f.estimate, '', f.notes].join('\n');
+			window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Project enquiry — ' + (f.name || '')) + '&body=' + encodeURIComponent(body);
+		}
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var f = fields();
+			if (!f.name || !f.email) { setStatus('Please add your name and email.', false); return; }
+			if (!endpoint) { mailtoFallback(f); return; }
+			if (submitBtn) { submitBtn.disabled = true; }
+			setStatus('Sending…', null);
+			fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f) })
+				.then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+				.then(function () {
+					setStatus('Thank you — your enquiry is in. I’ll reply within 24 hours. Check your inbox for a confirmation.', true);
+					form.reset(); var c = form.querySelector('input[name="project_type"]'); if (c) c.checked = true; compute();
+				})
+				.catch(function () { setStatus('Couldn’t reach the studio just now — opening your mail app instead…', false); setTimeout(function () { mailtoFallback(f); }, 900); })
+				.then(function () { if (submitBtn) submitBtn.disabled = false; });
 		});
 	}
 

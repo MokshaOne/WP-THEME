@@ -275,3 +275,96 @@ function rvn_site_payload() {
 		'faq'     => $faq,
 	);
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Enquiry endpoint — receives the frontend enquiry form, stores it as a
+   private CPT, and emails the studio + an auto-reply to the client.
+   ══════════════════════════════════════════════════════════════════════ */
+
+add_action( 'init', function () {
+	register_post_type( 'rvn_enquiry', array(
+		'labels'       => array( 'name' => 'Enquiries', 'singular_name' => 'Enquiry' ),
+		'public'       => false,
+		'show_ui'      => true,
+		'show_in_menu' => true,
+		'menu_icon'    => 'dashicons-email-alt',
+		'menu_position'=> 26,
+		'supports'     => array( 'title', 'editor' ),
+		'capability_type' => 'post',
+	) );
+} );
+
+/* CORS for the rvn/v1 namespace so the static frontend (another origin) can POST. */
+add_action( 'rest_api_init', function () {
+	remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+	add_filter( 'rest_pre_serve_request', function ( $value ) {
+		$origin  = get_http_origin();
+		$allowed = array(
+			'https://raveenthiran.com',
+			'https://www.raveenthiran.com',
+			'http://localhost:4321',
+			'http://localhost:4322',
+		);
+		if ( $origin && in_array( $origin, $allowed, true ) ) {
+			header( 'Access-Control-Allow-Origin: ' . $origin );
+			header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS' );
+			header( 'Access-Control-Allow-Headers: Content-Type' );
+			header( 'Vary: Origin' );
+		}
+		return $value;
+	} );
+}, 15 );
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'rvn/v1', '/enquiry', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => 'rvn_enquiry_submit',
+	) );
+} );
+
+function rvn_enquiry_submit( WP_REST_Request $request ) {
+	$p = $request->get_json_params();
+	if ( ! is_array( $p ) ) { $p = $request->get_params(); }
+
+	// Honeypot — bots fill hidden "company"; drop silently as success.
+	if ( ! empty( $p['company'] ) ) { return new WP_REST_Response( array( 'ok' => true ), 200 ); }
+
+	$name  = sanitize_text_field( $p['name'] ?? '' );
+	$email = sanitize_email( $p['email'] ?? '' );
+	if ( $name === '' || ! is_email( $email ) ) {
+		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Please add your name and a valid email.' ), 400 );
+	}
+
+	$type     = sanitize_text_field( $p['project_type'] ?? '' );
+	$addons   = sanitize_text_field( $p['addons'] ?? '' );
+	$estimate = sanitize_text_field( $p['estimate'] ?? '' );
+	$date     = sanitize_text_field( $p['preferred_date'] ?? '' );
+	$notes    = sanitize_textarea_field( $p['notes'] ?? '' );
+
+	$body  = "Name: {$name}\nEmail: {$email}\nProject type: {$type}\nAdd-ons: {$addons}\n";
+	$body .= "Estimate: {$estimate}\nPreferred date: {$date}\n\n{$notes}";
+
+	wp_insert_post( array(
+		'post_type'    => 'rvn_enquiry',
+		'post_status'  => 'private',
+		'post_title'   => trim( $name . ' — ' . ( $type ?: 'Enquiry' ) . ( $estimate ? ' (' . $estimate . ')' : '' ) ),
+		'post_content' => $body,
+	) );
+
+	$studio  = rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
+	wp_mail( $studio, 'New enquiry — ' . $name, $body, array(
+		'Content-Type: text/plain; charset=UTF-8',
+		'Reply-To: ' . $name . ' <' . $email . '>',
+	) );
+
+	$reply  = "Hi {$name},\n\nThank you for your enquiry — I've received it and will reply within 24 hours ";
+	$reply .= "with availability and a firm quote.\n\nHere's what you sent:\n\n{$body}\n\n";
+	$reply .= "— Nishuthan Raveenthiran\nraveenthiran.com";
+	wp_mail( $email, 'Thanks for your enquiry — Raveenthiran', $reply, array(
+		'Content-Type: text/plain; charset=UTF-8',
+		'Reply-To: ' . $studio,
+	) );
+
+	return new WP_REST_Response( array( 'ok' => true ), 200 );
+}

@@ -482,3 +482,15 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 	.plate img, .hero__right img, .proj-hero__right img { filter: none !important; }
 	a { color: #111; }
 }
+
+/* ── Easy wins: scheme, scrollbar, hanging punctuation, easter egg ────────── */
+:root { color-scheme: dark; }
+* { scrollbar-width: thin; scrollbar-color: var(--chip) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--chip); border: 3px solid var(--canvas); }
+::-webkit-scrollbar-thumb:hover { background: var(--faint); }
+.article__body, .quotes__text, .proj-statement p, .hv-ed__lede { hanging-punctuation: first last; }
+/* type "raveen" anywhere → a quick luminance flip (a talkable detail) */
+html.rvn-flash { filter: invert(1) hue-rotate(180deg); transition: filter .45s ease; }
+@media (prefers-reduced-motion: reduce) { html.rvn-flash { filter: none; } }

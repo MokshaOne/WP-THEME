@@ -253,6 +253,22 @@ function initEnquire() {
 	}
 }
 
+/* ── Easter egg: type "raveen" anywhere → a quick luminance flip ─────────── */
+(() => {
+	let buf = '';
+	addEventListener('keydown', (e) => {
+		if (!e.key || e.key.length !== 1) return;
+		const t = e.target;
+		if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+		buf = (buf + e.key.toLowerCase()).slice(-6);
+		if (buf === 'raveen') {
+			const h = document.documentElement;
+			h.classList.add('rvn-flash');
+			setTimeout(() => h.classList.remove('rvn-flash'), 460);
+		}
+	});
+})();
+
 /* ── boot ────────────────────────────────────────────────────────────────── */
 document.addEventListener('astro:page-load', boot);
 document.addEventListener('astro:before-swap', teardown);

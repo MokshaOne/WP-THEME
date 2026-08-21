@@ -4,6 +4,31 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.3.0 — 2026-08-21 · Batches 11 / 12 / 14 / 16 (signature tier)
+
+- **Batch 11 — motion physics**: inertial smooth scroll (dependency-free
+  mini-Lenis; fine-pointer only, off under reduced-motion/touch) and marquee
+  speed that eases with scroll velocity. (Keeps the existing View-Transitions
+  cover-morph, letter reveals and parallax.)
+- **Batch 12 — WebGL layer**: an animated GPU film-grain on a shared WebGL2
+  canvas, replacing the static SVG grain when supported. Feature-gated with a
+  frame-time watchdog that auto-disables and restores the SVG grain on weak
+  hardware; fully off under reduced-motion.
+- **Batch 14 (partial) — content ops**: a per-project **focal-point picker**
+  (Projects → Focal point X/Y %) that drives `object-position` on the project
+  hero and home slides, so the subject stays framed across every crop.
+- **Batch 16 (partial) — engineering**: a ready-but-**disabled** Content-
+  Security-Policy in `.htaccess` (commented, with enable/verify instructions —
+  a wrong CSP can blank the site, so it never auto-applies) alongside the live
+  HSTS; plus an accessibility pass (decorative marquee + section numerals
+  hidden from screen readers).
+- **Fix**: a latent temporal-dead-zone bug in the cursor loop (`peekOn`) that
+  could throw and disable the whole motion engine.
+- Deferred (need your accounts/assets): OG-image generator, Sentry/monitoring,
+  image CDN, visual-regression CI, and the content items (real case studies,
+  client logos, b-roll video, self-portrait).
+- Frontend + WordPress theme/zip at 3.3.0.
+
 ## 3.2.1 — 2026-08-21 · Fix: site reverting to old version (service worker)
 
 - The PWA service worker (added in 2.6.0) was caching the app shell and serving

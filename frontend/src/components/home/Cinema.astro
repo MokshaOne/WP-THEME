@@ -8,7 +8,7 @@ const featured = (projects.filter((p) => p.featured_home).length ? projects.filt
 <section class="hv-cin" data-cinema>
 	{featured.map((p, i) => (
 		<img class:list={['hv-cin__img', i === 0 && 'on']} src={p.image} alt={p.title}
-			data-kicker={up(p.category || 'Portrait')} data-title={p.title} loading={i === 0 ? 'eager' : 'lazy'} />
+			data-kicker={up(p.category || 'Portrait')} data-title={p.title} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} />
 	))}
 	<div class="hv-cin__grad"></div>
 	<div class="hv-cin__cap">

@@ -10,6 +10,7 @@ export function initFX(opts = {}) {
 	const ease = 'cubic-bezier(.65,.05,.2,1)';
 	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 	const fine = matchMedia('(pointer: fine)').matches;
+	let peekOn = false; // read by the cursor loop; the hover-peek element is created later
 
 	/* grain + vignette atmosphere */
 	const atmo = document.createElement('div');
@@ -226,7 +227,6 @@ export function initFX(opts = {}) {
 	const peek = document.createElement('img');
 	peek.style.cssText = 'position:fixed;left:0;top:0;width:300px;height:auto;pointer-events:none;z-index:10003;opacity:0;transform:translate(-150px,-50%) rotate(3deg);transition:opacity .3s;filter:contrast(1.05)';
 	document.body.append(peek);
-	let peekOn = false;
 	document.querySelectorAll('[data-peek]').forEach(row => {
 		const enter = () => { const im = row.dataset.img; if (!im || !fine) return; peek.src = im; peek.style.opacity = '1'; peekOn = true; };
 		const leave = () => { peek.style.opacity = '0'; peekOn = false; };
@@ -248,9 +248,101 @@ export function initFX(opts = {}) {
 		rail.addEventListener('click', clk, true);
 	});
 
-	/* card hover choreography (handled by CSS; JS kept for filter fallback) */
-	tick_noop();
-	function tick_noop() {}
+	/* Batch 11 — motion physics: inertial smooth scroll + scroll-velocity marquee.
+	   Batch 12 — WebGL animated film grain (feature-gated, falls back to the SVG
+	   grain). All modules are no-ops under prefers-reduced-motion / on touch. */
+	cleanups.push(rvnSmoothScroll(reduce, fine));
+	cleanups.push(rvnScrollFX(reduce));
+	cleanups.push(rvnGrainGL(reduce, atmo));
 
 	return () => cleanups.forEach(f => f());
+}
+
+/* ── Batch 11: inertial smooth scroll (mini-Lenis, no dependency) ─────────── */
+function rvnSmoothScroll(reduce, fine) {
+	if (reduce || !fine || matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) return () => {};
+	let target = scrollY, current = scrollY, raf = 0, running = false, programmatic = false;
+	const max = () => document.documentElement.scrollHeight - innerHeight;
+	const clamp = (v) => Math.max(0, Math.min(max(), v));
+	const loop = () => {
+		current += (target - current) * 0.12;
+		if (Math.abs(target - current) < 0.4) { current = target; running = false; }
+		programmatic = true; window.scrollTo(0, current); programmatic = false;
+		if (running) raf = requestAnimationFrame(loop);
+	};
+	const start = () => { if (!running) { running = true; raf = requestAnimationFrame(loop); } };
+	const onWheel = (e) => {
+		if (e.ctrlKey) return; // let pinch-zoom through
+		e.preventDefault();
+		const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
+		target = clamp(target + e.deltaY * unit); start();
+	};
+	const resync = () => { if (!programmatic && !running) { target = current = scrollY; } };
+	addEventListener('wheel', onWheel, { passive: false });
+	addEventListener('scroll', resync, { passive: true });
+	addEventListener('resize', resync);
+	return () => { cancelAnimationFrame(raf); removeEventListener('wheel', onWheel); removeEventListener('scroll', resync); removeEventListener('resize', resync); };
+}
+
+/* ── Batch 11: marquee speed eases with scroll velocity ──────────────────── */
+function rvnScrollFX(reduce) {
+	if (reduce) return () => {};
+	const marq = [...document.querySelectorAll('.marquee__row')];
+	if (!marq.length) return () => {};
+	let lastY = scrollY, vel = 0, raf = 0;
+	const onScroll = () => { vel += (scrollY - lastY); lastY = scrollY; };
+	addEventListener('scroll', onScroll, { passive: true });
+	const loop = () => {
+		vel *= 0.9;
+		const boost = Math.min(2.6, Math.abs(vel) * 0.03);
+		marq.forEach((m) => { m.style.animationDuration = (26 / (1 + boost)).toFixed(2) + 's'; });
+		raf = requestAnimationFrame(loop);
+	};
+	raf = requestAnimationFrame(loop);
+	return () => { cancelAnimationFrame(raf); removeEventListener('scroll', onScroll); };
+}
+
+/* ── Batch 12: WebGL2 animated film grain (shared canvas, perf auto-disable) ─ */
+function rvnGrainGL(reduce, atmo) {
+	if (reduce) return () => {};
+	let gl, canvas;
+	try { canvas = document.createElement('canvas'); gl = canvas.getContext('webgl2', { alpha: true, antialias: false, depth: false }); } catch (e) {}
+	if (!gl) return () => {}; // no WebGL2 → keep the SVG grain
+	const cssHide = () => { if (atmo) atmo.style.display = 'none'; };
+	const cssShow = () => { if (atmo) atmo.style.display = ''; };
+	cssHide();
+	canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9998;mix-blend-mode:overlay;opacity:.5';
+	document.body.appendChild(canvas);
+	const vsrc = '#version 300 es\nin vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+	const fsrc = '#version 300 es\nprecision highp float;out vec4 o;uniform float t;uniform vec2 r;' +
+		'float h(vec2 x){return fract(sin(dot(x,vec2(12.9898,78.233)))*43758.5453);}' +
+		'void main(){vec2 uv=gl_FragCoord.xy;float g=h(uv+t);vec2 c=gl_FragCoord.xy/r-0.5;' +
+		'float v=smoothstep(0.95,0.35,length(c));float n=(g-0.5)*0.5;o=vec4(vec3(n)-(1.0-v)*0.05,0.5);}';
+	const mk = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+	const prog = gl.createProgram();
+	gl.attachShader(prog, mk(gl.VERTEX_SHADER, vsrc)); gl.attachShader(prog, mk(gl.FRAGMENT_SHADER, fsrc));
+	gl.linkProgram(prog);
+	if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { canvas.remove(); cssShow(); return () => {}; }
+	gl.useProgram(prog);
+	const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+	const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+	const uT = gl.getUniformLocation(prog, 't'), uR = gl.getUniformLocation(prog, 'r');
+	const resize = () => {
+		const w = Math.min(innerWidth, 1200), h = Math.round(w * innerHeight / innerWidth);
+		canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); gl.uniform2f(uR, w, h);
+	};
+	resize(); addEventListener('resize', resize);
+	let raf = 0, alive = true, frame = 0, slow = 0, last = performance.now();
+	const loop = (now) => {
+		if (!alive) return;
+		// ~30fps + perf watchdog: if consistently slow, disable and restore SVG grain
+		const dt = now - last; last = now;
+		if (frame > 8 && dt > 40) { slow++; if (slow > 20) { teardown(); cssShow(); return; } }
+		if (frame++ % 2 === 0) { gl.uniform1f(uT, (now % 100000) * 0.06); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+		raf = requestAnimationFrame(loop);
+	};
+	raf = requestAnimationFrame(loop);
+	function teardown() { alive = false; cancelAnimationFrame(raf); removeEventListener('resize', resize); canvas.remove(); }
+	return () => { teardown(); cssShow(); };
 }

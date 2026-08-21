@@ -124,6 +124,17 @@ function rvn_image( $id, $size = 'large' ) {
 	);
 }
 
+/** Focal point as a CSS object-position string ("50% 30%"), from ACF or defaults. */
+function rvn_focal( $post_id ) {
+	$x = 50; $y = 30;
+	if ( function_exists( 'get_field' ) ) {
+		$fx = get_field( 'focal_x', $post_id ); $fy = get_field( 'focal_y', $post_id );
+		if ( $fx !== null && $fx !== '' ) { $x = max( 0, min( 100, (float) $fx ) ); }
+		if ( $fy !== null && $fy !== '' ) { $y = max( 0, min( 100, (float) $fy ) ); }
+	}
+	return $x . '% ' . $y . '%';
+}
+
 /** Series terms for a project as [{name,slug}]. */
 function rvn_series_terms( $post_id ) {
 	$out = array();
@@ -152,6 +163,7 @@ add_action( 'rest_api_init', function () {
 				'series'        => rvn_series_terms( $id ),
 				'credits'       => rvn_credits( $id ),
 				'featured_home' => (bool) ( function_exists( 'get_field' ) ? get_field( 'featured_home', $id ) : false ),
+				'focal'         => rvn_focal( $id ),
 			);
 		},
 		'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ) ),

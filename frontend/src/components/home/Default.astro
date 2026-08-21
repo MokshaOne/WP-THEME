@@ -34,7 +34,7 @@ const testimonials = site.home.testimonials;
 	<div class="hero__right" data-hero data-intro>
 		<div class="slides">
 			{featured.map((p, i) => (
-				<img class:list={['slide', i === 0 && 'on']} src={p.image} alt={p.title} data-cap={up(p.category || p.title)} loading={i === 0 ? 'eager' : 'lazy'} />
+				<img class:list={['slide', i === 0 && 'on']} src={p.image} alt={p.title} data-cap={up(p.category || p.title)} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} />
 			))}
 		</div>
 		<div class="slide-chrome">
@@ -49,14 +49,14 @@ const testimonials = site.home.testimonials;
 </section>
 
 <!-- MARQUEE -->
-<div class="marquee" data-skew>
+<div class="marquee" data-skew aria-hidden="true">
 	<div class="marquee__row marquee__row--a"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
 	<div class="marquee__row marquee__row--b"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
 </div>
 
 <!-- SELECTED WORK -->
 <section class="sec sec__pad">
-	<div class="ghost-num">01</div>
+	<div class="ghost-num" aria-hidden="true">01</div>
 	<div class="sec__head" data-reveal>
 		<h2 data-letters>SELECTED WORK</h2>
 		<div class="sec__hint">DRAG / SCROLL SIDEWAYS ——→</div>
@@ -73,7 +73,7 @@ const testimonials = site.home.testimonials;
 
 <!-- THE INDEX -->
 <section class="sec" style="border-top:1px solid var(--line);padding-top:90px">
-	<div class="ghost-num">02</div>
+	<div class="ghost-num" aria-hidden="true">02</div>
 	<div class="sec__head" data-reveal>
 		<h2 data-letters>THE INDEX</h2>
 		<div class="sec__hint">HOVER A NAME — CLICK TO OPEN</div>

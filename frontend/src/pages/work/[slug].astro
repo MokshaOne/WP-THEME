@@ -44,7 +44,7 @@ const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0
 			)}
 		</div>
 		<div class="proj-hero__right" data-intro>
-			<img src={p.image} alt={p.title} data-parallax="0.08" transition:name={`cover-${p.slug}`} />
+			<img src={p.image} alt={p.title} data-parallax="0.08" style={`object-position:${p.focal}`} transition:name={`cover-${p.slug}`} />
 		</div>
 	</section>
 

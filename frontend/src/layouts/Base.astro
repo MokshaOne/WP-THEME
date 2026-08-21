@@ -10,6 +10,10 @@ import '../styles/theme.css';
 import { ClientRouter } from 'astro:transitions';
 import { getSite, getProjects } from '../lib/wp';
 import { dict } from '../i18n';
+import pkg from '../../package.json';
+
+const VERSION = pkg.version;
+const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
 export interface Props {
 	title: string;
@@ -175,7 +179,7 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 		</div>
 
 		<div class="foot__base">
-			<span>© {year} Nishuthan Raveenthiran</span>
+			<span>© {year} Nishuthan Raveenthiran <span class="foot__ver" title={`Built ${BUILD_DATE}`}>· v{VERSION} · {BUILD_DATE}</span></span>
 			<span class="foot__social">
 				{site.contact.instagram && <a href={site.contact.instagram} target="_blank" rel="noopener">Instagram</a>}
 				<a href="/work/">Work</a>

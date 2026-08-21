@@ -386,6 +386,7 @@ body.lb-open .site-header{opacity:0;pointer-events:none}
 @media(max-width:640px){.foot__cols{grid-template-columns:1fr;gap:2.2rem}}
 .foot__base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;max-width:var(--maxw);margin:clamp(2rem,5vw,3rem) auto 0;padding-top:1.6rem;border-top:1px solid var(--footer-line);font-family:var(--label);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--footer-dim)}
 .foot__social{display:flex;gap:1.4rem}
+.foot__ver{color:var(--footer-dim);opacity:.6;margin-left:.3rem}
 .foot__social a:hover{color:var(--gold)}
 
 /* animated hairline underlines on quiet links */

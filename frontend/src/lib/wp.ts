@@ -214,7 +214,7 @@ export interface Testimonial { text: string; by: string }
 export interface Faq { q: string; a: string }
 export interface Site {
 	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[] };
-	home: { hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
+	home: { variant: string; hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
 	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
 	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; sessions: Session[]; licence: number; per_km: number };
 	faq: Faq[];
@@ -240,6 +240,7 @@ const SITE_FALLBACK: Site = {
 		clients: ['SZ Magazin', 'Apartamento', 'NYT Magazine', 'Belvedere', 'Hotel Sacher'],
 	},
 	home: {
+		variant: 'raveenthiran',
 		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
 		hero_lede: 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
 		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ',
@@ -298,6 +299,7 @@ export async function getSite(): Promise<Site> {
 				clients: arr(d?.studio?.clients, F.studio.clients),
 			},
 			home: {
+				variant: pick(d?.home?.variant, F.home.variant),
 				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),
 				hero_lede: pick(d?.home?.hero_lede, F.home.hero_lede),
 				marquee: pick(d?.home?.marquee, F.home.marquee),

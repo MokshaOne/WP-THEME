@@ -114,6 +114,25 @@
             "placement": "top"
         },
         {
+            "key": "field_rvn_home_variant",
+            "label": "Home — layout",
+            "name": "home_variant",
+            "type": "select",
+            "instructions": "Which start-page design to use. All share the same content below.",
+            "required": 0,
+            "default_value": "raveenthiran",
+            "return_format": "value",
+            "allow_null": 0,
+            "ui": 1,
+            "choices": {
+                "raveenthiran": "Raveenthiran — split hero (default)",
+                "monument": "Monument — giant wordmark + single hero",
+                "index": "Index — archive-first, horizontal",
+                "editorial": "Editorial — serif magazine",
+                "cinema": "Cinema — full-screen slider"
+            }
+        },
+        {
             "key": "field_rvn_home_hero_lines",
             "label": "Home — hero headline (lines)",
             "name": "home_hero_lines",
@@ -543,5 +562,5 @@
     "label_placement": "top",
     "active": true,
     "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
-    "modified": 1787314815
+    "modified": 1787318302
 }

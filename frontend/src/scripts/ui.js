@@ -27,6 +27,7 @@ function boot() {
 	fxOff = initFX({ preloader });
 	initMobileMenu();
 	initHeroSlider();
+	initCinema();
 	initCompare();
 	initQuotes();
 	initFilter();
@@ -74,6 +75,32 @@ function initHeroSlider() {
 	const next = stage.querySelector('[data-next]');
 	prev && prev.addEventListener('click', () => go(-1));
 	next && next.addEventListener('click', () => go(1));
+	const onKey = (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
+	addEventListener('keydown', onKey);
+	render(); start();
+	pageCleanups.push(() => { clearInterval(timer); removeEventListener('keydown', onKey); });
+}
+
+/* ── Cinema home slider (crossfade) ──────────────────────────────────────── */
+function initCinema() {
+	const stage = document.querySelector('[data-cinema]');
+	if (!stage) return;
+	const slides = [...stage.querySelectorAll('.hv-cin__img')];
+	if (slides.length < 2) return;
+	const kEl = stage.querySelector('[data-cin-kicker]');
+	const tEl = stage.querySelector('[data-cin-title]');
+	const cEl = stage.querySelector('[data-cin-count]');
+	let i = 0, timer = 0;
+	const render = () => {
+		slides.forEach((s, k) => s.classList.toggle('on', k === i));
+		if (kEl) kEl.textContent = slides[i].dataset.kicker || '';
+		if (tEl) tEl.textContent = slides[i].dataset.title || '';
+		if (cEl) cEl.textContent = String(i + 1).padStart(2, '0');
+	};
+	const go = (d) => { i = (i + d + slides.length) % slides.length; render(); start(); };
+	const start = () => { clearInterval(timer); timer = setInterval(() => go(1), 5000); };
+	stage.querySelector('[data-cin-prev]')?.addEventListener('click', () => go(-1));
+	stage.querySelector('[data-cin-next]')?.addEventListener('click', () => go(1));
 	const onKey = (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
 	addEventListener('keydown', onKey);
 	render(); start();

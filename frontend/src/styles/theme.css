@@ -400,3 +400,85 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 	}
 	.marquee__row--a, .marquee__row--b { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOME VARIANTS — selectable in WordPress (Site settings → Home → Layout).
+   Distinct layouts on the same brand system; a system serif carries the
+   editorial accents (no extra webfont, GDPR-safe).
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root { --font-serif: Georgia, 'Times New Roman', serif; }
+.hv-serif { font-family: var(--font-serif); font-style: italic; }
+
+/* Monument */
+.hv-mon__wm { display: block; width: 100%; padding: 34px 0 0; }
+.hv-mon__wm text { font-family: var(--font-body); font-weight: 900; fill: var(--ink); letter-spacing: -2px; }
+.hv-mon__meta { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 10px 28px 26px; font-size: 12px; letter-spacing: 0.14em; color: var(--dim); font-weight: 500; }
+.hv-mon__hero { position: relative; border-top: var(--hair); border-bottom: var(--hair); overflow: hidden; }
+.hv-mon__hero img { width: 100%; height: 78vh; object-fit: cover; object-position: 50% 22%; filter: grayscale(1); transition: filter .7s; }
+.hv-mon__hero:hover img { filter: none; }
+.hv-mon__tag { position: absolute; left: 28px; bottom: 26px; font-family: var(--font-serif); font-style: italic; font-size: clamp(28px, 4.4vw, 56px); line-height: 1.05; max-width: 560px; text-shadow: 0 2px 30px rgba(0,0,0,.5); }
+.hv-mon__fig { position: absolute; right: 28px; bottom: 30px; font-size: 12px; letter-spacing: 0.16em; text-align: right; }
+.hv-mon__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding: 70px 28px; }
+.hv-mon__grid .plate img { height: 520px; }
+.hv-mon__grid .cap { color: var(--ink); }
+
+/* Editorial */
+.hv-ed { position: relative; padding: 80px 28px 90px; }
+.hv-ed__grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; align-items: start; }
+.hv-ed__imgL { grid-column: 1 / 5; grid-row: 1; margin-top: 120px; }
+.hv-ed__imgR { grid-column: 8 / 13; grid-row: 1; }
+.hv-ed__grid img { width: 100%; object-fit: cover; filter: grayscale(1); transition: filter .6s; display: block; }
+.hv-ed__imgL img { height: 560px; }
+.hv-ed__imgR img { height: 640px; }
+.hv-ed__imgL:hover img, .hv-ed__imgR:hover img { filter: none; }
+.hv-ed__center { grid-column: 1 / 13; grid-row: 1; position: relative; z-index: 2; pointer-events: none; padding-top: 200px; }
+.hv-ed__h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(48px, 9vw, 118px); line-height: .98; text-align: center; }
+.hv-ed__h1 em { color: var(--ink); }
+.hv-ed__lede { margin: 30px auto 0; max-width: 400px; text-align: center; font-size: 13px; line-height: 1.7; letter-spacing: 0.04em; color: var(--muted); }
+.hv-ed__fig { position: absolute; font-size: 10px; letter-spacing: 0.2em; color: var(--faint); }
+.hv-ed__toc { border-top: var(--hair); padding: 56px 28px; }
+.hv-ed__toc .index__row .t { font-family: var(--font-serif); font-style: italic; font-size: 34px; }
+
+/* Cinema */
+.hv-cin { position: relative; height: 82vh; overflow: hidden; background: #0d0c0b; border-bottom: var(--hair); }
+.hv-cin__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; opacity: 0; transition: opacity 1.1s ease; animation: hvKen 9s ease-out infinite alternate; }
+.hv-cin__img.on { opacity: 1; }
+.hv-cin__grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,12,11,.78) 0%, rgba(13,12,11,0) 42%); pointer-events: none; }
+.hv-cin__cap { position: absolute; left: 32px; bottom: 34px; max-width: 640px; z-index: 2; }
+.hv-cin__kicker { font-size: 11px; letter-spacing: 0.22em; margin-bottom: 14px; }
+.hv-cin__title { font-family: var(--font-serif); font-weight: 500; font-size: clamp(40px, 5vw, 64px); line-height: 1.02; text-shadow: 0 2px 30px rgba(0,0,0,.5); }
+.hv-cin__nav { position: absolute; right: 32px; bottom: 38px; display: flex; align-items: center; gap: 22px; z-index: 2; }
+@keyframes hvKen { from { transform: scale(1.02); } to { transform: scale(1.1); } }
+
+/* Index */
+.hv-idx { padding: 40px 0 30px; }
+.hv-idx__head { padding: 0 28px 34px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+.hv-idx__h1 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(22px, 3vw, 32px); line-height: 1.3; max-width: 520px; }
+.hv-idx__h1 em { color: var(--dim); }
+
+@media (max-width: 900px) {
+	.hv-mon__grid { grid-template-columns: 1fr; }
+	.hv-mon__grid .plate img { height: auto; }
+	.hv-ed__grid { display: block; }
+	.hv-ed__imgL, .hv-ed__imgR { margin: 0 0 18px; }
+	.hv-ed__imgL img, .hv-ed__imgR img { height: 60vh; }
+	.hv-ed__center { padding-top: 40px; }
+	.hv-cin { height: 70vh; }
+	.hv-cin__cap { left: 20px; right: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .hv-cin__img { animation: none; } }
+
+/* ── Detail: tabular numerals on counters / meta / prices (Batch 13) ──────── */
+.hdr-clock, .slide-count, .stepper__val, .est__total .tv, .est__lines,
+.foot-meta, .phead__meta, .meta-row, .index__row .k, .honor .k, .cap .n,
+.hv-mon__meta, .hv-idx__head .chrome { font-variant-numeric: tabular-nums; }
+
+/* ── Print (Batch 13): clean catalogue sheets ────────────────────────────── */
+@media print {
+	.site-header, .m-ovl, .burger, .marquee, .cta, .site-footer,
+	.slide-nav, .stepper, .chips, [data-cinema] .hv-cin__nav { display: none !important; }
+	:root { --canvas: #fff; --ink: #111; --panel: #fff; --line: #ccc; --subline: #ddd; --muted: #333; --dim: #555; --faint: #777; }
+	body { background: #fff; color: #111; }
+	.plate img, .hero__right img, .proj-hero__right img { filter: none !important; }
+	a { color: #111; }
+}

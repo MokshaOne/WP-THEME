@@ -319,6 +319,7 @@ function rvn_site_payload() {
 			'clients'   => $lines( 'studio_clients' ),
 		),
 		'home'    => array(
+			'variant'      => (string) rvn_site_opt( 'home_variant', 'raveenthiran' ),
 			'hero_lines'   => $lines( 'home_hero_lines' ),
 			'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
 			'marquee'      => (string) rvn_site_opt( 'home_marquee', '' ),

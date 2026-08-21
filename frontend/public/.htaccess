@@ -27,6 +27,8 @@ ErrorDocument 404 /404.html
   Header set X-Frame-Options "SAMEORIGIN"
   Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), interest-cohort=()"
   Header set X-XSS-Protection "0"
+  # HSTS — force HTTPS for 180 days (no includeSubDomains/preload, to stay reversible)
+  Header always set Strict-Transport-Security "max-age=15552000"
 </IfModule>
 
 # ── Correct MIME types ───────────────────────────────────────

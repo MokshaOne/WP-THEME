@@ -1,0 +1,126 @@
+---
+import type { Site, Project } from '../../lib/wp';
+interface Props { site: Site; projects: Project[]; }
+const { site, projects } = Astro.props;
+
+const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects).slice(0, 6);
+const railFrames = projects.slice(0, 8);
+const indexItems = projects.slice(0, 10);
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
+
+const heroLines = site.home.hero_lines;
+const heroLede = site.home.hero_lede;
+const marqueeWords = /\s—\s$/.test(site.home.marquee) ? site.home.marquee : site.home.marquee.replace(/\s*$/, '') + ' — ';
+const honors = site.home.honors;
+const testimonials = site.home.testimonials;
+---
+<!-- HERO -->
+<section class="hero">
+	<div class="hero__left">
+		<div class="hero__head" data-intro>
+			{heroLines.map((l, i) => (
+				<div class:list={['line', i === heroLines.length - 1 && 'line--outline']}>{l}</div>
+			))}
+		</div>
+		<div class="hero__lede" data-intro>
+			<p>{heroLede}</p>
+			<div class="hero__cta">
+				<a class="btn" href="/enquire/">Start a commission</a>
+				<a class="btn btn--ghost" href="/work/">See the work</a>
+			</div>
+		</div>
+	</div>
+	<div class="hero__right" data-hero data-intro>
+		<div class="slides">
+			{featured.map((p, i) => (
+				<img class:list={['slide', i === 0 && 'on']} src={p.image} alt={p.title} data-cap={up(p.category || p.title)} loading={i === 0 ? 'eager' : 'lazy'} />
+			))}
+		</div>
+		<div class="slide-chrome">
+			<div class="slide-cap" data-cap>{up(featured[0]?.category || '')}</div>
+			<div class="slide-nav">
+				<button class="rbtn" data-prev aria-label="Previous">←</button>
+				<span class="slide-count"><span data-count>01</span><span class="of"> / {String(featured.length).padStart(2, '0')}</span></span>
+				<button class="rbtn" data-next aria-label="Next">→</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" data-skew>
+	<div class="marquee__row marquee__row--a"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
+	<div class="marquee__row marquee__row--b"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
+</div>
+
+<!-- SELECTED WORK -->
+<section class="sec sec__pad">
+	<div class="ghost-num">01</div>
+	<div class="sec__head" data-reveal>
+		<h2 data-letters>SELECTED WORK</h2>
+		<div class="sec__hint">DRAG / SCROLL SIDEWAYS ——→</div>
+	</div>
+	<div class="rail" data-drag>
+		{railFrames.map((p, i) => (
+			<a class="card" href={`/work/${p.slug}/`}>
+				<div class="plate"><img src={p.image} alt={p.title} loading="lazy" /></div>
+				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span></div>
+			</a>
+		))}
+	</div>
+</section>
+
+<!-- THE INDEX -->
+<section class="sec" style="border-top:1px solid var(--line);padding-top:90px">
+	<div class="ghost-num">02</div>
+	<div class="sec__head" data-reveal>
+		<h2 data-letters>THE INDEX</h2>
+		<div class="sec__hint">HOVER A NAME — CLICK TO OPEN</div>
+	</div>
+	<div class="index" style="margin-bottom:90px">
+		{indexItems.map((p, i) => (
+			<a class="index__row" href={`/work/${p.slug}/`} data-peek data-img={p.image}>
+				<span class="k">{num(i + 1)}</span>
+				<span class="t">{up(p.title)}</span>
+				<span class="k cat">{up(p.category)}</span>
+				<span class="k year">{p.year}</span>
+			</a>
+		))}
+	</div>
+
+	<!-- RECOGNITION -->
+	<div class="sec__head" data-reveal>
+		<h2 data-letters>RECOGNITION</h2>
+		<div class="sec__hint">PRESS · AWARDS · CLIENT WORDS</div>
+	</div>
+	<div class="recog">
+		<div>
+			{honors.map((h) => (
+				<div class="honor" data-reveal>
+					<span class="k">{h.year}</span>
+					<span class="t">{h.title}</span>
+					<span class="k">{h.tag}</span>
+				</div>
+			))}
+		</div>
+		<div class="quotes" data-reveal data-quotes>
+			<div class="quotes__mark" aria-hidden="true">&ldquo;</div>
+			<p class="quotes__text" data-quote-text>&ldquo;{testimonials[0].text}&rdquo;</p>
+			<div class="quotes__foot">
+				<span class="quotes__by" data-quote-by>{testimonials[0].by}</span>
+				<div class="slide-nav">
+					<button class="rbtn" data-q-prev aria-label="Previous quote">←</button>
+					<span class="slide-count"><span data-quote-count>01</span><span class="of"> / {String(testimonials.length).padStart(2, '0')}</span></span>
+					<button class="rbtn" data-q-next aria-label="Next quote">→</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="application/json" id="quotes-data" set:html={JSON.stringify(testimonials)} />
+</section>
+
+<!-- CTA -->
+<a class="cta" href="/enquire/">
+	<span>BOOK THE NEXT SHOOT</span><span>→</span>
+</a>

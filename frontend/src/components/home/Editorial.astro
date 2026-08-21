@@ -1,0 +1,38 @@
+---
+import type { Site, Project } from '../../lib/wp';
+interface Props { site: Site; projects: Project[]; }
+const { site, projects } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects);
+const imgL = featured[1] || projects[1] || projects[0];
+const imgR = featured[0] || projects[0];
+const toc = projects.slice(0, 4);
+const lede = site.home.hero_lede;
+---
+<section class="hv-ed">
+	<div class="hv-ed__grid">
+		{imgL && <div class="hv-ed__imgL"><img src={imgL.image} alt={imgL.title} /></div>}
+		{imgR && <div class="hv-ed__imgR"><img src={imgR.image} alt={imgR.title} data-parallax="0.05" /></div>}
+		<div class="hv-ed__center">
+			<h1 class="hv-ed__h1" data-intro>Portraits with<br /><em>patience</em> &amp; light</h1>
+			<p class="hv-ed__lede" data-intro>{lede}</p>
+		</div>
+	</div>
+	{imgL && <div class="hv-ed__fig" style="left:28px;top:26px">FIG. 002 — {up(imgL.title)}</div>}
+	{imgR && <div class="hv-ed__fig" style="right:28px;bottom:36px">FIG. 004 — {up(imgR.title)}</div>}
+</section>
+
+<section class="hv-ed__toc">
+	<div class="chrome" style="margin-bottom:26px">IN THIS ISSUE</div>
+	<div class="index">
+		{toc.map((p, i) => (
+			<a class="index__row" href={`/work/${p.slug}/`} data-peek data-img={p.image} style="grid-template-columns:70px 1fr auto">
+				<span class="k">{String(i + 1).padStart(3, '0')}</span>
+				<span class="t">{p.title}</span>
+				<span class="k">{up(p.category)} · {p.year}</span>
+			</a>
+		))}
+	</div>
+</section>
+
+<a class="cta cta--sm" href="/enquire/"><span>BOOK THE NEXT SHOOT</span><span>→</span></a>

@@ -18,6 +18,17 @@ const services = site.pricing.sessions.map((s) => ({
 	meta: `${s.hrs} HRS · ${fmt(s.base)} ${cur}`,
 }));
 const s0 = services[0];
+
+// FAQ rich-results schema (Batch 16) — only when FAQ content exists.
+const faqSchema = site.faq.length ? {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: site.faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') },
+	})),
+} : null;
 ---
 <Base title="Name your shoot — Raveenthiran" description="Commission a shoot. Instant estimate, firm written offer within 24 hours." active="enquire" page="enquire">
 	<section class="wrap" style="padding:64px 28px 40px">
@@ -87,6 +98,7 @@ const s0 = services[0];
 		</div>
 	</section>
 
+	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
 	{site.faq.length > 0 && (
 		<section class="faq">
 			{site.faq.map((f) => (

@@ -4,6 +4,23 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.1.0 — 2026-08-21 · Home layouts + selector, batch polish
+
+- **Five selectable home layouts**, chosen in WordPress (Site settings → Home →
+  Layout) — all share the same content:
+  - **Raveenthiran** — split hero (default)
+  - **Monument** — giant wordmark + one full-width hero + serif tagline
+  - **Index** — archive-first: serif statement + horizontal rail + full index
+  - **Editorial** — offset portraits under a centred serif headline + issue TOC
+  - **Cinema** — full-screen Ken-Burns crossfade slider (kicker + serif title)
+  - A system serif carries the editorial accents (no extra webfont, GDPR-safe).
+- **RAW / FINAL** removed from the home page (per request).
+- **Batch polish** (from the plan's signature tier, the safe/high-value parts):
+  FAQ rich-results schema (FAQPage JSON-LD) on Enquire, Speculation-Rules
+  hover-prefetch for instant navigation, tabular numerals on counters/prices,
+  a print stylesheet (clean catalogue sheets), and HSTS.
+- WordPress theme + zip at 3.1.0; ACF gains the Home → Layout select.
+
 ## 3.0.0 — 2026-08-21 · "Poster Brutalism" redesign
 
 A ground-up frontend redesign — the approved Claude Design direction, built into

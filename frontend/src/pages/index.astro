@@ -19,7 +19,6 @@ const marqueeWords = /\s—\s$/.test(site.home.marquee) ? site.home.marquee : si
 const honors = site.home.honors;
 const testimonials = site.home.testimonials;
 
-const compareImg = (featured[0] || projects[0])?.image || '';
 const preload = featured[0]?.image || '';
 ---
 <Base title="Raveenthiran — Photographer, Vienna" description={heroLede} active="" page="home" preload={preload}
@@ -98,24 +97,6 @@ const preload = featured[0]?.image || '';
 				</a>
 			))}
 		</div>
-
-		<!-- RAW / FINAL -->
-		{compareImg && (
-			<>
-				<div class="sec__head" data-reveal>
-					<h2 data-letters>RAW / FINAL</h2>
-					<div class="sec__hint">DRAG THE LINE</div>
-				</div>
-				<div class="compare" data-compare data-reveal style="margin-bottom:90px">
-					<img src={compareImg} alt="Final frame" draggable="false" />
-					<img class="raw" src={compareImg} alt="Raw frame" draggable="false" style="clip-path:inset(0 50% 0 0)" />
-					<div class="divider" data-div style="left:50%"></div>
-					<div class="knob" data-knob style="left:50%">←→</div>
-					<div class="lab lab--l">RAW</div>
-					<div class="lab lab--r">FINAL</div>
-				</div>
-			</>
-		)}
 
 		<!-- RECOGNITION -->
 		<div class="sec__head" data-reveal>

@@ -18,6 +18,33 @@
 	}
 	var LB = { open: false, i: 0, figs: [], el: null, stage: null, count: null, last: null };
 
+	/* ── language switch (UI strings) ── */
+	function initI18n() {
+		var data = document.getElementById('i18n-data');
+		if (!data) return;
+		var dict = {};
+		try { dict = JSON.parse(data.textContent); } catch (e) { return; }
+		var lang = 'en';
+		try { lang = localStorage.getItem('lang') || 'en'; } catch (e) {}
+		if (!dict[lang]) lang = 'en';
+		function apply(l) {
+			var d = dict[l] || dict.en || {};
+			[].forEach.call(document.querySelectorAll('[data-i18n]'), function (n) {
+				var k = n.getAttribute('data-i18n'); if (d[k] != null) n.textContent = d[k];
+			});
+			document.documentElement.lang = l;
+			[].forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
+				var on = b.getAttribute('data-lang') === l;
+				b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+			});
+		}
+		[].forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
+			if (b._i18n) return; b._i18n = true;
+			b.addEventListener('click', function () { var l = b.getAttribute('data-lang'); try { localStorage.setItem('lang', l); } catch (e) {} apply(l); });
+		});
+		apply(lang);
+	}
+
 	/* ── theme toggle ── */
 	function initTheme() {
 		var btn = document.querySelector('[data-theme-toggle]');
@@ -348,6 +375,6 @@
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 	});
 
-	function boot() { initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); }
+	function boot() { initI18n(); initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); }
 	document.addEventListener('astro:page-load', boot);
 })();

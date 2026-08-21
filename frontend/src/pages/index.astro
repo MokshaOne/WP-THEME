@@ -33,27 +33,27 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		<div class="cine__inner">
 			<span class="cine__eyebrow" data-cine-eyebrow>{slides[0]?.category}</span>
 			<h1 class="cine__title" data-cine-title>{slides[0]?.title}</h1>
-			<a class="cine__cta" href={`/work/${slides[0]?.slug}/`} data-cine-link>View project →</a>
+			<a class="cine__cta" href={`/work/${slides[0]?.slug}/`} data-cine-link data-i18n="home.view">View project →</a>
 		</div>
 
 		<div class="cine__ui">
 			<span class="cine__count"><b data-cine-cur>01</b> / {pad(slides.length)}<span class="cine__prog"><i data-cine-prog></i></span></span>
 			<div class="cine__arrows">
-				<button data-cine-prev aria-label="Previous">← Prev</button>
-				<button data-cine-next aria-label="Next">Next →</button>
+				<button data-cine-prev aria-label="Previous" data-i18n="home.prev">← Prev</button>
+				<button data-cine-next aria-label="Next" data-i18n="home.next">Next →</button>
 			</div>
 		</div>
-		<span class="cine__scroll">Scroll</span>
+		<span class="cine__scroll" data-i18n="home.scroll">Scroll</span>
 	</section>
 
 	<section class="home-intro" data-reveal>
-		<span class="eyebrow">Vienna · Photography</span>
+		<span class="eyebrow" data-i18n="home.eyebrow">Vienna · Photography</span>
 		<p class="home-intro__lede">{site.studio.lede}</p>
 	</section>
 
 	<div class="home-section-head" data-reveal>
-		<h2>Selected work</h2>
-		<a href="/work/">All work →</a>
+		<h2 data-i18n="home.selected">Selected work</h2>
+		<a href="/work/" data-i18n="home.allwork">All work →</a>
 	</div>
 
 	<div class="masonry stagger">

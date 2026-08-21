@@ -92,6 +92,17 @@ body.ovl-open .toggle span:nth-child(3){transform:translateY(-6.5px) rotate(-45d
 :root[data-theme="dark"] .theme-toggle .sun{display:none}:root[data-theme="dark"] .theme-toggle .moon{display:block}
 :root[data-theme="light"] .theme-toggle .moon{display:none}:root[data-theme="light"] .theme-toggle .sun{display:block}
 @media(max-width:640px){.site-header .toggle{right:calc(var(--gut) + 40px)}}
+.lang{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--label);font-size:.66rem;letter-spacing:.1em;font-weight:600}
+.lang--header{position:absolute;left:var(--gut);top:50%;transform:translateY(-50%)}
+.lang button{color:var(--dim);transition:color var(--dur) var(--ease)}
+.lang button.is-on{color:var(--ink)}
+.lang button:hover{color:var(--gold)}
+.lang span{color:var(--dim);opacity:.6}
+body.header-light .lang--header button{color:rgba(255,255,255,.55)}
+body.header-light .lang--header button.is-on{color:#fff}
+body.header-light .lang--header span{color:rgba(255,255,255,.4)}
+.ovl__foot .lang button.is-on{color:var(--gold)}
+@media(max-width:520px){.lang--header{display:none}}
 
 /* ── cinematic overlay menu ── */
 .ovl{position:fixed;inset:0;z-index:80;background:var(--bg);display:grid;place-items:center;opacity:0;visibility:hidden;transition:opacity .55s var(--ease),visibility .55s;padding:2rem}

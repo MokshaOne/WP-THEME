@@ -11,8 +11,8 @@ const grads = [
 <Base title="Journal — Raveenthiran" description="Notes on light, process and the work — from the Raveenthiran studio in Vienna." active="journal">
 	<div class="page page--wide">
 		<div class="page-head" data-reveal>
-			<span class="eyebrow">Notes & stories</span>
-			<h1 class="page-title">Journal</h1>
+			<span class="eyebrow" data-i18n="journal.eyebrow">Notes & stories</span>
+			<h1 class="page-title" data-i18n="journal.title">Journal</h1>
 		</div>
 
 		<div class="journal-list">
@@ -27,7 +27,7 @@ const grads = [
 						<span class="jcard__meta">{post.category} · {post.dateLabel}</span>
 						<h2 class="jcard__title">{post.title}</h2>
 						<p class="jcard__excerpt">{post.excerpt}</p>
-						<span class="jcard__more">Read →</span>
+						<span class="jcard__more" data-i18n="journal.read">Read →</span>
 					</div>
 				</a>
 			))}

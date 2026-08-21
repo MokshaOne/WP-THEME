@@ -12,7 +12,7 @@ const igHandle = c.instagram ? '@' + c.instagram.replace(/\/+$/, '').split('/').
 		<div class="page-head studio-head" data-reveal>
 			<span class="flourish studio-flourish" aria-hidden="true">Vienna</span>
 			<span class="eyebrow">{c.location}</span>
-			<h1 class="page-title">The Studio</h1>
+			<h1 class="page-title" data-i18n="studio.title">The Studio</h1>
 		</div>
 
 		<p class="studio-lede" data-reveal>{s.lede}</p>
@@ -40,7 +40,7 @@ const igHandle = c.instagram ? '@' + c.instagram.replace(/\/+$/, '').split('/').
 
 		{s.clients.length > 0 && (
 			<div class="clients-block" data-reveal>
-				<p class="eyebrow">Selected clients</p>
+				<p class="eyebrow" data-i18n="studio.clients">Selected clients</p>
 				<div class="clients">{s.clients.map((cl) => <span class="client">{cl}</span>)}</div>
 			</div>
 		)}

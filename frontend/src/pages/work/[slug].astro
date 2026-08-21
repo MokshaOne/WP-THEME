@@ -82,16 +82,16 @@ const items = p.gallery.length
 
 	{next && next.slug !== p.slug && (
 		<a class="next-proj" href={`/work/${next.slug}/`} aria-label={`Next project: ${next.title}`}>
-			<span class="next-proj__k">Next project</span>
+			<span class="next-proj__k" data-i18n="proj.next">Next project</span>
 			<span class="next-proj__t">{next.title}</span>
 			<span class="next-proj__c">{next.category}{next.year ? ` · ${next.year}` : ''} →</span>
 		</a>
 	)}
 
 	<nav class="entry-nav">
-		<a href="/work/">← All work</a>
+		<a href="/work/" data-i18n="proj.allwork">← All work</a>
 		{prev && prev.slug !== p.slug ? <a href={`/work/${prev.slug}/`}>← {prev.title}</a> : <span></span>}
-		<a href="/enquire/">Enquire about a shoot →</a>
+		<a href="/enquire/" data-i18n="proj.enquire">Enquire about a shoot →</a>
 	</nav>
 
 	<div class="lb" data-lb data-lb-title={p.title} aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">

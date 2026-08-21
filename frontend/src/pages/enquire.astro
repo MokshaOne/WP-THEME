@@ -17,9 +17,9 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 <Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
 	<div class="page">
 		<div class="page-head" data-reveal>
-			<span class="eyebrow">Enquire · Vienna</span>
-			<h1 class="page-title">Start a project</h1>
-			<p class="page-lead">Tell me what you have in mind. Get an instant estimate — a firm quote follows by email within 24 hours.</p>
+			<span class="eyebrow" data-i18n="enq.eyebrow">Enquire · Vienna</span>
+			<h1 class="page-title" data-i18n="enq.title">Start a project</h1>
+			<p class="page-lead" data-i18n="enq.lead">Tell me what you have in mind. Get an instant estimate — a firm quote follows by email within 24 hours.</p>
 		</div>
 
 		<div class="two-col" data-reveal>
@@ -29,7 +29,7 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 				<div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
 
 				<div class="field">
-					<span class="field-label">01 · Project type</span>
+					<span class="field-label" data-i18n="enq.step1">01 · Project type</span>
 					<div class="chips">
 						{types.map((t, i) => (
 							<label class="chip"><input type="radio" name="project_type" value={t.label} data-base={t.base} checked={i === 0} /><span>{t.label} · {money(t.base)}</span></label>
@@ -39,7 +39,7 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 
 				{extras.length > 0 && (
 					<div class="field">
-						<span class="field-label">02 · Add-ons</span>
+						<span class="field-label" data-i18n="enq.step2">02 · Add-ons</span>
 						<div class="chips">
 							{extras.map((x) => (
 								<label class="chip"><input type="checkbox" name="addons[]" value={x.label} data-price={x.price} /><span>{x.label} · +{money(x.price)}</span></label>
@@ -53,25 +53,25 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 						<label class="chip"><input type="checkbox" name="license" value="1" data-price={licence} /><span>Commercial licence · +{money(licence)}</span></label>
 					)}
 					{perKm > 0 && (
-						<label class="km"><span>Travel (km)</span><input type="number" name="travel_km" min="0" step="1" value="0" data-per-km={perKm} /></label>
+						<label class="km"><span data-i18n="enq.travel">Travel (km)</span><input type="number" name="travel_km" min="0" step="1" value="0" data-per-km={perKm} /></label>
 					)}
 				</div>
 
 				<div class="field">
-					<span class="field-label">03 · Your details</span>
-					<div class="field"><label for="f-name">Name</label><input id="f-name" type="text" name="name" required /></div>
-					<div class="field"><label for="f-email">Email</label><input id="f-email" type="email" name="email" required /></div>
-					<div class="field"><label for="f-date">Preferred date</label><input id="f-date" type="date" name="preferred_date" /></div>
-					<div class="field"><label for="f-notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
+					<span class="field-label" data-i18n="enq.step3">03 · Your details</span>
+					<div class="field"><label for="f-name" data-i18n="enq.name">Name</label><input id="f-name" type="text" name="name" required /></div>
+					<div class="field"><label for="f-email" data-i18n="enq.email">Email</label><input id="f-email" type="email" name="email" required /></div>
+					<div class="field"><label for="f-date" data-i18n="enq.date">Preferred date</label><input id="f-date" type="date" name="preferred_date" /></div>
+					<div class="field"><label for="f-notes" data-i18n="enq.notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
 				</div>
 
-				<button type="submit" class="btn" data-submit>Send enquiry →</button>
+				<button type="submit" class="btn" data-submit data-i18n="enq.send">Send enquiry →</button>
 				<p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
 			</form>
 
 			<aside class="enquire-side">
 				<div class="big-estimate">
-					<span class="k">Estimate</span>
+					<span class="k" data-i18n="enq.estimate">Estimate</span>
 					<output class="v" data-estimate role="status" aria-live="polite" aria-atomic="true">—</output>
 					<span class="note">Indicative — the final quote is confirmed by email once we’ve talked through the details.</span>
 				</div>
@@ -85,7 +85,7 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 
 		{faq.length > 0 && (
 			<div class="faq" data-reveal>
-				<h2 class="page-title" style="font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem">Questions</h2>
+				<h2 class="page-title" style="font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem" data-i18n="enq.questions">Questions</h2>
 				{faq.map((f) => <details><summary>{f.q}</summary><div class="a"><p>{f.a}</p></div></details>)}
 			</div>
 		)}

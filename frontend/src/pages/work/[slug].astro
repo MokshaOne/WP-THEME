@@ -44,7 +44,7 @@ const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0
 			)}
 		</div>
 		<div class="proj-hero__right" data-intro>
-			<img src={p.image} alt={p.title} data-parallax="0.08" style={`object-position:${p.focal}`} transition:name={`cover-${p.slug}`} />
+			<img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="eager" fetchpriority="high" transition:name={`cover-${p.slug}`} />
 		</div>
 	</section>
 

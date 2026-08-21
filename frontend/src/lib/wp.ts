@@ -34,6 +34,7 @@ export interface Project {
 	image: string;            // featured image URL ('' if none)
 	imageW?: number;          // featured image width (undefined if unknown)
 	imageH?: number;          // featured image height (undefined if unknown)
+	imageSrcset?: string;     // responsive srcset from WordPress sizes ('' if none)
 	content: string;          // rendered HTML body ('' if none)
 	gallery: GalleryImage[];  // additional images attached to the project
 	ogImage: string;
@@ -68,13 +69,35 @@ function decode(s: string): string {
 		.trim();
 }
 
+/** Build a responsive `srcset` string from a WordPress media_details.sizes map.
+ *  WordPress generates several widths per upload; exposing them lets the browser
+ *  fetch the smallest file that fits, which is a real Core-Web-Vitals win.
+ *  Dedupes by width and returns '' when only the original size exists. */
+function srcsetFromSizes(md: any): string {
+	const sizes = md && md.sizes;
+	if (!sizes || typeof sizes !== 'object') return '';
+	const byW = new Map<number, string>();
+	for (const k of Object.keys(sizes)) {
+		const s = sizes[k];
+		const w = +(s && s.width) || 0;
+		const url = s && s.source_url;
+		if (w && url && !byW.has(w)) byW.set(w, url);
+	}
+	// Include the full-size original too, so the largest candidate is present.
+	const fullW = +md.width || 0;
+	if (fullW && md.source_url && !byW.has(fullW)) byW.set(fullW, md.source_url);
+	if (byW.size < 2) return '';
+	return [...byW.entries()].sort((a, b) => a[0] - b[0]).map(([w, u]) => `${u} ${w}w`).join(', ');
+}
+
 function mapProject(p: any): Project {
-	let image = '', imageW = 0, imageH = 0;
+	let image = '', imageW = 0, imageH = 0, imageSrcset = '';
 	try {
 		const fm = p._embedded['wp:featuredmedia'][0];
 		image = fm.source_url || '';
 		const md = fm.media_details || {};
 		imageW = +md.width || 0; imageH = +md.height || 0;
+		imageSrcset = srcsetFromSizes({ ...md, source_url: image });
 	} catch {}
 	let category = '';
 	try {
@@ -112,6 +135,7 @@ function mapProject(p: any): Project {
 		image,
 		imageW,
 		imageH,
+		imageSrcset,
 		content: (p.content && p.content.rendered) || '',
 		gallery,
 		ogImage: seo.og_image || image || '',
@@ -154,6 +178,7 @@ export interface Post {
 	image: string;
 	imageW?: number;
 	imageH?: number;
+	imageSrcset?: string;
 }
 
 const SAMPLE_POSTS: Post[] = [
@@ -168,12 +193,13 @@ function fmtDate(iso: string): string {
 }
 
 function mapPost(p: any): Post {
-	let image = '', imageW = 0, imageH = 0;
+	let image = '', imageW = 0, imageH = 0, imageSrcset = '';
 	try {
 		const fm = p._embedded['wp:featuredmedia'][0];
 		image = fm.source_url || '';
 		const md = fm.media_details || {};
 		imageW = +md.width || 0; imageH = +md.height || 0;
+		imageSrcset = srcsetFromSizes({ ...md, source_url: image });
 	} catch {}
 	let category = '';
 	try {
@@ -189,7 +215,7 @@ function mapPost(p: any): Post {
 		date: p.date || '',
 		dateLabel: fmtDate(p.date || ''),
 		category: category || 'Journal',
-		image, imageW, imageH,
+		image, imageW, imageH, imageSrcset,
 	};
 }
 

@@ -20,7 +20,7 @@ const marqueeWords = (site.home.marquee || 'SELECTED WORK · VIENNA · PORTRAIT 
 	</div>
 	{hero && (
 		<a class="hv-mon__hero" href={`/work/${hero.slug}/`} data-intro>
-			<img src={hero.image} alt={hero.title} />
+			<img src={hero.image} srcset={hero.imageSrcset || undefined} sizes="100vw" width={hero.imageW || undefined} height={hero.imageH || undefined} alt={hero.title} loading="eager" fetchpriority="high" />
 			<div class="hv-mon__tag">{tagline}</div>
 			<div class="hv-mon__fig">{up(hero.title)}<br /><span class="chrome" style="color:var(--dim)">FIG. 001</span></div>
 		</a>
@@ -39,7 +39,7 @@ const marqueeWords = (site.home.marquee || 'SELECTED WORK · VIENNA · PORTRAIT 
 	<div class="hv-mon__grid">
 		{grid.map((p, i) => (
 			<a class="card" href={`/work/${p.slug}/`}>
-				<div class="plate"><img src={p.image} alt={p.title} loading="lazy" /></div>
+				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 33vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="lazy" /></div>
 				<div class="cap" style="justify-content:space-between"><span>{up(p.title)}</span><span class="c">{String(i + 2).padStart(3, '0')}</span></div>
 			</a>
 		))}

@@ -11,8 +11,8 @@ const lede = site.home.hero_lede;
 ---
 <section class="hv-ed">
 	<div class="hv-ed__grid">
-		{imgL && <div class="hv-ed__imgL"><img src={imgL.image} alt={imgL.title} /></div>}
-		{imgR && <div class="hv-ed__imgR"><img src={imgR.image} alt={imgR.title} data-parallax="0.05" /></div>}
+		{imgL && <div class="hv-ed__imgL"><img src={imgL.image} srcset={imgL.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={imgL.imageW || undefined} height={imgL.imageH || undefined} alt={imgL.title} loading="eager" /></div>}
+		{imgR && <div class="hv-ed__imgR"><img src={imgR.image} srcset={imgR.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={imgR.imageW || undefined} height={imgR.imageH || undefined} alt={imgR.title} data-parallax="0.05" loading="lazy" /></div>}
 		<div class="hv-ed__center">
 			<h1 class="hv-ed__h1" data-intro>Portraits with<br /><em>patience</em> &amp; light</h1>
 			<p class="hv-ed__lede" data-intro>{lede}</p>

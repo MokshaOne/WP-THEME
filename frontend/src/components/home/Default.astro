@@ -34,7 +34,7 @@ const testimonials = site.home.testimonials;
 	<div class="hero__right" data-hero data-intro>
 		<div class="slides">
 			{featured.map((p, i) => (
-				<img class:list={['slide', i === 0 && 'on']} src={p.image} alt={p.title} data-cap={up(p.category || p.title)} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} />
+				<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-cap={up(p.category || p.title)} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
 			))}
 		</div>
 		<div class="slide-chrome">
@@ -64,7 +64,7 @@ const testimonials = site.home.testimonials;
 	<div class="rail" data-drag>
 		{railFrames.map((p, i) => (
 			<a class="card" href={`/work/${p.slug}/`}>
-				<div class="plate"><img src={p.image} alt={p.title} loading="lazy" /></div>
+				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 60vw, 30vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="lazy" /></div>
 				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span></div>
 			</a>
 		))}

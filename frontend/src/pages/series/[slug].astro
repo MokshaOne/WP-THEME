@@ -24,7 +24,7 @@ const num = (n: number) => String(n).padStart(3, '0');
 	<section class="masonry" data-work-grid>
 		{projects.map((p, i) => (
 			<a class="card" href={`/work/${p.slug}/`}>
-				<div class="plate"><img src={p.image} alt={p.title} data-zoom loading="lazy" /></div>
+				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-zoom loading={i < 3 ? 'eager' : 'lazy'} /></div>
 				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span><span class="c">{p.year}</span></div>
 			</a>
 		))}

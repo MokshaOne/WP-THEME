@@ -20,7 +20,7 @@ const up = (s: string) => (s || '').toUpperCase();
 		<div class="eyebrow" data-intro style="margin-bottom:20px">{up(post.category)} · {post.dateLabel.toUpperCase()}</div>
 		<h1 data-intro>{up(post.title)}</h1>
 		{post.image && (
-			<div class="plate" data-reveal style="margin:40px 0"><img src={post.image} alt={post.title} data-zoom /></div>
+			<div class="plate" data-reveal style="margin:40px 0"><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></div>
 		)}
 		<div class="article__body" data-reveal set:html={post.content} />
 	</article>

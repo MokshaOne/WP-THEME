@@ -18,7 +18,7 @@ const to = years.length ? Math.max(...years) : new Date().getFullYear();
 	<div class="rail" data-drag>
 		{frames.map((p, i) => (
 			<a class="card" href={`/work/${p.slug}/`}>
-				<div class="plate"><img src={p.image} alt={p.title} loading="lazy" /></div>
+				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 70vw, 40vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="lazy" /></div>
 				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span></div>
 			</a>
 		))}

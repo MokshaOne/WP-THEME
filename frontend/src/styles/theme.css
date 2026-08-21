@@ -343,6 +343,7 @@ body.lb-open .site-header{opacity:0;pointer-events:none}
 .km span{font-family:var(--label);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:600}
 .km input{width:90px}
 .hp{position:absolute;left:-9999px}
+.cf-wrap{margin:.5rem 0 1.4rem;min-height:65px}
 .form-status{margin-top:1.3rem;font-size:.92rem;line-height:1.65;color:var(--body)}
 .form-status.is-ok{color:var(--ink);font-family:var(--serif);font-size:1.1rem;border-left:2px solid var(--gold);padding-left:1rem}
 .form-status.is-err{color:#c0532e}

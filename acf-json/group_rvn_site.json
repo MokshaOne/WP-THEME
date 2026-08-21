@@ -73,7 +73,11 @@
 		{ "key": "field_rvn_smtp_user", "label": "Username (full mailbox)", "name": "smtp_user", "type": "text", "instructions": "The real mailbox you authenticate with, e.g. hello@raveenthiran.com. For Gmail/Workspace use a 16-char App Password below.", "required": 0, "wrapper": { "width": "50" } },
 		{ "key": "field_rvn_smtp_pass", "label": "Password / App Password", "name": "smtp_pass", "type": "password", "instructions": "Or, more securely, define RVN_SMTP_PASS in wp-config.php and leave this blank.", "required": 0, "wrapper": { "width": "50" } },
 		{ "key": "field_rvn_smtp_from", "label": "From address", "name": "smtp_from", "type": "email", "instructions": "The visible sender. May be a verified alias of the mailbox above. Defaults to the username.", "required": 0, "wrapper": { "width": "50" } },
-		{ "key": "field_rvn_smtp_fromname", "label": "From name", "name": "smtp_fromname", "type": "text", "default_value": "Raveenthiran", "wrapper": { "width": "50" } }
+		{ "key": "field_rvn_smtp_fromname", "label": "From name", "name": "smtp_fromname", "type": "text", "default_value": "Raveenthiran", "wrapper": { "width": "50" } },
+
+		{ "key": "field_rvn_tab_security", "label": "Security", "name": "", "type": "tab", "placement": "top" },
+		{ "key": "field_rvn_turnstile_site", "label": "Turnstile site key", "name": "turnstile_site", "type": "text", "instructions": "Cloudflare Turnstile — a no-puzzle spam shield for the enquiry form. Create a widget at dash.cloudflare.com → Turnstile. The site key is public; paste it here to switch protection on. Leave both blank to keep just the honeypot.", "required": 0, "wrapper": { "width": "50" } },
+		{ "key": "field_rvn_turnstile_secret", "label": "Turnstile secret key", "name": "turnstile_secret", "type": "password", "instructions": "Kept server-side (never exposed to the frontend). Or define RVN_TURNSTILE_SECRET in wp-config.php and leave this blank.", "required": 0, "wrapper": { "width": "50" } }
 	],
 	"location": [
 		[ { "param": "options_page", "operator": "==", "value": "rvn-site" } ]

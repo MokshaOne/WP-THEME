@@ -13,6 +13,7 @@ const faq = site.faq;
 const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
 const WP_BASE = (import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2';
 const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
+const turnstileKey = site.security?.turnstile_site || '';
 ---
 <Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
 	<div class="page">
@@ -65,6 +66,7 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 					<div class="field"><label for="f-notes" data-i18n="enq.notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
 				</div>
 
+				{turnstileKey && <div class="cf-wrap" data-turnstile data-sitekey={turnstileKey}></div>}
 				<button type="submit" class="btn" data-submit data-i18n="enq.send">Send enquiry →</button>
 				<p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
 			</form>
@@ -90,4 +92,5 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 			</div>
 		)}
 	</div>
+	{turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 </Base>

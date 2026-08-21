@@ -273,7 +273,7 @@
 		function fields() {
 			var type = (form.querySelector('input[name="project_type"]:checked') || {}).value || '';
 			var addons = [].slice.call(form.querySelectorAll('input[name="addons[]"]:checked')).map(function (x) { return x.value; }).join(', ');
-			return { name: g('name'), email: g('email'), project_type: type, addons: addons, estimate: g('estimate'), preferred_date: g('preferred_date'), notes: g('notes'), company: g('company') };
+			return { name: g('name'), email: g('email'), project_type: type, addons: addons, estimate: g('estimate'), preferred_date: g('preferred_date'), notes: g('notes'), company: g('company'), 'cf-turnstile-response': g('cf-turnstile-response') };
 		}
 		function setStatus(msg, ok) {
 			if (!statusEl) return;
@@ -300,6 +300,20 @@
 				.catch(function () { setStatus('Couldn’t reach the studio just now — opening your mail app instead…', false); setTimeout(function () { mailtoFallback(f); }, 900); })
 				.then(function () { if (submitBtn) submitBtn.disabled = false; });
 		});
+	}
+
+	/* ── Cloudflare Turnstile (explicit render, survives view transitions) ── */
+	function initTurnstile() {
+		var el = document.querySelector('[data-turnstile]');
+		if (!el || el.dataset.rendered) return;
+		function render() {
+			if (!window.turnstile) return false;
+			el.dataset.rendered = '1';
+			try { window.turnstile.render(el, { sitekey: el.getAttribute('data-sitekey'), theme: 'auto' }); } catch (e) {}
+			return true;
+		}
+		if (render()) return;
+		var tries = 0, t = setInterval(function () { if (render() || ++tries > 40) clearInterval(t); }, 200);
 	}
 
 	/* ── stat count-up ── */
@@ -375,6 +389,6 @@
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 	});
 
-	function boot() { initI18n(); initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); }
+	function boot() { initI18n(); initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); initTurnstile(); }
 	document.addEventListener('astro:page-load', boot);
 })();

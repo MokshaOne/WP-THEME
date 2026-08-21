@@ -199,6 +199,7 @@ export interface Site {
 	contact: { email: string; location: string; response: string; instagram: string };
 	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; licence: number; per_km: number };
 	faq: Faq[];
+	security: { turnstile_site: string };
 }
 
 const SITE_FALLBACK: Site = {
@@ -225,6 +226,7 @@ const SITE_FALLBACK: Site = {
 		{ q: 'Do you travel?', a: 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.' },
 		{ q: 'When do I receive the images?', a: 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.' },
 	],
+	security: { turnstile_site: '' },
 };
 
 function pick<T>(v: T | undefined | null | '', fb: T): T { return (v === undefined || v === null || v === '' ) ? fb : v; }
@@ -259,6 +261,7 @@ export async function getSite(): Promise<Site> {
 				per_km: pick(d?.pricing?.per_km, F.pricing.per_km),
 			},
 			faq: arr(d?.faq, F.faq),
+			security: { turnstile_site: pick(d?.security?.turnstile_site, '') },
 		};
 	} catch (e) {
 		console.warn('[wp] site settings fallback —', (e as Error).message);

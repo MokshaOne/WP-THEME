@@ -272,8 +272,34 @@ function rvn_site_payload() {
 			'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
 			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
 		),
-		'faq'     => $faq,
+		'faq'      => $faq,
+		'security' => array(
+			'turnstile_site' => (string) rvn_site_opt( 'turnstile_site', '' ),
+		),
 	);
+}
+
+/**
+ * Cloudflare Turnstile verification (adapted from Obscura). Returns true when
+ * Turnstile is not configured (form keeps working) or the token verifies.
+ */
+function rvn_turnstile_secret() {
+	if ( defined( 'RVN_TURNSTILE_SECRET' ) && RVN_TURNSTILE_SECRET ) { return RVN_TURNSTILE_SECRET; }
+	return trim( (string) rvn_site_opt( 'turnstile_secret', '' ) );
+}
+function rvn_turnstile_passes( $token ) {
+	$secret = rvn_turnstile_secret();
+	if ( $secret === '' ) { return true; } // not configured → don't block
+	$token = trim( (string) $token );
+	if ( $token === '' ) { return false; }
+	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	$res = wp_remote_post( 'https://challenges.cloudflare.com/turnstile/v0/siteverify', array(
+		'timeout' => 8,
+		'body'    => array( 'secret' => $secret, 'response' => $token, 'remoteip' => $ip ),
+	) );
+	if ( is_wp_error( $res ) ) { return true; } // fail open on network error
+	$data = json_decode( wp_remote_retrieve_body( $res ), true );
+	return ! empty( $data['success'] );
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -329,6 +355,11 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
 
 	// Honeypot — bots fill hidden "company"; drop silently as success.
 	if ( ! empty( $p['company'] ) ) { return new WP_REST_Response( array( 'ok' => true ), 200 ); }
+
+	// Cloudflare Turnstile (only enforced when configured).
+	if ( ! rvn_turnstile_passes( $p['cf-turnstile-response'] ?? '' ) ) {
+		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Spam check failed — please try again.' ), 400 );
+	}
 
 	$name  = sanitize_text_field( $p['name'] ?? '' );
 	$email = sanitize_email( $p['email'] ?? '' );

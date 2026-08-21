@@ -4,6 +4,14 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 2.2.0 — 2026-08-21 · Turnstile spam shield
+
+- Cloudflare **Turnstile** on the enquiry form (adapted from Obscura): a
+  no-puzzle, privacy-friendly CAPTCHA. Configure the keys under **Site
+  settings → Security**; the secret can also live in wp-config.php
+  (RVN_TURNSTILE_SECRET). When unset, the honeypot still applies — nothing
+  breaks without setup.
+
 ## 2.1.1 — 2026-08-21 · Enquiry form fix (frontend only)
 
 - The enquiry form's `action` now targets the HTTPS enquiry endpoint

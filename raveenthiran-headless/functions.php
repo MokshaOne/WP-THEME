@@ -368,3 +368,54 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
 
 	return new WP_REST_Response( array( 'ok' => true ), 200 );
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   SMTP delivery — routes wp_mail() through an authenticated SMTP server so
+   enquiries + auto-replies actually arrive. Adapted from the Obscura theme.
+   Configured under Site settings → Mail (SMTP). The password may instead be
+   defined as RVN_SMTP_PASS in wp-config.php (kept out of the database).
+   ══════════════════════════════════════════════════════════════════════ */
+
+function rvn_smtp_password() {
+	if ( defined( 'RVN_SMTP_PASS' ) && RVN_SMTP_PASS ) { return RVN_SMTP_PASS; }
+	return (string) rvn_site_opt( 'smtp_pass', '' );
+}
+
+add_action( 'phpmailer_init', function ( $phpmailer ) {
+	if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return; }
+
+	$host = trim( (string) rvn_site_opt( 'smtp_host', '' ) );
+	$user = trim( (string) rvn_site_opt( 'smtp_user', '' ) );
+	$pass = rvn_smtp_password();
+	if ( $host === '' || $user === '' || $pass === '' ) { return; } // not configured → leave default mail()
+
+	$phpmailer->isSMTP();
+	$phpmailer->Host       = $host;
+	$phpmailer->Port       = (int) ( rvn_site_opt( 'smtp_port', 587 ) ?: 587 );
+	$phpmailer->SMTPAuth   = true;
+	$phpmailer->Username   = $user;
+	$phpmailer->Password   = $pass;
+	$phpmailer->SMTPSecure = rvn_site_opt( 'smtp_secure', 'tls' ) === 'ssl' ? 'ssl' : 'tls';
+
+	$from = trim( (string) rvn_site_opt( 'smtp_from', '' ) );
+	if ( $from === '' || ! is_email( $from ) ) { $from = $user; }
+	$name = (string) ( rvn_site_opt( 'smtp_fromname', '' ) ?: get_bloginfo( 'name' ) );
+	try {
+		$phpmailer->setFrom( $from, $name, false );
+		$phpmailer->Sender = $from; // envelope-from for SPF alignment
+	} catch ( \Exception $e ) {
+		// keep whatever From WP already set
+	}
+}, 20 );
+
+add_filter( 'wp_mail_from', function ( $email ) {
+	if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return $email; }
+	$from = trim( (string) rvn_site_opt( 'smtp_from', '' ) );
+	return ( $from && is_email( $from ) ) ? $from : $email;
+}, 20 );
+
+add_filter( 'wp_mail_from_name', function ( $name ) {
+	if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return $name; }
+	$n = trim( (string) rvn_site_opt( 'smtp_fromname', '' ) );
+	return $n ?: $name;
+}, 20 );

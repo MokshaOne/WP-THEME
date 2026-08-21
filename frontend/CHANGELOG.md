@@ -4,6 +4,14 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 2.1.0 — 2026-08-21 · SMTP mail
+
+- **SMTP delivery** for enquiry emails (adapted from the Obscura theme).
+  Configure under **Site settings → Mail (SMTP)** — host, port, TLS/SSL,
+  username, password (or the `RVN_SMTP_PASS` constant in wp-config.php),
+  from address + name. When off, the server's default PHP mail() is used.
+  This makes the enquiry confirmation + studio notification actually arrive.
+
 ## 2.0.0 — 2026-08-21 · "Master" launch
 
 The complete, production-ready site.

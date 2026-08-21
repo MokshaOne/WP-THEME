@@ -3,7 +3,7 @@ Theme Name: Raveenthiran Headless
 Theme URI: https://raveenthiran.com
 Author: Nishuthan Raveenthiran
 Description: Blank headless backend theme. Renders no front end — it only holds the content model (Work CPT, Album + Service taxonomies, ACF field group via acf-json/) and exposes a normalized REST contract for the Astro frontend. Direct visitors to this WordPress install are redirected to the live site.
-Version: 2.4.0
+Version: 2.5.0
 Requires at least: 6.4
 Requires PHP: 8.0
 License: GNU General Public License v2 or later

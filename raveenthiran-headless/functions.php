@@ -634,3 +634,54 @@ function rvn_insights_widget() {
 	}
 	printf( '<p style="margin-top:1rem"><a href="%s">View all enquiries →</a></p>', esc_url( admin_url( 'edit.php?post_type=rvn_enquiry' ) ) );
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Before / after comparison slider (adapted from Obscura). A shortcode for
+   journal posts + project write-ups; the drag interaction lives in the
+   Astro frontend (ui.js .rvn-compare). Markup only here.
+     [rvn_compare before="123" after="456"]                 (attachment IDs)
+     [rvn_compare before="https://…/raw.avif" after="https://…/final.avif"
+                  before_label="Raw" after_label="Graded" start="50"]
+   ══════════════════════════════════════════════════════════════════════ */
+
+add_shortcode( 'rvn_compare', 'rvn_compare_shortcode' );
+
+function rvn_compare_shortcode( $atts ) {
+	$a = shortcode_atts( array(
+		'before' => '', 'after' => '', 'before_label' => 'Before', 'after_label' => 'After', 'start' => '50',
+	), $atts, 'rvn_compare' );
+
+	$before = rvn_compare_resolve( $a['before'] );
+	$after  = rvn_compare_resolve( $a['after'] );
+	if ( ! $before || ! $after ) { return ''; }
+	$start = max( 0, min( 100, (int) $a['start'] ) );
+
+	ob_start(); ?>
+	<div class="rvn-compare" data-compare style="--start:<?php echo esc_attr( $start ); ?>%">
+		<figure class="rvn-compare__media rvn-compare__after">
+			<img src="<?php echo esc_url( $after['url'] ); ?>" alt="<?php echo esc_attr( $after['alt'] ); ?>" width="<?php echo esc_attr( $after['w'] ); ?>" height="<?php echo esc_attr( $after['h'] ); ?>" loading="lazy" decoding="async">
+			<?php if ( $a['after_label'] ) : ?><figcaption class="rvn-compare__label rvn-compare__label--after"><?php echo esc_html( $a['after_label'] ); ?></figcaption><?php endif; ?>
+		</figure>
+		<figure class="rvn-compare__media rvn-compare__before" data-compare-clip>
+			<img src="<?php echo esc_url( $before['url'] ); ?>" alt="<?php echo esc_attr( $before['alt'] ); ?>" width="<?php echo esc_attr( $before['w'] ); ?>" height="<?php echo esc_attr( $before['h'] ); ?>" loading="lazy" decoding="async">
+			<?php if ( $a['before_label'] ) : ?><figcaption class="rvn-compare__label rvn-compare__label--before"><?php echo esc_html( $a['before_label'] ); ?></figcaption><?php endif; ?>
+		</figure>
+		<input type="range" class="rvn-compare__range" min="0" max="100" value="<?php echo esc_attr( $start ); ?>" aria-label="Reveal before / after" data-compare-range>
+		<span class="rvn-compare__handle" aria-hidden="true"></span>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+function rvn_compare_resolve( $ref ) {
+	$ref = trim( (string) $ref );
+	if ( $ref === '' ) { return null; }
+	if ( ctype_digit( $ref ) ) {
+		$rec = rvn_image( (int) $ref, 'large' );
+		return $rec ? array( 'url' => $rec['src'], 'alt' => $rec['alt'], 'w' => $rec['w'], 'h' => $rec['h'] ) : null;
+	}
+	if ( filter_var( $ref, FILTER_VALIDATE_URL ) ) {
+		return array( 'url' => esc_url_raw( $ref ), 'alt' => '', 'w' => '', 'h' => '' );
+	}
+	return null;
+}

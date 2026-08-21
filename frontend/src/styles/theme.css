@@ -398,6 +398,19 @@ body.lb-open .site-header{opacity:0;pointer-events:none}
 /* signature decorative script watermark (optional) */
 .flourish{font-family:var(--script);color:var(--gold-soft);opacity:.5;line-height:1;pointer-events:none;user-select:none}
 
+/* ── before / after compare slider ── */
+.rvn-compare{position:relative;overflow:hidden;user-select:none;background:var(--surface);margin:1.8em 0;line-height:0}
+.rvn-compare img{display:block;width:100%;height:auto}
+.rvn-compare__media{margin:0}
+.rvn-compare__before{position:absolute;inset:0;width:100%;height:100%;clip-path:inset(0 calc(100% - var(--start,50%)) 0 0)}
+.rvn-compare__before img{height:100%;object-fit:cover}
+.rvn-compare__label{position:absolute;bottom:1rem;font-family:var(--label);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.55);padding:.35rem .7rem;line-height:1}
+.rvn-compare__label--after{right:1rem}
+.rvn-compare__label--before{left:1rem}
+.rvn-compare__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+.rvn-compare__handle{position:absolute;top:0;bottom:0;left:var(--start,50%);width:2px;background:#fff;transform:translateX(-50%);pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.rvn-compare__handle::after{content:"↔";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border:2px solid #fff;border-radius:50%;background:rgba(0,0,0,.25);color:#fff;display:grid;place-items:center;font-size:.85rem;backdrop-filter:blur(2px)}
+
 /* ── Journal ── */
 .journal-list{display:grid;gap:clamp(2.5rem,6vw,4.5rem);max-width:var(--maxw);margin:0 auto}
 .jcard{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}

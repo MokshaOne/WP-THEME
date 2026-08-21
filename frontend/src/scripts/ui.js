@@ -302,6 +302,16 @@
 		});
 	}
 
+	/* ── before / after compare sliders (from [rvn_compare] in content) ── */
+	function initCompare() {
+		[].forEach.call(document.querySelectorAll('[data-compare]'), function (c) {
+			if (c._compare) return; c._compare = true;
+			var range = c.querySelector('[data-compare-range]');
+			function set(v) { c.style.setProperty('--start', v + '%'); }
+			if (range) { range.addEventListener('input', function () { set(range.value); }); set(range.value); }
+		});
+	}
+
 	/* ── Cloudflare Turnstile (explicit render, survives view transitions) ── */
 	function initTurnstile() {
 		var el = document.querySelector('[data-turnstile]');
@@ -389,6 +399,6 @@
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 	});
 
-	function boot() { initI18n(); initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); initTurnstile(); }
+	function boot() { initI18n(); initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); initTurnstile(); initCompare(); }
 	document.addEventListener('astro:page-load', boot);
 })();

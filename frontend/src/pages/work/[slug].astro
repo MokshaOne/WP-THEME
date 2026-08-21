@@ -94,9 +94,10 @@ const items = p.gallery.length
 		<a href="/enquire/">Enquire about a shoot →</a>
 	</nav>
 
-	<div class="lb" data-lb aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<div class="lb" data-lb data-lb-title={p.title} aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
 		<div class="lb__bar">
-			<span data-lb-count>1 / {items.length}</span>
+			<span class="lb__title">{p.title}</span>
+			<span class="lb__count" data-lb-count>1 / {items.length}</span>
 			<button class="lb__close" data-lb-close aria-label="Close">✕</button>
 		</div>
 		<button class="lb__nav lb__prev" data-lb-prev aria-label="Previous">←</button>

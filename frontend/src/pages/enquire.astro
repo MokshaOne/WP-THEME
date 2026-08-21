@@ -69,7 +69,7 @@ const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
 			<aside class="enquire-side">
 				<div class="big-estimate">
 					<span class="k">Estimate</span>
-					<output class="v" data-estimate>—</output>
+					<output class="v" data-estimate role="status" aria-live="polite" aria-atomic="true">—</output>
 					<span class="note">Indicative — the final quote is confirmed by email once we’ve talked through the details.</span>
 				</div>
 				<dl class="contact-list">

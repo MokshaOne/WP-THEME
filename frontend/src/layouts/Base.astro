@@ -72,6 +72,12 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	<title>{title}</title>
 	{description && <meta name="description" content={description} />}
 	<link rel="canonical" href={canonical} />
+	<!-- Bilingual interface (EN default, DE toggle) on the same URL — signal both. -->
+	<link rel="alternate" hreflang="en" href={canonical} />
+	<link rel="alternate" hreflang="de" href={canonical} />
+	<link rel="alternate" hreflang="x-default" href={canonical} />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:locale:alternate" content="de_AT" />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Raveenthiran" />
 	<meta property="og:title" content={title} />
@@ -106,17 +112,18 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 		<nav class="nav" aria-label="Primary">
 			{nav.map((n, i) => (
 				<a href={n.href} aria-current={active === n.key ? 'page' : undefined}>
-					<span class="num">0{i + 1}</span>{n.label.toUpperCase()}
+					<span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span>
 				</a>
 			))}
 		</nav>
+		<button class="lang" data-lang-toggle type="button" aria-label="Sprache wechseln / Switch language">DE</button>
 		<button class="burger" data-burger aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 	</header>
 
 	<div class="m-ovl" data-mobile-ovl>
 		<nav aria-label="Mobile">
 			{nav.map((n, i) => (
-				<a href={n.href}><span class="num">0{i + 1}</span>{n.label.toUpperCase()}</a>
+				<a href={n.href}><span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span></a>
 			))}
 		</nav>
 		<div class="m-foot">
@@ -155,6 +162,7 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 
 	<script>
 		import '../scripts/ui.js';
+		import '../scripts/i18n.js';
 	</script>
 </body>
 </html>

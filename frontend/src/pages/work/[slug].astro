@@ -25,8 +25,47 @@ const meta = ([
 ] as [string, string][]).filter(([, v]) => v);
 
 const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0 }];
+
+// Unique, human meta description per project: prefer the statement text,
+// otherwise compose one from the project's own metadata.
+const plain = (p.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+const description = plain.length > 40
+	? (plain.length > 155 ? plain.slice(0, 152).replace(/\s+\S*$/, '') + '…' : plain)
+	: `${p.category || 'Photography'}${p.location ? ` in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''} by Nishuthan Raveenthiran${p.services.length ? ` — ${p.services.join(', ')}` : ''}.`;
+
+// Per-project structured data (image search + rich results).
+const siteBase = (Astro.site?.href || 'https://raveenthiran.com/').replace(/\/$/, '');
+const absImg = (u: string) => (/^https?:\/\//.test(u) ? u : siteBase + (u.startsWith('/') ? '' : '/') + u);
+const projectImages = [p.image, ...p.gallery.map((g) => g.src)].filter(Boolean).map(absImg);
+const projectLd = {
+	'@context': 'https://schema.org',
+	'@type': 'CreativeWork',
+	'@id': `${siteBase}/work/${p.slug}/#project`,
+	name: p.title,
+	headline: p.title,
+	description,
+	url: `${siteBase}/work/${p.slug}/`,
+	...(p.year ? { dateCreated: p.year } : {}),
+	...(p.location ? { contentLocation: { '@type': 'Place', name: p.location } } : {}),
+	...(p.category ? { genre: p.category } : {}),
+	...(p.services.length ? { keywords: p.services.join(', ') } : {}),
+	creator: { '@type': 'Person', name: 'Nishuthan Raveenthiran', jobTitle: 'Photographer' },
+	...(projectImages.length
+		? {
+				image: projectImages,
+				associatedMedia: projectImages.map((u) => ({
+					'@type': 'ImageObject',
+					contentUrl: u,
+					creator: { '@type': 'Person', name: 'Nishuthan Raveenthiran' },
+					creditText: 'Nishuthan Raveenthiran',
+					copyrightNotice: `© ${new Date().getFullYear()} Nishuthan Raveenthiran`,
+				})),
+			}
+		: {}),
+};
 ---
-<Base title={`${p.title} — Raveenthiran`} description={`${p.title} — ${p.category || 'project'} photography by Nishuthan Raveenthiran.`} active="work" page="project" ogImage={p.ogImage || p.image} preload={p.image}>
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={p.ogImage || p.image} preload={p.image}>
+	<script type="application/ld+json" set:html={JSON.stringify(projectLd)} is:inline />
 	<!-- SPLIT HERO -->
 	<section class="proj-hero">
 		<div class="proj-hero__left">

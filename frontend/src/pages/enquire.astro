@@ -3,94 +3,95 @@ import Base from '../layouts/Base.astro';
 import { getSite } from '../lib/wp';
 
 const site = await getSite();
-const CUR = site.pricing.currency || '€';
-const EMAIL = site.contact.email;
-const types = site.pricing.types;
-const extras = site.pricing.addons;
-const licence = site.pricing.licence;
-const perKm = site.pricing.per_km;
-const faq = site.faq;
-const money = (n: number) => CUR + Math.round(n).toLocaleString('en-US');
-const WP_BASE = (import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2';
-const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
-const turnstileKey = site.security?.turnstile_site || '';
+const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
+const turnstile = site.security.turnstile_site;
+
+// Session model — editable in WordPress later (Site settings → Price calculator).
+const services = [
+	{ name: 'PORTRAIT', base: 150, hrs: 2, extra: 120, meta: '2 HRS · 150 €', note: '' },
+	{ name: 'EVENT', base: 690, hrs: 3, extra: 120, meta: '3 HRS · 690 €', note: '' },
+	{ name: 'WEDDING', base: 1200, hrs: 5, extra: 220, meta: '5 HRS · 1200 €', note: '' },
+	{ name: 'FASHION / COMMERCIAL', base: 220, hrs: 2, extra: 120, meta: '2 HRS · 220 €', note: 'Price excludes a commercial usage license — licensing is quoted per campaign.' },
+];
+const s0 = services[0];
+const fmt = (n: number) => n.toLocaleString('de-AT');
 ---
-<Base title="Enquire — Raveenthiran" description="Start a photography project — instant estimate, firm quote by email within 24 hours." active="enquire">
-	<div class="page">
-		<div class="page-head" data-reveal>
-			<span class="eyebrow" data-i18n="enq.eyebrow">Enquire · Vienna</span>
-			<h1 class="page-title" data-i18n="enq.title">Start a project</h1>
-			<p class="page-lead" data-i18n="enq.lead">Tell me what you have in mind. Get an instant estimate — a firm quote follows by email within 24 hours.</p>
-		</div>
+<Base title="Name your shoot — Raveenthiran" description="Commission a shoot. Instant estimate, firm written offer within 24 hours." active="enquire" page="enquire">
+	<section class="wrap" style="padding:64px 28px 40px">
+		<div class="eyebrow" data-intro style="margin-bottom:18px">COMMISSIONS — {new Date().getFullYear()}</div>
+		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">NAME YOUR SHOOT<span style="color:var(--faint)">.</span></h1>
+	</section>
 
-		<div class="two-col" data-reveal>
-			<form class="form" method="post" action={endpoint} data-price-engine data-currency={CUR} data-mailto={EMAIL} data-endpoint={endpoint}>
-				<input type="hidden" name="estimate" value="" data-estimate-input />
-				<input type="hidden" name="breakdown" value="" data-breakdown />
-				<div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
-
-				<div class="field">
-					<span class="field-label" data-i18n="enq.step1">01 · Project type</span>
-					<div class="chips">
-						{types.map((t, i) => (
-							<label class="chip"><input type="radio" name="project_type" value={t.label} data-base={t.base} checked={i === 0} /><span>{t.label} · {money(t.base)}</span></label>
-						))}
-					</div>
-				</div>
-
-				{extras.length > 0 && (
-					<div class="field">
-						<span class="field-label" data-i18n="enq.step2">02 · Add-ons</span>
-						<div class="chips">
-							{extras.map((x) => (
-								<label class="chip"><input type="checkbox" name="addons[]" value={x.label} data-price={x.price} /><span>{x.label} · +{money(x.price)}</span></label>
-							))}
-						</div>
-					</div>
-				)}
-
-				<div class="field field--inline">
-					{licence > 0 && (
-						<label class="chip"><input type="checkbox" name="license" value="1" data-price={licence} /><span>Commercial licence · +{money(licence)}</span></label>
-					)}
-					{perKm > 0 && (
-						<label class="km"><span data-i18n="enq.travel">Travel (km)</span><input type="number" name="travel_km" min="0" step="1" value="0" data-per-km={perKm} /></label>
-					)}
-				</div>
-
-				<div class="field">
-					<span class="field-label" data-i18n="enq.step3">03 · Your details</span>
-					<div class="field"><label for="f-name" data-i18n="enq.name">Name</label><input id="f-name" type="text" name="name" required /></div>
-					<div class="field"><label for="f-email" data-i18n="enq.email">Email</label><input id="f-email" type="email" name="email" required /></div>
-					<div class="field"><label for="f-date" data-i18n="enq.date">Preferred date</label><input id="f-date" type="date" name="preferred_date" /></div>
-					<div class="field"><label for="f-notes" data-i18n="enq.notes">Tell me about it</label><textarea id="f-notes" name="notes" rows="4" required></textarea></div>
-				</div>
-
-				{turnstileKey && <div class="cf-wrap" data-turnstile data-sitekey={turnstileKey}></div>}
-				<button type="submit" class="btn" data-submit data-i18n="enq.send">Send enquiry →</button>
-				<p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
-			</form>
-
-			<aside class="enquire-side">
-				<div class="big-estimate">
-					<span class="k" data-i18n="enq.estimate">Estimate</span>
-					<output class="v" data-estimate role="status" aria-live="polite" aria-atomic="true">—</output>
-					<span class="note">Indicative — the final quote is confirmed by email once we’ve talked through the details.</span>
-				</div>
-				<dl class="contact-list">
-					<div class="row"><span class="k">Email</span><a href={`mailto:${EMAIL}`}>{EMAIL}</a></div>
-					<div class="row"><span class="k">Studio</span><span>{site.contact.location}</span></div>
-					<div class="row"><span class="k">Response</span><span>{site.contact.response}</span></div>
-				</dl>
-			</aside>
-		</div>
-
-		{faq.length > 0 && (
-			<div class="faq" data-reveal>
-				<h2 class="page-title" style="font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem" data-i18n="enq.questions">Questions</h2>
-				{faq.map((f) => <details><summary>{f.q}</summary><div class="a"><p>{f.a}</p></div></details>)}
+	<section class="enq" data-enquire>
+		<div class="enq__form">
+			<p class="enq__step">1 — CHOOSE A SESSION</p>
+			<div class="svc-grid">
+				{services.map((s, i) => (
+					<button type="button" class="svc" aria-pressed={i === 0 ? 'true' : 'false'}
+						data-name={s.name} data-base={s.base} data-hrs={s.hrs} data-extra={s.extra} data-meta={s.meta} data-note={s.note}>
+						<span class="name">{s.name}</span>
+						<span class="m">{s.meta}</span>
+					</button>
+				))}
 			</div>
-		)}
-	</div>
-	{turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+			<p class="enq__step mt">2 — EXTRA HOURS</p>
+			<div class="stepper">
+				<button type="button" data-minus aria-label="Fewer hours">−</button>
+				<div class="stepper__val" data-extra-hours>0</div>
+				<button type="button" data-plus aria-label="More hours">+</button>
+				<div class="stepper__rate">× <span data-extra-rate>{s0.extra}</span> € / HOUR</div>
+			</div>
+
+			<p class="enq__step mt">3 — DETAILS</p>
+			<form action={endpoint} method="POST" data-mailto={site.contact.email}>
+				<div class="fields">
+					<input name="name" placeholder="Name" required autocomplete="name" />
+					<input name="email" type="email" placeholder="Email" required autocomplete="email" />
+					<input name="date" placeholder="Preferred date" />
+					<input name="location" placeholder="Location" />
+				</div>
+				<textarea name="message" placeholder="Tell me about the shoot…" rows="4"></textarea>
+				<!-- honeypot: real users leave this empty -->
+				<input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+				{turnstile && (
+					<>
+						<div class="cf-turnstile" data-sitekey={turnstile} style="margin-top:16px"></div>
+						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
+					</>
+				)}
+				<button type="submit" class="btn btn--solid" style="width:100%;margin-top:18px;padding:18px">SEND ENQUIRY →</button>
+			</form>
+		</div>
+
+		<div class="enq__est">
+			<p class="enq__step" style="margin:0">YOUR ESTIMATE</p>
+			<div>
+				<div class="est__name" data-est-name>{s0.name}</div>
+				<div class="stepper__rate" data-est-meta style="margin-top:8px">{s0.meta}</div>
+			</div>
+			<div class="est__lines">
+				<span class="k">Base (<span data-base-hrs>{s0.hrs}</span> hrs)</span><span><span data-base-fmt>{fmt(s0.base)}</span> €</span>
+				<span class="k">Extra hours × <span data-extra-hours>0</span></span><span><span data-extra-fmt>0</span> €</span>
+			</div>
+			<div class="est__total">
+				<span class="tk">TOTAL</span>
+				<span class="tv"><span data-total-fmt>{fmt(s0.base)}</span> €</span>
+			</div>
+			<div class="est__note" data-est-note style="display:none"></div>
+			<div class="est__fine">Non-binding estimate. You get a written offer within 24 hours — then we shoot.</div>
+			<div class="est__msg" data-est-msg></div>
+		</div>
+	</section>
+
+	{site.faq.length > 0 && (
+		<section class="faq">
+			{site.faq.map((f) => (
+				<details class="faq__item">
+					<summary class="faq__q">{f.q}<span class="pm" aria-hidden="true">+</span></summary>
+					<div class="faq__a" set:html={f.a} />
+				</details>
+			))}
+		</section>
+	)}
 </Base>

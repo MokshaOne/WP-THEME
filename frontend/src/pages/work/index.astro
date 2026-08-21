@@ -3,57 +3,37 @@ import Base from '../../layouts/Base.astro';
 import { getProjects } from '../../lib/wp';
 
 const projects = await getProjects();
-const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-const albums = Array.from(new Set(projects.map((p) => p.category).filter(Boolean))).sort();
-const count = (cat: string) => projects.filter((p) => p.category === cat).length;
-const grads = [
-	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
-	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
-	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
-];
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
+
+const cats = Array.from(new Set(projects.map((p) => up(p.category)).filter(Boolean))).sort();
+const chips = ['ALL', ...cats];
+const years = projects.map((p) => +p.year).filter(Boolean);
+const from = years.length ? Math.min(...years) : 2020;
+const to = years.length ? Math.max(...years) : new Date().getFullYear();
 ---
-<Base title="Work — Raveenthiran" description="Selected photography — portraiture, weddings, street. Filter by album." active="work">
-	<div class="page page--wide" data-work>
-		<div class="page-head" data-reveal>
-			<span class="eyebrow">{projects.length} <span data-i18n="work.eyebrow_tail">projects · Vienna</span></span>
-			<h1 class="page-title" data-i18n="work.title">Selected Work</h1>
-		</div>
+<Base title="The Work — Raveenthiran" description="The full archive — portrait, fashion, event and wedding work from Vienna and across Austria." active="work" page="work">
+	<section class="phead">
+		<h1 data-intro>THE WORK</h1>
+		<div class="phead__meta" data-intro>ARCHIVE {from} — {to}<br /><span data-count>{String(projects.length).padStart(2, '0')}</span> FRAMES SHOWN</div>
+	</section>
 
-		<div class="filters" role="toolbar" aria-label="Filter by album" data-reveal>
-			<button class="filter-btn is-on" data-filter="*" data-i18n="work.all">All</button>
-			{albums.map((c) => <button class="filter-btn" data-filter={slug(c)}>{c}<sup>{count(c)}</sup></button>)}
-		</div>
-		<div class="view-toggle" role="tablist" aria-label="View" data-reveal>
-			<button class="is-on" data-view="grid" role="tab" aria-selected="true" data-i18n="work.grid">Grid</button>
-			<button data-view="index" role="tab" aria-selected="false" data-i18n="work.index">Index</button>
-		</div>
-
-		<div class="masonry stagger" data-grid>
-			{projects.map((p, i) => (
-				<a class="tile" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
-					<div class="tile__frame">
-						{p.image
-							? <img class="tile__img" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading="lazy" transition:name={`cover-${p.slug}`} />
-							: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
-					</div>
-					<div class="tile__cap">
-						<span class="tile__t">{p.title}</span>
-						<span class="tile__c">{p.category}{p.year ? ` · ${p.year}` : ''}</span>
-					</div>
-				</a>
-			))}
-		</div>
-
-		<div class="index" data-index hidden>
-			{projects.map((p) => (
-				<a class="index-row" href={`/work/${p.slug}/`} data-cat={slug(p.category)} data-year={p.year}>
-					<span class="t">{p.title}</span>
-					<span class="c">{p.category}</span>
-					<span class="y">{p.year}</span>
-				</a>
-			))}
-		</div>
-
-		<p class="empty" data-empty hidden data-i18n="work.empty">Nothing in this album yet.</p>
+	<div class="chips" data-chips data-intro>
+		{chips.map((c) => (
+			<button class="chip" data-cat={c} aria-pressed={c === 'ALL' ? 'true' : 'false'}>{c}</button>
+		))}
 	</div>
+
+	<section class="masonry" data-work-grid>
+		{projects.map((p, i) => (
+			<a class="card" href={`/work/${p.slug}/`} data-cat={up(p.category)}>
+				<div class="plate"><img src={p.image} alt={p.title} data-zoom loading="lazy" /></div>
+				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span><span class="c">{up(p.category)}</span></div>
+			</a>
+		))}
+	</section>
+
+	<a class="cta cta--sm" href="/enquire/">
+		<span>YOUR SESSION IS NEXT</span><span>→</span>
+	</a>
 </Base>

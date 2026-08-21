@@ -4,6 +4,39 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.0.0 — 2026-08-21 · "Poster Brutalism" redesign
+
+A ground-up frontend redesign — the approved Claude Design direction, built into
+the live Astro site. This consolidates the redesign batches (foundation → polish).
+
+- **Design system** — new `theme.css`: monochrome palette (no gold), self-hosted
+  **Anton + Archivo** (GDPR), 1px hairlines, sharp corners, **dark-only**. Images
+  sit duotone at rest and bloom to colour on hover. Old Playfair/Montserrat/Roboto
+  fonts and the light/dark toggle removed.
+- **Motion engine** (`fx.js`, vanilla, no deps) — preloader (home, once/session),
+  intro stagger, scroll reveals, parallax, scroll-velocity marquee skew, custom
+  cursor (fine-pointer only), letter-stagger headings, click-zoom lightbox,
+  hover-peek previews, drag-to-scroll rails, live Vienna clock, film-grain +
+  vignette atmosphere, scroll-progress hairline, cookie notice. All motion is
+  suppressed under `prefers-reduced-motion`.
+- **Home** — split hero (mix-blend headline over a `featured_home` slide stack
+  with clip-path wipes + counter), kinetic marquee, drag "Selected work" rail,
+  **The Index** (all projects, hover-invert + floating peek), **RAW / FINAL**
+  drag compare, **Recognition** (awards + rotating testimonials), giant CTA band.
+- **Work** — huge "THE WORK" head, instant client-side category filter chips
+  (dynamic from WordPress), 3-col masonry, duotone → colour, click-zoom.
+- **Project** — split hero (stacked Anton title + parallax plate), drag gallery
+  rail, statement + credits, giant "Next project" band.
+- **Studio / Enquire / Series / Journal / 404 / Offline** — all restyled in the
+  new language. Enquire keeps the live calculator + real backend (honeypot +
+  Turnstile + PDF auto-reply) with a graceful mail fallback.
+- **New** — Impressum / Datenschutz / AGB legal pages (Austrian ECG + GDPR
+  scaffolds; owner fills the specifics), new footer (ghost stretched wordmark,
+  GPS, social, legal), header with numbered nav + live clock + mobile overlay.
+- **PWA** — service-worker cache busted to `rvn-v3`, new "R" icon, dark manifest.
+- The offline/first-run SAMPLE set now uses the photographer's real frames, so
+  the site looks finished even when the WordPress API is unreachable at build.
+
 ## 2.2.0 — 2026-08-21 · Turnstile spam shield
 
 - Cloudflare **Turnstile** on the enquiry form (adapted from Obscura): a

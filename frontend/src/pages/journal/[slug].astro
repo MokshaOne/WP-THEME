@@ -13,33 +13,22 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const { next } = Astro.props;
 const post = (await getPost(slug!))!;
+const up = (s: string) => (s || '').toUpperCase();
 ---
-<Base title={`${post.title} — Journal`} description={post.excerpt} active="journal" ogImage={post.image} preload={post.image}>
-	<article class="entry">
-		<header class="entry__head" data-reveal>
-			<span class="eyebrow">{post.category} · {post.dateLabel}</span>
-			<h1 class="entry__title">{post.title}</h1>
-		</header>
-
+<Base title={`${post.title} — Journal`} description={post.excerpt} active="journal" page="article" ogImage={post.image} preload={post.image}>
+	<article class="article">
+		<div class="eyebrow" data-intro style="margin-bottom:20px">{up(post.category)} · {post.dateLabel.toUpperCase()}</div>
+		<h1 data-intro>{up(post.title)}</h1>
 		{post.image && (
-			<div class="entry__hero" data-reveal>
-				<img src={post.image} alt={post.title} width={post.imageW || undefined} height={post.imageH || undefined} />
-			</div>
+			<div class="plate" data-reveal style="margin:40px 0"><img src={post.image} alt={post.title} data-zoom /></div>
 		)}
-
-		<div class="entry__body prose" data-reveal set:html={post.content} />
+		<div class="article__body" data-reveal set:html={post.content} />
 	</article>
 
 	{next && next.slug !== post.slug && (
-		<a class="next-proj" href={`/journal/${next.slug}/`}>
-			<span class="next-proj__k">Next entry</span>
-			<span class="next-proj__t">{next.title}</span>
-			<span class="next-proj__c">{next.category} · {next.dateLabel} →</span>
+		<a class="cta cta--sm" href={`/journal/${next.slug}/`}>
+			<span style="font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;color:var(--faint)">NEXT ENTRY</span>
+			<span>{up(next.title)} →</span>
 		</a>
 	)}
-
-	<nav class="entry-nav">
-		<a href="/journal/">← All entries</a>
-		<a href="/enquire/">Enquire about a shoot →</a>
-	</nav>
 </Base>

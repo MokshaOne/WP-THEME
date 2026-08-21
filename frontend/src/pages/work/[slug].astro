@@ -6,105 +6,84 @@ export async function getStaticPaths() {
 	const projects = await getProjects();
 	return projects.map((p, i) => ({
 		params: { slug: p.slug },
-		props: {
-			prev: projects[(i - 1 + projects.length) % projects.length],
-			next: projects[(i + 1) % projects.length],
-		},
+		props: { index: i, next: projects[(i + 1) % projects.length] },
 	}));
 }
 
 const { slug } = Astro.params;
-const { prev, next } = Astro.props;
+const { index, next } = Astro.props;
 const p = (await getProject(slug!))!;
 
+const up = (s: string) => (s || '').toUpperCase();
+const titleLines = up(p.title).split(/\s*—\s*|\s*·\s*/).filter(Boolean);
+const eyebrow = `FIG. ${String(index + 1).padStart(3, '0')} — ${up(p.category || 'WORK')} — ${p.year}`;
+
 const meta = ([
-	['Year', p.year],
-	['Location', p.location],
-	['Client', p.client],
+	['CLIENT', p.client],
+	['LOCATION', p.location],
+	['SERVICES', p.services.join(' · ')],
 ] as [string, string][]).filter(([, v]) => v);
 
-const kind = (p.category || 'photographic').toLowerCase();
-const article = /^[aeiou]/.test(kind) ? 'An' : 'A';
-
-const items = p.gallery.length
-	? p.gallery.map((g) => ({ src: g.src, srcset: g.srcset || '', w: g.w || 0, h: g.h || 0, label: '' }))
-	: Array.from({ length: 8 }, (_v, i) => ({ src: '', srcset: '', w: 0, h: 0, label: `${p.title} · plate ${String(i + 1).padStart(2, '0')}` }));
+const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0 }];
 ---
-<Base title={`${p.title} — Raveenthiran`} description={`${p.title} — ${p.category || 'project'} photography by Nishuthan Raveenthiran.`} active="work" ogImage={p.ogImage}>
-	<div class="proj__hero">
-		{p.image
-			? <img src={p.image} alt={p.title} transition:name={`cover-${p.slug}`} />
-			: <div class="proj__ph" transition:name={`cover-${p.slug}`}><span>{p.title.toLowerCase()}</span></div>}
-	</div>
-
-	<div class="proj__head">
-		<div data-reveal>
-			<div class="meta-pairs">
-				{meta.map(([k, v]) => <div class="pair"><span class="k">{k}</span><span class="v">{v}</span></div>)}
-				{p.website && (
-					<div class="pair"><span class="k">Website</span>
-						<span class="v"><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span>
-					</div>
-				)}
+<Base title={`${p.title} — Raveenthiran`} description={`${p.title} — ${p.category || 'project'} photography by Nishuthan Raveenthiran.`} active="work" page="project" ogImage={p.ogImage || p.image} preload={p.image}>
+	<!-- SPLIT HERO -->
+	<section class="proj-hero">
+		<div class="proj-hero__left">
+			<div>
+				<div class="eyebrow" data-intro style="margin-bottom:20px">{eyebrow}</div>
+				<div class="proj-hero__title">
+					{(titleLines.length ? titleLines : [up(p.title)]).map((l) => <div class="line" data-intro>{l}</div>)}
+				</div>
 			</div>
-			{p.services.length > 0 && (
-				<div class="services">{p.services.map((s) => <span class="service">{s}</span>)}</div>
-			)}
-			{(p.series || []).length > 0 && (
-				<div class="services">{(p.series || []).map((s) => <a class="service service--link" href={`/series/${s.slug}/`}>{s.name}</a>)}</div>
-			)}
-			{p.credits.length > 0 && (
-				<div class="credits">
-					{p.credits.map((c) => (
-						<div class="row">
-							<span class="cr-role">{c.role}</span>
-							<span class="cr-name">{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span>
-						</div>
-					))}
+			{meta.length > 0 && (
+				<div class="meta-row" data-intro>
+					{meta.map(([k]) => <span class="k">{k}</span>)}
+					{meta.map(([, v]) => <span>{v}</span>)}
 				</div>
 			)}
 		</div>
-		<div data-reveal>
-			<span class="eyebrow proj__eyebrow">{p.category || 'Project'}</span>
-			<h1 class="proj__title">{p.title}</h1>
-			{p.content
-				? <div class="proj__body" set:html={p.content} />
-				: <div class="proj__body"><p>{article} {kind} series{p.location ? ` made in ${p.location}` : ''}{p.year ? `, ${p.year}` : ''}. Selected frames below.</p></div>}
+		<div class="proj-hero__right" data-intro>
+			<img src={p.image} alt={p.title} data-parallax="0.08" transition:name={`cover-${p.slug}`} />
 		</div>
-	</div>
+	</section>
 
-	<div class="gallery" data-gallery>
-		{items.map((it, i) => (
-			<figure data-i={i} data-src={it.src} data-label={it.label}>
-				{it.src
-					? <img src={it.src} srcset={it.srcset} sizes="(max-width:640px) 96vw, 48vw" width={it.w || undefined} height={it.h || undefined} alt={`${p.title} — ${i + 1}`} loading="lazy" />
-					: <span class="g-ph">{String(i + 1).padStart(2, '0')}</span>}
-			</figure>
-		))}
-	</div>
+	<!-- GALLERY RAIL -->
+	<section class="proj-gallery">
+		<div class="rail" data-drag>
+			{gallery.map((g, i) => (
+				<div class="card">
+					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} /></div>
+					<div class="cap"><span class="n">{String(i + 1).padStart(2, '0')}</span><span>{up(p.title)}</span></div>
+				</div>
+			))}
+		</div>
+		<div class="wrap" style="padding-top:24px;font-size:11px;letter-spacing:0.2em;color:var(--faint)">SCROLL SIDEWAYS ——→</div>
+	</section>
 
+	<!-- STATEMENT + CREDITS -->
+	<section class="proj-statement" data-reveal>
+		{p.content
+			? <div set:html={p.content} />
+			: <p>{`${p.category || 'A photographic'} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p>}
+		<div class="credits">
+			{p.credits.length > 0
+				? p.credits.map((c) => (<><span class="k">{up(c.role)}</span><span>{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>))
+				: (<><span class="k">PHOTOGRAPHY</span><span>NISHUTHAN RAVEENTHIRAN</span></>)}
+			{(p.series || []).length > 0 && (
+				<><span class="k">SERIES</span><span>{(p.series || []).map((s) => <a class="chipline" href={`/series/${s.slug}/`}>{up(s.name)}</a>)}</span></>
+			)}
+			{p.website && (
+				<><span class="k">WEBSITE</span><span><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
+			)}
+		</div>
+	</section>
+
+	<!-- NEXT PROJECT -->
 	{next && next.slug !== p.slug && (
-		<a class="next-proj" href={`/work/${next.slug}/`} aria-label={`Next project: ${next.title}`}>
-			<span class="next-proj__k" data-i18n="proj.next">Next project</span>
-			<span class="next-proj__t">{next.title}</span>
-			<span class="next-proj__c">{next.category}{next.year ? ` · ${next.year}` : ''} →</span>
+		<a class="cta cta--sm" href={`/work/${next.slug}/`}>
+			<span style="font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;color:var(--faint)">NEXT PROJECT</span>
+			<span>{up(next.title)} →</span>
 		</a>
 	)}
-
-	<nav class="entry-nav">
-		<a href="/work/" data-i18n="proj.allwork">← All work</a>
-		{prev && prev.slug !== p.slug ? <a href={`/work/${prev.slug}/`}>← {prev.title}</a> : <span></span>}
-		<a href="/enquire/" data-i18n="proj.enquire">Enquire about a shoot →</a>
-	</nav>
-
-	<div class="lb" data-lb data-lb-title={p.title} aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
-		<div class="lb__bar">
-			<span class="lb__title">{p.title}</span>
-			<span class="lb__count" data-lb-count>1 / {items.length}</span>
-			<button class="lb__close" data-lb-close aria-label="Close">✕</button>
-		</div>
-		<button class="lb__nav lb__prev" data-lb-prev aria-label="Previous">←</button>
-		<div data-lb-stage></div>
-		<button class="lb__nav lb__next" data-lb-next aria-label="Next">→</button>
-	</div>
 </Base>

@@ -1,15 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Not found — Raveenthiran" description="This page could not be found.">
+<Base title="Lost frame — 404 — Raveenthiran" description="This page could not be found." page="404">
 	<section class="notfound">
-		<span class="flourish notfound__flourish" aria-hidden="true">lost?</span>
-		<span class="eyebrow" data-i18n="nf.eyebrow">Error 404</span>
-		<h1 class="notfound__title" data-i18n="nf.title">This frame is empty.</h1>
-		<p class="notfound__lead" data-i18n="nf.lead">The page you were looking for isn’t here — it may have moved, or never existed.</p>
-		<div class="notfound__links">
-			<a class="btn" href="/" data-i18n="nf.home">Back home</a>
-			<a class="notfound__alt" href="/work/" data-i18n="nf.browse">Browse the work →</a>
+		<div class="eyebrow" style="margin-bottom:20px">ERROR 404</div>
+		<h1>LOST FRAME<br />— 404</h1>
+		<p>The page you were looking for isn't here.</p>
+		<div class="hero__cta">
+			<a class="btn" href="/">Back home</a>
+			<a class="btn btn--ghost" href="/work/">Browse the work →</a>
 		</div>
 	</section>
 </Base>

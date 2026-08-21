@@ -1,7 +1,7 @@
 /* Raveenthiran — service worker. Network-first for pages (always fresh online),
    cache as offline fallback; cache-first for hashed build assets. */
-const CACHE = 'rvn-v1';
-const CORE = ['/', '/work/', '/journal/', '/about/', '/enquire/', '/offline/', '/site.webmanifest', '/icon.svg'];
+const CACHE = 'rvn-v3';
+const CORE = ['/', '/work/', '/series/', '/journal/', '/about/', '/enquire/', '/offline/', '/site.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (e) => {
 	e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE.map((u) => new Request(u, { cache: 'reload' }))).catch(() => {})));

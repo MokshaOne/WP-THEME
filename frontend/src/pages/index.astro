@@ -2,73 +2,165 @@
 import Base from '../layouts/Base.astro';
 import { getProjects, getSite } from '../lib/wp';
 
-const all = await getProjects();
+const projects = await getProjects();
 const site = await getSite();
-const featured = all.filter((p) => p.featured_home);
-const slides = (featured.length ? featured : all).slice(0, 6);
-const recent = all.slice(0, 8);
-const grads = [
-	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
-	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
-	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
+
+const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects).slice(0, 6);
+const railFrames = projects.slice(0, 8);
+const indexItems = projects.slice(0, 10);
+
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
+
+// Home hero copy — editable in WordPress later (Site settings → Studio).
+const heroLines = ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'];
+const heroLede = 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.';
+const marqueeWords = 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ';
+
+// Recognition + testimonials — placeholders until wired to WordPress (Site settings).
+const honors = [
+	{ year: '2026', title: 'INTERNATIONAL PORTRAIT AWARDS', tag: 'SHORTLIST' },
+	{ year: '2025', title: 'FOTO WIEN — GROUP SHOW', tag: 'EXHIBITION' },
+	{ year: '2025', title: 'VIENNA PHOTO FESTIVAL', tag: 'FEATURE' },
+	{ year: '2024', title: 'AUSTRIAN WEDDING AWARDS', tag: 'WINNER — REPORTAGE' },
 ];
-const pad = (n: number) => String(n).padStart(2, '0');
+const testimonials = [
+	{ text: 'He directed the whole shoot so calmly that I forgot the camera was there. The prints hang in our living room.', by: 'SARAH K. — PORTRAIT, 2024' },
+	{ text: 'Booked two hours, kept the gallery for life. The KHM series is my favourite thing on my wall.', by: 'MIRI — FASHION, 2026' },
+	{ text: 'The only photographer who delivered earlier than promised. Every single frame usable.', by: 'LUNA M. — STREET PORTRAIT, 2025' },
+];
+
+const compareImg = (featured[0] || projects[0])?.image || '';
+const preload = featured[0]?.image || '';
 ---
-<Base
-	title="Raveenthiran — Photography"
-	description="Selected photography by Nishuthan Raveenthiran — portraiture, weddings, street and the quiet spaces between. Vienna, working across Europe."
-	ogImage={slides[0]?.image}
-	preload={slides[0]?.image}
->
-	<section class="cine" data-cine>
-		{slides.map((p, i) => (
-			<div class={`cine__slide${i === 0 ? ' on' : ''}`} data-slide={i} data-title={p.title} data-cat={p.category} data-slug={p.slug}>
-				{p.image
-					? <img class="cine__media" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
-					: <div class="cine__ph" style={`background:${grads[i % grads.length]}`}></div>}
-				<div class="cine__scrim"></div>
+<Base title="Raveenthiran — Photographer, Vienna" description={heroLede} active="" page="home" preload={preload}
+	ogImage={featured[0]?.ogImage || featured[0]?.image || ''}>
+
+	<!-- HERO -->
+	<section class="hero">
+		<div class="hero__left">
+			<div class="hero__head" data-intro>
+				{heroLines.map((l, i) => (
+					<div class:list={['line', i === heroLines.length - 1 && 'line--outline']}>{l}</div>
+				))}
 			</div>
-		))}
-
-		<div class="cine__inner">
-			<span class="cine__eyebrow" data-cine-eyebrow>{slides[0]?.category}</span>
-			<h1 class="cine__title" data-cine-title>{slides[0]?.title}</h1>
-			<a class="cine__cta" href={`/work/${slides[0]?.slug}/`} data-cine-link data-i18n="home.view">View project →</a>
-		</div>
-
-		<div class="cine__ui">
-			<span class="cine__count"><b data-cine-cur>01</b> / {pad(slides.length)}<span class="cine__prog"><i data-cine-prog></i></span></span>
-			<div class="cine__arrows">
-				<button data-cine-prev aria-label="Previous" data-i18n="home.prev">← Prev</button>
-				<button data-cine-next aria-label="Next" data-i18n="home.next">Next →</button>
+			<div class="hero__lede" data-intro>
+				<p>{heroLede}</p>
+				<div class="hero__cta">
+					<a class="btn" href="/enquire/">Start a commission</a>
+					<a class="btn btn--ghost" href="/work/">See the work</a>
+				</div>
 			</div>
 		</div>
-		<span class="cine__scroll" data-i18n="home.scroll">Scroll</span>
+		<div class="hero__right" data-hero data-intro>
+			<div class="slides">
+				{featured.map((p, i) => (
+					<img class:list={['slide', i === 0 && 'on']} src={p.image} alt={p.title} data-cap={up(p.category || p.title)} loading={i === 0 ? 'eager' : 'lazy'} />
+				))}
+			</div>
+			<div class="slide-chrome">
+				<div class="slide-cap" data-cap>{up(featured[0]?.category || '')}</div>
+				<div class="slide-nav">
+					<button class="rbtn" data-prev aria-label="Previous">←</button>
+					<span class="slide-count"><span data-count>01</span><span class="of"> / {String(featured.length).padStart(2, '0')}</span></span>
+					<button class="rbtn" data-next aria-label="Next">→</button>
+				</div>
+			</div>
+		</div>
 	</section>
 
-	<section class="home-intro" data-reveal>
-		<span class="eyebrow" data-i18n="home.eyebrow">Vienna · Photography</span>
-		<p class="home-intro__lede">{site.studio.lede}</p>
+	<!-- MARQUEE -->
+	<div class="marquee" data-skew>
+		<div class="marquee__row marquee__row--a"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
+		<div class="marquee__row marquee__row--b"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
+	</div>
+
+	<!-- SELECTED WORK -->
+	<section class="sec sec__pad">
+		<div class="ghost-num">01</div>
+		<div class="sec__head" data-reveal>
+			<h2 data-letters>SELECTED WORK</h2>
+			<div class="sec__hint">DRAG / SCROLL SIDEWAYS ——→</div>
+		</div>
+		<div class="rail" data-drag>
+			{railFrames.map((p, i) => (
+				<a class="card" href={`/work/${p.slug}/`}>
+					<div class="plate"><img src={p.image} alt={p.title} loading="lazy" /></div>
+					<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span></div>
+				</a>
+			))}
+		</div>
 	</section>
 
-	<div class="home-section-head" data-reveal>
-		<h2 data-i18n="home.selected">Selected work</h2>
-		<a href="/work/" data-i18n="home.allwork">All work →</a>
-	</div>
+	<!-- THE INDEX -->
+	<section class="sec" style="border-top:1px solid var(--line);padding-top:90px">
+		<div class="ghost-num">02</div>
+		<div class="sec__head" data-reveal>
+			<h2 data-letters>THE INDEX</h2>
+			<div class="sec__hint">HOVER A NAME — CLICK TO OPEN</div>
+		</div>
+		<div class="index" style="margin-bottom:90px">
+			{indexItems.map((p, i) => (
+				<a class="index__row" href={`/work/${p.slug}/`} data-peek data-img={p.image}>
+					<span class="k">{num(i + 1)}</span>
+					<span class="t">{up(p.title)}</span>
+					<span class="k cat">{up(p.category)}</span>
+					<span class="k year">{p.year}</span>
+				</a>
+			))}
+		</div>
 
-	<div class="masonry stagger">
-		{recent.map((p, i) => (
-			<a class="tile" href={`/work/${p.slug}/`} data-reveal>
-				<div class="tile__frame">
-					{p.image
-						? <img class="tile__img" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading="lazy" transition:name={`cover-${p.slug}`} />
-						: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`} transition:name={`cover-${p.slug}`}>{p.title.toLowerCase()}</div>}
+		<!-- RAW / FINAL -->
+		{compareImg && (
+			<>
+				<div class="sec__head" data-reveal>
+					<h2 data-letters>RAW / FINAL</h2>
+					<div class="sec__hint">DRAG THE LINE</div>
 				</div>
-				<div class="tile__cap">
-					<span class="tile__t">{p.title}</span>
-					<span class="tile__c">{p.category || 'Series'}</span>
+				<div class="compare" data-compare data-reveal style="margin-bottom:90px">
+					<img src={compareImg} alt="Final frame" draggable="false" />
+					<img class="raw" src={compareImg} alt="Raw frame" draggable="false" style="clip-path:inset(0 50% 0 0)" />
+					<div class="divider" data-div style="left:50%"></div>
+					<div class="knob" data-knob style="left:50%">←→</div>
+					<div class="lab lab--l">RAW</div>
+					<div class="lab lab--r">FINAL</div>
 				</div>
-			</a>
-		))}
-	</div>
+			</>
+		)}
+
+		<!-- RECOGNITION -->
+		<div class="sec__head" data-reveal>
+			<h2 data-letters>RECOGNITION</h2>
+			<div class="sec__hint">PRESS · AWARDS · CLIENT WORDS</div>
+		</div>
+		<div class="recog">
+			<div>
+				{honors.map((h) => (
+					<div class="honor" data-reveal>
+						<span class="k">{h.year}</span>
+						<span class="t">{h.title}</span>
+						<span class="k">{h.tag}</span>
+					</div>
+				))}
+			</div>
+			<div class="quotes" data-reveal data-quotes>
+				<div class="quotes__mark" aria-hidden="true">&ldquo;</div>
+				<p class="quotes__text" data-quote-text>&ldquo;{testimonials[0].text}&rdquo;</p>
+				<div class="quotes__foot">
+					<span class="quotes__by" data-quote-by>{testimonials[0].by}</span>
+					<div class="slide-nav">
+						<button class="rbtn" data-q-prev aria-label="Previous quote">←</button>
+						<span class="slide-count"><span data-quote-count>01</span><span class="of"> / {String(testimonials.length).padStart(2, '0')}</span></span>
+						<button class="rbtn" data-q-next aria-label="Next quote">→</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="application/json" id="quotes-data" set:html={JSON.stringify(testimonials)} />
+	</section>
+
+	<!-- CTA -->
+	<a class="cta" href="/enquire/">
+		<span>BOOK THE NEXT SHOOT</span><span>→</span>
+	</a>
 </Base>

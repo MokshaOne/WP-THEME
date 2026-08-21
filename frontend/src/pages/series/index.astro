@@ -11,39 +11,32 @@ for (const p of projects) {
 	}
 }
 const series = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
-const grads = [
-	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
-	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
-];
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
 ---
-<Base title="Series — Raveenthiran" description="Bodies of work — projects grouped into named series." active="series">
-	<div class="page page--wide">
-		<div class="page-head" data-reveal>
-			<span class="eyebrow">Bodies of work</span>
-			<h1 class="page-title">Series</h1>
-		</div>
+<Base title="Series — Raveenthiran" description="Bodies of work — projects grouped into named series." active="series" page="series">
+	<section class="phead">
+		<h1 data-intro>SERIES</h1>
+		<div class="phead__meta" data-intro>BODIES OF WORK<br />{String(series.length).padStart(2, '0')} SERIES</div>
+	</section>
 
-		{series.length > 0 ? (
-			<div class="masonry stagger">
-				{series.map((s, i) => {
-					const cover = s.items.find((p) => p.image);
-					return (
-						<a class="tile" href={`/series/${s.slug}/`} data-reveal>
-							<div class="tile__frame">
-								{cover?.image
-									? <img class="tile__img" src={cover.image} alt={s.name} loading="lazy" />
-									: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`}>{s.name.toLowerCase()}</div>}
-							</div>
-							<div class="tile__cap">
-								<span class="tile__t">{s.name}</span>
-								<span class="tile__c">{s.items.length} {s.items.length === 1 ? 'project' : 'projects'}</span>
-							</div>
-						</a>
-					);
-				})}
-			</div>
-		) : (
-			<p class="empty">No series yet — group projects under a series in WordPress (Work → Series).</p>
-		)}
-	</div>
+	{series.length > 0 ? (
+		<div class="index" style="border-top:1px solid var(--line);margin-top:44px">
+			{series.map((s, i) => {
+				const cover = s.items.find((p) => p.image);
+				return (
+					<a class="index__row" href={`/series/${s.slug}/`} data-peek data-img={cover?.image || ''}>
+						<span class="k">{num(i + 1)}</span>
+						<span class="t">{up(s.name)}</span>
+						<span class="k cat">{s.items.length} {s.items.length === 1 ? 'PROJECT' : 'PROJECTS'}</span>
+						<span class="k year">→</span>
+					</a>
+				);
+			})}
+		</div>
+	) : (
+		<p class="wrap" style="padding:60px 28px;color:var(--dim);letter-spacing:0.06em">No series yet — group projects under a series in WordPress (Work → Series).</p>
+	)}
+
+	<a class="cta cta--sm" href="/work/"><span>SEE ALL WORK</span><span>→</span></a>
 </Base>

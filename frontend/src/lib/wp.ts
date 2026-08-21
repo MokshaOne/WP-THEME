@@ -38,14 +38,22 @@ export interface Project {
 	ogImage: string;
 }
 
-/* ── offline / first-run fallback ── */
+/* ── offline / first-run fallback ──
+   Uses the photographer's real frames bundled in /public/sample so the site
+   looks finished even when the WordPress API is unreachable at build time.
+   On a live build these are replaced by the WordPress Work archive. */
+const S = (n: string) => '/sample/' + n;
+function gal(...names: string[]): GalleryImage[] { return names.map((n) => ({ src: S(n), w: 0, h: 0 })); }
 const SAMPLE: Project[] = [
-	{ slug: 'nachtdienst',           title: 'Nachtdienst',           category: 'Editorial',    year: '2024', client: 'SZ Magazin',   location: 'Wien', website: '', services: [], credits: [], featured_home: false, image: '', content: '', gallery: [], ogImage: '' },
-	{ slug: 'a-house-in-mariahilf',  title: 'A House in Mariahilf',  category: 'Editorial',    year: '2024', client: 'Apartamento',  location: 'Wien', website: '', services: [], credits: [], featured_home: false, image: '', content: '', gallery: [], ogImage: '' },
-	{ slug: 'the-vienna-notebook',   title: 'The Vienna Notebook',   category: 'Portrait',     year: '2024', client: 'NYT Magazine', location: 'Wien', website: '', services: [], credits: [], featured_home: false, image: '', content: '', gallery: [], ogImage: '' },
-	{ slug: 'naschmarkt-at-dawn',    title: 'Naschmarkt at Dawn',    category: 'Street',       year: '2023', client: 'Personal',     location: 'Wien', website: '', services: [], credits: [], featured_home: false, image: '', content: '', gallery: [], ogImage: '' },
-	{ slug: 'belvedere-after-hours', title: 'Belvedere After Hours', category: 'Architecture', year: '2023', client: 'Belvedere',    location: 'Wien', website: '', services: [], credits: [], featured_home: false, image: '', content: '', gallery: [], ogImage: '' },
-	{ slug: 'rote-bar',              title: 'Rote Bar',              category: 'Event',        year: '2023', client: 'Hotel Sacher', location: 'Wien', website: '', services: [], credits: [], featured_home: false, image: '', content: '', gallery: [], ogImage: '' },
+	{ slug: 'miri-khm', title: 'Miri — KHM Wien', category: 'Fashion', year: '2026', client: 'Miri', location: 'KHM, Vienna', website: '', services: ['Fashion', 'Editorial'], series: [{ name: 'Museumsquartier', slug: 'museumsquartier' }], credits: [{ role: 'Model', name: 'Miri', url: '' }, { role: 'Styling', name: 'Miri', url: '' }, { role: 'Photography', name: 'Nishuthan Raveenthiran', url: '' }], featured_home: true, image: S('photos-1787300281346-72v4.avif'), content: '<p>One winter afternoon in the Kunsthistorisches Museum. Mesh against marble, gold light through the cupola — no set, no retouch theatrics.</p>', gallery: gal('photos-1787300281436-xhhr.avif', 'photos-1787300281346-72v4.avif', 'photos-1787300281605-uqp5.avif', 'photos-1787300237173-kdba.avif'), ogImage: '' },
+	{ slug: 'sarah-noir', title: 'Sarah — Noir', category: 'B&W', year: '2024', client: '', location: 'Vienna', website: '', services: ['Portrait'], credits: [{ role: 'Model', name: 'Sarah', url: '' }, { role: 'Photography', name: 'Nishuthan Raveenthiran', url: '' }], featured_home: true, image: S('photos-1787300135405-cc8f.avif'), content: '', gallery: gal('photos-1787300135405-cc8f.avif', 'photos-1787300135360-vkq6.avif'), ogImage: '' },
+	{ slug: 'luna-innere-stadt', title: 'Luna — Innere Stadt', category: 'Portrait', year: '2025', client: '', location: 'Vienna', website: '', services: ['Street portrait'], credits: [{ role: 'Photography', name: 'Nishuthan Raveenthiran', url: '' }], featured_home: true, image: S('photos-1787300113403-jefw.avif'), content: '', gallery: gal('photos-1787300113403-jefw.avif'), ogImage: '' },
+	{ slug: 'sara', title: 'Sara', category: 'Portrait', year: '2025', client: '', location: 'Vienna', website: '', services: ['Portrait'], credits: [{ role: 'Photography', name: 'Nishuthan Raveenthiran', url: '' }], featured_home: true, image: S('photos-1787300171349-dd0r.avif'), content: '', gallery: gal('photos-1787300171349-dd0r.avif'), ogImage: '' },
+	{ slug: 'dianlx-viecc', title: 'Dianlx — VIECC', category: 'Event', year: '2024', client: 'VIECC', location: 'Vienna', website: '', services: ['Event'], credits: [], featured_home: false, image: S('photos-1787300135316-3app.avif'), content: '', gallery: gal('photos-1787300135316-3app.avif'), ogImage: '' },
+	{ slug: 'milky-viecc', title: 'Milky — VIECC', category: 'Event', year: '2024', client: 'VIECC', location: 'Vienna', website: '', services: ['Event'], credits: [], featured_home: false, image: S('photos-1787300135360-vkq6.avif'), content: '', gallery: gal('photos-1787300135360-vkq6.avif'), ogImage: '' },
+	{ slug: 'study-in-gold', title: 'Study in Gold', category: 'Fashion', year: '2025', client: '', location: 'Vienna', website: '', services: ['Fashion'], credits: [], featured_home: false, image: S('photos-1787300200344-ujl5.avif'), content: '', gallery: gal('photos-1787300200344-ujl5.avif'), ogImage: '' },
+	{ slug: 'self-love', title: 'Self Love', category: 'Personal', year: '2025', client: '', location: 'Vienna', website: '', services: ['Personal'], credits: [], featured_home: false, image: S('photos-1787300225660-8itm.avif'), content: '', gallery: gal('photos-1787300225660-8itm.avif'), ogImage: '' },
+	{ slug: 'untitled', title: 'Untitled', category: 'Portrait', year: '2024', client: '', location: 'Vienna', website: '', services: ['Portrait'], credits: [], featured_home: false, image: S('photos-1787300237173-kdba.avif'), content: '', gallery: gal('photos-1787300237173-kdba.avif', 'photos-1787300281605-uqp5.avif'), ogImage: '' },
 ];
 
 function decode(s: string): string {
@@ -202,7 +210,7 @@ export interface AddOn { label: string; price: number }
 export interface Faq { q: string; a: string }
 export interface Site {
 	studio: { lede: string; bio: string; portrait: string; stats: SiteStat[]; clients: string[] };
-	contact: { email: string; location: string; response: string; instagram: string };
+	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
 	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; licence: number; per_km: number };
 	faq: Faq[];
 	security: { turnstile_site: string };
@@ -219,7 +227,7 @@ const SITE_FALLBACK: Site = {
 		],
 		clients: ['SZ Magazin', 'Apartamento', 'NYT Magazine', 'Belvedere', 'Hotel Sacher'],
 	},
-	contact: { email: 'hello@raveenthiran.com', location: 'Vienna, AT', response: 'Within 24 hours', instagram: '' },
+	contact: { email: 'hello@raveenthiran.com', location: 'Vienna, AT', response: 'Within 24 hours', instagram: '', behance: '', linkedin: '' },
 	pricing: {
 		currency: '€',
 		types: [ { label: 'Portrait', base: 450 }, { label: 'Wedding', base: 1800 }, { label: 'Event', base: 900 }, { label: 'Editorial', base: 1200 } ],
@@ -258,6 +266,8 @@ export async function getSite(): Promise<Site> {
 				location: pick(d?.contact?.location, F.contact.location),
 				response: pick(d?.contact?.response, F.contact.response),
 				instagram: pick(d?.contact?.instagram, ''),
+				behance: pick(d?.contact?.behance, ''),
+				linkedin: pick(d?.contact?.linkedin, ''),
 			},
 			pricing: {
 				currency: pick(d?.pricing?.currency, F.pricing.currency),

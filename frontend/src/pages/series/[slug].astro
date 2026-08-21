@@ -12,38 +12,23 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const { name } = Astro.props;
 const projects = (await getProjects()).filter((p) => (p.series || []).some((s) => s.slug === slug));
-const grads = [
-	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
-	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
-	'linear-gradient(160deg,#2a2026,#160f13)', 'linear-gradient(135deg,#202a26,#101613)',
-];
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
 ---
-<Base title={`${name} — Series — Raveenthiran`} description={`${name} — a series of photography projects by Nishuthan Raveenthiran.`} active="series">
-	<div class="page page--wide">
-		<div class="page-head" data-reveal>
-			<span class="eyebrow">Series · {projects.length} {projects.length === 1 ? 'project' : 'projects'}</span>
-			<h1 class="page-title">{name}</h1>
-		</div>
+<Base title={`${name} — Series — Raveenthiran`} description={`${name} — a series of photography projects by Nishuthan Raveenthiran.`} active="series" page="series">
+	<section class="phead">
+		<h1 data-intro>{up(name)}</h1>
+		<div class="phead__meta" data-intro>SERIES<br />{String(projects.length).padStart(2, '0')} {projects.length === 1 ? 'PROJECT' : 'PROJECTS'}</div>
+	</section>
 
-		<div class="masonry stagger">
-			{projects.map((p, i) => (
-				<a class="tile" href={`/work/${p.slug}/`} data-reveal>
-					<div class="tile__frame">
-						{p.image
-							? <img class="tile__img" src={p.image} alt={p.title} width={p.imageW || undefined} height={p.imageH || undefined} loading="lazy" />
-							: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`}>{p.title.toLowerCase()}</div>}
-					</div>
-					<div class="tile__cap">
-						<span class="tile__t">{p.title}</span>
-						<span class="tile__c">{p.category}{p.year ? ` · ${p.year}` : ''}</span>
-					</div>
-				</a>
-			))}
-		</div>
+	<section class="masonry" data-work-grid>
+		{projects.map((p, i) => (
+			<a class="card" href={`/work/${p.slug}/`}>
+				<div class="plate"><img src={p.image} alt={p.title} data-zoom loading="lazy" /></div>
+				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span><span class="c">{p.year}</span></div>
+			</a>
+		))}
+	</section>
 
-		<nav class="entry-nav" style="margin-top:clamp(2rem,5vw,3.5rem)">
-			<a href="/series/">← All series</a>
-			<a href="/work/">All work →</a>
-		</nav>
-	</div>
+	<a class="cta cta--sm" href="/series/"><span>ALL SERIES</span><span>→</span></a>
 </Base>

@@ -4,6 +4,17 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.4.0 — 2026-08-21 · One-click publishing from WordPress
+
+- **Publish changes now** button in **Site Control**: triggers the GitHub
+  Actions deploy from inside WordPress, so edits go live on demand without
+  waiting for the nightly rebuild and without touching GitHub.
+- The GitHub token is entered in **Site settings → Publishing** (a new field —
+  no `wp-config.php` editing) and is used **server-side only**; it never reaches
+  the browser. `wp-config.php`'s `RVN_GH_TOKEN` still overrides it if preferred.
+  Repo / branch / workflow are configurable, with the right defaults pre-filled.
+- Backend-only change; version bumped to 3.4.0 for parity.
+
 ## 3.3.0 — 2026-08-21 · Batches 11 / 12 / 14 / 16 (signature tier)
 
 - **Batch 11 — motion physics**: inertial smooth scroll (dependency-free

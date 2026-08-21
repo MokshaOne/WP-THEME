@@ -287,6 +287,39 @@ add_action( 'admin_head', function () {
 	</style>';
 } );
 
+/** GitHub deploy token — wp-config constant wins, else the Site settings field. */
+function rvn_gh_token() {
+	if ( defined( 'RVN_GH_TOKEN' ) && RVN_GH_TOKEN ) { return RVN_GH_TOKEN; }
+	return trim( (string) rvn_site_opt( 'deploy_gh_token', '' ) );
+}
+
+/** "Publish now" — trigger the GitHub Actions deploy workflow (token stays server-side). */
+add_action( 'admin_post_rvn_publish', function () {
+	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'rvn_publish' ) ) { wp_die( 'Not allowed.' ); }
+	$token  = rvn_gh_token();
+	$repo   = trim( (string) rvn_site_opt( 'deploy_repo', '' ) ) ?: 'MokshaOne/WP-THEME';
+	$branch = trim( (string) rvn_site_opt( 'deploy_branch', '' ) ) ?: 'claude/headless-wordpress-easyname-8eu9fj';
+	$wf     = trim( (string) rvn_site_opt( 'deploy_workflow', '' ) ) ?: 'deploy-frontend.yml';
+	$status = 'notoken';
+	if ( $token !== '' ) {
+		$res = wp_remote_post( 'https://api.github.com/repos/' . $repo . '/actions/workflows/' . rawurlencode( $wf ) . '/dispatches', array(
+			'timeout' => 15,
+			'headers' => array(
+				'Authorization'        => 'Bearer ' . $token,
+				'Accept'               => 'application/vnd.github+json',
+				'X-GitHub-Api-Version' => '2022-11-28',
+				'User-Agent'           => 'RaveenthiranSiteControl',
+				'Content-Type'         => 'application/json',
+			),
+			'body' => wp_json_encode( array( 'ref' => $branch ) ),
+		) );
+		if ( is_wp_error( $res ) ) { $status = 'error'; }
+		else { $code = (int) wp_remote_retrieve_response_code( $res ); $status = ( $code === 204 ) ? 'ok' : ( 'http' . $code ); }
+	}
+	wp_safe_redirect( add_query_arg( array( 'page' => 'site-control', 'rvn_deploy' => $status ), admin_url( 'admin.php' ) ) );
+	exit;
+} );
+
 function rvn_site_control_page() {
 	$theme    = wp_get_theme();
 	$ver      = $theme->get( 'Version' );
@@ -340,7 +373,28 @@ function rvn_site_control_page() {
 
 		<div class="rvn-sc__panel">
 			<h2>Publishing — how changes go live</h2>
-			<p>The website is a fast static build that pulls this content automatically. After you edit here, the site rebuilds on its schedule (nightly) or on the next push. To see a change immediately, trigger the deploy in GitHub → Actions → “Deploy frontend”, then hard-refresh (Ctrl/Cmd+Shift+R). The live footer shows the running version.</p>
+			<?php
+			$dep = isset( $_GET['rvn_deploy'] ) ? sanitize_key( wp_unslash( $_GET['rvn_deploy'] ) ) : '';
+			if ( $dep === 'ok' ) {
+				echo '<div class="notice notice-success" style="margin:0 0 14px"><p><strong>Publishing…</strong> the deploy was triggered. Your changes go live in ~2 minutes — then hard-refresh the site (Ctrl/Cmd+Shift+R).</p></div>';
+			} elseif ( $dep === 'notoken' ) {
+				echo '<div class="notice notice-warning" style="margin:0 0 14px"><p>No deploy token set. Add one under <a href="' . esc_url( $settings . '#acf-field_rvn_deploy_token' ) . '">Site settings → Publishing</a>.</p></div>';
+			} elseif ( $dep !== '' ) {
+				echo '<div class="notice notice-error" style="margin:0 0 14px"><p>Deploy could not be triggered (' . esc_html( $dep ) . '). Check the token has <strong>Actions: Read &amp; write</strong> on the repo, and the branch/workflow are correct.</p></div>';
+			}
+			$has_token = rvn_gh_token() !== '';
+			?>
+			<p>The website is a fast static build that pulls this content automatically. After you edit here, the site rebuilds on its schedule (nightly). To push a change out <em>now</em>, use the button below — then hard-refresh (Ctrl/Cmd+Shift+R). The live footer shows the running version.</p>
+			<?php if ( $has_token ) : ?>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:4px 0 18px">
+					<input type="hidden" name="action" value="rvn_publish">
+					<?php wp_nonce_field( 'rvn_publish' ); ?>
+					<button type="submit" class="button button-primary button-hero">▲ &nbsp;Publish changes now</button>
+					<span style="color:#787268;margin-left:10px">Triggers the deploy on GitHub — no code needed.</span>
+				</form>
+			<?php else : ?>
+				<p style="margin:4px 0 18px"><a class="button button-primary" href="<?php echo esc_url( $settings . '#acf-field_rvn_deploy_token' ); ?>">Set up one-click publishing →</a> <span style="color:#787268;margin-left:8px">Add a GitHub token under Site settings → Publishing.</span></p>
+			<?php endif; ?>
 			<ul class="rvn-sc__check">
 				<?php
 				$row( $acf, $acf ? 'ACF is active — all settings available.' : 'ACF Pro is not active — install/activate it to edit settings.' );

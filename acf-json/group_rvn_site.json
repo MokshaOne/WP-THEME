@@ -518,6 +518,51 @@
             }
         },
         {
+            "key": "field_rvn_tab_publish",
+            "label": "Publishing",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_rvn_deploy_token",
+            "label": "GitHub deploy token",
+            "name": "deploy_gh_token",
+            "type": "password",
+            "instructions": "Fine-grained GitHub token with <b>Actions: Read &amp; write</b> on the site repo. Powers the “Publish changes now” button in Site Control. Stored in the database — leave blank to hide the button.",
+            "required": 0
+        },
+        {
+            "key": "field_rvn_deploy_repo",
+            "label": "Repository (owner/name)",
+            "name": "deploy_repo",
+            "type": "text",
+            "instructions": "Usually leave as-is.",
+            "required": 0,
+            "default_value": "MokshaOne/WP-THEME",
+            "placeholder": "MokshaOne/WP-THEME"
+        },
+        {
+            "key": "field_rvn_deploy_branch",
+            "label": "Branch",
+            "name": "deploy_branch",
+            "type": "text",
+            "instructions": "The branch the deploy workflow runs on.",
+            "required": 0,
+            "default_value": "claude/headless-wordpress-easyname-8eu9fj",
+            "placeholder": "claude/headless-wordpress-easyname-8eu9fj"
+        },
+        {
+            "key": "field_rvn_deploy_workflow",
+            "label": "Workflow file",
+            "name": "deploy_workflow",
+            "type": "text",
+            "instructions": "The GitHub Actions workflow filename.",
+            "required": 0,
+            "default_value": "deploy-frontend.yml",
+            "placeholder": "deploy-frontend.yml"
+        },
+        {
             "key": "field_rvn_tab_security",
             "label": "Security",
             "name": "",
@@ -562,5 +607,5 @@
     "label_placement": "top",
     "active": true,
     "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
-    "modified": 1787318302
+    "modified": 1787340853
 }

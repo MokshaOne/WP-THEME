@@ -279,8 +279,109 @@ export function initFX(opts = {}) {
 	cleanups.push(rvnSmoothScroll(reduce, fine));
 	cleanups.push(rvnScrollFX(reduce));
 	cleanups.push(rvnGrainGL(reduce, atmo));
+	cleanups.push(rvnHoverDistort(reduce, fine));
 
 	return () => cleanups.forEach(f => f());
+}
+
+/* ── Awwwards tier: WebGL hover distortion on grid images ─────────────────────
+   A shared WebGL2 canvas draws the hovered tile's photo with a cursor-driven
+   ripple + subtle RGB split, exactly over the real <img>. It is pure progressive
+   enhancement: at rest and on any failure (no WebGL2, cross-origin/tainted
+   texture, weak hardware) it does nothing and the plain <img> shows through —
+   the image is never replaced. Off under reduced motion / coarse pointers. */
+function rvnHoverDistort(reduce, fine) {
+	if (reduce || !fine || matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) return () => {};
+	const plates = [...document.querySelectorAll('.masonry .card .plate')].filter((p) => p.querySelector('img'));
+	if (!plates.length) return () => {};
+
+	let gl, canvas;
+	try { canvas = document.createElement('canvas'); gl = canvas.getContext('webgl2', { alpha: true, antialias: false, premultipliedAlpha: false }); } catch (e) {}
+	if (!gl) return () => {};
+
+	const vsrc = '#version 300 es\nin vec2 p;out vec2 vUv;void main(){vUv=vec2(p.x*0.5+0.5,1.0-(p.y*0.5+0.5));gl_Position=vec4(p,0.,1.);}';
+	const fsrc = '#version 300 es\nprecision highp float;in vec2 vUv;uniform sampler2D uTex;uniform vec4 uRect;uniform vec2 uMouse;uniform float uAmt;uniform float uTime;out vec4 o;' +
+		'void main(){vec2 p=vUv;if(p.x<uRect.x||p.x>uRect.z||p.y<uRect.y||p.y>uRect.w)discard;' +
+		'vec2 uv=(p-uRect.xy)/(uRect.zw-uRect.xy);vec2 d=uv-uMouse;float dist=length(d);' +
+		'float ripple=sin(dist*20.0-uTime*3.0)*0.010*uAmt*smoothstep(0.55,0.0,dist);' +
+		'vec2 off=normalize(d+1e-5)*ripple;float s=0.004*uAmt;' +
+		'float r=texture(uTex,uv+off+vec2(s,0.0)).r;float g=texture(uTex,uv+off).g;float b=texture(uTex,uv+off-vec2(s,0.0)).b;' +
+		'o=vec4(r,g,b,1.0);}';
+	const mk = (t, s) => { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return sh; };
+	const prog = gl.createProgram();
+	gl.attachShader(prog, mk(gl.VERTEX_SHADER, vsrc)); gl.attachShader(prog, mk(gl.FRAGMENT_SHADER, fsrc)); gl.linkProgram(prog);
+	if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return () => {};
+	gl.useProgram(prog);
+	const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+	const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+	const uRect = gl.getUniformLocation(prog, 'uRect'), uMouse = gl.getUniformLocation(prog, 'uMouse'),
+		uAmt = gl.getUniformLocation(prog, 'uAmt'), uTime = gl.getUniformLocation(prog, 'uTime');
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); // vUv already uses a top-left origin
+
+	canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;opacity:0;transition:opacity .25s';
+	document.body.appendChild(canvas);
+	const dpr = Math.min(devicePixelRatio || 1, 1.5);
+	const resize = () => { canvas.width = Math.round(innerWidth * dpr); canvas.height = Math.round(innerHeight * dpr); gl.viewport(0, 0, canvas.width, canvas.height); };
+	resize(); addEventListener('resize', resize);
+
+	const texCache = new Map();
+	function texFor(img) {
+		if (texCache.has(img)) return texCache.get(img);
+		if (!img.complete || !img.naturalWidth) return null;
+		let tex = null;
+		try {
+			tex = gl.createTexture();
+			gl.bindTexture(gl.TEXTURE_2D, tex);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); // may throw if cross-origin tainted
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		} catch (e) { if (tex) gl.deleteTexture(tex); tex = null; }
+		texCache.set(img, tex);
+		return tex;
+	}
+
+	let active = null, amt = 0, mouse = [0.5, 0.5], raf = 0, alive = true, dead = false;
+	let frame = 0, slow = 0, last = performance.now();
+	const start = () => { if (!raf && alive && !dead) { last = performance.now(); raf = requestAnimationFrame(loop); } };
+
+	function loop(now) {
+		if (!alive || dead) return;
+		const dt = now - last; last = now;
+		if (frame++ > 6 && dt > 45) { if (++slow > 24) { teardown(); return; } }
+		const target = active ? 1 : 0;
+		amt += (target - amt) * 0.12;
+		if (amt < 0.004 && !active) { amt = 0; canvas.style.opacity = '0'; gl.clear(gl.COLOR_BUFFER_BIT); raf = 0; return; }
+		const img = active && active.querySelector('img');
+		const tex = img ? texFor(img) : null;
+		if (!tex) { canvas.style.opacity = '0'; if (!active) { raf = 0; return; } raf = requestAnimationFrame(loop); return; }
+		const r = active.getBoundingClientRect();
+		if (r.bottom < 0 || r.top > innerHeight) { canvas.style.opacity = '0'; raf = requestAnimationFrame(loop); return; }
+		gl.clear(gl.COLOR_BUFFER_BIT);
+		gl.uniform4f(uRect, r.left / innerWidth, r.top / innerHeight, r.right / innerWidth, r.bottom / innerHeight);
+		gl.uniform2f(uMouse, mouse[0], mouse[1]);
+		gl.uniform1f(uAmt, amt); gl.uniform1f(uTime, (now % 100000) * 0.001);
+		gl.bindTexture(gl.TEXTURE_2D, tex);
+		gl.drawArrays(gl.TRIANGLES, 0, 3);
+		canvas.style.opacity = String(Math.min(1, amt * 1.3));
+		raf = requestAnimationFrame(loop);
+	}
+
+	const onEnter = (e) => { const pl = e.currentTarget; if (!texFor(pl.querySelector('img'))) return; active = pl; start(); };
+	const onMove = (e) => { if (!active) return; const r = active.getBoundingClientRect(); mouse = [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; };
+	const onLeave = (e) => { if (active === e.currentTarget) active = null; };
+	plates.forEach((pl) => { pl.addEventListener('pointerenter', onEnter); pl.addEventListener('pointermove', onMove); pl.addEventListener('pointerleave', onLeave); });
+
+	function teardown() {
+		if (dead) return; dead = true; alive = false; cancelAnimationFrame(raf); raf = 0;
+		removeEventListener('resize', resize);
+		plates.forEach((pl) => { pl.removeEventListener('pointerenter', onEnter); pl.removeEventListener('pointermove', onMove); pl.removeEventListener('pointerleave', onLeave); });
+		texCache.forEach((t) => t && gl.deleteTexture(t)); texCache.clear();
+		canvas.remove();
+	}
+	return () => teardown();
 }
 
 /* ── Batch 11: inertial smooth scroll (mini-Lenis, no dependency) ─────────── */

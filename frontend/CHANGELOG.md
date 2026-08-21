@@ -4,6 +4,23 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.8.0 — 2026-08-21 · WebGL hover distortion + signature polish
+
+- **WebGL hover distortion (Awwwards tier)**: hovering a Work/Series grid image
+  now ripples it toward the cursor with a subtle RGB split, rendered on a shared
+  WebGL2 canvas exactly over the real photo. Pure progressive enhancement — on
+  any failure (no WebGL2, a cross-origin/tainted texture, weak hardware via a
+  frame-time watchdog) it silently does nothing and the plain image shows; off
+  under reduced motion / touch. (For the effect on the live cross-origin images,
+  WordPress/NAS must send CORS headers for the media; otherwise it safely no-ops.)
+- **Shared-element morph**: clicking a grid card now morphs its image into the
+  project cover (View Transitions), on both Work and Series.
+- **Structured data**: Journal posts emit BlogPosting JSON-LD; Journal and
+  project pages emit a BreadcrumbList — richer results and sitelinks.
+- **Accessibility**: a keyboard focus ring on the enquiry inputs (previously
+  `outline:none`); global `:focus-visible` already covers nav/buttons/toggle.
+- Frontend-only; WordPress theme unchanged (no re-upload needed).
+
 ## 3.7.0 — 2026-08-21 · Image delivery, SEO, EN/DE, magnetic cursor
 
 - **Responsive images (Core Web Vitals)**: featured images on projects and

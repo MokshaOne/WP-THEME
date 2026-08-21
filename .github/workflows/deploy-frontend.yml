@@ -51,16 +51,23 @@ jobs:
           WP_BASE: ${{ secrets.WP_BASE }}
         run: npm run build
 
-      - name: Check FTP config
+      - name: Check deploy config
         id: cfg
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: |
           if [ -n "$FTP_SERVER" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
             echo "::notice title=Deploy skipped::FTP secrets are not set yet — built dist/ but did not upload. Add FTP_SERVER / FTP_USERNAME / FTP_PASSWORD to enable deploy."
+          fi
+          if [ -n "$CF_ZONE_ID" ] && [ -n "$CF_API_TOKEN" ]; then
+            echo "cf=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cf=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Deploy dist/ to easyname (FTPS)
@@ -77,7 +84,7 @@ jobs:
       # Purge the Cloudflare cache so the new build is visible immediately —
       # no more manual "Purge Everything". Skipped when the CF secrets aren't set.
       - name: Purge Cloudflare cache
-        if: ${{ secrets.CF_ZONE_ID != '' && secrets.CF_API_TOKEN != '' }}
+        if: steps.cfg.outputs.cf == 'true'
         run: |
           echo "Purging Cloudflare cache for zone ${CF_ZONE_ID:0:6}…"
           resp=$(curl -sS -X POST \

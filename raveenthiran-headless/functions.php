@@ -390,12 +390,30 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
 	) );
 
 	$reply  = "Hi {$name},\n\nThank you for your enquiry — I've received it and will reply within 24 hours ";
-	$reply .= "with availability and a firm quote.\n\nHere's what you sent:\n\n{$body}\n\n";
+	$reply .= "with availability and a firm quote.\n\n";
+	if ( $estimate ) { $reply .= "A non-binding estimate is attached as a PDF.\n\n"; }
+	$reply .= "Here's what you sent:\n\n{$body}\n\n";
 	$reply .= "— Nishuthan Raveenthiran\nraveenthiran.com";
+
+	// Branded PDF estimate (attached only when there's a calculated figure).
+	$attachments = array();
+	$pdf_path = '';
+	if ( $estimate && function_exists( 'rvn_quote_pdf_file' ) ) {
+		$pdf_path = rvn_quote_pdf_file( array(
+			'name'     => $name,
+			'type'     => $type,
+			'estimate' => $estimate,
+			'ref'      => 'RVN-' . gmdate( 'ymd' ) . '-' . wp_rand( 100, 999 ),
+		) );
+		if ( $pdf_path ) { $attachments[] = $pdf_path; }
+	}
+
 	wp_mail( $email, 'Thanks for your enquiry — Raveenthiran', $reply, array(
 		'Content-Type: text/plain; charset=UTF-8',
 		'Reply-To: ' . $studio,
-	) );
+	), $attachments );
+
+	if ( $pdf_path && file_exists( $pdf_path ) ) { @unlink( $pdf_path ); }
 
 	return new WP_REST_Response( array( 'ok' => true ), 200 );
 }
@@ -450,3 +468,117 @@ add_filter( 'wp_mail_from_name', function ( $name ) {
 	$n = trim( (string) rvn_site_opt( 'smtp_fromname', '' ) );
 	return $n ?: $name;
 }, 20 );
+
+/* ══════════════════════════════════════════════════════════════════════
+   Quote → branded PDF estimate (adapted from Obscura). A tiny dependency-free
+   single-page PDF writer using the standard Helvetica fonts. Attached to the
+   enquiry auto-reply the visitor receives.
+   ══════════════════════════════════════════════════════════════════════ */
+
+function rvn_quote_pdf_file( $args ) {
+	$a = wp_parse_args( $args, array( 'name' => '', 'type' => '', 'date' => '', 'estimate' => '', 'ref' => '' ) );
+
+	$studio = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$mark   = 'Raveenthiran';
+	$addr   = (string) rvn_site_opt( 'contact_location', '' );
+	$email  = (string) rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
+	$accent = rvn_hex_rgb01( '#c8a253' );
+
+	$pdf   = new RVN_PDF();
+	$ink   = array( 0.10, 0.10, 0.09 );
+	$muted = array( 0.42, 0.42, 0.40 );
+
+	$pdf->text( 72, 770, strtoupper( $mark ), 'B', 22, $ink );
+	$pdf->text( 523, 772, 'ESTIMATE', 'B', 11, $muted, 'right' );
+	$pdf->rect( 72, 752, 451, 2, $accent );
+
+	$y = 712;
+	$rows = array(
+		array( 'PREPARED FOR', $a['name'] ?: '—' ),
+		array( 'DATE',         $a['date'] ?: date_i18n( 'j M Y' ) ),
+		array( 'PROJECT TYPE', $a['type'] ?: '—' ),
+	);
+	if ( $a['ref'] ) { $rows[] = array( 'REFERENCE', $a['ref'] ); }
+	foreach ( $rows as $r ) {
+		$pdf->text( 72, $y, $r[0], 'B', 9, $muted );
+		$pdf->text( 200, $y, (string) $r[1], '', 12, $ink );
+		$y -= 26;
+	}
+
+	$pdf->text( 72, $y - 36, 'ESTIMATED INVESTMENT', 'B', 10, $muted );
+	$pdf->text( 72, $y - 86, $a['estimate'] ?: '—', 'B', 44, $ink );
+
+	$note = 'This is a non-binding estimate based on the brief you submitted. The final quote is confirmed after a short call to align on scope, locations, usage rights, and delivery. Valid for 30 days.';
+	$ny = $y - 140;
+	foreach ( rvn_pdf_wrap( $note, 92 ) as $line ) { $pdf->text( 72, $ny, $line, '', 11, $muted ); $ny -= 17; }
+
+	$pdf->rect( 72, 96, 451, 1, array( 0.85, 0.84, 0.80 ) );
+	$pdf->text( 72, 78, $studio, 'B', 9, $ink );
+	if ( $addr )  { $pdf->text( 72, 64, $addr, '', 9, $muted ); }
+	if ( $email ) { $pdf->text( 72, 50, $email, '', 9, $muted ); }
+
+	$bytes = $pdf->output();
+	if ( ! $bytes ) { return ''; }
+	$dir  = trailingslashit( get_temp_dir() );
+	$name = wp_unique_filename( $dir, 'Estimate-Raveenthiran.pdf' );
+	$path = $dir . $name;
+	if ( @file_put_contents( $path, $bytes ) === false ) { return ''; }
+	return $path;
+}
+
+function rvn_pdf_wrap( $text, $max ) {
+	$out = array(); $cur = '';
+	foreach ( preg_split( '/\s+/', trim( $text ) ) as $w ) {
+		$try = $cur === '' ? $w : $cur . ' ' . $w;
+		if ( strlen( $try ) > $max && $cur !== '' ) { $out[] = $cur; $cur = $w; } else { $cur = $try; }
+	}
+	if ( $cur !== '' ) { $out[] = $cur; }
+	return $out;
+}
+
+function rvn_hex_rgb01( $hex ) {
+	$hex = ltrim( (string) $hex, '#' );
+	if ( strlen( $hex ) === 3 ) { $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
+	if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) { $hex = 'c8a253'; }
+	return array( hexdec( substr( $hex, 0, 2 ) ) / 255, hexdec( substr( $hex, 2, 2 ) ) / 255, hexdec( substr( $hex, 4, 2 ) ) / 255 );
+}
+
+class RVN_PDF {
+	private $ops = array();
+	private function esc( $s ) {
+		$s = wp_specialchars_decode( (string) $s, ENT_QUOTES );
+		if ( function_exists( 'mb_convert_encoding' ) ) { $s = @mb_convert_encoding( $s, 'Windows-1252', 'UTF-8' ); }
+		elseif ( function_exists( 'iconv' ) ) { $s = @iconv( 'UTF-8', 'Windows-1252//TRANSLIT//IGNORE', $s ); }
+		else { $s = remove_accents( $s ); }
+		return str_replace( array( '\\', '(', ')' ), array( '\\\\', '\\(', '\\)' ), (string) $s );
+	}
+	public function text( $x, $y, $str, $weight = '', $size = 12, $rgb = array( 0, 0, 0 ), $align = 'left' ) {
+		$font = $weight === 'B' ? '/F2' : '/F1';
+		if ( $align === 'right' ) { $x -= $this->width( $str, $size, $weight ); }
+		$this->ops[] = sprintf( '%.3f %.3f %.3f rg', $rgb[0], $rgb[1], $rgb[2] );
+		$this->ops[] = sprintf( 'BT %s %d Tf %.2f %.2f Td (%s) Tj ET', $font, $size, $x, $y, $this->esc( $str ) );
+	}
+	public function rect( $x, $y, $w, $h, $rgb ) {
+		$this->ops[] = sprintf( '%.3f %.3f %.3f rg %.2f %.2f %.2f %.2f re f', $rgb[0], $rgb[1], $rgb[2], $x, $y, $w, $h );
+	}
+	private function width( $str, $size, $weight ) {
+		return strlen( remove_accents( (string) $str ) ) * $size * ( $weight === 'B' ? 0.56 : 0.52 );
+	}
+	public function output() {
+		$content = implode( "\n", $this->ops );
+		$objs = array();
+		$objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+		$objs[2] = '<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
+		$objs[3] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>';
+		$objs[4] = "<< /Length " . strlen( $content ) . " >>\nstream\n" . $content . "\nendstream";
+		$objs[5] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+		$objs[6] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+		$pdf = "%PDF-1.4\n"; $offsets = array();
+		foreach ( $objs as $n => $body ) { $offsets[ $n ] = strlen( $pdf ); $pdf .= $n . " 0 obj\n" . $body . "\nendobj\n"; }
+		$xref_pos = strlen( $pdf ); $count = count( $objs ) + 1;
+		$pdf .= "xref\n0 " . $count . "\n0000000000 65535 f \n";
+		for ( $i = 1; $i < $count; $i++ ) { $pdf .= sprintf( "%010d 00000 n \n", $offsets[ $i ] ); }
+		$pdf .= "trailer\n<< /Size " . $count . " /Root 1 0 R >>\nstartxref\n" . $xref_pos . "\n%%EOF";
+		return $pdf;
+	}
+}

@@ -33,6 +33,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 const nav = [
 	{ key: 'work', label: 'Work', href: '/work/' },
+	{ key: 'journal', label: 'Journal', href: '/journal/' },
 	{ key: 'studio', label: 'Studio', href: '/about/' },
 	{ key: 'enquire', label: 'Enquire', href: '/enquire/' },
 ];
@@ -169,6 +170,7 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 			<span class="foot__social">
 				{site.contact.instagram && <a href={site.contact.instagram} target="_blank" rel="noopener">Instagram</a>}
 				<a href="/work/">Work</a>
+				<a href="/journal/">Journal</a>
 				<a href="/enquire/">Enquire</a>
 			</span>
 		</div>

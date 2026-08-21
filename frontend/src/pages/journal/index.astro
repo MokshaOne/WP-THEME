@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts } from '../../lib/wp';
+
+const posts = await getPosts();
+const grads = [
+	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
+	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
+];
+---
+<Base title="Journal — Raveenthiran" description="Notes on light, process and the work — from the Raveenthiran studio in Vienna." active="journal">
+	<div class="page page--wide">
+		<div class="page-head" data-reveal>
+			<span class="eyebrow">Notes & stories</span>
+			<h1 class="page-title">Journal</h1>
+		</div>
+
+		<div class="journal-list">
+			{posts.map((post, i) => (
+				<a class="jcard" href={`/journal/${post.slug}/`} data-reveal>
+					<div class="jcard__media">
+						{post.image
+							? <img src={post.image} alt={post.title} width={post.imageW || undefined} height={post.imageH || undefined} loading="lazy" />
+							: <div class="jcard__ph" style={`background:${grads[i % grads.length]}`}></div>}
+					</div>
+					<div class="jcard__body">
+						<span class="jcard__meta">{post.category} · {post.dateLabel}</span>
+						<h2 class="jcard__title">{post.title}</h2>
+						<p class="jcard__excerpt">{post.excerpt}</p>
+						<span class="jcard__more">Read →</span>
+					</div>
+				</a>
+			))}
+		</div>
+	</div>
+</Base>

@@ -126,6 +126,69 @@ export async function getProject(slug: string): Promise<Project | undefined> {
 	return SAMPLE.find((p) => p.slug === slug);
 }
 
+/* ── Journal (native WordPress posts) ── */
+export interface Post {
+	slug: string;
+	title: string;
+	excerpt: string;
+	content: string;
+	date: string;       // ISO
+	dateLabel: string;  // e.g. "12 August 2026"
+	category: string;
+	image: string;
+	imageW?: number;
+	imageH?: number;
+}
+
+const SAMPLE_POSTS: Post[] = [
+	{ slug: 'available-light', title: 'On available light', excerpt: 'Why I keep the flash in the bag, and what the window already knows.', content: '<p>Notes on working with what the room gives you.</p>', date: '2026-06-14', dateLabel: '14 June 2026', category: 'Craft', image: '' },
+	{ slug: 'a-year-in-albums', title: 'A year, kept in albums', excerpt: 'Looking back on twelve months of portraits, weddings and quiet streets.', content: '<p>A short retrospective.</p>', date: '2026-01-04', dateLabel: '4 January 2026', category: 'Journal', image: '' },
+	{ slug: 'tfp-and-trust', title: 'TFP, and the value of trust', excerpt: 'How collaborative sessions became the backbone of the studio.', content: '<p>On working for the picture, not the invoice.</p>', date: '2025-11-20', dateLabel: '20 November 2025', category: 'Journal', image: '' },
+];
+
+function fmtDate(iso: string): string {
+	try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); }
+	catch { return (iso || '').slice(0, 10); }
+}
+
+function mapPost(p: any): Post {
+	let image = '', imageW = 0, imageH = 0;
+	try {
+		const fm = p._embedded['wp:featuredmedia'][0];
+		image = fm.source_url || '';
+		const md = fm.media_details || {};
+		imageW = +md.width || 0; imageH = +md.height || 0;
+	} catch {}
+	let category = '';
+	try {
+		const terms = ([] as any[]).concat(...(p._embedded['wp:term'] || []));
+		const t = terms.find((x) => x && x.taxonomy === 'category');
+		category = t ? t.name : '';
+	} catch {}
+	return {
+		slug: p.slug,
+		title: decode(p.title && p.title.rendered),
+		excerpt: decode(p.excerpt && p.excerpt.rendered),
+		content: (p.content && p.content.rendered) || '',
+		date: p.date || '',
+		dateLabel: fmtDate(p.date || ''),
+		category: category || 'Journal',
+		image, imageW, imageH,
+	};
+}
+
+export async function getPosts(): Promise<Post[]> {
+	const data = await fetchJson('/posts?per_page=50&_embed');
+	if (!data || !data.length) return SAMPLE_POSTS;
+	return data.map(mapPost);
+}
+
+export async function getPost(slug: string): Promise<Post | undefined> {
+	const data = await fetchJson('/posts?slug=' + encodeURIComponent(slug) + '&_embed');
+	if (data && data.length) return mapPost(data[0]);
+	return SAMPLE_POSTS.find((p) => p.slug === slug);
+}
+
 /* ── Site settings (editable in WordPress → Site settings) ── */
 export interface SiteStat { label: string; value: string }
 export interface PriceType { label: string; base: number }

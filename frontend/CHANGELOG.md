@@ -4,6 +4,14 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.6.1 — 2026-08-21 · Softer film grain
+
+- The full-page film-grain atmosphere was too heavy (`opacity .5` with an
+  overlay blend, made more visible by the animated WebGL layer). Dialed both
+  the static SVG grain and the WebGL grain down to `opacity .18`, so it now
+  reads as a subtle texture instead of visible noise over the photographs.
+  Vignette and the reduced-motion / touch opt-outs are unchanged.
+
 ## 3.6.0 — 2026-08-21 · Quick wins — share images, sticky headings, CI guard
 
 - **Open Graph share images everywhere**: every page now emits a real, absolute

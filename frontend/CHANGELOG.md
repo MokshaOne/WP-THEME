@@ -4,6 +4,31 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.7.0 — 2026-08-21 · Image delivery, SEO, EN/DE, magnetic cursor
+
+- **Responsive images (Core Web Vitals)**: featured images on projects and
+  journal posts now build a `srcset` from WordPress's generated sizes, and
+  every content image carries `srcset` + `sizes` + intrinsic `width`/`height`
+  (no layout shift). AVIF is served through as-is. LCP heroes get
+  `fetchpriority=high`. (For multiple widths the WordPress media library must
+  generate intermediate sizes for the upload — otherwise a single size is used,
+  which still works.)
+- **Original crop on the project hero**: no more force-cropping — the full
+  photograph is shown, matted by the panel, so a portrait keeps its head.
+- **Per-project SEO**: unique meta/OG descriptions (from the statement, or
+  composed from the project's own data), a `CreativeWork` + `ImageObject`
+  JSON-LD block per project (creator, credit, copyright, location, date), and a
+  new `/image-sitemap.xml` (Google image extension) referenced from robots.txt.
+- **EN/DE interface toggle**: a header switch swaps the site chrome
+  (navigation, buttons, CTAs, labels) between English and German; WordPress
+  content is untouched. Remembered per visitor, re-applied on every navigation,
+  and paired with `hreflang` (en/de/x-default) + `og:locale` for SEO.
+- **Magnetic cursor + bespoke easing**: the cursor ring snaps to and wraps the
+  hovered control, buttons drift toward the pointer and spring back on a
+  signature ease-out curve. Off under reduced-motion / touch; native cursor
+  stays visible.
+- Frontend-only; WordPress theme unchanged (no re-upload needed).
+
 ## 3.6.1 — 2026-08-21 · Softer film grain
 
 - The full-page film-grain atmosphere was too heavy (`opacity .5` with an

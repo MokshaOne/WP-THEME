@@ -75,9 +75,10 @@ body::after{content:"";position:fixed;inset:0;z-index:400;pointer-events:none;op
 
 /* ── header ── */
 .site-header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:clamp(1.1rem,2.4vw,2rem) var(--gut)}
-.monogram{color:var(--gold);width:46px;display:block;transition:transform .25s var(--ease),color var(--dur) var(--ease)}
-.monogram svg{width:100%;height:auto;transition:transform var(--dur) var(--ease)}
-.monogram:hover svg{transform:rotate(90deg)}
+.wordmark{display:inline-block;font-family:var(--serif);font-weight:500;font-size:clamp(1.3rem,2.4vw,1.6rem);letter-spacing:.015em;color:var(--ink);white-space:nowrap;transition:transform .25s var(--ease),color var(--dur) var(--ease)}
+.wordmark:hover{color:var(--gold)}
+body.header-light .wordmark{color:#fff}
+body.header-light .wordmark:hover{color:var(--gold-2)}
 .site-header .toggle{position:absolute;right:calc(var(--gut) + 46px);top:50%;transform:translateY(-50%);width:30px;height:22px;display:flex;flex-direction:column;justify-content:center;gap:5px}
 .site-header .toggle span{display:block;height:1.5px;background:var(--ink);transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease),width var(--dur) var(--ease);width:100%}
 .site-header .toggle span:nth-child(2){width:70%;margin-left:auto}
@@ -140,11 +141,10 @@ main{min-height:60vh}
 /* ── cinematic preloader (first paint) ── */
 .preloader{position:fixed;inset:0;z-index:500;display:grid;place-items:center;background:var(--bg);opacity:0;visibility:hidden;transition:opacity .7s var(--ease),visibility .7s}
 html.preloading .preloader{opacity:1;visibility:visible}
-.preloader__mark{width:56px;height:56px;color:var(--gold)}
-html.preloading .preloader__mark circle,html.preloading .preloader__mark path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s var(--ease) forwards}
-html.preloading .preloader__mark path{animation-delay:.35s}
-@keyframes draw{to{stroke-dashoffset:0}}
-@media (prefers-reduced-motion:reduce){.preloader__mark circle,.preloader__mark path{animation:none;stroke-dashoffset:0}}
+.preloader__word{font-family:var(--serif);font-weight:500;font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--ink);letter-spacing:.05em}
+html.preloading .preloader__word{animation:wordin 1.1s var(--ease) both}
+@keyframes wordin{0%{opacity:0;transform:translateY(10px);letter-spacing:.28em}60%{opacity:1}100%{opacity:1;transform:none;letter-spacing:.05em}}
+@media (prefers-reduced-motion:reduce){html.preloading .preloader__word{animation:none}}
 
 /* hero auto-advance progress */
 .cine__prog{display:inline-block;width:38px;height:1px;background:rgba(255,255,255,.25);margin-left:.9rem;vertical-align:middle;overflow:hidden}
@@ -367,8 +367,8 @@ body.lb-open .site-header{opacity:0;pointer-events:none}
 
 /* ── signature black footer (always dark, Opta-style) ── */
 .site-footer{background:var(--footer-bg);color:var(--footer-fg);text-align:center;padding:clamp(4rem,9vw,6.5rem) var(--gut) 2.5rem;margin-top:clamp(4rem,9vw,7rem)}
-.monogram--foot{color:var(--footer-dim);margin:0 auto;width:42px}
-.monogram--foot:hover{color:var(--gold)}
+.wordmark--foot{display:block;color:var(--footer-fg);font-size:clamp(1.3rem,3vw,1.6rem)}
+.wordmark--foot:hover{color:var(--gold)}
 .foot__rule{display:block;width:1px;height:clamp(2rem,5vw,3.5rem);background:var(--footer-line);margin:1.4rem auto}
 .foot__email{font-family:var(--serif);font-size:clamp(1.7rem,4.5vw,2.8rem);color:var(--footer-fg);border-bottom:1px solid var(--footer-line);padding-bottom:.15rem;transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
 .foot__email:hover{color:var(--gold);border-color:var(--gold)}

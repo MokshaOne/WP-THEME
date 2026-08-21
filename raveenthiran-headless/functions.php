@@ -258,10 +258,45 @@ function rvn_site_payload() {
 		return $out;
 	};
 
+	// Generic repeater reader → array of associative rows (only rows with a non-empty first key).
+	$rows = function ( $key, $keys ) {
+		$out = array();
+		foreach ( (array) rvn_site_opt( $key, array() ) as $r ) {
+			$first = isset( $r[ $keys[0] ] ) ? trim( (string) $r[ $keys[0] ] ) : '';
+			if ( $first === '' ) { continue; }
+			$row = array();
+			foreach ( $keys as $k ) { $row[ $k ] = isset( $r[ $k ] ) ? $r[ $k ] : ''; }
+			$out[] = $row;
+		}
+		return $out;
+	};
+
 	$types = array();
 	foreach ( $rows_kv( 'project_types', 'label', 'base' ) as $r ) { $types[] = array( 'label' => $r['label'], 'base' => (float) $r['base'] ); }
 	$addons = array();
 	foreach ( $rows_kv( 'addons', 'label', 'price' ) as $r ) { $addons[] = array( 'label' => $r['label'], 'price' => (float) $r['price'] ); }
+
+	// Redesign calculator sessions: [{name, base, hrs, extra, note}].
+	$sessions = array();
+	foreach ( $rows( 'price_sessions', array( 'name', 'base', 'hrs', 'extra', 'note' ) ) as $r ) {
+		$sessions[] = array(
+			'name'  => (string) $r['name'],
+			'base'  => (float) $r['base'],
+			'hrs'   => (float) $r['hrs'],
+			'extra' => (float) $r['extra'],
+			'note'  => (string) $r['note'],
+		);
+	}
+
+	// Studio spec [{label, value}] + statement lines.
+	$spec = array();
+	foreach ( $rows_kv( 'studio_spec', 'label', 'value' ) as $r ) { $spec[] = array( 'label' => (string) $r['label'], 'value' => (string) $r['value'] ); }
+
+	// Home recognition + testimonials.
+	$honors = array();
+	foreach ( $rows( 'home_honors', array( 'year', 'title', 'tag' ) ) as $r ) { $honors[] = array( 'year' => (string) $r['year'], 'title' => (string) $r['title'], 'tag' => (string) $r['tag'] ); }
+	$testimonials = array();
+	foreach ( $rows( 'home_testimonials', array( 'text', 'author' ) ) as $r ) { $testimonials[] = array( 'text' => (string) $r['text'], 'by' => (string) $r['author'] ); }
 	$stats = array();
 	foreach ( $rows_kv( 'studio_stats', 'label', 'value' ) as $r ) { $stats[] = array( 'label' => $r['label'], 'value' => (string) $r['value'] ); }
 	$faq = array();
@@ -275,22 +310,34 @@ function rvn_site_payload() {
 
 	return array(
 		'studio'  => array(
-			'lede'     => (string) rvn_site_opt( 'studio_lede', '' ),
-			'bio'      => (string) rvn_site_opt( 'studio_bio', '' ),
-			'portrait' => (string) $portrait,
-			'stats'    => $stats,
-			'clients'  => $lines( 'studio_clients' ),
+			'lede'      => (string) rvn_site_opt( 'studio_lede', '' ),
+			'bio'       => (string) rvn_site_opt( 'studio_bio', '' ),
+			'portrait'  => (string) $portrait,
+			'statement' => $lines( 'studio_statement' ),
+			'spec'      => $spec,
+			'stats'     => $stats,
+			'clients'   => $lines( 'studio_clients' ),
+		),
+		'home'    => array(
+			'hero_lines'   => $lines( 'home_hero_lines' ),
+			'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
+			'marquee'      => (string) rvn_site_opt( 'home_marquee', '' ),
+			'honors'       => $honors,
+			'testimonials' => $testimonials,
 		),
 		'contact' => array(
 			'email'     => (string) rvn_site_opt( 'contact_email', '' ),
 			'location'  => (string) rvn_site_opt( 'contact_location', '' ),
 			'response'  => (string) rvn_site_opt( 'contact_response', '' ),
 			'instagram' => (string) rvn_site_opt( 'contact_instagram', '' ),
+			'behance'   => (string) rvn_site_opt( 'contact_behance', '' ),
+			'linkedin'  => (string) rvn_site_opt( 'contact_linkedin', '' ),
 		),
 		'pricing' => array(
 			'currency' => (string) rvn_site_opt( 'currency', '€' ),
 			'types'    => $types,
 			'addons'   => $addons,
+			'sessions' => $sessions,
 			'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
 			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
 		),

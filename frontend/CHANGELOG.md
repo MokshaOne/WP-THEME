@@ -36,6 +36,14 @@ the live Astro site. This consolidates the redesign batches (foundation → poli
 - **PWA** — service-worker cache busted to `rvn-v3`, new "R" icon, dark manifest.
 - The offline/first-run SAMPLE set now uses the photographer's real frames, so
   the site looks finished even when the WordPress API is unreachable at build.
+- **Fully WordPress-editable** (Site settings): a new **Home** tab drives the
+  hero headline + sub-copy, the marquee text, the Recognition awards and the
+  testimonials; Studio gains an editable statement + spec table; the Enquire
+  calculator reads its **Sessions** from WordPress; Behance/LinkedIn added to
+  Contact. Every field falls back to the built-in defaults, so nothing is blank
+  before it's filled in. WordPress theme + `raveenthiran-headless.zip` at 3.0.0.
+- **Cursor**: the native cursor stays visible everywhere; an elegant trailing
+  ring accent follows it on fine-pointer devices (no more hidden cursor).
 
 ## 2.2.0 — 2026-08-21 · Turnstile spam shield
 

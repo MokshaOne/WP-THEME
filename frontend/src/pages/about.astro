@@ -5,14 +5,9 @@ import { getSite } from '../lib/wp';
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.png';
 
-const statementLines = ['NO PRESETS.', 'NO SHORTCUTS.', 'JUST THE FRAME.'];
+const statementLines = site.studio.statement;
 const bio = 'Vienna-based, working across Austria. Portrait, fashion, event and wedding — planned like productions, shot with intent, delivered on time. You deal with me directly, from first call to final print.';
-const spec = [
-	['FOCUS', 'PORTRAIT · FASHION · EVENT · WEDDING'],
-	['BASE', 'VIENNA, AUSTRIA'],
-	['SINCE', 'MMXX'],
-	['LANGUAGES', 'EN · DE · TA'],
-];
+const spec = site.studio.spec.map((s) => [s.label, s.value] as [string, string]);
 const process = [
 	['01', 'THE CALL', 'We talk intent, references and location. You get a fixed quote — no surprises later.'],
 	['02', 'THE SHOOT', 'Prepared, directed, unhurried. Most people hate being photographed — until this part.'],

@@ -6,15 +6,18 @@ const site = await getSite();
 const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 const turnstile = site.security.turnstile_site;
 
-// Session model — editable in WordPress later (Site settings → Price calculator).
-const services = [
-	{ name: 'PORTRAIT', base: 150, hrs: 2, extra: 120, meta: '2 HRS · 150 €', note: '' },
-	{ name: 'EVENT', base: 690, hrs: 3, extra: 120, meta: '3 HRS · 690 €', note: '' },
-	{ name: 'WEDDING', base: 1200, hrs: 5, extra: 220, meta: '5 HRS · 1200 €', note: '' },
-	{ name: 'FASHION / COMMERCIAL', base: 220, hrs: 2, extra: 120, meta: '2 HRS · 220 €', note: 'Price excludes a commercial usage license — licensing is quoted per campaign.' },
-];
-const s0 = services[0];
+// Session model — editable in WordPress (Site settings → Price calculator → Sessions).
+const cur = site.pricing.currency || '€';
 const fmt = (n: number) => n.toLocaleString('de-AT');
+const services = site.pricing.sessions.map((s) => ({
+	name: s.name,
+	base: s.base,
+	hrs: s.hrs,
+	extra: s.extra,
+	note: s.note,
+	meta: `${s.hrs} HRS · ${fmt(s.base)} ${cur}`,
+}));
+const s0 = services[0];
 ---
 <Base title="Name your shoot — Raveenthiran" description="Commission a shoot. Instant estimate, firm written offer within 24 hours." active="enquire" page="enquire">
 	<section class="wrap" style="padding:64px 28px 40px">

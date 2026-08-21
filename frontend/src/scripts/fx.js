@@ -87,24 +87,22 @@ export function initFX(opts = {}) {
 	addEventListener('scroll', onScroll, { passive: true }); onScroll();
 	cleanups.push(() => removeEventListener('scroll', onScroll));
 
-	/* custom cursor (fine pointer only) */
+	/* cursor: keep the NATIVE cursor visible, add a trailing ring accent
+	   (fine pointer only). The native pointer is never hidden. */
 	let raf = 0;
 	if (fine && !reduce) {
-		document.documentElement.classList.add('has-cursor');
-		const dot = document.createElement('div');
-		dot.style.cssText = 'position:fixed;left:0;top:0;width:10px;height:10px;border-radius:50%;background:#efece6;mix-blend-mode:difference;pointer-events:none;z-index:10001;transform:translate(-100px,-100px)';
 		const ring = document.createElement('div');
-		ring.style.cssText = 'position:fixed;left:0;top:0;width:42px;height:42px;border-radius:50%;border:1px solid #efece6;mix-blend-mode:difference;pointer-events:none;z-index:10001;transform:translate(-100px,-100px);transition:width .25s,height .25s';
-		document.body.append(dot, ring);
-		let mx = -100, my = -100, rx = -100, ry = -100;
-		const onMove = e => { mx = e.clientX; my = e.clientY; };
+		ring.style.cssText = 'position:fixed;left:0;top:0;width:34px;height:34px;border-radius:50%;border:1.5px solid #efece6;mix-blend-mode:difference;pointer-events:none;z-index:10001;opacity:0;transform:translate(-100px,-100px);transition:width .25s,height .25s,opacity .3s';
+		document.body.append(ring);
+		let mx = -100, my = -100, rx = -100, ry = -100, seen = false;
+		const onMove = e => { mx = e.clientX; my = e.clientY; if (!seen) { seen = true; ring.style.opacity = '1'; } };
 		const onOver = e => {
 			const hot = e.target.closest && e.target.closest('a,button,[data-zoom]');
-			ring.style.width = hot ? '70px' : '42px'; ring.style.height = hot ? '70px' : '42px';
+			ring.style.width = hot ? '58px' : '34px'; ring.style.height = hot ? '58px' : '34px';
 		};
+		const onLeave = () => { ring.style.opacity = '0'; };
 		const tick = () => {
-			rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
-			dot.style.transform = 'translate(' + (mx - 5) + 'px,' + (my - 5) + 'px)';
+			rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
 			const s = ring.offsetWidth / 2;
 			ring.style.transform = 'translate(' + (rx - s) + 'px,' + (ry - s) + 'px)';
 			if (peekOn) peek.style.transform = 'translate(' + (mx + 30) + 'px,' + (my - peek.offsetHeight / 2) + 'px) rotate(3deg)';
@@ -115,7 +113,8 @@ export function initFX(opts = {}) {
 		};
 		addEventListener('mousemove', onMove, { passive: true });
 		addEventListener('mouseover', onOver, { passive: true });
-		cleanups.push(() => { removeEventListener('mousemove', onMove); removeEventListener('mouseover', onOver); cancelAnimationFrame(raf); dot.remove(); ring.remove(); document.documentElement.classList.remove('has-cursor'); });
+		document.addEventListener('mouseleave', onLeave);
+		cleanups.push(() => { removeEventListener('mousemove', onMove); removeEventListener('mouseover', onOver); document.removeEventListener('mouseleave', onLeave); cancelAnimationFrame(raf); ring.remove(); });
 		tick();
 	} else {
 		/* still decay velocity skew without a cursor */

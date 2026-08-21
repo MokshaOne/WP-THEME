@@ -59,11 +59,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; margin: 0; 
 }
 .skip-link:focus { left: 8px; top: 8px; }
 
-/* Fine-pointer devices get the bespoke cursor; hide the native one. */
-@media (pointer: fine) {
-	html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }
-}
-
+/* The native cursor stays visible everywhere; fx.js adds a trailing ring accent. */
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
 .wrap { padding-left: var(--pad); padding-right: var(--pad); }

@@ -12,23 +12,12 @@ const indexItems = projects.slice(0, 10);
 const up = (s: string) => (s || '').toUpperCase();
 const num = (n: number) => String(n).padStart(3, '0');
 
-// Home hero copy — editable in WordPress later (Site settings → Studio).
-const heroLines = ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'];
-const heroLede = 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.';
-const marqueeWords = 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ';
-
-// Recognition + testimonials — placeholders until wired to WordPress (Site settings).
-const honors = [
-	{ year: '2026', title: 'INTERNATIONAL PORTRAIT AWARDS', tag: 'SHORTLIST' },
-	{ year: '2025', title: 'FOTO WIEN — GROUP SHOW', tag: 'EXHIBITION' },
-	{ year: '2025', title: 'VIENNA PHOTO FESTIVAL', tag: 'FEATURE' },
-	{ year: '2024', title: 'AUSTRIAN WEDDING AWARDS', tag: 'WINNER — REPORTAGE' },
-];
-const testimonials = [
-	{ text: 'He directed the whole shoot so calmly that I forgot the camera was there. The prints hang in our living room.', by: 'SARAH K. — PORTRAIT, 2024' },
-	{ text: 'Booked two hours, kept the gallery for life. The KHM series is my favourite thing on my wall.', by: 'MIRI — FASHION, 2026' },
-	{ text: 'The only photographer who delivered earlier than promised. Every single frame usable.', by: 'LUNA M. — STREET PORTRAIT, 2025' },
-];
+// Home content — all editable in WordPress (Site settings → Home).
+const heroLines = site.home.hero_lines;
+const heroLede = site.home.hero_lede;
+const marqueeWords = /\s—\s$/.test(site.home.marquee) ? site.home.marquee : site.home.marquee.replace(/\s*$/, '') + ' — ';
+const honors = site.home.honors;
+const testimonials = site.home.testimonials;
 
 const compareImg = (featured[0] || projects[0])?.image || '';
 const preload = featured[0]?.image || '';

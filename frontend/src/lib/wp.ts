@@ -207,11 +207,16 @@ export async function getPost(slug: string): Promise<Post | undefined> {
 export interface SiteStat { label: string; value: string }
 export interface PriceType { label: string; base: number }
 export interface AddOn { label: string; price: number }
+export interface Session { name: string; base: number; hrs: number; extra: number; note: string }
+export interface SpecRow { label: string; value: string }
+export interface Honor { year: string; title: string; tag: string }
+export interface Testimonial { text: string; by: string }
 export interface Faq { q: string; a: string }
 export interface Site {
-	studio: { lede: string; bio: string; portrait: string; stats: SiteStat[]; clients: string[] };
+	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[] };
+	home: { hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
 	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
-	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; licence: number; per_km: number };
+	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; sessions: Session[]; licence: number; per_km: number };
 	faq: Faq[];
 	security: { turnstile_site: string };
 }
@@ -221,17 +226,46 @@ const SITE_FALLBACK: Site = {
 		lede: 'A practice of looking slowly — and keeping only what lasts.',
 		bio: '<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, wedding and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p><p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. Each project is kept as an album; the archive lives under Work.</p><p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>',
 		portrait: '',
+		statement: ['NO PRESETS.', 'NO SHORTCUTS.', 'JUST THE FRAME.'],
+		spec: [
+			{ label: 'FOCUS', value: 'PORTRAIT · FASHION · EVENT · WEDDING' },
+			{ label: 'BASE', value: 'VIENNA, AUSTRIA' },
+			{ label: 'SINCE', value: 'MMXX' },
+			{ label: 'LANGUAGES', value: 'EN · DE · TA' },
+		],
 		stats: [
 			{ label: 'Projects', value: '120+' }, { label: 'Countries', value: '14' },
 			{ label: 'Publications', value: '30+' }, { label: 'Based in', value: 'Vienna, AT' },
 		],
 		clients: ['SZ Magazin', 'Apartamento', 'NYT Magazine', 'Belvedere', 'Hotel Sacher'],
 	},
+	home: {
+		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
+		hero_lede: 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
+		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ',
+		honors: [
+			{ year: '2026', title: 'INTERNATIONAL PORTRAIT AWARDS', tag: 'SHORTLIST' },
+			{ year: '2025', title: 'FOTO WIEN — GROUP SHOW', tag: 'EXHIBITION' },
+			{ year: '2025', title: 'VIENNA PHOTO FESTIVAL', tag: 'FEATURE' },
+			{ year: '2024', title: 'AUSTRIAN WEDDING AWARDS', tag: 'WINNER — REPORTAGE' },
+		],
+		testimonials: [
+			{ text: 'He directed the whole shoot so calmly that I forgot the camera was there. The prints hang in our living room.', by: 'SARAH K. — PORTRAIT, 2024' },
+			{ text: 'Booked two hours, kept the gallery for life. The KHM series is my favourite thing on my wall.', by: 'MIRI — FASHION, 2026' },
+			{ text: 'The only photographer who delivered earlier than promised. Every single frame usable.', by: 'LUNA M. — STREET PORTRAIT, 2025' },
+		],
+	},
 	contact: { email: 'hello@raveenthiran.com', location: 'Vienna, AT', response: 'Within 24 hours', instagram: '', behance: '', linkedin: '' },
 	pricing: {
 		currency: '€',
 		types: [ { label: 'Portrait', base: 450 }, { label: 'Wedding', base: 1800 }, { label: 'Event', base: 900 }, { label: 'Editorial', base: 1200 } ],
 		addons: [ { label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 }, { label: 'Second shooter', price: 300 }, { label: 'Hair & makeup', price: 350 } ],
+		sessions: [
+			{ name: 'PORTRAIT', base: 150, hrs: 2, extra: 120, note: '' },
+			{ name: 'EVENT', base: 690, hrs: 3, extra: 120, note: '' },
+			{ name: 'WEDDING', base: 1200, hrs: 5, extra: 220, note: '' },
+			{ name: 'FASHION / COMMERCIAL', base: 220, hrs: 2, extra: 120, note: 'Price excludes a commercial usage license — licensing is quoted per campaign.' },
+		],
 		licence: 150, per_km: 0.42,
 	},
 	faq: [
@@ -258,8 +292,17 @@ export async function getSite(): Promise<Site> {
 				lede: pick(d?.studio?.lede, F.studio.lede),
 				bio: pick(d?.studio?.bio, F.studio.bio),
 				portrait: pick(d?.studio?.portrait, ''),
+				statement: arr(d?.studio?.statement, F.studio.statement),
+				spec: arr(d?.studio?.spec, F.studio.spec),
 				stats: arr(d?.studio?.stats, F.studio.stats),
 				clients: arr(d?.studio?.clients, F.studio.clients),
+			},
+			home: {
+				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),
+				hero_lede: pick(d?.home?.hero_lede, F.home.hero_lede),
+				marquee: pick(d?.home?.marquee, F.home.marquee),
+				honors: arr(d?.home?.honors, F.home.honors),
+				testimonials: arr(d?.home?.testimonials, F.home.testimonials),
 			},
 			contact: {
 				email: pick(d?.contact?.email, F.contact.email),
@@ -273,6 +316,7 @@ export async function getSite(): Promise<Site> {
 				currency: pick(d?.pricing?.currency, F.pricing.currency),
 				types: arr(d?.pricing?.types, F.pricing.types),
 				addons: arr(d?.pricing?.addons, F.pricing.addons),
+				sessions: arr(d?.pricing?.sessions, F.pricing.sessions),
 				licence: pick(d?.pricing?.licence, F.pricing.licence),
 				per_km: pick(d?.pricing?.per_km, F.pricing.per_km),
 			},

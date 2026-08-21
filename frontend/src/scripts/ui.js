@@ -107,25 +107,25 @@ function initCinema() {
 	pageCleanups.push(() => { clearInterval(timer); removeEventListener('keydown', onKey); });
 }
 
-/* ── RAW / FINAL compare ─────────────────────────────────────────────────── */
+/* ── Before / after compare ([rvn_compare] shortcode in journal/project) ──── */
 function initCompare() {
-	const el = document.querySelector('[data-compare]');
-	if (!el) return;
-	const raw = el.querySelector('.raw');
-	const div = el.querySelector('[data-div]');
-	const knob = el.querySelector('[data-knob]');
-	const set = (e) => {
-		const r = el.getBoundingClientRect();
-		const pct = Math.max(2, Math.min(98, ((e.clientX - r.left) / r.width) * 100));
-		if (raw) raw.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
-		if (div) div.style.left = pct + '%';
-		if (knob) knob.style.left = pct + '%';
-	};
-	const down = (e) => set(e);
-	const move = (e) => { if (e.buttons === 1) set(e); };
-	el.addEventListener('pointerdown', down);
-	el.addEventListener('pointermove', move);
-	pageCleanups.push(() => { el.removeEventListener('pointerdown', down); el.removeEventListener('pointermove', move); });
+	document.querySelectorAll('.rvn-compare').forEach((el) => {
+		const range = el.querySelector('[data-compare-range]');
+		const set = (v) => el.style.setProperty('--start', Math.max(0, Math.min(100, v)) + '%');
+		if (range) { const on = () => set(+range.value); range.addEventListener('input', on); on(); }
+		const drag = (e) => {
+			const r = el.getBoundingClientRect();
+			const pct = ((e.clientX - r.left) / r.width) * 100;
+			set(pct); if (range) range.value = String(Math.round(pct));
+		};
+		const down = (e) => {
+			drag(e);
+			const mv = (ev) => drag(ev);
+			const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
+			addEventListener('pointermove', mv); addEventListener('pointerup', up);
+		};
+		el.addEventListener('pointerdown', down);
+	});
 }
 
 /* ── testimonial rotator ─────────────────────────────────────────────────── */
@@ -228,7 +228,7 @@ function initEnquire() {
 			btn && (btn.disabled = true);
 			if (msg) { msg.className = 'est__msg'; msg.textContent = 'Sending…'; }
 			try {
-				const ts = form.querySelector('[name="cf-turnstile-response"]');
+				// Turnstile's hidden [name=cf-turnstile-response] is already in FormData.
 				const res = await fetch(endpoint, { method: 'POST', body: fd });
 				if (!res.ok) throw new Error('HTTP ' + res.status);
 				if (msg) { msg.className = 'est__msg ok'; msg.textContent = 'Sent. You will have a written offer within 24 hours.'; }

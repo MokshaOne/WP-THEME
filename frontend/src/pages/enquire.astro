@@ -98,7 +98,7 @@ const faqSchema = site.faq.length ? {
 		</div>
 	</section>
 
-	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />}
 	{site.faq.length > 0 && (
 		<section class="faq">
 			{site.faq.map((f) => (

@@ -4,6 +4,20 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.2.0 — 2026-08-21 · Site Control admin + polish
+
+- **Site Control** — a single branded WordPress admin hub (top-level menu) to run
+  the whole site instead of hunting the default dashboard: live stats (projects,
+  enquiries, journal, theme version, active home layout), quick-launch cards to
+  every area, a "how changes go live" panel, and a setup checklist. **Site
+  settings** now nest under it as a sub-page, and **Enquiries** move under it too.
+- **Fix** — the `[rvn_compare]` before/after slider lost its styling in the v3
+  redesign; restored its CSS and rebuilt the drag/keyboard behaviour so it works
+  again in journal/project content.
+- **Polish** — type-checked (0 errors/0 warnings), removed a dead variable, and
+  marked the JSON-LD / speculation-rules data scripts `is:inline`.
+- Frontend + WordPress theme/zip at 3.2.0.
+
 ## 3.1.0 — 2026-08-21 · Home layouts + selector, batch polish
 
 - **Five selectable home layouts**, chosen in WordPress (Site settings → Home →

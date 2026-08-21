@@ -207,21 +207,142 @@ add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
 } );
 
-/* ── Site settings: ACF options page (edit the Studio bio, contact, price
-   calculator and FAQ from WordPress) + a REST endpoint the Astro build reads. ── */
+/* ══════════════════════════════════════════════════════════════════════
+   SITE CONTROL — a single branded admin hub. One place to run the whole
+   site instead of hunting through the default WordPress dashboard. The ACF
+   "Site settings" become a sub-page of it, and Enquiries nest under it too.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Top-level "Site Control" menu with a branded overview page. */
+add_action( 'admin_menu', function () {
+	add_menu_page(
+		'Site Control',
+		'Site Control',
+		'edit_posts',
+		'site-control',
+		'rvn_site_control_page',
+		'dashicons-screenoptions',
+		2
+	);
+}, 9 );
+
+/* Site settings → a sub-page of Site Control (edit Home layout, Studio, Pricing,
+   FAQ, Mail, Security, Booking) + the REST endpoint the Astro build reads. */
 add_action( 'acf/init', function () {
-	if ( function_exists( 'acf_add_options_page' ) ) {
+	if ( function_exists( 'acf_add_options_sub_page' ) ) {
+		acf_add_options_sub_page( array(
+			'page_title'  => 'Site settings',
+			'menu_title'  => 'Site settings',
+			'menu_slug'   => 'rvn-site',
+			'parent_slug' => 'site-control',
+			'capability'  => 'edit_posts',
+			'redirect'    => false,
+		) );
+	} elseif ( function_exists( 'acf_add_options_page' ) ) {
 		acf_add_options_page( array(
-			'page_title' => 'Site settings',
-			'menu_title' => 'Site settings',
-			'menu_slug'  => 'rvn-site',
-			'capability' => 'edit_posts',
-			'redirect'   => false,
-			'icon_url'   => 'dashicons-admin-customizer',
-			'position'   => 3,
+			'page_title' => 'Site settings', 'menu_title' => 'Site settings',
+			'menu_slug' => 'rvn-site', 'capability' => 'edit_posts', 'redirect' => false,
 		) );
 	}
 } );
+
+/* Branded styles for the Site Control page only. */
+add_action( 'admin_head', function () {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || strpos( (string) $screen->id, 'site-control' ) === false ) { return; }
+	echo '<style>
+	.rvn-sc { max-width: 1100px; }
+	.rvn-sc__hero { background:#121110; color:#efece6; padding:34px 34px 30px; margin:20px 20px 0 0; border:1px solid #2b2925; }
+	.rvn-sc__wm { font-family:"Arial Narrow",Arial,sans-serif; font-weight:800; letter-spacing:.22em; font-size:15px; }
+	.rvn-sc__hero h1 { color:#efece6; font-size:44px; line-height:1; margin:14px 0 6px; font-weight:800; letter-spacing:-.5px; }
+	.rvn-sc__hero p { color:#8a847a; margin:0; letter-spacing:.02em; }
+	.rvn-sc__stats { display:flex; gap:34px; margin-top:24px; flex-wrap:wrap; }
+	.rvn-sc__stat b { display:block; font-size:30px; line-height:1; color:#efece6; font-weight:800; }
+	.rvn-sc__stat span { font-size:11px; letter-spacing:.14em; color:#6f6a60; text-transform:uppercase; }
+	.rvn-sc__grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin:16px 20px 0 0; }
+	.rvn-sc__card { display:block; background:#fff; border:1px solid #dcd7cf; border-left:3px solid #121110; padding:18px 20px; text-decoration:none; transition:box-shadow .15s, transform .15s; }
+	.rvn-sc__card:hover { box-shadow:0 6px 22px rgba(0,0,0,.08); transform:translateY(-1px); }
+	.rvn-sc__card h3 { margin:0 0 6px; font-size:15px; color:#121110; }
+	.rvn-sc__card p { margin:0; color:#787268; font-size:12.5px; line-height:1.5; }
+	.rvn-sc__card .dashicons { color:#8a847a; }
+	.rvn-sc__panel { background:#fff; border:1px solid #dcd7cf; padding:20px 24px; margin:16px 20px 0 0; }
+	.rvn-sc__panel h2 { margin-top:0; }
+	.rvn-sc__check { list-style:none; margin:0; padding:0; }
+	.rvn-sc__check li { padding:7px 0; border-bottom:1px solid #eee; font-size:13.5px; }
+	.rvn-sc__check li:last-child { border-bottom:none; }
+	.rvn-sc__ok { color:#2b7a2b; font-weight:700; } .rvn-sc__todo { color:#b26a00; font-weight:700; }
+	.rvn-sc__foot { color:#8a847a; font-size:12px; margin:18px 20px 30px 0; }
+	</style>';
+} );
+
+function rvn_site_control_page() {
+	$theme    = wp_get_theme();
+	$ver      = $theme->get( 'Version' );
+	$work     = wp_count_posts( 'work' );
+	$work_n   = isset( $work->publish ) ? (int) $work->publish : 0;
+	$enq      = wp_count_posts( 'rvn_enquiry' );
+	$enq_n    = ( isset( $enq->private ) ? (int) $enq->private : 0 ) + ( isset( $enq->publish ) ? (int) $enq->publish : 0 );
+	$posts_n  = (int) wp_count_posts( 'post' )->publish;
+	$acf      = function_exists( 'get_field' );
+	$variant  = $acf ? (string) rvn_site_opt( 'home_variant', 'raveenthiran' ) : 'raveenthiran';
+	$email    = (string) rvn_site_opt( 'contact_email', '' );
+	$smtp     = (int) rvn_site_opt( 'smtp_enable', 0 ) === 1;
+	$settings = admin_url( 'admin.php?page=rvn-site' );
+
+	$card = function ( $href, $icon, $title, $desc ) {
+		printf(
+			'<a class="rvn-sc__card" href="%s"><h3><span class="dashicons %s"></span> %s</h3><p>%s</p></a>',
+			esc_url( $href ), esc_attr( $icon ), esc_html( $title ), esc_html( $desc )
+		);
+	};
+	$row = function ( $ok, $text ) {
+		printf( '<li><span class="%s">%s</span> %s</li>', $ok ? 'rvn-sc__ok' : 'rvn-sc__todo', $ok ? '✓' : '›', wp_kses_post( $text ) );
+	};
+	?>
+	<div class="wrap rvn-sc">
+		<div class="rvn-sc__hero">
+			<div class="rvn-sc__wm">RAVEENTHIRAN</div>
+			<h1>Site Control</h1>
+			<p>Everything that runs raveenthiran.com — in one place.</p>
+			<div class="rvn-sc__stats">
+				<div class="rvn-sc__stat"><b><?php echo esc_html( $work_n ); ?></b><span>Projects</span></div>
+				<div class="rvn-sc__stat"><b><?php echo esc_html( $enq_n ); ?></b><span>Enquiries</span></div>
+				<div class="rvn-sc__stat"><b><?php echo esc_html( $posts_n ); ?></b><span>Journal</span></div>
+				<div class="rvn-sc__stat"><b>v<?php echo esc_html( $ver ); ?></b><span>Theme</span></div>
+				<div class="rvn-sc__stat"><b><?php echo esc_html( ucfirst( $variant ) ); ?></b><span>Home layout</span></div>
+			</div>
+		</div>
+
+		<div class="rvn-sc__grid">
+			<?php
+			$card( $settings . '#acf-field_rvn_home_variant', 'dashicons-layout', 'Homepage', 'Pick the start-page layout, hero text, marquee, awards & testimonials.' );
+			$card( admin_url( 'edit.php?post_type=work' ), 'dashicons-camera-alt', 'Projects', 'Add & edit albums — cover, gallery, credits, album, series, featured.' );
+			$card( admin_url( 'edit.php?post_type=rvn_enquiry' ), 'dashicons-email-alt', 'Enquiries', 'Every enquiry received from the website, newest first.' );
+			$card( admin_url( 'edit.php' ), 'dashicons-edit-page', 'Journal', 'Write journal entries (native WordPress posts).' );
+			$card( $settings, 'dashicons-store', 'Studio & Pricing', 'Studio statement, spec, and the Enquire calculator sessions.' );
+			$card( $settings, 'dashicons-email', 'Mail (SMTP)', 'Delivery for enquiry emails so they actually arrive.' );
+			$card( $settings, 'dashicons-shield', 'Security & Booking', 'Turnstile spam shield and the availability / booking link.' );
+			$card( admin_url( 'upload.php' ), 'dashicons-format-image', 'Media', 'Your image library — upload AVIF, manage files.' );
+			?>
+		</div>
+
+		<div class="rvn-sc__panel">
+			<h2>Publishing — how changes go live</h2>
+			<p>The website is a fast static build that pulls this content automatically. After you edit here, the site rebuilds on its schedule (nightly) or on the next push. To see a change immediately, trigger the deploy in GitHub → Actions → “Deploy frontend”, then hard-refresh (Ctrl/Cmd+Shift+R). The live footer shows the running version.</p>
+			<ul class="rvn-sc__check">
+				<?php
+				$row( $acf, $acf ? 'ACF is active — all settings available.' : 'ACF Pro is not active — install/activate it to edit settings.' );
+				$row( $work_n > 0, $work_n > 0 ? esc_html( $work_n ) . ' project(s) published.' : 'No projects yet — add your first album under <b>Projects</b>.' );
+				$row( $email !== '', $email !== '' ? 'Contact email set: <b>' . esc_html( $email ) . '</b>.' : 'Set your contact email in <b>Site settings → Contact</b>.' );
+				$row( $smtp, $smtp ? 'SMTP delivery is on.' : 'Configure <b>Mail (SMTP)</b> so enquiry emails reliably arrive.' );
+				?>
+			</ul>
+		</div>
+
+		<p class="rvn-sc__foot">Raveenthiran Headless · theme v<?php echo esc_html( $ver ); ?> · after activating a new theme version, ACF may prompt <b>Sync</b>, then save <b>Settings → Permalinks</b> once.</p>
+	</div>
+	<?php
+}
 
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'rvn/v1', '/site', array(
@@ -382,7 +503,7 @@ add_action( 'init', function () {
 		'labels'       => array( 'name' => 'Enquiries', 'singular_name' => 'Enquiry' ),
 		'public'       => false,
 		'show_ui'      => true,
-		'show_in_menu' => true,
+		'show_in_menu' => 'site-control',
 		'menu_icon'    => 'dashicons-email-alt',
 		'menu_position'=> 26,
 		'supports'     => array( 'title', 'editor' ),

@@ -197,15 +197,18 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 .index__row .k { font-size: 11px; letter-spacing: 0.18em; color: var(--faint); }
 .index__row .t { font-family: var(--font-display); font-size: 38px; letter-spacing: 0.01em; }
 
-/* ── RAW / FINAL compare ─────────────────────────────────────────────────── */
-.compare { position: relative; height: 74vh; overflow: hidden; border-top: var(--hair); border-bottom: var(--hair); touch-action: none; user-select: none; }
-.compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
-.compare .raw { filter: grayscale(1) brightness(.7) contrast(.9); z-index: 2; }
-.compare .divider { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--ink); z-index: 3; }
-.compare .knob { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 52px; height: 52px; border: 1px solid var(--ink); border-radius: 50%; background: rgba(18,17,16,.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 12px; letter-spacing: 0.1em; z-index: 4; pointer-events: none; }
-.compare .lab { position: absolute; bottom: 20px; font-size: 10px; letter-spacing: 0.22em; color: var(--ink); z-index: 3; }
-.compare .lab--l { left: 28px; }
-.compare .lab--r { right: 28px; }
+/* ── Before / after compare ([rvn_compare] shortcode) ────────────────────── */
+.rvn-compare { position: relative; overflow: hidden; user-select: none; touch-action: none; --start: 50%; margin: 1.6em 0; }
+.rvn-compare__media { margin: 0; }
+.rvn-compare__media img { display: block; width: 100%; height: auto; }
+.rvn-compare__before { position: absolute; inset: 0; }
+.rvn-compare__before img { clip-path: inset(0 calc(100% - var(--start)) 0 0); }
+.rvn-compare__label { position: absolute; bottom: 12px; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); background: rgba(18,17,16,.55); padding: 4px 9px; z-index: 3; }
+.rvn-compare__label--before { left: 12px; }
+.rvn-compare__label--after { right: 12px; }
+.rvn-compare__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+.rvn-compare__handle { position: absolute; top: 0; bottom: 0; left: var(--start); width: 1px; background: var(--ink); z-index: 2; pointer-events: none; }
+.rvn-compare__handle::after { content: '⟺'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px; border: 1px solid var(--ink); border-radius: 50%; background: rgba(18,17,16,.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 13px; }
 
 /* ── Recognition + quotes ────────────────────────────────────────────────── */
 .recog { display: grid; grid-template-columns: 1fr 1fr; border-top: var(--hair); position: relative; z-index: 1; }

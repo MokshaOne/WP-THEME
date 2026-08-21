@@ -4,6 +4,19 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.5.0 — 2026-08-21 · WP Admin redesign — Site Control as the home
+
+- **Windows-8 / Metro tile board**: the WordPress **Dashboard now redirects to
+  Site Control**, shown as a grid of flat colour tiles (Projects, Enquiries,
+  Journal with live counts; Homepage, Site settings, Media, Mail, Security; and
+  Appearance/Plugins/Users/Tools/WP Settings/ACF) — everything reachable from
+  one screen, plus a big **Publish now** tile.
+- **Icon-only sidebar**: the admin menu is collapsed to icons by default (native
+  fly-out submenus on hover), for a calm, uncluttered admin.
+- **Site Control hub**: Projects, Journal, Media and Enquiries are grouped as
+  its sub-menu; the toolbar keeps the **▲ Publish** shortcut on every screen.
+- Backend-only; version bumped to 3.5.0 for parity.
+
 ## 3.4.0 — 2026-08-21 · One-click publishing from WordPress
 
 - **Publish changes now** button in **Site Control**: triggers the GitHub

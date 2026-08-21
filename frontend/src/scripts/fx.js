@@ -292,7 +292,8 @@ export function initFX(opts = {}) {
    the image is never replaced. Off under reduced motion / coarse pointers. */
 function rvnHoverDistort(reduce, fine) {
 	if (reduce || !fine || matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) return () => {};
-	const plates = [...document.querySelectorAll('.masonry .card .plate')].filter((p) => p.querySelector('img'));
+	// Work/Series grid + every drag rail (home "Selected work", project gallery, …).
+	const plates = [...document.querySelectorAll('.masonry .card .plate, .rail .card .plate')].filter((p) => p.querySelector('img'));
 	if (!plates.length) return () => {};
 
 	let gl, canvas;
@@ -325,22 +326,48 @@ function rvnHoverDistort(reduce, fine) {
 	const resize = () => { canvas.width = Math.round(innerWidth * dpr); canvas.height = Math.round(innerHeight * dpr); gl.viewport(0, 0, canvas.width, canvas.height); };
 	resize(); addEventListener('resize', resize);
 
+	// Texture strategy that never risks the visible image:
+	//  · same-origin  → upload from the already-decoded <img> (format-agnostic,
+	//    reliable, no crossorigin attribute needed).
+	//  · cross-origin → a separate CORS fetch + createImageBitmap; works only
+	//    when the media server sends CORS headers, otherwise it fails and we fall
+	//    back to the plain image. The displayed <img> is never touched either way.
+	// Cache values: WebGLTexture (ready) · null (failed) · 'pending' (in flight).
 	const texCache = new Map();
+	function makeTex(source) {
+		const t = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, t);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		return t;
+	}
 	function texFor(img) {
-		if (texCache.has(img)) return texCache.get(img);
-		if (!img.complete || !img.naturalWidth) return null;
-		let tex = null;
-		try {
-			tex = gl.createTexture();
-			gl.bindTexture(gl.TEXTURE_2D, tex);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); // may throw if cross-origin tainted
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		} catch (e) { if (tex) gl.deleteTexture(tex); tex = null; }
-		texCache.set(img, tex);
-		return tex;
+		const src = img.currentSrc || img.src;
+		if (!src) return null;
+		const cached = texCache.get(src);
+		if (cached && cached !== 'pending') return cached;
+		if (cached === 'pending') return null;
+		let sameOrigin = false;
+		try { sameOrigin = new URL(src, location.href).origin === location.origin; } catch (e) {}
+		if (sameOrigin) {
+			if (!img.complete || !img.naturalWidth) return null; // decoded next frame
+			try { const t = makeTex(img); texCache.set(src, t); return t; }
+			catch (e) { texCache.set(src, null); return null; }
+		}
+		texCache.set(src, 'pending');
+		fetch(src, { mode: 'cors', credentials: 'omit' })
+			.then((r) => (r.ok ? r.blob() : Promise.reject(new Error('http'))))
+			.then((b) => createImageBitmap(b))
+			.then((bmp) => {
+				try { texCache.set(src, makeTex(bmp)); if (active) start(); }
+				catch (e) { texCache.set(src, null); }
+				if (bmp.close) bmp.close();
+			})
+			.catch(() => texCache.set(src, null));
+		return null;
 	}
 
 	let active = null, amt = 0, mouse = [0.5, 0.5], raf = 0, alive = true, dead = false;
@@ -369,7 +396,7 @@ function rvnHoverDistort(reduce, fine) {
 		raf = requestAnimationFrame(loop);
 	}
 
-	const onEnter = (e) => { const pl = e.currentTarget; if (!texFor(pl.querySelector('img'))) return; active = pl; start(); };
+	const onEnter = (e) => { const pl = e.currentTarget; active = pl; texFor(pl.querySelector('img')); start(); };
 	const onMove = (e) => { if (!active) return; const r = active.getBoundingClientRect(); mouse = [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; };
 	const onLeave = (e) => { if (active === e.currentTarget) active = null; };
 	plates.forEach((pl) => { pl.addEventListener('pointerenter', onEnter); pl.addEventListener('pointermove', onMove); pl.addEventListener('pointerleave', onLeave); });
@@ -378,7 +405,7 @@ function rvnHoverDistort(reduce, fine) {
 		if (dead) return; dead = true; alive = false; cancelAnimationFrame(raf); raf = 0;
 		removeEventListener('resize', resize);
 		plates.forEach((pl) => { pl.removeEventListener('pointerenter', onEnter); pl.removeEventListener('pointermove', onMove); pl.removeEventListener('pointerleave', onLeave); });
-		texCache.forEach((t) => t && gl.deleteTexture(t)); texCache.clear();
+		texCache.forEach((t) => { if (t && t !== 'pending') gl.deleteTexture(t); }); texCache.clear();
 		canvas.remove();
 	}
 	return () => teardown();

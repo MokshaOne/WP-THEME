@@ -4,6 +4,22 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.9.0 — 2026-08-21 · Cinematic transitions + distortion everywhere
+
+- **Cinematic project→project transition**: navigating between pages now
+  dissolves with a brief scale + blur, and where a project cover is shared it
+  morphs across on a softer curve — moving between projects reads as one
+  continuous image. Pure CSS View-Transitions; fully off under reduced motion.
+- **Hover distortion on every rail**: the WebGL ripple/RGB-split effect now also
+  covers the home "Selected work" rail and project galleries, not just the grid.
+- **Safe cross-origin textures**: textures load from the already-decoded image
+  same-origin, or via a CORS fetch cross-origin — the visible `<img>` never
+  carries a crossorigin attribute, so it can never break; the effect just
+  activates once CORS is present.
+- **Docs**: `docs/nas-cors.md` — copy-paste Apache/nginx/Cloudflare snippets to
+  enable CORS on the NAS media so the effect lights up on the live images.
+- Frontend-only; WordPress theme unchanged (no re-upload needed).
+
 ## 3.8.0 — 2026-08-21 · WebGL hover distortion + signature polish
 
 - **WebGL hover distortion (Awwwards tier)**: hovering a Work/Series grid image

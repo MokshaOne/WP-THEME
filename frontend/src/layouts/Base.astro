@@ -19,9 +19,15 @@ const { title, description = '', active = '', ogImage = '', preload = '', page =
 
 const site = await getSite();
 const projects = await getProjects();
-const recent = projects.slice(0, 3);
 const year = new Date().getFullYear();
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+// Open Graph / Twitter share image: make it absolute (scrapers reject relative
+// URLs) and always provide one — fall back to the first featured photograph so
+// every page shares a real, branded frame instead of a bare summary card.
+const abs = (u: string) => (u ? new URL(u, Astro.site).href : '');
+const featuredOg = projects.find((p) => p.featured_home)?.image || projects[0]?.image || '';
+const ogFinal = abs(ogImage || featuredOg);
 
 const nav = [
 	{ key: 'work', label: 'Work', href: '/work/' },
@@ -43,7 +49,7 @@ const jsonld = {
 			'@type': 'ProfessionalService',
 			'@id': (Astro.site || '') + '#studio',
 			name: 'Raveenthiran Photography',
-			image: ogImage || undefined,
+			image: ogFinal || undefined,
 			email: site.contact.email,
 			url: Astro.site,
 			areaServed: 'Austria',
@@ -71,11 +77,12 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	<meta property="og:title" content={title} />
 	<meta property="og:url" content={canonical} />
 	{description && <meta property="og:description" content={description} />}
-	{ogImage && <meta property="og:image" content={ogImage} />}
-	<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+	{ogFinal && <meta property="og:image" content={ogFinal} />}
+	{ogFinal && <meta property="og:image:alt" content={`${title} — Raveenthiran Photography`} />}
+	<meta name="twitter:card" content={ogFinal ? 'summary_large_image' : 'summary'} />
 	<meta name="twitter:title" content={title} />
 	{description && <meta name="twitter:description" content={description} />}
-	{ogImage && <meta name="twitter:image" content={ogImage} />}
+	{ogFinal && <meta name="twitter:image" content={ogFinal} />}
 	<meta name="theme-color" content="#121110" />
 	{preload && <link rel="preload" as="image" href={preload} fetchpriority="high" />}
 	<link rel="preconnect" href="https://wp.m1o.at" crossorigin />

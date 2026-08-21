@@ -4,6 +4,24 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.6.0 — 2026-08-21 · Quick wins — share images, sticky headings, CI guard
+
+- **Open Graph share images everywhere**: every page now emits a real, absolute
+  `og:image` / `twitter:image` — a page's own photo where it has one, otherwise
+  the first featured photograph — so links to any page (Work, Studio, Enquire,
+  legal, 404…) unfurl with a proper large image card instead of a bare summary.
+  Adds `og:image:alt`; JSON-LD uses the same resolved image.
+- **Sticky section headings**: on the home page, the **SELECTED WORK** and **THE
+  INDEX** titles pin just under the header while their section scrolls past — an
+  editorial touch, pure CSS, no motion (unaffected by reduced-motion).
+- **Visual-check CI**: a new GitHub Actions workflow builds the site, type-checks
+  it, then loads every key route (desktop + mobile) in a real headless Chromium.
+  It **fails the check on any uncaught JS error or missing page content** — the
+  exact class of bug that used to make the site look broken — and uploads
+  full-page screenshots as an artifact for a visual diff on each pull request.
+  `@astrojs/check` + TypeScript are now dev-dependencies so the type-check runs.
+- Frontend-only; WordPress theme unchanged (no re-upload needed).
+
 ## 3.5.0 — 2026-08-21 · WP Admin redesign — Site Control as the home
 
 - **Windows-8 / Metro tile board**: the WordPress **Dashboard now redirects to

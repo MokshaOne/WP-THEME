@@ -1,0 +1,69 @@
+name: Visual check
+
+# Builds the Astro site and loads every key route in a real headless Chromium.
+# Fails the check if any page throws an uncaught JS error or is missing its
+# <main> content — the class of bug that used to leave the live site looking
+# broken. Full-page screenshots (desktop + mobile) are uploaded as an artifact
+# so you can eyeball the visual diff on each pull request.
+#
+# Runs on PRs and pushes that touch the frontend, plus a manual trigger. It
+# never touches WordPress secrets; the build uses the baked-in sample content
+# when the API is unreachable, so the check is deterministic.
+
+on:
+  pull_request:
+    paths: [ "frontend/**", ".github/workflows/visual-check.yml" ]
+  push:
+    branches: [ "claude/headless-wordpress-easyname-8eu9fj" ]
+    paths: [ "frontend/**", ".github/workflows/visual-check.yml" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Type-check
+        working-directory: frontend
+        run: npm run check
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Install Playwright + Chromium
+        working-directory: frontend
+        run: |
+          npm i --no-save playwright@^1.48
+          npx playwright install --with-deps chromium
+
+      - name: Smoke + screenshots
+        working-directory: frontend
+        run: node scripts/smoke.mjs
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: frontend/screenshots/
+          if-no-files-found: warn
+          retention-days: 14

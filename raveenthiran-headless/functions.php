@@ -57,6 +57,17 @@ add_action( 'init', function () {
 			'rewrite'           => array( 'slug' => 'service', 'with_front' => false ),
 		) );
 	}
+
+	if ( ! taxonomy_exists( 'work_series' ) ) {
+		register_taxonomy( 'work_series', 'work', array(
+			'labels'            => array( 'name' => __( 'Series', 'rvn' ), 'singular_name' => __( 'Series', 'rvn' ) ),
+			'public'            => true,
+			'hierarchical'      => false,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+			'rewrite'           => array( 'slug' => 'series', 'with_front' => false ),
+		) );
+	}
 } );
 
 /* Flush rewrite rules once when the theme is activated (so /work resolves). */
@@ -113,6 +124,16 @@ function rvn_image( $id, $size = 'large' ) {
 	);
 }
 
+/** Series terms for a project as [{name,slug}]. */
+function rvn_series_terms( $post_id ) {
+	$out = array();
+	$terms = wp_get_post_terms( $post_id, 'work_series' );
+	if ( ! is_wp_error( $terms ) ) {
+		foreach ( $terms as $t ) { $out[] = array( 'name' => $t->name, 'slug' => $t->slug ); }
+	}
+	return $out;
+}
+
 /* ── REST contract: project / gallery / seo ─────────────────────────────── */
 add_action( 'rest_api_init', function () {
 
@@ -128,6 +149,7 @@ add_action( 'rest_api_init', function () {
 				'location'      => (string) rvn_field( $id, 'location', '_still_location' ),
 				'website'       => (string) rvn_field( $id, 'website',  '_still_website' ),
 				'services'      => $services,
+				'series'        => rvn_series_terms( $id ),
 				'credits'       => rvn_credits( $id ),
 				'featured_home' => (bool) ( function_exists( 'get_field' ) ? get_field( 'featured_home', $id ) : false ),
 			);

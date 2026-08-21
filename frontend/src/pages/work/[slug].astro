@@ -50,6 +50,9 @@ const items = p.gallery.length
 			{p.services.length > 0 && (
 				<div class="services">{p.services.map((s) => <span class="service">{s}</span>)}</div>
 			)}
+			{(p.series || []).length > 0 && (
+				<div class="services">{(p.series || []).map((s) => <a class="service service--link" href={`/series/${s.slug}/`}>{s.name}</a>)}</div>
+			)}
 			{p.credits.length > 0 && (
 				<div class="credits">
 					{p.credits.map((c) => (

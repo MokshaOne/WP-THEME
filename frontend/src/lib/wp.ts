@@ -16,6 +16,7 @@ export interface GalleryImage {
 }
 
 export interface Credit { role: string; name: string; url: string; }
+export interface Term { name: string; slug: string; }
 
 export interface Project {
 	slug: string;
@@ -26,6 +27,7 @@ export interface Project {
 	location: string;
 	website: string;
 	services: string[];
+	series?: Term[];
 	credits: Credit[];
 	featured_home: boolean;
 	image: string;            // featured image URL ('' if none)
@@ -81,6 +83,9 @@ function mapProject(p: any): Project {
 		? f.credits.map((c: any) => ({ role: c.role || '', name: c.name || '', url: c.url || '' }))
 		: [];
 	const services: string[] = Array.isArray(f.services) ? f.services.filter(Boolean) : [];
+	const series: Term[] = Array.isArray(f.series)
+		? f.series.map((t: any) => ({ name: t.name || '', slug: t.slug || '' })).filter((t: Term) => t.slug)
+		: [];
 	const seo = (p.seo || {}) as any;
 	return {
 		slug: p.slug,
@@ -91,6 +96,7 @@ function mapProject(p: any): Project {
 		location: f.location || '',
 		website: f.website || '',
 		services,
+		series,
 		credits,
 		featured_home: !!f.featured_home,
 		image,

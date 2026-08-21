@@ -262,6 +262,8 @@ body.header-light .monogram{color:var(--gold-2)}
 .meta-pairs .v a{border-bottom:1px solid var(--gold);padding-bottom:1px}
 .services{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.6rem}
 .service{font-family:var(--label);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line-2);border-radius:999px;padding:.45rem .85rem;font-weight:600}
+.service--link{transition:background var(--dur) var(--ease),color var(--dur) var(--ease)}
+.service--link:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .credits{margin-top:1.8rem;display:grid;gap:.8rem}
 .credits .row{display:flex;flex-direction:column;gap:.15rem}
 .credits .cr-role{font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--dim)}

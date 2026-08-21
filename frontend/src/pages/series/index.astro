@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getProjects } from '../../lib/wp';
+
+const projects = await getProjects();
+const map = new Map<string, { name: string; slug: string; items: typeof projects }>();
+for (const p of projects) {
+	for (const s of p.series || []) {
+		if (!map.has(s.slug)) map.set(s.slug, { name: s.name, slug: s.slug, items: [] });
+		map.get(s.slug)!.items.push(p);
+	}
+}
+const series = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+const grads = [
+	'linear-gradient(135deg,#2a2824,#17140f)', 'linear-gradient(120deg,#232830,#12161c)',
+	'linear-gradient(150deg,#2c2622,#171210)', 'linear-gradient(120deg,#26262c,#141418)',
+];
+---
+<Base title="Series — Raveenthiran" description="Bodies of work — projects grouped into named series." active="series">
+	<div class="page page--wide">
+		<div class="page-head" data-reveal>
+			<span class="eyebrow">Bodies of work</span>
+			<h1 class="page-title">Series</h1>
+		</div>
+
+		{series.length > 0 ? (
+			<div class="masonry stagger">
+				{series.map((s, i) => {
+					const cover = s.items.find((p) => p.image);
+					return (
+						<a class="tile" href={`/series/${s.slug}/`} data-reveal>
+							<div class="tile__frame">
+								{cover?.image
+									? <img class="tile__img" src={cover.image} alt={s.name} loading="lazy" />
+									: <div class="tile__ph" style={`background:${grads[i % grads.length]};aspect-ratio:4/5`}>{s.name.toLowerCase()}</div>}
+							</div>
+							<div class="tile__cap">
+								<span class="tile__t">{s.name}</span>
+								<span class="tile__c">{s.items.length} {s.items.length === 1 ? 'project' : 'projects'}</span>
+							</div>
+						</a>
+					);
+				})}
+			</div>
+		) : (
+			<p class="empty">No series yet — group projects under a series in WordPress (Work → Series).</p>
+		)}
+	</div>
+</Base>

@@ -1,0 +1,46 @@
+# Raveenthiran — static site (easyname / Apache)
+
+# Serve the bespoke 404 page on missing routes
+ErrorDocument 404 /404.html
+
+# ── Compression ──────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml application/rss+xml image/svg+xml
+</IfModule>
+
+# ── Caching ──────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Content-hashed build assets never change → cache hard
+  <FilesMatch "\.(woff2?|css|js|avif|webp|jpe?g|png|gif|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # HTML / feeds / sitemaps should always be revalidated
+  <FilesMatch "\.(html|xml|json|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+
+  # ── Security headers ──────────────────────────────────────
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+  Header set X-XSS-Protection "0"
+</IfModule>
+
+# ── Correct MIME types ───────────────────────────────────────
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# ── Force HTTPS (Cloudflare usually handles this; harmless if so) ──
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>

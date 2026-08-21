@@ -399,6 +399,11 @@
 		try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 	});
 
+	/* register the service worker once (installable + offline) */
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+	}
+
 	function boot() { initI18n(); initTheme(); initOverlay(); initReveal(); initCine(); initProgress(); initWork(); initLightbox(); initPrice(); initCountup(); initMagnetic(); initTurnstile(); initCompare(); }
 	document.addEventListener('astro:page-load', boot);
 })();

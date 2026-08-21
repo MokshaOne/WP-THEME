@@ -93,19 +93,44 @@ export function initFX(opts = {}) {
 	let raf = 0;
 	if (fine && !reduce) {
 		const ring = document.createElement('div');
-		ring.style.cssText = 'position:fixed;left:0;top:0;width:34px;height:34px;border-radius:50%;border:1.5px solid #efece6;mix-blend-mode:difference;pointer-events:none;z-index:10001;opacity:0;transform:translate(-100px,-100px);transition:width .25s,height .25s,opacity .3s';
+		ring.style.cssText = 'position:fixed;left:0;top:0;width:34px;height:34px;border-radius:50%;border:1.5px solid #efece6;mix-blend-mode:difference;pointer-events:none;z-index:10001;opacity:0;transform:translate(-100px,-100px);transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),border-radius .3s,opacity .3s';
 		document.body.append(ring);
 		let mx = -100, my = -100, rx = -100, ry = -100, seen = false;
+		// Magnetic targeting: the ring snaps to and wraps a hovered control, and
+		// deliberate buttons drift a few px toward the pointer for a tactile pull.
+		let hotEl = null, magEl = null;
+		const isMag = (el) => el && el.matches && el.matches('.btn,.cta,.rbtn,[data-magnetic]');
+		const clearMag = () => { if (magEl) { magEl.style.transform = ''; magEl = null; } };
 		const onMove = e => { mx = e.clientX; my = e.clientY; if (!seen) { seen = true; ring.style.opacity = '1'; } };
 		const onOver = e => {
 			const hot = e.target.closest && e.target.closest('a,button,[data-zoom]');
-			ring.style.width = hot ? '58px' : '34px'; ring.style.height = hot ? '58px' : '34px';
+			hotEl = hot || null;
+			if (hot !== magEl) clearMag();
+			if (isMag(hot)) magEl = hot;
+			if (!hot) { ring.style.width = '34px'; ring.style.height = '34px'; ring.style.borderRadius = '50%'; }
 		};
-		const onLeave = () => { ring.style.opacity = '0'; };
+		const onLeave = () => { ring.style.opacity = '0'; hotEl = null; clearMag(); };
 		const tick = () => {
-			rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
-			const s = ring.offsetWidth / 2;
-			ring.style.transform = 'translate(' + (rx - s) + 'px,' + (ry - s) + 'px)';
+			let tx = mx, ty = my, lerp = 0.18;
+			if (hotEl && hotEl.isConnected) {
+				const r = hotEl.getBoundingClientRect();
+				const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+				// Ring: snap toward the control's centre and wrap it (rounded rect).
+				tx = mx + (cx - mx) * 0.35; ty = my + (cy - my) * 0.35; lerp = 0.28;
+				const w = Math.min(r.width + 20, 260), h = Math.min(r.height + 20, 120);
+				ring.style.width = w + 'px'; ring.style.height = h + 'px';
+				ring.style.borderRadius = h > 70 ? '50%' : '10px';
+				// Button: drift toward the pointer (magnetic pull), capped.
+				if (magEl === hotEl) {
+					const px = Math.max(-14, Math.min(14, (mx - cx) * 0.28));
+					const py = Math.max(-14, Math.min(14, (my - cy) * 0.28));
+					magEl.style.transform = 'translate(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px)';
+				}
+			}
+			rx += (tx - rx) * lerp; ry += (ty - ry) * lerp;
+			ring.style.left = (rx - ring.offsetWidth / 2) + 'px';
+			ring.style.top = (ry - ring.offsetHeight / 2) + 'px';
+			ring.style.transform = 'translate(0,0)';
 			if (peekOn) peek.style.transform = 'translate(' + (mx + 30) + 'px,' + (my - peek.offsetHeight / 2) + 'px) rotate(3deg)';
 			vel *= 0.88;
 			const sk = Math.max(-7, Math.min(7, vel * 0.10));
@@ -115,7 +140,7 @@ export function initFX(opts = {}) {
 		addEventListener('mousemove', onMove, { passive: true });
 		addEventListener('mouseover', onOver, { passive: true });
 		document.addEventListener('mouseleave', onLeave);
-		cleanups.push(() => { removeEventListener('mousemove', onMove); removeEventListener('mouseover', onOver); document.removeEventListener('mouseleave', onLeave); cancelAnimationFrame(raf); ring.remove(); });
+		cleanups.push(() => { removeEventListener('mousemove', onMove); removeEventListener('mouseover', onOver); document.removeEventListener('mouseleave', onLeave); cancelAnimationFrame(raf); clearMag(); ring.remove(); });
 		tick();
 	} else {
 		/* still decay velocity skew without a cursor */

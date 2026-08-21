@@ -106,11 +106,18 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; margin: 0; 
 .m-ovl a .num { font-family: var(--font-body); font-size: 12px; letter-spacing: 0.2em; color: var(--faint); margin-right: 14px; vertical-align: middle; }
 .m-ovl .m-foot { margin-top: 40px; font-size: 11px; letter-spacing: 0.18em; color: var(--dim); display: flex; gap: 24px; flex-wrap: wrap; }
 
+/* Magnetic pull easing (signature motion) — the JS nudges these toward the
+   pointer each frame; this bespoke ease-out gives the trailing follow + a soft
+   spring back to place on release. Suppressed under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+	.cta, .rbtn { transition: transform .45s cubic-bezier(.16, 1, .3, 1); }
+}
+
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 .btn {
 	display: inline-block; font-size: 11px; letter-spacing: 0.18em; font-weight: 600;
 	text-transform: uppercase; border: 1px solid var(--ink); padding: 16px 26px;
-	transition: background .25s, color .25s, border-color .25s;
+	transition: transform .45s cubic-bezier(.16, 1, .3, 1), background .25s, color .25s, border-color .25s;
 }
 .btn:hover { background: var(--ink); color: var(--canvas); }
 .btn--ghost { border-color: var(--chip); color: var(--dim); }

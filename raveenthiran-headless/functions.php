@@ -381,6 +381,11 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
 		'post_status'  => 'private',
 		'post_title'   => trim( $name . ' — ' . ( $type ?: 'Enquiry' ) . ( $estimate ? ' (' . $estimate . ')' : '' ) ),
 		'post_content' => $body,
+		'meta_input'   => array(
+			'_rvn_type'     => $type,
+			'_rvn_estimate' => $estimate,
+			'_rvn_email'    => $email,
+		),
 	) );
 
 	$studio  = rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
@@ -581,4 +586,51 @@ class RVN_PDF {
 		$pdf .= "trailer\n<< /Size " . $count . " /Root 1 0 R >>\nstartxref\n" . $xref_pos . "\n%%EOF";
 		return $pdf;
 	}
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Enquiry insights — a small dashboard widget over the stored enquiries.
+   No third-party analytics: answers "how many enquiries, of what kind".
+   ══════════════════════════════════════════════════════════════════════ */
+
+add_action( 'wp_dashboard_setup', function () {
+	if ( ! current_user_can( 'edit_posts' ) ) { return; }
+	wp_add_dashboard_widget( 'rvn_insights', 'Enquiry insights', 'rvn_insights_widget' );
+} );
+
+function rvn_insights_widget() {
+	$ids = get_posts( array(
+		'post_type'      => 'rvn_enquiry',
+		'post_status'    => array( 'private', 'publish' ),
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'no_found_rows'  => true,
+	) );
+	$total = count( $ids );
+	$since = strtotime( '-30 days' );
+	$recent = 0; $types = array(); $sum = 0.0; $cur = '';
+	foreach ( $ids as $id ) {
+		if ( get_post_time( 'U', true, $id ) >= $since ) { $recent++; }
+		$t = get_post_meta( $id, '_rvn_type', true );
+		if ( $t ) { $types[ $t ] = ( $types[ $t ] ?? 0 ) + 1; }
+		$e = (string) get_post_meta( $id, '_rvn_estimate', true );
+		if ( $e !== '' ) {
+			if ( $cur === '' && preg_match( '/^\D+/', $e, $m ) ) { $cur = trim( $m[0] ); }
+			$sum += (float) preg_replace( '/[^0-9.]/', '', str_replace( ',', '', $e ) );
+		}
+	}
+	arsort( $types );
+
+	echo '<div style="display:flex;gap:1.5rem;margin-bottom:1rem">';
+	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">total enquiries</div></div>', $total );
+	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">last 30 days</div></div>', $recent );
+	if ( $sum > 0 ) { printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%s%s</div><div style="color:#777">pipeline (est.)</div></div>', esc_html( $cur ), number_format( $sum ) ); }
+	echo '</div>';
+
+	if ( $types ) {
+		echo '<table class="widefat striped" style="margin-top:.5rem"><thead><tr><th>Project type</th><th style="text-align:right">Enquiries</th></tr></thead><tbody>';
+		foreach ( $types as $t => $n ) { printf( '<tr><td>%s</td><td style="text-align:right">%d</td></tr>', esc_html( $t ), $n ); }
+		echo '</tbody></table>';
+	}
+	printf( '<p style="margin-top:1rem"><a href="%s">View all enquiries →</a></p>', esc_url( admin_url( 'edit.php?post_type=rvn_enquiry' ) ) );
 }

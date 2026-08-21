@@ -1,30 +1,24 @@
-/* Raveenthiran — service worker. Network-first for pages (always fresh online),
-   cache as offline fallback; cache-first for hashed build assets. */
-const CACHE = 'rvn-v3';
-const CORE = ['/', '/work/', '/series/', '/journal/', '/about/', '/enquire/', '/offline/', '/site.webmanifest', '/icon.svg'];
+/* Raveenthiran — service-worker KILL SWITCH.
+   The previous PWA worker cached the app shell and kept serving stale builds,
+   so the live site appeared to "revert" to an old version. This worker takes
+   over from it, deletes every cache, unregisters itself, and reloads open
+   tabs — then no service worker controls the site and the browser always
+   fetches the freshest files from the server. */
+self.addEventListener('install', () => self.skipWaiting());
 
-self.addEventListener('install', (e) => {
-	e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE.map((u) => new Request(u, { cache: 'reload' }))).catch(() => {})));
-	self.skipWaiting();
+self.addEventListener('activate', (event) => {
+	event.waitUntil((async () => {
+		try {
+			const keys = await caches.keys();
+			await Promise.all(keys.map((k) => caches.delete(k)));
+		} catch (e) {}
+		try { await self.registration.unregister(); } catch (e) {}
+		try {
+			const clients = await self.clients.matchAll({ type: 'window' });
+			clients.forEach((c) => { try { c.navigate(c.url); } catch (e) {} });
+		} catch (e) {}
+	})());
 });
-self.addEventListener('activate', (e) => {
-	e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))));
-	self.clients.claim();
-});
-self.addEventListener('fetch', (e) => {
-	const req = e.request;
-	if (req.method !== 'GET') return;
-	const url = new URL(req.url);
-	if (url.origin !== location.origin) return; // leave WP images / cross-origin alone
 
-	if (req.mode === 'navigate') {
-		e.respondWith(
-			fetch(req).then((r) => { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(req, cp)); return r; })
-				.catch(() => caches.match(req).then((r) => r || caches.match('/offline/')))
-		);
-		return;
-	}
-	e.respondWith(
-		caches.match(req).then((r) => r || fetch(req).then((res) => { const cp = res.clone(); caches.open(CACHE).then((c) => c.put(req, cp)); return res; }))
-	);
-});
+/* Never intercept — let the browser fetch everything straight from the network. */
+self.addEventListener('fetch', () => {});

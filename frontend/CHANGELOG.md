@@ -4,6 +4,18 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.2.1 — 2026-08-21 · Fix: site reverting to old version (service worker)
+
+- The PWA service worker (added in 2.6.0) was caching the app shell and serving
+  stale builds, so the live site kept "reverting" to an old version. Root cause:
+  `sw.js` was covered by the immutable `*.js` cache rule, pinning the old worker
+  in browsers for up to a year.
+- **Fix**: `sw.js` is now a kill-switch that deletes all caches, unregisters the
+  worker and reloads open tabs; `ui.js` also proactively unregisters any worker
+  and clears caches; `.htaccess` serves `sw.js` as `no-cache` so it can never be
+  pinned again. Net effect: no service worker controls the site — the browser
+  always fetches the freshest files. (Frontend-only; no theme re-upload.)
+
 ## 3.2.0 — 2026-08-21 · Site Control admin + polish
 
 - **Site Control** — a single branded WordPress admin hub (top-level menu) to run

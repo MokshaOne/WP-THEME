@@ -274,7 +274,12 @@ document.addEventListener('astro:page-load', boot);
 document.addEventListener('astro:before-swap', teardown);
 if (document.readyState !== 'loading') { /* first load handled by astro:page-load */ }
 
-/* service worker */
+/* Remove any previously-registered PWA service worker + its caches — the old
+   offline layer was serving stale builds, making the live site look reverted.
+   The /sw.js kill-switch cleans clients that update it; this handles the rest. */
 if ('serviceWorker' in navigator) {
-	addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+	navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});
+}
+if (typeof caches !== 'undefined' && caches.keys) {
+	caches.keys().then((ks) => ks.forEach((k) => caches.delete(k))).catch(() => {});
 }

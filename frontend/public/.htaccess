@@ -20,6 +20,10 @@ ErrorDocument 404 /404.html
   <FilesMatch "\.(html|xml|json|webmanifest)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
+  # The service worker must never be cached, or updates can't propagate
+  <Files "sw.js">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
 
   # ── Security headers ──────────────────────────────────────
   Header set X-Content-Type-Options "nosniff"

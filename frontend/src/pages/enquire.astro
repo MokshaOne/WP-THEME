@@ -23,7 +23,7 @@ const endpoint = WP_BASE.replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 		</div>
 
 		<div class="two-col" data-reveal>
-			<form class="form" method="post" action={`mailto:${EMAIL}`} data-price-engine data-currency={CUR} data-mailto={EMAIL} data-endpoint={endpoint}>
+			<form class="form" method="post" action={endpoint} data-price-engine data-currency={CUR} data-mailto={EMAIL} data-endpoint={endpoint}>
 				<input type="hidden" name="estimate" value="" data-estimate-input />
 				<input type="hidden" name="breakdown" value="" data-breakdown />
 				<div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>

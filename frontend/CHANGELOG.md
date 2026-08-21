@@ -4,6 +4,14 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 2.1.1 — 2026-08-21 · Enquiry form fix (frontend only)
+
+- The enquiry form's `action` now targets the HTTPS enquiry endpoint
+  instead of `mailto:`, so Chrome no longer shows "This form is not secure.
+  Autofill has been turned off." Autofill works again, and the form now also
+  submits without JavaScript (native POST → the same endpoint). JS behaviour
+  and the mailto fallback are unchanged. (No theme re-upload needed.)
+
 ## 2.1.0 — 2026-08-21 · SMTP mail
 
 - **SMTP delivery** for enquiry emails (adapted from the Obscura theme).

@@ -168,7 +168,18 @@ function initFilter() {
 	// archive opens filtered to that series, shown as an extra pressed chip.
 	// Clicking any category chip leaves series mode; clicking the series chip
 	// re-applies it.
-	const serSlug = (new URLSearchParams(location.search).get('series') || '').toLowerCase();
+	const params = new URLSearchParams(location.search);
+	const serSlug = (params.get('series') || '').toLowerCase();
+	const catParam = (params.get('cat') || '').toUpperCase();
+	// Every filter state is a shareable URL: chips write ?cat= / ?series= via
+	// replaceState (no history spam), and the page restores the filter on load.
+	const syncUrl = (cat, ser) => {
+		const url = new URL(location.href);
+		url.searchParams.delete('cat'); url.searchParams.delete('series');
+		if (ser) { url.searchParams.set('series', ser); }
+		else if (cat && cat !== 'ALL') { url.searchParams.set('cat', cat.toLowerCase()); }
+		history.replaceState(null, '', url);
+	};
 	const inSeries = (c) => (c.dataset.series || '').split(/\s+/).includes(serSlug);
 	let serChip = null;
 	const setCount = (n) => { if (countEl) countEl.textContent = String(n).padStart(2, '0'); };
@@ -182,6 +193,7 @@ function initFilter() {
 		chips.forEach((ch) => ch.setAttribute('aria-pressed', String(ch.dataset.cat === cat)));
 		if (serChip) serChip.setAttribute('aria-pressed', 'false');
 		setCount(shown);
+		syncUrl(cat, '');
 	};
 	const applySeries = () => {
 		let shown = 0;
@@ -189,6 +201,7 @@ function initFilter() {
 		chips.forEach((ch) => ch.setAttribute('aria-pressed', 'false'));
 		serChip.setAttribute('aria-pressed', 'true');
 		setCount(shown);
+		syncUrl('', serSlug);
 	};
 	chips.forEach((ch) => ch.addEventListener('click', () => apply(ch.dataset.cat)));
 	const first = serSlug && cards.find(inSeries);
@@ -201,6 +214,8 @@ function initFilter() {
 		bar.insertBefore(serChip, chips[0] ? chips[0].nextSibling : null);
 		serChip.addEventListener('click', applySeries);
 		applySeries();
+	} else if (catParam && chips.some((ch) => ch.dataset.cat === catParam)) {
+		apply(catParam);
 	} else {
 		apply('ALL');
 	}

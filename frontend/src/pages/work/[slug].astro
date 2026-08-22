@@ -83,7 +83,7 @@ const breadcrumbLd = {
 	],
 };
 ---
-<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={p.ogImage || p.image} preload={p.image}>
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={p.ogImage || `/og/${p.slug}.jpg`} preload={p.image}>
 	<script type="application/ld+json" set:html={JSON.stringify(projectLd)} is:inline />
 	<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} is:inline />
 	<!-- SPLIT HERO -->

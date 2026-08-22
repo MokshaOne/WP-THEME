@@ -211,29 +211,97 @@ export function initFX(opts = {}) {
 	});
 	cleanups.push(() => lio.disconnect());
 
-	/* lightbox (click any [data-zoom]) */
+	/* lightbox (click any [data-zoom]) — full gallery mode: every [data-zoom] in
+	   the same container becomes a navigable set (arrows, ←/→ keys, swipe,
+	   counter, neighbour preload). Accessible: role=dialog + focus trap, focus
+	   returned to the trigger on close. */
 	const onZoom = e => {
 		const img = e.target.closest && e.target.closest('[data-zoom]');
 		if (!img) return;
 		e.preventDefault(); e.stopPropagation();
+		const scope = img.closest('.rail, [data-work-grid]') || document;
+		const set = [...scope.querySelectorAll('[data-zoom]')];
+		let idx = Math.max(0, set.indexOf(img));
+		const prevFocus = document.activeElement;
+		const pad2 = n => String(n).padStart(2, '0');
+		const mono = "font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:#efece6";
+
 		const box = document.createElement('div');
+		box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Image gallery');
 		box.style.cssText = 'position:fixed;inset:0;z-index:10005;background:rgba(12,11,10,.94);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s';
 		const big = document.createElement('img');
-		big.src = img.currentSrc || img.src;
-		big.style.cssText = 'max-width:92vw;max-height:88vh;object-fit:contain;transform:scale(.95);transition:transform .5s ' + ease;
+		big.style.cssText = 'max-width:92vw;max-height:88vh;object-fit:contain;transform:scale(.95);transition:transform .5s ' + ease + ',opacity .2s';
 		const cap = document.createElement('div');
-		cap.style.cssText = "position:fixed;left:28px;bottom:22px;font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:.2em;color:#efece6";
-		cap.textContent = (img.alt || '').toUpperCase();
-		const x = document.createElement('div');
-		x.style.cssText = "position:fixed;right:28px;top:22px;font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:.2em;color:#8a847a";
-		x.textContent = 'CLICK ANYWHERE TO CLOSE ✕';
-		box.append(big, cap, x);
+		cap.style.cssText = "position:fixed;left:28px;bottom:22px;" + mono;
+		const count = document.createElement('div');
+		count.style.cssText = 'position:fixed;left:28px;top:22px;' + mono + ';color:#8a847a';
+		const mkBtn = (label, txt, css) => {
+			const b = document.createElement('button');
+			b.setAttribute('aria-label', label);
+			b.style.cssText = 'background:none;border:1px solid #3a372f;color:#efece6;cursor:pointer;padding:10px 16px;' + mono + ';' + css;
+			b.textContent = txt;
+			b.addEventListener('click', ev => ev.stopPropagation());
+			return b;
+		};
+		const prev = mkBtn('Previous image', '←', 'position:fixed;left:28px;top:50%;transform:translateY(-50%)');
+		const next = mkBtn('Next image', '→', 'position:fixed;right:28px;top:50%;transform:translateY(-50%)');
+		const x = mkBtn('Close', '✕ CLOSE', 'position:fixed;right:28px;top:16px;border:none;color:#8a847a');
+		if (set.length < 2) { prev.style.display = next.style.display = 'none'; }
+
+		const show = (i) => {
+			idx = (i + set.length) % set.length;
+			const im = set[idx];
+			big.style.opacity = '0';
+			const src = im.currentSrc || im.src;
+			const swap = () => { big.src = src; big.style.opacity = '1'; };
+			const pre = new Image(); pre.onload = swap; pre.onerror = swap; pre.src = src;
+			cap.textContent = (im.alt || '').toUpperCase();
+			count.textContent = pad2(idx + 1) + ' / ' + pad2(set.length);
+			// warm the neighbours so arrows feel instant
+			[set[(idx + 1) % set.length], set[(idx - 1 + set.length) % set.length]].forEach(n => {
+				if (n && n !== im) { const w = new Image(); w.src = n.currentSrc || n.src; }
+			});
+		};
+		prev.addEventListener('click', () => show(idx - 1));
+		next.addEventListener('click', () => show(idx + 1));
+
+		box.append(big, cap, count, prev, next, x);
 		document.body.append(box);
+		show(idx);
 		requestAnimationFrame(() => { box.style.opacity = '1'; big.style.transform = 'scale(1)'; });
-		const close = () => { box.style.opacity = '0'; setTimeout(() => box.remove(), 350); removeEventListener('keydown', onKey); };
-		const onKey = ev => { if (ev.key === 'Escape') close(); };
-		box.addEventListener('click', close);
+
+		const close = () => {
+			box.style.opacity = '0'; setTimeout(() => box.remove(), 350);
+			removeEventListener('keydown', onKey);
+			if (prevFocus && prevFocus.focus) { prevFocus.focus(); }
+		};
+		const onKey = ev => {
+			if (ev.key === 'Escape') { close(); return; }
+			if (ev.key === 'ArrowLeft') { show(idx - 1); return; }
+			if (ev.key === 'ArrowRight') { show(idx + 1); return; }
+			if (ev.key === 'Tab') {
+				// trap focus inside the dialog controls
+				const f = [prev, next, x].filter(b => b.style.display !== 'none');
+				const at = f.indexOf(document.activeElement);
+				ev.preventDefault();
+				f[(at + (ev.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+			}
+		};
+		let swiped = false;
+		box.addEventListener('click', () => { if (swiped) { swiped = false; return; } close(); });
+		x.addEventListener('click', close);
 		addEventListener('keydown', onKey);
+		x.focus();
+
+		// swipe: a mostly-horizontal drag over ~40px flips the image (and must
+		// not count as the backdrop click that closes the dialog)
+		let tx = null, ty = null;
+		box.addEventListener('pointerdown', ev => { tx = ev.clientX; ty = ev.clientY; });
+		box.addEventListener('pointerup', ev => {
+			if (tx === null) return;
+			const dx = ev.clientX - tx, dy = ev.clientY - ty; tx = ty = null;
+			if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) { swiped = true; show(idx + (dx < 0 ? 1 : -1)); }
+		});
 	};
 	document.addEventListener('click', onZoom, true);
 	cleanups.push(() => document.removeEventListener('click', onZoom, true));

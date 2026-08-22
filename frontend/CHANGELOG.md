@@ -4,6 +4,28 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.4.0 — 2026-08-23 · Gallery lightbox, shareable filters, branded OG cards
+
+Frontend + deploy workflow. Three improvements in one release:
+
+- **The lightbox is a real gallery now.** Every image in the same rail/grid
+  becomes a navigable set: ←/→ arrows, arrow keys, swipe, an `02 / 04`
+  counter, neighbour preloading, per-image captions. Accessible from the
+  ground up — `role="dialog"`, focus trapped between the controls, Escape
+  closes, and focus returns to the trigger. Backdrop click still closes
+  (swipes don't count as clicks).
+- **Filter states are shareable URLs.** Category chips write `?cat=fashion`
+  (series mode keeps `?series=…`) via `replaceState`, and the archive
+  restores the filter on load — send a client a link to just their kind of
+  work.
+- **Branded OG share cards.** A new build step (`scripts/og.mjs`) renders a
+  1200×630 card per project with the site's own grammar — graded photo,
+  wordmark, Anton title with the accent full stop, mono EXIF footer — via
+  headless Chromium in CI, into `/og/<slug>.jpg`; project pages point
+  `og:image` there. Titles that overflow shrink until they fit.
+- Verified interactively: counter/keys/trap/Escape on the lightbox, chip →
+  URL → reload round-trip on the filters, 9/9 cards generated. Smoke 14/14.
+
 ## 4.3.0 — 2026-08-23 · Series are clickable — the archive filters to a series
 
 Frontend-only. Building on 4.2.0 (series shown in-post):

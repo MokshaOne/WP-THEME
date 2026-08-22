@@ -51,6 +51,13 @@ jobs:
           WP_BASE: ${{ secrets.WP_BASE }}
         run: npm run build
 
+      - name: Generate OG share cards
+        working-directory: frontend
+        run: |
+          npm i --no-save playwright@^1.48
+          npx playwright install --with-deps chromium
+          node scripts/og.mjs
+
       - name: Check deploy config
         id: cfg
         env:

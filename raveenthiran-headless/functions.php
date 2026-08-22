@@ -529,6 +529,12 @@ function rvn_site_payload() {
 	foreach ( $rows( 'home_honors', array( 'year', 'title', 'tag' ) ) as $r ) { $honors[] = array( 'year' => (string) $r['year'], 'title' => (string) $r['title'], 'tag' => (string) $r['tag'] ); }
 	$testimonials = array();
 	foreach ( $rows( 'home_testimonials', array( 'text', 'author' ) ) as $r ) { $testimonials[] = array( 'text' => (string) $r['text'], 'by' => (string) $r['author'] ); }
+	// Modular home stack — ordered section types (empty → single-variant home).
+	$home_sections = array();
+	foreach ( $rows( 'home_sections', array( 'type' ) ) as $r ) {
+		$t = (string) $r['type'];
+		if ( $t !== '' ) { $home_sections[] = array( 'type' => $t ); }
+	}
 	$stats = array();
 	foreach ( $rows_kv( 'studio_stats', 'label', 'value' ) as $r ) { $stats[] = array( 'label' => $r['label'], 'value' => (string) $r['value'] ); }
 	$faq = array();
@@ -607,6 +613,7 @@ function rvn_site_payload() {
 		),
 		'home'    => array(
 			'variant'      => (string) rvn_site_opt( 'home_variant', 'raveenthiran' ),
+			'sections'     => $home_sections,
 			'hero_lines'   => $lines( 'home_hero_lines' ),
 			'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
 			'marquee'      => (string) rvn_site_opt( 'home_marquee', '' ),

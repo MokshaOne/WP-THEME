@@ -1,0 +1,25 @@
+---
+import type { Project } from '../../lib/wp';
+interface Props { projects: Project[]; }
+const { projects } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
+const indexItems = projects.slice(0, 10);
+---
+<section class="sec" style="border-top:1px solid var(--line);padding-top:90px">
+	<div class="ghost-num" aria-hidden="true">02</div>
+	<div class="sec__head sec__head--sticky" data-reveal>
+		<h2 data-letters>THE INDEX</h2>
+		<div class="sec__hint">HOVER A NAME — CLICK TO OPEN</div>
+	</div>
+	<div class="index" style="margin-bottom:90px">
+		{indexItems.map((p, i) => (
+			<a class="index__row" href={`/work/${p.slug}/`} data-peek data-img={p.image}>
+				<span class="k">{num(i + 1)}</span>
+				<span class="t">{up(p.title)}</span>
+				<span class="k cat">{up(p.category)}</span>
+				<span class="k year">{p.year}</span>
+			</a>
+		))}
+	</div>
+</section>

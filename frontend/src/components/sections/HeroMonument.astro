@@ -1,0 +1,26 @@
+---
+import type { Site, Project } from '../../lib/wp';
+interface Props { site: Site; projects: Project[]; }
+const { site, projects } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects);
+const hero = featured[0] || projects[0];
+const tagline = 'The quiet drama of a single frame.';
+---
+<section>
+	<svg class="hv-mon__wm" viewBox="0 0 1000 108" aria-label="Raveenthiran">
+		<text x="0" y="92" textLength="1000" lengthAdjust="spacingAndGlyphs" font-size="118">RAVEENTHIRAN</text>
+	</svg>
+	<div class="hv-mon__meta">
+		<span>PORTRAIT &amp; FASHION PHOTOGRAPHY</span>
+		<span>{up(site.contact.location) || 'VIENNA, AT'}</span>
+		<span>EST. MMXX</span>
+	</div>
+	{hero && (
+		<a class="hv-mon__hero" href={`/work/${hero.slug}/`} data-intro>
+			<img src={hero.image} srcset={hero.imageSrcset || undefined} sizes="100vw" width={hero.imageW || undefined} height={hero.imageH || undefined} alt={hero.title} loading="eager" fetchpriority="high" />
+			<div class="hv-mon__tag">{tagline}</div>
+			<div class="hv-mon__fig">{up(hero.title)}<br /><span class="chrome" style="color:var(--dim)">FIG. 001</span></div>
+		</a>
+	)}
+</section>

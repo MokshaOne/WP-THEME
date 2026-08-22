@@ -4,6 +4,26 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.11.0 — 2026-08-22 · Modular home — compose it from sections
+
+- **The home page is now a stack of modules you order in WordPress**
+  (Site settings → Home → **Home sections**): a sortable repeater where each row
+  is a section. Drag to reorder; leave it empty to keep the old single-variant
+  home (so nothing changes until you opt in).
+- **The five home layouts become reusable pieces.** Each variant's signature top
+  is a **Hero module** you can pick — *Split (Raveenthiran), Monument, Editorial,
+  Cinema, Index* — and the shared home sections are modules too: *Marquee,
+  Selected work, The Index, Recognition, CTA*.
+- **Mix in the content blocks anywhere.** The Press / Packages / Testimonial /
+  Availability blocks can sit at any point in the home stack, reusing the same
+  content you set in the Sections tab — e.g. Hero → Selected work → Packages →
+  Recognition → CTA.
+- Fully additive: the frontend renders the stack when one is defined, otherwise
+  the single-variant home; both share the same section components, so the design
+  is identical either way.
+- WordPress theme + `raveenthiran-headless.zip` at 3.11.0 (Home-sections repeater
+  + REST `home.sections`); frontend at 3.11.0.
+
 ## 3.10.0 — 2026-08-22 · Optional content blocks (backend-toggleable)
 
 - **Four new sections you switch on from WordPress** (Site Control → Site

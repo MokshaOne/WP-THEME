@@ -1,0 +1,42 @@
+---
+import type { Site, Project, PressBlock, PackagesBlock, TestimonialBlock, AvailabilityBlock } from '../../lib/wp';
+import HeroSplit from './HeroSplit.astro';
+import HeroMonument from './HeroMonument.astro';
+import HeroEditorial from './HeroEditorial.astro';
+import HeroCinema from './HeroCinema.astro';
+import HeroIndex from './HeroIndex.astro';
+import Marquee from './Marquee.astro';
+import SelectedWork from './SelectedWork.astro';
+import TheIndex from './TheIndex.astro';
+import Recognition from './Recognition.astro';
+import Cta from './Cta.astro';
+import Press from '../blocks/Press.astro';
+import Packages from '../blocks/Packages.astro';
+import TestimonialSpotlight from '../blocks/TestimonialSpotlight.astro';
+import Availability from '../blocks/Availability.astro';
+
+interface Props { site: Site; projects: Project[]; }
+const { site, projects } = Astro.props;
+// Content blocks reuse the same content the Sections tab drives.
+const press = site.blocks.find((b) => b.type === 'press') as PressBlock | undefined;
+const packages = site.blocks.find((b) => b.type === 'packages') as PackagesBlock | undefined;
+const testimonial = site.blocks.find((b) => b.type === 'testimonial') as TestimonialBlock | undefined;
+const availability = site.blocks.find((b) => b.type === 'availability') as AvailabilityBlock | undefined;
+---
+{site.home.sections.map(({ type }) => (
+	type === 'hero-split' ? <HeroSplit site={site} projects={projects} />
+	: type === 'hero-monument' ? <HeroMonument site={site} projects={projects} />
+	: type === 'hero-editorial' ? <HeroEditorial site={site} projects={projects} />
+	: type === 'hero-cinema' ? <HeroCinema projects={projects} />
+	: type === 'hero-index' ? <HeroIndex projects={projects} />
+	: type === 'marquee' ? <Marquee site={site} />
+	: type === 'selected-work' ? <SelectedWork projects={projects} />
+	: type === 'the-index' ? <TheIndex projects={projects} />
+	: type === 'recognition' ? <Recognition site={site} />
+	: type === 'cta' ? <Cta />
+	: type === 'press' ? (press ? <Press block={press} /> : null)
+	: type === 'packages' ? (packages ? <Packages block={packages} /> : null)
+	: type === 'testimonial' ? (testimonial ? <TestimonialSpotlight block={testimonial} site={site} /> : null)
+	: type === 'availability' ? (availability ? <Availability block={availability} /> : null)
+	: null
+))}

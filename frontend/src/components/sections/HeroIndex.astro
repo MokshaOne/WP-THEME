@@ -1,0 +1,27 @@
+---
+import type { Project } from '../../lib/wp';
+interface Props { projects: Project[]; }
+const { projects } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
+const frames = projects.slice(0, 10);
+const seriesCount = new Set(projects.flatMap((p) => (p.series || []).map((s) => s.slug))).size || projects.length;
+const years = projects.map((p) => +p.year).filter(Boolean);
+const from = years.length ? Math.min(...years) : 2020;
+const to = years.length ? Math.max(...years) : new Date().getFullYear();
+---
+<section class="hv-idx">
+	<div class="hv-idx__head" data-intro>
+		<h1 class="hv-idx__h1">An index of people, light and Vienna —<br /><em class="hv-serif">photographed slowly.</em></h1>
+		<div class="chrome" style="text-align:right">ARCHIVE {from} — {to}<br />{seriesCount} SERIES · {projects.length} PROJECTS</div>
+	</div>
+	<div class="rail" data-drag>
+		{frames.map((p, i) => (
+			<a class="card" href={`/work/${p.slug}/`}>
+				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 70vw, 40vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="lazy" /></div>
+				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span></div>
+			</a>
+		))}
+	</div>
+	<div class="wrap" style="padding-top:26px;font-size:11px;letter-spacing:0.2em;color:var(--faint)">SCROLL SIDEWAYS ——→</div>
+</section>

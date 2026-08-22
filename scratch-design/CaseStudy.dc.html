@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #121110; color: #efece6; font-family: 'Archivo', system-ui, sans-serif; font-weight: 300; }
+    .an { font-family: 'Anton', 'Arial Narrow', sans-serif; font-weight: 400; line-height: .9; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+    .lab { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #6f6a60; }
+    .plate { background: linear-gradient(135deg, #1a1815, #141210); border: 1px solid #2b2925; display:flex; align-items:center; justify-content:center; }
+    a { color: #efece6; } a:hover { color: #b5aea1; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 900px; padding: 60px 64px; background: #121110; box-sizing: border-box;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="lab">03 — Case study</span>
+    <span class="lab">Editorial project page</span>
+  </div>
+
+  <div class="lab" style="margin-top: 22px; color:#8a847a;">Fig. 007 — Fashion — 2026</div>
+  <h2 class="an" style="font-size: 96px; margin-top: 12px;">Miri —<br>KHM Wien</h2>
+
+  <!-- lead + hero -->
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; align-items:start;">
+    <div>
+      <p style="margin:0; font-size: 17px; line-height: 1.75; color:#b5aea1;">
+        One winter afternoon in the Kunsthistorisches Museum. Mesh against marble,
+        gold light through the cupola — no set, no retouch theatrics. The brief was
+        a single question: what does the room already give you?
+      </p>
+      <div style="display:grid; grid-template-columns: auto 1fr; gap: 10px 40px; margin-top: 34px; font-size: 12px; letter-spacing:.06em; color:#b5aea1;">
+        <span class="lab" style="color:#6f6a60;">Model</span><span>Miri</span>
+        <span class="lab" style="color:#6f6a60;">Styling</span><span>Miri</span>
+        <span class="lab" style="color:#6f6a60;">Location</span><span>KHM, Vienna</span>
+        <span class="lab" style="color:#6f6a60;">Photography</span><span>Nishuthan Raveenthiran</span>
+      </div>
+    </div>
+    <div class="plate" style="height: 320px;"><span class="lab" style="color:#4d4841;">Hero · 4:5</span></div>
+  </div>
+
+  <!-- pull quote -->
+  <div style="border-top:1px solid #2b2925; border-bottom:1px solid #2b2925; padding: 40px 0; margin-top: 44px;">
+    <p class="an" style="font-size: 44px; line-height:1.02; color:#efece6; max-width: 940px;">&ldquo;Prepared like a production, delivered like a promise.&rdquo;</p>
+  </div>
+
+  <!-- before / after -->
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1px; background:#2b2925; border:1px solid #2b2925; margin-top: 44px;">
+    <div class="plate" style="height: 200px; border:none;"><span class="lab" style="color:#4d4841;">Raw</span></div>
+    <div class="plate" style="height: 200px; border:none; background: linear-gradient(135deg,#211d18,#151210);"><span class="lab" style="color:#8a847a;">Final</span></div>
+  </div>
+  <div style="margin-top: 22px;"><span class="lab">Copy is real (from the live project) — imagery is placeholder</span></div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #121110; color: #efece6; font-family: 'Archivo', system-ui, sans-serif; font-weight: 300; }
+    .an { font-family: 'Anton', 'Arial Narrow', sans-serif; font-weight: 400; line-height: .9; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+    .lab { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #6f6a60; }
+    .row { display:flex; gap: 12px; font-size: 13px; color:#b5aea1; padding: 9px 0; border-top: 1px solid #26231f; }
+    .row span:first-child { color:#6f6a60; }
+    .col { background:#121110; padding: 30px 28px; display:flex; flex-direction:column; }
+    a { color: #efece6; } a:hover { color: #b5aea1; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 720px; padding: 60px 64px; background: #121110; box-sizing: border-box;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="lab">04 — Packages</span>
+    <span class="lab">Clarity on what a session is</span>
+  </div>
+
+  <h2 class="an" style="font-size: 64px; margin-top: 20px;">Sessions</h2>
+
+  <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:1px; background:#2b2925; border:1px solid #2b2925; margin-top: 34px;">
+    <div class="col">
+      <span class="lab" style="color:#8a847a;">A</span>
+      <div class="an" style="font-size: 34px; margin-top: 6px;">Portrait</div>
+      <div class="row"><span>Duration</span><span>90 minutes · one look</span></div>
+      <div class="row"><span>Where</span><span>Vienna, on location</span></div>
+      <div class="row"><span>Delivery</span><span>20 edited frames · 2 weeks</span></div>
+      <div style="flex-grow:1;"></div>
+      <div class="an" style="font-size: 30px; margin-top: 24px;">From [€XXX]</div>
+      <a href="#" style="margin-top: 14px; font-size: 11px; letter-spacing:.18em; text-transform:uppercase; color:#8a847a;">Enquire →</a>
+    </div>
+    <div class="col">
+      <span class="lab" style="color:#8a847a;">B</span>
+      <div class="an" style="font-size: 34px; margin-top: 6px;">Editorial</div>
+      <div class="row"><span>Duration</span><span>Half day · multiple looks</span></div>
+      <div class="row"><span>Team</span><span>MUA / styling welcome</span></div>
+      <div class="row"><span>Delivery</span><span>40 edited frames · 3 weeks</span></div>
+      <div style="flex-grow:1;"></div>
+      <div class="an" style="font-size: 30px; margin-top: 24px;">From [€XXX]</div>
+      <a href="#" style="margin-top: 14px; font-size: 11px; letter-spacing:.18em; text-transform:uppercase; color:#8a847a;">Enquire →</a>
+    </div>
+    <div class="col">
+      <span class="lab" style="color:#8a847a;">C</span>
+      <div class="an" style="font-size: 34px; margin-top: 6px;">Wedding</div>
+      <div class="row"><span>Duration</span><span>Full day · two shooters opt.</span></div>
+      <div class="row"><span>Coverage</span><span>Prep → celebration</span></div>
+      <div class="row"><span>Delivery</span><span>Full gallery · 4–6 weeks</span></div>
+      <div style="flex-grow:1;"></div>
+      <div class="an" style="font-size: 30px; margin-top: 24px;">From [€X,XXX]</div>
+      <a href="#" style="margin-top: 14px; font-size: 11px; letter-spacing:.18em; text-transform:uppercase; color:#8a847a;">Enquire →</a>
+    </div>
+  </div>
+
+  <div style="margin-top: 26px;"><span class="lab">Prices in brackets are placeholders — you set the real numbers</span></div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #121110; color: #efece6; font-family: 'Archivo', system-ui, sans-serif; font-weight: 300; }
+    .an { font-family: 'Anton', 'Arial Narrow', sans-serif; font-weight: 400; line-height: .9; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+    .lab { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #6f6a60; }
+    a { color: #efece6; } a:hover { color: #b5aea1; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 620px; padding: 60px 64px; background: #121110; box-sizing: border-box;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="lab">01 — Press &amp; features</span>
+    <span class="lab">Social proof</span>
+  </div>
+
+  <h2 class="an" style="font-size: 64px; margin-top: 20px;">As featured in</h2>
+
+  <!-- Logo wall — placeholder cells to fill with real press marks -->
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: #2b2925; border: 1px solid #2b2925; margin-top: 34px;">
+    <div style="background:#121110; height: 96px; display:flex; align-items:center; justify-content:center;"><span class="lab" style="color:#4d4841;">[ Outlet ]</span></div>
+    <div style="background:#121110; height: 96px; display:flex; align-items:center; justify-content:center;"><span class="lab" style="color:#4d4841;">[ Outlet ]</span></div>
+    <div style="background:#121110; height: 96px; display:flex; align-items:center; justify-content:center;"><span class="lab" style="color:#4d4841;">[ Outlet ]</span></div>
+    <div style="background:#121110; height: 96px; display:flex; align-items:center; justify-content:center;"><span class="lab" style="color:#4d4841;">[ Outlet ]</span></div>
+    <div style="background:#121110; height: 96px; display:flex; align-items:center; justify-content:center;"><span class="lab" style="color:#4d4841;">[ Outlet ]</span></div>
+  </div>
+
+  <!-- Pull quotes -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background:#2b2925; border:1px solid #2b2925; border-top: none; margin-top: 1px;">
+    <div style="background:#121110; padding: 34px 30px;">
+      <div class="an" style="font-size: 40px; color:#8a847a; line-height:.6;">&ldquo;</div>
+      <p style="margin: 6px 0 0; font-size: 19px; line-height: 1.5; color:#efece6; font-weight:300;">A quiet, exacting eye — the frames feel less taken than kept.</p>
+      <div class="lab" style="margin-top: 18px; color:#8a847a;">[ Publication ] — 2026</div>
+    </div>
+    <div style="background:#121110; padding: 34px 30px;">
+      <div class="an" style="font-size: 40px; color:#8a847a; line-height:.6;">&ldquo;</div>
+      <p style="margin: 6px 0 0; font-size: 19px; line-height: 1.5; color:#efece6; font-weight:300;">Vienna's portraiture, without the varnish. Light doing the talking.</p>
+      <div class="lab" style="margin-top: 18px; color:#8a847a;">[ Publication ] — 2025</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 26px;"><span class="lab">Placeholder marks &amp; quotes — swap for real coverage (e.g. heute.at)</span></div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -4,6 +4,29 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.1.1 — 2026-08-22 · Backend hardening (theme 4.1.1)
+
+WordPress theme pass — same perfection bar as the frontend. Frontend version
+bumped in sync, no frontend behaviour change.
+
+- **Enquiry endpoint rate-limited**: max 5 submissions per IP per hour
+  (transient-based, no plugin). Each submission stores a post and sends two
+  emails, and Turnstile is optional — without a cap the endpoint was a mail-
+  bombing / backscatter vector. Over the limit → HTTP 429 with a polite note.
+- **Input length caps** on every enquiry field (name 200, message 5000, …) —
+  multibyte-safe, so oversized payloads can't bloat the database or emails.
+- **Dashboard redirect guarded**: only users who can open Site Control are
+  redirected to it; subscribers keep the stock dashboard instead of hitting a
+  permissions error.
+- **Rewrite-flush timing fixed**: `after_switch_theme` fires before `init`, so
+  the activation flush ran before the Work CPT existed and `/work` stayed dead
+  until Permalinks were saved manually. Now flagged and flushed after `init`.
+- **CORS hygiene**: `Vary: Origin` on every REST response (never only on
+  allowed ones — shared caches must not replay origin-specific responses),
+  plus `Access-Control-Max-Age: 600` for cheaper preflights.
+- Verified: `php -l` clean; rate limiter and clipping stub-tested (5-then-429
+  per IP, other IPs unaffected, multibyte clip exact).
+
 ## 4.1.0 — 2026-08-22 · The dev-limit layer — site-wide
 
 Frontend-only (theme stays 4.0.1). Four techniques most portfolio sites don't

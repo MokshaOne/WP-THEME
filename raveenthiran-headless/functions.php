@@ -70,8 +70,16 @@ add_action( 'init', function () {
 	}
 } );
 
-/* Flush rewrite rules once when the theme is activated (so /work resolves). */
-add_action( 'after_switch_theme', function () { flush_rewrite_rules(); } );
+/* Flush rewrite rules once when the theme is activated (so /work resolves).
+   after_switch_theme fires BEFORE init on that request, so flushing there
+   would flush without the CPT registered — flag it and flush after init. */
+add_action( 'after_switch_theme', function () { update_option( 'rvn_flush_rewrites', 1 ); } );
+add_action( 'init', function () {
+	if ( get_option( 'rvn_flush_rewrites' ) ) {
+		delete_option( 'rvn_flush_rewrites' );
+		flush_rewrite_rules();
+	}
+}, 99 );
 
 /* ── Helpers ────────────────────────────────────────────────────────────── */
 
@@ -269,8 +277,10 @@ add_action( 'wp_head', function () {
 add_filter( 'admin_body_class', function ( $classes ) {
 	return trim( $classes . ' folded' );
 } );
-// The default Dashboard becomes the Site Control tile board.
+// The default Dashboard becomes the Site Control tile board — only for users
+// who can actually open it; anyone else keeps the stock dashboard.
 add_action( 'load-index.php', function () {
+	if ( ! current_user_can( 'edit_posts' ) ) { return; }
 	wp_safe_redirect( admin_url( 'admin.php?page=site-control' ) );
 	exit;
 } );
@@ -628,11 +638,14 @@ add_action( 'rest_api_init', function () {
 			'http://localhost:4321',
 			'http://localhost:4322',
 		);
+		// Vary on every response (not only allowed ones) so a shared cache never
+		// serves an origin-specific response to the wrong origin.
+		header( 'Vary: Origin', false );
 		if ( $origin && in_array( $origin, $allowed, true ) ) {
 			header( 'Access-Control-Allow-Origin: ' . $origin );
 			header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS' );
 			header( 'Access-Control-Allow-Headers: Content-Type' );
-			header( 'Vary: Origin' );
+			header( 'Access-Control-Max-Age: 600' );
 		}
 		return $value;
 	} );
@@ -646,6 +659,22 @@ add_action( 'rest_api_init', function () {
 	) );
 } );
 
+/** Sliding-window rate limit per client IP (transients — no table, no plugin). */
+function rvn_enquiry_rate_ok() {
+	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	if ( $ip === '' ) { return true; }
+	$key = 'rvn_enq_' . md5( $ip );
+	$n   = (int) get_transient( $key );
+	if ( $n >= 5 ) { return false; }
+	set_transient( $key, $n + 1, HOUR_IN_SECONDS );
+	return true;
+}
+
+/** Clip a value to a sane length before it reaches the database or an email. */
+function rvn_clip( $v, $max ) {
+	return mb_substr( (string) $v, 0, $max );
+}
+
 function rvn_enquiry_submit( WP_REST_Request $request ) {
 	$p = $request->get_json_params();
 	if ( ! is_array( $p ) ) { $p = $request->get_params(); }
@@ -653,28 +682,34 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
 	// Honeypot — bots fill hidden "company"; drop silently as success.
 	if ( ! empty( $p['company'] ) ) { return new WP_REST_Response( array( 'ok' => true ), 200 ); }
 
+	// Each submission stores a post and sends two emails — cap the rate per IP
+	// so the endpoint can't be used for mail bombing or backscatter spam.
+	if ( ! rvn_enquiry_rate_ok() ) {
+		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Too many requests — please try again in an hour, or email directly.' ), 429 );
+	}
+
 	// Cloudflare Turnstile (only enforced when configured).
 	if ( ! rvn_turnstile_passes( $p['cf-turnstile-response'] ?? '' ) ) {
 		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Spam check failed — please try again.' ), 400 );
 	}
 
-	$name  = sanitize_text_field( $p['name'] ?? '' );
-	$email = sanitize_email( $p['email'] ?? '' );
+	$name  = rvn_clip( sanitize_text_field( $p['name'] ?? '' ), 200 );
+	$email = sanitize_email( rvn_clip( $p['email'] ?? '', 320 ) );
 	if ( $name === '' || ! is_email( $email ) ) {
 		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Please add your name and a valid email.' ), 400 );
 	}
 
 	// Full calculator model: session × duration × distance + add-ons (+ usage licence).
 	// Accepts both the current field names and the legacy ones.
-	$type     = sanitize_text_field( $p['service'] ?? ( $p['project_type'] ?? '' ) );
-	$hours    = sanitize_text_field( $p['hours'] ?? '' );
-	$addons   = sanitize_text_field( $p['addons'] ?? '' );
-	$km       = sanitize_text_field( $p['km'] ?? '' );
-	$usage    = sanitize_text_field( $p['usage'] ?? '' );
-	$estimate = sanitize_text_field( $p['estimate'] ?? '' );
-	$date     = sanitize_text_field( $p['date'] ?? ( $p['preferred_date'] ?? '' ) );
-	$loc      = sanitize_text_field( $p['location'] ?? '' );
-	$notes    = sanitize_textarea_field( $p['message'] ?? ( $p['notes'] ?? '' ) );
+	$type     = rvn_clip( sanitize_text_field( $p['service'] ?? ( $p['project_type'] ?? '' ) ), 200 );
+	$hours    = rvn_clip( sanitize_text_field( $p['hours'] ?? '' ), 50 );
+	$addons   = rvn_clip( sanitize_text_field( $p['addons'] ?? '' ), 500 );
+	$km       = rvn_clip( sanitize_text_field( $p['km'] ?? '' ), 50 );
+	$usage    = rvn_clip( sanitize_text_field( $p['usage'] ?? '' ), 50 );
+	$estimate = rvn_clip( sanitize_text_field( $p['estimate'] ?? '' ), 100 );
+	$date     = rvn_clip( sanitize_text_field( $p['date'] ?? ( $p['preferred_date'] ?? '' ) ), 100 );
+	$loc      = rvn_clip( sanitize_text_field( $p['location'] ?? '' ), 300 );
+	$notes    = rvn_clip( sanitize_textarea_field( $p['message'] ?? ( $p['notes'] ?? '' ) ), 5000 );
 
 	$body  = "Name: {$name}\nEmail: {$email}\nSession: {$type}\nExtra hours: {$hours}\nAdd-ons: {$addons}\n";
 	$body .= "Distance: {$km} km\nUsage: {$usage}\nIndicative estimate: {$estimate}\n";

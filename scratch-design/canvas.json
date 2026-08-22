@@ -1,18 +1,11 @@
 {
   "artboards": [
-    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1200, "h": 560 },
-    { "file": "Press.dc.html", "x": 1360, "y": 0, "w": 1200, "h": 620 },
-    { "file": "Booking.dc.html", "x": 2720, "y": 0, "w": 1200, "h": 760 },
-    { "file": "CaseStudy.dc.html", "x": 0, "y": 900, "w": 1200, "h": 900 },
-    { "file": "Packages.dc.html", "x": 1360, "y": 900, "w": 1200, "h": 720 },
-    { "file": "Testimonial.dc.html", "x": 2720, "y": 900, "w": 1200, "h": 620 }
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 2760, "title": "Option A — Salon (light)" },
+    { "file": "PosterDark.dc.html", "x": 1600, "y": 0, "w": 1440, "h": 2900, "title": "Option B — Poster (dark)" }
   ],
   "annotations": [
-    { "id": "press-note", "x": 1360, "y": -150, "w": 280, "text": "WHY — 'As seen in' + real quotes is fast social proof, lifts conversion.\nTRADEOFF — needs real logos + permission; stays empty until you have coverage." },
-    { "id": "booking-note", "x": 2720, "y": -150, "w": 300, "text": "WHY — clients self-check open dates → far fewer back-and-forth emails.\nTRADEOFF — needs a live data source (WordPress or cal.m1o.at) and upkeep." },
-    { "id": "case-note", "x": 0, "y": 780, "w": 280, "text": "WHY — turns a gallery into a story: deeper engagement + stronger SEO.\nTRADEOFF — a short write-up and before/after assets per project." },
-    { "id": "pkg-note", "x": 1360, "y": 780, "w": 300, "text": "WHY — answers 'what does it cost' before the email; filters serious enquiries.\nTRADEOFF — commits you to numbers; you may prefer bespoke quotes." },
-    { "id": "testi-note", "x": 2720, "y": 780, "w": 280, "text": "WHY — one strong quote + a face builds trust in seconds.\nTRADEOFF — needs a real client willing to be named and shown." }
+    { "id": "note-a", "x": 0, "y": -168, "w": 360, "text": "OPTION A — SALON (light)\nInk-on-paper, the brief's default. Neo-grotesque (Space Grotesk) + mono EXIF captions, exposed hairline grid, huge negative space — a single photo owns the frame. Quiet, museum, timeless.\nTRADEOFF — less loud; leans classic/gallery." },
+    { "id": "note-b", "x": 1600, "y": -168, "w": 360, "text": "OPTION B — POSTER (dark)\nKeeps the dark signature, pushed brutalist: full-bleed hero + giant Anton wordmark (mix-blend), kinetic marquee, broken oversized grid, one signal accent used only for state.\nTRADEOFF — bolder, more to art-direct; dark competes a little more with the photographs." }
   ],
   "launch": { "view": "canvas" }
 }

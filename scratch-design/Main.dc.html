@@ -7,35 +7,76 @@
 <body>
 <x-dc>
 <helmet>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
   <style>
-    body { margin: 0; background: #121110; color: #efece6; font-family: 'Archivo', system-ui, sans-serif; font-weight: 300; }
-    .an { font-family: 'Anton', 'Arial Narrow', sans-serif; font-weight: 400; line-height: .9; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
-    .lab { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #6f6a60; }
-    a { color: #efece6; } a:hover { color: #b5aea1; }
+    body { margin: 0; background: #F4F2ED; color: #0B0B0B; font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .g { font-family: 'Space Grotesk', sans-serif; }
+    .m { font-family: 'Space Mono', monospace; text-transform: uppercase; letter-spacing: .16em; }
+    .hair { border-top: 1px solid #0B0B0B; }
+    a { color: #0B0B0B; }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); }
   </style>
 </helmet>
-<div style="width: 1200px; min-height: 560px; padding: 60px 64px; background: #121110; box-sizing: border-box;">
-  <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #2b2925; padding-bottom: 18px;">
-    <span class="lab">Concept board — six directions</span>
-    <span class="lab">raveenthiran.com · v3</span>
+<div style="width: 1440px; min-height: 2760px; background: #F4F2ED; box-sizing: border-box;">
+
+  <!-- running header -->
+  <div class="m hair" style="display:flex; justify-content:space-between; align-items:center; padding: 16px 48px; font-size: 11px; border-top:none; border-bottom:1px solid #0B0B0B;">
+    <span style="font-weight:700; letter-spacing:.24em;">RAVEENTHIRAN</span>
+    <span>48.2082°N · 16.3738°E</span>
+    <span>PHOTOGRAPHER — VIENNA</span>
+    <span>[ 01 WORK · 02 STUDIO · 03 ENQUIRE ]</span>
   </div>
 
-  <h1 class="an" style="font-size: 118px; margin-top: 34px; color: #efece6;">Possible<br>improvements</h1>
+  <!-- HERO -->
+  <div style="display:grid; grid-template-columns: 7fr 5fr; border-bottom:1px solid #0B0B0B;">
+    <div style="padding: 64px 48px 40px; border-right:1px solid #0B0B0B; display:flex; flex-direction:column; justify-content:space-between;">
+      <div class="m" style="font-size:11px; color:#0B0B0B;">01 — SELECTED WORK</div>
+      <h1 class="g" style="font-weight:700; font-size: 168px; line-height:.86; letter-spacing:-.03em; margin: 40px 0 0;">Photo&shy;graphs that out&shy;live trends.</h1>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top: 56px;">
+        <p style="max-width: 380px; margin:0; font-size:16px; line-height:1.5;">Nishuthan Raveenthiran photographs people — portrait, fashion, editorial — in Vienna and across Austria. Prepared like a production, delivered like a promise.</p>
+        <div class="m" style="font-size:12px; border-bottom:2px solid #0B0B0B; padding-bottom:4px;">START A COMMISSION →</div>
+      </div>
+    </div>
+    <div style="position:relative;">
+      <img src="miri.jpg" alt="Miri — KHM Wien" />
+      <div class="m" style="position:absolute; left:16px; bottom:14px; font-size:10px; color:#F4F2ED; background:#0B0B0B; padding:5px 9px;">50MM · f/1.4 · KHM WIEN · 2026</div>
+    </div>
+  </div>
 
-  <p style="max-width: 620px; margin: 26px 0 0; color: #b5aea1; font-size: 15px; line-height: 1.75;">
-    Six sections you could ship next — each drawn in the site's own language
-    (Anton · Archivo, mono palette, hairlines). Pan the canvas, then tell me which
-    ones are worth building.
-  </p>
+  <!-- FEATURED — asymmetric editorial grid -->
+  <div style="padding: 80px 48px 40px;">
+    <div class="m" style="font-size:11px;">02 — INDEX / FEATURED</div>
+  </div>
+  <div style="display:grid; grid-template-columns: 5fr 7fr; gap: 1px; background:#0B0B0B; border-top:1px solid #0B0B0B; border-bottom:1px solid #0B0B0B;">
+    <a style="background:#F4F2ED; padding: 28px; display:block;">
+      <div style="aspect-ratio:4/5; overflow:hidden;"><img src="sarah.jpg" alt="Sarah — Noir" /></div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:16px;">
+        <span class="g" style="font-size:34px; font-weight:700; letter-spacing:-.02em;">Sarah — Noir</span>
+        <span class="m" style="font-size:11px;">B&amp;W · 2024</span>
+      </div>
+      <div class="m" style="font-size:10px; color:#555; margin-top:6px;">85MM · f/2.0 · VIENNA</div>
+    </a>
+    <a style="background:#F4F2ED; padding: 28px; display:block;">
+      <div style="aspect-ratio:16/10; overflow:hidden;"><img src="luna.jpg" alt="Luna — Innere Stadt" /></div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:16px;">
+        <span class="g" style="font-size:34px; font-weight:700; letter-spacing:-.02em;">Luna — Innere Stadt</span>
+        <span class="m" style="font-size:11px;">PORTRAIT · 2025</span>
+      </div>
+      <div class="m" style="font-size:10px; color:#555; margin-top:6px;">35MM · f/1.8 · INNERE STADT</div>
+    </a>
+  </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #2b2925; border: 1px solid #2b2925; margin-top: 44px;">
-    <div style="background: #121110; padding: 22px 20px;"><div class="lab" style="color:#8a847a;">01</div><div class="an" style="font-size: 22px; margin-top: 8px;">Press wall</div><div style="color:#8a847a; font-size:12px; margin-top:6px;">Logos + pull-quotes</div></div>
-    <div style="background: #121110; padding: 22px 20px;"><div class="lab" style="color:#8a847a;">02</div><div class="an" style="font-size: 22px; margin-top: 8px;">Availability</div><div style="color:#8a847a; font-size:12px; margin-top:6px;">Bookable calendar</div></div>
-    <div style="background: #121110; padding: 22px 20px;"><div class="lab" style="color:#8a847a;">03</div><div class="an" style="font-size: 22px; margin-top: 8px;">Case study</div><div style="color:#8a847a; font-size:12px; margin-top:6px;">Editorial project page</div></div>
-    <div style="background: #121110; padding: 22px 20px;"><div class="lab" style="color:#8a847a;">04</div><div class="an" style="font-size: 22px; margin-top: 8px;">Packages</div><div style="color:#8a847a; font-size:12px; margin-top:6px;">Three session tiers</div></div>
-    <div style="background: #121110; padding: 22px 20px;"><div class="lab" style="color:#8a847a;">05</div><div class="an" style="font-size: 22px; margin-top: 8px;">Testimonial</div><div style="color:#8a847a; font-size:12px; margin-top:6px;">Full-bleed spotlight</div></div>
-    <div style="background: #121110; padding: 22px 20px;"><div class="lab" style="color:#6f6a60;">＋</div><div class="an" style="font-size: 22px; margin-top: 8px; color:#6f6a60;">Your call</div><div style="color:#6f6a60; font-size:12px; margin-top:6px;">Pick, mix, or skip</div></div>
+  <!-- STATEMENT -->
+  <div style="padding: 130px 48px; border-bottom:1px solid #0B0B0B;">
+    <div class="m" style="font-size:11px; margin-bottom:34px;">03 — STATEMENT</div>
+    <p class="g" style="font-weight:500; font-size: 72px; line-height:1.04; letter-spacing:-.02em; max-width: 20ch; margin:0;">No presets. No shortcuts. Just the frame, kept for life.</p>
+  </div>
+
+  <!-- running footer -->
+  <div class="m" style="display:flex; justify-content:space-between; align-items:center; padding: 22px 48px; font-size:11px;">
+    <span>© 2026 RAVEENTHIRAN</span>
+    <span>AVAILABLE FOR COMMISSIONS</span>
+    <span>VIENNA — 48.2082°N 16.3738°E</span>
   </div>
 </div>
 </x-dc>

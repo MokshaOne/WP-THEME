@@ -130,7 +130,7 @@ const breadcrumbLd = {
 				? p.credits.map((c) => (<><span class="k">{up(c.role)}</span><span>{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>))
 				: (<><span class="k">PHOTOGRAPHY</span><span>NISHUTHAN RAVEENTHIRAN</span></>)}
 			{(p.series || []).length > 0 && (
-				<><span class="k">SERIES</span><span>{up((p.series || []).map((s) => s.name).join(' · '))}</span></>
+				<><span class="k">SERIES</span><span>{(p.series || []).map((s) => <a class="chipline" href={`/work/?series=${s.slug}`}>{up(s.name)}</a>)}</span></>
 			)}
 			{p.website && (
 				<><span class="k">WEBSITE</span><span><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
@@ -141,7 +141,10 @@ const breadcrumbLd = {
 	<!-- FROM THE SERIES — the other frames that belong to this series -->
 	{siblings.length > 0 && (
 		<section class="wrap" data-reveal style="padding:var(--sp-tight) var(--gx);border-bottom:var(--hair)">
-			<div class="sec__hint" style="margin-bottom:28px">FROM THE SERIES — {up((p.series || []).map((s) => s.name).join(' · '))}</div>
+			<div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:28px">
+				<div class="sec__hint" style="margin:0">FROM THE SERIES — {up((p.series || []).map((s) => s.name).join(' · '))}</div>
+				<a class="chipline" href={`/work/?series=${(p.series || [])[0]?.slug || ''}`}>VIEW THE WHOLE SERIES →</a>
+			</div>
 			<div class="index">
 				{siblings.map((s, i) => (
 					<a class="index__row" href={`/work/${s.slug}/`} data-peek data-img={s.image}>

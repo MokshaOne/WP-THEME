@@ -164,6 +164,14 @@ function initFilter() {
 	const chips = [...bar.querySelectorAll('.chip')];
 	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
 	const countEl = document.querySelector('[data-count]');
+	// /work/?series=<slug> — deep link from a project's SERIES credit: the
+	// archive opens filtered to that series, shown as an extra pressed chip.
+	// Clicking any category chip leaves series mode; clicking the series chip
+	// re-applies it.
+	const serSlug = (new URLSearchParams(location.search).get('series') || '').toLowerCase();
+	const inSeries = (c) => (c.dataset.series || '').split(/\s+/).includes(serSlug);
+	let serChip = null;
+	const setCount = (n) => { if (countEl) countEl.textContent = String(n).padStart(2, '0'); };
 	const apply = (cat) => {
 		let shown = 0;
 		cards.forEach((c) => {
@@ -172,10 +180,30 @@ function initFilter() {
 			if (match) shown++;
 		});
 		chips.forEach((ch) => ch.setAttribute('aria-pressed', String(ch.dataset.cat === cat)));
-		if (countEl) countEl.textContent = String(shown).padStart(2, '0');
+		if (serChip) serChip.setAttribute('aria-pressed', 'false');
+		setCount(shown);
+	};
+	const applySeries = () => {
+		let shown = 0;
+		cards.forEach((c) => { const m = inSeries(c); c.classList.toggle('hide', !m); if (m) shown++; });
+		chips.forEach((ch) => ch.setAttribute('aria-pressed', 'false'));
+		serChip.setAttribute('aria-pressed', 'true');
+		setCount(shown);
 	};
 	chips.forEach((ch) => ch.addEventListener('click', () => apply(ch.dataset.cat)));
-	apply('ALL');
+	const first = serSlug && cards.find(inSeries);
+	if (first) {
+		serChip = document.createElement('button');
+		serChip.className = 'chip';
+		const names = (first.dataset.seriesName || '').split(' · ');
+		const label = names[(first.dataset.series || '').split(/\s+/).indexOf(serSlug)] || serSlug;
+		serChip.textContent = 'SERIES — ' + label.toUpperCase();
+		bar.insertBefore(serChip, chips[0] ? chips[0].nextSibling : null);
+		serChip.addEventListener('click', applySeries);
+		applySeries();
+	} else {
+		apply('ALL');
+	}
 }
 
 /* ── Enquire calculator + submit ─────────────────────────────────────────── */

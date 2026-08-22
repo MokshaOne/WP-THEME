@@ -4,6 +4,19 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.3.0 — 2026-08-23 · Series are clickable — the archive filters to a series
+
+Frontend-only. Building on 4.2.0 (series shown in-post):
+
+- **Series names link to the archive filtered to that series.** The SERIES
+  credit on a project and a new "VIEW THE WHOLE SERIES →" link open
+  `/work/?series=<slug>` — the archive then shows only that series's frames,
+  with an injected pressed chip (`SERIES — VIECC`) in the filter row and the
+  frame count updated. Clicking any category chip returns to the normal
+  archive; clicking the series chip re-applies the series.
+- Verified interactively: deep link shows exactly the series's projects
+  (02 frames), chip pressed, ALL restores the full archive. Smoke 14/14.
+
 ## 4.2.1 — 2026-08-23 · The gallery rail scrolls sideways again
 
 Three separate causes, all fixed (frontend-only):

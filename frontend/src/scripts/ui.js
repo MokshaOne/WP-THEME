@@ -17,13 +17,12 @@ function teardown() {
 
 function boot() {
 	teardown();
-	const isHome = document.body.dataset.page === 'home';
+	// The boot preloader is a brand moment, not a home feature — it plays once
+	// per session on whichever page the visitor lands on first.
 	let preloader = '';
-	if (isHome) {
-		try {
-			if (!sessionStorage.getItem('rvn-pre')) { preloader = 'RAVEENTHIRAN'; sessionStorage.setItem('rvn-pre', '1'); }
-		} catch (e) { preloader = 'RAVEENTHIRAN'; }
-	}
+	try {
+		if (!sessionStorage.getItem('rvn-pre')) { preloader = 'RAVEENTHIRAN'; sessionStorage.setItem('rvn-pre', '1'); }
+	} catch (e) { preloader = 'RAVEENTHIRAN'; }
 	fxOff = initFX({ preloader });
 	initMobileMenu();
 	initHeroSlider();
@@ -69,7 +68,14 @@ function initHeroSlider() {
 		if (capEl) capEl.textContent = slides[i].dataset.cap || '';
 		if (curEl) curEl.textContent = String(i + 1).padStart(2, '0');
 	};
-	const go = (d) => { i = (i + d + total) % total; render(); start(); };
+	const go = (d) => {
+		const from = i;
+		i = (i + d + total) % total;
+		// The WebGL displacement morph (fx.js) listens for this and, when it can,
+		// takes over the visual transition; the class toggle stays the source of truth.
+		stage.dispatchEvent(new CustomEvent('rvn:slide', { detail: { from, to: i } }));
+		render(); start();
+	};
 	const start = () => { clearInterval(timer); timer = setInterval(() => go(1), 6000); };
 	const prev = stage.querySelector('[data-prev]');
 	const next = stage.querySelector('[data-next]');

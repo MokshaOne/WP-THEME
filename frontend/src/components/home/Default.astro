@@ -17,8 +17,12 @@ const testimonials = site.home.testimonials;
 <!-- POSTER HERO -->
 <section class="phero" data-hero data-intro>
 	<div class="slides">
+		{/* All hero frames load eagerly: the slideshow shows every one, and lazy
+		    images inside the fully-clipped slides never intersect — that would
+		    starve both the WebGL morph textures and the CSS fallback. Only the
+		    first frame competes for LCP priority. */}
 		{featured.map((p, i) => (
-			<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-cap={`${up(p.category || 'PORTRAIT')} · ${up(p.location || 'VIENNA')} · ${p.year || ''}`} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+			<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-cap={`${up(p.category || 'PORTRAIT')} · ${up(p.location || 'VIENNA')} · ${p.year || ''}`} style={`object-position:${p.focal}`} loading="eager" decoding="async" fetchpriority={i === 0 ? 'high' : 'low'} />
 		))}
 	</div>
 	<div class="phero__top">
@@ -86,7 +90,7 @@ const testimonials = site.home.testimonials;
 	<div class="exif stmt__k">03 — STATEMENT</div>
 	<div class="stmt__lines">
 		{site.studio.statement.map((l, i) => (
-			<div class:list={['stmt__line', i === site.studio.statement.length - 1 && 'stmt__line--outline']} data-letters>{up(l)}</div>
+			<div class:list={['stmt__line', i === site.studio.statement.length - 1 && 'stmt__line--outline']}>{up(l)}</div>
 		))}
 	</div>
 </section>

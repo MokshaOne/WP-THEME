@@ -336,7 +336,7 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 .studio-hero { display: grid; grid-template-columns: 5fr 7fr; min-height: 84vh; border-bottom: var(--hair); }
 .studio-hero__portrait { position: relative; overflow: hidden; background: var(--panel); border-right: var(--hair); }
 .studio-hero__portrait img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; }
-.studio-hero__portrait .credit { position: absolute; left: 22px; bottom: 18px; font-size: 10px; letter-spacing: 0.2em; text-shadow: 0 1px 10px rgba(0,0,0,.7); }
+.studio-hero__portrait .credit { position: absolute; left: 22px; bottom: 18px; font-size: 10px; letter-spacing: 0.2em; text-shadow: 0 1px 10px rgba(0,0,0,.7); z-index: 4; /* above the GL distortion overlay (z 3) */ }
 .studio-hero__body { padding: 64px 48px 44px; display: flex; flex-direction: column; justify-content: space-between; gap: 44px; }
 .studio-hero__body .line { font-family: var(--font-display); font-size: min(8.4vw, 108px); line-height: 0.92; letter-spacing: 0.005em; }
 .studio-hero__body p { margin: 0; font-size: 14px; font-weight: 300; line-height: 1.75; letter-spacing: 0.02em; color: var(--muted); max-width: 520px; }
@@ -633,3 +633,42 @@ a.live { color: var(--accent); border-bottom-color: var(--accent); }
 /* TFP locks the add-ons step */
 .addon:disabled { opacity: .35; cursor: not-allowed; }
 .addons__lock { margin: 14px 0 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: .2em; color: var(--accent); }
+
+/* ── Dev-limit layer ─────────────────────────────────────────────────────── */
+/* While the WebGL morph owns a hero transition, slides snap underneath it. */
+.phero.glm .slide { transition: none; }
+
+/* Scroll-driven animations — no JS, no library: the statement wall wipes in
+   line by line and the giant numerals drift, all bound to scroll position via
+   CSS animation-timeline. Progressive: browsers without support keep the
+   IntersectionObserver reveals. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.stmt__line { clip-path: inset(0 100% 0 0); animation: rvn-wipe 1ms linear both; animation-timeline: view(); animation-range: entry 15% entry 55%; }
+		.stmt__line:nth-child(2) { animation-range: entry 28% entry 68%; }
+		.stmt__line:nth-child(3) { animation-range: entry 41% entry 81%; }
+		.ghost-num { animation: rvn-drift 1ms linear both; animation-timeline: view(); }
+		.feat__no--sm { animation: rvn-drift-sm 1ms linear both; animation-timeline: view(); }
+
+		/* About — the studio statement and the proof wall wipe in like the home wall */
+		.studio-hero__body .line { clip-path: inset(0 100% 0 0); animation: rvn-wipe 1ms linear both; animation-timeline: view(); animation-range: entry 10% entry 45%; }
+		.studio-hero__body .line:nth-child(3) { animation-range: entry 20% entry 55%; }
+		.studio-hero__body .line:nth-child(4) { animation-range: entry 30% entry 65%; }
+		.stats .stat b { clip-path: inset(0 100% 0 0); animation: rvn-wipe 1ms linear both; animation-timeline: view(); animation-range: entry 10% entry 60%; }
+		.process__step .no { animation: rvn-drift-sm 1ms linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+
+		/* Work — the archive gets a quiet column parallax: alternating cards drift
+		   against the scroll, scrubbed, never animated on their images (hover zoom
+		   and view-transition names stay untouched). */
+		.masonry .card { animation: rvn-drift-xs 1ms linear both; animation-timeline: view(); }
+		.masonry .card:nth-child(2n) { animation-name: rvn-drift-xs-r; }
+
+		/* Enquiry — the step labels wipe in as the instrument is scrolled */
+		.enq__step { clip-path: inset(0 100% 0 0); animation: rvn-wipe 1ms linear both; animation-timeline: view(); animation-range: entry 5% entry 40%; }
+	}
+}
+@keyframes rvn-wipe { to { clip-path: inset(0 0 0 0); } }
+@keyframes rvn-drift { from { transform: translateY(90px); } to { transform: translateY(-90px); } }
+@keyframes rvn-drift-sm { from { transform: translateY(46px); } to { transform: translateY(-46px); } }
+@keyframes rvn-drift-xs { from { transform: translateY(18px); } to { transform: translateY(-18px); } }
+@keyframes rvn-drift-xs-r { from { transform: translateY(-14px); } to { transform: translateY(14px); } }

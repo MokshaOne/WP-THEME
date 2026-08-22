@@ -4,6 +4,34 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.1.0 — 2026-08-22 · The dev-limit layer — site-wide
+
+Frontend-only (theme stays 4.0.1). Four techniques most portfolio sites don't
+attempt, each feature-gated with a full CSS fallback and off under
+`prefers-reduced-motion`:
+
+- **Raw WebGL2 hero displacement morph** (no three.js): every slide change on
+  the home hero runs a fractal-noise tear between the outgoing and incoming
+  frame — per-slide focal points, the site's own grade baked into the shader,
+  quintic easing. On any failure the CSS crossfade still runs. Hero slides now
+  load eagerly (lazy images inside fully clipped slides never load — that
+  starved both the morph textures and the fallback).
+- **Scroll-driven CSS animations** (`animation-timeline: view()`, zero JS) on
+  every page: the home statement wall and the About statement + stats wipe in
+  line by line, ghost numerals and process numbers drift against the scroll,
+  the Work archive gets an alternating column parallax, and the calculator's
+  step labels wipe in as the instrument scrolls.
+- **Scramble decode**: mono labels (EXIF lines, eyebrows, section hints, the
+  calculator steps) decode left-to-right through a technical charset on hover,
+  then restore exactly.
+- **Instrument boot preloader**: once per session on whichever page is entered
+  first — masked wordmark reveal, a typed boot readout (`RVN / OS — BOOT`),
+  and the accent rail. Timer-armed (not rAF) so throttled tabs still resolve;
+  sits above every other overlay.
+- **GL hover distortion covers the About portrait** too, with new
+  object-fit-cover mapping in the shader so overscanned crops render the same
+  framing as the real image.
+
 ## 4.0.3 — 2026-08-22 · TFP has no extras; no events or weddings
 
 - **TFP locks the add-ons step**: choosing TFP clears any picked add-ons and

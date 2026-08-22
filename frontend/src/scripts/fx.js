@@ -25,24 +25,37 @@ export function initFX(opts = {}) {
 	let introDelay = 120;
 	if (opts.preloader && !reduce) {
 		introDelay = 1750;
+		const mech = 'cubic-bezier(.9,0,.12,1)';
 		const pre = document.createElement('div');
-		pre.style.cssText = 'position:fixed;inset:0;z-index:10000;background:#0c0b0a;display:flex;align-items:center;justify-content:center;transition:transform .8s ' + ease;
+		pre.style.cssText = 'position:fixed;inset:0;z-index:10010;background:#0B0B0B;display:flex;align-items:center;justify-content:center;transition:transform .7s ' + mech;
+		const mask = document.createElement('div');
+		mask.style.cssText = 'overflow:hidden';
 		const word = document.createElement('div');
-		word.style.cssText = "font-family:'Anton',sans-serif;font-size:min(10vw,110px);letter-spacing:.02em;color:#efece6;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .6s " + ease;
+		word.style.cssText = "font-family:'Anton',sans-serif;font-size:min(10vw,110px);letter-spacing:.02em;color:#F4F2ED;transform:translateY(110%);transition:transform .7s " + mech;
 		word.textContent = opts.preloader;
-		const pct = document.createElement('div');
-		pct.style.cssText = "position:fixed;right:28px;bottom:22px;font-family:'Archivo',sans-serif;font-size:12px;letter-spacing:.24em;color:#8a847a";
-		pre.append(word, pct);
+		mask.append(word);
+		const boot = document.createElement('div');
+		boot.style.cssText = "position:fixed;left:28px;bottom:26px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:#6f6a63;line-height:2;text-transform:uppercase;white-space:pre";
+		const rail = document.createElement('div');
+		rail.style.cssText = 'position:fixed;left:0;bottom:0;height:2px;width:0;background:#FF3B1D;transition:width 1.15s ' + mech;
+		pre.append(mask, boot, rail);
 		document.body.append(pre);
-		requestAnimationFrame(() => { word.style.opacity = '1'; word.style.transform = 'none'; });
-		const t0 = performance.now(), dur = 1200;
-		const count = now => {
-			const p = Math.min(1, (now - t0) / dur);
-			pct.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * 100)).padStart(3, '0') + ' %';
-			if (p < 1) requestAnimationFrame(count);
-			else { pre.style.transform = 'translateY(-101%)'; setTimeout(() => pre.remove(), 900); }
+		// instrument boot readout — typed, mechanical
+		const LINES = ['RVN / OS — BOOT', '50MM · f/1.4 · READY', '48.2082 N · 16.3738 E — VIENNA'];
+		let li = 0, ci = 0, out = '';
+		const type = () => {
+			if (li >= LINES.length) return;
+			out += LINES[li][ci] || '';
+			boot.textContent = out;
+			if (++ci > LINES[li].length - 1) { li++; ci = 0; out += '\n'; }
+			setTimeout(type, 14);
 		};
-		requestAnimationFrame(count);
+		void word.offsetHeight; // force a layout so the transition actually fires
+		// timeout, not rAF: throttled/occluded pages may produce no frames, but the
+		// transition still has to arm — timers fire regardless
+		setTimeout(() => { word.style.transform = 'none'; rail.style.width = '100%'; }, 50);
+		type();
+		setTimeout(() => { pre.style.transform = 'translateY(-101%)'; setTimeout(() => pre.remove(), 800); }, 1450);
 		cleanups.push(() => pre.remove());
 	}
 
@@ -190,7 +203,7 @@ export function initFX(opts = {}) {
 			outer.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:bottom';
 			const inner = document.createElement('span');
 			inner.setAttribute('data-l', '');
-			inner.style.cssText = 'display:inline-block;transform:translateY(110%);opacity:0;transition:transform .7s ' + ease + ', opacity .5s';
+			inner.style.cssText = 'display:inline-block;transform:translateY(110%);opacity:0;transition:transform .55s cubic-bezier(.9,0,.12,1), opacity .3s';
 			inner.textContent = ch === ' ' ? ' ' : ch;
 			outer.append(inner); el.append(outer);
 		});
@@ -280,8 +293,179 @@ export function initFX(opts = {}) {
 	cleanups.push(rvnScrollFX(reduce));
 	cleanups.push(rvnGrainGL(reduce, atmo));
 	cleanups.push(rvnHoverDistort(reduce, fine));
+	cleanups.push(rvnHeroMorphGL(reduce));
+	cleanups.push(rvnScramble(reduce, fine));
 
 	return () => cleanups.forEach(f => f());
+}
+
+/* ── Hero displacement morph — raw WebGL2, no library ─────────────────────────
+   Slide changes in the poster hero are rendered as a GPU displacement morph:
+   both frames become textures and a value-noise field tears one into the next.
+   Pure progressive enhancement: without WebGL2 / textures / under reduced
+   motion the CSS clip-path transition below keeps running untouched. */
+function rvnHeroMorphGL(reduce) {
+	if (reduce) return () => {};
+	const stage = document.querySelector('.phero');
+	if (!stage) return () => {};
+	const imgs = [...stage.querySelectorAll('.slide')];
+	if (imgs.length < 2) return () => {};
+
+	let gl, canvas;
+	try { canvas = document.createElement('canvas'); gl = canvas.getContext('webgl2', { alpha: false, antialias: false, depth: false }); } catch (e) {}
+	if (!gl) return () => {};
+
+	const vsrc = '#version 300 es\nin vec2 p;out vec2 vUv;void main(){vUv=vec2(p.x*0.5+0.5,1.0-(p.y*0.5+0.5));gl_Position=vec4(p,0.,1.);}';
+	const fsrc = `#version 300 es
+precision highp float;in vec2 vUv;out vec4 o;
+uniform sampler2D uA;uniform sampler2D uB;uniform float uProg;uniform vec2 uRes;uniform vec2 uSizeA;uniform vec2 uSizeB;uniform vec2 uFocA;uniform vec2 uFocB;
+float h21(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float vnoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+ return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){return .62*vnoise(p)+.38*vnoise(p*2.3);}
+vec2 cover(vec2 uv, vec2 img, vec2 f){float ca=uRes.x/uRes.y, ia=img.x/img.y;vec2 sc=ia>ca?vec2(ca/ia,1.):vec2(1.,ia/ca);return clamp(f+(uv-f)*sc,0.,1.);}
+vec3 grade(vec3 c){float g=dot(c,vec3(.2126,.7152,.0722));return vec3(((g-.5)*1.06+.5)*.66);}
+void main(){
+ float d=fbm(vUv*2.1);
+ float mask=mix(d,vUv.x,0.35);
+ float w=0.19;
+ float t=smoothstep(uProg*(1.+2.*w)-w-w, uProg*(1.+2.*w)-w+w, mask);
+ float amp=sin(uProg*3.14159)*0.22;
+ vec2 off=(vec2(d,vnoise(vUv*5.))-.5)*amp;
+ float zo=1.+0.05*uProg, zi=1.06-0.06*uProg;
+ vec2 uvA=(vUv-.5)*zo+.5+off*(1.-t);
+ vec2 uvB=(vUv-.5)*zi+.5-off*t;
+ vec3 a=grade(texture(uA,cover(uvA,uSizeA,uFocA)).rgb);
+ vec3 b=grade(texture(uB,cover(uvB,uSizeB,uFocB)).rgb);
+ o=vec4(mix(a,b,1.-t),1.);
+}`;
+	const mk = (t, src) => { const sh = gl.createShader(t); gl.shaderSource(sh, src); gl.compileShader(sh); return sh; };
+	const prog = gl.createProgram();
+	gl.attachShader(prog, mk(gl.VERTEX_SHADER, vsrc)); gl.attachShader(prog, mk(gl.FRAGMENT_SHADER, fsrc)); gl.linkProgram(prog);
+	if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return () => {};
+	gl.useProgram(prog);
+	const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+	const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+	const U = (n) => gl.getUniformLocation(prog, n);
+	const uA = U('uA'), uB = U('uB'), uProg = U('uProg'), uRes = U('uRes'), uSizeA = U('uSizeA'), uSizeB = U('uSizeB'), uFocA = U('uFocA'), uFocB = U('uFocB');
+	gl.uniform1i(uA, 0); gl.uniform1i(uB, 1);
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); // vUv already top-left origin
+
+	canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:0;transition:opacity .18s';
+	stage.appendChild(canvas);
+	const dpr = Math.min(devicePixelRatio || 1, 1.5);
+	const resize = () => {
+		const r = stage.getBoundingClientRect();
+		canvas.width = Math.max(2, Math.round(r.width * dpr));
+		canvas.height = Math.max(2, Math.round(r.height * dpr));
+		gl.viewport(0, 0, canvas.width, canvas.height);
+		gl.uniform2f(uRes, canvas.width, canvas.height);
+	};
+	resize(); addEventListener('resize', resize);
+
+	// Texture cache: same-origin uploads straight from the decoded <img>;
+	// cross-origin goes through a CORS fetch. Failure → morph silently skips.
+	const tex = new Map(); // index → {t, w, h} | null | 'pending'
+	function makeTex(source, w, h) {
+		const t = gl.createTexture();
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, t);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		return { t, w, h };
+	}
+	function load(k) {
+		if (tex.has(k)) return;
+		const img = imgs[k];
+		const src = img.currentSrc || img.src;
+		if (!src) { tex.set(k, null); return; }
+		let same = false;
+		try { same = new URL(src, location.href).origin === location.origin; } catch (e) {}
+		if (same) {
+			if (!img.complete || !img.naturalWidth) { img.addEventListener('load', () => { tex.delete(k); load(k); }, { once: true }); tex.set(k, null); return; }
+			try { tex.set(k, makeTex(img, img.naturalWidth, img.naturalHeight)); } catch (e) { tex.set(k, null); }
+			return;
+		}
+		tex.set(k, 'pending');
+		fetch(src, { mode: 'cors', credentials: 'omit' })
+			.then((r) => (r.ok ? r.blob() : Promise.reject(0)))
+			.then((b) => createImageBitmap(b))
+			.then((bmp) => { try { tex.set(k, makeTex(bmp, bmp.width, bmp.height)); } catch (e) { tex.set(k, null); } if (bmp.close) bmp.close(); })
+			.catch(() => tex.set(k, null));
+	}
+	imgs.forEach((_, k) => load(k));
+	const focal = imgs.map((im) => {
+		const m = /([\d.]+)%\s+([\d.]+)%/.exec(im.style.objectPosition || '');
+		return m ? [Math.min(1, +m[1] / 100), Math.min(1, +m[2] / 100)] : [0.5, 0.3];
+	});
+
+	let raf = 0, alive = true;
+	const onSlide = (e) => {
+		if (!alive) return;
+		const { from, to } = e.detail || {};
+		const A = tex.get(from), B = tex.get(to);
+		if (!A || A === 'pending' || !B || B === 'pending') return; // CSS fallback runs
+		stage.classList.add('glm');            // slides snap; the GPU owns the motion
+		cancelAnimationFrame(raf);
+		gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, A.t);
+		gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, B.t);
+		gl.uniform2f(uSizeA, A.w, A.h); gl.uniform2f(uSizeB, B.w, B.h);
+		gl.uniform2f(uFocA, focal[from][0], focal[from][1]); gl.uniform2f(uFocB, focal[to][0], focal[to][1]);
+		canvas.style.opacity = '1';
+		const t0 = performance.now(), dur = 1150;
+		const ease = (x) => (x < .5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2); // quintic — hard, mechanical
+		const frame = (now) => {
+			if (!alive) return;
+			const p = Math.min(1, (now - t0) / dur);
+			gl.uniform1f(uProg, ease(p));
+			gl.drawArrays(gl.TRIANGLES, 0, 3);
+			if (p < 1) raf = requestAnimationFrame(frame);
+			else { canvas.style.opacity = '0'; setTimeout(() => stage.classList.remove('glm'), 200); }
+		};
+		raf = requestAnimationFrame(frame);
+	};
+	stage.addEventListener('rvn:slide', onSlide);
+	return () => {
+		alive = false; cancelAnimationFrame(raf);
+		stage.removeEventListener('rvn:slide', onSlide); removeEventListener('resize', resize);
+		tex.forEach((v) => { if (v && v !== 'pending') gl.deleteTexture(v.t); });
+		canvas.remove(); stage.classList.remove('glm');
+	};
+}
+
+/* ── Scramble decode on technical labels (fine pointer, mechanical) ───────── */
+function rvnScramble(reduce, fine) {
+	if (reduce || !fine) return () => {};
+	const els = [...document.querySelectorAll('.exif, .eyebrow, .sec__hint, .enq__step')];
+	const CH = 'ABCDEFGHIKLMNOPRSTUVXYZ0123456789/·—';
+	const handlers = [];
+	els.forEach((el) => {
+		if (el.children.length) return; // leaf text only
+		const orig = el.textContent;
+		let busy = false;
+		const fn = () => {
+			if (busy || !orig.trim()) return;
+			busy = true;
+			const t0 = performance.now(), dur = 420;
+			const step = (now) => {
+				const p = Math.min(1, (now - t0) / dur);
+				const solid = Math.floor(orig.length * p);
+				let out = orig.slice(0, solid);
+				for (let k = solid; k < orig.length; k++) out += orig[k] === ' ' ? ' ' : CH[(Math.random() * CH.length) | 0];
+				el.textContent = out;
+				if (p < 1) requestAnimationFrame(step);
+				else { el.textContent = orig; busy = false; }
+			};
+			requestAnimationFrame(step);
+		};
+		el.addEventListener('mouseenter', fn);
+		handlers.push([el, fn]);
+	});
+	return () => handlers.forEach(([el, fn]) => el.removeEventListener('mouseenter', fn));
 }
 
 /* ── Awwwards tier: WebGL hover distortion on grid images ─────────────────────
@@ -292,8 +476,8 @@ export function initFX(opts = {}) {
    the image is never replaced. Off under reduced motion / coarse pointers. */
 function rvnHoverDistort(reduce, fine) {
 	if (reduce || !fine || matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) return () => {};
-	// Work/Series grid + every drag rail (home "Selected work", project gallery, …).
-	const plates = [...document.querySelectorAll('.masonry .card .plate, .rail .card .plate')].filter((p) => p.querySelector('img'));
+	// Work/Series grid, every drag rail, and the About portrait.
+	const plates = [...document.querySelectorAll('.masonry .card .plate, .rail .card .plate, .studio-hero__portrait')].filter((p) => p.querySelector('img'));
 	if (!plates.length) return () => {};
 
 	let gl, canvas;
@@ -301,12 +485,17 @@ function rvnHoverDistort(reduce, fine) {
 	if (!gl) return () => {};
 
 	const vsrc = '#version 300 es\nin vec2 p;out vec2 vUv;void main(){vUv=vec2(p.x*0.5+0.5,1.0-(p.y*0.5+0.5));gl_Position=vec4(p,0.,1.);}';
-	const fsrc = '#version 300 es\nprecision highp float;in vec2 vUv;uniform sampler2D uTex;uniform vec4 uRect;uniform vec2 uMouse;uniform float uAmt;uniform float uTime;out vec4 o;' +
+	// uUvS/uUvO cover-map the texture into the plate rect (object-fit: cover),
+	// so plates whose visible crop differs from the file's aspect (e.g. the
+	// About portrait with its parallax overscan) render the same framing as
+	// the real <img> underneath.
+	const fsrc = '#version 300 es\nprecision highp float;in vec2 vUv;uniform sampler2D uTex;uniform vec4 uRect;uniform vec2 uMouse;uniform vec2 uUvS;uniform vec2 uUvO;uniform float uAmt;uniform float uTime;out vec4 o;' +
 		'void main(){vec2 p=vUv;if(p.x<uRect.x||p.x>uRect.z||p.y<uRect.y||p.y>uRect.w)discard;' +
-		'vec2 uv=(p-uRect.xy)/(uRect.zw-uRect.xy);vec2 d=uv-uMouse;float dist=length(d);' +
+		'vec2 uvR=(p-uRect.xy)/(uRect.zw-uRect.xy);vec2 d=uvR-uMouse;float dist=length(d);' +
 		'float ripple=sin(dist*20.0-uTime*3.0)*0.010*uAmt*smoothstep(0.55,0.0,dist);' +
 		'vec2 off=normalize(d+1e-5)*ripple;float s=0.004*uAmt;' +
-		'float r=texture(uTex,uv+off+vec2(s,0.0)).r;float g=texture(uTex,uv+off).g;float b=texture(uTex,uv+off-vec2(s,0.0)).b;' +
+		'vec2 b0=uUvO+(uvR+off)*uUvS;vec2 bx=uUvO+(uvR+off+vec2(s,0.0))*uUvS;vec2 bn=uUvO+(uvR+off-vec2(s,0.0))*uUvS;' +
+		'float r=texture(uTex,bx).r;float g=texture(uTex,b0).g;float b=texture(uTex,bn).b;' +
 		'o=vec4(r,g,b,1.0);}';
 	const mk = (t, s) => { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return sh; };
 	const prog = gl.createProgram();
@@ -317,7 +506,8 @@ function rvnHoverDistort(reduce, fine) {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 	const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 	const uRect = gl.getUniformLocation(prog, 'uRect'), uMouse = gl.getUniformLocation(prog, 'uMouse'),
-		uAmt = gl.getUniformLocation(prog, 'uAmt'), uTime = gl.getUniformLocation(prog, 'uTime');
+		uAmt = gl.getUniformLocation(prog, 'uAmt'), uTime = gl.getUniformLocation(prog, 'uTime'),
+		uUvS = gl.getUniformLocation(prog, 'uUvS'), uUvO = gl.getUniformLocation(prog, 'uUvO');
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); // vUv already uses a top-left origin
 
 	canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;opacity:0;transition:opacity .25s';
@@ -332,9 +522,9 @@ function rvnHoverDistort(reduce, fine) {
 	//  · cross-origin → a separate CORS fetch + createImageBitmap; works only
 	//    when the media server sends CORS headers, otherwise it fails and we fall
 	//    back to the plain image. The displayed <img> is never touched either way.
-	// Cache values: WebGLTexture (ready) · null (failed) · 'pending' (in flight).
+	// Cache values: {t,w,h} (ready) · null (failed) · 'pending' (in flight).
 	const texCache = new Map();
-	function makeTex(source) {
+	function makeTex(source, w, h) {
 		const t = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, t);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
@@ -342,7 +532,7 @@ function rvnHoverDistort(reduce, fine) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		return t;
+		return { t, w, h };
 	}
 	function texFor(img) {
 		const src = img.currentSrc || img.src;
@@ -354,7 +544,7 @@ function rvnHoverDistort(reduce, fine) {
 		try { sameOrigin = new URL(src, location.href).origin === location.origin; } catch (e) {}
 		if (sameOrigin) {
 			if (!img.complete || !img.naturalWidth) return null; // decoded next frame
-			try { const t = makeTex(img); texCache.set(src, t); return t; }
+			try { const t = makeTex(img, img.naturalWidth, img.naturalHeight); texCache.set(src, t); return t; }
 			catch (e) { texCache.set(src, null); return null; }
 		}
 		texCache.set(src, 'pending');
@@ -362,7 +552,7 @@ function rvnHoverDistort(reduce, fine) {
 			.then((r) => (r.ok ? r.blob() : Promise.reject(new Error('http'))))
 			.then((b) => createImageBitmap(b))
 			.then((bmp) => {
-				try { texCache.set(src, makeTex(bmp)); if (active) start(); }
+				try { texCache.set(src, makeTex(bmp, bmp.width, bmp.height)); if (active) start(); }
 				catch (e) { texCache.set(src, null); }
 				if (bmp.close) bmp.close();
 			})
@@ -389,8 +579,12 @@ function rvnHoverDistort(reduce, fine) {
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.uniform4f(uRect, r.left / innerWidth, r.top / innerHeight, r.right / innerWidth, r.bottom / innerHeight);
 		gl.uniform2f(uMouse, mouse[0], mouse[1]);
+		// cover-map: same framing as the CSS object-fit underneath (centered)
+		const cs = Math.max(r.width / tex.w, r.height / tex.h);
+		const vw = r.width / (tex.w * cs), vh = r.height / (tex.h * cs);
+		gl.uniform2f(uUvS, vw, vh); gl.uniform2f(uUvO, (1 - vw) / 2, (1 - vh) / 2);
 		gl.uniform1f(uAmt, amt); gl.uniform1f(uTime, (now % 100000) * 0.001);
-		gl.bindTexture(gl.TEXTURE_2D, tex);
+		gl.bindTexture(gl.TEXTURE_2D, tex.t);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);
 		canvas.style.opacity = String(Math.min(1, amt * 1.3));
 		raf = requestAnimationFrame(loop);
@@ -405,7 +599,7 @@ function rvnHoverDistort(reduce, fine) {
 		if (dead) return; dead = true; alive = false; cancelAnimationFrame(raf); raf = 0;
 		removeEventListener('resize', resize);
 		plates.forEach((pl) => { pl.removeEventListener('pointerenter', onEnter); pl.removeEventListener('pointermove', onMove); pl.removeEventListener('pointerleave', onLeave); });
-		texCache.forEach((t) => { if (t && t !== 'pending') gl.deleteTexture(t); }); texCache.clear();
+		texCache.forEach((t) => { if (t && t !== 'pending') gl.deleteTexture(t.t); }); texCache.clear();
 		canvas.remove();
 	}
 	return () => teardown();

@@ -284,6 +284,8 @@ export function initFX(opts = {}) {
 		rail.addEventListener('pointermove', mv);
 		rail.addEventListener('pointerup', up); rail.addEventListener('pointerleave', up);
 		rail.addEventListener('click', clk, true);
+		// native image/link drag would hijack the pointer mid-gesture
+		rail.addEventListener('dragstart', e => e.preventDefault());
 	});
 
 	/* Batch 11 — motion physics: inertial smooth scroll + scroll-velocity marquee.
@@ -620,8 +622,22 @@ function rvnSmoothScroll(reduce, fine) {
 	const start = () => { if (!running) { running = true; raf = requestAnimationFrame(loop); } };
 	const onWheel = (e) => {
 		if (e.ctrlKey) return; // let pinch-zoom through
-		e.preventDefault();
 		const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
+		// A horizontal rail under the cursor owns the gesture: sideways deltas and
+		// the vertical wheel both drive the rail until it hits its end — only then
+		// does the page take over. Without this, the global preventDefault below
+		// would make gallery rails unscrollable by wheel/trackpad entirely.
+		const rail = e.target.closest && e.target.closest('[data-drag]');
+		if (rail && rail.scrollWidth > rail.clientWidth + 1) {
+			const d = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * unit;
+			const maxL = rail.scrollWidth - rail.clientWidth;
+			if ((d > 0 && rail.scrollLeft < maxL - 1) || (d < 0 && rail.scrollLeft > 1)) {
+				e.preventDefault();
+				rail.scrollLeft += d;
+				return;
+			}
+		}
+		e.preventDefault();
 		target = clamp(target + e.deltaY * unit); start();
 	};
 	const resync = () => { if (!programmatic && !running) { target = current = scrollY; } };

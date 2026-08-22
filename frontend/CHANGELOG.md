@@ -4,6 +4,22 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.2.1 — 2026-08-23 · The gallery rail scrolls sideways again
+
+Three separate causes, all fixed (frontend-only):
+
+- **The inertial smooth scroll swallowed every wheel event** and turned it
+  into page scroll — the project gallery rail never saw one. The rail now
+  owns the gesture while it can still move: sideways trackpad deltas and the
+  vertical wheel both drive the rail; at its end the page takes over.
+- **`touch-action: pan-y` on the rail blocked horizontal swiping on phones**
+  entirely — removed.
+- **Native image drag could hijack the pointer mid-drag** — suppressed via
+  `dragstart` on the rails.
+- Verified with real input: wheel over the rail moves it sideways, drag
+  continues from there, page scroll resumes once the rail is at its end.
+  Smoke 14/14.
+
 ## 4.2.0 — 2026-08-23 · Series live in the post; the archive always opens the gallery
 
 Frontend-only (theme stays 4.1.1 — the Series taxonomy in WordPress is

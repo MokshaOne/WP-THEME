@@ -225,7 +225,7 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 @media (max-width: 720px) { .sec__head--sticky { top: 54px; } }
 
 /* ── Selected-work rail ──────────────────────────────────────────────────── */
-.rail { display: flex; gap: clamp(18px, 2vw, 34px); overflow-x: auto; padding: 0 var(--gx) 12px; scrollbar-width: none; position: relative; z-index: 1; touch-action: pan-y; }
+.rail { display: flex; gap: clamp(18px, 2vw, 34px); overflow-x: auto; padding: 0 var(--gx) 12px; scrollbar-width: none; position: relative; z-index: 1; }
 .rail::-webkit-scrollbar { display: none; }
 .rail .card { flex: 0 0 auto; display: block; }
 .rail .card .plate { height: 54vh; }

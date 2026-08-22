@@ -4,6 +4,37 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.0.0 — 2026-08-22 · The flagship rebuild — dark, epic, one voice
+
+The package rebuilt around the chosen dark "Poster" direction. One signature
+site, no layout modes; a backend cut to what actually runs it.
+
+- **Home** — an epic sequence: the full-bleed poster hero with the giant
+  wordmark → kinetic marquee → **Three Frames** (one photograph owns the
+  viewport under a huge outlined `001`, then an asymmetric `002/003` pair) →
+  a colossal **statement wall** (No presets. No shortcuts. Just the frame.) →
+  The Index → Recognition → CTA. EXIF-style mono captions throughout.
+- **Work** — the filter is now a mono list (brutalist, not pill-y) with the
+  accent underlining the active album; mono captions on the tiles.
+- **Studio** — proof added: a stats wall in display type (projects, years,
+  frames, base) and a "Seen at · worked with" names row, both editable in
+  WordPress (Studio → stats / clients).
+- **Enquiry calculator — the real pricing model.** No price list: session ×
+  duration × **distance from Vienna** (round trip × per-km) + **add-ons** +
+  **usage licence** (private/TFP vs commercial). Six steps, an itemized
+  ledger, a sticky orientation panel, and the full breakdown lands in both
+  emails. The backend handler now also captures hours, add-ons, distance and
+  usage (and a legacy field-name mismatch that dropped date/location/message
+  from enquiry mails is fixed).
+- **Backend reduced to essentials** (theme 4.0.0): the home-layout selector,
+  the modular-home repeater, the Sections/blocks system and the redundant
+  "Project types" field are gone — 46 fields remain, each driving a live
+  feature. No stored WordPress data is deleted; removed fields simply no
+  longer appear.
+- Sourced-parts note: Envato was consulted for reference only (licensed
+  generic templates — rejected per the design law); the 21st component server
+  was unavailable this session. Everything shipped is hand-built.
+
 ## 3.12.0 — 2026-08-22 · "Poster" dark direction (Option B) — full site
 
 - The chosen redesign direction from the design canvas, applied site-wide:

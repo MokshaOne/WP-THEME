@@ -177,8 +177,13 @@ function initEnquire() {
 	const root = document.querySelector('[data-enquire]');
 	if (!root) return;
 	const svcs = [...root.querySelectorAll('.svc')];
+	const addonBtns = [...root.querySelectorAll('[data-addon]')];
+	const usageBtns = [...root.querySelectorAll('[data-usage]')];
+	const kmInput = root.querySelector('[data-km-input]');
+	const perKm = Number(root.dataset.perkm) || 0;
+	const licencePrice = Number(root.dataset.licence) || 0;
 	const fmt = (n) => n.toLocaleString('de-AT');
-	let sel = 0, extra = 0;
+	let sel = 0, extra = 0, usage = 'private';
 	const els = {
 		name: root.querySelector('[data-est-name]'),
 		meta: root.querySelector('[data-est-meta]'),
@@ -187,6 +192,10 @@ function initEnquire() {
 		extraN: [...root.querySelectorAll('[data-extra-hours]')],
 		extraFmt: root.querySelector('[data-extra-fmt]'),
 		rate: root.querySelector('[data-extra-rate]'),
+		addonsFmt: root.querySelector('[data-addons-fmt]'),
+		kmEcho: root.querySelector('[data-km-echo]'),
+		travelFmt: root.querySelector('[data-travel-fmt]'),
+		licenceFmt: root.querySelector('[data-licence-fmt]'),
 		total: root.querySelector('[data-total-fmt]'),
 		note: root.querySelector('[data-est-note]'),
 	};
@@ -195,8 +204,17 @@ function initEnquire() {
 	const render = () => {
 		const s = svc();
 		const base = d(s, 'base'), hrs = d(s, 'hrs'), rate = d(s, 'extra');
-		const extraCost = extra * rate, total = base + extraCost;
+		const extraCost = extra * rate;
+		// Add-ons, round-trip travel from Vienna and the commercial usage licence
+		// complete the studio's real formula: type × duration × distance + extras.
+		const picked = addonBtns.filter((b) => b.getAttribute('aria-pressed') === 'true');
+		const addonsCost = picked.reduce((sum, b) => sum + (Number(b.dataset.price) || 0), 0);
+		const km = Math.max(0, Math.min(2000, Number(kmInput?.value) || 0));
+		const travelCost = Math.round(km * 2 * perKm);
+		const licenceCost = usage === 'commercial' ? licencePrice : 0;
+		const total = base + extraCost + addonsCost + travelCost + licenceCost;
 		svcs.forEach((b, k) => b.setAttribute('aria-pressed', String(k === sel)));
+		usageBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.usage === usage)));
 		els.name && (els.name.textContent = s.dataset.name);
 		els.meta && (els.meta.textContent = s.dataset.meta);
 		els.baseHrs && (els.baseHrs.textContent = hrs);
@@ -204,15 +222,26 @@ function initEnquire() {
 		els.extraN.forEach((el) => (el.textContent = extra));
 		els.extraFmt && (els.extraFmt.textContent = fmt(extraCost));
 		els.rate && (els.rate.textContent = rate);
+		els.addonsFmt && (els.addonsFmt.textContent = fmt(addonsCost));
+		els.kmEcho && (els.kmEcho.textContent = km);
+		els.travelFmt && (els.travelFmt.textContent = fmt(travelCost));
+		els.licenceFmt && (els.licenceFmt.textContent = fmt(licenceCost));
 		els.total && (els.total.textContent = fmt(total));
 		if (els.note) { const n = s.dataset.note || ''; els.note.textContent = n; els.note.style.display = n ? '' : 'none'; }
 		// stash for submit
 		root.dataset.selService = s.dataset.name;
+		root.dataset.selHours = String(extra);
+		root.dataset.selAddons = picked.map((b) => b.dataset.label).join(', ');
+		root.dataset.selKm = String(km);
+		root.dataset.selUsage = usage;
 		root.dataset.selTotal = String(total);
 	};
 	svcs.forEach((b, k) => b.addEventListener('click', () => { sel = k; render(); }));
 	root.querySelector('[data-minus]')?.addEventListener('click', () => { extra = Math.max(0, extra - 1); render(); });
 	root.querySelector('[data-plus]')?.addEventListener('click', () => { extra = Math.min(8, extra + 1); render(); });
+	addonBtns.forEach((b) => b.addEventListener('click', () => { b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); render(); }));
+	usageBtns.forEach((b) => b.addEventListener('click', () => { usage = b.dataset.usage || 'private'; render(); }));
+	kmInput?.addEventListener('input', render);
 	render();
 
 	const form = root.querySelector('form');
@@ -223,6 +252,10 @@ function initEnquire() {
 			const endpoint = form.getAttribute('action');
 			const fd = new FormData(form);
 			fd.set('service', root.dataset.selService || '');
+			fd.set('hours', root.dataset.selHours || '0');
+			fd.set('addons', root.dataset.selAddons || '');
+			fd.set('km', root.dataset.selKm || '0');
+			fd.set('usage', root.dataset.selUsage || 'private');
 			fd.set('estimate', root.dataset.selTotal || '');
 			const btn = form.querySelector('[type="submit"]');
 			btn && (btn.disabled = true);
@@ -240,7 +273,9 @@ function initEnquire() {
 				const body = encodeURIComponent(
 					'Name: ' + (fd.get('name') || '') + '\nEmail: ' + (fd.get('email') || '') +
 					'\nDate: ' + (fd.get('date') || '') + '\nLocation: ' + (fd.get('location') || '') +
-					'\nService: ' + (root.dataset.selService || '') + '\nEstimate: € ' + (root.dataset.selTotal || '') +
+					'\nService: ' + (root.dataset.selService || '') + '\nExtra hours: ' + (root.dataset.selHours || '0') +
+					'\nAdd-ons: ' + (root.dataset.selAddons || '—') + '\nDistance: ' + (root.dataset.selKm || '0') + ' km' +
+					'\nUsage: ' + (root.dataset.selUsage || 'private') + '\nIndication: € ' + (root.dataset.selTotal || '') +
 					'\n\n' + (fd.get('message') || ''));
 				if (msg) { msg.className = 'est__msg err'; msg.textContent = 'Opening your mail app instead…'; }
 				location.href = 'mailto:' + to + '?subject=' + subj + '&body=' + body;

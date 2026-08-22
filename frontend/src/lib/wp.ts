@@ -232,32 +232,20 @@ export async function getPost(slug: string): Promise<Post | undefined> {
 }
 
 /* ── Site settings (editable in WordPress → Site settings) ── */
-export interface SiteStat { label: string; value: string }
-export interface PriceType { label: string; base: number }
-export interface AddOn { label: string; price: number }
 export interface Session { name: string; base: number; hrs: number; extra: number; note: string }
 export interface SpecRow { label: string; value: string }
+export interface SiteStat { label: string; value: string }
+export interface AddOn { label: string; price: number }
 export interface Honor { year: string; title: string; tag: string }
 export interface Testimonial { text: string; by: string }
 export interface Faq { q: string; a: string }
 
-/* ── Optional, backend-toggleable content blocks ──
-   Each carries a `placement` slot; the frontend renders it wherever the slot
-   sits (see components/blocks/BlockSlot.astro). 'off' means hidden. */
-export type SlotName = 'home-top' | 'home-bottom' | 'enquire-top' | 'enquire-bottom' | 'studio-bottom';
-export interface PressBlock { type: 'press'; placement: string; heading: string; items: { outlet: string; quote: string; source: string }[]; }
-export interface PackagesBlock { type: 'packages'; placement: string; heading: string; tiers: { name: string; price: string; features: string[]; cta_url: string }[]; }
-export interface TestimonialBlock { type: 'testimonial'; placement: string; quote: string; by: string; role: string; image: string; }
-export interface AvailabilityBlock { type: 'availability'; placement: string; source: string; heading: string; note: string; booked: { from: string; to: string; label: string }[]; cal_url: string; cta_label: string; cta_url: string; }
-export type Block = PressBlock | PackagesBlock | TestimonialBlock | AvailabilityBlock;
-
 export interface Site {
 	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[] };
-	home: { variant: string; hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
+	home: { hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
 	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
-	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; sessions: Session[]; licence: number; per_km: number };
+	pricing: { currency: string; sessions: Session[]; addons: AddOn[]; licence: number; per_km: number };
 	faq: Faq[];
-	blocks: Block[];
 	security: { turnstile_site: string };
 }
 
@@ -274,13 +262,12 @@ const SITE_FALLBACK: Site = {
 			{ label: 'LANGUAGES', value: 'EN · DE · TA' },
 		],
 		stats: [
-			{ label: 'Projects', value: '120+' }, { label: 'Countries', value: '14' },
-			{ label: 'Publications', value: '30+' }, { label: 'Based in', value: 'Vienna, AT' },
+			{ label: 'Projects kept', value: '120+' }, { label: 'Years behind the lens', value: '06' },
+			{ label: 'Frames delivered', value: '18K' }, { label: 'Base', value: 'Vienna' },
 		],
-		clients: ['SZ Magazin', 'Apartamento', 'NYT Magazine', 'Belvedere', 'Hotel Sacher'],
+		clients: ['heute.at', 'Foto Wien', 'Vienna Photo Festival', 'VIECC', '1000things'],
 	},
 	home: {
-		variant: 'raveenthiran',
 		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
 		hero_lede: 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
 		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ',
@@ -299,14 +286,13 @@ const SITE_FALLBACK: Site = {
 	contact: { email: 'hello@raveenthiran.com', location: 'Vienna, AT', response: 'Within 24 hours', instagram: '', behance: '', linkedin: '' },
 	pricing: {
 		currency: '€',
-		types: [ { label: 'Portrait', base: 450 }, { label: 'Wedding', base: 1800 }, { label: 'Event', base: 900 }, { label: 'Editorial', base: 1200 } ],
-		addons: [ { label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 }, { label: 'Second shooter', price: 300 }, { label: 'Hair & makeup', price: 350 } ],
 		sessions: [
 			{ name: 'PORTRAIT', base: 150, hrs: 2, extra: 120, note: '' },
 			{ name: 'EVENT', base: 690, hrs: 3, extra: 120, note: '' },
 			{ name: 'WEDDING', base: 1200, hrs: 5, extra: 220, note: '' },
 			{ name: 'FASHION / COMMERCIAL', base: 220, hrs: 2, extra: 120, note: 'Price excludes a commercial usage license — licensing is quoted per campaign.' },
 		],
+		addons: [ { label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 }, { label: 'Second shooter', price: 300 }, { label: 'Hair & make-up artist', price: 350 } ],
 		licence: 150, per_km: 0.42,
 	},
 	faq: [
@@ -315,41 +301,8 @@ const SITE_FALLBACK: Site = {
 		{ q: 'Do you travel?', a: 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.' },
 		{ q: 'When do I receive the images?', a: 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.' },
 	],
-	blocks: [
-		{ type: 'press', placement: 'home-bottom', heading: 'As featured in', items: [
-			{ outlet: 'heute.at', quote: 'A quiet, exacting eye — the frames feel less taken than kept.', source: 'heute.at, 2026' },
-			{ outlet: 'Foto Wien', quote: '', source: '' },
-			{ outlet: 'Vienna Photo Fest', quote: '', source: '' },
-			{ outlet: '1000things', quote: 'Vienna portraiture without the varnish.', source: '1000things, 2025' },
-		] },
-		{ type: 'packages', placement: 'enquire-top', heading: 'Sessions', tiers: [
-			{ name: 'Portrait', price: 'From €150', features: ['90 minutes · one look', 'Vienna, on location', '20 edited frames · 2 weeks'], cta_url: '/enquire/' },
-			{ name: 'Editorial', price: 'From €220', features: ['Half day · multiple looks', 'MUA / styling welcome', '40 edited frames · 3 weeks'], cta_url: '/enquire/' },
-			{ name: 'Wedding', price: 'From €1,200', features: ['Full day · two shooters opt.', 'Prep → celebration', 'Full gallery · 4–6 weeks'], cta_url: '/enquire/' },
-		] },
-		{ type: 'testimonial', placement: 'studio-bottom', quote: 'He directed the whole shoot so calmly that I forgot the camera was there. The prints hang in our living room.', by: 'Sarah K.', role: 'Portrait — 2024', image: '' },
-		{ type: 'availability', placement: 'enquire-bottom', source: 'wordpress', heading: 'Availability', note: 'Currently booking Autumn 2026', booked: [
-			{ from: '2026-09-05', to: '2026-09-06', label: '' }, { from: '2026-09-12', to: '2026-09-13', label: '' },
-			{ from: '2026-09-19', to: '2026-09-20', label: '' }, { from: '2026-09-26', to: '2026-09-27', label: '' },
-		], cal_url: '', cta_label: 'Request a date', cta_url: '/enquire/' },
-	],
 	security: { turnstile_site: '' },
 };
-
-/* Normalize the REST blocks array defensively (unknown/malformed → dropped). */
-function normBlocks(v: any): Block[] {
-	if (!Array.isArray(v)) return [];
-	const out: Block[] = [];
-	for (const b of v) {
-		if (!b || typeof b.type !== 'string') continue;
-		const placement = String(b.placement || 'off');
-		if (b.type === 'press') out.push({ type: 'press', placement, heading: String(b.heading || ''), items: Array.isArray(b.items) ? b.items.map((i: any) => ({ outlet: String(i.outlet || ''), quote: String(i.quote || ''), source: String(i.source || '') })) : [] });
-		else if (b.type === 'packages') out.push({ type: 'packages', placement, heading: String(b.heading || ''), tiers: Array.isArray(b.tiers) ? b.tiers.map((t: any) => ({ name: String(t.name || ''), price: String(t.price || ''), features: Array.isArray(t.features) ? t.features.map(String) : [], cta_url: String(t.cta_url || '') })) : [] });
-		else if (b.type === 'testimonial') out.push({ type: 'testimonial', placement, quote: String(b.quote || ''), by: String(b.by || ''), role: String(b.role || ''), image: String(b.image || '') });
-		else if (b.type === 'availability') out.push({ type: 'availability', placement, source: String(b.source || 'wordpress'), heading: String(b.heading || ''), note: String(b.note || ''), booked: Array.isArray(b.booked) ? b.booked.map((r: any) => ({ from: String(r.from || ''), to: String(r.to || ''), label: String(r.label || '') })) : [], cal_url: String(b.cal_url || ''), cta_label: String(b.cta_label || 'Request a date'), cta_url: String(b.cta_url || '/enquire/') });
-	}
-	return out;
-}
 
 function pick<T>(v: T | undefined | null | '', fb: T): T { return (v === undefined || v === null || v === '' ) ? fb : v; }
 function arr<T>(v: T[] | undefined | null, fb: T[]): T[] { return Array.isArray(v) && v.length ? v : fb; }
@@ -372,7 +325,6 @@ export async function getSite(): Promise<Site> {
 				clients: arr(d?.studio?.clients, F.studio.clients),
 			},
 			home: {
-				variant: pick(d?.home?.variant, F.home.variant),
 				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),
 				hero_lede: pick(d?.home?.hero_lede, F.home.hero_lede),
 				marquee: pick(d?.home?.marquee, F.home.marquee),
@@ -389,14 +341,12 @@ export async function getSite(): Promise<Site> {
 			},
 			pricing: {
 				currency: pick(d?.pricing?.currency, F.pricing.currency),
-				types: arr(d?.pricing?.types, F.pricing.types),
-				addons: arr(d?.pricing?.addons, F.pricing.addons),
 				sessions: arr(d?.pricing?.sessions, F.pricing.sessions),
+				addons: arr(d?.pricing?.addons, F.pricing.addons),
 				licence: pick(d?.pricing?.licence, F.pricing.licence),
 				per_km: pick(d?.pricing?.per_km, F.pricing.per_km),
 			},
 			faq: arr(d?.faq, F.faq),
-			blocks: normBlocks(d?.blocks),
 			security: { turnstile_site: pick(d?.security?.turnstile_site, '') },
 		};
 	} catch (e) {

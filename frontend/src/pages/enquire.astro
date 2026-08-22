@@ -1,13 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getSite } from '../lib/wp';
-import BlockSlot from '../components/blocks/BlockSlot.astro';
 
 const site = await getSite();
 const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 const turnstile = site.security.turnstile_site;
 
-// Session model — editable in WordPress (Site settings → Price calculator → Sessions).
+// The calculator follows the studio's real pricing model: there is no price
+// list — session type × duration × distance from Vienna + add-ons define the
+// figure, and the number shown is an ORIENTATION. The firm quote comes by mail.
 const cur = site.pricing.currency || '€';
 const fmt = (n: number) => n.toLocaleString('de-AT');
 const services = site.pricing.sessions.map((s) => ({
@@ -16,11 +17,14 @@ const services = site.pricing.sessions.map((s) => ({
 	hrs: s.hrs,
 	extra: s.extra,
 	note: s.note,
-	meta: `${s.hrs} HRS · ${fmt(s.base)} ${cur}`,
+	meta: `${s.hrs} HRS · FROM ${fmt(s.base)} ${cur}`,
 }));
 const s0 = services[0];
+const addons = site.pricing.addons;
+const perKm = site.pricing.per_km;
+const licence = site.pricing.licence;
 
-// FAQ rich-results schema (Batch 16) — only when FAQ content exists.
+// FAQ rich-results schema — only when FAQ content exists.
 const faqSchema = site.faq.length ? {
 	'@context': 'https://schema.org',
 	'@type': 'FAQPage',
@@ -31,16 +35,16 @@ const faqSchema = site.faq.length ? {
 	})),
 } : null;
 ---
-<Base title="Name your shoot — Raveenthiran" description="Commission a shoot. Instant estimate, firm written offer within 24 hours." active="enquire" page="enquire">
-	<section class="wrap" style="padding:64px 28px 40px">
-		<div class="eyebrow" data-intro style="margin-bottom:18px">COMMISSIONS — {new Date().getFullYear()}</div>
-		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">NAME YOUR SHOOT<span style="color:var(--faint)">.</span></h1>
+<Base title="Name your shoot — Raveenthiran" description="Commission a shoot. An honest orientation figure now, a firm written offer within 24 hours." active="enquire" page="enquire">
+	<section class="wrap" style="padding:clamp(72px,9vw,150px) var(--gx) 40px">
+		<div class="eyebrow" data-intro style="margin-bottom:18px">01 — COMMISSIONS · {new Date().getFullYear()}</div>
+		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">NAME YOUR SHOOT<span style="color:var(--accent)">.</span></h1>
+		<p class="enq__intro" data-intro>No price list. The session, the hours, the distance and the extras define the figure — the number below is an orientation, the firm offer arrives by mail within 24 hours.</p>
 	</section>
-	<BlockSlot site={site} slotName="enquire-top" />
 
-	<section class="enq" data-enquire>
+	<section class="enq" data-enquire data-perkm={perKm} data-licence={licence}>
 		<div class="enq__form">
-			<p class="enq__step">1 — CHOOSE A SESSION</p>
+			<p class="enq__step">01 — SESSION</p>
 			<div class="svc-grid">
 				{services.map((s, i) => (
 					<button type="button" class="svc" aria-pressed={i === 0 ? 'true' : 'false'}
@@ -51,15 +55,39 @@ const faqSchema = site.faq.length ? {
 				))}
 			</div>
 
-			<p class="enq__step mt">2 — EXTRA HOURS</p>
+			<p class="enq__step mt">02 — DURATION</p>
 			<div class="stepper">
 				<button type="button" data-minus aria-label="Fewer hours">−</button>
 				<div class="stepper__val" data-extra-hours>0</div>
 				<button type="button" data-plus aria-label="More hours">+</button>
-				<div class="stepper__rate">× <span data-extra-rate>{s0.extra}</span> € / HOUR</div>
+				<div class="stepper__rate">EXTRA HOURS × <span data-extra-rate>{s0.extra}</span> {cur} / HR</div>
 			</div>
 
-			<p class="enq__step mt">3 — DETAILS</p>
+			<p class="enq__step mt">03 — DISTANCE</p>
+			<div class="km">
+				<input type="number" inputmode="numeric" min="0" max="2000" step="5" value="0" data-km-input aria-label="Kilometres from Vienna" />
+				<span class="km__u">KM FROM VIENNA</span>
+				<span class="km__hint">0 = WITHIN VIENNA · ROUND TRIP × {perKm} {cur}/KM</span>
+			</div>
+
+			<p class="enq__step mt">04 — ADD-ONS</p>
+			<div class="addons">
+				{addons.map((a) => (
+					<button type="button" class="addon" aria-pressed="false" data-addon data-label={a.label} data-price={a.price}>
+						<span class="addon__box" aria-hidden="true"></span>
+						<span class="addon__l">{a.label.toUpperCase()}</span>
+						<span class="addon__p">+ {fmt(a.price)} {cur}</span>
+					</button>
+				))}
+			</div>
+
+			<p class="enq__step mt">05 — USAGE</p>
+			<div class="usage">
+				<button type="button" data-usage="private" aria-pressed="true">PRIVATE / TFP</button>
+				<button type="button" data-usage="commercial" aria-pressed="false">COMMERCIAL <span class="usage__p">+ {fmt(licence)} {cur} LICENCE</span></button>
+			</div>
+
+			<p class="enq__step mt">06 — DETAILS</p>
 			<form action={endpoint} method="POST" data-mailto={site.contact.email}>
 				<div class="fields">
 					<input name="name" placeholder="Name" required autocomplete="name" />
@@ -81,21 +109,24 @@ const faqSchema = site.faq.length ? {
 		</div>
 
 		<div class="enq__est">
-			<p class="enq__step" style="margin:0">YOUR ESTIMATE</p>
+			<p class="enq__step" style="margin:0">YOUR ORIENTATION</p>
 			<div>
 				<div class="est__name" data-est-name>{s0.name}</div>
 				<div class="stepper__rate" data-est-meta style="margin-top:8px">{s0.meta}</div>
 			</div>
 			<div class="est__lines">
-				<span class="k">Base (<span data-base-hrs>{s0.hrs}</span> hrs)</span><span><span data-base-fmt>{fmt(s0.base)}</span> €</span>
-				<span class="k">Extra hours × <span data-extra-hours>0</span></span><span><span data-extra-fmt>0</span> €</span>
+				<span class="k">Base (<span data-base-hrs>{s0.hrs}</span> hrs)</span><span><span data-base-fmt>{fmt(s0.base)}</span> {cur}</span>
+				<span class="k">Extra hours × <span data-extra-hours>0</span></span><span><span data-extra-fmt>0</span> {cur}</span>
+				<span class="k">Add-ons</span><span><span data-addons-fmt>0</span> {cur}</span>
+				<span class="k">Travel — <span data-km-echo>0</span> km rt</span><span><span data-travel-fmt>0</span> {cur}</span>
+				<span class="k">Usage licence</span><span><span data-licence-fmt>0</span> {cur}</span>
 			</div>
 			<div class="est__total">
-				<span class="tk">TOTAL</span>
-				<span class="tv"><span data-total-fmt>{fmt(s0.base)}</span> €</span>
+				<span class="tk">INDICATION</span>
+				<span class="tv"><span data-total-fmt>{fmt(s0.base)}</span> {cur}</span>
 			</div>
 			<div class="est__note" data-est-note style="display:none"></div>
-			<div class="est__fine">Non-binding estimate. You get a written offer within 24 hours — then we shoot.</div>
+			<div class="est__fine">Every shoot is quoted individually — this is an orientation, not a price list. Written offer within 24 hours, then we shoot.</div>
 			<div class="est__msg" data-est-msg></div>
 		</div>
 	</section>
@@ -111,5 +142,4 @@ const faqSchema = site.faq.length ? {
 			))}
 		</section>
 	)}
-	<BlockSlot site={site} slotName="enquire-bottom" />
 </Base>

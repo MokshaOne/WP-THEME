@@ -374,7 +374,6 @@ function rvn_site_control_page() {
 	$enq_n    = ( isset( $enq->private ) ? (int) $enq->private : 0 ) + ( isset( $enq->publish ) ? (int) $enq->publish : 0 );
 	$posts_n  = (int) wp_count_posts( 'post' )->publish;
 	$acf      = function_exists( 'get_field' );
-	$variant  = $acf ? (string) rvn_site_opt( 'home_variant', 'raveenthiran' ) : 'raveenthiran';
 	$email    = (string) rvn_site_opt( 'contact_email', '' );
 	$smtp     = (int) rvn_site_opt( 'smtp_enable', 0 ) === 1;
 	$settings = admin_url( 'admin.php?page=rvn-site' );
@@ -401,7 +400,6 @@ function rvn_site_control_page() {
 				<div class="rvn-sc__stat"><b><?php echo esc_html( $enq_n ); ?></b><span>Enquiries</span></div>
 				<div class="rvn-sc__stat"><b><?php echo esc_html( $posts_n ); ?></b><span>Journal</span></div>
 				<div class="rvn-sc__stat"><b>v<?php echo esc_html( $ver ); ?></b><span>Theme</span></div>
-				<div class="rvn-sc__stat"><b><?php echo esc_html( ucfirst( $variant ) ); ?></b><span>Home layout</span></div>
 			</div>
 		</div>
 
@@ -423,7 +421,7 @@ function rvn_site_control_page() {
 			$tile( admin_url( 'edit.php?post_type=work' ), 'dashicons-camera-alt', 'Projects', '#1ba1e2', $work_n, 'Albums & galleries', 'rvn-tile--tall' );
 			$tile( admin_url( 'edit.php?post_type=rvn_enquiry' ), 'dashicons-email-alt', 'Enquiries', '#4c9a2a', $enq_n, 'From the website' );
 			$tile( admin_url( 'edit.php' ), 'dashicons-edit-page', 'Journal', '#2d6cdf', $posts_n, 'Blog posts' );
-			$tile( $settings . '#acf-field_rvn_home_variant', 'dashicons-layout', 'Homepage', '#7a3ff2', null, 'Layout & hero' );
+			$tile( $settings . '#acf-field_rvn_home_hero_lines', 'dashicons-layout', 'Homepage', '#7a3ff2', null, 'Hero & content' );
 			$tile( $settings, 'dashicons-admin-generic', 'Site settings', '#37474f', null, 'Content & config' );
 			$tile( admin_url( 'upload.php' ), 'dashicons-format-image', 'Media', '#0097a7', null, 'Images' );
 			$tile( $settings . '#acf-field_rvn_smtp_enable', 'dashicons-email', 'Mail', '#d9601a', null, 'SMTP delivery' );
@@ -503,8 +501,6 @@ function rvn_site_payload() {
 		return $out;
 	};
 
-	$types = array();
-	foreach ( $rows_kv( 'project_types', 'label', 'base' ) as $r ) { $types[] = array( 'label' => $r['label'], 'base' => (float) $r['base'] ); }
 	$addons = array();
 	foreach ( $rows_kv( 'addons', 'label', 'price' ) as $r ) { $addons[] = array( 'label' => $r['label'], 'price' => (float) $r['price'] ); }
 
@@ -540,61 +536,6 @@ function rvn_site_payload() {
 	$portrait = rvn_site_opt( 'studio_portrait', '' );
 	if ( is_array( $portrait ) ) { $portrait = $portrait['url'] ?? ''; }
 
-	// ── Optional, backend-toggleable content blocks (Sections tab) ──
-	// Each carries a `placement` slot ('off' = hidden) the frontend renders into.
-	$blocks = array();
-
-	$press_items = array();
-	foreach ( $rows( 'press_items', array( 'outlet', 'quote', 'source' ) ) as $r ) {
-		$press_items[] = array( 'outlet' => (string) $r['outlet'], 'quote' => (string) $r['quote'], 'source' => (string) $r['source'] );
-	}
-	$blocks[] = array(
-		'type'      => 'press',
-		'placement' => (string) rvn_site_opt( 'press_placement', 'off' ),
-		'heading'   => (string) rvn_site_opt( 'press_heading', 'As featured in' ),
-		'items'     => $press_items,
-	);
-
-	$pkg_tiers = array();
-	foreach ( $rows( 'packages_tiers', array( 'name', 'price', 'features', 'cta_url' ) ) as $r ) {
-		$feat = array();
-		foreach ( preg_split( '/\r\n|\r|\n/', (string) $r['features'] ) as $l ) { $l = trim( $l ); if ( $l !== '' ) { $feat[] = $l; } }
-		$pkg_tiers[] = array( 'name' => (string) $r['name'], 'price' => (string) $r['price'], 'features' => $feat, 'cta_url' => (string) $r['cta_url'] );
-	}
-	$blocks[] = array(
-		'type'      => 'packages',
-		'placement' => (string) rvn_site_opt( 'packages_placement', 'off' ),
-		'heading'   => (string) rvn_site_opt( 'packages_heading', 'Sessions' ),
-		'tiers'     => $pkg_tiers,
-	);
-
-	$ts_img = rvn_site_opt( 'testimonial_image', '' );
-	if ( is_array( $ts_img ) ) { $ts_img = $ts_img['url'] ?? ''; }
-	$blocks[] = array(
-		'type'      => 'testimonial',
-		'placement' => (string) rvn_site_opt( 'testimonial_placement', 'off' ),
-		'quote'     => (string) rvn_site_opt( 'testimonial_quote', '' ),
-		'by'        => (string) rvn_site_opt( 'testimonial_by', '' ),
-		'role'      => (string) rvn_site_opt( 'testimonial_role', '' ),
-		'image'     => (string) $ts_img,
-	);
-
-	$avail_booked = array();
-	foreach ( $rows( 'avail_booked', array( 'from', 'to', 'label' ) ) as $r ) {
-		$avail_booked[] = array( 'from' => (string) $r['from'], 'to' => (string) $r['to'], 'label' => (string) $r['label'] );
-	}
-	$blocks[] = array(
-		'type'      => 'availability',
-		'placement' => (string) rvn_site_opt( 'avail_placement', 'off' ),
-		'source'    => (string) rvn_site_opt( 'avail_source', 'wordpress' ),
-		'heading'   => (string) rvn_site_opt( 'avail_heading', 'Availability' ),
-		'note'      => (string) rvn_site_opt( 'avail_note', '' ),
-		'booked'    => $avail_booked,
-		'cal_url'   => (string) rvn_site_opt( 'avail_cal_url', '' ),
-		'cta_label' => (string) rvn_site_opt( 'avail_cta_label', 'Request a date' ),
-		'cta_url'   => (string) rvn_site_opt( 'avail_cta_url', '/enquire/' ),
-	);
-
 	return array(
 		'studio'  => array(
 			'lede'      => (string) rvn_site_opt( 'studio_lede', '' ),
@@ -606,7 +547,6 @@ function rvn_site_payload() {
 			'clients'   => $lines( 'studio_clients' ),
 		),
 		'home'    => array(
-			'variant'      => (string) rvn_site_opt( 'home_variant', 'raveenthiran' ),
 			'hero_lines'   => $lines( 'home_hero_lines' ),
 			'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
 			'marquee'      => (string) rvn_site_opt( 'home_marquee', '' ),
@@ -623,14 +563,12 @@ function rvn_site_payload() {
 		),
 		'pricing' => array(
 			'currency' => (string) rvn_site_opt( 'currency', '€' ),
-			'types'    => $types,
 			'addons'   => $addons,
 			'sessions' => $sessions,
 			'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
 			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
 		),
 		'faq'      => $faq,
-		'blocks'   => $blocks,
 		'security' => array(
 			'turnstile_site' => (string) rvn_site_opt( 'turnstile_site', '' ),
 		),
@@ -725,14 +663,21 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
 		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Please add your name and a valid email.' ), 400 );
 	}
 
-	$type     = sanitize_text_field( $p['project_type'] ?? '' );
+	// Full calculator model: session × duration × distance + add-ons (+ usage licence).
+	// Accepts both the current field names and the legacy ones.
+	$type     = sanitize_text_field( $p['service'] ?? ( $p['project_type'] ?? '' ) );
+	$hours    = sanitize_text_field( $p['hours'] ?? '' );
 	$addons   = sanitize_text_field( $p['addons'] ?? '' );
+	$km       = sanitize_text_field( $p['km'] ?? '' );
+	$usage    = sanitize_text_field( $p['usage'] ?? '' );
 	$estimate = sanitize_text_field( $p['estimate'] ?? '' );
-	$date     = sanitize_text_field( $p['preferred_date'] ?? '' );
-	$notes    = sanitize_textarea_field( $p['notes'] ?? '' );
+	$date     = sanitize_text_field( $p['date'] ?? ( $p['preferred_date'] ?? '' ) );
+	$loc      = sanitize_text_field( $p['location'] ?? '' );
+	$notes    = sanitize_textarea_field( $p['message'] ?? ( $p['notes'] ?? '' ) );
 
-	$body  = "Name: {$name}\nEmail: {$email}\nProject type: {$type}\nAdd-ons: {$addons}\n";
-	$body .= "Estimate: {$estimate}\nPreferred date: {$date}\n\n{$notes}";
+	$body  = "Name: {$name}\nEmail: {$email}\nSession: {$type}\nExtra hours: {$hours}\nAdd-ons: {$addons}\n";
+	$body .= "Distance: {$km} km\nUsage: {$usage}\nIndicative estimate: {$estimate}\n";
+	$body .= "Preferred date: {$date}\nLocation: {$loc}\n\n{$notes}";
 
 	wp_insert_post( array(
 		'post_type'    => 'rvn_enquiry',

@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getSite } from '../lib/wp';
-import BlockSlot from '../components/blocks/BlockSlot.astro';
 
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.png';
@@ -48,7 +47,20 @@ const process = [
 		))}
 	</section>
 
-	<BlockSlot site={site} slotName="studio-bottom" />
+	<!-- PROOF — numbers, then names -->
+	{site.studio.stats.length > 0 && (
+		<section class="stats" data-reveal>
+			{site.studio.stats.map((s) => (
+				<div class="stat"><b>{s.value}</b><span>{s.label}</span></div>
+			))}
+		</section>
+	)}
+	{site.studio.clients.length > 0 && (
+		<section class="clients" data-reveal>
+			<span class="k">SEEN AT · WORKED WITH</span>
+			{site.studio.clients.map((c) => <span>{c}</span>)}
+		</section>
+	)}
 
 	<a class="cta cta--sm" href="/enquire/"><span>LET'S TALK</span><span>→</span></a>
 </Base>

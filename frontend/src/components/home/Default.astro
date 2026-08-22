@@ -4,7 +4,6 @@ interface Props { site: Site; projects: Project[]; }
 const { site, projects } = Astro.props;
 
 const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects).slice(0, 6);
-const railFrames = projects.slice(0, 8);
 const indexItems = projects.slice(0, 10);
 const up = (s: string) => (s || '').toUpperCase();
 const num = (n: number) => String(n).padStart(3, '0');
@@ -44,29 +43,60 @@ const testimonials = site.home.testimonials;
 	<div class="marquee__row marquee__row--b"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
 </div>
 
-<!-- SELECTED WORK -->
-<section class="sec sec__pad">
-	<div class="ghost-num" aria-hidden="true">01</div>
-	<div class="sec__head sec__head--sticky" data-reveal>
-		<h2 data-letters>SELECTED WORK</h2>
-		<div class="sec__hint">DRAG / SCROLL SIDEWAYS ——→</div>
+<!-- FEATURED SEQUENCE — one frame owns the viewport, then an asymmetric pair -->
+<section class="sec feat">
+	<div class="sec__head" data-reveal>
+		<div class="sec__hint">02 — SELECTED WORK</div>
+		<h2 data-letters>THREE FRAMES</h2>
 	</div>
-	<div class="rail" data-drag>
-		{railFrames.map((p, i) => (
-			<a class="card" href={`/work/${p.slug}/`}>
-				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 60vw, 30vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="lazy" /></div>
-				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span></div>
+
+	{featured[0] && (
+		<a class="feat__main" href={`/work/${featured[0].slug}/`} data-reveal>
+			<img src={featured[0].image} srcset={featured[0].imageSrcset || undefined} sizes="100vw" width={featured[0].imageW || undefined} height={featured[0].imageH || undefined} alt={featured[0].title} style={`object-position:${featured[0].focal}`} loading="lazy" transition:name={`cover-${featured[0].slug}`} />
+			<span class="feat__no" aria-hidden="true">001</span>
+			<span class="feat__title">{up(featured[0].title)}</span>
+			<span class="exif feat__exif">{up(featured[0].category || 'PORTRAIT')} · {up(featured[0].location || 'VIENNA')} · {featured[0].year}</span>
+		</a>
+	)}
+
+	<div class="feat__pair">
+		{featured[1] && (
+			<a class="feat__b" href={`/work/${featured[1].slug}/`} data-reveal>
+				<div class="feat__plate"><img src={featured[1].image} srcset={featured[1].imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 52vw" width={featured[1].imageW || undefined} height={featured[1].imageH || undefined} alt={featured[1].title} style={`object-position:${featured[1].focal}`} loading="lazy" transition:name={`cover-${featured[1].slug}`} /></div>
+				<span class="feat__no feat__no--sm" aria-hidden="true">002</span>
+				<div class="feat__cap"><span class="feat__t">{up(featured[1].title)}</span><span class="exif">{up(featured[1].category)} · {featured[1].year}</span></div>
 			</a>
+		)}
+		{featured[2] && (
+			<a class="feat__c" href={`/work/${featured[2].slug}/`} data-reveal>
+				<div class="feat__plate"><img src={featured[2].image} srcset={featured[2].imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 34vw" width={featured[2].imageW || undefined} height={featured[2].imageH || undefined} alt={featured[2].title} style={`object-position:${featured[2].focal}`} loading="lazy" transition:name={`cover-${featured[2].slug}`} /></div>
+				<span class="feat__no feat__no--sm" aria-hidden="true">003</span>
+				<div class="feat__cap"><span class="feat__t">{up(featured[2].title)}</span><span class="exif">{up(featured[2].category)} · {featured[2].year}</span></div>
+			</a>
+		)}
+	</div>
+
+	<div class="feat__foot" data-reveal>
+		<a class="feat__all" href="/work/">FULL ARCHIVE — {String(projects.length).padStart(2, '0')} PROJECTS →</a>
+	</div>
+</section>
+
+<!-- STATEMENT WALL -->
+<section class="stmt" data-reveal>
+	<div class="exif stmt__k">03 — STATEMENT</div>
+	<div class="stmt__lines">
+		{site.studio.statement.map((l, i) => (
+			<div class:list={['stmt__line', i === site.studio.statement.length - 1 && 'stmt__line--outline']} data-letters>{up(l)}</div>
 		))}
 	</div>
 </section>
 
 <!-- THE INDEX -->
 <section class="sec" style="border-top:1px solid var(--line);padding-top:90px">
-	<div class="ghost-num" aria-hidden="true">02</div>
+	<div class="ghost-num" aria-hidden="true">04</div>
 	<div class="sec__head sec__head--sticky" data-reveal>
+		<div class="sec__hint">04 — THE INDEX</div>
 		<h2 data-letters>THE INDEX</h2>
-		<div class="sec__hint">HOVER A NAME — CLICK TO OPEN</div>
 	</div>
 	<div class="index" style="margin-bottom:90px">
 		{indexItems.map((p, i) => (
@@ -81,8 +111,8 @@ const testimonials = site.home.testimonials;
 
 	<!-- RECOGNITION -->
 	<div class="sec__head" data-reveal>
+		<div class="sec__hint">05 — RECOGNITION</div>
 		<h2 data-letters>RECOGNITION</h2>
-		<div class="sec__hint">PRESS · AWARDS · CLIENT WORDS</div>
 	</div>
 	<div class="recog">
 		<div>

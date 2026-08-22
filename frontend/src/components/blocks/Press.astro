@@ -1,0 +1,31 @@
+---
+import type { PressBlock } from '../../lib/wp';
+interface Props { block: PressBlock; }
+const { block } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const items = block.items.filter((i) => i.outlet);
+const quotes = items.filter((i) => i.quote);
+if (!items.length) { /* nothing to show */ }
+---
+{items.length > 0 && (
+	<section class="sec blk blk-press" data-reveal>
+		<div class="blk__head">
+			<h2 data-letters>{up(block.heading || 'As featured in')}</h2>
+			<span class="sec__hint">Press · features</span>
+		</div>
+		<div class="press-wall" style={`grid-template-columns:repeat(${Math.min(items.length, 5)},minmax(0,1fr))`}>
+			{items.map((i) => <div class="press-cell">{up(i.outlet)}</div>)}
+		</div>
+		{quotes.length > 0 && (
+			<div class="press-quotes">
+				{quotes.slice(0, 2).map((q) => (
+					<div class="press-q">
+						<div class="press-q__mark" aria-hidden="true">&ldquo;</div>
+						<p>{q.quote}</p>
+						{q.source && <span class="k">{q.source}</span>}
+					</div>
+				))}
+			</div>
+		)}
+	</section>
+)}

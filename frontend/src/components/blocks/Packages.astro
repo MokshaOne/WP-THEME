@@ -1,0 +1,31 @@
+---
+import type { PackagesBlock } from '../../lib/wp';
+interface Props { block: PackagesBlock; }
+const { block } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const tiers = block.tiers.filter((t) => t.name);
+---
+{tiers.length > 0 && (
+	<section class="sec blk blk-packages" data-reveal>
+		<div class="blk__head">
+			<h2 data-letters>{up(block.heading || 'Sessions')}</h2>
+			<span class="sec__hint">What a session includes</span>
+		</div>
+		<div class="pkg-grid" style={`grid-template-columns:repeat(${Math.min(tiers.length, 4)},minmax(0,1fr))`}>
+			{tiers.map((t, i) => (
+				<div class="pkg-col">
+					<span class="k pkg-col__i">{String.fromCharCode(65 + i)}</span>
+					<div class="pkg-col__name">{up(t.name)}</div>
+					{t.features.length > 0 && (
+						<div class="pkg-col__feat">
+							{t.features.map((f) => <div class="pkg-row">{f}</div>)}
+						</div>
+					)}
+					<div class="pkg-col__spacer"></div>
+					{t.price && <div class="pkg-col__price">{up(t.price)}</div>}
+					{t.cta_url && <a class="pkg-col__cta" href={t.cta_url}>Enquire →</a>}
+				</div>
+			))}
+		</div>
+	</section>
+)}

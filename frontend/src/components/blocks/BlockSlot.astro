@@ -1,0 +1,20 @@
+---
+import type { Site, SlotName } from '../../lib/wp';
+import Press from './Press.astro';
+import Packages from './Packages.astro';
+import TestimonialSpotlight from './TestimonialSpotlight.astro';
+import Availability from './Availability.astro';
+
+// NOTE: the prop is `slotName`, not `slot` — `slot` is a reserved Astro
+// attribute (slot projection), so a component prop named `slot` is swallowed.
+interface Props { site: Site; slotName: SlotName; }
+const { site, slotName } = Astro.props;
+const here = site.blocks.filter((b) => b.placement === slotName);
+---
+{here.map((b) => (
+	b.type === 'press' ? <Press block={b} />
+	: b.type === 'packages' ? <Packages block={b} />
+	: b.type === 'testimonial' ? <TestimonialSpotlight block={b} site={site} />
+	: b.type === 'availability' ? <Availability block={b} />
+	: null
+))}

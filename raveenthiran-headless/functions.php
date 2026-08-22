@@ -540,6 +540,61 @@ function rvn_site_payload() {
 	$portrait = rvn_site_opt( 'studio_portrait', '' );
 	if ( is_array( $portrait ) ) { $portrait = $portrait['url'] ?? ''; }
 
+	// ── Optional, backend-toggleable content blocks (Sections tab) ──
+	// Each carries a `placement` slot ('off' = hidden) the frontend renders into.
+	$blocks = array();
+
+	$press_items = array();
+	foreach ( $rows( 'press_items', array( 'outlet', 'quote', 'source' ) ) as $r ) {
+		$press_items[] = array( 'outlet' => (string) $r['outlet'], 'quote' => (string) $r['quote'], 'source' => (string) $r['source'] );
+	}
+	$blocks[] = array(
+		'type'      => 'press',
+		'placement' => (string) rvn_site_opt( 'press_placement', 'off' ),
+		'heading'   => (string) rvn_site_opt( 'press_heading', 'As featured in' ),
+		'items'     => $press_items,
+	);
+
+	$pkg_tiers = array();
+	foreach ( $rows( 'packages_tiers', array( 'name', 'price', 'features', 'cta_url' ) ) as $r ) {
+		$feat = array();
+		foreach ( preg_split( '/\r\n|\r|\n/', (string) $r['features'] ) as $l ) { $l = trim( $l ); if ( $l !== '' ) { $feat[] = $l; } }
+		$pkg_tiers[] = array( 'name' => (string) $r['name'], 'price' => (string) $r['price'], 'features' => $feat, 'cta_url' => (string) $r['cta_url'] );
+	}
+	$blocks[] = array(
+		'type'      => 'packages',
+		'placement' => (string) rvn_site_opt( 'packages_placement', 'off' ),
+		'heading'   => (string) rvn_site_opt( 'packages_heading', 'Sessions' ),
+		'tiers'     => $pkg_tiers,
+	);
+
+	$ts_img = rvn_site_opt( 'testimonial_image', '' );
+	if ( is_array( $ts_img ) ) { $ts_img = $ts_img['url'] ?? ''; }
+	$blocks[] = array(
+		'type'      => 'testimonial',
+		'placement' => (string) rvn_site_opt( 'testimonial_placement', 'off' ),
+		'quote'     => (string) rvn_site_opt( 'testimonial_quote', '' ),
+		'by'        => (string) rvn_site_opt( 'testimonial_by', '' ),
+		'role'      => (string) rvn_site_opt( 'testimonial_role', '' ),
+		'image'     => (string) $ts_img,
+	);
+
+	$avail_booked = array();
+	foreach ( $rows( 'avail_booked', array( 'from', 'to', 'label' ) ) as $r ) {
+		$avail_booked[] = array( 'from' => (string) $r['from'], 'to' => (string) $r['to'], 'label' => (string) $r['label'] );
+	}
+	$blocks[] = array(
+		'type'      => 'availability',
+		'placement' => (string) rvn_site_opt( 'avail_placement', 'off' ),
+		'source'    => (string) rvn_site_opt( 'avail_source', 'wordpress' ),
+		'heading'   => (string) rvn_site_opt( 'avail_heading', 'Availability' ),
+		'note'      => (string) rvn_site_opt( 'avail_note', '' ),
+		'booked'    => $avail_booked,
+		'cal_url'   => (string) rvn_site_opt( 'avail_cal_url', '' ),
+		'cta_label' => (string) rvn_site_opt( 'avail_cta_label', 'Request a date' ),
+		'cta_url'   => (string) rvn_site_opt( 'avail_cta_url', '/enquire/' ),
+	);
+
 	return array(
 		'studio'  => array(
 			'lede'      => (string) rvn_site_opt( 'studio_lede', '' ),
@@ -575,6 +630,7 @@ function rvn_site_payload() {
 			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
 		),
 		'faq'      => $faq,
+		'blocks'   => $blocks,
 		'security' => array(
 			'turnstile_site' => (string) rvn_site_opt( 'turnstile_site', '' ),
 		),

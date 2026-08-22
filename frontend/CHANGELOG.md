@@ -4,6 +4,24 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.10.0 — 2026-08-22 · Optional content blocks (backend-toggleable)
+
+- **Four new sections you switch on from WordPress** (Site Control → Site
+  settings → **Sections**), each with a **placement** dropdown — Home top/bottom,
+  Enquire top/bottom, Studio bottom, or **Off**:
+  - **Press wall** — an "As featured in" logo row + pull-quotes (repeater).
+  - **Packages** — session tiers with what each includes and a price (repeater).
+  - **Testimonial spotlight** — one large quote + portrait (falls back to the
+    first Home testimonial when its own quote is blank).
+  - **Availability** — a booking calendar. Source = **WordPress** renders a month
+    from the booked date ranges you enter; **cal.m1o.at** links out to your
+    external calendar instead. A "Request a date" button points at Enquire.
+- Every block defaults to **Off**, so nothing changes until you place it. The
+  frontend renders whatever is assigned to each slot — a block can go anywhere,
+  and the same slot system extends to new blocks later.
+- WordPress theme + `raveenthiran-headless.zip` at 3.10.0 (new ACF **Sections**
+  tab + REST `blocks`); frontend at 3.10.0.
+
 ## 3.9.0 — 2026-08-21 · Cinematic transitions + distortion everywhere
 
 - **Cinematic project→project transition**: navigating between pages now

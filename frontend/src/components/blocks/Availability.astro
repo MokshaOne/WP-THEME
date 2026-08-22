@@ -1,0 +1,71 @@
+---
+import type { AvailabilityBlock } from '../../lib/wp';
+interface Props { block: AvailabilityBlock; }
+const { block } = Astro.props;
+const up = (s: string) => (s || '').toUpperCase();
+const isCal = block.source === 'cal';
+
+function parseD(s: string): Date | null {
+	const m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s || '');
+	return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
+// Expand booked ranges into a set of day keys, and find the earliest range.
+const bookedSet = new Set<string>();
+let anchor: Date | null = null;
+for (const r of block.booked) {
+	const a = parseD(r.from); if (!a) continue;
+	const b = parseD(r.to) || a;
+	if (!anchor || a < anchor) anchor = a;
+	const d = new Date(a);
+	while (d <= b) { bookedSet.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`); d.setDate(d.getDate() + 1); }
+}
+const now = new Date();
+const show = anchor && anchor > now ? anchor : (anchor || now);
+const Y = show.getFullYear(), M = show.getMonth();
+const monthName = show.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+const firstIdx = (new Date(Y, M, 1).getDay() + 6) % 7; // Monday-based
+const days = new Date(Y, M + 1, 0).getDate();
+const cells: (number | null)[] = [];
+for (let i = 0; i < firstIdx; i++) cells.push(null);
+for (let d = 1; d <= days; d++) cells.push(d);
+const isBooked = (d: number) => bookedSet.has(`${Y}-${M}-${d}`);
+const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+---
+<section class="sec blk blk-availability" data-reveal>
+	<div class="blk__head">
+		<h2 data-letters>{up(block.heading || 'Availability')}</h2>
+		{block.note && <span class="sec__hint">{block.note}</span>}
+	</div>
+
+	{isCal ? (
+		<div class="avail-cal">
+			<p>Live availability &amp; instant booking are handled on the studio calendar.</p>
+			{block.cal_url && <a class="btn" href={block.cal_url} target="_blank" rel="noopener">Open booking calendar →</a>}
+		</div>
+	) : (
+		<div class="avail">
+			<div class="avail__top">
+				<span class="k">{up(monthName)}</span>
+				<div class="avail__legend">
+					<span class="k"><i class="dot dot--open"></i>Open</span>
+					<span class="k"><i class="dot dot--booked"></i>Booked</span>
+				</div>
+			</div>
+			<div class="avail__wd">{weekdays.map((w) => <span class="k">{w}</span>)}</div>
+			<div class="avail__grid">
+				{cells.map((d) => (
+					d === null
+						? <div class="avail__cell avail__cell--empty"></div>
+						: <div class:list={['avail__cell', isBooked(d) && 'is-booked']}>
+								<span class="avail__n">{d}</span>
+								<span class="k">{isBooked(d) ? 'Booked' : 'Open'}</span>
+							</div>
+				))}
+			</div>
+			<div class="avail__foot">
+				<span class="sec__hint">Dates shown from the studio schedule</span>
+				{block.cta_url && <a class="btn" href={block.cta_url}>{block.cta_label || 'Request a date'} →</a>}
+			</div>
+		</div>
+	)}
+</section>

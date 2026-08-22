@@ -6,6 +6,7 @@ import Monument from '../components/home/Monument.astro';
 import IndexHome from '../components/home/Index.astro';
 import Editorial from '../components/home/Editorial.astro';
 import Cinema from '../components/home/Cinema.astro';
+import BlockSlot from '../components/blocks/BlockSlot.astro';
 
 const projects = await getProjects();
 const site = await getSite();
@@ -21,5 +22,7 @@ const Home = VARIANTS[chosen] || Default;
 ---
 <Base title="Raveenthiran — Photographer, Vienna" description={site.home.hero_lede} active="" page="home" preload={preload}
 	ogImage={featured[0]?.ogImage || featured[0]?.image || ''}>
+	<BlockSlot site={site} slotName="home-top" />
 	<Home site={site} projects={projects} />
+	<BlockSlot site={site} slotName="home-bottom" />
 </Base>

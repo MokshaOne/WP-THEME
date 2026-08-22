@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getSite } from '../lib/wp';
+import BlockSlot from '../components/blocks/BlockSlot.astro';
 
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.png';
@@ -46,6 +47,8 @@ const process = [
 			</div>
 		))}
 	</section>
+
+	<BlockSlot site={site} slotName="studio-bottom" />
 
 	<a class="cta cta--sm" href="/enquire/"><span>LET'S TALK</span><span>→</span></a>
 </Base>

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getSite } from '../lib/wp';
+import BlockSlot from '../components/blocks/BlockSlot.astro';
 
 const site = await getSite();
 const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
@@ -35,6 +36,7 @@ const faqSchema = site.faq.length ? {
 		<div class="eyebrow" data-intro style="margin-bottom:18px">COMMISSIONS — {new Date().getFullYear()}</div>
 		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">NAME YOUR SHOOT<span style="color:var(--faint)">.</span></h1>
 	</section>
+	<BlockSlot site={site} slotName="enquire-top" />
 
 	<section class="enq" data-enquire>
 		<div class="enq__form">
@@ -109,4 +111,5 @@ const faqSchema = site.faq.length ? {
 			))}
 		</section>
 	)}
+	<BlockSlot site={site} slotName="enquire-bottom" />
 </Base>

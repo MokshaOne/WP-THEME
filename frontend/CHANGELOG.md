@@ -4,6 +4,24 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.11.0 — 2026-08-22 · Editorial restructure (structure, not skin)
+
+- Same design language (Anton · Archivo, mono, hairlines) — a rebuilt **layout
+  system** so the site reads editorial and expensive instead of template-flat:
+  - **Content sits in a column with real margins**, not edge-to-edge: a single
+    scaling gutter token (`--gx`, up to 132px) drives every section, so the page
+    has asymmetric breathing room instead of a uniform full-width band.
+  - **Section heads are a small kicker over a large heading**, left-aligned and
+    held in a column — no more symmetric left/right bar.
+  - **Airy, variable rhythm**: big scaling section spacing (`--sp`) with generous
+    negative space; headings and rows scaled up.
+  - **The boxed grids are gone.** The Press wall is wordmarks over a rule with
+    open pull-quotes; Packages are columns split by a single hairline; the
+    Availability calendar is a light single-line grid; the Testimonial is an open
+    asymmetric split — no more table-like 1px cells.
+- Applied across home, work, project, studio, enquire, journal and the blocks.
+  Frontend-only (CSS) — WordPress theme unchanged (no re-upload needed).
+
 ## 3.10.0 — 2026-08-22 · Optional content blocks (backend-toggleable)
 
 - **Four new sections you switch on from WordPress** (Site Control → Site

@@ -182,6 +182,7 @@ function initEnquire() {
 	const kmInput = root.querySelector('[data-km-input]');
 	const perKm = Number(root.dataset.perkm) || 0;
 	const licencePrice = Number(root.dataset.licence) || 0;
+	const commercialExtra = Number(root.dataset.commx) || 0;
 	const fmt = (n) => n.toLocaleString('de-AT');
 	let sel = 0, extra = 0, usage = 'private';
 	const els = {
@@ -211,8 +212,11 @@ function initEnquire() {
 		const addonsCost = picked.reduce((sum, b) => sum + (Number(b.dataset.price) || 0), 0);
 		const km = Math.max(0, Math.min(2000, Number(kmInput?.value) || 0));
 		const travelCost = Math.round(km * 2 * perKm);
-		const licenceCost = usage === 'commercial' ? licencePrice : 0;
-		const total = base + extraCost + addonsCost + travelCost + licenceCost;
+		// Usage: TFP zeroes the balance (collaborative — no fee); commercial adds
+		// the licence PLUS the commercial surcharge on top.
+		const licenceCost = usage === 'commercial' ? licencePrice + commercialExtra : 0;
+		const subtotal = base + extraCost + addonsCost + travelCost + licenceCost;
+		const total = usage === 'tfp' ? 0 : subtotal;
 		svcs.forEach((b, k) => b.setAttribute('aria-pressed', String(k === sel)));
 		usageBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.usage === usage)));
 		els.name && (els.name.textContent = s.dataset.name);
@@ -226,6 +230,9 @@ function initEnquire() {
 		els.kmEcho && (els.kmEcho.textContent = km);
 		els.travelFmt && (els.travelFmt.textContent = fmt(travelCost));
 		els.licenceFmt && (els.licenceFmt.textContent = fmt(licenceCost));
+		root.querySelectorAll('[data-tfp-line]').forEach((el) => { el.style.display = usage === 'tfp' ? '' : 'none'; });
+		const tfpFmt = root.querySelector('[data-tfp-fmt]');
+		tfpFmt && (tfpFmt.textContent = fmt(subtotal));
 		els.total && (els.total.textContent = fmt(total));
 		if (els.note) { const n = s.dataset.note || ''; els.note.textContent = n; els.note.style.display = n ? '' : 'none'; }
 		// stash for submit

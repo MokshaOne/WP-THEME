@@ -272,6 +272,20 @@
             }
         },
         {
+            "key": "field_rvn_commercial_extra",
+            "label": "Commercial surcharge",
+            "name": "commercial_extra",
+            "type": "number",
+            "instructions": "Added on top of the licence for commercial usage.",
+            "required": 0,
+            "default_value": 250,
+            "min": 0,
+            "step": 10,
+            "wrapper": {
+                "width": "33"
+            }
+        },
+        {
             "key": "field_rvn_perkm",
             "label": "Travel per km",
             "name": "per_km",
@@ -564,5 +578,5 @@
     "label_placement": "top",
     "active": true,
     "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
-    "modified": 1787399986
+    "modified": 1787400761
 }

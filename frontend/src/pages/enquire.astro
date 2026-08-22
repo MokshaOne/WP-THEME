@@ -23,6 +23,8 @@ const s0 = services[0];
 const addons = site.pricing.addons;
 const perKm = site.pricing.per_km;
 const licence = site.pricing.licence;
+const commx = site.pricing.commercial_extra;
+const usageCost = licence + commx;
 
 // FAQ rich-results schema — only when FAQ content exists.
 const faqSchema = site.faq.length ? {
@@ -42,7 +44,7 @@ const faqSchema = site.faq.length ? {
 		<p class="enq__intro" data-intro>No price list. The session, the hours, the distance and the extras define the figure — the number below is an orientation, the firm offer arrives by mail within 24 hours.</p>
 	</section>
 
-	<section class="enq" data-enquire data-perkm={perKm} data-licence={licence}>
+	<section class="enq" data-enquire data-perkm={perKm} data-licence={licence} data-commx={commx}>
 		<div class="enq__form">
 			<p class="enq__step">01 — SESSION</p>
 			<div class="svc-grid">
@@ -83,9 +85,11 @@ const faqSchema = site.faq.length ? {
 
 			<p class="enq__step mt">05 — USAGE</p>
 			<div class="usage">
-				<button type="button" data-usage="private" aria-pressed="true">PRIVATE / TFP</button>
-				<button type="button" data-usage="commercial" aria-pressed="false">COMMERCIAL <span class="usage__p">+ {fmt(licence)} {cur} LICENCE</span></button>
+				<button type="button" data-usage="tfp" aria-pressed="false">TFP <span class="usage__p">COLLABORATION · 0 {cur}</span></button>
+				<button type="button" data-usage="private" aria-pressed="true">PRIVATE</button>
+				<button type="button" data-usage="commercial" aria-pressed="false">COMMERCIAL <span class="usage__p">+ {fmt(usageCost)} {cur} LICENCE &amp; FEE</span></button>
 			</div>
+			<p class="usage__note">TFP — time for print: a collaborative shoot, both sides keep the frames, no fee. Offered at my discretion; tell me your idea below.</p>
 
 			<p class="enq__step mt">06 — DETAILS</p>
 			<form action={endpoint} method="POST" data-mailto={site.contact.email}>
@@ -119,7 +123,8 @@ const faqSchema = site.faq.length ? {
 				<span class="k">Extra hours × <span data-extra-hours>0</span></span><span><span data-extra-fmt>0</span> {cur}</span>
 				<span class="k">Add-ons</span><span><span data-addons-fmt>0</span> {cur}</span>
 				<span class="k">Travel — <span data-km-echo>0</span> km rt</span><span><span data-travel-fmt>0</span> {cur}</span>
-				<span class="k">Usage licence</span><span><span data-licence-fmt>0</span> {cur}</span>
+				<span class="k">Commercial usage</span><span><span data-licence-fmt>0</span> {cur}</span>
+				<span class="k tfp-line" data-tfp-line style="display:none">TFP collaboration</span><span class="tfp-line" data-tfp-line style="display:none">− <span data-tfp-fmt>0</span> {cur}</span>
 			</div>
 			<div class="est__total">
 				<span class="tk">INDICATION</span>

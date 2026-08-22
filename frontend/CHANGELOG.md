@@ -4,6 +4,17 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.0.1 — 2026-08-22 · Usage: TFP zeroes the balance, commercial pays for it
+
+- **Usage now has three modes.** TFP — a collaborative shoot: the ledger shows
+  the full breakdown, then a "TFP collaboration" line (in the accent) negates
+  it and the balance reads **0 €**, with a note that TFP is offered at the
+  photographer's discretion. Private — unchanged. **Commercial** — the licence
+  plus a new **commercial surcharge** (default 250 €, editable in Site
+  settings → Price calculator) — e.g. 150 + 250 = 400 € on top.
+- All three paths verified interactively (534 / 934 / 0 € on the same
+  configuration). Theme + zip at 4.0.1 (new `commercial_extra` field).
+
 ## 4.0.0 — 2026-08-22 · The flagship rebuild — dark, epic, one voice
 
 The package rebuilt around the chosen dark "Poster" direction. One signature

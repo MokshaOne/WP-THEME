@@ -566,6 +566,7 @@ function rvn_site_payload() {
 			'addons'   => $addons,
 			'sessions' => $sessions,
 			'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
+			'commercial_extra' => (float) rvn_site_opt( 'commercial_extra', 250 ),
 			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
 		),
 		'faq'      => $faq,

@@ -244,7 +244,7 @@ export interface Site {
 	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[] };
 	home: { hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
 	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
-	pricing: { currency: string; sessions: Session[]; addons: AddOn[]; licence: number; per_km: number };
+	pricing: { currency: string; sessions: Session[]; addons: AddOn[]; licence: number; commercial_extra: number; per_km: number };
 	faq: Faq[];
 	security: { turnstile_site: string };
 }
@@ -293,7 +293,7 @@ const SITE_FALLBACK: Site = {
 			{ name: 'FASHION / COMMERCIAL', base: 220, hrs: 2, extra: 120, note: 'Price excludes a commercial usage license — licensing is quoted per campaign.' },
 		],
 		addons: [ { label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 }, { label: 'Second shooter', price: 300 }, { label: 'Hair & make-up artist', price: 350 } ],
-		licence: 150, per_km: 0.42,
+		licence: 150, commercial_extra: 250, per_km: 0.42,
 	},
 	faq: [
 		{ q: 'How do we get started?', a: 'Send an enquiry with a few details about your project. I reply within 24 hours with availability and a firm quote.' },
@@ -344,6 +344,7 @@ export async function getSite(): Promise<Site> {
 				sessions: arr(d?.pricing?.sessions, F.pricing.sessions),
 				addons: arr(d?.pricing?.addons, F.pricing.addons),
 				licence: pick(d?.pricing?.licence, F.pricing.licence),
+				commercial_extra: pick(d?.pricing?.commercial_extra, F.pricing.commercial_extra),
 				per_km: pick(d?.pricing?.per_km, F.pricing.per_km),
 			},
 			faq: arr(d?.faq, F.faq),

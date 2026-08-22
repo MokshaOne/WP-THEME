@@ -4,6 +4,16 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.0.3 — 2026-08-22 · TFP has no extras; no events or weddings
+
+- **TFP locks the add-ons step**: choosing TFP clears any picked add-ons and
+  disables the list with a mono note ("not available on TFP collaborations");
+  switching back re-enables it. Balance stays 0 €.
+- **Events and weddings leave the offer**: sessions are now Portrait and
+  Fashion / Editorial, and every positioning line (hero, marquee, focus, bio,
+  work intro, sample honors) reads portrait · fashion · editorial. Existing
+  archive projects are untouched.
+
 ## 4.0.2 — 2026-08-22 · One voice across every page
 
 - **Navigation is now three items: Work · About · Enquiry** (Series leaves the

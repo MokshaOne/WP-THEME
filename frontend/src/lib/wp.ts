@@ -183,7 +183,7 @@ export interface Post {
 
 const SAMPLE_POSTS: Post[] = [
 	{ slug: 'available-light', title: 'On available light', excerpt: 'Why I keep the flash in the bag, and what the window already knows.', content: '<p>Notes on working with what the room gives you.</p>', date: '2026-06-14', dateLabel: '14 June 2026', category: 'Craft', image: '' },
-	{ slug: 'a-year-in-albums', title: 'A year, kept in albums', excerpt: 'Looking back on twelve months of portraits, weddings and quiet streets.', content: '<p>A short retrospective.</p>', date: '2026-01-04', dateLabel: '4 January 2026', category: 'Journal', image: '' },
+	{ slug: 'a-year-in-albums', title: 'A year, kept in albums', excerpt: 'Looking back on twelve months of portraits, editorials and quiet streets.', content: '<p>A short retrospective.</p>', date: '2026-01-04', dateLabel: '4 January 2026', category: 'Journal', image: '' },
 	{ slug: 'tfp-and-trust', title: 'TFP, and the value of trust', excerpt: 'How collaborative sessions became the backbone of the studio.', content: '<p>On working for the picture, not the invoice.</p>', date: '2025-11-20', dateLabel: '20 November 2025', category: 'Journal', image: '' },
 ];
 
@@ -252,11 +252,11 @@ export interface Site {
 const SITE_FALLBACK: Site = {
 	studio: {
 		lede: 'A practice of looking slowly — and keeping only what lasts.',
-		bio: '<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, wedding and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p><p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. Each project is kept as an album; the archive lives under Work.</p><p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>',
+		bio: '<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, fashion and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p><p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. Each project is kept as an album; the archive lives under Work.</p><p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>',
 		portrait: '',
 		statement: ['NO PRESETS.', 'NO SHORTCUTS.', 'JUST THE FRAME.'],
 		spec: [
-			{ label: 'FOCUS', value: 'PORTRAIT · FASHION · EVENT · WEDDING' },
+			{ label: 'FOCUS', value: 'PORTRAIT · FASHION · EDITORIAL' },
 			{ label: 'BASE', value: 'VIENNA, AUSTRIA' },
 			{ label: 'SINCE', value: 'MMXX' },
 			{ label: 'LANGUAGES', value: 'EN · DE · TA' },
@@ -269,13 +269,13 @@ const SITE_FALLBACK: Site = {
 	},
 	home: {
 		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
-		hero_lede: 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
-		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ',
+		hero_lede: 'Raveenthiran photographs people — portrait, fashion and editorial — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
+		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EDITORIAL — ',
 		honors: [
 			{ year: '2026', title: 'INTERNATIONAL PORTRAIT AWARDS', tag: 'SHORTLIST' },
 			{ year: '2025', title: 'FOTO WIEN — GROUP SHOW', tag: 'EXHIBITION' },
 			{ year: '2025', title: 'VIENNA PHOTO FESTIVAL', tag: 'FEATURE' },
-			{ year: '2024', title: 'AUSTRIAN WEDDING AWARDS', tag: 'WINNER — REPORTAGE' },
+			{ year: '2024', title: 'VIENNA PORTRAIT PRIZE', tag: 'NOMINATION' },
 		],
 		testimonials: [
 			{ text: 'He directed the whole shoot so calmly that I forgot the camera was there. The prints hang in our living room.', by: 'SARAH K. — PORTRAIT, 2024' },
@@ -288,9 +288,7 @@ const SITE_FALLBACK: Site = {
 		currency: '€',
 		sessions: [
 			{ name: 'PORTRAIT', base: 150, hrs: 2, extra: 120, note: '' },
-			{ name: 'EVENT', base: 690, hrs: 3, extra: 120, note: '' },
-			{ name: 'WEDDING', base: 1200, hrs: 5, extra: 220, note: '' },
-			{ name: 'FASHION / COMMERCIAL', base: 220, hrs: 2, extra: 120, note: 'Price excludes a commercial usage license — licensing is quoted per campaign.' },
+			{ name: 'FASHION / EDITORIAL', base: 220, hrs: 2, extra: 120, note: 'Commercial usage is licensed separately — pick COMMERCIAL below and it is included in the figure.' },
 		],
 		addons: [ { label: 'Advanced retouching', price: 180 }, { label: 'Express delivery', price: 240 }, { label: 'Second shooter', price: 300 }, { label: 'Hair & make-up artist', price: 350 } ],
 		licence: 150, commercial_extra: 250, per_km: 0.42,

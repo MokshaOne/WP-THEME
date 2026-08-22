@@ -208,6 +208,12 @@ function initEnquire() {
 		const extraCost = extra * rate;
 		// Add-ons, round-trip travel from Vienna and the commercial usage licence
 		// complete the studio's real formula: type × duration × distance + extras.
+		// TFP is a collaboration — no extras: the add-ons step locks and clears.
+		const isTfp = usage === 'tfp';
+		if (isTfp) { addonBtns.forEach((b) => b.setAttribute('aria-pressed', 'false')); }
+		addonBtns.forEach((b) => { b.disabled = isTfp; });
+		const lock = root.querySelector('[data-addons-lock]');
+		lock && (lock.style.display = isTfp ? '' : 'none');
 		const picked = addonBtns.filter((b) => b.getAttribute('aria-pressed') === 'true');
 		const addonsCost = picked.reduce((sum, b) => sum + (Number(b.dataset.price) || 0), 0);
 		const km = Math.max(0, Math.min(2000, Number(kmInput?.value) || 0));

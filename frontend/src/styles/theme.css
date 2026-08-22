@@ -629,3 +629,7 @@ a.live { color: var(--accent); border-bottom-color: var(--accent); }
 /* Usage — TFP / private / commercial */
 .usage__note { max-width: 52ch; margin: 16px 0 0; font-size: 12px; line-height: 1.65; color: var(--faint); }
 .est__lines .tfp-line { color: var(--accent); }
+
+/* TFP locks the add-ons step */
+.addon:disabled { opacity: .35; cursor: not-allowed; }
+.addons__lock { margin: 14px 0 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: .2em; color: var(--accent); }

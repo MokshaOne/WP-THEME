@@ -4,6 +4,21 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 3.12.0 — 2026-08-22 · "Poster" dark direction (Option B) — full site
+
+- The chosen redesign direction from the design canvas, applied site-wide:
+  - **Truer black + paper** palette (`#0B0B0B` / `#F4F2ED`); one **signal accent**
+    `#FF3B1D` used only for state (active nav, hovers, links, the section index).
+  - **Space Mono** on every technical label — nav, captions, section kickers,
+    index/credits meta, footer — for an EXIF / instrument feel (self-hosted, GDPR).
+  - **Poster hero** on the home: a full-bleed darkened frame with a giant Anton
+    `RAVEENTHIRAN` wordmark (mix-blend), an EXIF-style caption, the section index
+    in the accent, and the slideshow chrome — keeps the auto-advance + nav.
+- Built on the v3.11 editorial layout (gutters, airy rhythm, de-boxed sections).
+- Frontend-only; WordPress theme unchanged (no re-upload needed). This is a
+  preview of the direction — easy to tune (accent amount, wordmark scale) or
+  revert.
+
 ## 3.11.0 — 2026-08-22 · Editorial restructure (structure, not skin)
 
 - Same design language (Anton · Archivo, mono, hairlines) — a rebuilt **layout

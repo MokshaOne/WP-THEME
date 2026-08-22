@@ -7,21 +7,25 @@
 
 @import '@fontsource/anton/400.css';
 @import '@fontsource-variable/archivo';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/space-mono/700.css';
 
-/* ── Tokens ──────────────────────────────────────────────────────────────── */
+/* ── Tokens — "Poster" (dark) ────────────────────────────────────────────── */
 :root {
-	--canvas:  #121110;
-	--panel:   #1a1815;
-	--ink:     #efece6;
-	--muted:   #b5aea1;
-	--dim:     #8a847a;
-	--faint:   #6f6a60;
-	--line:    #2b2925;
-	--subline: #26231f;
-	--chip:    #3a372f;
+	--canvas:  #0B0B0B;
+	--panel:   #141414;
+	--ink:     #F4F2ED;
+	--muted:   #b8b2a8;
+	--dim:     #8a857e;
+	--faint:   #6f6a63;
+	--line:    #2a2a2a;
+	--subline: #1e1e1e;
+	--chip:    #3a3a37;
+	--accent:  #FF3B1D;   /* one signal accent — state only (hover/active/index) */
 
 	--font-display: 'Anton', 'Arial Narrow', sans-serif;
 	--font-body: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
+	--font-mono: 'Space Mono', ui-monospace, 'Courier New', monospace;
 
 	--pad: 28px;
 	/* Editorial layout system — generous, scaling gutters (content sits in a
@@ -610,4 +614,50 @@ html.rvn-flash { filter: invert(1) hue-rotate(180deg); transition: filter .45s e
 	.ts-spot { grid-template-columns: 1fr; }
 	.avail__cell { min-height: 58px; padding: 8px; }
 	.avail__n { font-size: 14px; }
+}
+
+/* ── Poster (dark) chrome: technical mono labels + one signal accent ──────── */
+.chrome, .sec__hint, .cap, .slide-cap, .slide-count, .hdr-clock, .eyebrow,
+.phead__meta, .foot-meta, .foot-legal, .foot-ver, .nav, .lang, .m-ovl a .num,
+.index__row .k, .honor .k, .quotes__by, .pkg-row, .pkg-col__i, .pkg-col__cta,
+.pkg-col__feat, .avail__wd, .avail__cell .k, .avail__foot, .avail__top,
+.press-q .k, .exif, .meta-row, .credits { font-family: var(--font-mono); }
+
+/* the section kicker reads as a technical index marker */
+.sec__hint, .blk__head .sec__hint { color: var(--dim); }
+
+/* accent — state only (hover / active / links) */
+.nav a:hover, .foot-legal a:hover, .m-ovl a:hover,
+.index__row:hover .t, .pkg-col__cta:hover, .press-cell:hover { color: var(--accent); }
+.nav a[aria-current="page"] { border-bottom-color: var(--accent); color: var(--ink); }
+.article__body a, .proj-statement a, .faq__a a { color: var(--accent); }
+a.live { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* EXIF-style photo caption (mono, technical) */
+.exif { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+
+/* ── Poster hero (full-bleed, giant wordmark) ────────────────────────────── */
+.phero { position: relative; height: 92vh; min-height: 600px; overflow: hidden; border-bottom: var(--hair); }
+.phero .slides { position: absolute; inset: 0; }
+.phero .slide {
+	position: absolute; inset: 0; width: 100%; height: 100%;
+	object-fit: cover; object-position: 50% 30%;
+	filter: grayscale(1) contrast(1.06) brightness(.66);
+	clip-path: inset(0 0 100% 0); z-index: 1; transition: clip-path 1s var(--ease);
+}
+.phero .slide.on { clip-path: inset(0 0 0 0); z-index: 2; }
+.phero__top { position: absolute; top: 0; left: 0; right: 0; z-index: 4; display: flex; justify-content: space-between; align-items: center; padding: 28px var(--gx); }
+.phero__top .exif { color: var(--accent); font-size: 11px; }
+.phero__lede { position: absolute; right: var(--gx); top: 128px; z-index: 4; max-width: 300px; display: flex; flex-direction: column; align-items: flex-end; gap: 18px; text-align: right; }
+.phero__lede p { margin: 0; font-size: 13px; line-height: 1.65; color: var(--muted); }
+.phero__cap { position: absolute; right: var(--gx); bottom: calc(3vh + 8px); z-index: 4; }
+.phero__wm { position: absolute; left: -0.015em; bottom: 2.2vh; z-index: 4; font-family: var(--font-display); font-size: clamp(64px, 15.5vw, 232px); line-height: .8; letter-spacing: -0.005em; color: #fff; mix-blend-mode: difference; pointer-events: none; white-space: nowrap; text-transform: uppercase; }
+.phero .rbtn { border-color: rgba(244,242,237,.45); }
+@media (max-width: 760px) {
+	.phero { height: auto; }
+	.phero .slides { position: relative; height: 58vh; }
+	.phero__top { position: absolute; }
+	.phero__lede { position: static; max-width: none; text-align: left; align-items: flex-start; padding: 22px var(--gx) 0; }
+	.phero__cap { position: static; padding: 14px var(--gx) 0; }
+	.phero__wm { position: static; padding: 16px var(--gx) 22px; font-size: 15vw; white-space: normal; }
 }

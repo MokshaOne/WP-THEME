@@ -15,37 +15,27 @@ const marqueeWords = /\s—\s$/.test(site.home.marquee) ? site.home.marquee : si
 const honors = site.home.honors;
 const testimonials = site.home.testimonials;
 ---
-<!-- HERO -->
-<section class="hero">
-	<div class="hero__left">
-		<div class="hero__head" data-intro>
-			{heroLines.map((l, i) => (
-				<div class:list={['line', i === heroLines.length - 1 && 'line--outline']}>{l}</div>
-			))}
-		</div>
-		<div class="hero__lede" data-intro>
-			<p>{heroLede}</p>
-			<div class="hero__cta">
-				<a class="btn" href="/enquire/">Start a commission</a>
-				<a class="btn btn--ghost" href="/work/">See the work</a>
-			</div>
+<!-- POSTER HERO -->
+<section class="phero" data-hero data-intro>
+	<div class="slides">
+		{featured.map((p, i) => (
+			<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-cap={`${up(p.category || 'PORTRAIT')} · ${up(p.location || 'VIENNA')} · ${p.year || ''}`} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+		))}
+	</div>
+	<div class="phero__top">
+		<span class="exif">01 — SELECTED WORK</span>
+		<div class="slide-nav">
+			<button class="rbtn" data-prev aria-label="Previous">←</button>
+			<span class="slide-count"><span data-count>01</span><span class="of"> / {String(featured.length).padStart(2, '0')}</span></span>
+			<button class="rbtn" data-next aria-label="Next">→</button>
 		</div>
 	</div>
-	<div class="hero__right" data-hero data-intro>
-		<div class="slides">
-			{featured.map((p, i) => (
-				<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-cap={up(p.category || p.title)} style={`object-position:${p.focal}`} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
-			))}
-		</div>
-		<div class="slide-chrome">
-			<div class="slide-cap" data-cap>{up(featured[0]?.category || '')}</div>
-			<div class="slide-nav">
-				<button class="rbtn" data-prev aria-label="Previous">←</button>
-				<span class="slide-count"><span data-count>01</span><span class="of"> / {String(featured.length).padStart(2, '0')}</span></span>
-				<button class="rbtn" data-next aria-label="Next">→</button>
-			</div>
-		</div>
+	<div class="phero__lede">
+		<p>{heroLede}</p>
+		<a class="btn" href="/enquire/">Start a commission</a>
 	</div>
+	<div class="phero__cap"><span class="exif" data-cap>{up(featured[0]?.category || '')}</span></div>
+	<div class="phero__wm" aria-hidden="true">RAVEENTHIRAN</div>
 </section>
 
 <!-- MARQUEE -->

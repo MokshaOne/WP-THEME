@@ -4,6 +4,24 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.2.0 — 2026-08-23 · Series live in the post; the archive always opens the gallery
+
+Frontend-only (theme stays 4.1.1 — the Series taxonomy in WordPress is
+untouched and still feeds the data).
+
+- **Series pages are gone; series membership shows inside the project.** The
+  credits list a plain `SERIES — <name>` line, and a new **FROM THE SERIES**
+  section lists the other frames of the same series as index rows (hover-peek
+  preview included), each linking straight to its project page. Sample data:
+  the two VIECC shoots now share the VIECC series so the block is visible.
+- **The Work archive always opens the gallery.** Clicking a card's image used
+  to open a single-image lightbox while only the caption led to the project —
+  now the whole card navigates to the project page. The lightbox remains on
+  the gallery images inside a project, where it belongs.
+- Smoke suite now covers 14 checks (7 routes × 2 viewports — `/series/` is no
+  longer a route); archive image click verified to navigate, in-post lightbox
+  verified to still open.
+
 ## 4.1.1 — 2026-08-22 · Backend hardening (theme 4.1.1)
 
 WordPress theme pass — same perfection bar as the frontend. Frontend version

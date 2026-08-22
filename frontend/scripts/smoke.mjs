@@ -24,7 +24,6 @@ const OUT = new URL('../screenshots/', import.meta.url).pathname;
 const ROUTES = [
 	['home', '/'],
 	['work', '/work/'],
-	['series', '/series/'],
 	['studio', '/about/'],
 	['enquire', '/enquire/'],
 	['journal', '/journal/'],

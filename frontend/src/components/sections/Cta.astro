@@ -1,7 +1,0 @@
----
-interface Props { small?: boolean; label?: string; }
-const { small = false, label = 'BOOK THE NEXT SHOOT' } = Astro.props;
----
-<a class:list={['cta', small && 'cta--sm']} href="/enquire/">
-	<span>{label}</span><span>→</span>
-</a>

@@ -253,7 +253,7 @@ export type Block = PressBlock | PackagesBlock | TestimonialBlock | Availability
 
 export interface Site {
 	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[] };
-	home: { variant: string; sections: { type: string }[]; hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
+	home: { variant: string; hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
 	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
 	pricing: { currency: string; types: PriceType[]; addons: AddOn[]; sessions: Session[]; licence: number; per_km: number };
 	faq: Faq[];
@@ -281,12 +281,6 @@ const SITE_FALLBACK: Site = {
 	},
 	home: {
 		variant: 'raveenthiran',
-		// Modular home stack (WordPress → Home → Home sections). Empty on the live
-		// site until composed; this sample stack shows a block mixed into the home.
-		sections: [
-			{ type: 'hero-split' }, { type: 'marquee' }, { type: 'selected-work' },
-			{ type: 'the-index' }, { type: 'packages' }, { type: 'recognition' }, { type: 'cta' },
-		],
 		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
 		hero_lede: 'Raveenthiran photographs people — portrait, fashion, event, wedding and everything between — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
 		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EVENT — WEDDING — ',
@@ -379,7 +373,6 @@ export async function getSite(): Promise<Site> {
 			},
 			home: {
 				variant: pick(d?.home?.variant, F.home.variant),
-				sections: Array.isArray(d?.home?.sections) ? d.home.sections.map((s: any) => ({ type: String(s?.type || '') })).filter((s: any) => s.type) : [],
 				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),
 				hero_lede: pick(d?.home?.hero_lede, F.home.hero_lede),
 				marquee: pick(d?.home?.marquee, F.home.marquee),

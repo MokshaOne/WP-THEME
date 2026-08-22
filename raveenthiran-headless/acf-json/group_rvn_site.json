@@ -133,44 +133,6 @@
             }
         },
         {
-            "key": "field_rvn_home_sections",
-            "label": "Home sections (modular home)",
-            "name": "home_sections",
-            "type": "repeater",
-            "instructions": "Compose the home page as an ordered stack — drag rows to reorder. Leave EMPTY to use the single \"Home — layout\" variant above instead (nothing changes until you add a row).",
-            "required": 0,
-            "layout": "table",
-            "button_label": "Add section",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_home_section_type",
-                    "label": "Section",
-                    "name": "type",
-                    "type": "select",
-                    "required": 1,
-                    "ui": 1,
-                    "allow_null": 0,
-                    "return_format": "value",
-                    "choices": {
-                        "hero-split": "Hero — Split (Raveenthiran)",
-                        "hero-monument": "Hero — Monument (giant wordmark)",
-                        "hero-editorial": "Hero — Editorial (offset portraits)",
-                        "hero-cinema": "Hero — Cinema (fullscreen slider)",
-                        "hero-index": "Hero — Index (statement + rail)",
-                        "marquee": "Section — Marquee band",
-                        "selected-work": "Section — Selected work (rail)",
-                        "the-index": "Section — The Index (list)",
-                        "recognition": "Section — Recognition (awards + quotes)",
-                        "cta": "Section — CTA band",
-                        "press": "Block — Press wall",
-                        "packages": "Block — Packages",
-                        "testimonial": "Block — Testimonial spotlight",
-                        "availability": "Block — Availability"
-                    }
-                }
-            ]
-        },
-        {
             "key": "field_rvn_home_hero_lines",
             "label": "Home — hero headline (lines)",
             "name": "home_hero_lines",
@@ -990,5 +952,5 @@
     "label_placement": "top",
     "active": true,
     "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
-    "modified": 1787393049
+    "modified": 1787391733
 }

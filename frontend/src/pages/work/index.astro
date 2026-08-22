@@ -13,9 +13,10 @@ const from = years.length ? Math.min(...years) : 2020;
 const to = years.length ? Math.max(...years) : new Date().getFullYear();
 ---
 <Base title="The Work — Raveenthiran" description="The full archive — portrait, fashion, event and wedding work from Vienna and across Austria." active="work" page="work">
-	<section class="phead">
-		<h1 data-intro>THE WORK</h1>
-		<div class="phead__meta" data-intro>ARCHIVE {from} — {to}<br /><span data-count>{String(projects.length).padStart(2, '0')}</span> FRAMES SHOWN</div>
+	<section class="wrap" style="padding:clamp(72px,9vw,150px) var(--gx) 40px">
+		<div class="eyebrow" data-intro style="margin-bottom:18px">01 — THE ARCHIVE · {from} — {to}</div>
+		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">THE WORK<span style="color:var(--accent)">.</span></h1>
+		<p class="enq__intro" data-intro><span class="chrome"><span data-count>{String(projects.length).padStart(2, '0')}</span> FRAMES</span> — portrait, fashion, event and wedding. Vienna, and wherever the light is worth the drive.</p>
 	</section>
 
 	<div class="chips" data-chips data-intro>

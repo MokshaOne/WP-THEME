@@ -4,6 +4,14 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.0.2 — 2026-08-22 · One voice across every page
+
+- **Navigation is now three items: Work · About · Enquiry** (Series leaves the
+  menu; series pages remain reachable from project credits). DE toggle follows.
+- **Work and About now speak the home's grammar**: mono accent-index kicker
+  (`01 — THE ARCHIVE`), colossal title with the accent full stop, mono frame
+  count — the same opener DNA as the homepage and the calculator. Frontend-only.
+
 ## 4.0.1 — 2026-08-22 · Usage: TFP zeroes the balance, commercial pays for it
 
 - **Usage now has three modes.** TFP — a collaborative shoot: the ledger shows

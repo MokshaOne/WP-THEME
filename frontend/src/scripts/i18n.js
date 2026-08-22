@@ -9,9 +9,8 @@
 const DICT = {
 	// Navigation
 	'WORK': 'ARBEITEN',
-	'SERIES': 'SERIEN',
-	'STUDIO': 'STUDIO',
-	'ENQUIRE': 'ANFRAGE',
+	'ABOUT': 'ÜBER',
+	'ENQUIRY': 'ANFRAGE',
 	// Buttons
 	'Start a commission': 'Auftrag anfragen',
 	'See the work': 'Arbeiten ansehen',

@@ -14,7 +14,7 @@ const process = [
 	['03', 'THE DELIVERY', 'Hand-edited selects in full resolution, ready for print — delivered when promised.'],
 ];
 ---
-<Base title="Studio — Raveenthiran" description="Nishuthan Raveenthiran — photographer based in Vienna, working across Austria." active="studio" page="studio" preload={portrait}>
+<Base title="About — Raveenthiran" description="Nishuthan Raveenthiran — photographer based in Vienna, working across Austria." active="studio" page="studio" preload={portrait}>
 	<section class="studio-hero">
 		<div class="studio-hero__portrait" data-intro>
 			<img src={portrait} alt="Nishuthan Raveenthiran" data-parallax="0.07" />
@@ -22,7 +22,7 @@ const process = [
 		</div>
 		<div class="studio-hero__body">
 			<div>
-				<div class="eyebrow" data-intro style="margin-bottom:20px">THE STUDIO</div>
+				<div class="eyebrow" data-intro style="margin-bottom:20px">01 — ABOUT THE STUDIO</div>
 				{statementLines.map((l, i) => (
 					<div class:list={['line', i === statementLines.length - 1 && 'line--outline']} data-intro>{l}</div>
 				))}

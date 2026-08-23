@@ -240,9 +240,13 @@ export interface Honor { year: string; title: string; tag: string }
 export interface Testimonial { text: string; by: string }
 export interface Faq { q: string; a: string }
 
+export interface ClientLogo { name: string; logo: string }
+export interface TravelDate { dates: string; city: string }
+
 export interface Site {
-	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[] };
+	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[]; client_logos: ClientLogo[] };
 	home: { hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
+	travel: { open: boolean; dates: TravelDate[] };
 	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
 	pricing: { currency: string; sessions: Session[]; addons: AddOn[]; licence: number; commercial_extra: number; per_km: number };
 	faq: Faq[];
@@ -266,6 +270,7 @@ const SITE_FALLBACK: Site = {
 			{ label: 'Frames delivered', value: '18K' }, { label: 'Base', value: 'Vienna' },
 		],
 		clients: ['heute.at', 'Foto Wien', 'Vienna Photo Festival', 'VIECC', '1000things'],
+		client_logos: [],
 	},
 	home: {
 		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
@@ -299,6 +304,13 @@ const SITE_FALLBACK: Site = {
 		{ q: 'Do you travel?', a: 'Yes. I am based in Vienna and work across Europe. Travel beyond the city is added per kilometre.' },
 		{ q: 'When do I receive the images?', a: 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.' },
 	],
+	travel: {
+		open: true,
+		dates: [
+			{ dates: '12.–14. SEPTEMBER', city: 'BERLIN' },
+			{ dates: '03.–05. OCTOBER', city: 'MUNICH' },
+		],
+	},
 	security: { turnstile_site: '' },
 };
 
@@ -321,6 +333,14 @@ export async function getSite(): Promise<Site> {
 				spec: arr(d?.studio?.spec, F.studio.spec),
 				stats: arr(d?.studio?.stats, F.studio.stats),
 				clients: arr(d?.studio?.clients, F.studio.clients),
+				client_logos: arr(d?.studio?.client_logos, F.studio.client_logos),
+			},
+			// Travel deliberately does NOT fall back to the sample dates: when the
+			// live backend predates the field (or has no rows), the strip stays
+			// hidden rather than showing fabricated availability.
+			travel: {
+				open: d?.travel?.open === true,
+				dates: Array.isArray(d?.travel?.dates) ? d.travel.dates : [],
 			},
 			home: {
 				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),

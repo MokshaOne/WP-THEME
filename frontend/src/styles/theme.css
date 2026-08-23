@@ -627,6 +627,21 @@ a.live { color: var(--accent); border-bottom-color: var(--accent); }
 .addon:disabled { opacity: .35; cursor: not-allowed; }
 .addons__lock { margin: 14px 0 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: .2em; color: var(--accent); }
 
+/* ── ON THE ROAD — planned city dates ────────────────────────────────────── */
+.road { display: flex; flex-wrap: wrap; align-items: baseline; gap: 18px clamp(28px, 4vw, 64px); padding: 26px var(--gx); border-bottom: var(--hair); font-family: var(--font-mono); font-size: 11px; letter-spacing: .2em; }
+.road__k { color: var(--faint); }
+.road__d { color: var(--ink); }
+.road__d em { font-style: normal; color: var(--faint); }
+.road__open { margin-left: auto; color: var(--accent); text-decoration: none; }
+.road__open:hover { text-decoration: underline; }
+.km__road { display: block; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .18em; color: var(--accent); }
+
+/* ── Client logo wall (About) — white silhouettes on the dark canvas ─────── */
+.logowall { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px, 4vw, 60px); }
+.logowall img { height: 26px; width: auto; max-width: 150px; object-fit: contain; filter: brightness(0) invert(1); opacity: .68; transition: opacity .3s; }
+.logowall img:hover { opacity: 1; }
+.clients--logos { flex-direction: column; align-items: flex-start; gap: 26px; }
+
 /* ── THE PHOTOGRAPHER teaser (home) ──────────────────────────────────────── */
 .whois { display: grid; grid-template-columns: minmax(200px, 300px) 1fr; gap: clamp(32px, 5vw, 80px); align-items: center; padding: var(--sp-tight) var(--gx); border-top: var(--hair); }
 .whois__plate { display: block; aspect-ratio: 4 / 5; overflow: hidden; background: var(--panel); }

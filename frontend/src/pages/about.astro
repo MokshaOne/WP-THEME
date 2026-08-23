@@ -55,7 +55,14 @@ const process = [
 			))}
 		</section>
 	)}
-	{site.studio.clients.length > 0 && (
+	{site.studio.client_logos.length > 0 ? (
+		<section class="clients clients--logos" data-reveal>
+			<span class="k">SEEN AT · WORKED WITH</span>
+			<div class="logowall">
+				{site.studio.client_logos.map((c) => <img src={c.logo} alt={c.name} title={c.name} loading="lazy" />)}
+			</div>
+		</section>
+	) : site.studio.clients.length > 0 && (
 		<section class="clients" data-reveal>
 			<span class="k">SEEN AT · WORKED WITH</span>
 			{site.studio.clients.map((c) => <span>{c}</span>)}

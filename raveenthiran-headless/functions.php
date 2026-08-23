@@ -546,6 +546,21 @@ function rvn_site_payload() {
 	$portrait = rvn_site_opt( 'studio_portrait', '' );
 	if ( is_array( $portrait ) ) { $portrait = $portrait['url'] ?? ''; }
 
+	// Client logos (optional — About shows a logo wall when present).
+	$client_logos = array();
+	foreach ( (array) rvn_site_opt( 'studio_client_logos', array() ) as $r ) {
+		$logo = $r['logo'] ?? '';
+		if ( is_array( $logo ) ) { $logo = $logo['url'] ?? ''; }
+		$name = isset( $r['name'] ) ? trim( (string) $r['name'] ) : '';
+		if ( $logo ) { $client_logos[] = array( 'name' => $name, 'logo' => (string) $logo ); }
+	}
+
+	// Traveling strip: planned city dates + the "open for traveling" note.
+	$travel_dates = array();
+	foreach ( $rows( 'travel_dates', array( 'dates', 'city' ) ) as $r ) {
+		$travel_dates[] = array( 'dates' => (string) $r['dates'], 'city' => (string) $r['city'] );
+	}
+
 	return array(
 		'studio'  => array(
 			'lede'      => (string) rvn_site_opt( 'studio_lede', '' ),
@@ -555,6 +570,11 @@ function rvn_site_payload() {
 			'spec'      => $spec,
 			'stats'     => $stats,
 			'clients'   => $lines( 'studio_clients' ),
+			'client_logos' => $client_logos,
+		),
+		'travel'  => array(
+			'open'  => (int) rvn_site_opt( 'travel_open', 0 ) === 1,
+			'dates' => $travel_dates,
 		),
 		'home'    => array(
 			'hero_lines'   => $lines( 'home_hero_lines' ),

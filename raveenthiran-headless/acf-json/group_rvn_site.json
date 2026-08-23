@@ -1,582 +1,641 @@
 {
-    "key": "group_rvn_site",
-    "title": "Site settings",
-    "fields": [
-        {
-            "key": "field_rvn_tab_studio",
-            "label": "Studio",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_studio_lede",
-            "label": "Studio — lede",
-            "name": "studio_lede",
-            "type": "text",
-            "instructions": "Short one-line intro shown large on the Studio page.",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_studio_bio",
-            "label": "Studio — bio",
-            "name": "studio_bio",
-            "type": "wysiwyg",
-            "instructions": "The main studio / about text.",
-            "required": 0,
-            "tabs": "all",
-            "toolbar": "basic",
-            "media_upload": 0
-        },
-        {
-            "key": "field_rvn_studio_portrait",
-            "label": "Studio — portrait",
-            "name": "studio_portrait",
-            "type": "image",
-            "instructions": "Optional portrait shown on the Studio page.",
-            "required": 0,
-            "return_format": "url",
-            "preview_size": "medium",
-            "library": "all"
-        },
-        {
-            "key": "field_rvn_studio_statement",
-            "label": "Studio — statement (lines)",
-            "name": "studio_statement",
-            "type": "textarea",
-            "instructions": "One line per row; the last line renders outlined. Default: NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME.",
-            "required": 0,
-            "rows": 3,
-            "new_lines": ""
-        },
-        {
-            "key": "field_rvn_studio_spec",
-            "label": "Studio — spec",
-            "name": "studio_spec",
-            "type": "repeater",
-            "instructions": "Key/value facts (Focus, Base, Since, Languages).",
-            "required": 0,
-            "layout": "table",
-            "button_label": "Add row",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_spec_k",
-                    "label": "Label",
-                    "name": "label",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_spec_v",
-                    "label": "Value",
-                    "name": "value",
-                    "type": "text"
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_studio_stats",
-            "label": "Studio — stats",
-            "name": "studio_stats",
-            "type": "repeater",
-            "instructions": "Small figures (e.g. Projects / 120+).",
-            "required": 0,
-            "layout": "table",
-            "button_label": "Add stat",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_stat_label",
-                    "label": "Label",
-                    "name": "label",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_stat_value",
-                    "label": "Value",
-                    "name": "value",
-                    "type": "text"
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_studio_clients",
-            "label": "Studio — selected clients",
-            "name": "studio_clients",
-            "type": "textarea",
-            "instructions": "One per line (e.g. SZ Magazin).",
-            "required": 0,
-            "rows": 5
-        },
-        {
-            "key": "field_rvn_tab_home",
-            "label": "Home",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_home_hero_lines",
-            "label": "Home — hero headline (lines)",
-            "name": "home_hero_lines",
-            "type": "textarea",
-            "instructions": "One line per row; the last line renders outlined. Default: PHOTOGRAPHS / THAT OUTLIVE / TRENDS.",
-            "required": 0,
-            "rows": 3,
-            "new_lines": ""
-        },
-        {
-            "key": "field_rvn_home_hero_lede",
-            "label": "Home — hero sub-copy",
-            "name": "home_hero_lede",
-            "type": "textarea",
-            "required": 0,
-            "rows": 3,
-            "new_lines": "wpautop"
-        },
-        {
-            "key": "field_rvn_home_marquee",
-            "label": "Home — marquee text",
-            "name": "home_marquee",
-            "type": "text",
-            "instructions": "The scrolling band. End with ' — ' so it loops cleanly.",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_home_honors",
-            "label": "Home — recognition (awards / press)",
-            "name": "home_honors",
-            "type": "repeater",
-            "required": 0,
-            "layout": "table",
-            "button_label": "Add entry",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_honor_year",
-                    "label": "Year",
-                    "name": "year",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_honor_title",
-                    "label": "Title",
-                    "name": "title",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_honor_tag",
-                    "label": "Tag",
-                    "name": "tag",
-                    "type": "text"
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_home_testis",
-            "label": "Home — testimonials",
-            "name": "home_testimonials",
-            "type": "repeater",
-            "required": 0,
-            "layout": "row",
-            "button_label": "Add testimonial",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_testi_text",
-                    "label": "Quote",
-                    "name": "text",
-                    "type": "textarea",
-                    "rows": 3
-                },
-                {
-                    "key": "field_rvn_testi_by",
-                    "label": "Attribution",
-                    "name": "author",
-                    "type": "text"
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_tab_contact",
-            "label": "Contact",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_contact_email",
-            "label": "Email",
-            "name": "contact_email",
-            "type": "email",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_contact_location",
-            "label": "Studio location",
-            "name": "contact_location",
-            "type": "text",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_contact_response",
-            "label": "Response time",
-            "name": "contact_response",
-            "type": "text",
-            "required": 0,
-            "default_value": "Within 24 hours"
-        },
-        {
-            "key": "field_rvn_contact_instagram",
-            "label": "Instagram URL",
-            "name": "contact_instagram",
-            "type": "url",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_contact_behance",
-            "label": "Behance URL",
-            "name": "contact_behance",
-            "type": "url",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_contact_linkedin",
-            "label": "LinkedIn URL",
-            "name": "contact_linkedin",
-            "type": "url",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_tab_pricing",
-            "label": "Price calculator",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_currency",
-            "label": "Currency symbol",
-            "name": "currency",
-            "type": "text",
-            "required": 0,
-            "default_value": "€",
-            "wrapper": {
-                "width": "25"
-            }
-        },
-        {
-            "key": "field_rvn_licence",
-            "label": "Commercial licence",
-            "name": "licence_price",
-            "type": "number",
-            "required": 0,
-            "wrapper": {
-                "width": "25"
-            }
-        },
-        {
-            "key": "field_rvn_commercial_extra",
-            "label": "Commercial surcharge",
-            "name": "commercial_extra",
-            "type": "number",
-            "instructions": "Added on top of the licence for commercial usage.",
-            "required": 0,
-            "default_value": 250,
-            "min": 0,
-            "step": 10,
-            "wrapper": {
-                "width": "33"
-            }
-        },
-        {
-            "key": "field_rvn_perkm",
-            "label": "Travel per km",
-            "name": "per_km",
-            "type": "number",
-            "required": 0,
-            "step": "0.01",
-            "wrapper": {
-                "width": "25"
-            }
-        },
-        {
-            "key": "field_rvn_addons",
-            "label": "Add-ons",
-            "name": "addons",
-            "type": "repeater",
-            "instructions": "Optional extras and their price.",
-            "required": 0,
-            "layout": "table",
-            "button_label": "Add add-on",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_addon_label",
-                    "label": "Label",
-                    "name": "label",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_addon_price",
-                    "label": "Price",
-                    "name": "price",
-                    "type": "number"
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_price_sessions",
-            "label": "Sessions (Enquire calculator)",
-            "name": "price_sessions",
-            "type": "repeater",
-            "instructions": "The session cards on Enquire: name, base price, included hours, extra €/h, optional note. Leave empty to use the built-in defaults.",
-            "required": 0,
-            "layout": "table",
-            "button_label": "Add session",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_sess_name",
-                    "label": "Name",
-                    "name": "name",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_sess_base",
-                    "label": "Base €",
-                    "name": "base",
-                    "type": "number"
-                },
-                {
-                    "key": "field_rvn_sess_hrs",
-                    "label": "Included hours",
-                    "name": "hrs",
-                    "type": "number"
-                },
-                {
-                    "key": "field_rvn_sess_extra",
-                    "label": "Extra €/h",
-                    "name": "extra",
-                    "type": "number"
-                },
-                {
-                    "key": "field_rvn_sess_note",
-                    "label": "Note (optional)",
-                    "name": "note",
-                    "type": "text"
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_tab_faq",
-            "label": "FAQ",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_faq",
-            "label": "FAQ",
-            "name": "faq",
-            "type": "repeater",
-            "instructions": "Questions shown under the enquiry form.",
-            "required": 0,
-            "layout": "block",
-            "button_label": "Add question",
-            "sub_fields": [
-                {
-                    "key": "field_rvn_faq_q",
-                    "label": "Question",
-                    "name": "question",
-                    "type": "text"
-                },
-                {
-                    "key": "field_rvn_faq_a",
-                    "label": "Answer",
-                    "name": "answer",
-                    "type": "textarea",
-                    "rows": 3
-                }
-            ]
-        },
-        {
-            "key": "field_rvn_tab_smtp",
-            "label": "Mail (SMTP)",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_smtp_enable",
-            "label": "Send mail via SMTP",
-            "name": "smtp_enable",
-            "type": "true_false",
-            "instructions": "Route enquiry emails through an authenticated SMTP server so they actually arrive. Leave off to use the server's default PHP mail().",
-            "ui": 1,
-            "default_value": 0
-        },
-        {
-            "key": "field_rvn_smtp_host",
-            "label": "SMTP host",
-            "name": "smtp_host",
-            "type": "text",
-            "instructions": "e.g. smtp.gmail.com or your provider's server.",
-            "required": 0,
-            "wrapper": {
-                "width": "50"
-            }
-        },
-        {
-            "key": "field_rvn_smtp_port",
-            "label": "Port",
-            "name": "smtp_port",
-            "type": "number",
-            "default_value": 587,
-            "wrapper": {
-                "width": "25"
-            }
-        },
-        {
-            "key": "field_rvn_smtp_secure",
-            "label": "Encryption",
-            "name": "smtp_secure",
-            "type": "select",
-            "choices": {
-                "tls": "TLS (587)",
-                "ssl": "SSL (465)"
-            },
-            "default_value": "tls",
-            "wrapper": {
-                "width": "25"
-            }
-        },
-        {
-            "key": "field_rvn_smtp_user",
-            "label": "Username (full mailbox)",
-            "name": "smtp_user",
-            "type": "text",
-            "instructions": "The real mailbox you authenticate with, e.g. hello@raveenthiran.com. For Gmail/Workspace use a 16-char App Password below.",
-            "required": 0,
-            "wrapper": {
-                "width": "50"
-            }
-        },
-        {
-            "key": "field_rvn_smtp_pass",
-            "label": "Password / App Password",
-            "name": "smtp_pass",
-            "type": "password",
-            "instructions": "Or, more securely, define RVN_SMTP_PASS in wp-config.php and leave this blank.",
-            "required": 0,
-            "wrapper": {
-                "width": "50"
-            }
-        },
-        {
-            "key": "field_rvn_smtp_from",
-            "label": "From address",
-            "name": "smtp_from",
-            "type": "email",
-            "instructions": "The visible sender. May be a verified alias of the mailbox above. Defaults to the username.",
-            "required": 0,
-            "wrapper": {
-                "width": "50"
-            }
-        },
-        {
-            "key": "field_rvn_smtp_fromname",
-            "label": "From name",
-            "name": "smtp_fromname",
-            "type": "text",
-            "default_value": "Raveenthiran",
-            "wrapper": {
-                "width": "50"
-            }
-        },
-        {
-            "key": "field_rvn_tab_publish",
-            "label": "Publishing",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_deploy_token",
-            "label": "GitHub deploy token",
-            "name": "deploy_gh_token",
-            "type": "password",
-            "instructions": "Fine-grained GitHub token with <b>Actions: Read &amp; write</b> on the site repo. Powers the “Publish changes now” button in Site Control. Stored in the database — leave blank to hide the button.",
-            "required": 0
-        },
-        {
-            "key": "field_rvn_deploy_repo",
-            "label": "Repository (owner/name)",
-            "name": "deploy_repo",
-            "type": "text",
-            "instructions": "Usually leave as-is.",
-            "required": 0,
-            "default_value": "MokshaOne/WP-THEME",
-            "placeholder": "MokshaOne/WP-THEME"
-        },
-        {
-            "key": "field_rvn_deploy_branch",
-            "label": "Branch",
-            "name": "deploy_branch",
-            "type": "text",
-            "instructions": "The branch the deploy workflow runs on.",
-            "required": 0,
-            "default_value": "claude/headless-wordpress-easyname-8eu9fj",
-            "placeholder": "claude/headless-wordpress-easyname-8eu9fj"
-        },
-        {
-            "key": "field_rvn_deploy_workflow",
-            "label": "Workflow file",
-            "name": "deploy_workflow",
-            "type": "text",
-            "instructions": "The GitHub Actions workflow filename.",
-            "required": 0,
-            "default_value": "deploy-frontend.yml",
-            "placeholder": "deploy-frontend.yml"
-        },
-        {
-            "key": "field_rvn_tab_security",
-            "label": "Security",
-            "name": "",
-            "type": "tab",
-            "placement": "top"
-        },
-        {
-            "key": "field_rvn_turnstile_site",
-            "label": "Turnstile site key",
-            "name": "turnstile_site",
-            "type": "text",
-            "instructions": "Cloudflare Turnstile — a no-puzzle spam shield for the enquiry form. Create a widget at dash.cloudflare.com → Turnstile. The site key is public; paste it here to switch protection on. Leave both blank to keep just the honeypot.",
-            "required": 0,
-            "wrapper": {
-                "width": "50"
-            }
-        },
-        {
-            "key": "field_rvn_turnstile_secret",
-            "label": "Turnstile secret key",
-            "name": "turnstile_secret",
-            "type": "password",
-            "instructions": "Kept server-side (never exposed to the frontend). Or define RVN_TURNSTILE_SECRET in wp-config.php and leave this blank.",
-            "required": 0,
-            "wrapper": {
-                "width": "50"
-            }
-        }
-    ],
-    "location": [
-        [
-            {
-                "param": "options_page",
-                "operator": "==",
-                "value": "rvn-site"
-            }
-        ]
-    ],
-    "menu_order": 0,
-    "position": "normal",
-    "style": "default",
-    "label_placement": "top",
-    "active": true,
-    "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
-    "modified": 1787400761
+ "key": "group_rvn_site",
+ "title": "Site settings",
+ "fields": [
+  {
+   "key": "field_rvn_tab_studio",
+   "label": "Studio",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_studio_lede",
+   "label": "Studio — lede",
+   "name": "studio_lede",
+   "type": "text",
+   "instructions": "Short one-line intro shown large on the Studio page.",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_studio_bio",
+   "label": "Studio — bio",
+   "name": "studio_bio",
+   "type": "wysiwyg",
+   "instructions": "The main studio / about text.",
+   "required": 0,
+   "tabs": "all",
+   "toolbar": "basic",
+   "media_upload": 0
+  },
+  {
+   "key": "field_rvn_studio_portrait",
+   "label": "Studio — portrait",
+   "name": "studio_portrait",
+   "type": "image",
+   "instructions": "Optional portrait shown on the Studio page.",
+   "required": 0,
+   "return_format": "url",
+   "preview_size": "medium",
+   "library": "all"
+  },
+  {
+   "key": "field_rvn_studio_statement",
+   "label": "Studio — statement (lines)",
+   "name": "studio_statement",
+   "type": "textarea",
+   "instructions": "One line per row; the last line renders outlined. Default: NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME.",
+   "required": 0,
+   "rows": 3,
+   "new_lines": ""
+  },
+  {
+   "key": "field_rvn_studio_spec",
+   "label": "Studio — spec",
+   "name": "studio_spec",
+   "type": "repeater",
+   "instructions": "Key/value facts (Focus, Base, Since, Languages).",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add row",
+   "sub_fields": [
+    {
+     "key": "field_rvn_spec_k",
+     "label": "Label",
+     "name": "label",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_spec_v",
+     "label": "Value",
+     "name": "value",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_studio_stats",
+   "label": "Studio — stats",
+   "name": "studio_stats",
+   "type": "repeater",
+   "instructions": "Small figures (e.g. Projects / 120+).",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add stat",
+   "sub_fields": [
+    {
+     "key": "field_rvn_stat_label",
+     "label": "Label",
+     "name": "label",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_stat_value",
+     "label": "Value",
+     "name": "value",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_studio_clients",
+   "label": "Studio — selected clients",
+   "name": "studio_clients",
+   "type": "textarea",
+   "instructions": "One per line (e.g. SZ Magazin).",
+   "required": 0,
+   "rows": 5
+  },
+  {
+   "key": "field_rvn_studio_client_logos",
+   "label": "Studio — client logos (optional)",
+   "name": "studio_client_logos",
+   "type": "repeater",
+   "instructions": "With logos the About page shows a logo wall instead of the text row. Transparent PNG/SVG works best — logos are rendered as white silhouettes on the dark canvas.",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add logo",
+   "sub_fields": [
+    {
+     "key": "field_rvn_clientlogo_name",
+     "label": "Name",
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_clientlogo_logo",
+     "label": "Logo",
+     "name": "logo",
+     "type": "image",
+     "return_format": "url",
+     "preview_size": "thumbnail"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_tab_home",
+   "label": "Home",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_home_hero_lines",
+   "label": "Home — hero headline (lines)",
+   "name": "home_hero_lines",
+   "type": "textarea",
+   "instructions": "One line per row; the last line renders outlined. Default: PHOTOGRAPHS / THAT OUTLIVE / TRENDS.",
+   "required": 0,
+   "rows": 3,
+   "new_lines": ""
+  },
+  {
+   "key": "field_rvn_home_hero_lede",
+   "label": "Home — hero sub-copy",
+   "name": "home_hero_lede",
+   "type": "textarea",
+   "required": 0,
+   "rows": 3,
+   "new_lines": "wpautop"
+  },
+  {
+   "key": "field_rvn_home_marquee",
+   "label": "Home — marquee text",
+   "name": "home_marquee",
+   "type": "text",
+   "instructions": "The scrolling band. End with ' — ' so it loops cleanly.",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_home_honors",
+   "label": "Home — recognition (awards / press)",
+   "name": "home_honors",
+   "type": "repeater",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add entry",
+   "sub_fields": [
+    {
+     "key": "field_rvn_honor_year",
+     "label": "Year",
+     "name": "year",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_honor_title",
+     "label": "Title",
+     "name": "title",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_honor_tag",
+     "label": "Tag",
+     "name": "tag",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_home_testis",
+   "label": "Home — testimonials",
+   "name": "home_testimonials",
+   "type": "repeater",
+   "required": 0,
+   "layout": "row",
+   "button_label": "Add testimonial",
+   "sub_fields": [
+    {
+     "key": "field_rvn_testi_text",
+     "label": "Quote",
+     "name": "text",
+     "type": "textarea",
+     "rows": 3
+    },
+    {
+     "key": "field_rvn_testi_by",
+     "label": "Attribution",
+     "name": "author",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_travel_dates",
+   "label": "Traveling — planned dates",
+   "name": "travel_dates",
+   "type": "repeater",
+   "instructions": "Shown as the ON THE ROAD strip on the homepage while dates exist (e.g. Dates: 10.–14. September · City: Berlin). Delete rows once past.",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add dates",
+   "sub_fields": [
+    {
+     "key": "field_rvn_travel_when",
+     "label": "Dates",
+     "name": "dates",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_travel_city",
+     "label": "City",
+     "name": "city",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_travel_open",
+   "label": "Traveling — show “open for traveling”",
+   "name": "travel_open",
+   "type": "true_false",
+   "instructions": "Adds the OPEN FOR TRAVELING note to the strip (strip also shows with no dates when this is on).",
+   "required": 0,
+   "ui": 1
+  },
+  {
+   "key": "field_rvn_tab_contact",
+   "label": "Contact",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_contact_email",
+   "label": "Email",
+   "name": "contact_email",
+   "type": "email",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_contact_location",
+   "label": "Studio location",
+   "name": "contact_location",
+   "type": "text",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_contact_response",
+   "label": "Response time",
+   "name": "contact_response",
+   "type": "text",
+   "required": 0,
+   "default_value": "Within 24 hours"
+  },
+  {
+   "key": "field_rvn_contact_instagram",
+   "label": "Instagram URL",
+   "name": "contact_instagram",
+   "type": "url",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_contact_behance",
+   "label": "Behance URL",
+   "name": "contact_behance",
+   "type": "url",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_contact_linkedin",
+   "label": "LinkedIn URL",
+   "name": "contact_linkedin",
+   "type": "url",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_tab_pricing",
+   "label": "Price calculator",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_currency",
+   "label": "Currency symbol",
+   "name": "currency",
+   "type": "text",
+   "required": 0,
+   "default_value": "€",
+   "wrapper": {
+    "width": "25"
+   }
+  },
+  {
+   "key": "field_rvn_licence",
+   "label": "Commercial licence",
+   "name": "licence_price",
+   "type": "number",
+   "required": 0,
+   "wrapper": {
+    "width": "25"
+   }
+  },
+  {
+   "key": "field_rvn_commercial_extra",
+   "label": "Commercial surcharge",
+   "name": "commercial_extra",
+   "type": "number",
+   "instructions": "Added on top of the licence for commercial usage.",
+   "required": 0,
+   "default_value": 250,
+   "min": 0,
+   "step": 10,
+   "wrapper": {
+    "width": "33"
+   }
+  },
+  {
+   "key": "field_rvn_perkm",
+   "label": "Travel per km",
+   "name": "per_km",
+   "type": "number",
+   "required": 0,
+   "step": "0.01",
+   "wrapper": {
+    "width": "25"
+   }
+  },
+  {
+   "key": "field_rvn_addons",
+   "label": "Add-ons",
+   "name": "addons",
+   "type": "repeater",
+   "instructions": "Optional extras and their price.",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add add-on",
+   "sub_fields": [
+    {
+     "key": "field_rvn_addon_label",
+     "label": "Label",
+     "name": "label",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_addon_price",
+     "label": "Price",
+     "name": "price",
+     "type": "number"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_price_sessions",
+   "label": "Sessions (Enquire calculator)",
+   "name": "price_sessions",
+   "type": "repeater",
+   "instructions": "The session cards on Enquire: name, base price, included hours, extra €/h, optional note. Leave empty to use the built-in defaults.",
+   "required": 0,
+   "layout": "table",
+   "button_label": "Add session",
+   "sub_fields": [
+    {
+     "key": "field_rvn_sess_name",
+     "label": "Name",
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_sess_base",
+     "label": "Base €",
+     "name": "base",
+     "type": "number"
+    },
+    {
+     "key": "field_rvn_sess_hrs",
+     "label": "Included hours",
+     "name": "hrs",
+     "type": "number"
+    },
+    {
+     "key": "field_rvn_sess_extra",
+     "label": "Extra €/h",
+     "name": "extra",
+     "type": "number"
+    },
+    {
+     "key": "field_rvn_sess_note",
+     "label": "Note (optional)",
+     "name": "note",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_tab_faq",
+   "label": "FAQ",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_faq",
+   "label": "FAQ",
+   "name": "faq",
+   "type": "repeater",
+   "instructions": "Questions shown under the enquiry form.",
+   "required": 0,
+   "layout": "block",
+   "button_label": "Add question",
+   "sub_fields": [
+    {
+     "key": "field_rvn_faq_q",
+     "label": "Question",
+     "name": "question",
+     "type": "text"
+    },
+    {
+     "key": "field_rvn_faq_a",
+     "label": "Answer",
+     "name": "answer",
+     "type": "textarea",
+     "rows": 3
+    }
+   ]
+  },
+  {
+   "key": "field_rvn_tab_smtp",
+   "label": "Mail (SMTP)",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_smtp_enable",
+   "label": "Send mail via SMTP",
+   "name": "smtp_enable",
+   "type": "true_false",
+   "instructions": "Route enquiry emails through an authenticated SMTP server so they actually arrive. Leave off to use the server's default PHP mail().",
+   "ui": 1,
+   "default_value": 0
+  },
+  {
+   "key": "field_rvn_smtp_host",
+   "label": "SMTP host",
+   "name": "smtp_host",
+   "type": "text",
+   "instructions": "e.g. smtp.gmail.com or your provider's server.",
+   "required": 0,
+   "wrapper": {
+    "width": "50"
+   }
+  },
+  {
+   "key": "field_rvn_smtp_port",
+   "label": "Port",
+   "name": "smtp_port",
+   "type": "number",
+   "default_value": 587,
+   "wrapper": {
+    "width": "25"
+   }
+  },
+  {
+   "key": "field_rvn_smtp_secure",
+   "label": "Encryption",
+   "name": "smtp_secure",
+   "type": "select",
+   "choices": {
+    "tls": "TLS (587)",
+    "ssl": "SSL (465)"
+   },
+   "default_value": "tls",
+   "wrapper": {
+    "width": "25"
+   }
+  },
+  {
+   "key": "field_rvn_smtp_user",
+   "label": "Username (full mailbox)",
+   "name": "smtp_user",
+   "type": "text",
+   "instructions": "The real mailbox you authenticate with, e.g. hello@raveenthiran.com. For Gmail/Workspace use a 16-char App Password below.",
+   "required": 0,
+   "wrapper": {
+    "width": "50"
+   }
+  },
+  {
+   "key": "field_rvn_smtp_pass",
+   "label": "Password / App Password",
+   "name": "smtp_pass",
+   "type": "password",
+   "instructions": "Or, more securely, define RVN_SMTP_PASS in wp-config.php and leave this blank.",
+   "required": 0,
+   "wrapper": {
+    "width": "50"
+   }
+  },
+  {
+   "key": "field_rvn_smtp_from",
+   "label": "From address",
+   "name": "smtp_from",
+   "type": "email",
+   "instructions": "The visible sender. May be a verified alias of the mailbox above. Defaults to the username.",
+   "required": 0,
+   "wrapper": {
+    "width": "50"
+   }
+  },
+  {
+   "key": "field_rvn_smtp_fromname",
+   "label": "From name",
+   "name": "smtp_fromname",
+   "type": "text",
+   "default_value": "Raveenthiran",
+   "wrapper": {
+    "width": "50"
+   }
+  },
+  {
+   "key": "field_rvn_tab_publish",
+   "label": "Publishing",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_deploy_token",
+   "label": "GitHub deploy token",
+   "name": "deploy_gh_token",
+   "type": "password",
+   "instructions": "Fine-grained GitHub token with <b>Actions: Read &amp; write</b> on the site repo. Powers the “Publish changes now” button in Site Control. Stored in the database — leave blank to hide the button.",
+   "required": 0
+  },
+  {
+   "key": "field_rvn_deploy_repo",
+   "label": "Repository (owner/name)",
+   "name": "deploy_repo",
+   "type": "text",
+   "instructions": "Usually leave as-is.",
+   "required": 0,
+   "default_value": "MokshaOne/WP-THEME",
+   "placeholder": "MokshaOne/WP-THEME"
+  },
+  {
+   "key": "field_rvn_deploy_branch",
+   "label": "Branch",
+   "name": "deploy_branch",
+   "type": "text",
+   "instructions": "The branch the deploy workflow runs on.",
+   "required": 0,
+   "default_value": "claude/headless-wordpress-easyname-8eu9fj",
+   "placeholder": "claude/headless-wordpress-easyname-8eu9fj"
+  },
+  {
+   "key": "field_rvn_deploy_workflow",
+   "label": "Workflow file",
+   "name": "deploy_workflow",
+   "type": "text",
+   "instructions": "The GitHub Actions workflow filename.",
+   "required": 0,
+   "default_value": "deploy-frontend.yml",
+   "placeholder": "deploy-frontend.yml"
+  },
+  {
+   "key": "field_rvn_tab_security",
+   "label": "Security",
+   "name": "",
+   "type": "tab",
+   "placement": "top"
+  },
+  {
+   "key": "field_rvn_turnstile_site",
+   "label": "Turnstile site key",
+   "name": "turnstile_site",
+   "type": "text",
+   "instructions": "Cloudflare Turnstile — a no-puzzle spam shield for the enquiry form. Create a widget at dash.cloudflare.com → Turnstile. The site key is public; paste it here to switch protection on. Leave both blank to keep just the honeypot.",
+   "required": 0,
+   "wrapper": {
+    "width": "50"
+   }
+  },
+  {
+   "key": "field_rvn_turnstile_secret",
+   "label": "Turnstile secret key",
+   "name": "turnstile_secret",
+   "type": "password",
+   "instructions": "Kept server-side (never exposed to the frontend). Or define RVN_TURNSTILE_SECRET in wp-config.php and leave this blank.",
+   "required": 0,
+   "wrapper": {
+    "width": "50"
+   }
+  }
+ ],
+ "location": [
+  [
+   {
+    "param": "options_page",
+    "operator": "==",
+    "value": "rvn-site"
+   }
+  ]
+ ],
+ "menu_order": 0,
+ "position": "normal",
+ "style": "default",
+ "label_placement": "top",
+ "active": true,
+ "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
+ "modified": 1787400761
 }

@@ -74,6 +74,9 @@ const faqSchema = site.faq.length ? {
 				<input type="number" inputmode="numeric" min="0" max="2000" step="5" value="0" data-km-input aria-label="Kilometres from Vienna" />
 				<span class="km__u">KM FROM VIENNA</span>
 				<span class="km__hint">0 = WITHIN VIENNA · ROUND TRIP × {perKm} {cur}/KM</span>
+				{site.travel.dates.length > 0 && (
+					<span class="km__road">ON THE ROAD: {site.travel.dates.map((t) => `${t.dates} ${t.city}`.toUpperCase()).join(' · ')} — ASK ABOUT A SLOT</span>
+				)}
 			</div>
 
 			<p class="enq__step mt">04 — ADD-ONS</p>

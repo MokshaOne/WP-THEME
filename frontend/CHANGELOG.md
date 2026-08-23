@@ -4,6 +4,27 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.6.0 — 2026-08-23 · Trust layer II — traveling strip + logo wall (theme 4.2.0)
+
+The two backend-driven pieces from the award sweep. Theme 4.2.0 (new zip)
+adds three Site-settings fields; the frontend renders them when filled.
+
+- **ON THE ROAD strip** (diaurra's best idea, adapted): Site settings →
+  Traveling holds date rows (`12.–14. September · Berlin`) and an
+  "open for traveling" toggle. Home shows a mono strip between the marquee
+  and Three Frames; the calculator's DISTANCE step lists the same dates with
+  ASK ABOUT A SLOT. Deliberately NO fallback to sample dates: a live backend
+  without the field (or with no rows) hides the strip entirely rather than
+  showing fabricated availability.
+- **Client logo wall** (Kremser): Site settings → Studio can now hold
+  client logos (name + image). With logos, About renders a logo wall —
+  white silhouettes on the dark canvas (`brightness(0) invert(1)`), hover
+  restores full presence; without, the text row stays exactly as before.
+  Nothing was removed — the text list remains the fallback.
+- Theme 4.2.0: ACF fields + REST payload (`studio.client_logos`, `travel`),
+  php -l clean. Frontend verified: strip + hint render from sample, About
+  falls back to the text row when no logos exist. Smoke 14/14.
+
 ## 4.5.0 — 2026-08-23 · Trust layer I — distilled from an Awwwards-top-20 sweep
 
 Eight peer/award sites analysed (three Vienna photographers, five award-tier

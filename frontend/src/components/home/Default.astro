@@ -48,6 +48,17 @@ const testimonials = site.home.testimonials;
 	<div class="marquee__row marquee__row--b"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
 </div>
 
+<!-- ON THE ROAD — planned city dates; travel priced by the calculator anyway -->
+{(site.travel.dates.length > 0 || site.travel.open) && (
+	<section class="road" data-reveal>
+		<span class="road__k">ON THE ROAD — {new Date().getFullYear()}</span>
+		{site.travel.dates.map((t) => (
+			<span class="road__d">{up(t.dates)} <em>—</em> {up(t.city)}</span>
+		))}
+		{site.travel.open && <a class="road__open" href="/enquire/">OPEN FOR TRAVELING →</a>}
+	</section>
+)}
+
 <!-- FEATURED SEQUENCE — one frame owns the viewport, then an asymmetric pair -->
 <section class="sec feat">
 	<div class="sec__head" data-reveal>

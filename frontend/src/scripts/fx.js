@@ -164,7 +164,9 @@ export function initFX(opts = {}) {
 
 	/* scroll-progress hairline */
 	const prog = document.createElement('div');
-	prog.style.cssText = 'position:fixed;left:0;top:0;height:2px;width:0;background:#efece6;z-index:10002;transition:width .15s linear';
+	// segmented like film frames — the strip fills as the roll advances
+	prog.style.cssText = 'position:fixed;left:0;top:0;height:2px;width:0;background:#efece6;z-index:10002;transition:width .15s linear;' +
+		'-webkit-mask:repeating-linear-gradient(90deg,#000 0 16px,transparent 16px 20px);mask:repeating-linear-gradient(90deg,#000 0 16px,transparent 16px 20px)';
 	document.body.append(prog);
 	const onProg = () => {
 		const max = document.documentElement.scrollHeight - innerHeight;

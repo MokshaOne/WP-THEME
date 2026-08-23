@@ -39,6 +39,7 @@ const testimonials = site.home.testimonials;
 	</div>
 	<div class="phero__cap"><span class="exif" data-cap>{up(featured[0]?.category || '')}</span></div>
 	<div class="phero__wm" aria-hidden="true">RAVEENTHIRAN</div>
+	<div class="vf" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
 </section>
 
 <!-- MARQUEE -->
@@ -142,6 +143,18 @@ const testimonials = site.home.testimonials;
 		</div>
 	</div>
 	<script type="application/json" id="quotes-data" set:html={JSON.stringify(testimonials)} is:inline />
+</section>
+
+<!-- THE PHOTOGRAPHER — the person behind the frames, one glance before the CTA -->
+<section class="whois" data-reveal>
+	<a class="whois__plate" href="/about/" aria-label="About Nishuthan Raveenthiran">
+		<img src={site.studio.portrait || '/sample/self-portrait.png'} alt="Nishuthan Raveenthiran" loading="lazy" />
+	</a>
+	<div class="whois__body">
+		<div class="sec__hint">06 — THE PHOTOGRAPHER</div>
+		<p class="whois__line">{site.studio.lede || 'Nishuthan Raveenthiran — portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.'}</p>
+		<a class="chipline" href="/about/">ABOUT THE STUDIO →</a>
+	</div>
 </section>
 
 <!-- CTA -->

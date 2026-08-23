@@ -4,6 +4,26 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.5.0 — 2026-08-23 · Trust layer I — distilled from an Awwwards-top-20 sweep
+
+Eight peer/award sites analysed (three Vienna photographers, five award-tier
+references, all supplied as saved copies). Frontend-only; the backend pieces
+(traveling strip, logo wall) wait for the next theme update.
+
+- **Quick entries on the enquiry page**: PRIVATE SESSION / BRANDS &
+  COMMERCIAL preconfigure the instrument via `/enquire/?for=…` — brands
+  selects the editorial session and commercial usage in one click (verified:
+  620 € on the sample config).
+- **THE PHOTOGRAPHER teaser on home** (06) — portrait, one line, ABOUT THE
+  STUDIO →. Every Vienna peer shows the person; now the poster does too,
+  without breaking its grammar.
+- **Viewfinder overlay on the hero** — corner brackets + centre cross, the
+  camera's own chrome over the frame. Stays up during the WebGL morph, like
+  a HUD should.
+- **Film-strip scroll progress** — the top progress line is now segmented
+  like film frames.
+- Smoke 14/14; no JS errors.
+
 ## 4.4.2 — 2026-08-23 · WHAT HAPPENS NEXT on the enquiry page
 
 Nobody should submit into a void: a three-step strip (01 YOU SEND THE BRIEF ·

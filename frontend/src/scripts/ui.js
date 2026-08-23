@@ -304,6 +304,18 @@ function initEnquire() {
 	addonBtns.forEach((b) => b.addEventListener('click', () => { b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); render(); }));
 	usageBtns.forEach((b) => b.addEventListener('click', () => { usage = b.dataset.usage || 'private'; render(); }));
 	kmInput?.addEventListener('input', render);
+
+	// /enquire/?for=brands|private — the quick entries above preconfigure the
+	// instrument: brands = the editorial session + commercial usage; private is
+	// the default spelled out.
+	const preset = new URLSearchParams(location.search).get('for');
+	if (preset === 'brands') {
+		const k = svcs.findIndex((b) => /fashion|editorial|commercial|brand/i.test(b.dataset.name || ''));
+		if (k >= 0) { sel = k; }
+		usage = 'commercial';
+	} else if (preset === 'private') {
+		sel = 0; usage = 'private';
+	}
 	render();
 
 	const form = root.querySelector('form');

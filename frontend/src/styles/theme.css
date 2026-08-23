@@ -108,13 +108,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; margin: 0; 
 .nav a[aria-current="page"] { border-bottom: 1px solid var(--ink); padding-bottom: 3px; }
 .nav a:hover { color: var(--ink); }
 
-/* Language toggle (EN ⇄ DE) */
-.lang {
-	background: none; border: 1px solid var(--subline); color: var(--faint);
-	font: 600 10px/1 var(--font-body); letter-spacing: 0.18em; padding: 6px 9px;
-	cursor: pointer; white-space: nowrap; transition: color .25s, border-color .25s;
-}
-.lang:hover { color: var(--ink); border-color: var(--ink); }
 
 .burger { display: none; background: none; border: none; padding: 6px; cursor: pointer; }
 .burger span { display: block; width: 24px; height: 1.5px; background: var(--ink); margin: 5px 0; transition: transform .3s var(--ease), opacity .3s; }
@@ -488,7 +481,7 @@ html.rvn-flash { filter: invert(1) hue-rotate(180deg); transition: filter .45s e
 
 /* ── Poster (dark) chrome: technical mono labels + one signal accent ──────── */
 .chrome, .sec__hint, .cap, .slide-cap, .slide-count, .hdr-clock, .eyebrow,
-.phead__meta, .foot-meta, .foot-legal, .foot-ver, .nav, .lang, .m-ovl a .num,
+.phead__meta, .foot-meta, .foot-legal, .foot-ver, .nav, .m-ovl a .num,
 .index__row .k, .honor .k, .quotes__by, .exif, .meta-row, .credits,
 .chip, .est__lines, .enq__step { font-family: var(--font-mono); }
 

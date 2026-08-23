@@ -4,6 +4,15 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.4.1 — 2026-08-23 · The EN/DE toggle leaves
+
+A label-only translator is a façade, and the owner called it: it translated
+navigation and buttons but never the content. Removed entirely — the DE
+button in the header, `i18n.js`, the `.lang` styles, and the `hreflang`
+en/de/x-default alternates plus `og:locale:alternate` (one language, one
+honest signal). If a real German version ever happens, it will be proper
+`/de/` pages with translated content. Smoke 14/14.
+
 ## 4.4.0 — 2026-08-23 · Gallery lightbox, shareable filters, branded OG cards
 
 Frontend + deploy workflow. Three improvements in one release:

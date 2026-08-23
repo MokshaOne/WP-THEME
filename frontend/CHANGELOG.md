@@ -4,6 +4,13 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.4.2 — 2026-08-23 · WHAT HAPPENS NEXT on the enquiry page
+
+Nobody should submit into a void: a three-step strip (01 YOU SEND THE BRIEF ·
+02 FIRM OFFER — 24H · 03 WE SHOOT) now sits between the form and the FAQ,
+in the About page's process grammar. Idea adapted from how booking-flow
+expectations are set on peer portfolio sites. Smoke 14/14.
+
 ## 4.4.1 — 2026-08-23 · The EN/DE toggle leaves
 
 A label-only translator is a façade, and the owner called it: it translated

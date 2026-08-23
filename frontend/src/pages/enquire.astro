@@ -137,6 +137,25 @@ const faqSchema = site.faq.length ? {
 		</div>
 	</section>
 
+	<!-- WHAT HAPPENS NEXT — the three steps after SEND, so nobody submits into a void -->
+	<section class="process" data-reveal>
+		<div class="process__step">
+			<div class="no">01</div>
+			<div class="t">YOU SEND THE BRIEF</div>
+			<p>The form above lands directly with me — no agency inbox, no ticket system. The orientation figure travels with it.</p>
+		</div>
+		<div class="process__step">
+			<div class="no">02</div>
+			<div class="t">FIRM OFFER — 24H</div>
+			<p>You get a written quote and date options within a day. We align on vision, locations and usage — by mail or a short call.</p>
+		</div>
+		<div class="process__step">
+			<div class="no">03</div>
+			<div class="t">WE SHOOT</div>
+			<p>Prepared, directed, unhurried — and the gallery is delivered when promised, ready for print.</p>
+		</div>
+	</section>
+
 	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />}
 	{site.faq.length > 0 && (
 		<section class="faq">

@@ -1,7 +1,7 @@
 {
   "name": "raveenthiran-frontend",
   "type": "module",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "private": true,
   "description": "Headless Astro frontend for raveenthiran.com — pulls the Work archive from WordPress (wp.m1o.at) at build time and outputs a static site for easyname.",
   "scripts": {

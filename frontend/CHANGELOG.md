@@ -4,6 +4,12 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.6.1 — 2026-08-23 · Launch prep (theme 4.2.1)
+
+- The ▲ Publish button's default deploy branch is now `Theme-folder` — the
+  branch the site lives on after the launch merge. (A custom value in Site
+  settings → Publishing still wins.) Theme-only; zip rebuilt.
+
 ## 4.6.0 — 2026-08-23 · Trust layer II — traveling strip + logo wall (theme 4.2.0)
 
 The two backend-driven pieces from the award sweep. Theme 4.2.0 (new zip)

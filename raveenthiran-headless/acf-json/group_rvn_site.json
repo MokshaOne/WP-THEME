@@ -579,8 +579,8 @@
    "type": "text",
    "instructions": "The branch the deploy workflow runs on.",
    "required": 0,
-   "default_value": "claude/headless-wordpress-easyname-8eu9fj",
-   "placeholder": "claude/headless-wordpress-easyname-8eu9fj"
+   "default_value": "Theme-folder",
+   "placeholder": "Theme-folder"
   },
   {
    "key": "field_rvn_deploy_workflow",

@@ -353,7 +353,7 @@ add_action( 'admin_post_rvn_publish', function () {
 	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'rvn_publish' ) ) { wp_die( 'Not allowed.' ); }
 	$token  = rvn_gh_token();
 	$repo   = trim( (string) rvn_site_opt( 'deploy_repo', '' ) ) ?: 'MokshaOne/WP-THEME';
-	$branch = trim( (string) rvn_site_opt( 'deploy_branch', '' ) ) ?: 'claude/headless-wordpress-easyname-8eu9fj';
+	$branch = trim( (string) rvn_site_opt( 'deploy_branch', '' ) ) ?: 'Theme-folder';
 	$wf     = trim( (string) rvn_site_opt( 'deploy_workflow', '' ) ) ?: 'deploy-frontend.yml';
 	$status = 'notoken';
 	if ( $token !== '' ) {

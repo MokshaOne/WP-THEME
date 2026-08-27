@@ -4,6 +4,15 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.6.2 — 2026-08-27 · One folder per domain
+
+The repository is reorganised: `raveenthiran.com/` now holds everything for
+this site (the Astro frontend, the headless backend theme + zip, and the
+legacy themes Still / R-E / Catalogue-Noir-child plus interim HTML and design
+scratches). `viennaphotogroup.com/`, `m1o.at/` and `jrpoetry.com/` hold their
+themes. Deploy + visual-check workflows follow the new frontend path; nothing
+inside any theme changed. Smoke 14/14 from the new location.
+
 ## 4.6.1 — 2026-08-23 · Launch prep (theme 4.2.1)
 
 - The ▲ Publish button's default deploy branch is now `Theme-folder` — the

@@ -11,7 +11,7 @@ A **headless photography portfolio** for **raveenthiran.com** (Nishuthan
 Raveenthiran, Vienna).
 
 ```
-WordPress (NAS, https://wp.m1o.at)  =  content + admin ONLY (data via REST)
+WordPress (private NAS)  =  content + admin ONLY (data via REST)
         │  build-time fetch
 Astro static frontend (frontend/)   =  the actual website design
         │  GitHub Action → FTPS
@@ -22,7 +22,7 @@ easyname shared hosting             =  serves raveenthiran.com (behind Cloudflar
   live site is fast and works even if the NAS is offline.
 - If the API is unreachable at build, `src/lib/wp.ts` falls back to built-in
   **SAMPLE** data → the build never breaks (this is why sandbox builds show
-  placeholder projects — the agent proxy blocks wp.m1o.at with 403).
+  placeholder projects — the agent proxy blocks the WordPress host with 403).
 
 ## 2. Repo orientation (IMPORTANT — reduces confusion)
 
@@ -103,7 +103,7 @@ is CACHE** (Cloudflare edge + browser; possibly the new service worker too).
    auto-purges IF the user sets repo secrets `CF_ZONE_ID` + `CF_API_TOKEN`
    (Cloudflare → Zone ID; My Profile → API Tokens → "Edit Cloudflare Zone
    Cache" template). Guide them to set these.
-3. Note: the beautiful site is **raveenthiran.com**; **wp.m1o.at** is just the
+3. Note: the beautiful site is **raveenthiran.com**; the NAS WordPress is just the
    admin (plain WordPress — that's normal).
 
 Do NOT build more features until the user confirms they can SEE the current
@@ -137,7 +137,7 @@ but unmistakably custom. Verify with Playwright screenshots.
 
 ## 9. Sandbox / working notes for the next session
 
-- The agent proxy **blocks wp.m1o.at AND raveenthiran.com (403)** — you cannot
+- The agent proxy **blocks the WordPress host AND raveenthiran.com (403)** — you cannot
   fetch live data or the live site. Builds use SAMPLE fallback; that's expected
   and fine (green builds). To preview with images, temporarily patch the SAMPLE
   in `wp.ts` to point at local `/public/_fix/*.svg`, build, screenshot, then

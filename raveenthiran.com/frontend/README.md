@@ -5,7 +5,7 @@ site that pulls its content from a headless WordPress at build time and is
 deployed to **easyname** shared hosting.
 
 ```
-WordPress (NAS, wp.m1o.at)   →  Astro build (fetch REST)  →  static dist/  →  easyname
+WordPress (private NAS)   →  Astro build (fetch REST)  →  static dist/  →  easyname
    content + admin only            your machine / CI            fast, offline-proof
 ```
 
@@ -40,7 +40,7 @@ run of the deploy workflow) to publish the changes.
 ```bash
 cd frontend
 npm install
-npm run dev      # http://localhost:4321 — live content from wp.m1o.at
+npm run dev      # http://localhost:4321 — live content from the WordPress backend
 npm run build    # → dist/  (static output)
 npm run preview  # serve dist/ locally
 ```
@@ -48,7 +48,7 @@ npm run preview  # serve dist/ locally
 Override the WordPress endpoint when building:
 
 ```bash
-WP_BASE=https://wp.m1o.at/wp-json/wp/v2 npm run build
+WP_BASE=https://<wordpress-host>/wp-json/wp/v2 npm run build
 ```
 
 ---

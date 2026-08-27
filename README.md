@@ -13,7 +13,7 @@ All web properties in one repository — **one folder per domain**.
 
 ## raveenthiran.com — how it ships
 
-WordPress on the NAS (`wp.m1o.at`) is a pure CMS behind a normalized REST
+WordPress on a private NAS is a pure CMS behind a normalized REST
 contract; the Astro frontend builds from it and deploys to easyname over FTPS.
 
 - **Deploy**: pushing changes under `raveenthiran.com/frontend/` to
@@ -28,7 +28,7 @@ contract; the Astro frontend builds from it and deploys to easyname over FTPS.
 ```bash
 cd raveenthiran.com/frontend
 npm install
-npm run dev        # live against wp.m1o.at (sample fallback offline)
+npm run dev        # live against the WordPress backend (sample fallback offline)
 npm run build      # static output in dist/
 node scripts/smoke.mjs      # smoke suite against the built dist/
 node scripts/og.mjs         # branded OG share cards into dist/og/

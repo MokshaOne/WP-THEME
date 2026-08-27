@@ -1,6 +1,6 @@
 name: Deploy frontend to easyname
 
-# Builds the Astro site (pulling live content from WordPress at wp.m1o.at) and
+# Builds the Astro site (pulling live content from the WordPress backend) and
 # uploads the static output to easyname over FTPS. Runs on push to frontend/**,
 # on a manual trigger, and nightly (so new WordPress content goes live daily).
 #

@@ -1,0 +1,59 @@
+# Raveenthiran — static site (easyname / Apache)
+
+# Serve the bespoke 404 page on missing routes
+ErrorDocument 404 /404.html
+
+# ── Compression ──────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml application/rss+xml image/svg+xml
+</IfModule>
+
+# ── Caching ──────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Content-hashed build assets never change → cache hard
+  <FilesMatch "\.(woff2?|css|js|avif|webp|jpe?g|png|gif|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # HTML / feeds / sitemaps should always be revalidated
+  <FilesMatch "\.(html|xml|json|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  # The service worker must never be cached, or updates can't propagate
+  <Files "sw.js">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
+
+  # ── Security headers ──────────────────────────────────────
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+  Header set X-XSS-Protection "0"
+  # HSTS — force HTTPS for 180 days (no includeSubDomains/preload, to stay reversible)
+  Header always set Strict-Transport-Security "max-age=15552000"
+
+  # Content-Security-Policy (Batch 16) — READY BUT DISABLED by default.
+  # A wrong CSP can blank the site, and it can't be verified from here, so it
+  # ships commented. To enable: uncomment the line, deploy, then load the site
+  # once (incognito) and check the browser console for "blocked by CSP". If
+  # anything breaks, re-comment and redeploy — nothing else depends on it.
+  # Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'inline-speculation-rules' https://challenges.cloudflare.com; connect-src 'self' https://wp.m1o.at https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self' https://wp.m1o.at"
+</IfModule>
+
+# ── Correct MIME types ───────────────────────────────────────
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# ── Force HTTPS (Cloudflare usually handles this; harmless if so) ──
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>

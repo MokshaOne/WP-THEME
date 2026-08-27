@@ -1,0 +1,11 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 2760, "title": "Option A — Salon (light)" },
+    { "file": "PosterDark.dc.html", "x": 1600, "y": 0, "w": 1440, "h": 2900, "title": "Option B — Poster (dark)" }
+  ],
+  "annotations": [
+    { "id": "note-a", "x": 0, "y": -168, "w": 360, "text": "OPTION A — SALON (light)\nInk-on-paper, the brief's default. Neo-grotesque (Space Grotesk) + mono EXIF captions, exposed hairline grid, huge negative space — a single photo owns the frame. Quiet, museum, timeless.\nTRADEOFF — less loud; leans classic/gallery." },
+    { "id": "note-b", "x": 1600, "y": -168, "w": 360, "text": "OPTION B — POSTER (dark)\nKeeps the dark signature, pushed brutalist: full-bleed hero + giant Anton wordmark (mix-blend), kinetic marquee, broken oversized grid, one signal accent used only for state.\nTRADEOFF — bolder, more to art-direct; dark competes a little more with the photographs." }
+  ],
+  "launch": { "view": "canvas" }
+}

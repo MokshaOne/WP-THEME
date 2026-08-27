@@ -1,0 +1,127 @@
+<!doctype html>
+<!--
+  Raveenthiran — "Under construction" splash in the Obscura visual identity.
+  Self-contained: no WordPress, no PHP, no external fonts. Shows a holding page
+  on the public frontend while you build everything in the WordPress backend.
+
+  Deploy (pick one):
+   A) Put this file as index.html at the web root; keep WordPress at
+      cms.raveenthiran.com or raveenthiran.com/cms — /wp-admin stays reachable.
+   B) Use a WordPress "maintenance mode" plugin that serves this markup to
+      visitors but lets logged-in admins through to the real site.
+
+  Change the email (hello@raveenthiran.com) below to your real studio address.
+-->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Raveenthiran — Coming soon</title>
+	<meta name="description" content="A new portfolio by Nishuthan Raveenthiran is on its way. Editorial, portrait and architectural photography — Vienna, working across Europe.">
+	<meta name="theme-color" content="#0B0C10">
+	<meta name="robots" content="noindex">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0C10'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23F2A03D'/%3E%3C/svg%3E">
+	<style>
+	:root{
+		--bg:#0B0C10; --ink:#F2EFE9; --amber:#F2A03D;
+		--mut:rgba(242,239,233,.55); --dim:rgba(242,239,233,.34);
+		--hair:rgba(242,239,233,.14); --hair-soft:rgba(242,239,233,.07);
+		--sans:"Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+		--mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+		--gut:clamp(1.4rem,5vw,4rem);
+	}
+	*{margin:0;box-sizing:border-box}
+	html,body{height:100%}
+	body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+	a{color:inherit;text-decoration:none}
+	::selection{background:var(--amber);color:#0B0C10}
+	:focus-visible{outline:1px solid var(--amber);outline-offset:3px}
+	.label{font-family:var(--mono);font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mut)}
+
+	/* ── background layers ── */
+	.bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+	.bg__glow{position:absolute;left:50%;top:56%;width:90vmax;height:90vmax;transform:translate(-50%,-50%);
+		background:radial-gradient(closest-side,rgba(242,160,61,.14),rgba(242,160,61,.05) 42%,transparent 70%);
+		animation:breathe 9s ease-in-out infinite}
+	.bg__grain{position:absolute;inset:0;opacity:.045;mix-blend-mode:overlay;
+		background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+	.bg__scan{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.14) 3px,rgba(0,0,0,.14) 4px);opacity:.35}
+	@keyframes breathe{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+
+	/* ── frame + registration marks ── */
+	.wrap{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;padding:clamp(1.4rem,3.5vh,2.4rem) var(--gut)}
+	.reg{position:fixed;width:11px;height:11px;border:1px solid var(--hair);z-index:3}
+	.reg.tl{top:calc(var(--gut) - 4px);left:calc(var(--gut) - 4px);border-right:0;border-bottom:0}
+	.reg.tr{top:calc(var(--gut) - 4px);right:calc(var(--gut) - 4px);border-left:0;border-bottom:0}
+	.reg.bl{bottom:calc(var(--gut) - 4px);left:calc(var(--gut) - 4px);border-right:0;border-top:0}
+	.reg.br{bottom:calc(var(--gut) - 4px);right:calc(var(--gut) - 4px);border-left:0;border-top:0}
+
+	/* ── top bar ── */
+	.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+	.brand{font-family:var(--mono);font-size:.8rem;letter-spacing:.28em;text-transform:lowercase}
+	.brand span{display:block;font-size:.56rem;letter-spacing:.24em;color:var(--mut);margin-top:.3rem}
+	.avail{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+	.avail i{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber);animation:pulse 2.4s ease-in-out infinite}
+	@keyframes pulse{50%{opacity:.35}}
+
+	/* ── center ── */
+	.mid{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+	.mid .label{display:flex;align-items:center;gap:.7rem;margin-bottom:1.4rem}
+	.mid .label::before{content:"";width:16px;height:1px;background:var(--amber)}
+	h1{font-weight:200;font-size:clamp(2.3rem,6vw,4.8rem);line-height:.98;letter-spacing:-.02em;max-width:13ch}
+	h1 em{font-style:italic;font-weight:300;color:var(--amber)}
+	.lede{margin-top:1.6rem;max-width:48ch;color:var(--mut);font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.7}
+	.cta{display:inline-flex;align-items:center;gap:.6rem;margin-top:2.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border:1px solid var(--hair);border-radius:2px;padding:.8rem 1.1rem;transition:border-color .3s,color .3s,gap .3s;width:max-content}
+	.cta:hover{border-color:var(--amber);color:var(--amber);gap:1rem}
+
+	/* ── progress shimmer ── */
+	.prog{margin-top:2.6rem;width:min(320px,60vw)}
+	.prog__track{height:1px;background:var(--hair);position:relative;overflow:hidden}
+	.prog__bar{position:absolute;top:0;left:0;height:100%;width:38%;background:linear-gradient(90deg,transparent,var(--amber),transparent);animation:slide 2.8s cubic-bezier(.5,0,.5,1) infinite}
+	.prog__t{display:block;margin-top:.7rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+	@keyframes slide{0%{left:-40%}100%{left:100%}}
+
+	/* ── bottom meta ── */
+	.foot{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+	.foot a{color:var(--mut)}
+	.foot a:hover{color:var(--amber)}
+
+	@media(max-width:600px){.avail span,.foot .coords{display:none}}
+	@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+	</style>
+</head>
+<body>
+	<div class="bg" aria-hidden="true">
+		<div class="bg__glow"></div>
+		<div class="bg__scan"></div>
+		<div class="bg__grain"></div>
+	</div>
+
+	<span class="reg tl"></span><span class="reg tr"></span>
+	<span class="reg bl"></span><span class="reg br"></span>
+
+	<div class="wrap">
+		<header class="top">
+			<div class="brand">raveenthiran<span>studio · 2026</span></div>
+			<span class="avail"><i></i>Available <span>· 2026</span></span>
+		</header>
+
+		<main class="mid">
+			<span class="label">Under construction</span>
+			<h1>New work, in the <em>making</em>.</h1>
+			<p class="lede">The portfolio of Nishuthan Raveenthiran is being rebuilt — editorial, portrait and architectural photography. Vienna, working across Europe.</p>
+			<a class="cta" href="mailto:hello@raveenthiran.com">Enquiries → hello@raveenthiran.com</a>
+
+			<div class="prog" role="status" aria-label="Site in progress">
+				<div class="prog__track"><div class="prog__bar"></div></div>
+				<span class="prog__t">Building the archive</span>
+			</div>
+		</main>
+
+		<footer class="foot">
+			<span class="coords">48.20°N · 16.36°E · Wien</span>
+			<span>© 2026 Raveenthiran</span>
+		</footer>
+	</div>
+</body>
+</html>

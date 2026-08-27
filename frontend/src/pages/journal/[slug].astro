@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts, getPost } from '../../lib/wp';
+
+export async function getStaticPaths() {
+	const posts = await getPosts();
+	return posts.map((post, i) => ({
+		params: { slug: post.slug },
+		props: { next: posts[(i + 1) % posts.length] },
+	}));
+}
+
+const { slug } = Astro.params;
+const { next } = Astro.props;
+const post = (await getPost(slug!))!;
+const up = (s: string) => (s || '').toUpperCase();
+
+const siteBase = (Astro.site?.href || 'https://raveenthiran.com/').replace(/\/$/, '');
+const abs = (u: string) => (/^https?:\/\//.test(u) ? u : siteBase + (u.startsWith('/') ? '' : '/') + u);
+const articleLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	'@id': `${siteBase}/journal/${post.slug}/#article`,
+	headline: post.title,
+	description: post.excerpt,
+	url: `${siteBase}/journal/${post.slug}/`,
+	...(post.date ? { datePublished: post.date, dateModified: post.date } : {}),
+	...(post.image ? { image: [abs(post.image)] } : {}),
+	...(post.category ? { articleSection: post.category } : {}),
+	author: { '@type': 'Person', name: 'Nishuthan Raveenthiran' },
+	publisher: { '@type': 'Person', name: 'Nishuthan Raveenthiran' },
+	inLanguage: 'en',
+	mainEntityOfPage: `${siteBase}/journal/${post.slug}/`,
+};
+const breadcrumbLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: siteBase + '/' },
+		{ '@type': 'ListItem', position: 2, name: 'Journal', item: siteBase + '/journal/' },
+		{ '@type': 'ListItem', position: 3, name: post.title, item: `${siteBase}/journal/${post.slug}/` },
+	],
+};
+---
+<Base title={`${post.title} — Journal`} description={post.excerpt} active="journal" page="article" ogImage={post.image} preload={post.image}>
+	<script type="application/ld+json" set:html={JSON.stringify(articleLd)} is:inline />
+	<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} is:inline />
+	<article class="article">
+		<div class="eyebrow" data-intro style="margin-bottom:20px">{up(post.category)} · {post.dateLabel.toUpperCase()}</div>
+		<h1 data-intro>{up(post.title)}</h1>
+		{post.image && (
+			<div class="plate" data-reveal style="margin:40px 0"><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></div>
+		)}
+		<div class="article__body" data-reveal set:html={post.content} />
+	</article>
+
+	{next && next.slug !== post.slug && (
+		<a class="cta cta--sm" href={`/journal/${next.slug}/`}>
+			<span style="font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;color:var(--faint)">NEXT ENTRY</span>
+			<span>{up(next.title)} →</span>
+		</a>
+	)}
+</Base>

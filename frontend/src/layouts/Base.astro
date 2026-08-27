@@ -1,0 +1,160 @@
+---
+import '../styles/theme.css';
+import { ClientRouter } from 'astro:transitions';
+import { getSite, getProjects } from '../lib/wp';
+import pkg from '../../package.json';
+
+const VERSION = pkg.version;
+const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+export interface Props {
+	title: string;
+	description?: string;
+	active?: string;
+	ogImage?: string;
+	preload?: string;
+	page?: string;
+}
+const { title, description = '', active = '', ogImage = '', preload = '', page = '' } = Astro.props;
+
+const site = await getSite();
+const projects = await getProjects();
+const year = new Date().getFullYear();
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+// Open Graph / Twitter share image: make it absolute (scrapers reject relative
+// URLs) and always provide one — fall back to the first featured photograph so
+// every page shares a real, branded frame instead of a bare summary card.
+const abs = (u: string) => (u ? new URL(u, Astro.site).href : '');
+const featuredOg = projects.find((p) => p.featured_home)?.image || projects[0]?.image || '';
+const ogFinal = abs(ogImage || featuredOg);
+
+const nav = [
+	{ key: 'work', label: 'Work', href: '/work/' },
+	{ key: 'studio', label: 'About', href: '/about/' },
+	{ key: 'enquire', label: 'Enquiry', href: '/enquire/' },
+];
+
+const social = [
+	site.contact.instagram && { label: 'Instagram', href: site.contact.instagram },
+	site.contact.behance && { label: 'Behance', href: site.contact.behance },
+	site.contact.linkedin && { label: 'LinkedIn', href: site.contact.linkedin },
+].filter(Boolean) as { label: string; href: string }[];
+
+const jsonld = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'ProfessionalService',
+			'@id': (Astro.site || '') + '#studio',
+			name: 'Raveenthiran Photography',
+			image: ogFinal || undefined,
+			email: site.contact.email,
+			url: Astro.site,
+			areaServed: 'Austria',
+			address: { '@type': 'PostalAddress', addressLocality: 'Vienna', addressCountry: 'AT' },
+			geo: { '@type': 'GeoCoordinates', latitude: 48.2082, longitude: 16.3738 },
+			founder: { '@type': 'Person', name: 'Nishuthan Raveenthiran', jobTitle: 'Photographer' },
+			sameAs: social.map((s) => s.href),
+		},
+		{ '@type': 'WebSite', url: Astro.site, name: 'Raveenthiran', inLanguage: 'en' },
+	],
+};
+
+const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23121110'/%3E%3Ctext x='24' y='37' font-family='Arial Narrow,Arial,sans-serif' font-size='40' font-weight='700' fill='%23efece6' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E";
+---
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>{title}</title>
+	{description && <meta name="description" content={description} />}
+	<link rel="canonical" href={canonical} />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Raveenthiran" />
+	<meta property="og:title" content={title} />
+	<meta property="og:url" content={canonical} />
+	{description && <meta property="og:description" content={description} />}
+	{ogFinal && <meta property="og:image" content={ogFinal} />}
+	{ogFinal && <meta property="og:image:alt" content={`${title} — Raveenthiran Photography`} />}
+	<meta name="twitter:card" content={ogFinal ? 'summary_large_image' : 'summary'} />
+	<meta name="twitter:title" content={title} />
+	{description && <meta name="twitter:description" content={description} />}
+	{ogFinal && <meta name="twitter:image" content={ogFinal} />}
+	<meta name="theme-color" content="#121110" />
+	{preload && <link rel="preload" as="image" href={preload} fetchpriority="high" />}
+	<link rel="preconnect" href="https://wp.m1o.at" crossorigin />
+	<link rel="dns-prefetch" href="https://wp.m1o.at" />
+	<link rel="icon" href={favicon} />
+	<link rel="apple-touch-icon" href="/icon.svg" />
+	<link rel="mask-icon" href="/icon.svg" color="#efece6" />
+	<link rel="manifest" href="/site.webmanifest" />
+	<link rel="alternate" type="application/rss+xml" title="Raveenthiran — Journal" href="/rss.xml" />
+	<script type="application/ld+json" set:html={JSON.stringify(jsonld)} is:inline />
+	<!-- Speculation Rules: hover-intent prefetch of same-origin pages (Batch 16) -->
+	<script type="speculationrules" set:html={JSON.stringify({ prefetch: [{ source: 'document', where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/enquire/*' } }] }, eagerness: 'moderate' }] })} is:inline />
+	<ClientRouter />
+</head>
+<body data-page={page}>
+	<a class="skip-link" href="#main">Skip to content</a>
+
+	<header class="site-header">
+		<a class="wordmark" href="/">RAVEENTHIRAN</a>
+		<span class="hdr-clock" data-clock></span>
+		<nav class="nav" aria-label="Primary">
+			{nav.map((n, i) => (
+				<a href={n.href} aria-current={active === n.key ? 'page' : undefined}>
+					<span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span>
+				</a>
+			))}
+		</nav>
+		<button class="burger" data-burger aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+	</header>
+
+	<div class="m-ovl" data-mobile-ovl>
+		<nav aria-label="Mobile">
+			{nav.map((n, i) => (
+				<a href={n.href}><span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span></a>
+			))}
+		</nav>
+		<div class="m-foot">
+			<a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+			{social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label} ↗</a>)}
+		</div>
+	</div>
+
+	<main id="main">
+		<slot />
+	</main>
+
+	<footer class="site-footer">
+		<svg class="foot-ghost" viewBox="0 0 1000 62" aria-hidden="true">
+			<text x="0" y="52" textLength="1000" lengthAdjust="spacingAndGlyphs" font-size="70">RAVEENTHIRAN</text>
+		</svg>
+		<div class="foot-meta">
+			<span>48.2082° N, 16.3738° E</span>
+			<a class="live" href="/enquire/">AVAILABLE FOR COMMISSIONS</a>
+			<span>© {year} RAVEENTHIRAN — VIENNA</span>
+		</div>
+		<div class="foot-legal">
+			<div class="grp">
+				{social.length
+					? social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label.toUpperCase()} ↗</a>)
+					: <a href={`mailto:${site.contact.email}`}>EMAIL ↗</a>}
+			</div>
+			<div class="grp">
+				<a href="/legal/impressum/">IMPRESSUM</a>
+				<a href="/legal/datenschutz/">DATENSCHUTZ</a>
+				<a href="/legal/agb/">AGB</a>
+				<span class="foot-ver" title={`Built ${BUILD_DATE}`}>v{VERSION} · {BUILD_DATE}</span>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		import '../scripts/ui.js';
+	</script>
+</body>
+</html>

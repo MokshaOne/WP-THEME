@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #121110; color: #efece6; font-family: 'Archivo', system-ui, sans-serif; font-weight: 300; }
+    .an { font-family: 'Anton', 'Arial Narrow', sans-serif; font-weight: 400; line-height: .9; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+    .lab { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #6f6a60; }
+    .num { font-family: 'Archivo', system-ui, sans-serif; font-weight: 500; font-size: 16px; }
+    .cell { min-height: 92px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; }
+    .wk { padding: 12px 0; text-align: center; }
+    a { color: #efece6; } a:hover { color: #b5aea1; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 760px; padding: 60px 64px; background: #121110; box-sizing: border-box;">
+  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="lab">02 — Availability</span>
+    <span class="lab">Self-service booking</span>
+  </div>
+
+  <div style="display:flex; justify-content: space-between; align-items: flex-end; margin-top: 20px;">
+    <h2 class="an" style="font-size: 60px;">September 2026</h2>
+    <div style="display:flex; gap: 22px; align-items:center;">
+      <span class="lab"><span style="display:inline-block; width:10px; height:10px; border:1px solid #6f6a60; margin-right:8px; vertical-align:middle;"></span>Open</span>
+      <span class="lab"><span style="display:inline-block; width:10px; height:10px; background:#1a1815; margin-right:8px; vertical-align:middle;"></span>Booked</span>
+      <span class="lab"><span style="display:inline-block; width:10px; height:10px; box-shadow: inset 0 2px 0 #efece6; border:1px solid #2b2925; margin-right:8px; vertical-align:middle;"></span>1 slot</span>
+    </div>
+  </div>
+
+  <!-- weekday header -->
+  <div style="display:grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap:1px; margin-top: 24px;">
+    <div class="wk"><span class="lab">Mon</span></div><div class="wk"><span class="lab">Tue</span></div><div class="wk"><span class="lab">Wed</span></div><div class="wk"><span class="lab">Thu</span></div><div class="wk"><span class="lab">Fri</span></div><div class="wk"><span class="lab">Sat</span></div><div class="wk"><span class="lab">Sun</span></div>
+  </div>
+
+  <!-- month grid -->
+  <div style="display:grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap:1px; background:#2b2925; border:1px solid #2b2925;">
+    <div class="cell" style="background:#161411;"></div>
+    <div class="cell" style="background:#121110;"><span class="num">1</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">2</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">3</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">4</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">5</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">6</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+
+    <div class="cell" style="background:#121110;"><span class="num">7</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">8</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">9</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110; box-shadow: inset 0 2px 0 #efece6;"><span class="num">10</span><span class="lab" style="color:#efece6;">1 slot</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">11</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">12</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">13</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+
+    <div class="cell" style="background:#121110;"><span class="num">14</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">15</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">16</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">17</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">18</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">19</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">20</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+
+    <div class="cell" style="background:#121110;"><span class="num">21</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">22</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">23</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110; box-shadow: inset 0 2px 0 #efece6;"><span class="num">24</span><span class="lab" style="color:#efece6;">1 slot</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">25</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">26</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+    <div class="cell" style="background:#1a1815;"><span class="num" style="color:#4d4841;">27</span><span class="lab" style="color:#4d4841;">Booked</span></div>
+
+    <div class="cell" style="background:#121110;"><span class="num">28</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">29</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#121110;"><span class="num">30</span><span class="lab" style="color:#6f6a60;">Open</span></div>
+    <div class="cell" style="background:#161411;"></div>
+    <div class="cell" style="background:#161411;"></div>
+    <div class="cell" style="background:#161411;"></div>
+    <div class="cell" style="background:#161411;"></div>
+  </div>
+
+  <div style="display:flex; justify-content: space-between; align-items:center; margin-top: 26px;">
+    <span class="lab">Illustrative month — real state comes from WordPress / cal.m1o.at</span>
+    <a href="#" style="border:1px solid #efece6; padding:15px 26px; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#efece6;">Request a date →</a>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,177 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSite } from '../lib/wp';
+
+const site = await getSite();
+const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
+const turnstile = site.security.turnstile_site;
+
+// The calculator follows the studio's real pricing model: there is no price
+// list — session type × duration × distance from Vienna + add-ons define the
+// figure, and the number shown is an ORIENTATION. The firm quote comes by mail.
+const cur = site.pricing.currency || '€';
+const fmt = (n: number) => n.toLocaleString('de-AT');
+const services = site.pricing.sessions.map((s) => ({
+	name: s.name,
+	base: s.base,
+	hrs: s.hrs,
+	extra: s.extra,
+	note: s.note,
+	meta: `${s.hrs} HRS · FROM ${fmt(s.base)} ${cur}`,
+}));
+const s0 = services[0];
+const addons = site.pricing.addons;
+const perKm = site.pricing.per_km;
+const licence = site.pricing.licence;
+const commx = site.pricing.commercial_extra;
+const usageCost = licence + commx;
+
+// FAQ rich-results schema — only when FAQ content exists.
+const faqSchema = site.faq.length ? {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: site.faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') },
+	})),
+} : null;
+---
+<Base title="Name your shoot — Raveenthiran" description="Commission a shoot. An honest orientation figure now, a firm written offer within 24 hours." active="enquire" page="enquire">
+	<section class="wrap" style="padding:clamp(72px,9vw,150px) var(--gx) 40px">
+		<div class="eyebrow" data-intro style="margin-bottom:18px">01 — COMMISSIONS · {new Date().getFullYear()}</div>
+		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">NAME YOUR SHOOT<span style="color:var(--accent)">.</span></h1>
+		<p class="enq__intro" data-intro>No price list. The session, the hours, the distance and the extras define the figure — the number below is an orientation, the firm offer arrives by mail within 24 hours.</p>
+		<div data-intro style="display:flex;gap:14px;flex-wrap:wrap;margin-top:26px">
+			<a class="chipline" href="/enquire/?for=private" data-preset-link>PRIVATE SESSION →</a>
+			<a class="chipline" href="/enquire/?for=brands" data-preset-link>BRANDS &amp; COMMERCIAL →</a>
+		</div>
+	</section>
+
+	<section class="enq" data-enquire data-perkm={perKm} data-licence={licence} data-commx={commx}>
+		<div class="enq__form">
+			<p class="enq__step">01 — SESSION</p>
+			<div class="svc-grid">
+				{services.map((s, i) => (
+					<button type="button" class="svc" aria-pressed={i === 0 ? 'true' : 'false'}
+						data-name={s.name} data-base={s.base} data-hrs={s.hrs} data-extra={s.extra} data-meta={s.meta} data-note={s.note}>
+						<span class="name">{s.name}</span>
+						<span class="m">{s.meta}</span>
+					</button>
+				))}
+			</div>
+
+			<p class="enq__step mt">02 — DURATION</p>
+			<div class="stepper">
+				<button type="button" data-minus aria-label="Fewer hours">−</button>
+				<div class="stepper__val" data-extra-hours>0</div>
+				<button type="button" data-plus aria-label="More hours">+</button>
+				<div class="stepper__rate">EXTRA HOURS × <span data-extra-rate>{s0.extra}</span> {cur} / HR</div>
+			</div>
+
+			<p class="enq__step mt">03 — DISTANCE</p>
+			<div class="km">
+				<input type="number" inputmode="numeric" min="0" max="2000" step="5" value="0" data-km-input aria-label="Kilometres from Vienna" />
+				<span class="km__u">KM FROM VIENNA</span>
+				<span class="km__hint">0 = WITHIN VIENNA · ROUND TRIP × {perKm} {cur}/KM</span>
+				{site.travel.dates.length > 0 && (
+					<span class="km__road">ON THE ROAD: {site.travel.dates.map((t) => `${t.dates} ${t.city}`.toUpperCase()).join(' · ')} — ASK ABOUT A SLOT</span>
+				)}
+			</div>
+
+			<p class="enq__step mt">04 — ADD-ONS</p>
+			<div class="addons">
+				{addons.map((a) => (
+					<button type="button" class="addon" aria-pressed="false" data-addon data-label={a.label} data-price={a.price}>
+						<span class="addon__box" aria-hidden="true"></span>
+						<span class="addon__l">{a.label.toUpperCase()}</span>
+						<span class="addon__p">+ {fmt(a.price)} {cur}</span>
+					</button>
+				))}
+			</div>
+			<p class="addons__lock" data-addons-lock style="display:none">— NOT AVAILABLE ON TFP COLLABORATIONS</p>
+
+			<p class="enq__step mt">05 — USAGE</p>
+			<div class="usage">
+				<button type="button" data-usage="tfp" aria-pressed="false">TFP <span class="usage__p">COLLABORATION · 0 {cur}</span></button>
+				<button type="button" data-usage="private" aria-pressed="true">PRIVATE</button>
+				<button type="button" data-usage="commercial" aria-pressed="false">COMMERCIAL <span class="usage__p">+ {fmt(usageCost)} {cur} LICENCE &amp; FEE</span></button>
+			</div>
+			<p class="usage__note">TFP — time for print: a collaborative shoot, both sides keep the frames, no fee. Offered at my discretion; tell me your idea below.</p>
+
+			<p class="enq__step mt">06 — DETAILS</p>
+			<form action={endpoint} method="POST" data-mailto={site.contact.email}>
+				<div class="fields">
+					<input name="name" placeholder="Name" required autocomplete="name" />
+					<input name="email" type="email" placeholder="Email" required autocomplete="email" />
+					<input name="date" placeholder="Preferred date" />
+					<input name="location" placeholder="Location" />
+				</div>
+				<textarea name="message" placeholder="Tell me about the shoot…" rows="4"></textarea>
+				<!-- honeypot: real users leave this empty -->
+				<input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+				{turnstile && (
+					<>
+						<div class="cf-turnstile" data-sitekey={turnstile} style="margin-top:16px"></div>
+						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
+					</>
+				)}
+				<button type="submit" class="btn btn--solid" style="width:100%;margin-top:18px;padding:18px">SEND ENQUIRY →</button>
+			</form>
+		</div>
+
+		<div class="enq__est">
+			<p class="enq__step" style="margin:0">YOUR ORIENTATION</p>
+			<div>
+				<div class="est__name" data-est-name>{s0.name}</div>
+				<div class="stepper__rate" data-est-meta style="margin-top:8px">{s0.meta}</div>
+			</div>
+			<div class="est__lines">
+				<span class="k">Base (<span data-base-hrs>{s0.hrs}</span> hrs)</span><span><span data-base-fmt>{fmt(s0.base)}</span> {cur}</span>
+				<span class="k">Extra hours × <span data-extra-hours>0</span></span><span><span data-extra-fmt>0</span> {cur}</span>
+				<span class="k">Add-ons</span><span><span data-addons-fmt>0</span> {cur}</span>
+				<span class="k">Travel — <span data-km-echo>0</span> km rt</span><span><span data-travel-fmt>0</span> {cur}</span>
+				<span class="k">Commercial usage</span><span><span data-licence-fmt>0</span> {cur}</span>
+				<span class="k tfp-line" data-tfp-line style="display:none">TFP collaboration</span><span class="tfp-line" data-tfp-line style="display:none">− <span data-tfp-fmt>0</span> {cur}</span>
+			</div>
+			<div class="est__total">
+				<span class="tk">INDICATION</span>
+				<span class="tv"><span data-total-fmt>{fmt(s0.base)}</span> {cur}</span>
+			</div>
+			<div class="est__note" data-est-note style="display:none"></div>
+			<div class="est__fine">Every shoot is quoted individually — this is an orientation, not a price list. Written offer within 24 hours, then we shoot.</div>
+			<div class="est__msg" data-est-msg></div>
+		</div>
+	</section>
+
+	<!-- WHAT HAPPENS NEXT — the three steps after SEND, so nobody submits into a void -->
+	<section class="process" data-reveal>
+		<div class="process__step">
+			<div class="no">01</div>
+			<div class="t">YOU SEND THE BRIEF</div>
+			<p>The form above lands directly with me — no agency inbox, no ticket system. The orientation figure travels with it.</p>
+		</div>
+		<div class="process__step">
+			<div class="no">02</div>
+			<div class="t">FIRM OFFER — 24H</div>
+			<p>You get a written quote and date options within a day. We align on vision, locations and usage — by mail or a short call.</p>
+		</div>
+		<div class="process__step">
+			<div class="no">03</div>
+			<div class="t">WE SHOOT</div>
+			<p>Prepared, directed, unhurried — and the gallery is delivered when promised, ready for print.</p>
+		</div>
+	</section>
+
+	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />}
+	{site.faq.length > 0 && (
+		<section class="faq">
+			{site.faq.map((f) => (
+				<details class="faq__item">
+					<summary class="faq__q">{f.q}<span class="pm" aria-hidden="true">+</span></summary>
+					<div class="faq__a" set:html={f.a} />
+				</details>
+			))}
+		</section>
+	)}
+</Base>

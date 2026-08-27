@@ -1,0 +1,174 @@
+---
+import type { Site, Project } from '../../lib/wp';
+interface Props { site: Site; projects: Project[]; }
+const { site, projects } = Astro.props;
+
+const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects).slice(0, 6);
+const indexItems = projects.slice(0, 10);
+const up = (s: string) => (s || '').toUpperCase();
+const num = (n: number) => String(n).padStart(3, '0');
+
+const heroLines = site.home.hero_lines;
+const heroLede = site.home.hero_lede;
+const marqueeWords = /\s—\s$/.test(site.home.marquee) ? site.home.marquee : site.home.marquee.replace(/\s*$/, '') + ' — ';
+const honors = site.home.honors;
+const testimonials = site.home.testimonials;
+---
+<!-- POSTER HERO -->
+<section class="phero" data-hero data-intro>
+	<div class="slides">
+		{/* All hero frames load eagerly: the slideshow shows every one, and lazy
+		    images inside the fully-clipped slides never intersect — that would
+		    starve both the WebGL morph textures and the CSS fallback. Only the
+		    first frame competes for LCP priority. */}
+		{featured.map((p, i) => (
+			<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} data-cap={`${up(p.category || 'PORTRAIT')} · ${up(p.location || 'VIENNA')} · ${p.year || ''}`} style={`object-position:${p.focal}`} loading="eager" decoding="async" fetchpriority={i === 0 ? 'high' : 'low'} />
+		))}
+	</div>
+	<div class="phero__top">
+		<span class="exif">01 — SELECTED WORK</span>
+		<div class="slide-nav">
+			<button class="rbtn" data-prev aria-label="Previous">←</button>
+			<span class="slide-count"><span data-count>01</span><span class="of"> / {String(featured.length).padStart(2, '0')}</span></span>
+			<button class="rbtn" data-next aria-label="Next">→</button>
+		</div>
+	</div>
+	<div class="phero__lede">
+		<p>{heroLede}</p>
+		<a class="btn" href="/enquire/">Start a commission</a>
+	</div>
+	<div class="phero__cap"><span class="exif" data-cap>{up(featured[0]?.category || '')}</span></div>
+	<div class="phero__wm" aria-hidden="true">RAVEENTHIRAN</div>
+	<div class="vf" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" data-skew aria-hidden="true">
+	<div class="marquee__row marquee__row--a"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
+	<div class="marquee__row marquee__row--b"><span>{marqueeWords.repeat(2)}</span><span>{marqueeWords.repeat(2)}</span></div>
+</div>
+
+<!-- ON THE ROAD — planned city dates; travel priced by the calculator anyway -->
+{(site.travel.dates.length > 0 || site.travel.open) && (
+	<section class="road" data-reveal>
+		<span class="road__k">ON THE ROAD — {new Date().getFullYear()}</span>
+		{site.travel.dates.map((t) => (
+			<span class="road__d">{up(t.dates)} <em>—</em> {up(t.city)}</span>
+		))}
+		{site.travel.open && <a class="road__open" href="/enquire/">OPEN FOR TRAVELING →</a>}
+	</section>
+)}
+
+<!-- FEATURED SEQUENCE — one frame owns the viewport, then an asymmetric pair -->
+<section class="sec feat">
+	<div class="sec__head" data-reveal>
+		<div class="sec__hint">02 — SELECTED WORK</div>
+		<h2 data-letters>THREE FRAMES</h2>
+	</div>
+
+	{featured[0] && (
+		<a class="feat__main" href={`/work/${featured[0].slug}/`} data-reveal>
+			<img src={featured[0].image} srcset={featured[0].imageSrcset || undefined} sizes="100vw" width={featured[0].imageW || undefined} height={featured[0].imageH || undefined} alt={featured[0].title} style={`object-position:${featured[0].focal}`} loading="lazy" transition:name={`cover-${featured[0].slug}`} />
+			<span class="feat__no" aria-hidden="true">001</span>
+			<span class="feat__title">{up(featured[0].title)}</span>
+			<span class="exif feat__exif">{up(featured[0].category || 'PORTRAIT')} · {up(featured[0].location || 'VIENNA')} · {featured[0].year}</span>
+		</a>
+	)}
+
+	<div class="feat__pair">
+		{featured[1] && (
+			<a class="feat__b" href={`/work/${featured[1].slug}/`} data-reveal>
+				<div class="feat__plate"><img src={featured[1].image} srcset={featured[1].imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 52vw" width={featured[1].imageW || undefined} height={featured[1].imageH || undefined} alt={featured[1].title} style={`object-position:${featured[1].focal}`} loading="lazy" transition:name={`cover-${featured[1].slug}`} /></div>
+				<span class="feat__no feat__no--sm" aria-hidden="true">002</span>
+				<div class="feat__cap"><span class="feat__t">{up(featured[1].title)}</span><span class="exif">{up(featured[1].category)} · {featured[1].year}</span></div>
+			</a>
+		)}
+		{featured[2] && (
+			<a class="feat__c" href={`/work/${featured[2].slug}/`} data-reveal>
+				<div class="feat__plate"><img src={featured[2].image} srcset={featured[2].imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 34vw" width={featured[2].imageW || undefined} height={featured[2].imageH || undefined} alt={featured[2].title} style={`object-position:${featured[2].focal}`} loading="lazy" transition:name={`cover-${featured[2].slug}`} /></div>
+				<span class="feat__no feat__no--sm" aria-hidden="true">003</span>
+				<div class="feat__cap"><span class="feat__t">{up(featured[2].title)}</span><span class="exif">{up(featured[2].category)} · {featured[2].year}</span></div>
+			</a>
+		)}
+	</div>
+
+	<div class="feat__foot" data-reveal>
+		<a class="feat__all" href="/work/">FULL ARCHIVE — {String(projects.length).padStart(2, '0')} PROJECTS →</a>
+	</div>
+</section>
+
+<!-- STATEMENT WALL -->
+<section class="stmt" data-reveal>
+	<div class="exif stmt__k">03 — STATEMENT</div>
+	<div class="stmt__lines">
+		{site.studio.statement.map((l, i) => (
+			<div class:list={['stmt__line', i === site.studio.statement.length - 1 && 'stmt__line--outline']}>{up(l)}</div>
+		))}
+	</div>
+</section>
+
+<!-- THE INDEX -->
+<section class="sec" style="border-top:1px solid var(--line);padding-top:90px">
+	<div class="ghost-num" aria-hidden="true">04</div>
+	<div class="sec__head sec__head--sticky" data-reveal>
+		<div class="sec__hint">04 — THE INDEX</div>
+		<h2 data-letters>THE INDEX</h2>
+	</div>
+	<div class="index" style="margin-bottom:90px">
+		{indexItems.map((p, i) => (
+			<a class="index__row" href={`/work/${p.slug}/`} data-peek data-img={p.image}>
+				<span class="k">{num(i + 1)}</span>
+				<span class="t">{up(p.title)}</span>
+				<span class="k cat">{up(p.category)}</span>
+				<span class="k year">{p.year}</span>
+			</a>
+		))}
+	</div>
+
+	<!-- RECOGNITION -->
+	<div class="sec__head" data-reveal>
+		<div class="sec__hint">05 — RECOGNITION</div>
+		<h2 data-letters>RECOGNITION</h2>
+	</div>
+	<div class="recog">
+		<div>
+			{honors.map((h) => (
+				<div class="honor" data-reveal>
+					<span class="k">{h.year}</span>
+					<span class="t">{h.title}</span>
+					<span class="k">{h.tag}</span>
+				</div>
+			))}
+		</div>
+		<div class="quotes" data-reveal data-quotes>
+			<div class="quotes__mark" aria-hidden="true">&ldquo;</div>
+			<p class="quotes__text" data-quote-text>&ldquo;{testimonials[0].text}&rdquo;</p>
+			<div class="quotes__foot">
+				<span class="quotes__by" data-quote-by>{testimonials[0].by}</span>
+				<div class="slide-nav">
+					<button class="rbtn" data-q-prev aria-label="Previous quote">←</button>
+					<span class="slide-count"><span data-quote-count>01</span><span class="of"> / {String(testimonials.length).padStart(2, '0')}</span></span>
+					<button class="rbtn" data-q-next aria-label="Next quote">→</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="application/json" id="quotes-data" set:html={JSON.stringify(testimonials)} is:inline />
+</section>
+
+<!-- THE PHOTOGRAPHER — the person behind the frames, one glance before the CTA -->
+<section class="whois" data-reveal>
+	<a class="whois__plate" href="/about/" aria-label="About Nishuthan Raveenthiran">
+		<img src={site.studio.portrait || '/sample/self-portrait.png'} alt="Nishuthan Raveenthiran" loading="lazy" />
+	</a>
+	<div class="whois__body">
+		<div class="sec__hint">06 — THE PHOTOGRAPHER</div>
+		<p class="whois__line">{site.studio.lede || 'Nishuthan Raveenthiran — portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.'}</p>
+		<a class="chipline" href="/about/">ABOUT THE STUDIO →</a>
+	</div>
+</section>
+
+<!-- CTA -->
+<a class="cta" href="/enquire/">
+	<span>BOOK THE NEXT SHOOT</span><span>→</span>
+</a>

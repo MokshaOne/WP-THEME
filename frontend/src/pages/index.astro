@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { getProjects, getSite } from '../lib/wp';
+import Home from '../components/home/Default.astro';
+
+const projects = await getProjects();
+const site = await getSite();
+
+const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects).slice(0, 6);
+const preload = featured[0]?.image || '';
+---
+<Base title="Raveenthiran — Photographer, Vienna" description={site.home.hero_lede} active="" page="home" preload={preload}
+	ogImage={featured[0]?.ogImage || featured[0]?.image || ''}>
+	<Home site={site} projects={projects} />
+</Base>

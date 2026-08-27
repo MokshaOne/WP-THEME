@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #121110; color: #efece6; font-family: 'Archivo', system-ui, sans-serif; font-weight: 300; }
+    .an { font-family: 'Anton', 'Arial Narrow', sans-serif; font-weight: 400; line-height: .9; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+    .lab { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #6f6a60; }
+    a { color: #efece6; } a:hover { color: #b5aea1; }
+  </style>
+</helmet>
+<div style="width: 1200px; min-height: 620px; background: #121110; box-sizing: border-box; display:grid; grid-template-columns: 1.5fr 1fr;">
+  <div style="padding: 60px 56px; display:flex; flex-direction:column; justify-content:space-between;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline;">
+      <span class="lab">05 — Testimonial</span>
+      <span class="lab">Trust, full-bleed</span>
+    </div>
+    <div>
+      <div class="an" style="font-size: 90px; color:#2b2925; line-height:.5;">&ldquo;</div>
+      <p class="an" style="font-size: 46px; line-height:1.02; margin-top: 6px;">He directed the whole shoot so calmly that I forgot the camera was there. The prints hang in our living room.</p>
+      <div style="display:flex; gap:14px; align-items:center; margin-top: 30px;">
+        <span style="font-size: 13px; letter-spacing:.08em; color:#efece6;">Sarah K.</span>
+        <span class="lab">Portrait — 2024</span>
+      </div>
+    </div>
+    <div><span class="lab">Placeholder quote — swap for a real client's words</span></div>
+  </div>
+  <div style="background: linear-gradient(160deg, #1a1815, #141210); border-left:1px solid #2b2925; display:flex; align-items:flex-end; padding: 26px;">
+    <span class="lab" style="color:#4d4841;">Client portrait · 4:5</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

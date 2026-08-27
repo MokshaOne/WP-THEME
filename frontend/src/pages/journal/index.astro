@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts } from '../../lib/wp';
+
+const posts = await getPosts();
+const up = (s: string) => (s || '').toUpperCase();
+---
+<Base title="Journal — Raveenthiran" description="Notes on light, process and the work — from the Raveenthiran studio in Vienna." active="journal" page="journal">
+	<section class="phead">
+		<h1 data-intro>JOURNAL</h1>
+		<div class="phead__meta" data-intro>NOTES & STORIES<br />{String(posts.length).padStart(2, '0')} ENTRIES</div>
+	</section>
+
+	<div style="border-top:1px solid var(--line);margin-top:44px">
+		{posts.map((post) => (
+			<a class="jrow" href={`/journal/${post.slug}/`}>
+				<span class="k">{post.dateLabel.toUpperCase()}</span>
+				<span class="t">{up(post.title)}</span>
+				<span class="x">{up(post.category)} →</span>
+			</a>
+		))}
+	</div>
+
+	<a class="cta cta--sm" href="/work/"><span>SEE THE WORK</span><span>→</span></a>
+</Base>

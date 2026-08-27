@@ -1,0 +1,168 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getProjects, getProject } from '../../lib/wp';
+
+export async function getStaticPaths() {
+	const projects = await getProjects();
+	return projects.map((p, i) => {
+		// Series are shown inside the post (no series pages): collect the other
+		// projects that share a series with this one, for the FROM THE SERIES rows.
+		const mine = new Set((p.series || []).map((s) => s.slug));
+		const siblings = mine.size
+			? projects
+					.filter((q) => q.slug !== p.slug && (q.series || []).some((s) => mine.has(s.slug)))
+					.map((q) => ({ slug: q.slug, title: q.title, category: q.category, year: q.year, image: q.image }))
+			: [];
+		return {
+			params: { slug: p.slug },
+			props: { index: i, next: projects[(i + 1) % projects.length], siblings },
+		};
+	});
+}
+
+const { slug } = Astro.params;
+const { index, next, siblings } = Astro.props;
+const p = (await getProject(slug!))!;
+
+const up = (s: string) => (s || '').toUpperCase();
+const titleLines = up(p.title).split(/\s*—\s*|\s*·\s*/).filter(Boolean);
+const eyebrow = `FIG. ${String(index + 1).padStart(3, '0')} — ${up(p.category || 'WORK')} — ${p.year}`;
+
+const meta = ([
+	['CLIENT', p.client],
+	['LOCATION', p.location],
+	['SERVICES', p.services.join(' · ')],
+] as [string, string][]).filter(([, v]) => v);
+
+const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0 }];
+
+// Unique, human meta description per project: prefer the statement text,
+// otherwise compose one from the project's own metadata.
+const plain = (p.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+const description = plain.length > 40
+	? (plain.length > 155 ? plain.slice(0, 152).replace(/\s+\S*$/, '') + '…' : plain)
+	: `${p.category || 'Photography'}${p.location ? ` in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''} by Nishuthan Raveenthiran${p.services.length ? ` — ${p.services.join(', ')}` : ''}.`;
+
+// Per-project structured data (image search + rich results).
+const siteBase = (Astro.site?.href || 'https://raveenthiran.com/').replace(/\/$/, '');
+const absImg = (u: string) => (/^https?:\/\//.test(u) ? u : siteBase + (u.startsWith('/') ? '' : '/') + u);
+const projectImages = [p.image, ...p.gallery.map((g) => g.src)].filter(Boolean).map(absImg);
+const projectLd = {
+	'@context': 'https://schema.org',
+	'@type': 'CreativeWork',
+	'@id': `${siteBase}/work/${p.slug}/#project`,
+	name: p.title,
+	headline: p.title,
+	description,
+	url: `${siteBase}/work/${p.slug}/`,
+	...(p.year ? { dateCreated: p.year } : {}),
+	...(p.location ? { contentLocation: { '@type': 'Place', name: p.location } } : {}),
+	...(p.category ? { genre: p.category } : {}),
+	...(p.services.length ? { keywords: p.services.join(', ') } : {}),
+	creator: { '@type': 'Person', name: 'Nishuthan Raveenthiran', jobTitle: 'Photographer' },
+	...(projectImages.length
+		? {
+				image: projectImages,
+				associatedMedia: projectImages.map((u) => ({
+					'@type': 'ImageObject',
+					contentUrl: u,
+					creator: { '@type': 'Person', name: 'Nishuthan Raveenthiran' },
+					creditText: 'Nishuthan Raveenthiran',
+					copyrightNotice: `© ${new Date().getFullYear()} Nishuthan Raveenthiran`,
+				})),
+			}
+		: {}),
+};
+const breadcrumbLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: siteBase + '/' },
+		{ '@type': 'ListItem', position: 2, name: 'Work', item: siteBase + '/work/' },
+		{ '@type': 'ListItem', position: 3, name: p.title, item: `${siteBase}/work/${p.slug}/` },
+	],
+};
+---
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={p.ogImage || `/og/${p.slug}.jpg`} preload={p.image}>
+	<script type="application/ld+json" set:html={JSON.stringify(projectLd)} is:inline />
+	<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} is:inline />
+	<!-- SPLIT HERO -->
+	<section class="proj-hero">
+		<div class="proj-hero__left">
+			<div>
+				<div class="eyebrow" data-intro style="margin-bottom:20px">{eyebrow}</div>
+				<div class="proj-hero__title">
+					{(titleLines.length ? titleLines : [up(p.title)]).map((l) => <div class="line" data-intro>{l}</div>)}
+				</div>
+			</div>
+			{meta.length > 0 && (
+				<div class="meta-row" data-intro>
+					{meta.map(([k]) => <span class="k">{k}</span>)}
+					{meta.map(([, v]) => <span>{v}</span>)}
+				</div>
+			)}
+		</div>
+		<div class="proj-hero__right" data-intro>
+			<img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="eager" fetchpriority="high" transition:name={`cover-${p.slug}`} />
+		</div>
+	</section>
+
+	<!-- GALLERY RAIL -->
+	<section class="proj-gallery">
+		<div class="rail" data-drag>
+			{gallery.map((g, i) => (
+				<div class="card">
+					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} /></div>
+					<div class="cap"><span class="n">{String(i + 1).padStart(2, '0')}</span><span>{up(p.title)}</span></div>
+				</div>
+			))}
+		</div>
+		<div class="wrap" style="padding-top:24px;font-size:11px;letter-spacing:0.2em;color:var(--faint)">SCROLL SIDEWAYS ——→</div>
+	</section>
+
+	<!-- STATEMENT + CREDITS -->
+	<section class="proj-statement" data-reveal>
+		{p.content
+			? <div set:html={p.content} />
+			: <p>{`${p.category || 'A photographic'} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p>}
+		<div class="credits">
+			{p.credits.length > 0
+				? p.credits.map((c) => (<><span class="k">{up(c.role)}</span><span>{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>))
+				: (<><span class="k">PHOTOGRAPHY</span><span>NISHUTHAN RAVEENTHIRAN</span></>)}
+			{(p.series || []).length > 0 && (
+				<><span class="k">SERIES</span><span>{(p.series || []).map((s) => <a class="chipline" href={`/work/?series=${s.slug}`}>{up(s.name)}</a>)}</span></>
+			)}
+			{p.website && (
+				<><span class="k">WEBSITE</span><span><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
+			)}
+		</div>
+	</section>
+
+	<!-- FROM THE SERIES — the other frames that belong to this series -->
+	{siblings.length > 0 && (
+		<section class="wrap" data-reveal style="padding:var(--sp-tight) var(--gx);border-bottom:var(--hair)">
+			<div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:28px">
+				<div class="sec__hint" style="margin:0">FROM THE SERIES — {up((p.series || []).map((s) => s.name).join(' · '))}</div>
+				<a class="chipline" href={`/work/?series=${(p.series || [])[0]?.slug || ''}`}>VIEW THE WHOLE SERIES →</a>
+			</div>
+			<div class="index">
+				{siblings.map((s, i) => (
+					<a class="index__row" href={`/work/${s.slug}/`} data-peek data-img={s.image}>
+						<span class="k">{String(i + 1).padStart(3, '0')}</span>
+						<span class="t">{up(s.title)}</span>
+						<span class="k cat">{up(s.category)}</span>
+						<span class="k year">{s.year}</span>
+					</a>
+				))}
+			</div>
+		</section>
+	)}
+
+	<!-- NEXT PROJECT -->
+	{next && next.slug !== p.slug && (
+		<a class="cta cta--sm" href={`/work/${next.slug}/`}>
+			<span style="font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;color:var(--faint)">NEXT PROJECT</span>
+			<span>{up(next.title)} →</span>
+		</a>
+	)}
+</Base>

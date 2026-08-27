@@ -1,0 +1,186 @@
+/* moksha1one — scroll-mode engine.
+ *   none : home / contact — a single locked viewport, no scroll.
+ *   h    : portfolio / journal / about / enquire — vertical wheel drives a
+ *          smooth HORIZONTAL track (desktop scroll-hijack); native swipe on
+ *          touch. A progress rail + section counter track position.
+ *   v    : single project / journal + everything else — native vertical.
+ * Everything degrades gracefully: no JS, reduced-motion, or touch all stay
+ * usable. Pairs with .mk-h / .mk-h__track / .mk-panel markup in the templates.
+ */
+(function () {
+	'use strict';
+	var MK   = window.MK || { mode: 'v' };
+	var root = document.documentElement;
+	var mq   = function ( q ) { return window.matchMedia && window.matchMedia( q ).matches; };
+	var reduce  = mq( '(prefers-reduced-motion: reduce)' );
+	var isTouch = mq( '(pointer: coarse)' ) || 'ontouchstart' in window;
+	var lerp = function ( a, b, n ) { return ( 1 - n ) * a + n * b; };
+	var clamp = function ( v, a, b ) { return Math.max( a, Math.min( b, v ) ); };
+	var raf = window.requestAnimationFrame.bind( window );
+
+	root.classList.add( 'mk-ready', 'mk-m-' + MK.mode );
+
+	/* ---------- Magic Control → root flags + intensity var ---------- */
+	var fx = MK.fx || {};
+	if ( fx.orb === false )    root.classList.add( 'mk-no-orb' );
+	if ( fx.hint === false )   root.classList.add( 'mk-no-hint' );
+	if ( fx.tilt === false )   root.classList.add( 'mk-no-tilt' );
+	if ( fx.trails === false ) root.classList.add( 'mk-no-trail' );
+	var intensity = typeof fx.intensity === 'number' ? fx.intensity : 100;
+	root.style.setProperty( '--mk-i', ( intensity / 100 ).toFixed( 2 ) );
+
+	/* ---------- Cursor light trail (stoic gilt) ----------
+	 * A restrained trail of gilt sparks that eases behind the pointer and fades
+	 * fast — presence, not spectacle. Desktop + fine pointer only; off under
+	 * reduced-motion, touch, zero intensity, or the Magic Control toggle. Runs
+	 * on every page mode, so it's set up here before the mode branches return. */
+	if ( fx.trails !== false && ! reduce && ! isTouch && intensity > 0 && mq( '(pointer: fine)' ) ) {
+		( function trail() {
+			var cv = document.createElement( 'canvas' );
+			cv.className = 'mk-trail';
+			cv.setAttribute( 'aria-hidden', 'true' );
+			var cx = cv.getContext( '2d' );
+			var dpr = Math.min( window.devicePixelRatio || 1, 2 );
+			function resize() {
+				cv.width = window.innerWidth * dpr; cv.height = window.innerHeight * dpr;
+				cv.style.width = window.innerWidth + 'px'; cv.style.height = window.innerHeight + 'px';
+				cx.setTransform( dpr, 0, 0, dpr, 0, 0 );
+			}
+			var I = clamp( intensity / 100, 0, 2 );
+			var pts = [], MAX = 16, active = false, px = 0, py = 0, ex = 0, ey = 0;
+			window.addEventListener( 'mousemove', function ( e ) {
+				px = e.clientX; py = e.clientY;
+				if ( ! active ) { ex = px; ey = py; active = true; document.body.appendChild( cv ); resize(); }
+			}, { passive: true } );
+			window.addEventListener( 'resize', function () { if ( active ) resize(); } );
+			( function loop() {
+				raf( loop );
+				if ( ! active ) return;
+				ex = lerp( ex, px, 0.28 ); ey = lerp( ey, py, 0.28 );
+				pts.push( { x: ex, y: ey, a: 1 } );
+				if ( pts.length > MAX ) pts.shift();
+				cx.clearRect( 0, 0, cv.width, cv.height );
+				cx.globalCompositeOperation = 'lighter';
+				for ( var i = 0; i < pts.length; i++ ) {
+					var p = pts[ i ];
+					p.a *= 0.86;
+					var r = ( 1 + ( i / pts.length ) * 5 ) * ( 0.6 + 0.4 * I );
+					var g = cx.createRadialGradient( p.x, p.y, 0, p.x, p.y, r );
+					g.addColorStop( 0, 'rgba(242,202,80,' + ( p.a * 0.5 * I ).toFixed( 3 ) + ')' );
+					g.addColorStop( 1, 'rgba(242,202,80,0)' );
+					cx.fillStyle = g;
+					cx.beginPath(); cx.arc( p.x, p.y, r, 0, Math.PI * 2 ); cx.fill();
+				}
+			} )();
+		} )();
+	}
+
+	/* ---------- Magnetic buttons + stoic frame tilt (mk_fx_tilt) ----------
+	 * Gold/outline buttons lean gently toward the pointer (≤6px), and work
+	 * frames tilt in 3D under the cursor (≤4°) — both scaled by the Magic
+	 * intensity, desktop fine-pointer only, off with the tilt toggle. */
+	if ( fx.tilt !== false && ! reduce && ! isTouch && intensity > 0 && mq( '(pointer: fine)' ) ) {
+		( function tiltLayer() {
+			var I = clamp( intensity / 100, 0, 2 );
+
+			// magnetic buttons
+			var btns = [].slice.call( document.querySelectorAll( '.void-btn, .st-btn' ) );
+			btns.forEach( function ( b ) {
+				b.addEventListener( 'mousemove', function ( e ) {
+					var r = b.getBoundingClientRect();
+					var mxp = ( e.clientX - r.left ) / r.width - 0.5;
+					var myp = ( e.clientY - r.top ) / r.height - 0.5;
+					b.style.transform = 'translate(' + ( mxp * 6 * I ).toFixed( 1 ) + 'px,' + ( myp * 4 * I ).toFixed( 1 ) + 'px)';
+				} );
+				b.addEventListener( 'mouseleave', function () { b.style.transform = ''; } );
+			} );
+
+			// stoic 3D tilt on specimen frames
+			var frames = [].slice.call( document.querySelectorAll( '.mk-work__frame, .mk-plate__frame, .void-home-plate' ) );
+			frames.forEach( function ( f ) {
+				f.addEventListener( 'mousemove', function ( e ) {
+					var r = f.getBoundingClientRect();
+					var fx2 = ( e.clientX - r.left ) / r.width - 0.5;
+					var fy2 = ( e.clientY - r.top ) / r.height - 0.5;
+					f.style.transform = 'perspective(1100px) rotateY(' + ( fx2 * 4 * I ).toFixed( 2 ) + 'deg) rotateX(' + ( -fy2 * 4 * I ).toFixed( 2 ) + 'deg) translateZ(0)';
+				} );
+				f.addEventListener( 'mouseleave', function () { f.style.transform = ''; } );
+			} );
+		} )();
+	}
+
+	/* ---------- NO-SCROLL (home / contact) ---------- */
+	if ( MK.mode === 'none' ) {
+		root.classList.add( 'mk-lock' );
+		return;
+	}
+
+	/* ---------- HORIZONTAL ---------- */
+	if ( MK.mode === 'h' ) {
+		var wrap  = document.querySelector( '[data-mk-h]' );
+		var track = wrap && wrap.querySelector( '.mk-h__track' );
+		if ( ! wrap || ! track ) return;
+
+		// Touch / reduced-motion / narrow → leave the panels as a natural
+		// vertical stack (CSS default, matches the 901px breakpoint). Best UX
+		// on phones, and forms stay fully scrollable.
+		if ( isTouch || reduce || window.innerWidth <= 900 ) return;
+
+		root.classList.add( 'mk-h-on' );
+		var progress = document.createElement( 'div' );
+		progress.className = 'mk-progress';
+		document.body.appendChild( progress );
+
+		var maxX = 0, cur = 0;
+		function size() {
+			maxX = Math.max( 0, track.scrollWidth - window.innerWidth );
+			// body height mirrors the track length so the native scrollbar maps 1:1
+			document.body.style.height = ( maxX + window.innerHeight ) + 'px';
+		}
+		size();
+		window.addEventListener( 'resize', size );
+		if ( 'ResizeObserver' in window ) new ResizeObserver( size ).observe( track );
+		window.addEventListener( 'load', size );
+		setTimeout( size, 400 ); // re-measure once media/fonts settle
+
+		// keyboard + anchor helpers: map a panel index to a scroll position
+		var panels = [].slice.call( track.querySelectorAll( '.mk-panel' ) );
+		wrap.addEventListener( 'click', function ( e ) {
+			var jump = e.target.closest( '[data-mk-goto]' );
+			if ( ! jump ) return;
+			var i = parseInt( jump.getAttribute( 'data-mk-goto' ), 10 ) || 0;
+			var p = panels[ i ];
+			if ( p ) window.scrollTo( { top: clamp( p.offsetLeft, 0, maxX ), behavior: 'smooth' } );
+		} );
+
+		// stoic 3D depth: panels ease through space as they pass the centre —
+		// a restrained rotateY + scale + dim, scaled by the Magic intensity.
+		var depthOn = ! reduce && ( intensity > 0 );
+		( function frame() {
+			raf( frame );
+			var y = window.scrollY || window.pageYOffset || 0;
+			cur = lerp( cur, clamp( y, 0, maxX ), 0.1 );
+			if ( Math.abs( cur - y ) < 0.4 ) cur = y;
+			track.style.transform = 'translate3d(' + ( -cur ) + 'px,0,0)';
+			progress.style.transform = 'scaleX(' + ( maxX ? cur / maxX : 0 ) + ')';
+
+			if ( depthOn ) {
+				var I = intensity / 100, vw = window.innerWidth;
+				for ( var pi = 0; pi < panels.length; pi++ ) {
+					var pnl = panels[ pi ];
+					var d = clamp( ( pnl.offsetLeft - cur + pnl.offsetWidth / 2 - vw / 2 ) / vw, -1, 1 );
+					var ad = Math.abs( d );
+					// stoic ceilings: ≤5° turn, ≤5% shrink, ≤42% dim — calm, not flashy
+					pnl.style.transform = 'perspective(1600px) rotateY(' + ( -d * 5 * I ).toFixed( 2 ) + 'deg) scale(' + ( 1 - ad * 0.05 * I ).toFixed( 3 ) + ')';
+					pnl.style.opacity = ( 1 - ad * 0.42 ).toFixed( 3 );
+					// inner parallax: children read --mk-d and drift at their own
+					// depth (headline slower, frame faster) — pure CSS from here.
+					pnl.style.setProperty( '--mk-d', ( d * I ).toFixed( 3 ) );
+				}
+			}
+		} )();
+		return;
+	}
+
+	/* ---------- VERTICAL (default) — nothing to do ---------- */
+})();

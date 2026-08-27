@@ -1,5 +1,13 @@
 /vendor/
 
 # Design-canvas working files: keep the .dc.html sources, ignore the large seeded payload
-scratch-design/*.html
-!scratch-design/*.dc.html
+raveenthiran.com/scratch-design/*.html
+!raveenthiran.com/scratch-design/*.dc.html
+
+# Licensed assets (Envato Elements etc.) — supplied per-install, never committed
+# to this public repo. See m1o.at/m1o-v2/assets/fonts/AVOISTE-README.md
+m1o.at/m1o-v2/assets/fonts/avoiste-laverta.woff2
+m1o.at/m1o-v2/assets/fonts/avoiste-laverta.woff
+
+# built theme deliverables (generated, not source)
+still.zip

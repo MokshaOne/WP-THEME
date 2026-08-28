@@ -92,6 +92,33 @@
     </div>
 </footer>
 
+<?php if ( ! is_user_logged_in() && ! is_page( [ 'join', 'login' ] ) ) : ?>
+<!-- Mobile sticky join bar · logged-out visitors only -->
+<div class="g-joinbar" role="complementary" aria-label="<?php esc_attr_e( 'Membership', 'vpg-v2' ); ?>">
+    <span class="g-joinbar__t"><?php esc_html_e( 'Free membership · two minutes', 'vpg-v2' ); ?></span>
+    <a class="g-joinbar__btn" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join free', 'vpg-v2' ); ?> &#8594;</a>
+</div>
+<style>
+    .g-joinbar { display: none; }
+    @media (max-width: 760px) {
+        .g-joinbar {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            background: var(--g-ink, #0B0B0B); color: #fff;
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+            border-top: 1px solid rgba(255,255,255,.14);
+        }
+        .g-joinbar__t { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.75); }
+        .g-joinbar__btn {
+            flex: none; background: var(--g-red, #E5341F); color: #fff;
+            font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+            padding: 11px 18px; text-decoration: none;
+        }
+        body { padding-bottom: 64px; }
+    }
+</style>
+<?php endif; ?>
+
 <?php wp_footer(); ?>
 </body>
 </html>

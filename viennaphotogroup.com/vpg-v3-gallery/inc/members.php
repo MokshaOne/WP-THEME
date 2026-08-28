@@ -79,7 +79,12 @@ add_action( 'template_redirect', function () {
                         <?php endwhile; wp_reset_postdata(); ?>
                     </div>
                 <?php else : ?>
-                    <p class="vpg-caps" style="text-align:center;padding:4rem 0">— <?php esc_html_e( 'No public contributions yet.', 'vpg-v2' ); ?></p>
+                    <div style="text-align:center;padding:4rem 0">
+                        <p class="vpg-caps" style="margin-bottom:1.2rem">— <?php esc_html_e( 'No public contributions yet.', 'vpg-v2' ); ?></p>
+                        <?php if ( get_current_user_id() === $user->ID ) : ?>
+                            <a class="g-btn g-btn--red" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your first piece', 'vpg-v2' ); ?> →</a>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </section>

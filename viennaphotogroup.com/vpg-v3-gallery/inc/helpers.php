@@ -144,3 +144,52 @@ function vpg_chip( $post_type, $label = '' ) {
         esc_html( $label )
     );
 }
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Event → .ics download · "Add to calendar"                        */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_post_nopriv_vpg_event_ics', 'vpg_event_ics' );
+add_action( 'admin_post_vpg_event_ics',        'vpg_event_ics' );
+function vpg_event_ics() {
+    $id    = (int) ( $_GET['event'] ?? 0 );
+    $event = $id ? get_post( $id ) : null;
+    if ( ! $event || $event->post_type !== 'vpg_event' || $event->post_status !== 'publish' ) {
+        wp_die( 'Event not found', 404 );
+    }
+
+    $date  = get_post_meta( $id, '_vpg_event_date',  true );
+    $venue = get_post_meta( $id, '_vpg_event_venue', true );
+    $start = $date ? strtotime( $date ) : false;
+    if ( ! $start ) $start = strtotime( $event->post_date );
+
+    // All-day event · the date meta is a plain date without a time
+    $dtstart = gmdate( 'Ymd', $start );
+    $dtend   = gmdate( 'Ymd', $start + DAY_IN_SECONDS );
+
+    $esc = function ( $s ) {
+        return str_replace( [ '\\', ';', ',', "\n" ], [ '\\\\', '\;', '\,', '\n' ], (string) $s );
+    };
+
+    $lines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Vienna Photo Group//Events//EN',
+        'BEGIN:VEVENT',
+        'UID:vpg-event-' . $id . '@' . wp_parse_url( home_url(), PHP_URL_HOST ),
+        'DTSTAMP:' . gmdate( 'Ymd\THis\Z' ),
+        'DTSTART;VALUE=DATE:' . $dtstart,
+        'DTEND;VALUE=DATE:' . $dtend,
+        'SUMMARY:' . $esc( $event->post_title ),
+        'DESCRIPTION:' . $esc( wp_strip_all_tags( get_the_excerpt( $event ) ?: wp_trim_words( $event->post_content, 40 ) ) ),
+        'LOCATION:' . $esc( $venue ?: 'Wien' ),
+        'URL:' . esc_url_raw( get_permalink( $id ) ),
+        'END:VEVENT',
+        'END:VCALENDAR',
+    ];
+
+    nocache_headers();
+    header( 'Content-Type: text/calendar; charset=utf-8' );
+    header( 'Content-Disposition: attachment; filename="' . sanitize_title( $event->post_title ) . '.ics"' );
+    echo implode( "\r\n", $lines ) . "\r\n";
+    exit;
+}

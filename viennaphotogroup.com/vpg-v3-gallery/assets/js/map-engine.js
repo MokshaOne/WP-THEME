@@ -1,4 +1,4 @@
-/* VPG v2 · map-engine.js
+/* VPG v3 · map-engine.js
  * Initialises Leaflet on every #vpg-map / .vpg-map element.
  *
  * Per-pin data shape:
@@ -7,10 +7,14 @@
  *            controls the marker colour & glyph (see CSS .vpg-pin--<type>)
  *
  * Behaviour:
+ *   - Lazy init · the map (and its tile requests) only boots when the element
+ *     approaches the viewport (IntersectionObserver, 400px margin)
  *   - Custom teardrop divIcon per type · colour from token palette
  *   - Clusters when count > 4 (and Leaflet.markercluster is loaded)
  *   - Optional filter bar · any .vpg-map-filter[data-target="#vpg-map"] in DOM
  *     toggles pin types on/off
+ *   - Filter state lives in the URL (?types=studio,shop) · shareable map views;
+ *     restored on load, written with history.replaceState (no reload)
  *   - fitBounds with 18% padding and maxZoom 16 so single pins don't slam in
  *   - Wheel-zoom only after first click (prevents page-scroll hijack)
  */
@@ -51,7 +55,27 @@
     });
   }
 
-  document.querySelectorAll('#vpg-map, .vpg-map').forEach(function (el) {
+  /* ── URL filter state · ?types=a,b,c ── */
+  function readUrlTypes() {
+    try {
+      var v = new URLSearchParams(window.location.search).get('types');
+      if (!v) return null;
+      var list = v.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      return list.length ? list : null;
+    } catch (e) { return null; }
+  }
+
+  function writeUrlTypes(active, allCount) {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (active.size === allCount) params.delete('types');
+      else params.set('types', Array.from(active).join(','));
+      var qs = params.toString();
+      history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+    } catch (e) { /* URL stays as-is · filtering still works */ }
+  }
+
+  function initMap(el) {
     var raw = el.getAttribute('data-pins') || '[]';
     var pins;
     try { pins = JSON.parse(raw); } catch (e) { pins = []; }
@@ -112,36 +136,69 @@
     // any buttons with [data-type="<type>"] or [data-type="all"]. Click toggles.
     var selector = el.id ? '#' + el.id : '.vpg-map';
     var filters  = document.querySelectorAll('.vpg-map-filter[data-target="' + selector + '"], .vpg-map-filter[data-target="' + el.id + '"]');
+    if (!filters.length) return;
+
+    var allTypes = Object.keys(byType);
+    var active   = new Set(allTypes);
+
+    // Restore a shared view · keep only URL types that exist on this map
+    var fromUrl = readUrlTypes();
+    if (fromUrl) {
+      var valid = fromUrl.filter(function (t) { return allTypes.indexOf(t) !== -1; });
+      if (valid.length) active = new Set(valid);
+    }
+
+    function paintButtons(bar) {
+      bar.querySelectorAll('button[data-type]').forEach(function (b) {
+        var t = b.getAttribute('data-type');
+        b.classList.toggle('is-active', t === 'all' ? active.size === allTypes.length : active.has(t));
+      });
+    }
+
+    function applyFilter() {
+      rootGroup.clearLayers();
+      allTypes.forEach(function (t) {
+        if (!active.has(t)) return;
+        byType[t].forEach(function (m) { rootGroup.addLayer(m); });
+      });
+      filters.forEach(paintButtons);
+      writeUrlTypes(active, allTypes.length);
+    }
+
     filters.forEach(function (bar) {
-      var active = new Set( Object.keys( byType ) );
       bar.addEventListener('click', function (e) {
         var btn = e.target.closest('button[data-type]');
         if (!btn) return;
         var type = btn.getAttribute('data-type');
         if (type === 'all') {
-          active = new Set( Object.keys( byType ) );
+          active = new Set(allTypes);
         } else if (active.has(type) && active.size > 1) {
           active.delete(type);
         } else {
           active.add(type);
         }
-        // Visual state
-        bar.querySelectorAll('button[data-type]').forEach(function (b) {
-          var t = b.getAttribute('data-type');
-          b.classList.toggle('is-active', t === 'all' ? active.size === Object.keys(byType).length : active.has(t));
-        });
-        // Layer updates
-        rootGroup.clearLayers();
-        Object.keys(byType).forEach(function (t) {
-          if (!active.has(t)) return;
-          byType[t].forEach(function (m) { rootGroup.addLayer(m); });
-        });
-      });
-      // Initialise visual state
-      bar.querySelectorAll('button[data-type]').forEach(function (b) {
-        var t = b.getAttribute('data-type');
-        b.classList.toggle('is-active', t === 'all' || active.has(t));
+        applyFilter();
       });
     });
-  });
+
+    // Initial state · applies a restored URL filter and paints the buttons
+    applyFilter();
+  }
+
+  /* ── Lazy boot · init each map when it approaches the viewport ── */
+  var maps = document.querySelectorAll('#vpg-map, .vpg-map');
+  if (!maps.length) return;
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        initMap(entry.target);
+      });
+    }, { rootMargin: '400px 0px' });
+    maps.forEach(function (el) { io.observe(el); });
+  } else {
+    maps.forEach(initMap);
+  }
 }());

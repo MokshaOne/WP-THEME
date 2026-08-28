@@ -26,6 +26,8 @@ get_header();
           <?php if ( $meta ) : ?>
             <dl class="g-phero__aside">
               <dt>Date</dt><dd><?php echo esc_html( $meta ); ?></dd>
+              <dt><?php esc_html_e( 'Calendar', 'vpg-v2' ); ?></dt>
+              <dd><a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_event_ics&event=' . get_the_ID() ) ); ?>"><?php esc_html_e( 'Download .ics ↓', 'vpg-v2' ); ?></a></dd>
             </dl>
           <?php endif; ?>
         </div>

@@ -31,6 +31,24 @@ get_header();
             <dl class="g-phero__aside">
               <dt><?php esc_html_e( 'District', 'vpg-v2' ); ?></dt>
               <dd><?php echo $meta ? esc_html( $meta ) : '—'; ?></dd>
+              <?php
+              // Today's light at this exact spot · computed locally, no API.
+              $lat = (float) get_post_meta( get_the_ID(), 'location_lat', true );
+              $lng = (float) get_post_meta( get_the_ID(), 'location_lng', true );
+              if ( $lat && $lng ) :
+                  $sun = date_sun_info( current_time( 'timestamp' ), $lat, $lng );
+                  if ( ! empty( $sun['sunrise'] ) && ! empty( $sun['sunset'] ) ) :
+                      $tz      = wp_timezone();
+                      $sunrise = wp_date( 'H:i', $sun['sunrise'], $tz );
+                      $sunset  = wp_date( 'H:i', $sun['sunset'],  $tz );
+                      $gh_eve  = wp_date( 'H:i', $sun['sunset'] - HOUR_IN_SECONDS, $tz );
+                      $gh_morn = wp_date( 'H:i', $sun['sunrise'] + HOUR_IN_SECONDS, $tz );
+              ?>
+              <dt><?php esc_html_e( 'Light today', 'vpg-v2' ); ?></dt>
+              <dd><?php printf( esc_html__( '↑ %1$s · ↓ %2$s', 'vpg-v2' ), esc_html( $sunrise ), esc_html( $sunset ) ); ?></dd>
+              <dt><?php esc_html_e( 'Golden hour', 'vpg-v2' ); ?></dt>
+              <dd><?php printf( esc_html__( '%1$s–%2$s · %3$s–%4$s', 'vpg-v2' ), esc_html( $sunrise ), esc_html( $gh_morn ), esc_html( $gh_eve ), esc_html( $sunset ) ); ?></dd>
+              <?php endif; endif; ?>
             </dl>
             <a class="g-link" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_location' ) ); ?>" style="margin-top:18px"><?php esc_html_e( 'All locations', 'vpg-v2' ); ?> <span class="a">→</span></a>
           </aside>

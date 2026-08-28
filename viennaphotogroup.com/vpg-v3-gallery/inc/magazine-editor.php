@@ -269,6 +269,9 @@ function vpg_magazine_edit_page() {
                     <h2 id="vpg-pick-title"><?php esc_html_e( 'Pick content', 'vpg-v2' ); ?></h2>
                     <button type="button" class="vpg-pick-close" id="vpg-pick-close" aria-label="Close">×</button>
                 </div>
+                <div class="vpg-pick-search">
+                    <input type="search" id="vpg-pick-search" placeholder="<?php esc_attr_e( 'Filter…', 'vpg-v2' ); ?>" autocomplete="off">
+                </div>
                 <div class="vpg-pick-list" id="vpg-pick-list"><p class="vpg-pick-loading"><?php esc_html_e( 'Loading…', 'vpg-v2' ); ?></p></div>
                 <div class="vpg-pick-foot" id="vpg-pick-foot" hidden>
                     <button type="button" class="button button-primary" id="vpg-pick-add-selected"><?php esc_html_e( 'Add selected as photo spread', 'vpg-v2' ); ?></button>
@@ -285,6 +288,8 @@ function vpg_magazine_edit_page() {
         .vpg-pick-modal { background: #fff; border-radius: 8px; width: 640px; max-width: 100%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
         .vpg-pick-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid #ccd0d4; }
         .vpg-pick-head h2 { margin: 0; font-size: 1.05rem; }
+        .vpg-pick-search { padding: .7rem 1.25rem; border-bottom: 1px solid #ccd0d4; }
+        .vpg-pick-search input { width: 100%; padding: .5rem .7rem; border: 1px solid #ccd0d4; border-radius: 4px; font-size: 13px; }
         .vpg-pick-close { background: none; border: 0; font-size: 22px; cursor: pointer; color: #646970; line-height: 1; }
         .vpg-pick-list { overflow-y: auto; padding: .5rem 0; }
         .vpg-pick-loading { padding: 2rem; text-align: center; color: #646970; }
@@ -444,7 +449,15 @@ function vpg_magazine_edit_page() {
             photos:  <?php echo wp_json_encode( __( 'Photos · tick the plates for the spread', 'vpg-v2' ) ); ?>
         };
 
-        function closePicker() { overlay.hidden = true; pickList.innerHTML = ''; }
+        var pickSearch = document.getElementById('vpg-pick-search');
+        pickSearch.addEventListener('input', function () {
+            var q = pickSearch.value.trim().toLowerCase();
+            pickList.querySelectorAll('.vpg-pick-item').forEach(function (row) {
+                row.style.display = (!q || row.textContent.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
+            });
+        });
+
+        function closePicker() { overlay.hidden = true; pickList.innerHTML = ''; pickSearch.value = ''; }
         document.getElementById('vpg-pick-close').addEventListener('click', closePicker);
         overlay.addEventListener('click', function (e) { if (e.target === overlay) closePicker(); });
 

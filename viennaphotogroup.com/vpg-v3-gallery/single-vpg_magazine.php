@@ -26,6 +26,28 @@ $is_print  = ! empty( $_GET['vpg_print'] );
 
 <main id="vpg-main" class="vpg-mag-issue<?php echo $is_print ? ' vpg-mag-issue--print' : ''; ?>">
 
+<?php if ( ! $is_print ) : ?>
+<!-- Reading progress · thin red bar pinned to the top of the issue -->
+<div id="vpg-readbar" aria-hidden="true" style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--g-red,#E5341F);z-index:90"></div>
+<script>
+(function () {
+    var bar = document.getElementById('vpg-readbar');
+    if (!bar) return;
+    var ticking = false;
+    function paint() {
+        ticking = false;
+        var doc = document.documentElement;
+        var max = doc.scrollHeight - window.innerHeight;
+        bar.style.width = (max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0) + '%';
+    }
+    window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+    }, { passive: true });
+    paint();
+}());
+</script>
+<?php endif; ?>
+
 <!-- ────────  COVER HERO  ──────── -->
 <header class="vpg-cover">
     <div class="vpg-cover__bg<?php echo $cover_url ? '' : ' vpg-cover__bg--placeholder'; ?>" style="<?php echo $cover_url ? 'background-image:url(' . esc_url( $cover_url ) . ')' : ''; ?>"></div>

@@ -144,6 +144,18 @@ get_header();
     </div>
   </section>
 
+  <!-- Empty state · nothing submitted yet -->
+  <?php if ( ! $pending->have_posts() && ! $published->have_posts() ) : ?>
+  <section class="g-section g-section--alt g-section--tight">
+    <div class="g-wrap" style="text-align:center;padding-top:24px;padding-bottom:24px">
+      <span class="g-kicker"><?php esc_html_e( 'Nothing on your wall yet', 'vpg-v2' ); ?></span>
+      <h2 class="g-head__t" style="margin:14px auto 18px"><?php echo wp_kses_post( __( 'Your first frame is <em>waiting</em>.', 'vpg-v2' ) ); ?></h2>
+      <p class="g-lede" style="margin:0 auto 28px;text-align:center;max-width:52ch"><?php esc_html_e( 'Submit a location, a review or a tutorial — with your photos. Editorial reviews within 72 hours, and your name goes under it.', 'vpg-v2' ); ?></p>
+      <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your first piece', 'vpg-v2' ); ?> <span class="a">→</span></a>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Submissions in review -->
   <?php if ( $pending->have_posts() ) : ?>
   <section class="g-section g-section--alt g-section--tight">
@@ -194,6 +206,34 @@ get_header();
     </div>
   </section>
   <?php endif; ?>
+
+  <!-- Bookmarks · saved for later -->
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Bookmarks', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'Saved for <em>later</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+        <div class="g-meta"><?php echo count( $bookmarks ); ?></div>
+      </div>
+      <?php if ( $bookmarks ) :
+          $marked = get_posts( [ 'post__in' => array_map( 'intval', $bookmarks ), 'post_type' => 'any', 'posts_per_page' => 12, 'orderby' => 'post__in' ] );
+      ?>
+      <div class="g-list">
+        <?php foreach ( $marked as $bp ) : ?>
+          <a class="g-row" style="grid-template-columns:auto 1fr auto" href="<?php echo esc_url( get_permalink( $bp ) ); ?>">
+            <?php vpg_chip( $bp->post_type ); ?>
+            <h3 class="g-row__title" style="margin:0"><?php echo esc_html( get_the_title( $bp ) ); ?></h3>
+            <span class="g-row__when"><?php echo esc_html( get_the_date( 'M j, Y', $bp ) ); ?></span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+      <?php else : ?>
+      <p class="g-lede" style="color:var(--g-mid)"><?php esc_html_e( 'Nothing saved yet — every article has a “Save for later” button. Whatever you star lands here.', 'vpg-v2' ); ?></p>
+      <?php endif; ?>
+    </div>
+  </section>
 
   <section class="g-section--dark g-section">
     <div class="g-wrap" style="text-align:center">

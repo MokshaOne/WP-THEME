@@ -180,7 +180,7 @@ $journal_url = get_option( 'page_for_posts' ) ? get_permalink( (int) get_option(
   <!-- ── JOIN CTA ── -->
   <section class="g-section--dark g-section">
     <div class="g-wrap" style="text-align:center">
-      <span class="g-kicker"><?php esc_html_e( 'Membership · €60 / year', 'vpg-v2' ); ?></span>
+      <span class="g-kicker"><?php esc_html_e( 'Membership · free', 'vpg-v2' ); ?></span>
       <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'Join the <em>studio</em>.', 'vpg-v2' ) ); ?></h2>
       <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Every monthly issue in PDF and print, submission rights to the map and journal, event discounts and the studio-share directory. Forever-keepable.', 'vpg-v2' ); ?></p>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">

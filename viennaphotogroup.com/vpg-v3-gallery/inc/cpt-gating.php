@@ -122,7 +122,7 @@ function vpg_render_gate_page( $type, $title, $excerpt ) {
                         </p>
                         <p class="vpg-gate__actions">
                             <a class="vpg-btn vpg-btn--accent" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'Log in', 'vpg-v2' ); ?> →</a>
-                            <a class="vpg-btn vpg-btn--ghost" href="<?php echo esc_url( home_url('/membership/') ); ?>"><?php esc_html_e( 'Join wait-list', 'vpg-v2' ); ?></a>
+                            <a class="vpg-btn vpg-btn--ghost" href="<?php echo esc_url( home_url('/join/') ); ?>"><?php esc_html_e( 'Join free', 'vpg-v2' ); ?></a>
                         </p>
                     </div>
                 </div>

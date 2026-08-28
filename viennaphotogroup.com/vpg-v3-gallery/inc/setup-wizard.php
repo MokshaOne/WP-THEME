@@ -264,7 +264,7 @@ function vpg_seed_pages() {
         'journal'    => [ 'Journal',       '',                              'The VPG journal — essays, field notes, portfolios and gear writing.' ],
         'about'      => [ 'About',         'templates/page-about.php',      'A quiet magazine for photographers.' ],
         'contact'    => [ 'Contact',       'templates/page-contact.php',    'Send a message — editorial enquiries, submissions, member support.' ],
-        'join'       => [ 'Join VPG',      'templates/page-join.php',       'Become a member · €60 per year.' ],
+        'join'       => [ 'Join VPG',      'templates/page-join.php',       'Become a member · free.' ],
         'login'      => [ 'Login',         'templates/page-login.php',      'Member login.' ],
         'dashboard'  => [ 'Dashboard',     'templates/page-dashboard.php',  'Your VPG dashboard.' ],
         'submit'     => [ 'Submit',        'templates/page-submit.php',     'Members can submit a location, studio, shop or review.' ],

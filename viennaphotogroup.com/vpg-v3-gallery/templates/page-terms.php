@@ -27,7 +27,7 @@ $id = vpg_identity();
             <p>Browsing the website, the map, the magazine and the directories is free. No account required. Standard server logs apply · see <a href="<?php echo esc_url( home_url('/privacy/') ); ?>">/privacy/</a>.</p>
 
             <h2>3 · Member accounts</h2>
-            <p>To submit content, download PDFs or appear in the member directory, you need to register as a Member (€60/yr) or Sustaining Member (€180/yr). You agree to provide accurate information, keep your password secure, and not share your account.</p>
+            <p>To submit content, download PDFs or appear in the member directory, you need to register as a Member. Membership is currently free; optional paid supporter tiers may be introduced later and will never be required for the features listed here. You agree to provide accurate information, keep your password secure, and not share your account.</p>
 
             <h2>4 · Submissions &amp; content rights</h2>
             <p>You retain full copyright to anything you submit (text, photos, location data, reviews). By submitting, you grant VPG a non-exclusive, worldwide, non-transferable licence to publish, archive and republish the work in the magazine and on the platform · indefinitely or until you ask us to remove it.</p>
@@ -37,7 +37,7 @@ $id = vpg_identity();
             <p>The editorial circle reviews submissions within 72 hours typically (max two weeks). We may edit for clarity, accuracy, or fit · we will not change your meaning without consulting you. Rejected submissions are deleted from the queue · feedback is offered when useful.</p>
 
             <h2>6 · Membership fees &amp; refunds</h2>
-            <p>Membership is annual. No automatic renewal. Refunds within 14 days of payment (statutory cooling-off period). After 14 days no refunds, but membership runs to the end of the paid year regardless.</p>
+            <p>Membership is currently free of charge; no payment is requested or collected. If optional paid supporter tiers are introduced later, they will be annual with no automatic renewal, refundable within 14 days of payment (statutory cooling-off period); after 14 days no refunds, but the tier runs to the end of the paid year regardless. Free membership is never affected by supporter-tier changes.</p>
 
             <h2>7 · Acceptable use</h2>
             <p>You may not · scrape the site beyond the public RSS / sitemap · attempt to gain unauthorised access · submit spam, AI-generated junk, or impersonate other photographers · resell PDFs or location data commercially. We reserve the right to suspend accounts that violate these rules · no refund in cases of abuse.</p>

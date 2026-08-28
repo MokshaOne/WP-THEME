@@ -32,6 +32,41 @@ add_filter( 'add_menu_classes', function ( $menu ) {
     return $menu;
 } );
 
+/**
+ * Feedback mail to the member whose submission was approved or rejected.
+ * "Feedback beats likes" — no submission disappears silently.
+ */
+function vpg_notify_submitter( $post_id, $verdict, $reason = '' ) {
+    $post   = get_post( $post_id );
+    if ( ! $post ) return;
+    $author = get_userdata( $post->post_author );
+    if ( ! $author || ! is_email( $author->user_email ) ) return;
+
+    $title = $post->post_title;
+
+    if ( $verdict === 'approve' ) {
+        $subject = sprintf( __( '[VPG] Your work is live · %s', 'vpg-v2' ), $title );
+        $body    = sprintf(
+            /* translators: 1: display name, 2: post title, 3: permalink */
+            __( "Hello %1\$s,\n\nYour submission \"%2\$s\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group", 'vpg-v2' ),
+            $author->display_name, $title, get_permalink( $post_id )
+        );
+    } else {
+        $subject = sprintf( __( '[VPG] About your submission · %s', 'vpg-v2' ), $title );
+        $body    = sprintf(
+            /* translators: 1: display name, 2: post title */
+            __( "Hello %1\$s,\n\nWe couldn't publish \"%2\$s\" this time.", 'vpg-v2' ),
+            $author->display_name, $title
+        );
+        if ( $reason ) {
+            $body .= "\n\n" . __( 'Editorial feedback:', 'vpg-v2' ) . "\n" . $reason;
+        }
+        $body .= "\n\n" . __( "Revise and resubmit any time — most submissions go through with light edits.\n\n— Vienna Photo Group", 'vpg-v2' );
+    }
+
+    wp_mail( $author->user_email, $subject, $body );
+}
+
 function vpg_pending_submission_count() {
     static $c = null;
     if ( $c !== null ) return $c;
@@ -45,11 +80,18 @@ function vpg_render_submission_queue() {
 
     /* Handle quick actions */
     if ( ! empty( $_GET['vpg_act'] ) && ! empty( $_GET['id'] ) && check_admin_referer( 'vpg_submission_action' ) ) {
-        $id  = (int) $_GET['id'];
-        $act = sanitize_key( $_GET['vpg_act'] );
+        $id     = (int) $_GET['id'];
+        $act    = sanitize_key( $_GET['vpg_act'] );
+        $reason = sanitize_textarea_field( wp_unslash( $_GET['reason'] ?? '' ) );
         if ( current_user_can( 'edit_post', $id ) ) {
-            if ( $act === 'approve' ) wp_update_post( [ 'ID' => $id, 'post_status' => 'publish' ] );
-            if ( $act === 'reject' )  wp_update_post( [ 'ID' => $id, 'post_status' => 'trash' ] );
+            if ( $act === 'approve' ) {
+                wp_update_post( [ 'ID' => $id, 'post_status' => 'publish' ] );
+                vpg_notify_submitter( $id, 'approve' );
+            }
+            if ( $act === 'reject' ) {
+                vpg_notify_submitter( $id, 'reject', $reason ); // mail before trash · permalink still resolves
+                wp_update_post( [ 'ID' => $id, 'post_status' => 'trash' ] );
+            }
         }
         wp_safe_redirect( admin_url( 'admin.php?page=vpg-submissions&done=' . $act ) );
         exit;
@@ -108,9 +150,9 @@ function vpg_render_submission_queue() {
                     <td><?php echo esc_html( $author ); ?></td>
                     <td><?php echo esc_html( get_the_date( 'M j, Y · H:i' ) ); ?></td>
                     <td>
-                        <a class="button button-primary" href="<?php echo esc_url( $approve ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Approve and publish?', 'vpg-v2' ) ); ?>')">✓ <?php esc_html_e( 'Approve', 'vpg-v2' ); ?></a>
+                        <a class="button button-primary" href="<?php echo esc_url( $approve ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Approve and publish? The member gets a &quot;your work is live&quot; email.', 'vpg-v2' ) ); ?>')">✓ <?php esc_html_e( 'Approve', 'vpg-v2' ); ?></a>
                         <a class="button" href="<?php echo esc_url( $edit_url ); ?>"><?php esc_html_e( 'Edit', 'vpg-v2' ); ?></a>
-                        <a class="button button-link-delete" href="<?php echo esc_url( $reject ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Move to trash?', 'vpg-v2' ) ); ?>')">✕</a>
+                        <a class="button button-link-delete" href="<?php echo esc_url( $reject ); ?>" onclick="var r=prompt('<?php echo esc_js( __( 'Feedback for the member (sent by email · leave empty for none):', 'vpg-v2' ) ); ?>'); if (r===null) return false; this.href += '&reason=' + encodeURIComponent(r); return true;">✕</a>
                     </td>
                 </tr>
                 <?php endwhile; wp_reset_postdata(); ?>

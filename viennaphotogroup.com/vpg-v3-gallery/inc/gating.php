@@ -73,7 +73,7 @@ function vpg_gate_render( $mode, $content, $atts = [] ) {
                 <p class="vpg-gate__msg"><?php echo esc_html( $message ); ?></p>
                 <p class="vpg-gate__actions">
                     <a class="vpg-btn vpg-btn--sm" href="<?php echo esc_url( $cta_url ); ?>"><?php echo esc_html( $a['cta'] ); ?> →</a>
-                    <a class="vpg-btn vpg-btn--ghost vpg-btn--sm" href="<?php echo esc_url( home_url('/join/') ); ?>"><?php esc_html_e( 'Join wait-list', 'vpg-v2' ); ?></a>
+                    <a class="vpg-btn vpg-btn--ghost vpg-btn--sm" href="<?php echo esc_url( home_url('/join/') ); ?>"><?php esc_html_e( 'Join free', 'vpg-v2' ); ?></a>
                 </p>
             </div>
         </div>

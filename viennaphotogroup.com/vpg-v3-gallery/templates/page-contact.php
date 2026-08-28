@@ -33,6 +33,7 @@ $id = vpg_identity();
           <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
             <?php wp_nonce_field( 'vpg_contact' ); ?>
             <input type="hidden" name="action" value="vpg_contact">
+            <?php echo vpg_antispam_fields(); ?>
             <div class="g-field--row">
               <div class="g-field"><label for="vpg-name"><?php esc_html_e( 'Your name', 'vpg-v2' ); ?></label><input class="g-input" id="vpg-name" type="text" name="name" required></div>
               <div class="g-field"><label for="vpg-email"><?php esc_html_e( 'Email', 'vpg-v2' ); ?></label><input class="g-input" id="vpg-email" type="email" name="email" required></div>

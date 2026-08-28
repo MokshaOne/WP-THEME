@@ -45,7 +45,7 @@ if ( is_user_logged_in() ) {
             <p class="g-form__note">
                 <a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Forgot password?', 'vpg-v2' ); ?></a>
                 &middot;
-                <a href="<?php echo esc_url( home_url( '/membership/' ) ); ?>"><?php esc_html_e( 'Join the wait-list', 'vpg-v2' ); ?></a>
+                <a href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Not a member? Join free', 'vpg-v2' ); ?></a>
             </p>
           </div>
         </div>
@@ -59,11 +59,11 @@ if ( is_user_logged_in() ) {
   <section class="g-section--dark g-section">
     <div class="g-wrap" style="text-align:center">
       <span class="g-kicker"><?php esc_html_e( 'Not a member yet?', 'vpg-v2' ); ?></span>
-      <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'VPG is in <em>open beta</em>.', 'vpg-v2' ) ); ?></h2>
+      <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'Membership is <em>free</em>.', 'vpg-v2' ) ); ?></h2>
       <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center">
-        <?php esc_html_e( 'Reader access is free and open · no signup needed. Paid tiers (Member, Sustaining) open when we exit beta. Sign up for the wait-list to be notified.', 'vpg-v2' ); ?>
+        <?php esc_html_e( 'Two minutes, no fees. Contribute to the map and journal, build your public portfolio, download every issue as a PDF.', 'vpg-v2' ); ?>
       </p>
-      <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/membership/' ) ); ?>"><?php esc_html_e( 'See tiers &amp; join wait-list', 'vpg-v2' ); ?> <span class="a">→</span></a>
+      <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join free', 'vpg-v2' ); ?> <span class="a">→</span></a>
     </div>
   </section>
 

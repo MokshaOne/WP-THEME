@@ -17,7 +17,7 @@ get_header();
         </div>
         <dl class="g-phero__aside">
           <dt><?php esc_html_e( 'Reader access', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Free · no signup needed', 'vpg-v2' ); ?></dd>
-          <dt><?php esc_html_e( 'Not a member?', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/membership/' ) ); ?>"><?php esc_html_e( 'Join the wait-list', 'vpg-v2' ); ?></a></dd>
+          <dt><?php esc_html_e( 'Not a member?', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join free', 'vpg-v2' ); ?></a></dd>
         </dl>
       </div>
     </div>
@@ -30,7 +30,7 @@ get_header();
       <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Your dashboard, submissions and member-only resources live behind the door.', 'vpg-v2' ); ?></p>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
         <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>"><?php esc_html_e( 'Log in', 'vpg-v2' ); ?> <span class="a">→</span></a>
-        <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( home_url( '/membership/' ) ); ?>"><?php esc_html_e( 'Join the wait-list', 'vpg-v2' ); ?></a>
+        <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join free', 'vpg-v2' ); ?></a>
       </div>
     </div>
   </section>
@@ -74,6 +74,20 @@ get_header();
       </div>
     </div>
   </section>
+
+  <?php if ( function_exists( 'vpg_is_verified' ) && ! vpg_is_verified() ) : ?>
+  <!-- Email not yet confirmed -->
+  <section class="g-section--alt g-section--tight" style="border-top:2px solid var(--g-red)">
+    <div class="g-wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px">
+      <p style="margin:0;font-weight:600"><?php esc_html_e( 'Confirm your email to unlock submissions — we sent you a link when you joined.', 'vpg-v2' ); ?></p>
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+        <?php wp_nonce_field( 'vpg_resend_verify' ); ?>
+        <input type="hidden" name="action" value="vpg_resend_verify">
+        <button class="g-btn" type="submit"><?php esc_html_e( 'Resend the email', 'vpg-v2' ); ?></button>
+      </form>
+    </div>
+  </section>
+  <?php endif; ?>
 
   <!-- Quick stats row -->
   <section class="g-section g-section--tight">

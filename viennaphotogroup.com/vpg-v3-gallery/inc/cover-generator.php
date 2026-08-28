@@ -1,12 +1,15 @@
 <?php
 /**
- * VPG v2 — auto-cover-Mockup.
+ * VPG v3 — auto-cover-Mockup · Gallery edition.
  *
  * When a magazine issue has no featured image, generate a typographic
  * placeholder cover on the fly using GD. Cached in /uploads/vpg-pdf/covers/.
  * Returns a URL that single-magazine + archive can drop into the cover slot.
  *
- * Style: warm-paper bg + big italic Playfair title + issue number in mono caps + ⁕.
+ * Style: the site's own look — white ground, near-black Archivo Expanded
+ * uppercase title, one red square + red rules, wall-label meta line.
+ * Uses the theme's Archivo TTFs (assets/fonts) when present; falls back to
+ * GD's built-in fonts otherwise.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -20,62 +23,99 @@ function vpg_auto_cover_url( $issue_id ) {
     $url    = $upload['baseurl'] . '/vpg-pdf/covers';
     if ( ! is_dir( $dir ) ) wp_mkdir_p( $dir );
 
-    $file = $dir . '/cover-' . $issue_id . '-' . md5( $issue->post_title . $issue->post_modified ) . '.jpg';
+    $file = $dir . '/cover-' . $issue_id . '-' . md5( $issue->post_title . $issue->post_modified . 'g3' ) . '.jpg';
     if ( file_exists( $file ) ) return str_replace( $dir, $url, $file );
 
     $w = 800; $h = 1100;
     $im = imagecreatetruecolor( $w, $h );
 
-    // Colors · warm cream paper + ink + sienna
-    $bg     = imagecolorallocate( $im, 0xF4, 0xEF, 0xE3 );
-    $ink    = imagecolorallocate( $im, 0x0F, 0x0A, 0x04 );
-    $accent = imagecolorallocate( $im, 0xC8, 0x60, 0x1A );
-    $muted  = imagecolorallocate( $im, 0x6B, 0x5A, 0x48 );
+    // Gallery palette · white ground, near-black ink, one red, grey meta
+    $bg    = imagecolorallocate( $im, 0xFF, 0xFF, 0xFF );
+    $ink   = imagecolorallocate( $im, 0x0B, 0x0B, 0x0B );
+    $red   = imagecolorallocate( $im, 0xE5, 0x34, 0x1F );
+    $muted = imagecolorallocate( $im, 0x6A, 0x6A, 0x6A );
     imagefilledrectangle( $im, 0, 0, $w, $h, $bg );
-
-    // Top rule
-    imagefilledrectangle( $im, 60, 60, $w - 60, 62, $accent );
-
-    // Subtle noise · scatter dots
-    for ( $i = 0; $i < 220; $i++ ) {
-        $x = mt_rand( 0, $w - 1 );
-        $y = mt_rand( 0, $h - 1 );
-        imagesetpixel( $im, $x, $y, imagecolorallocatealpha( $im, 0x6B, 0x5A, 0x48, mt_rand( 105, 125 ) ) );
-    }
 
     $title    = $issue->post_title ?: 'Untitled';
     $issue_no = get_post_meta( $issue_id, '_vpg_issue_number', true ) ?: ( 'No. ' . $issue_id );
     $issue_dt = get_post_meta( $issue_id, '_vpg_issue_date',   true ) ?: get_the_date( 'F Y', $issue_id );
 
-    // Built-in GD fonts only · we don't ship a TTF
-    // Issue number top
-    imagestring( $im, 4, 60, 80, strtoupper( $issue_no . '  ·  ' . $issue_dt ), $muted );
+    $display = VPG_V2_DIR . '/assets/fonts/ArchivoExpanded-900.ttf';
+    $label   = VPG_V2_DIR . '/assets/fonts/Archivo-500.ttf';
+    $use_ttf = function_exists( 'imagettftext' ) && file_exists( $display ) && file_exists( $label );
 
-    // Title block · wrap to lines of ~22 chars, render with imagestring
-    $lines  = vpg_wrap_text( strtoupper( $title ), 22 );
-    $y_base = 280;
-    foreach ( $lines as $i => $line ) {
-        imagestring( $im, 5, 60, $y_base + ( $i * 56 ), $line, $ink );
-        // double-strike for bold-feel
-        imagestring( $im, 5, 61, $y_base + ( $i * 56 ), $line, $ink );
+    // Red square top-left · the brand mark
+    imagefilledrectangle( $im, 60, 60, 84, 84, $red );
+
+    if ( $use_ttf ) {
+        // Masthead strip · red brand period
+        imagettftext( $im, 15, 0, 104, 80, $ink, $label, 'VIENNAPHOTOGROUP' );
+        $mb = imagettfbbox( 15, 0, $label, 'VIENNAPHOTOGROUP' );
+        imagettftext( $im, 15, 0, 104 + ( $mb[2] - $mb[0] ) + 2, 80, $red, $label, '.' );
+        imagettftext( $im, 13, 0, 60, 130, $muted, $label, strtoupper( $issue_no . '  ·  ' . $issue_dt ) );
+        // Ink rule under the strip
+        imagefilledrectangle( $im, 60, 150, $w - 60, 152, $ink );
+
+        // Display title · Archivo Expanded 900 uppercase, wrapped to width
+        $size   = 64;
+        $lines  = vpg_wrap_ttf( strtoupper( $title ), $display, $size, $w - 120 );
+        while ( count( $lines ) > 6 && $size > 34 ) { // very long titles step down
+            $size -= 8;
+            $lines = vpg_wrap_ttf( strtoupper( $title ), $display, $size, $w - 120 );
+        }
+        $line_h = (int) round( $size * 1.12 );
+        $y      = 150 + 90;
+        foreach ( $lines as $line ) {
+            $y += $line_h;
+            imagettftext( $im, $size, 0, 58, $y, $ink, $display, $line );
+        }
+        // Red period after the last line
+        $bb = imagettfbbox( $size, 0, $display, end( $lines ) );
+        imagettftext( $im, $size, 0, 58 + ( $bb[2] - $bb[0] ) + 6, $y, $red, $display, '.' );
+
+        // Footer · hairline + wall label
+        imagesetthickness( $im, 1 );
+        imageline( $im, 60, $h - 110, $w - 60, $h - 110, $ink );
+        imagettftext( $im, 12, 0, 60, $h - 74, $muted, $label, 'A MEMBER-RUN PHOTOGRAPHY MAGAZINE · WIEN' );
+        imagettftext( $im, 12, 0, $w - 260, $h - 74, $muted, $label, 'VIENNAPHOTOGROUP.COM' );
+    } else {
+        // GD built-in fallback · same composition, humbler type
+        imagestring( $im, 5, 104, 62, 'VIENNAPHOTOGROUP.', $ink );
+        imagestring( $im, 3, 60, 110, strtoupper( $issue_no . '  .  ' . $issue_dt ), $muted );
+        imagefilledrectangle( $im, 60, 140, $w - 60, 142, $ink );
+        $lines  = vpg_wrap_text( strtoupper( $title ), 22 );
+        $y_base = 220;
+        foreach ( $lines as $i => $line ) {
+            imagestring( $im, 5, 60, $y_base + ( $i * 40 ), $line, $ink );
+            imagestring( $im, 5, 61, $y_base + ( $i * 40 ), $line, $ink );
+        }
+        imageline( $im, 60, $h - 110, $w - 60, $h - 110, $ink );
+        imagestring( $im, 3, 60, $h - 90, 'A MEMBER-RUN PHOTOGRAPHY MAGAZINE . WIEN', $muted );
     }
 
-    // Large ⁕ glyph (use 5px font, big block)
-    $glyph = '*';
-    $gx = ( $w / 2 ) - 6;
-    $gy = $h - 260;
-    imagestring( $im, 5, $gx, $gy, $glyph, $accent );
-    imagestring( $im, 5, $gx + 1, $gy, $glyph, $accent );
-
-    // Footer band
-    imagefilledrectangle( $im, 60, $h - 90, $w - 60, $h - 88, $accent );
-    imagestring( $im, 3, 60, $h - 80, 'VIENNA PHOTO GROUP', $muted );
-    imagestring( $im, 3, $w - 200, $h - 80, 'VIENNAPHOTOGROUP.COM', $muted );
-
-    imagejpeg( $im, $file, 88 );
+    imagejpeg( $im, $file, 90 );
     imagedestroy( $im );
 
     return str_replace( $dir, $url, $file );
+}
+
+/* Wrap uppercase text to a pixel width for a given TTF + size */
+function vpg_wrap_ttf( $text, $font, $size, $max_px ) {
+    $words = preg_split( '/\s+/', trim( $text ) ) ?: [];
+    $lines = [];
+    $cur   = '';
+    foreach ( $words as $word ) {
+        $try = $cur === '' ? $word : $cur . ' ' . $word;
+        $bb  = imagettfbbox( $size, 0, $font, $try );
+        if ( ( $bb[2] - $bb[0] ) > $max_px && $cur !== '' ) {
+            $lines[] = $cur;
+            $cur     = $word;
+        } else {
+            $cur = $try;
+        }
+    }
+    if ( $cur !== '' ) $lines[] = $cur;
+    return $lines ?: [ '' ];
 }
 
 function vpg_wrap_text( $text, $width ) {

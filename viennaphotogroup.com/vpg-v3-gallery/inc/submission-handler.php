@@ -137,6 +137,9 @@ function vpg_handle_join() {
 
     vpg_send_verification_mail( $uid );
 
+    // Gentle nudge · if the email is still unconfirmed in 48 h, remind once.
+    wp_schedule_single_event( time() + 2 * DAY_IN_SECONDS, 'vpg_verify_reminder', [ $uid ] );
+
     // Notify editorial + welcome the new member
     $to_editor = get_theme_mod( 'vpg_email', get_option( 'admin_email' ) );
     wp_mail( $to_editor, "[VPG] New member · {$name}", "Name: {$name}\nEmail: {$email}" );
@@ -185,6 +188,22 @@ add_action( 'admin_post_vpg_resend_verify', function () {
     vpg_redirect_with_status( 'dashboard', 'verify_sent' );
 } );
 
+/* Cron · one reminder 48 h after signup when the email is still unconfirmed */
+add_action( 'vpg_verify_reminder', function ( $uid ) {
+    if ( vpg_is_verified( $uid ) ) return;
+    $user = get_userdata( $uid );
+    if ( ! $user ) return;
+    vpg_send_verification_mail( $uid ); // fresh token + link
+    wp_mail( $user->user_email,
+        __( 'One click left · unlock your VPG submissions', 'vpg-v2' ),
+        sprintf(
+            /* translators: %s: display name */
+            __( "Hello %s,\n\nQuick reminder — your membership is active, but submissions stay locked until you confirm your email. We just sent you a fresh confirmation link (separate message).\n\n— Vienna Photo Group", 'vpg-v2' ),
+            $user->display_name
+        )
+    );
+} );
+
 /* ─── /submit/ · members only · creates pending CPT post ────────── */
 add_action( 'admin_post_vpg_submit', 'vpg_handle_submit' );
 function vpg_handle_submit() {
@@ -204,14 +223,33 @@ function vpg_handle_submit() {
         vpg_redirect_with_status( 'submit', 'invalid' );
     }
 
-    $post_id = wp_insert_post( [
-        'post_type'    => $type,
-        'post_title'   => $title,
-        'post_excerpt' => $lede,
-        'post_content' => $body,
-        'post_status'  => 'pending',
-        'post_author'  => get_current_user_id(),
-    ] );
+    // Editing an own, still-pending submission replaces its content in place.
+    $edit_id = (int) ( $_POST['edit_id'] ?? 0 );
+    if ( $edit_id ) {
+        $existing = get_post( $edit_id );
+        $editable = $existing
+            && (int) $existing->post_author === get_current_user_id()
+            && $existing->post_status === 'pending'
+            && in_array( $existing->post_type, $allowed, true );
+        if ( ! $editable ) {
+            vpg_redirect_with_status( 'submit', 'fail' );
+        }
+        $post_id = wp_update_post( [
+            'ID'           => $edit_id,
+            'post_title'   => $title,
+            'post_excerpt' => $lede,
+            'post_content' => $body,
+        ], true );
+    } else {
+        $post_id = wp_insert_post( [
+            'post_type'    => $type,
+            'post_title'   => $title,
+            'post_excerpt' => $lede,
+            'post_content' => $body,
+            'post_status'  => 'pending',
+            'post_author'  => get_current_user_id(),
+        ] );
+    }
 
     if ( is_wp_error( $post_id ) ) {
         vpg_redirect_with_status( 'submit', 'fail' );
@@ -229,8 +267,9 @@ function vpg_handle_submit() {
     $to     = get_theme_mod( 'vpg_email', get_option( 'admin_email' ) );
     $author = wp_get_current_user();
     $review = admin_url( 'post.php?post=' . $post_id . '&action=edit' );
+    $subject_tag = $edit_id ? 'submission updated' : 'submission';
     wp_mail( $to,
-        "[VPG · submission] {$title}",
+        "[VPG · {$subject_tag}] {$title}",
         "Type: {$type}\nFrom: {$author->display_name} <{$author->user_email}>\n{$photo_note}\nReview & approve:\n{$review}"
     );
 

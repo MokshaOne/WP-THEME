@@ -160,3 +160,41 @@ add_action( 'template_redirect', function () {
     get_footer();
     exit;
 } );
+
+/* ─── Per-CPT feeds · pretty /feed/<name> endpoints ──────────────
+ * WordPress already serves ?post_type=<cpt>&feed=rss2; these rewrites
+ * give each editorial surface a clean address and the head announces
+ * them so feed readers auto-discover.
+ */
+function vpg_cpt_feeds() {
+    return [
+        'events'    => 'vpg_event',
+        'locations' => 'vpg_location',
+        'reviews'   => 'vpg_review',
+        'tutorials' => 'vpg_tutorial',
+    ];
+}
+
+add_action( 'init', function () {
+    foreach ( vpg_cpt_feeds() as $slug => $cpt ) {
+        add_rewrite_rule(
+            '^feed/' . $slug . '/?$',
+            'index.php?post_type=' . $cpt . '&feed=rss2',
+            'top'
+        );
+    }
+} );
+
+add_action( 'wp_head', function () {
+    $name = get_bloginfo( 'name' );
+    foreach ( vpg_cpt_feeds() as $slug => $cpt ) {
+        $obj = get_post_type_object( $cpt );
+        if ( ! $obj ) continue;
+        printf(
+            '<link rel="alternate" type="application/rss+xml" title="%s · %s" href="%s">' . "\n",
+            esc_attr( $name ),
+            esc_attr( $obj->labels->name ),
+            esc_url( home_url( '/feed/' . $slug . '/' ) )
+        );
+    }
+}, 4 );

@@ -75,6 +75,42 @@ get_header();
     </div>
   </section>
 
+  <?php
+  // Onboarding checklist · shown until every step is done
+  $ob_verified  = ! function_exists( 'vpg_is_verified' ) || vpg_is_verified();
+  $ob_bio       = (bool) $u->description;
+  $ob_submitted = ( $pending->found_posts + $published->found_posts ) > 0;
+  $ob_bookmark  = ! empty( $bookmarks );
+  $ob_steps     = [
+      [ $ob_verified,  __( 'Confirm your email', 'vpg-v2' ),        home_url( '/dashboard/' ) ],
+      [ $ob_bio,       __( 'Write a short bio', 'vpg-v2' ),         get_edit_user_link() ],
+      [ $ob_submitted, __( 'Submit your first piece', 'vpg-v2' ),   home_url( '/submit/' ) ],
+      [ $ob_bookmark,  __( 'Save an article for later', 'vpg-v2' ), home_url( '/' ) ],
+  ];
+  $ob_done = count( array_filter( array_column( $ob_steps, 0 ) ) );
+  if ( $ob_done < count( $ob_steps ) ) :
+  ?>
+  <section class="g-section g-section--tight" style="padding-bottom:0">
+    <div class="g-wrap">
+      <div style="border:1px solid var(--g-ink);padding:22px 26px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+          <span class="g-kicker"><?php esc_html_e( 'Getting started', 'vpg-v2' ); ?></span>
+          <span class="g-meta"><?php printf( esc_html__( '%1$d of %2$d done', 'vpg-v2' ), (int) $ob_done, count( $ob_steps ) ); ?></span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 24px">
+          <?php foreach ( $ob_steps as $step ) : ?>
+            <?php if ( $step[0] ) : ?>
+              <span style="font-size:13px;font-weight:600;color:var(--g-mid)"><span style="color:var(--g-red)">✓</span> <s style="text-decoration-color:var(--g-line-2)"><?php echo esc_html( $step[1] ); ?></s></span>
+            <?php else : ?>
+              <a style="font-size:13px;font-weight:700" href="<?php echo esc_url( $step[2] ); ?>">□ <?php echo esc_html( $step[1] ); ?> →</a>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <?php if ( function_exists( 'vpg_is_verified' ) && ! vpg_is_verified() ) : ?>
   <!-- Email not yet confirmed -->
   <section class="g-section--alt g-section--tight" style="border-top:2px solid var(--g-red)">
@@ -174,8 +210,19 @@ get_header();
             <div>
               <h3 class="g-row__title" style="margin:0"><?php the_title(); ?></h3>
               <div class="g-byline"><span><?php echo esc_html( get_the_date( 'M j, Y · H:i' ) ); ?></span></div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:10px" aria-hidden="true">
+                <span style="width:9px;height:9px;background:var(--g-ink);flex:none"></span>
+                <span style="flex:1;max-width:60px;height:1px;background:var(--g-ink)"></span>
+                <span style="width:9px;height:9px;background:var(--g-red);flex:none"></span>
+                <span style="flex:1;max-width:60px;height:1px;background:var(--g-line-2)"></span>
+                <span style="width:9px;height:9px;border:1px solid var(--g-line-2);flex:none"></span>
+                <span class="g-meta" style="margin-left:6px"><?php esc_html_e( 'Submitted → in review → live', 'vpg-v2' ); ?></span>
+              </div>
             </div>
-            <span class="g-row__when" style="color:var(--g-red)"><?php esc_html_e( '⌛ Reviewing', 'vpg-v2' ); ?></span>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+              <span class="g-row__when" style="color:var(--g-red)"><?php esc_html_e( '⌛ Reviewing', 'vpg-v2' ); ?></span>
+              <a class="g-link" href="<?php echo esc_url( add_query_arg( 'edit', get_the_ID(), home_url( '/submit/' ) ) ); ?>"><?php esc_html_e( 'Edit', 'vpg-v2' ); ?> <span class="a">→</span></a>
+            </div>
           </div>
         <?php endwhile; wp_reset_postdata(); ?>
       </div>

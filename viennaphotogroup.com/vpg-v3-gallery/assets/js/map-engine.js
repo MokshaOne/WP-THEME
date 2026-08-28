@@ -131,6 +131,8 @@
     // Optional · expose total count via data-count for the corner chip
     el.setAttribute('data-count', pins.length + ' pinned');
 
+    addMapControls(el, map);
+
     // ── Filter-bar wiring ──
     // Looks for siblings or doc-wide `.vpg-map-filter[data-target="#vpg-map"]` and
     // any buttons with [data-type="<type>"] or [data-type="all"]. Click toggles.
@@ -183,6 +185,76 @@
 
     // Initial state · applies a restored URL filter and paints the buttons
     applyFilter();
+  }
+
+  /* ── Corner controls · fullscreen + "near me" ── */
+  var controlCssDone = false;
+  function ensureControlCss() {
+    if (controlCssDone) return;
+    controlCssDone = true;
+    var s = document.createElement('style');
+    s.textContent =
+      '.vpg-map-ctl{position:absolute;top:10px;right:10px;z-index:800;display:flex;flex-direction:column;gap:6px}' +
+      '.vpg-map-ctl button{width:38px;height:38px;border:1px solid #0B0B0B;background:#fff;color:#0B0B0B;' +
+      'font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}' +
+      '.vpg-map-ctl button:hover{background:#E5341F;border-color:#E5341F;color:#fff}' +
+      '.vpg-map--fs{position:fixed!important;inset:0!important;width:auto!important;height:auto!important;z-index:9999;margin:0!important}';
+    document.head.appendChild(s);
+  }
+
+  function addMapControls(el, map) {
+    ensureControlCss();
+    var box = document.createElement('div');
+    box.className = 'vpg-map-ctl';
+
+    // Fullscreen toggle · native API with a fixed-position fallback
+    var fs = document.createElement('button');
+    fs.type = 'button';
+    fs.title = 'Fullscreen';
+    fs.setAttribute('aria-label', 'Toggle fullscreen map');
+    fs.textContent = '⤢';
+    fs.addEventListener('click', function () {
+      if (document.fullscreenElement === el) {
+        document.exitFullscreen();
+      } else if (el.requestFullscreen) {
+        el.requestFullscreen().catch(function () { el.classList.toggle('vpg-map--fs'); resize(); });
+      } else {
+        el.classList.toggle('vpg-map--fs');
+        resize();
+      }
+    });
+    function resize() { setTimeout(function () { map.invalidateSize(); }, 60); }
+    document.addEventListener('fullscreenchange', resize);
+
+    // Near me · pan to the visitor's position, draw an accuracy circle
+    if (navigator.geolocation) {
+      var loc = document.createElement('button');
+      loc.type = 'button';
+      loc.title = 'Near me';
+      loc.setAttribute('aria-label', 'Show my position');
+      loc.textContent = '◎';
+      var youLayer = null;
+      loc.addEventListener('click', function () {
+        loc.textContent = '…';
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          loc.textContent = '◎';
+          var ll = [pos.coords.latitude, pos.coords.longitude];
+          if (youLayer) map.removeLayer(youLayer);
+          youLayer = L.layerGroup([
+            L.circle(ll, { radius: Math.min(pos.coords.accuracy || 50, 300), color: '#E5341F', weight: 1, fillOpacity: 0.08 }),
+            L.circleMarker(ll, { radius: 7, color: '#fff', weight: 2, fillColor: '#E5341F', fillOpacity: 1 })
+          ]).addTo(map);
+          map.setView(ll, Math.max(map.getZoom(), 14));
+        }, function () {
+          loc.textContent = '◎';
+          window.alert('Position not available.');
+        }, { enableHighAccuracy: true, timeout: 8000 });
+      });
+      box.appendChild(loc);
+    }
+
+    box.appendChild(fs);
+    el.appendChild(box);
   }
 
   /* ── Lazy boot · init each map when it approaches the viewport ── */

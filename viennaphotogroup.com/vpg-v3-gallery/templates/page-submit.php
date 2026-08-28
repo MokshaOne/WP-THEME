@@ -75,53 +75,110 @@ get_header();
   </section>
 
   <!-- The submission form -->
+  <?php
+  // Edit mode · a member may rework their own submission while it is pending.
+  $edit_post = null;
+  if ( ! empty( $_GET['edit'] ) ) {
+      $maybe = get_post( (int) $_GET['edit'] );
+      if ( $maybe
+          && (int) $maybe->post_author === get_current_user_id()
+          && $maybe->post_status === 'pending'
+          && in_array( $maybe->post_type, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ], true ) ) {
+          $edit_post = $maybe;
+      }
+  }
+  $ev = function ( $field ) use ( $edit_post ) {
+      if ( ! $edit_post ) return '';
+      if ( $field === 'district' ) {
+          $key = ( $edit_post->post_type === 'vpg_shop' ) ? 'shop_district' : 'location_district';
+          return (string) get_post_meta( $edit_post->ID, $key, true );
+      }
+      return (string) ( $edit_post->{$field} ?? '' );
+  };
+  ?>
   <section class="g-section g-section--alt">
     <div class="g-wrap">
       <div class="g-twocol">
         <div>
-          <span class="g-kicker"><?php esc_html_e( 'New submission', 'vpg-v2' ); ?></span>
-          <h2 class="g-head__t" style="margin:14px 0 22px"><?php echo wp_kses_post( __( 'Tell us what you’ve <em>found</em>.', 'vpg-v2' ) ); ?></h2>
+          <span class="g-kicker"><?php echo $edit_post ? esc_html__( 'Edit submission · still in review', 'vpg-v2' ) : esc_html__( 'New submission', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t" style="margin:14px 0 22px"><?php echo $edit_post ? esc_html( $edit_post->post_title ) : wp_kses_post( __( 'Tell us what you’ve <em>found</em>.', 'vpg-v2' ) ); ?></h2>
 
           <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" style="max-width:none">
             <?php wp_nonce_field( 'vpg_submit' ); ?>
             <input type="hidden" name="action" value="vpg_submit">
+            <?php if ( $edit_post ) : ?><input type="hidden" name="edit_id" value="<?php echo esc_attr( $edit_post->ID ); ?>"><?php endif; ?>
             <?php echo vpg_antispam_fields(); ?>
 
             <div class="g-field">
               <label for="submit_type"><?php esc_html_e( 'What are you submitting?', 'vpg-v2' ); ?></label>
-              <select class="g-select" id="submit_type" name="submit_type" required>
-                <option value="vpg_location"><?php esc_html_e( 'Location · a shooting spot', 'vpg-v2' ); ?></option>
-                <option value="vpg_studio"><?php esc_html_e( 'Studio · a rental space', 'vpg-v2' ); ?></option>
-                <option value="vpg_shop"><?php esc_html_e( 'Shop · a camera shop / lab / supplier', 'vpg-v2' ); ?></option>
-                <option value="vpg_review"><?php esc_html_e( 'Gear review · with /10 scores', 'vpg-v2' ); ?></option>
-                <option value="vpg_tutorial"><?php esc_html_e( 'Tutorial pitch · we’ll discuss', 'vpg-v2' ); ?></option>
+              <select class="g-select" id="submit_type" name="submit_type" required <?php disabled( (bool) $edit_post ); ?>>
+                <option value="vpg_location" <?php selected( $edit_post && $edit_post->post_type === 'vpg_location' ); ?>><?php esc_html_e( 'Location · a shooting spot', 'vpg-v2' ); ?></option>
+                <option value="vpg_studio" <?php selected( $edit_post && $edit_post->post_type === 'vpg_studio' ); ?>><?php esc_html_e( 'Studio · a rental space', 'vpg-v2' ); ?></option>
+                <option value="vpg_shop" <?php selected( $edit_post && $edit_post->post_type === 'vpg_shop' ); ?>><?php esc_html_e( 'Shop · a camera shop / lab / supplier', 'vpg-v2' ); ?></option>
+                <option value="vpg_review" <?php selected( $edit_post && $edit_post->post_type === 'vpg_review' ); ?>><?php esc_html_e( 'Gear review · with /10 scores', 'vpg-v2' ); ?></option>
+                <option value="vpg_tutorial" <?php selected( $edit_post && $edit_post->post_type === 'vpg_tutorial' ); ?>><?php esc_html_e( 'Tutorial pitch · we’ll discuss', 'vpg-v2' ); ?></option>
               </select>
+              <?php if ( $edit_post ) : ?><input type="hidden" name="submit_type" value="<?php echo esc_attr( $edit_post->post_type ); ?>"><?php endif; ?>
             </div>
 
             <div class="g-field">
               <label for="title"><?php esc_html_e( 'Title', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="title" type="text" name="title" required placeholder="<?php esc_attr_e( 'The Stephansdom rooftop · golden hour', 'vpg-v2' ); ?>">
+              <input class="g-input" id="title" type="text" name="title" required value="<?php echo esc_attr( $ev( 'post_title' ) ); ?>" placeholder="<?php esc_attr_e( 'The Stephansdom rooftop · golden hour', 'vpg-v2' ); ?>">
             </div>
 
             <div class="g-field">
               <label for="lede"><?php esc_html_e( 'One-line description', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="lede" type="text" name="lede" placeholder="<?php esc_attr_e( 'South-facing terrace · 35m elevation · free access via café', 'vpg-v2' ); ?>">
+              <input class="g-input" id="lede" type="text" name="lede" value="<?php echo esc_attr( $ev( 'post_excerpt' ) ); ?>" placeholder="<?php esc_attr_e( 'South-facing terrace · 35m elevation · free access via café', 'vpg-v2' ); ?>">
             </div>
 
             <div class="g-field">
               <label for="body"><?php esc_html_e( 'Body / notes', 'vpg-v2' ); ?></label>
-              <textarea class="g-textarea" id="body" name="body" rows="8" required placeholder="<?php esc_attr_e( 'Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going.', 'vpg-v2' ); ?>"></textarea>
+              <textarea class="g-textarea" id="body" name="body" rows="8" required placeholder="<?php esc_attr_e( 'Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $ev( 'post_content' ) ); ?></textarea>
             </div>
 
             <div class="g-field">
               <label for="district"><?php esc_html_e( 'District / area', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="district" type="text" name="district" placeholder="<?php esc_attr_e( '1010 · Innere Stadt', 'vpg-v2' ); ?>">
+              <input class="g-input" id="district" type="text" name="district" value="<?php echo esc_attr( $ev( 'district' ) ); ?>" placeholder="<?php esc_attr_e( '1010 · Innere Stadt', 'vpg-v2' ); ?>">
             </div>
 
             <div class="g-field">
               <label for="photos"><?php esc_html_e( 'Photos · up to 4', 'vpg-v2' ); ?></label>
               <input class="g-input" id="photos" type="file" name="photos[]" multiple accept=".jpg,.jpeg,.png,.webp,.avif,image/jpeg,image/png,image/webp,image/avif">
+              <div id="photo-preview" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"></div>
               <p class="g-form__note" style="margin-top:6px"><?php esc_html_e( 'JPG, PNG, WebP or AVIF · max 8 MB each · the first photo becomes the cover. Your photos stay yours, credited by name.', 'vpg-v2' ); ?></p>
+              <script>
+              (function () {
+                  var input = document.getElementById('photos');
+                  var prev  = document.getElementById('photo-preview');
+                  if (!input || !prev || typeof DataTransfer === 'undefined') return;
+                  function render() {
+                      prev.innerHTML = '';
+                      Array.prototype.forEach.call(input.files, function (file, idx) {
+                          if (!file.type || file.type.indexOf('image/') !== 0) return;
+                          var cell = document.createElement('div');
+                          cell.style.cssText = 'position:relative;width:84px;height:84px';
+                          var img = document.createElement('img');
+                          img.alt = file.name;
+                          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+                          img.src = URL.createObjectURL(file);
+                          img.onload = function () { URL.revokeObjectURL(img.src); };
+                          var rm = document.createElement('button');
+                          rm.type = 'button';
+                          rm.textContent = '×';
+                          rm.setAttribute('aria-label', 'Remove ' + file.name);
+                          rm.style.cssText = 'position:absolute;top:-8px;right:-8px;width:22px;height:22px;border:0;background:#0B0B0B;color:#fff;cursor:pointer;line-height:1';
+                          rm.addEventListener('click', function () {
+                              var dt = new DataTransfer();
+                              Array.prototype.forEach.call(input.files, function (f, i) { if (i !== idx) dt.items.add(f); });
+                              input.files = dt.files;
+                              render();
+                          });
+                          cell.appendChild(img); cell.appendChild(rm); prev.appendChild(cell);
+                      });
+                  }
+                  input.addEventListener('change', render);
+              }());
+              </script>
             </div>
 
             <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Submit for review', 'vpg-v2' ); ?> <span class="a">→</span></button>

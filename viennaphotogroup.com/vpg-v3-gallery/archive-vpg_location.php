@@ -42,7 +42,7 @@ $total = (int) $q->found_posts;
 
 /* ─── Build pins for ALL three CPTs (map shows everything; filter is visual) ─── */
 $nocache = isset( $_GET['nocache'] );
-$pins    = $nocache ? false : get_transient( 'vpg_location_pins' );
+$pins    = $nocache ? false : get_transient( 'vpg_location_pins_v2' );
 $counts  = [ 'location' => 0, 'studio' => 0, 'shop' => 0 ];
 
 if ( false === $pins || ! is_array( $pins ) || empty( $pins ) ) {
@@ -53,7 +53,10 @@ if ( false === $pins || ! is_array( $pins ) || empty( $pins ) ) {
             $coords = vpg_get_coords( $p->ID );
             if ( ! $coords ) continue;
             $d_meta = ( $cpt === 'vpg_shop' ) ? 'shop_district' : 'location_district';
+            $best   = ( $cpt === 'vpg_location' ) ? (string) get_post_meta( $p->ID, 'location_best_time', true ) : '';
+            $hours  = ( $cpt === 'vpg_shop' )     ? (string) get_post_meta( $p->ID, 'shop_hours', true )         : '';
             $pins[] = [
+                'id'       => (int) $p->ID,
                 'lat'      => $coords[0],
                 'lng'      => $coords[1],
                 'title'    => get_the_title( $p ),
@@ -61,10 +64,14 @@ if ( false === $pins || ! is_array( $pins ) || empty( $pins ) ) {
                 'lede'     => wp_trim_words( get_the_excerpt( $p ), 14 ),
                 'type'     => $t,
                 'district' => (string) get_post_meta( $p->ID, $d_meta, true ),
+                'img'      => get_the_post_thumbnail_url( $p, 'medium' ) ?: '',
+                'best'     => $best,
+                'hours'    => $hours,
+                'open'     => ( $hours && function_exists( 'vpg_hours_open_now' ) ) ? vpg_hours_open_now( $hours ) : null,
             ];
         }
     }
-    if ( $pins ) set_transient( 'vpg_location_pins', $pins, HOUR_IN_SECONDS );
+    if ( $pins ) set_transient( 'vpg_location_pins_v2', $pins, HOUR_IN_SECONDS );
 }
 
 $pins_filtered = $pins;
@@ -146,6 +153,11 @@ $h = $hero_copy[ $type_filter ];
         <a href="<?php echo esc_url( $mk_url( 'location' ) ); ?>" class="<?php if ( $type_filter === 'location' ) echo 'is-active'; ?>"><button type="button" data-type="location"><?php esc_html_e( 'Locations', 'vpg-v2' ); ?> · <?php echo (int) $counts['location']; ?></button></a>
         <a href="<?php echo esc_url( $mk_url( 'studio' ) ); ?>"   class="<?php if ( $type_filter === 'studio' )   echo 'is-active'; ?>"><button type="button" data-type="studio"><?php esc_html_e( 'Studios', 'vpg-v2' ); ?> · <?php echo (int) $counts['studio']; ?></button></a>
         <a href="<?php echo esc_url( $mk_url( 'shop' ) ); ?>"     class="<?php if ( $type_filter === 'shop' )     echo 'is-active'; ?>"><button type="button" data-type="shop"><?php esc_html_e( 'Shops', 'vpg-v2' ); ?> · <?php echo (int) $counts['shop']; ?></button></a>
+        <?php if ( is_user_logged_in() ) : ?>
+          <span class="vpg-map-filter__label" style="margin-left:auto">— <?php esc_html_e( 'Export', 'vpg-v2' ); ?></span>
+          <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_geo_export' ) ); ?>"><button type="button">GeoJSON ↓</button></a>
+          <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_geo_export&format=gpx' ) ); ?>"><button type="button">GPX ↓</button></a>
+        <?php endif; ?>
       </div>
 
       <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $map_pins ) ); ?>"></div>

@@ -48,7 +48,18 @@ get_header();
               <dd><?php printf( esc_html__( '↑ %1$s · ↓ %2$s', 'vpg-v2' ), esc_html( $sunrise ), esc_html( $sunset ) ); ?></dd>
               <dt><?php esc_html_e( 'Golden hour', 'vpg-v2' ); ?></dt>
               <dd><?php printf( esc_html__( '%1$s–%2$s · %3$s–%4$s', 'vpg-v2' ), esc_html( $sunrise ), esc_html( $gh_morn ), esc_html( $gh_eve ), esc_html( $sunset ) ); ?></dd>
+              <?php
+                  $wx = function_exists( 'vpg_weather' ) ? vpg_weather( $lat, $lng ) : null;
+                  if ( $wx ) :
+              ?>
+              <dt><?php esc_html_e( 'Right now', 'vpg-v2' ); ?></dt>
+              <dd><?php echo esc_html( trim( $wx['temp'] . ' · ' . $wx['label'], ' ·' ) ); ?></dd>
+              <?php endif; ?>
               <?php endif; endif; ?>
+              <?php $best = get_post_meta( get_the_ID(), 'location_best_time', true ); if ( $best ) : ?>
+              <dt><?php esc_html_e( 'Best time', 'vpg-v2' ); ?></dt>
+              <dd><?php echo esc_html( $best ); ?></dd>
+              <?php endif; ?>
             </dl>
             <a class="g-link" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_location' ) ); ?>" style="margin-top:18px"><?php esc_html_e( 'All locations', 'vpg-v2' ); ?> <span class="a">→</span></a>
           </aside>

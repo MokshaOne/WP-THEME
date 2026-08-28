@@ -337,10 +337,58 @@ function vpg_attach_submission_photos( $post_id ) {
         if ( ! $attached && ! has_post_thumbnail( $post_id ) ) {
             set_post_thumbnail( $post_id, $att_id );
         }
+        if ( ! $attached ) $first_att = $att_id;
         $attached++;
     }
 
-    return sprintf( 'Photos: %d attached%s', $attached, $skipped ? " · {$skipped} skipped (type/size)" : '' );
+    $gps_note = '';
+    if ( $attached && ! empty( $first_att ) ) {
+        $gps_note = vpg_maybe_fill_gps_from_exif( $post_id, $first_att );
+    }
+
+    return sprintf( 'Photos: %d attached%s%s', $attached, $skipped ? " · {$skipped} skipped (type/size)" : '', $gps_note );
+}
+
+/**
+ * Read GPS EXIF from an uploaded photo and suggest it as the pin position
+ * when the place has no coordinates yet. Returns a note for the editorial
+ * email ('' when nothing happened).
+ */
+function vpg_maybe_fill_gps_from_exif( $post_id, $att_id ) {
+    $keys = [
+        'vpg_location' => [ 'location_lat', 'location_lng' ],
+        'vpg_studio'   => [ 'studio_lat',   'studio_lng' ],
+        'vpg_shop'     => [ 'shop_lat',     'shop_lng' ],
+    ];
+    $type = get_post_type( $post_id );
+    if ( ! isset( $keys[ $type ] ) || ! function_exists( 'exif_read_data' ) ) return '';
+    [ $k_lat, $k_lng ] = $keys[ $type ];
+    if ( get_post_meta( $post_id, $k_lat, true ) !== '' ) return ''; // already pinned
+
+    $file = get_attached_file( $att_id );
+    if ( ! $file || ! file_exists( $file ) ) return '';
+    $exif = @exif_read_data( $file );
+    if ( empty( $exif['GPSLatitude'] ) || empty( $exif['GPSLongitude'] ) ) return '';
+
+    $to_dec = function ( $parts, $ref ) {
+        $f = function ( $v ) {
+            if ( is_string( $v ) && strpos( $v, '/' ) !== false ) {
+                [ $a, $b ] = explode( '/', $v, 2 );
+                return (float) $b ? (float) $a / (float) $b : 0.0;
+            }
+            return (float) $v;
+        };
+        $deg = $f( $parts[0] ?? 0 ) + $f( $parts[1] ?? 0 ) / 60 + $f( $parts[2] ?? 0 ) / 3600;
+        return in_array( strtoupper( (string) $ref ), [ 'S', 'W' ], true ) ? -$deg : $deg;
+    };
+
+    $lat = $to_dec( $exif['GPSLatitude'],  $exif['GPSLatitudeRef']  ?? 'N' );
+    $lng = $to_dec( $exif['GPSLongitude'], $exif['GPSLongitudeRef'] ?? 'E' );
+    if ( ! $lat || ! $lng || abs( $lat ) > 90 || abs( $lng ) > 180 ) return '';
+
+    update_post_meta( $post_id, $k_lat, round( $lat, 6 ) );
+    update_post_meta( $post_id, $k_lng, round( $lng, 6 ) );
+    return sprintf( "\nPin suggested from photo EXIF: %.6F, %.6F (please verify)", $lat, $lng );
 }
 
 /* ─── Duplicate check · non-blocking hint while typing a title ───── */

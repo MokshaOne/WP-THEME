@@ -193,3 +193,157 @@ function vpg_event_ics() {
     echo implode( "\r\n", $lines ) . "\r\n";
     exit;
 }
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Opening hours · tolerant parser for "Mon–Fri 10–18; Sat 10–14"   */
+/*  Understands EN/DE day names, ranges, 10 / 10:30 / 1030 times.    */
+/*  Returns true (open), false (closed) or null (couldn't parse).    */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_hours_open_now( $text ) {
+    $days = [ 'mo' => 1, 'mon' => 1, 'tu' => 2, 'tue' => 2, 'di' => 2, 'we' => 3, 'wed' => 3, 'mi' => 3,
+              'th' => 4, 'thu' => 4, 'do' => 4, 'fr' => 5, 'fri' => 5, 'sa' => 6, 'sat' => 6, 'su' => 7, 'sun' => 7, 'so' => 7 ];
+
+    $now_day = (int) current_time( 'N' );          // 1 = Monday
+    $now_min = (int) current_time( 'G' ) * 60 + (int) current_time( 'i' );
+
+    $norm = strtolower( str_replace( [ '–', '—', 'bis' ], '-', $text ) );
+    $segments = preg_split( '/[;,]/', $norm ) ?: [];
+    $parsed_any = false;
+
+    $to_min = function ( $t ) {
+        $t = trim( $t );
+        if ( preg_match( '/^(\d{1,2})[:.](\d{2})$/', $t, $m ) ) return (int) $m[1] * 60 + (int) $m[2];
+        if ( preg_match( '/^(\d{1,2})(\d{2})$/', $t, $m ) && (int) $m[1] <= 24 ) return (int) $m[1] * 60 + (int) $m[2];
+        if ( preg_match( '/^(\d{1,2})$/', $t, $m ) ) return (int) $m[1] * 60;
+        return null;
+    };
+
+    foreach ( $segments as $seg ) {
+        // day part · "mon-fri", "sat", "mo-fr" — letters before the first digit
+        if ( ! preg_match( '/^\s*([a-zäöü.\-\s]+?)\s+([\d].*)$/', trim( $seg ), $m ) ) continue;
+        $daypart  = preg_replace( '/[.\s]/', '', $m[1] );
+        $timepart = $m[2];
+
+        $d_from = $d_to = null;
+        if ( preg_match( '/^([a-zäöü]+)-([a-zäöü]+)$/', $daypart, $dm ) ) {
+            $d_from = $days[ substr( $dm[1], 0, 3 ) ] ?? $days[ substr( $dm[1], 0, 2 ) ] ?? null;
+            $d_to   = $days[ substr( $dm[2], 0, 3 ) ] ?? $days[ substr( $dm[2], 0, 2 ) ] ?? null;
+        } else {
+            $d_from = $d_to = $days[ substr( $daypart, 0, 3 ) ] ?? $days[ substr( $daypart, 0, 2 ) ] ?? null;
+        }
+        if ( ! $d_from || ! $d_to ) continue;
+
+        if ( ! preg_match( '/([\d:.]+)\s*-\s*([\d:.]+)/', $timepart, $tm ) ) continue;
+        $t_from = $to_min( $tm[1] );
+        $t_to   = $to_min( $tm[2] );
+        if ( $t_from === null || $t_to === null ) continue;
+        if ( $t_to <= $t_from ) $t_to += 24 * 60; // over midnight
+
+        $parsed_any = true;
+        $in_days = ( $d_from <= $d_to )
+            ? ( $now_day >= $d_from && $now_day <= $d_to )
+            : ( $now_day >= $d_from || $now_day <= $d_to );
+        if ( $in_days && $now_min >= $t_from && $now_min < $t_to ) return true;
+    }
+
+    return $parsed_any ? false : null;
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Weather · Open-Meteo current conditions, cached 30 min           */
+/*  Free, no API key. Returns ['temp' => '18°', 'label' => …] or null */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_weather( $lat, $lng ) {
+    $key   = 'vpg_wx_' . md5( round( $lat, 2 ) . ',' . round( $lng, 2 ) );
+    $cached = get_transient( $key );
+    if ( is_array( $cached ) ) return $cached;
+    if ( $cached === 'none' ) return null;
+
+    $url = add_query_arg( [
+        'latitude'        => round( $lat, 4 ),
+        'longitude'       => round( $lng, 4 ),
+        'current_weather' => 'true',
+    ], 'https://api.open-meteo.com/v1/forecast' );
+
+    $res = wp_remote_get( $url, [ 'timeout' => 4 ] );
+    if ( is_wp_error( $res ) || wp_remote_retrieve_response_code( $res ) !== 200 ) {
+        set_transient( $key, 'none', 10 * MINUTE_IN_SECONDS );
+        return null;
+    }
+    $data = json_decode( wp_remote_retrieve_body( $res ), true );
+    $cw   = $data['current_weather'] ?? null;
+    if ( ! $cw || ! isset( $cw['temperature'] ) ) {
+        set_transient( $key, 'none', 10 * MINUTE_IN_SECONDS );
+        return null;
+    }
+
+    $codes = [
+        0 => __( 'clear', 'vpg-v2' ), 1 => __( 'mostly clear', 'vpg-v2' ), 2 => __( 'partly cloudy', 'vpg-v2' ),
+        3 => __( 'overcast', 'vpg-v2' ), 45 => __( 'fog', 'vpg-v2' ), 48 => __( 'fog', 'vpg-v2' ),
+        51 => __( 'drizzle', 'vpg-v2' ), 53 => __( 'drizzle', 'vpg-v2' ), 55 => __( 'drizzle', 'vpg-v2' ),
+        61 => __( 'rain', 'vpg-v2' ), 63 => __( 'rain', 'vpg-v2' ), 65 => __( 'heavy rain', 'vpg-v2' ),
+        71 => __( 'snow', 'vpg-v2' ), 73 => __( 'snow', 'vpg-v2' ), 75 => __( 'snow', 'vpg-v2' ),
+        80 => __( 'showers', 'vpg-v2' ), 81 => __( 'showers', 'vpg-v2' ), 82 => __( 'showers', 'vpg-v2' ),
+        95 => __( 'thunderstorm', 'vpg-v2' ),
+    ];
+
+    $out = [
+        'temp'  => round( (float) $cw['temperature'] ) . '°',
+        'label' => $codes[ (int) ( $cw['weathercode'] ?? -1 ) ] ?? '',
+    ];
+    set_transient( $key, $out, 30 * MINUTE_IN_SECONDS );
+    return $out;
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Geo export · members download the map as GeoJSON or GPX          */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_post_vpg_geo_export', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+
+    $format = ( $_GET['format'] ?? '' ) === 'gpx' ? 'gpx' : 'geojson';
+    $rows   = [];
+
+    foreach ( [ 'location' => 'vpg_location', 'studio' => 'vpg_studio', 'shop' => 'vpg_shop' ] as $t => $cpt ) {
+        $items = get_posts( [ 'post_type' => $cpt, 'posts_per_page' => -1, 'post_status' => 'publish' ] );
+        foreach ( $items as $p ) {
+            $coords = vpg_get_coords( $p->ID );
+            if ( ! $coords ) continue;
+            $rows[] = [
+                'lat'   => (float) $coords[0],
+                'lng'   => (float) $coords[1],
+                'name'  => get_the_title( $p ),
+                'type'  => $t,
+                'url'   => get_permalink( $p ),
+            ];
+        }
+    }
+
+    nocache_headers();
+    if ( $format === 'gpx' ) {
+        header( 'Content-Type: application/gpx+xml; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="vpg-map.gpx"' );
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        echo '<gpx version="1.1" creator="Vienna Photo Group" xmlns="http://www.topografix.com/GPX/1/1">' . "\n";
+        foreach ( $rows as $r ) {
+            printf(
+                "  <wpt lat=\"%.6F\" lon=\"%.6F\"><name>%s</name><type>%s</type><link href=\"%s\"/></wpt>\n",
+                $r['lat'], $r['lng'],
+                esc_html( $r['name'] ), esc_html( $r['type'] ), esc_url( $r['url'] )
+            );
+        }
+        echo '</gpx>';
+    } else {
+        header( 'Content-Type: application/geo+json; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="vpg-map.geojson"' );
+        $features = array_map( function ( $r ) {
+            return [
+                'type'       => 'Feature',
+                'geometry'   => [ 'type' => 'Point', 'coordinates' => [ $r['lng'], $r['lat'] ] ],
+                'properties' => [ 'name' => $r['name'], 'type' => $r['type'], 'url' => $r['url'] ],
+            ];
+        }, $rows );
+        echo wp_json_encode( [ 'type' => 'FeatureCollection', 'features' => $features ] );
+    }
+    exit;
+} );

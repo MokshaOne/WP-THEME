@@ -39,6 +39,19 @@ $total = count( $pins );
         <p class="g-kicker" style="margin-bottom:16px">● <?php esc_html_e( 'Map', 'vpg-v2' ); ?></p>
         <h1 class="g-display g-phero__title"><?php esc_html_e( 'Vienna,', 'vpg-v2' ); ?> <em><?php esc_html_e( 'pinned', 'vpg-v2' ); ?></em>.</h1>
         <p class="g-lede g-phero__lede"><?php esc_html_e( 'The full interactive map. Locations, studios and shops on one canvas — toggle any layer.', 'vpg-v2' ); ?></p>
+        <?php
+        $guide_pdf   = get_option( 'vpg_mapguide_pdf' );
+        $guide_built = get_option( 'vpg_mapguide_pdf_built' );
+        ?>
+        <p style="display:flex;gap:14px;flex-wrap:wrap;margin-top:24px">
+            <?php if ( $guide_pdf ) : ?>
+                <a class="g-btn" href="<?php echo esc_url( $guide_pdf ); ?>" target="_blank"><?php esc_html_e( 'Printable guide · PDF', 'vpg-v2' ); ?> ↓</a>
+            <?php endif; ?>
+            <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+                <a class="g-btn g-btn--ghost" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_mapguide_pdf' ), 'vpg_mapguide_pdf' ) ); ?>"><?php echo $guide_pdf ? esc_html__( 'Rebuild guide PDF', 'vpg-v2' ) : esc_html__( 'Build guide PDF', 'vpg-v2' ); ?></a>
+                <?php if ( $guide_built ) : ?><span class="g-meta" style="align-self:center"><?php printf( esc_html__( 'built %s', 'vpg-v2' ), esc_html( mysql2date( 'M j, Y H:i', $guide_built ) ) ); ?></span><?php endif; ?>
+            <?php endif; ?>
+        </p>
     </div>
 </section>
 

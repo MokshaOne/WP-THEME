@@ -109,6 +109,42 @@ add_action( 'template_redirect', function () {
                 <?php endif; ?>
             </div>
         </section>
+
+        <?php
+        // Where this member photographs · their published place pins
+        $place_pins = [];
+        if ( function_exists( 'vpg_get_coords' ) ) {
+            $places = get_posts( [
+                'author'         => $user->ID,
+                'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ],
+                'post_status'    => 'publish',
+                'posts_per_page' => 100,
+            ] );
+            foreach ( $places as $pl ) {
+                $coords = vpg_get_coords( $pl->ID );
+                if ( ! $coords ) continue;
+                $place_pins[] = [
+                    'id'    => (int) $pl->ID,
+                    'lat'   => $coords[0],
+                    'lng'   => $coords[1],
+                    'title' => get_the_title( $pl ),
+                    'url'   => get_permalink( $pl ),
+                    'type'  => str_replace( 'vpg_', '', get_post_type( $pl ) ),
+                ];
+            }
+        }
+        if ( $place_pins ) :
+        ?>
+        <section class="vpg-section vpg-section--tight">
+            <div class="vpg-wrap">
+                <div class="vpg-section-head">
+                    <div><p class="vpg-caps">— <?php esc_html_e( 'On the map', 'vpg-v2' ); ?></p>
+                    <h2><?php printf( esc_html( _n( '%d pin', '%d pins', count( $place_pins ), 'vpg-v2' ) ), count( $place_pins ) ); ?></h2></div>
+                </div>
+                <div class="vpg-map" data-pins="<?php echo esc_attr( wp_json_encode( $place_pins ) ); ?>" style="height:380px"></div>
+            </div>
+        </section>
+        <?php endif; ?>
     </main>
     <?php
     get_footer();

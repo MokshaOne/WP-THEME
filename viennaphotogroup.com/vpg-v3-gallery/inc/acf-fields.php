@@ -37,6 +37,12 @@ function vpg_cpt_field_schema() {
                 [ 'key' => 'score_price',       'label' => __( 'Value (0–10)', 'vpg-v2' ),       'type' => 'number', 'min' => 0, 'max' => 10, 'step' => 0.1 ],
             ],
         ],
+        'vpg_location' => [
+            'title'  => __( 'Location details', 'vpg-v2' ),
+            'fields' => [
+                [ 'key' => 'location_best_time', 'label' => __( 'Best time / light', 'vpg-v2' ), 'type' => 'text', 'instructions' => __( 'e.g. Golden hour · 06:00, or Blue hour in winter', 'vpg-v2' ) ],
+            ],
+        ],
         'vpg_studio' => [
             'title'  => __( 'Studio details', 'vpg-v2' ),
             'fields' => [

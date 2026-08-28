@@ -31,6 +31,18 @@ get_header();
             <dl class="g-phero__aside">
               <dt><?php esc_html_e( 'District', 'vpg-v2' ); ?></dt>
               <dd><?php echo $meta ? esc_html( $meta ) : '—'; ?></dd>
+              <?php
+              $shop_hours = get_post_meta( get_the_ID(), 'shop_hours', true );
+              if ( $shop_hours ) :
+                  $open_now = function_exists( 'vpg_hours_open_now' ) ? vpg_hours_open_now( $shop_hours ) : null;
+              ?>
+              <dt><?php esc_html_e( 'Hours', 'vpg-v2' ); ?></dt>
+              <dd>
+                <?php echo esc_html( $shop_hours ); ?>
+                <?php if ( $open_now === true ) : ?> · <strong style="color:#1A7A3C"><?php esc_html_e( 'Open now', 'vpg-v2' ); ?></strong><?php endif; ?>
+                <?php if ( $open_now === false ) : ?> · <strong style="color:var(--g-red)"><?php esc_html_e( 'Closed', 'vpg-v2' ); ?></strong><?php endif; ?>
+              </dd>
+              <?php endif; ?>
             </dl>
             <a class="g-link" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_shop' ) ); ?>" style="margin-top:18px"><?php esc_html_e( 'All shops', 'vpg-v2' ); ?> <span class="a">→</span></a>
           </aside>

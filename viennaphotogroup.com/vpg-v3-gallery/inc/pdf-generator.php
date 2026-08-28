@@ -247,3 +247,102 @@ add_action( 'template_redirect', function () {
     if ( ! is_singular( 'vpg_magazine' ) || empty( $_GET['vpg_print'] ) ) return;
     add_filter( 'body_class', function ( $c ) { $c[] = 'vpg-print-mode'; return $c; } );
 } );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Map guide PDF · every published location, grouped by district    */
+/*  Editors build it (button on the map-guide page); everyone        */
+/*  downloads it once built.                                         */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_post_vpg_mapguide_pdf', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+    check_admin_referer( 'vpg_mapguide_pdf' );
+
+    $autoload = VPG_V2_DIR . '/vendor/autoload.php';
+    if ( ! file_exists( $autoload ) ) wp_die( 'mPDF not installed (composer install).' );
+    require_once $autoload;
+
+    // Gather locations grouped by district
+    $items = get_posts( [ 'post_type' => 'vpg_location', 'posts_per_page' => -1, 'post_status' => 'publish', 'orderby' => 'title', 'order' => 'ASC' ] );
+    $groups = [];
+    foreach ( $items as $p ) {
+        $district = get_post_meta( $p->ID, 'location_district', true ) ?: __( 'Unsorted', 'vpg-v2' );
+        $coords   = function_exists( 'vpg_get_coords' ) ? vpg_get_coords( $p->ID ) : null;
+        $groups[ $district ][] = [
+            'title'  => get_the_title( $p ),
+            'lede'   => wp_trim_words( get_the_excerpt( $p ), 28 ),
+            'best'   => get_post_meta( $p->ID, 'location_best_time', true ),
+            'coords' => $coords ? sprintf( '%.5F, %.5F', $coords[0], $coords[1] ) : '',
+        ];
+    }
+    ksort( $groups );
+
+    $css = <<<'CSS'
+    body { font-family: 'archivo', sans-serif; color: #0B0B0B; font-size: 10pt; line-height: 1.5; }
+    h1 { font-family: 'archivoexp'; font-weight: bold; font-size: 34pt; text-transform: uppercase; letter-spacing: -0.5pt; line-height: 0.92; margin: 8mm 0 4mm; }
+    h1 .dot { color: #E5341F; }
+    .strip { font-size: 7pt; letter-spacing: 1.8pt; text-transform: uppercase; color: #6A6A6A; padding-bottom: 3mm; border-bottom: 1.2pt solid #0B0B0B; }
+    .lede { font-size: 11pt; color: #2C2C2C; margin: 0 0 6mm; }
+    h2 { font-family: 'archivoexp'; font-weight: bold; font-size: 16pt; text-transform: uppercase; border-bottom: 1.2pt solid #0B0B0B; padding-bottom: 2mm; margin: 8mm 0 3mm; }
+    .loc { padding: 3mm 0; border-bottom: 0.4pt solid #E6E5E1; }
+    .loc .t { font-weight: bold; font-size: 11pt; text-transform: uppercase; }
+    .loc .m { font-size: 7pt; letter-spacing: 1.4pt; text-transform: uppercase; color: #E5341F; margin: 1mm 0; }
+    .loc .d { color: #2C2C2C; margin: 1mm 0 0; }
+CSS;
+
+    ob_start();
+    ?>
+    <p class="strip"><span style="color:#E5341F">■</span>&nbsp;&nbsp;VIENNAPHOTOGROUP<span style="color:#E5341F">.</span>&nbsp;&nbsp;&nbsp;<?php echo esc_html( gmdate( 'F Y' ) ); ?></p>
+    <h1><?php esc_html_e( 'The Map', 'vpg-v2' ); ?><span class="dot">.</span></h1>
+    <p class="lede"><?php printf( esc_html__( '%d curated Vienna locations — light notes, best times, coordinates. Member-curated, printed to take along.', 'vpg-v2' ), count( $items ) ); ?></p>
+    <?php foreach ( $groups as $district => $rows ) : ?>
+        <h2><?php echo esc_html( $district ); ?></h2>
+        <?php foreach ( $rows as $r ) : ?>
+        <div class="loc">
+            <div class="t"><?php echo esc_html( $r['title'] ); ?></div>
+            <div class="m"><?php echo esc_html( trim( ( $r['best'] ? 'Best: ' . $r['best'] . ' · ' : '' ) . $r['coords'], ' ·' ) ); ?></div>
+            <?php if ( $r['lede'] ) : ?><div class="d"><?php echo esc_html( $r['lede'] ); ?></div><?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+    <?php
+    $html = ob_get_clean();
+
+    $upload_dir = wp_upload_dir();
+    $pdf_dir    = $upload_dir['basedir'] . '/vpg-pdf';
+    wp_mkdir_p( $pdf_dir );
+    wp_mkdir_p( $pdf_dir . '/tmp' );
+    $file = $pdf_dir . '/vpg-map-guide.pdf';
+
+    try {
+        $font_config  = ( new \Mpdf\Config\FontVariables() )->getDefaults();
+        $font_data    = $font_config['fontdata'];
+        $font_dirs    = ( new \Mpdf\Config\ConfigVariables() )->getDefaults()['fontDir'];
+        $vpg_fonts    = VPG_V2_DIR . '/assets/fonts';
+        $default_font = 'dejavusans';
+        if ( file_exists( $vpg_fonts . '/Archivo-400.ttf' ) ) {
+            $font_dirs[]             = $vpg_fonts;
+            $font_data['archivo']    = [ 'R' => 'Archivo-400.ttf', 'B' => 'Archivo-700.ttf' ];
+            $font_data['archivoexp'] = [ 'R' => 'ArchivoExpanded-900.ttf', 'B' => 'ArchivoExpanded-900.ttf' ];
+            $default_font = 'archivo';
+        }
+        $mpdf = new \Mpdf\Mpdf( [
+            'mode' => 'utf-8', 'format' => 'A5',
+            'margin_left' => 12, 'margin_right' => 12, 'margin_top' => 12, 'margin_bottom' => 16,
+            'default_font_size' => 10, 'default_font' => $default_font,
+            'fontDir' => $font_dirs, 'fontdata' => $font_data,
+            'tempDir' => $pdf_dir . '/tmp',
+        ] );
+        $mpdf->SetTitle( 'VPG · The Map' );
+        $mpdf->SetHTMLFooter( '<table width="100%" style="font-family: archivo; font-size: 6.5pt; letter-spacing: 1.4pt; text-transform: uppercase; color: #9C9A95; border-top: 0.4pt solid #E6E5E1; padding-top: 2mm;"><tr><td>viennaphotogroup.com/locations</td><td align="right">{PAGENO}</td></tr></table>' );
+        $mpdf->WriteHTML( $css, \Mpdf\HTMLParserMode::HEADER_CSS );
+        $mpdf->WriteHTML( $html, \Mpdf\HTMLParserMode::HTML_BODY );
+        $mpdf->Output( $file, \Mpdf\Output\Destination::FILE );
+
+        update_option( 'vpg_mapguide_pdf', $upload_dir['baseurl'] . '/vpg-pdf/vpg-map-guide.pdf' );
+        update_option( 'vpg_mapguide_pdf_built', current_time( 'mysql' ) );
+        wp_safe_redirect( add_query_arg( 'vpg_status', 'ok', wp_get_referer() ?: home_url( '/map-guide/' ) ) );
+        exit;
+    } catch ( \Throwable $e ) {
+        wp_die( 'Map guide PDF failed: ' . esc_html( $e->getMessage() ) );
+    }
+} );

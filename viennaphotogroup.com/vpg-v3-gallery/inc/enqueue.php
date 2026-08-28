@@ -11,17 +11,22 @@ add_action( 'wp_enqueue_scripts', function () {
         return file_exists( $p ) ? (string) filemtime( $p ) : VPG_V2_VERSION;
     };
 
-    // Google Fonts · Gallery uses one variable grotesque (Archivo, width+weight axes)
-    wp_enqueue_style(
-        'vpg-fonts',
-        'https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,75..125,400..900;1,75..125,400..900&display=swap',
-        [],
-        VPG_V2_VERSION
-    );
+    // Fonts · self-hosted variable Archivo (assets/fonts/web) — no CDN,
+    // no third-party request, preloaded below for a fast first paint.
+    wp_enqueue_style( 'vpg-fonts', VPG_V2_URI . '/assets/css/fonts.css', [], $ver( '/assets/css/fonts.css' ) );
 
     // CSS · modular load order.
-    // tokens.css carries the Gallery remap → re-themes every inner template.
-    wp_enqueue_style( 'vpg-tokens',     VPG_V2_URI . '/assets/css/tokens.css',     [ 'vpg-fonts' ],   $ver( '/assets/css/tokens.css' ) );
+    // tokens.css (the design tokens every sheet reads) is inlined into <head>
+    // so the first paint has its variables without an extra request.
+    wp_register_style( 'vpg-tokens', false, [ 'vpg-fonts' ], $ver( '/assets/css/tokens.css' ) );
+    wp_enqueue_style( 'vpg-tokens' );
+    $tokens_file = VPG_V2_DIR . '/assets/css/tokens.css';
+    if ( file_exists( $tokens_file ) && filesize( $tokens_file ) < 30000 ) {
+        wp_add_inline_style( 'vpg-tokens', (string) file_get_contents( $tokens_file ) );
+    } else {
+        wp_deregister_style( 'vpg-tokens' );
+        wp_enqueue_style( 'vpg-tokens', VPG_V2_URI . '/assets/css/tokens.css', [ 'vpg-fonts' ], $ver( '/assets/css/tokens.css' ) );
+    }
     wp_enqueue_style( 'vpg-base',       VPG_V2_URI . '/assets/css/base.css',       [ 'vpg-tokens' ], $ver( '/assets/css/base.css' ) );
     wp_enqueue_style( 'vpg-layout',     VPG_V2_URI . '/assets/css/layout.css',     [ 'vpg-base' ],   $ver( '/assets/css/layout.css' ) );
     wp_enqueue_style( 'vpg-components', VPG_V2_URI . '/assets/css/components.css', [ 'vpg-layout' ], $ver( '/assets/css/components.css' ) );
@@ -60,6 +65,18 @@ add_action( 'wp_enqueue_scripts', function () {
     // Main JS bundle
     wp_enqueue_script( 'vpg-main', VPG_V2_URI . '/assets/js/main.js', [], $ver( '/assets/js/main.js' ), true );
 } );
+
+/* Preload the two variable font files · they style every glyph on the page */
+add_action( 'wp_head', function () {
+    foreach ( [ 'archivo-var-latin.woff2', 'archivo-var-latin-italic.woff2' ] as $f ) {
+        if ( file_exists( VPG_V2_DIR . '/assets/fonts/web/' . $f ) ) {
+            printf(
+                '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+                esc_url( VPG_V2_URI . '/assets/fonts/web/' . $f )
+            );
+        }
+    }
+}, 2 );
 
 /* PWA: ensure service-worker is allowed at /-relative scope by passing scope=/ */
 add_action( 'wp_footer', function () {

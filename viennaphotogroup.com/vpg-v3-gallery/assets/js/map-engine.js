@@ -76,6 +76,7 @@
   }
 
   function initMap(el) {
+    el.classList.add('is-ready'); // clears the CSS loading skeleton
     var raw = el.getAttribute('data-pins') || '[]';
     var pins;
     try { pins = JSON.parse(raw); } catch (e) { pins = []; }

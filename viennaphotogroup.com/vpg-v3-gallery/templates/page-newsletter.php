@@ -36,11 +36,11 @@ get_header();
             <input type="hidden" name="message" value="Newsletter signup request">
             <div class="g-field">
               <label for="name"><?php esc_html_e( 'Your name', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="name" type="text" name="name" required>
+              <input class="g-input" id="name" type="text" name="name" required autocomplete="name">
             </div>
             <div class="g-field">
               <label for="email"><?php esc_html_e( 'Email', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="email" type="email" name="email" required placeholder="you@studio.com">
+              <input class="g-input" id="email" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@studio.com">
             </div>
             <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Subscribe', 'vpg-v2' ); ?> <span class="a">→</span></button>
             <p class="g-form__note"><?php

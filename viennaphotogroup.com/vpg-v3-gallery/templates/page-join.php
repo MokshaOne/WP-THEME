@@ -58,7 +58,7 @@ get_header();
 
             <div class="g-field">
               <label for="join-email"><?php esc_html_e( 'Email', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="join-email" type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+              <input class="g-input" id="join-email" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@example.com">
             </div>
 
             <div class="g-field">

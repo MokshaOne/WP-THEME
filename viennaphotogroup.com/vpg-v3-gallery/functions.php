@@ -20,6 +20,7 @@ require_once VPG_V2_DIR . '/inc/acf-polyfill.php';
 // ── Core infrastructure ─────────────────────────────────────
 require_once VPG_V2_DIR . '/inc/theme-setup.php';
 require_once VPG_V2_DIR . '/inc/enqueue.php';
+require_once VPG_V2_DIR . '/inc/performance.php';     // WebP · lazy media · emoji removal
 require_once VPG_V2_DIR . '/inc/helpers.php';
 require_once VPG_V2_DIR . '/inc/cpts.php';
 require_once VPG_V2_DIR . '/inc/acf-fields.php';      // CPT field groups (ACF + native fallback)

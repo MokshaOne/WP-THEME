@@ -56,6 +56,12 @@ get_header();
         'orderby'        => 'date',
         'order'          => 'DESC',
     ] );
+    $drafts = new WP_Query( [
+        'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ],
+        'author'         => $u->ID,
+        'post_status'    => 'draft',
+        'posts_per_page' => 10,
+    ] );
 ?>
 
   <section class="g-phero">
@@ -83,7 +89,7 @@ get_header();
   $ob_bookmark  = ! empty( $bookmarks );
   $ob_steps     = [
       [ $ob_verified,  __( 'Confirm your email', 'vpg-v2' ),        home_url( '/dashboard/' ) ],
-      [ $ob_bio,       __( 'Write a short bio', 'vpg-v2' ),         get_edit_user_link() ],
+      [ $ob_bio,       __( 'Write a short bio', 'vpg-v2' ),         '#profile' ],
       [ $ob_submitted, __( 'Submit your first piece', 'vpg-v2' ),   home_url( '/submit/' ) ],
       [ $ob_bookmark,  __( 'Save an article for later', 'vpg-v2' ), home_url( '/' ) ],
   ];
@@ -171,7 +177,7 @@ get_header();
           <h3 class="g-card__title"><?php esc_html_e( 'Latest issue', 'vpg-v2' ); ?></h3>
           <p class="g-row__lede"><?php esc_html_e( 'PDF download available for your tier · forever-keepable.', 'vpg-v2' ); ?></p>
         </a>
-        <a class="g-card" href="<?php echo esc_url( get_edit_user_link() ); ?>">
+        <a class="g-card" href="#profile">
           <span class="g-cat"><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></span>
           <h3 class="g-card__title"><?php esc_html_e( 'Edit profile', 'vpg-v2' ); ?></h3>
           <p class="g-row__lede"><?php esc_html_e( 'Bio, social links, avatar · shown on your public member page.', 'vpg-v2' ); ?></p>
@@ -188,6 +194,29 @@ get_header();
       <h2 class="g-head__t" style="margin:14px auto 18px"><?php echo wp_kses_post( __( 'Your first frame is <em>waiting</em>.', 'vpg-v2' ) ); ?></h2>
       <p class="g-lede" style="margin:0 auto 28px;text-align:center;max-width:52ch"><?php esc_html_e( 'Submit a location, a review or a tutorial — with your photos. Editorial reviews within 72 hours, and your name goes under it.', 'vpg-v2' ); ?></p>
       <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your first piece', 'vpg-v2' ); ?> <span class="a">→</span></a>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <!-- Drafts · unfinished submissions -->
+  <?php if ( $drafts->have_posts() ) : ?>
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Drafts', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo (int) $drafts->found_posts; ?> <em><?php esc_html_e( 'unfinished', 'vpg-v2' ); ?></em></h2>
+        </div>
+      </div>
+      <div class="g-list">
+        <?php while ( $drafts->have_posts() ) : $drafts->the_post(); ?>
+          <div class="g-row" style="grid-template-columns:auto 1fr auto">
+            <?php vpg_chip( get_post_type() ); ?>
+            <h3 class="g-row__title" style="margin:0"><?php the_title(); ?></h3>
+            <a class="g-link" href="<?php echo esc_url( add_query_arg( 'edit', get_the_ID(), home_url( '/submit/' ) ) ); ?>"><?php esc_html_e( 'Finish & submit', 'vpg-v2' ); ?> <span class="a">→</span></a>
+          </div>
+        <?php endwhile; wp_reset_postdata(); ?>
+      </div>
     </div>
   </section>
   <?php endif; ?>
@@ -253,6 +282,104 @@ get_header();
     </div>
   </section>
   <?php endif; ?>
+
+  <!-- Profile editor · everything self-service, no wp-admin -->
+  <section class="g-section g-section--alt g-section--tight" id="profile">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Your profile', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'How you appear on the <em>wall</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+        <div class="g-meta"><a class="g-link" href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'Preview', 'vpg-v2' ); ?> <span class="a">→</span></a></div>
+      </div>
+
+      <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" style="max-width:none">
+        <?php wp_nonce_field( 'vpg_save_profile' ); ?>
+        <input type="hidden" name="action" value="vpg_save_profile">
+
+        <div style="display:grid;grid-template-columns:96px 1fr;gap:24px;align-items:start;margin-bottom:18px">
+          <div>
+            <?php echo get_avatar( $u->ID, 96, '', '', [ 'style' => 'display:block;width:96px;height:96px;object-fit:cover' ] ); ?>
+          </div>
+          <div class="g-field" style="margin:0">
+            <label for="pf-avatar"><?php esc_html_e( 'Avatar · JPG/PNG/WebP, max 4 MB', 'vpg-v2' ); ?></label>
+            <input class="g-input" id="pf-avatar" type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+            <p class="g-form__note" style="margin-top:6px"><?php esc_html_e( 'Stored on this site — no Gravatar, no third parties.', 'vpg-v2' ); ?></p>
+          </div>
+        </div>
+
+        <div class="g-field--row">
+          <div class="g-field">
+            <label for="pf-name"><?php esc_html_e( 'Display name', 'vpg-v2' ); ?></label>
+            <input class="g-input" id="pf-name" type="text" name="display_name" required value="<?php echo esc_attr( $u->display_name ); ?>">
+          </div>
+          <div class="g-field">
+            <label for="pf-website"><?php esc_html_e( 'Website', 'vpg-v2' ); ?></label>
+            <input class="g-input" id="pf-website" type="url" name="website" inputmode="url" value="<?php echo esc_attr( $u->user_url ); ?>" placeholder="https://">
+          </div>
+        </div>
+
+        <div class="g-field--row">
+          <div class="g-field">
+            <label for="pf-insta"><?php esc_html_e( 'Instagram', 'vpg-v2' ); ?></label>
+            <input class="g-input" id="pf-insta" type="text" name="instagram" value="<?php echo esc_attr( get_user_meta( $u->ID, '_vpg_instagram', true ) ); ?>" placeholder="@handle">
+          </div>
+          <div class="g-field">
+            <label><?php esc_html_e( 'Email', 'vpg-v2' ); ?></label>
+            <input class="g-input" type="email" value="<?php echo esc_attr( $u->user_email ); ?>" disabled>
+          </div>
+        </div>
+
+        <div class="g-field">
+          <label for="pf-bio"><?php esc_html_e( 'Bio · shown on your public page', 'vpg-v2' ); ?></label>
+          <textarea class="g-textarea" id="pf-bio" name="bio" rows="4" placeholder="<?php esc_attr_e( 'What you photograph, and how you look at the city.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $u->description ); ?></textarea>
+        </div>
+
+        <div class="g-field" style="display:grid;gap:10px">
+          <label><?php esc_html_e( 'Emails & visibility', 'vpg-v2' ); ?></label>
+          <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500">
+            <input type="checkbox" name="pref_feedback" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_pref_feedback', true ) !== '0' ); ?>>
+            <?php esc_html_e( 'Email me when my submissions are approved or get feedback', 'vpg-v2' ); ?>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500">
+            <input type="checkbox" name="pref_digest" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_pref_digest', true ) !== '0' ); ?>>
+            <?php esc_html_e( 'Send me the member digest when an issue ships', 'vpg-v2' ); ?>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500">
+            <input type="checkbox" name="directory_optin" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_directory_optin', true ) === '1' ); ?>>
+            <?php esc_html_e( 'List me in the public members directory', 'vpg-v2' ); ?>
+          </label>
+        </div>
+
+        <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Save profile', 'vpg-v2' ); ?> <span class="a">→</span></button>
+      </form>
+
+      <!-- Danger zone · GDPR self-service -->
+      <details style="margin-top:36px;border-top:1px solid var(--g-line);padding-top:22px">
+        <summary style="cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--g-mid)"><?php esc_html_e( 'Delete account', 'vpg-v2' ); ?></summary>
+        <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width:none;margin-top:18px" onsubmit="return confirm('<?php echo esc_js( __( 'Delete your account permanently? This cannot be undone.', 'vpg-v2' ) ); ?>')">
+          <?php wp_nonce_field( 'vpg_delete_account' ); ?>
+          <input type="hidden" name="action" value="vpg_delete_account">
+          <div class="g-field" style="display:grid;gap:10px">
+            <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:500">
+              <input type="radio" name="delete_mode" value="keep" checked style="margin-top:3px">
+              <span><?php esc_html_e( 'Delete my account, keep my published work on the site (byline passes to editorial)', 'vpg-v2' ); ?></span>
+            </label>
+            <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:500">
+              <input type="radio" name="delete_mode" value="erase" style="margin-top:3px">
+              <span><?php esc_html_e( 'Delete my account and everything I contributed — photos included', 'vpg-v2' ); ?></span>
+            </label>
+          </div>
+          <div class="g-field">
+            <label for="del-pw"><?php esc_html_e( 'Confirm with your password', 'vpg-v2' ); ?></label>
+            <input class="g-input" id="del-pw" type="password" name="password" required autocomplete="current-password">
+          </div>
+          <button class="g-btn" type="submit" style="background:transparent;color:var(--g-red);border-color:var(--g-red)"><?php esc_html_e( 'Delete my account permanently', 'vpg-v2' ); ?></button>
+        </form>
+      </details>
+    </div>
+  </section>
 
   <!-- Bookmarks · saved for later -->
   <section class="g-section g-section--tight">

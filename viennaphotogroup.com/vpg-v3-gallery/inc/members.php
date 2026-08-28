@@ -42,14 +42,35 @@ add_action( 'template_redirect', function () {
 
     get_header();
     ?>
+    <?php
+    $works_count = count_user_posts( $user->ID, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'post' ], true );
+    $founding    = (int) date( 'Y', strtotime( $user->user_registered ) ) <= 2019;
+    $insta       = get_user_meta( $user->ID, '_vpg_instagram', true );
+    ?>
     <main id="vpg-main">
         <header class="vpg-page-hero">
-            <span class="vpg-chip vpg-chip--member"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Member', 'vpg-v2' ); ?></span>
+            <?php echo get_avatar( $user->ID, 120, '', esc_attr( $user->display_name ), [ 'style' => 'display:block;width:120px;height:120px;object-fit:cover;margin:0 auto 1.4rem' ] ); ?>
+            <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.6rem">
+                <span class="vpg-chip vpg-chip--member"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Member', 'vpg-v2' ); ?></span>
+                <?php if ( $founding ) : ?>
+                    <span class="vpg-chip"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Founding member', 'vpg-v2' ); ?></span>
+                <?php endif; ?>
+            </div>
             <h1><?php echo esc_html( $user->display_name ); ?></h1>
             <?php if ( $user->description ) : ?>
                 <p class="vpg-lede"><?php echo esc_html( $user->description ); ?></p>
             <?php endif; ?>
-            <p class="vpg-caps" style="margin-top:1.5rem">— <?php esc_html_e( 'Member since', 'vpg-v2' ); ?> <?php echo esc_html( date_i18n( 'F Y', strtotime( $user->user_registered ) ) ); ?></p>
+            <p class="vpg-caps" style="margin-top:1.5rem">
+                — <?php esc_html_e( 'Member since', 'vpg-v2' ); ?> <?php echo esc_html( date_i18n( 'F Y', strtotime( $user->user_registered ) ) ); ?>
+                · <?php printf( esc_html( _n( '%d work', '%d works', (int) $works_count, 'vpg-v2' ) ), (int) $works_count ); ?>
+            </p>
+            <?php if ( $user->user_url || $insta ) : ?>
+            <p class="vpg-caps" style="margin-top:.6rem">
+                <?php if ( $user->user_url ) : ?><a href="<?php echo esc_url( $user->user_url ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Website', 'vpg-v2' ); ?> ↗</a><?php endif; ?>
+                <?php if ( $user->user_url && $insta ) echo ' · '; ?>
+                <?php if ( $insta ) : ?><a href="<?php echo esc_url( 'https://www.instagram.com/' . rawurlencode( $insta ) . '/' ); ?>" rel="noopener" target="_blank">@<?php echo esc_html( $insta ); ?> ↗</a><?php endif; ?>
+            </p>
+            <?php endif; ?>
         </header>
         <span class="vpg-asterism vpg-asterism--mark"></span>
         <section class="vpg-section vpg-section--tight">

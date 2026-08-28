@@ -82,7 +82,7 @@ get_header();
       $maybe = get_post( (int) $_GET['edit'] );
       if ( $maybe
           && (int) $maybe->post_author === get_current_user_id()
-          && $maybe->post_status === 'pending'
+          && in_array( $maybe->post_status, [ 'pending', 'draft' ], true )
           && in_array( $maybe->post_type, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ], true ) ) {
           $edit_post = $maybe;
       }
@@ -181,7 +181,40 @@ get_header();
               </script>
             </div>
 
-            <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Submit for review', 'vpg-v2' ); ?> <span class="a">→</span></button>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <button class="g-btn g-btn--lg g-btn--red" type="submit" name="save_action" value="submit"><?php esc_html_e( 'Submit for review', 'vpg-v2' ); ?> <span class="a">→</span></button>
+              <button class="g-btn g-btn--lg g-btn--ghost" type="submit" name="save_action" value="draft" formnovalidate><?php esc_html_e( 'Save as draft', 'vpg-v2' ); ?></button>
+            </div>
+            <div id="vpg-dupe-hint" hidden style="margin-top:14px;border:1px solid var(--g-red);padding:12px 16px;font-size:13px"></div>
+            <script>
+            (function () {
+                var title = document.getElementById('title');
+                var type  = document.getElementById('submit_type');
+                var hint  = document.getElementById('vpg-dupe-hint');
+                if (!title || !hint) return;
+                var t;
+                function check() {
+                    var v = title.value.trim();
+                    if (v.length < 4) { hint.hidden = true; return; }
+                    var url = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?> +
+                        '?action=vpg_dupe_check&_ajax_nonce=<?php echo esc_js( wp_create_nonce( 'vpg_dupe_check' ) ); ?>' +
+                        '&title=' + encodeURIComponent(v) + '&type=' + encodeURIComponent(type ? type.value : '');
+                    fetch(url, { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (res) {
+                        if (!res || !res.success || !res.data.length) { hint.hidden = true; return; }
+                        hint.innerHTML = '<strong><?php echo esc_js( __( 'Heads up — similar entries exist:', 'vpg-v2' ) ); ?></strong> ' +
+                            res.data.map(function (h) {
+                                var a = document.createElement('a');
+                                a.href = h.url; a.textContent = h.title; a.target = '_blank'; a.rel = 'noopener';
+                                return a.outerHTML;
+                            }).join(' · ') +
+                            ' — <?php echo esc_js( __( 'submitting anyway is fine if yours adds something new.', 'vpg-v2' ) ); ?>';
+                        hint.hidden = false;
+                    }).catch(function () {});
+                }
+                title.addEventListener('blur', check);
+                title.addEventListener('input', function () { clearTimeout(t); t = setTimeout(check, 900); });
+            }());
+            </script>
             <p class="g-form__note">
               <?php esc_html_e( 'Submissions are queued for editorial review. You’ll receive an email when your entry is approved and published. Coordinates can be added by the editor or by you later from the post edit screen · the map-picker is on the post editor.', 'vpg-v2' ); ?>
             </p>

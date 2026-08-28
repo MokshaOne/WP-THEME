@@ -219,17 +219,22 @@ function vpg_handle_submit() {
     $body    = wp_kses_post(        wp_unslash( $_POST['body']     ?? '' ) );
     $district= sanitize_text_field( wp_unslash( $_POST['district'] ?? '' ) );
 
-    if ( ! $type || ! $title || ! $body ) {
+    // "Save as draft" keeps the piece private until the member submits it.
+    // A draft only needs a title; a real submission needs the body too.
+    $as_draft = ( $_POST['save_action'] ?? '' ) === 'draft';
+    $status   = $as_draft ? 'draft' : 'pending';
+
+    if ( ! $type || ! $title || ( ! $as_draft && ! $body ) ) {
         vpg_redirect_with_status( 'submit', 'invalid' );
     }
 
-    // Editing an own, still-pending submission replaces its content in place.
+    // Editing an own draft or still-pending submission replaces it in place.
     $edit_id = (int) ( $_POST['edit_id'] ?? 0 );
     if ( $edit_id ) {
         $existing = get_post( $edit_id );
         $editable = $existing
             && (int) $existing->post_author === get_current_user_id()
-            && $existing->post_status === 'pending'
+            && in_array( $existing->post_status, [ 'pending', 'draft' ], true )
             && in_array( $existing->post_type, $allowed, true );
         if ( ! $editable ) {
             vpg_redirect_with_status( 'submit', 'fail' );
@@ -239,6 +244,7 @@ function vpg_handle_submit() {
             'post_title'   => $title,
             'post_excerpt' => $lede,
             'post_content' => $body,
+            'post_status'  => $status,
         ], true );
     } else {
         $post_id = wp_insert_post( [
@@ -246,7 +252,7 @@ function vpg_handle_submit() {
             'post_title'   => $title,
             'post_excerpt' => $lede,
             'post_content' => $body,
-            'post_status'  => 'pending',
+            'post_status'  => $status,
             'post_author'  => get_current_user_id(),
         ] );
     }
@@ -262,6 +268,11 @@ function vpg_handle_submit() {
     update_post_meta( $post_id, '_vpg_submitted_at', current_time( 'mysql' ) );
 
     $photo_note = vpg_attach_submission_photos( $post_id );
+
+    if ( $as_draft ) {
+        // Drafts stay between the member and their dashboard · no editorial ping
+        vpg_redirect_with_status( 'dashboard', 'draft_saved' );
+    }
 
     // Notify editorial
     $to     = get_theme_mod( 'vpg_email', get_option( 'admin_email' ) );
@@ -332,6 +343,27 @@ function vpg_attach_submission_photos( $post_id ) {
     return sprintf( 'Photos: %d attached%s', $attached, $skipped ? " · {$skipped} skipped (type/size)" : '' );
 }
 
+/* ─── Duplicate check · non-blocking hint while typing a title ───── */
+add_action( 'wp_ajax_vpg_dupe_check', function () {
+    check_ajax_referer( 'vpg_dupe_check' );
+    $title = sanitize_text_field( wp_unslash( $_GET['title'] ?? '' ) );
+    $type  = sanitize_key( $_GET['type'] ?? '' );
+    if ( strlen( $title ) < 4 ) wp_send_json_success( [] );
+
+    $q = new WP_Query( [
+        's'              => $title,
+        'post_type'      => in_array( $type, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ], true ) ? $type : 'vpg_location',
+        'post_status'    => [ 'publish', 'pending' ],
+        'posts_per_page' => 3,
+        'fields'         => 'ids',
+    ] );
+    $hits = [];
+    foreach ( $q->posts as $pid ) {
+        $hits[] = [ 'title' => get_the_title( $pid ), 'url' => get_permalink( $pid ) ];
+    }
+    wp_send_json_success( $hits );
+} );
+
 /* ─── Helper · redirect back to the form page with a status flag ─── */
 function vpg_redirect_with_status( $slug, $status ) {
     $page = get_page_by_path( $slug );
@@ -347,6 +379,7 @@ add_action( 'wp_footer', function () {
     $messages = [
         'ok'          => [ 'success', __( 'Sent · thank you.', 'vpg-v2' ) ],
         'welcome'     => [ 'success', __( 'Welcome — you\'re a member. Check your inbox to confirm your email.', 'vpg-v2' ) ],
+        'draft_saved' => [ 'success', __( 'Draft saved · finish and submit it any time from your dashboard.', 'vpg-v2' ) ],
         'verified'    => [ 'success', __( 'Email confirmed · submissions are unlocked.', 'vpg-v2' ) ],
         'verify_sent' => [ 'success', __( 'Confirmation email sent · check your inbox.', 'vpg-v2' ) ],
         'verify'      => [ 'error',   __( 'Please confirm your email first · check your inbox or resend from the dashboard.', 'vpg-v2' ) ],

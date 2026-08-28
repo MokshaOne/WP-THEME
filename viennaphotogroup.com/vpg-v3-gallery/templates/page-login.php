@@ -47,6 +47,22 @@ if ( is_user_logged_in() ) {
                 &middot;
                 <a href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Not a member? Join free', 'vpg-v2' ); ?></a>
             </p>
+
+            <!-- Passwordless · one-time login link by email -->
+            <details style="margin-top:22px;border-top:1px solid var(--g-line);padding-top:16px">
+                <summary style="cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase"><?php esc_html_e( 'Or: email me a login link', 'vpg-v2' ); ?></summary>
+                <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:14px">
+                    <?php wp_nonce_field( 'vpg_magic_request' ); ?>
+                    <input type="hidden" name="action" value="vpg_magic_request">
+                    <?php if ( function_exists( 'vpg_antispam_fields' ) ) echo vpg_antispam_fields(); ?>
+                    <div class="g-field">
+                        <label for="magic-email"><?php esc_html_e( 'Your account email', 'vpg-v2' ); ?></label>
+                        <input class="g-input" id="magic-email" type="email" name="email" required autocomplete="email" inputmode="email">
+                    </div>
+                    <button class="g-btn" type="submit"><?php esc_html_e( 'Send login link', 'vpg-v2' ); ?> <span class="a">→</span></button>
+                    <p class="g-form__note"><?php esc_html_e( 'One-time link, valid 15 minutes. No password needed.', 'vpg-v2' ); ?></p>
+                </form>
+            </details>
           </div>
         </div>
         <aside>

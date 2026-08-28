@@ -41,6 +41,7 @@ function vpg_notify_submitter( $post_id, $verdict, $reason = '' ) {
     if ( ! $post ) return;
     $author = get_userdata( $post->post_author );
     if ( ! $author || ! is_email( $author->user_email ) ) return;
+    if ( get_user_meta( $author->ID, '_vpg_pref_feedback', true ) === '0' ) return; // member opted out
 
     $title = $post->post_title;
 

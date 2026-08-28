@@ -230,9 +230,16 @@ function vpg_magazine_edit_page() {
             <section class="vpg-mag-articles">
                 <div class="vpg-mag-articles-head">
                     <h2><?php esc_html_e( 'Articles', 'vpg-v2' ); ?></h2>
-                    <button type="button" class="button button-primary" id="vpg-add-article"><?php esc_html_e( '+ Add article', 'vpg-v2' ); ?></button>
+                    <div class="vpg-mag-compile">
+                        <span><?php esc_html_e( 'Add from site:', 'vpg-v2' ); ?></span>
+                        <button type="button" class="button" data-vpg-pick="journal">📰 <?php esc_html_e( 'Journal article', 'vpg-v2' ); ?></button>
+                        <button type="button" class="button" data-vpg-pick="artist">👤 <?php esc_html_e( 'Featured artist', 'vpg-v2' ); ?></button>
+                        <button type="button" class="button" data-vpg-pick="event">📅 <?php esc_html_e( 'Event', 'vpg-v2' ); ?></button>
+                        <button type="button" class="button" data-vpg-pick="photos">🖼 <?php esc_html_e( 'Photo spread', 'vpg-v2' ); ?></button>
+                        <button type="button" class="button button-primary" id="vpg-add-article"><?php esc_html_e( '+ Blank article', 'vpg-v2' ); ?></button>
+                    </div>
                 </div>
-                <p class="description"><?php esc_html_e( 'Drag the handle to reorder. Each article becomes a section in the published issue and a chapter in the PDF.', 'vpg-v2' ); ?></p>
+                <p class="description"><?php esc_html_e( 'Compile the issue from what the site already has — journal writing, a member as featured artist, events, photo spreads from member uploads — or start a blank article. Drag the handle to reorder. Each article becomes a section in the published issue and a chapter in the PDF.', 'vpg-v2' ); ?></p>
 
                 <ol class="vpg-mag-list" id="vpg-mag-list">
                     <?php foreach ( $articles as $i => $a ) : ?>
@@ -254,10 +261,40 @@ function vpg_magazine_edit_page() {
                 <a class="button button-large" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-magazine' ) ); ?>"><?php esc_html_e( 'Back', 'vpg-v2' ); ?></a>
             </p>
         </form>
+
+        <!-- ─── Compile picker overlay ─── -->
+        <div class="vpg-pick-overlay" id="vpg-pick-overlay" hidden>
+            <div class="vpg-pick-modal" role="dialog" aria-modal="true" aria-labelledby="vpg-pick-title">
+                <div class="vpg-pick-head">
+                    <h2 id="vpg-pick-title"><?php esc_html_e( 'Pick content', 'vpg-v2' ); ?></h2>
+                    <button type="button" class="vpg-pick-close" id="vpg-pick-close" aria-label="Close">×</button>
+                </div>
+                <div class="vpg-pick-list" id="vpg-pick-list"><p class="vpg-pick-loading"><?php esc_html_e( 'Loading…', 'vpg-v2' ); ?></p></div>
+                <div class="vpg-pick-foot" id="vpg-pick-foot" hidden>
+                    <button type="button" class="button button-primary" id="vpg-pick-add-selected"><?php esc_html_e( 'Add selected as photo spread', 'vpg-v2' ); ?></button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <style>
         .vpg-mag-edit .vpg-mag-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        .vpg-mag-compile { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+        .vpg-mag-compile > span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: #646970; }
+        .vpg-pick-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .vpg-pick-modal { background: #fff; border-radius: 8px; width: 640px; max-width: 100%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+        .vpg-pick-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid #ccd0d4; }
+        .vpg-pick-head h2 { margin: 0; font-size: 1.05rem; }
+        .vpg-pick-close { background: none; border: 0; font-size: 22px; cursor: pointer; color: #646970; line-height: 1; }
+        .vpg-pick-list { overflow-y: auto; padding: .5rem 0; }
+        .vpg-pick-loading { padding: 2rem; text-align: center; color: #646970; }
+        .vpg-pick-item { display: grid; grid-template-columns: 48px 1fr auto; gap: .8rem; align-items: center; padding: .55rem 1.25rem; border-bottom: 1px solid #f0f0f1; }
+        .vpg-pick-item:hover { background: #f6f7f7; }
+        .vpg-pick-item__thumb { width: 48px; height: 48px; border-radius: 4px; background: #f0f0f1 center/cover; display: flex; align-items: center; justify-content: center; color: #bbb; }
+        .vpg-pick-item__title { font-weight: 600; }
+        .vpg-pick-item__meta { color: #646970; font-size: 12px; margin-top: .15em; }
+        .vpg-pick-foot { padding: 1rem 1.25rem; border-top: 1px solid #ccd0d4; text-align: right; }
+        .vpg-pick-check { width: 18px; height: 18px; }
         @media (max-width: 900px) { .vpg-mag-edit .vpg-mag-grid { grid-template-columns: 1fr; } }
         .vpg-mag-panel { background: #fff; border: 1px solid #ccd0d4; padding: 1.5rem; border-radius: 8px; }
         .vpg-mag-panel h2 { font-size: 1.05rem; margin: 0 0 1rem; }
@@ -366,15 +403,105 @@ function vpg_magazine_edit_page() {
 
         list.querySelectorAll('.vpg-mag-article').forEach(bindRow);
 
-        addBtn.addEventListener('click', function () {
+        function addRow(prefill) {
             var html = tpl.innerHTML.replace(/__INDEX__/g, list.children.length);
             var wrap = document.createElement('div');
             wrap.innerHTML = html;
             var row = wrap.firstElementChild;
             list.appendChild(row);
             bindRow(row);
+            if (prefill) {
+                row.querySelector('[data-name="title"]').value  = prefill.title  || '';
+                row.querySelector('[data-name="author"]').value = prefill.author || '';
+                row.querySelector('[data-name="body"]').value   = prefill.body   || '';
+                row.querySelector('[data-name="image_id"]').value = prefill.image_id || '';
+                if (prefill.image_url) {
+                    var imgBtn = row.querySelector('.vpg-mag-article__img');
+                    imgBtn.style.backgroundImage = 'url(' + prefill.image_url + ')';
+                    imgBtn.textContent = '';
+                }
+            }
             reindex();
             row.querySelector('.vpg-mag-article__title-input').focus();
+            return row;
+        }
+
+        addBtn.addEventListener('click', function () { addRow(null); });
+
+        // ─── Compile picker ───
+        var ajaxUrl   = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
+        var pickNonce = <?php echo wp_json_encode( wp_create_nonce( 'vpg_mag_pick' ) ); ?>;
+        var overlay   = document.getElementById('vpg-pick-overlay');
+        var pickList  = document.getElementById('vpg-pick-list');
+        var pickFoot  = document.getElementById('vpg-pick-foot');
+        var pickTitle = document.getElementById('vpg-pick-title');
+        var pickKind  = '';
+
+        var kindTitles = {
+            journal: <?php echo wp_json_encode( __( 'Journal · pick an article', 'vpg-v2' ) ); ?>,
+            artist:  <?php echo wp_json_encode( __( 'Members · pick the featured artist', 'vpg-v2' ) ); ?>,
+            event:   <?php echo wp_json_encode( __( 'Events · pick an event', 'vpg-v2' ) ); ?>,
+            photos:  <?php echo wp_json_encode( __( 'Photos · tick the plates for the spread', 'vpg-v2' ) ); ?>
+        };
+
+        function closePicker() { overlay.hidden = true; pickList.innerHTML = ''; }
+        document.getElementById('vpg-pick-close').addEventListener('click', closePicker);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) closePicker(); });
+
+        function fetchJSON(url) {
+            return fetch(url, { credentials: 'same-origin' }).then(function (r) { return r.json(); });
+        }
+
+        function addFromSource(kind, id, ids) {
+            var url = ajaxUrl + '?action=vpg_mag_pick_item&_ajax_nonce=' + pickNonce + '&kind=' + kind;
+            if (id)  url += '&id=' + id;
+            (ids || []).forEach(function (x) { url += '&ids[]=' + x; });
+            fetchJSON(url).then(function (res) {
+                if (res && res.success) { addRow(res.data); closePicker(); }
+                else { alert('Could not load that item.'); }
+            });
+        }
+
+        function openPicker(kind) {
+            pickKind = kind;
+            pickTitle.textContent = kindTitles[kind] || 'Pick content';
+            pickFoot.hidden = kind !== 'photos';
+            overlay.hidden = false;
+            pickList.innerHTML = '<p class="vpg-pick-loading">…</p>';
+            fetchJSON(ajaxUrl + '?action=vpg_mag_pick_list&_ajax_nonce=' + pickNonce + '&kind=' + kind).then(function (res) {
+                if (!res || !res.success) { pickList.innerHTML = '<p class="vpg-pick-loading">Failed to load.</p>'; return; }
+                if (!res.data.length)     { pickList.innerHTML = '<p class="vpg-pick-loading">Nothing found yet.</p>'; return; }
+                pickList.innerHTML = '';
+                res.data.forEach(function (it) {
+                    var row = document.createElement('div');
+                    row.className = 'vpg-pick-item';
+                    var thumb = it.thumb
+                        ? '<span class="vpg-pick-item__thumb" style="background-image:url(' + it.thumb + ')"></span>'
+                        : '<span class="vpg-pick-item__thumb">⁕</span>';
+                    var action = (kind === 'photos')
+                        ? '<input type="checkbox" class="vpg-pick-check" value="' + it.id + '">'
+                        : '<button type="button" class="button button-small vpg-pick-add" data-id="' + it.id + '">Add</button>';
+                    row.innerHTML = thumb +
+                        '<span><span class="vpg-pick-item__title"></span><div class="vpg-pick-item__meta"></div></span>' +
+                        action;
+                    row.querySelector('.vpg-pick-item__title').textContent = it.title;
+                    row.querySelector('.vpg-pick-item__meta').textContent  = it.meta;
+                    pickList.appendChild(row);
+                });
+                pickList.querySelectorAll('.vpg-pick-add').forEach(function (btn) {
+                    btn.addEventListener('click', function () { addFromSource(pickKind, btn.getAttribute('data-id'), null); });
+                });
+            });
+        }
+
+        document.querySelectorAll('[data-vpg-pick]').forEach(function (btn) {
+            btn.addEventListener('click', function () { openPicker(btn.getAttribute('data-vpg-pick')); });
+        });
+
+        document.getElementById('vpg-pick-add-selected').addEventListener('click', function () {
+            var ids = Array.prototype.map.call(pickList.querySelectorAll('.vpg-pick-check:checked'), function (c) { return c.value; });
+            if (!ids.length) { alert('Tick at least one photo.'); return; }
+            addFromSource('photos', null, ids);
         });
     })();
     </script>
@@ -512,3 +639,196 @@ function vpg_magazine_duplicate_handler() {
     wp_safe_redirect( admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $new_id . '&dup=ok' ) );
     exit;
 }
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Compile from site content                                        */
+/*                                                                   */
+/*  The photo magazine is assembled from what the site already has:  */
+/*  featured artists (members + their work), journal articles,       */
+/*  events, and photo spreads from member uploads. Two AJAX          */
+/*  endpoints feed the picker in the issue editor; the picked item   */
+/*  arrives as a prefilled article row (title/author/body/image),    */
+/*  so the storage model, PDF generator and reader templates stay    */
+/*  untouched.                                                       */
+/* ════════════════════════════════════════════════════════════════ */
+
+/* ─── List sources for the picker ────────────────────────────────── */
+add_action( 'wp_ajax_vpg_mag_pick_list', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_send_json_error( 'forbidden', 403 );
+    check_ajax_referer( 'vpg_mag_pick' );
+
+    $kind  = sanitize_key( $_GET['kind'] ?? '' );
+    $items = [];
+
+    if ( $kind === 'journal' ) {
+        $q = new WP_Query( [
+            'post_type'      => [ 'post', 'vpg_tutorial', 'vpg_review' ],
+            'post_status'    => 'publish',
+            'posts_per_page' => 30,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ] );
+        foreach ( $q->posts as $p ) {
+            $items[] = [
+                'id'    => $p->ID,
+                'title' => $p->post_title,
+                'meta'  => get_post_type_object( $p->post_type )->labels->singular_name
+                           . ' · ' . get_the_author_meta( 'display_name', $p->post_author )
+                           . ' · ' . mysql2date( 'M j, Y', $p->post_date ),
+                'thumb' => get_the_post_thumbnail_url( $p, 'thumbnail' ) ?: '',
+            ];
+        }
+    } elseif ( $kind === 'artist' ) {
+        $users = get_users( [ 'role__in' => [ 'vpg_member', 'administrator', 'editor', 'author' ], 'number' => 60 ] );
+        foreach ( $users as $u ) {
+            $works = count_user_posts( $u->ID, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'post' ], true );
+            $items[] = [
+                'id'    => $u->ID,
+                'title' => $u->display_name,
+                'meta'  => sprintf( _n( '%d published work', '%d published works', (int) $works, 'vpg-v2' ), (int) $works )
+                           . ' · ' . __( 'member since', 'vpg-v2' ) . ' ' . mysql2date( 'M Y', $u->user_registered ),
+                'thumb' => get_avatar_url( $u->ID, [ 'size' => 96 ] ),
+            ];
+        }
+    } elseif ( $kind === 'event' ) {
+        $q = new WP_Query( [
+            'post_type'      => 'vpg_event',
+            'post_status'    => 'publish',
+            'posts_per_page' => 20,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ] );
+        foreach ( $q->posts as $p ) {
+            $date  = get_post_meta( $p->ID, '_vpg_event_date',  true );
+            $venue = get_post_meta( $p->ID, '_vpg_event_venue', true );
+            $items[] = [
+                'id'    => $p->ID,
+                'title' => $p->post_title,
+                'meta'  => trim( ( $date ?: '' ) . ( $venue ? ' · ' . $venue : '' ), ' ·' ) ?: __( 'Event', 'vpg-v2' ),
+                'thumb' => get_the_post_thumbnail_url( $p, 'thumbnail' ) ?: '',
+            ];
+        }
+    } elseif ( $kind === 'photos' ) {
+        $q = new WP_Query( [
+            'post_type'      => 'attachment',
+            'post_status'    => 'inherit',
+            'post_mime_type' => 'image',
+            'posts_per_page' => 48,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ] );
+        foreach ( $q->posts as $p ) {
+            $items[] = [
+                'id'    => $p->ID,
+                'title' => $p->post_title ?: basename( get_attached_file( $p->ID ) ),
+                'meta'  => get_the_author_meta( 'display_name', $p->post_author )
+                           . ' · ' . mysql2date( 'M j, Y', $p->post_date ),
+                'thumb' => wp_get_attachment_image_url( $p->ID, 'thumbnail' ) ?: '',
+            ];
+        }
+    } else {
+        wp_send_json_error( 'unknown kind' );
+    }
+
+    wp_send_json_success( $items );
+} );
+
+/* ─── Build a prefilled article from one source ──────────────────── */
+add_action( 'wp_ajax_vpg_mag_pick_item', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_send_json_error( 'forbidden', 403 );
+    check_ajax_referer( 'vpg_mag_pick' );
+
+    $kind = sanitize_key( $_GET['kind'] ?? '' );
+    $id   = (int) ( $_GET['id'] ?? 0 );
+    $ids  = array_filter( array_map( 'intval', (array) ( $_GET['ids'] ?? [] ) ) );
+
+    $article = null;
+
+    if ( $kind === 'journal' && $id ) {
+        $p = get_post( $id );
+        if ( $p && $p->post_status === 'publish' ) {
+            $article = [
+                'title'    => $p->post_title,
+                'author'   => get_the_author_meta( 'display_name', $p->post_author ),
+                'body'     => $p->post_content,
+                'image_id' => (int) get_post_thumbnail_id( $p ),
+            ];
+        }
+    } elseif ( $kind === 'artist' && $id ) {
+        $u = get_userdata( $id );
+        if ( $u ) {
+            $works = get_posts( [
+                'author'         => $u->ID,
+                'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'post' ],
+                'post_status'    => 'publish',
+                'posts_per_page' => 8,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+            ] );
+            $body  = '';
+            if ( $u->description ) {
+                $body .= '<p><em>' . esc_html( $u->description ) . '</em></p>' . "\n";
+            }
+            $first_img = 0;
+            foreach ( $works as $w ) {
+                $tid = (int) get_post_thumbnail_id( $w );
+                if ( ! $tid ) continue;
+                if ( ! $first_img ) $first_img = $tid;
+                $url = wp_get_attachment_image_url( $tid, 'large' );
+                if ( ! $url ) continue;
+                $body .= '<figure><img src="' . esc_url( $url ) . '" alt="' . esc_attr( $w->post_title ) . '">'
+                       . '<figcaption>' . esc_html( $w->post_title ) . ' — ' . esc_html( $u->display_name ) . '</figcaption></figure>' . "\n";
+            }
+            if ( $works && ! $body ) {
+                $body = '<p>' . esc_html__( 'Selected works:', 'vpg-v2' ) . '</p><ul>';
+                foreach ( $works as $w ) $body .= '<li>' . esc_html( $w->post_title ) . '</li>';
+                $body .= '</ul>';
+            }
+            $article = [
+                'title'    => sprintf( __( 'Featured artist — %s', 'vpg-v2' ), $u->display_name ),
+                'author'   => $u->display_name,
+                'body'     => $body,
+                'image_id' => $first_img,
+            ];
+        }
+    } elseif ( $kind === 'event' && $id ) {
+        $p = get_post( $id );
+        if ( $p && $p->post_type === 'vpg_event' ) {
+            $date  = get_post_meta( $p->ID, '_vpg_event_date',  true );
+            $venue = get_post_meta( $p->ID, '_vpg_event_venue', true );
+            $lead  = trim( ( $date ?: '' ) . ( $venue ? ' · ' . $venue : '' ), ' ·' );
+            $body  = ( $lead ? '<p><strong>' . esc_html( $lead ) . '</strong></p>' . "\n" : '' ) . $p->post_content;
+            $article = [
+                'title'    => $p->post_title,
+                'author'   => __( 'Events', 'vpg-v2' ),
+                'body'     => $body,
+                'image_id' => (int) get_post_thumbnail_id( $p ),
+            ];
+        }
+    } elseif ( $kind === 'photos' && $ids ) {
+        $body      = '';
+        $first_img = 0;
+        foreach ( array_slice( $ids, 0, 12 ) as $aid ) {
+            if ( ! wp_attachment_is_image( $aid ) ) continue;
+            if ( ! $first_img ) $first_img = $aid;
+            $url = wp_get_attachment_image_url( $aid, 'large' );
+            if ( ! $url ) continue;
+            $att     = get_post( $aid );
+            $caption = wp_get_attachment_caption( $aid ) ?: ( $att->post_title ?? '' );
+            $credit  = $att ? get_the_author_meta( 'display_name', $att->post_author ) : '';
+            $body   .= '<figure><img src="' . esc_url( $url ) . '" alt="' . esc_attr( $caption ) . '">'
+                     . '<figcaption>' . esc_html( trim( $caption . ( $credit ? ' — ' . $credit : '' ), ' —' ) ) . '</figcaption></figure>' . "\n";
+        }
+        $article = [
+            'title'    => __( 'Plates', 'vpg-v2' ),
+            'author'   => __( 'Members of VPG', 'vpg-v2' ),
+            'body'     => $body,
+            'image_id' => $first_img,
+        ];
+    }
+
+    if ( ! $article ) wp_send_json_error( 'not found' );
+
+    $article['image_url'] = $article['image_id'] ? ( wp_get_attachment_image_url( $article['image_id'], 'thumbnail' ) ?: '' ) : '';
+    wp_send_json_success( $article );
+} );

@@ -50,6 +50,7 @@ require_once VPG_V2_DIR . '/inc/mail.php';                 // SMTP transport + d
 require_once VPG_V2_DIR . '/inc/platform.php';             // analytics · JSON-LD · embeds · REST hardening · locale · WP-CLI
 require_once VPG_V2_DIR . '/inc/advanced.php';
 require_once VPG_V2_DIR . '/inc/quickwins.php';          // Q2 · spot check · SOTW · heartbeat · maintenance             // check-in · photo fingerprints · trust levels · bilingual search · AI alt text
+require_once VPG_V2_DIR . '/inc/discovery.php';         // Q3 · missing districts · coffee · idea box · views · stats
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

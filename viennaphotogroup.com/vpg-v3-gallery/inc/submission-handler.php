@@ -146,6 +146,11 @@ function vpg_handle_join() {
     update_user_meta( $uid, '_vpg_tier_status',    'active' );
     update_user_meta( $uid, '_vpg_email_verified', '0' );
 
+    // 0521 · self-declared genres steer chips and future feeds
+    $genres = array_intersect( array_map( 'sanitize_key', (array) ( $_POST['genres'] ?? [] ) ),
+        [ 'street', 'architecture', 'portrait', 'analog', 'macro', 'night' ] );
+    if ( $genres ) update_user_meta( $uid, '_vpg_genres', array_values( $genres ) );
+
     vpg_send_verification_mail( $uid );
 
     // Gentle nudge · if the email is still unconfirmed in 48 h, remind once.

@@ -170,6 +170,15 @@ $h = $hero_copy[ $type_filter ];
       </p>
       <?php endif; ?>
       <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $map_pins ) ); ?>"></div>
+      <?php // 0014 · the blank districts, named — a standing call to fill them
+      $blank = function_exists( 'vpg_missing_districts' ) ? vpg_missing_districts() : [];
+      if ( $blank ) : ?>
+      <p style="margin:12px 0 0;font-size:12px;color:var(--g-mid,#6A6A6A)">
+        <span style="color:var(--g-red,#E5341F);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:10px">● <?php esc_html_e( 'Still blank', 'vpg-v2' ); ?></span>
+        <?php printf( esc_html( _n( '%s — one district has no pin yet.', '%s — these districts have no pins yet.', count( $blank ), 'vpg-v2' ) ), esc_html( implode( ' · ', $blank ) ) ); ?>
+        <?php if ( is_user_logged_in() ) : ?><a href="<?php echo esc_url( home_url( '/submit/' ) ); ?>" style="font-weight:700"><?php esc_html_e( 'Know a spot there? Add it →', 'vpg-v2' ); ?></a><?php endif; ?>
+      </p>
+      <?php endif; ?>
     </div>
   </section>
 

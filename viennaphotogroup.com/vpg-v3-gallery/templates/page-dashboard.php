@@ -545,6 +545,22 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <!-- 0435 · Idea box · anonymous by design -->
+  <section class="g-section--alt g-section--tight">
+    <div class="g-wrap" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;padding-top:22px;padding-bottom:22px">
+      <div style="flex:1;min-width:240px">
+        <span class="g-kicker"><?php esc_html_e( 'Idea box', 'vpg-v2' ); ?></span>
+        <p style="margin:6px 0 0;font-size:13px;color:var(--g-mid)"><?php esc_html_e( 'Drop a thought — it reaches editorial with no name attached. Anonymity is the point.', 'vpg-v2' ); ?></p>
+      </div>
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="flex:2;min-width:280px;display:flex;gap:10px">
+        <?php wp_nonce_field( 'vpg_idea_box' ); ?>
+        <input type="hidden" name="action" value="vpg_idea_box">
+        <input class="g-input" type="text" name="idea" required placeholder="<?php esc_attr_e( 'What should the collective try?', 'vpg-v2' ); ?>" style="flex:1">
+        <button class="g-btn" type="submit"><?php esc_html_e( 'Drop it in', 'vpg-v2' ); ?></button>
+      </form>
+    </div>
+  </section>
+
   <!-- Profile editor · everything self-service, no wp-admin -->
   <section class="g-section g-section--alt g-section--tight" id="profile">
     <div class="g-wrap">
@@ -607,6 +623,10 @@ get_header();
           <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500">
             <input type="checkbox" name="pref_digest" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_pref_digest', true ) !== '0' ); ?>>
             <?php esc_html_e( 'Send me the member digest when an issue ships', 'vpg-v2' ); ?>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600">
+            <input type="checkbox" name="pref_coffee" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_pref_coffee', true ) === '1' ); ?>>
+            <?php esc_html_e( 'Random coffee ☕ · pair me with another member once a month', 'vpg-v2' ); ?>
           </label>
           <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500">
             <input type="checkbox" name="directory_optin" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_directory_optin', true ) === '1' ); ?>>

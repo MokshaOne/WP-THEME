@@ -3685,3 +3685,175 @@ msgstr ""
 #: inc/quickwins.php
 msgid "wp_cron has stopped beating."
 msgstr ""
+
+#: templates/page-join.php
+msgid "Analog"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Anonymous idea from the box"
+msgstr ""
+
+#: templates/page-join.php
+msgid "Architecture"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Broken media"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Canned feedback · picked text prefills the reject note"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Checks featured images and local content images of the latest posts."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Drop a thought — it reaches editorial with no name attached. Anonymity is the point."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Drop it in"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Feedback…"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Great spot — needs a photo before we can publish. Resubmit with one?"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Idea box"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Idea dropped in the box — anonymously. Thank you."
+msgstr ""
+
+#: archive-vpg_location.php
+msgid "Know a spot there? Add it →"
+msgstr ""
+
+#: templates/page-join.php
+msgid "Macro"
+msgstr ""
+
+#: index.php
+msgid "Most seen this week"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Needs more detail: access, best time, what to expect on site."
+msgstr ""
+
+#: templates/page-join.php
+msgid "Night"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Nothing broken — every checked image resolves to a file."
+msgstr ""
+
+#: templates/page-join.php
+msgid "Portrait"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Post"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Problem"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Public transport route ↗"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Random coffee ☕"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Random coffee ☕ · pair me with another member once a month"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Random coffee ☕ — this month you’re paired with %s."
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Reads like promotion — we publish member experience, not listings."
+msgstr ""
+
+#: inc/members.php
+msgid "Save to lightbox collection"
+msgstr ""
+
+#: inc/members.php
+msgid "Save to your lightbox — this browser only"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Scan now"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Sent anonymously by a member via the dashboard idea box."
+msgstr ""
+
+#: archive-vpg_location.php
+msgid "Still blank"
+msgstr ""
+
+#: templates/page-join.php
+msgid "Street"
+msgstr ""
+
+#: inc/discovery.php
+msgid "The week in numbers"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "This place is already on the map — add your notes to the existing entry instead."
+msgstr ""
+
+#: templates/page-join.php
+msgid "What do you shoot? · optional"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "What should the collective try?"
+msgstr ""
+
+#: inc/discovery.php
+msgid "featured image file missing"
+msgstr ""
+
+#: inc/discovery.php
+msgid "missing"
+msgstr ""
+
+#: inc/discovery.php
+msgid "new members"
+msgstr ""
+
+#: inc/discovery.php
+msgid "notes on the walls"
+msgstr ""
+
+#: inc/discovery.php
+msgid "pieces published"
+msgstr ""
+
+#: inc/discovery.php
+msgid "waiting in the review queue"
+msgstr ""
+
+#: inc/discovery.php
+msgid "🖼 Broken media"
+msgstr ""

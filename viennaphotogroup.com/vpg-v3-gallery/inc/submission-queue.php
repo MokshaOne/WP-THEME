@@ -173,7 +173,14 @@ function vpg_render_submission_queue() {
                         <a class="button button-primary" href="<?php echo esc_url( $approve ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Approve and publish? The member gets a &quot;your work is live&quot; email.', 'vpg-v2' ) ); ?>')">✓ <?php esc_html_e( 'Approve', 'vpg-v2' ); ?></a>
                         <a class="button" href="<?php echo esc_url( $edit_url ); ?>"><?php esc_html_e( 'Edit', 'vpg-v2' ); ?></a>
                         <a class="button" href="<?php echo esc_url( vpg_preview_url( get_the_ID() ) ); ?>" target="_blank" title="<?php esc_attr_e( 'Shareable preview link · works without login', 'vpg-v2' ); ?>">👁</a>
-                        <a class="button button-link-delete" href="<?php echo esc_url( $reject ); ?>" onclick="var r=prompt('<?php echo esc_js( __( 'Feedback for the member (sent by email · leave empty for none):', 'vpg-v2' ) ); ?>'); if (r===null) return false; this.href += '&reason=' + encodeURIComponent(r); return true;">✕</a>
+                        <select class="vpg-canned" style="max-width:150px;vertical-align:middle" title="<?php esc_attr_e( 'Canned feedback · picked text prefills the reject note', 'vpg-v2' ); ?>">
+                            <option value=""><?php esc_html_e( 'Feedback…', 'vpg-v2' ); ?></option>
+                            <option><?php esc_html_e( 'Great spot — needs a photo before we can publish. Resubmit with one?', 'vpg-v2' ); ?></option>
+                            <option><?php esc_html_e( 'This place is already on the map — add your notes to the existing entry instead.', 'vpg-v2' ); ?></option>
+                            <option><?php esc_html_e( 'Needs more detail: access, best time, what to expect on site.', 'vpg-v2' ); ?></option>
+                            <option><?php esc_html_e( 'Reads like promotion — we publish member experience, not listings.', 'vpg-v2' ); ?></option>
+                        </select>
+                        <a class="button button-link-delete" href="<?php echo esc_url( $reject ); ?>" onclick="var c=this.parentNode.querySelector('.vpg-canned'); var r=prompt('<?php echo esc_js( __( 'Feedback for the member (sent by email · leave empty for none):', 'vpg-v2' ) ); ?>', c ? c.value : ''); if (r===null) return false; this.href += '&reason=' + encodeURIComponent(r); return true;">✕</a>
                     </td>
                 </tr>
                 <?php endwhile; wp_reset_postdata(); ?>

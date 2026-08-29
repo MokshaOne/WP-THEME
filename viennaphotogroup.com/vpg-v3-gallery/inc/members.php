@@ -102,9 +102,10 @@ add_action( 'template_redirect', function () {
                     <div><p class="vpg-caps">— <?php esc_html_e( 'Portfolio', 'vpg-v2' ); ?></p>
                     <h2><?php printf( esc_html( _n( '%d frame', '%d frames', count( $pf ), 'vpg-v2' ) ), count( $pf ) ); ?></h2></div>
                 </div>
+                <div id="vpg-pf-exif" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:16px"></div>
                 <div id="vpg-pf-wall" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px">
                     <?php foreach ( $pf as $i => $p ) : ?>
-                    <figure style="margin:0">
+                    <figure style="margin:0" data-exif="<?php echo esc_attr( $p['exif'] ); ?>">
                         <button type="button" data-pf="<?php echo (int) $i; ?>" style="display:block;width:100%;aspect-ratio:4/5;overflow:hidden;border:0;padding:0;background:#EDECE8;cursor:zoom-in">
                             <img src="<?php echo esc_url( $p['thumb'] ); ?>" alt="<?php echo esc_attr( $p['caption'] ); ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
                         </button>
@@ -118,6 +119,7 @@ add_action( 'template_redirect', function () {
             <div id="vpg-pf-lb" hidden role="dialog" aria-modal="true" aria-label="Portfolio" style="position:fixed;inset:0;z-index:9999;background:rgba(8,8,8,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
                 <img id="vpg-pf-lb-img" role="img" src="" alt="" style="max-width:92vw;max-height:78vh;object-fit:contain">
                 <div id="vpg-pf-lb-cap" style="color:#9C9A95;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;text-align:center"></div>
+                <button type="button" id="vpg-pf-lb-star" aria-label="<?php esc_attr_e( 'Save to lightbox collection', 'vpg-v2' ); ?>" title="<?php esc_attr_e( 'Save to your lightbox — this browser only', 'vpg-v2' ); ?>" style="position:absolute;top:18px;left:22px;background:none;border:0;color:#fff;font-size:24px;cursor:pointer">☆</button>
                 <button type="button" id="vpg-pf-lb-x" aria-label="Close" style="position:absolute;top:18px;right:22px;background:none;border:0;color:#fff;font-size:30px;cursor:pointer">×</button>
                 <button type="button" id="vpg-pf-lb-prev" aria-label="Previous" style="position:absolute;left:14px;top:50%;background:none;border:0;color:#fff;font-size:34px;cursor:pointer">‹</button>
                 <button type="button" id="vpg-pf-lb-next" aria-label="Next" style="position:absolute;right:14px;top:50%;background:none;border:0;color:#fff;font-size:34px;cursor:pointer">›</button>
@@ -153,6 +155,47 @@ add_action( 'template_redirect', function () {
                     if (e.key === 'ArrowLeft') show(cur - 1);
                     if (e.key === 'ArrowRight') show(cur + 1);
                 });
+
+                // 0315 · lightbox collection — this browser only
+                var star = document.getElementById('vpg-pf-lb-star');
+                function lbLoad() { try { return JSON.parse(localStorage.getItem('vpg_lightbox')) || []; } catch (e) { return []; } }
+                function lbSave(l) { try { localStorage.setItem('vpg_lightbox', JSON.stringify(l.slice(0, 60))); } catch (e) {} }
+                function starSync() {
+                    star.textContent = lbLoad().some(function (it) { return it.full === data[cur].full; }) ? '★' : '☆';
+                }
+                var _show = show;
+                show = function (i) { _show(i); starSync(); };
+                star.addEventListener('click', function () {
+                    var l = lbLoad();
+                    var idx = l.findIndex(function (it) { return it.full === data[cur].full; });
+                    if (idx >= 0) l.splice(idx, 1);
+                    else l.push({ full: data[cur].full, cap: data[cur].cap, url: location.href });
+                    lbSave(l); starSync();
+                });
+
+                // 0567 · focal-length chips — built from the EXIF wall labels
+                var wall = document.getElementById('vpg-pf-wall');
+                var chipBar = document.getElementById('vpg-pf-exif');
+                var focals = {};
+                wall.querySelectorAll('figure[data-exif]').forEach(function (f) {
+                    var m = (f.dataset.exif || '').match(/\d+\s?mm/);
+                    if (m) { f.dataset.focal = m[0].replace(/\s/g, ''); focals[f.dataset.focal] = (focals[f.dataset.focal] || 0) + 1; }
+                });
+                var keys = Object.keys(focals).sort(function (a, b) { return parseInt(a) - parseInt(b); });
+                if (keys.length >= 2) {
+                    chipBar.style.display = 'flex';
+                    chipBar.innerHTML = '<button type="button" data-f="" style="border:1px solid #0B0B0B;background:#0B0B0B;color:#fff;padding:6px 12px;font:700 11px/1 Archivo,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer"><?php echo esc_js( __( 'All', 'vpg-v2' ) ); ?></button>' +
+                        keys.map(function (k) { return '<button type="button" data-f="' + k + '" style="border:1px solid #D2D1CC;background:none;padding:6px 12px;font:700 11px/1 Archivo,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">' + k + ' · ' + focals[k] + '</button>'; }).join('');
+                    chipBar.addEventListener('click', function (e) {
+                        var b = e.target.closest('[data-f]');
+                        if (!b) return;
+                        chipBar.querySelectorAll('button').forEach(function (x) { x.style.background = 'none'; x.style.color = ''; x.style.borderColor = '#D2D1CC'; });
+                        b.style.background = '#0B0B0B'; b.style.color = '#fff'; b.style.borderColor = '#0B0B0B';
+                        wall.querySelectorAll('figure').forEach(function (f) {
+                            f.style.display = (!b.dataset.f || f.dataset.focal === b.dataset.f) ? '' : 'none';
+                        });
+                    });
+                }
             }());
             </script>
         </section>

@@ -94,6 +94,9 @@ get_header();
           $edit_post = $maybe;
       }
   }
+  // 0605 · arriving via the PWA share sheet prefills the form
+  $shared_title = sanitize_text_field( wp_unslash( $_GET['shared_title'] ?? '' ) );
+  $shared_body  = trim( sanitize_textarea_field( wp_unslash( $_GET['shared_text'] ?? '' ) ) . "\n" . esc_url_raw( wp_unslash( $_GET['shared_url'] ?? '' ) ) );
   $ev = function ( $field ) use ( $edit_post ) {
       if ( ! $edit_post ) return '';
       if ( $field === 'district' ) {
@@ -175,7 +178,7 @@ get_header();
 
             <div class="g-field">
               <label for="title"><?php esc_html_e( 'Title', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="title" type="text" name="title" required value="<?php echo esc_attr( $ev( 'post_title' ) ); ?>" placeholder="<?php esc_attr_e( 'The Stephansdom rooftop · golden hour', 'vpg-v2' ); ?>">
+              <input class="g-input" id="title" type="text" name="title" required value="<?php echo esc_attr( $ev( 'post_title' ) ?: $shared_title ); ?>" placeholder="<?php esc_attr_e( 'The Stephansdom rooftop · golden hour', 'vpg-v2' ); ?>">
             </div>
 
             <div class="g-field">
@@ -185,7 +188,7 @@ get_header();
 
             <div class="g-field">
               <label for="body"><?php esc_html_e( 'Body / notes', 'vpg-v2' ); ?></label>
-              <textarea class="g-textarea" id="body" name="body" rows="8" required placeholder="<?php esc_attr_e( 'Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $ev( 'post_content' ) ); ?></textarea>
+              <textarea class="g-textarea" id="body" name="body" rows="8" required placeholder="<?php esc_attr_e( 'Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $ev( 'post_content' ) ?: $shared_body ); ?></textarea>
             </div>
 
             <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop">

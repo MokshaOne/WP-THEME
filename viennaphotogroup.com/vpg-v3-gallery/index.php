@@ -60,6 +60,18 @@ $is_search = is_search();
 
   <section class="g-section">
     <div class="g-wrap">
+      <?php // 0311 · years as facet chips (syear is honoured by the faceted search)
+      $vpg_years = array_slice( array_unique( array_map( fn( $y ) => $y->year, (array) $GLOBALS['wpdb']->get_results( "SELECT DISTINCT YEAR(post_date) AS year FROM {$GLOBALS['wpdb']->posts} WHERE post_status='publish' AND post_type='post' ORDER BY year DESC" ) ) ), 0, 8 );
+      $vpg_cur_y = (int) ( $_GET['syear'] ?? 0 );
+      if ( count( $vpg_years ) > 1 ) : ?>
+      <div class="vpg-map-filter" style="margin-bottom:14px">
+        <span class="vpg-map-filter__label">— <?php esc_html_e( 'Year', 'vpg-v2' ); ?></span>
+        <a href="<?php echo esc_url( remove_query_arg( 'syear' ) ); ?>" class="<?php if ( ! $vpg_cur_y ) echo 'is-active'; ?>"><button type="button"><?php esc_html_e( 'All', 'vpg-v2' ); ?></button></a>
+        <?php foreach ( $vpg_years as $y ) : ?>
+          <a href="<?php echo esc_url( add_query_arg( 'syear', (int) $y ) ); ?>" class="<?php if ( $vpg_cur_y === (int) $y ) echo 'is-active'; ?>"><button type="button"><?php echo (int) $y; ?></button></a>
+        <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
       <p style="text-align:right;margin:0 0 14px"><a class="g-link" style="font-size:12px" href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_random_frame' ) ); ?>">⚄ <?php esc_html_e( 'Random frame', 'vpg-v2' ); ?></a></p>
       <?php if ( have_posts() ) : ?>
         <div class="g-list">
@@ -82,13 +94,29 @@ $is_search = is_search();
                   echo esc_html( $cat ? $cat[0]->name : get_post_type_object( get_post_type() )->labels->singular_name );
                 ?></span>
                 <h3 class="g-row__title"><?php the_title(); ?></h3>
-                <p class="g-row__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 28 ) ); ?></p>
+                <?php if ( is_search() ) : // 0581 · hover expands the preview to the full first passage ?>
+                  <p class="g-row__lede g-row__lede--peek"><?php echo esc_html( wp_trim_words( get_the_excerpt() ?: get_the_content(), 70 ) ); ?></p>
+                <?php else : ?>
+                  <p class="g-row__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 28 ) ); ?></p>
+                <?php endif; ?>
                 <div class="g-byline"><span><?php echo esc_html( get_the_author() ); ?></span><span>·</span><span><?php echo esc_html( function_exists( 'vpg_reading_time' ) ? vpg_reading_time( get_the_content() ) . ' ' . __( 'min', 'vpg-v2' ) : get_the_date() ); ?></span></div>
               </div>
               <span class="g-row__when"><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></span>
             </a>
           <?php endwhile; ?>
         </div>
+        <?php // 0317 · quiet weekly chart — three pieces, no like circus
+        $seen = ! is_search() && function_exists( 'vpg_most_seen_week' ) ? vpg_most_seen_week( 3 ) : [];
+        if ( count( $seen ) >= 2 ) : ?>
+        <div style="margin-top:40px;border-top:2px solid var(--g-ink);padding-top:18px">
+          <span class="g-kicker"><?php esc_html_e( 'Most seen this week', 'vpg-v2' ); ?></span>
+          <div style="display:flex;gap:28px;flex-wrap:wrap;margin-top:12px">
+            <?php $seen_i = 1; foreach ( $seen as $sid => $n ) : ?>
+              <a href="<?php echo esc_url( get_permalink( $sid ) ); ?>" style="font-weight:700;font-size:14px"><span style="color:var(--g-red);font-weight:900"><?php echo (int) $seen_i++; ?></span> <?php echo esc_html( get_the_title( $sid ) ); ?></a>
+            <?php endforeach; ?>
+          </div>
+        </div>
+        <?php endif; ?>
 
         <div style="text-align:center;margin-top:clamp(36px,5vw,56px)">
           <?php the_posts_pagination( [ 'mid_size' => 2, 'prev_text' => __( '← Newer', 'vpg-v2' ), 'next_text' => __( 'Older →', 'vpg-v2' ) ] ); ?>

@@ -45,7 +45,8 @@ get_header();
         if ( $ev_venue ) echo ' · ' . esc_html( $ev_venue );
       ?></p>
       <div id="vpg-event-map" style="height:280px;border:1px solid var(--g-line, #E6E5E1)"></div>
-      <p class="g-meta" style="margin-top:8px"><a href="https://www.openstreetmap.org/?mlat=<?php echo esc_attr( $ev_lat ); ?>&mlon=<?php echo esc_attr( $ev_lng ); ?>#map=17/<?php echo esc_attr( $ev_lat ); ?>/<?php echo esc_attr( $ev_lng ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Open in OSM for directions ↗', 'vpg-v2' ); ?></a></p>
+      <p class="g-meta" style="margin-top:8px"><a href="https://www.openstreetmap.org/?mlat=<?php echo esc_attr( $ev_lat ); ?>&mlon=<?php echo esc_attr( $ev_lng ); ?>#map=17/<?php echo esc_attr( $ev_lat ); ?>/<?php echo esc_attr( $ev_lng ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Open in OSM for directions ↗', 'vpg-v2' ); ?></a>
+        · <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo esc_attr( $ev_lat . ',' . $ev_lng ); ?>&travelmode=transit" target="_blank" rel="noopener"><?php esc_html_e( 'Public transport route ↗', 'vpg-v2' ); ?></a></p>
       <script>
       document.addEventListener('DOMContentLoaded', function () {
         if (typeof L === 'undefined') return;

@@ -28,6 +28,11 @@
             "purpose": "any maskable"
         }
     ],
+    "share_target": {
+        "action": "/submit/",
+        "method": "GET",
+        "params": { "title": "shared_title", "text": "shared_text", "url": "shared_url" }
+    },
     "shortcuts": [
         {
             "name": "The Map",

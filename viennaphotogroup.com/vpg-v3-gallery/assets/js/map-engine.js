@@ -63,6 +63,10 @@
     }
     if (p.lede) html += '<span style="font-family:' + f + ';color:#2C2C2C;font-size:13px;line-height:1.5;display:block;margin-bottom:.5rem">' + p.lede + '</span>';
     if (p.url)  html += '<a href="' + p.url + '" style="font-family:' + f + ';font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#0B0B0B;border-bottom:2px solid #E5341F;text-decoration:none">View →</a>';
+    // 0019 · tour list — saved in this browser only
+    if (p.id && p.url) {
+      html += ' <a href="#" class="vpg-tour-add" data-id="' + p.id + '" data-title="' + (p.title || '').replace(/"/g, '&quot;') + '" data-url="' + p.url + '" style="font-family:' + f + ';font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#6A6A6A;margin-left:10px;text-decoration:none">☆ Save</a>';
+    }
     return html;
   }
 
@@ -310,3 +314,53 @@
     maps.forEach(initMap);
   }
 }());
+
+
+/* ── 0019 · Tour list tray · localStorage, this browser only ─────── */
+(function () {
+  var mapEl = document.getElementById('vpg-map');
+  if (!mapEl) return;
+  var KEY = 'vpg_tour';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+  function save(list) { try { localStorage.setItem(KEY, JSON.stringify(list.slice(0, 30))); } catch (e) {} }
+
+  var tray = document.createElement('div');
+  tray.innerHTML = '<button type="button" id="vpg-tour-btn" hidden style="position:fixed;left:16px;bottom:16px;z-index:600;background:#0B0B0B;color:#fff;border:0;padding:10px 16px;font:700 12px/1 Archivo,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">⚑ Tour · <span id="vpg-tour-n">0</span></button>' +
+    '<div id="vpg-tour-panel" hidden style="position:fixed;left:16px;bottom:60px;z-index:600;background:#fff;border:2px solid #0B0B0B;padding:16px 18px;max-width:300px;max-height:50vh;overflow-y:auto;font-family:Archivo,sans-serif"></div>';
+  document.body.appendChild(tray);
+  var btn = document.getElementById('vpg-tour-btn'), panel = document.getElementById('vpg-tour-panel'), num = document.getElementById('vpg-tour-n');
+
+  function render() {
+    var list = load();
+    btn.hidden = !list.length;
+    num.textContent = list.length;
+    panel.innerHTML = list.map(function (it, i) {
+      return '<div style="display:flex;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid #E6E5E1">' +
+        '<b style="color:#E5341F;font-size:11px">' + (i + 1) + '</b>' +
+        '<a href="' + it.url + '" style="flex:1;font-size:13px;font-weight:600;color:#0B0B0B;text-decoration:none">' + it.title + '</a>' +
+        '<button type="button" data-rm="' + i + '" style="background:none;border:0;color:#E5341F;cursor:pointer;font-weight:700">×</button></div>';
+    }).join('') + (list.length ? '<button type="button" id="vpg-tour-clear" style="margin-top:10px;background:none;border:1px solid #E6E5E1;padding:6px 10px;font:700 10px/1 Archivo,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">Clear tour</button>' : '');
+    if (!list.length) panel.hidden = true;
+  }
+
+  document.addEventListener('click', function (e) {
+    var add = e.target.closest('.vpg-tour-add');
+    if (add) {
+      e.preventDefault();
+      var list = load();
+      if (!list.some(function (it) { return it.id === add.dataset.id; })) {
+        list.push({ id: add.dataset.id, title: add.dataset.title, url: add.dataset.url });
+        save(list); render();
+        add.textContent = '★ Saved';
+      }
+      return;
+    }
+    if (e.target === btn || btn.contains(e.target)) { panel.hidden = !panel.hidden; return; }
+    if (e.target.dataset && e.target.dataset.rm !== undefined && panel.contains(e.target)) {
+      var list = load(); list.splice(+e.target.dataset.rm, 1); save(list); render(); if (list.length) panel.hidden = false;
+      return;
+    }
+    if (e.target.id === 'vpg-tour-clear') { save([]); render(); }
+  });
+  render();
+})();

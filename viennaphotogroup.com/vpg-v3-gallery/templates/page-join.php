@@ -66,6 +66,17 @@ get_header();
               <input class="g-input" id="join-password" type="password" name="password" required minlength="8" autocomplete="new-password" placeholder="<?php esc_attr_e( 'At least 8 characters', 'vpg-v2' ); ?>">
             </div>
 
+            <div class="g-field">
+              <label><?php esc_html_e( 'What do you shoot? · optional', 'vpg-v2' ); ?></label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <?php foreach ( [ 'street' => __( 'Street', 'vpg-v2' ), 'architecture' => __( 'Architecture', 'vpg-v2' ), 'portrait' => __( 'Portrait', 'vpg-v2' ), 'analog' => __( 'Analog', 'vpg-v2' ), 'macro' => __( 'Macro', 'vpg-v2' ), 'night' => __( 'Night', 'vpg-v2' ) ] as $gv => $gl ) : ?>
+                  <label style="display:inline-flex;gap:6px;align-items:center;border:1px solid var(--g-line-2);padding:8px 12px;cursor:pointer;font-size:13px;font-weight:600">
+                    <input type="checkbox" name="genres[]" value="<?php echo esc_attr( $gv ); ?>"> <?php echo esc_html( $gl ); ?>
+                  </label>
+                <?php endforeach; ?>
+              </div>
+            </div>
+
             <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Become a member', 'vpg-v2' ); ?> <span class="a">→</span></button>
             <p class="g-form__note">
               <?php esc_html_e( 'Free forever · you\'re logged in right away · we send one confirmation email to unlock submissions. No spam, leave anytime.', 'vpg-v2' ); ?>

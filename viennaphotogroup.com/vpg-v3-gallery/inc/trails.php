@@ -535,7 +535,7 @@ add_filter( 'query_vars', function ( $v ) { $v[] = 'vpg_trailprint'; $v[] = 'vpg
 /* Flush rewrite rules once when the rule set changes (registers the new
    trail endpoints — and any earlier cluster's rules — on an existing site). */
 add_action( 'init', function () {
-    $want = 'c10-recognition-1';
+    $want = 'c11-community-1';
     if ( get_option( 'vpg_rw_ver' ) !== $want ) {
         flush_rewrite_rules( false );
         update_option( 'vpg_rw_ver', $want, false );

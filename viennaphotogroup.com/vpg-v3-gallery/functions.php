@@ -74,7 +74,8 @@ require_once VPG_V2_DIR . '/inc/print.php';           // Cluster 06 · print stu
 require_once VPG_V2_DIR . '/inc/journal.php';         // Cluster 07 · journal formats · before/after · desk · filter
 require_once VPG_V2_DIR . '/inc/gallery.php';         // Cluster 08 · lightbox · palette · embed · exposure
 require_once VPG_V2_DIR . '/inc/profile.php';         // Cluster 09 · artist page · CV · card · export · guestbook
-require_once VPG_V2_DIR . '/inc/recognition.php';     // Cluster 10 · ranks · badges · certificates · principles       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
+require_once VPG_V2_DIR . '/inc/recognition.php';     // Cluster 10 · ranks · badges · certificates · principles
+require_once VPG_V2_DIR . '/inc/community-plus.php';  // Cluster 11 · boards · Q&A · polls · handbook · status       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

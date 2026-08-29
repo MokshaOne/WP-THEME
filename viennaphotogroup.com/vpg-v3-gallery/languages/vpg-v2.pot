@@ -7740,3 +7740,212 @@ msgstr[1] ""
 
 msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
 msgstr ""
+
+msgid "Help wanted"
+msgstr ""
+
+msgid "“Looking for an assistant on Saturday”"
+msgstr ""
+
+msgid "Lending exchange"
+msgstr ""
+
+msgid "Lenses & tripods between members"
+msgstr ""
+
+msgid "Ride board"
+msgstr ""
+
+msgid "Share a car to spots beyond the U-Bahn"
+msgstr ""
+
+msgid "Craft swap"
+msgstr ""
+
+msgid "Photography for bookbinding for screenprint"
+msgstr ""
+
+msgid "Shared watchlist"
+msgstr ""
+
+msgid "Exhibitions to see together"
+msgstr ""
+
+msgid "Memory threads"
+msgstr ""
+
+msgid "“Remember the fog walk?”"
+msgstr ""
+
+msgid "Relay & edit partners"
+msgstr ""
+
+msgid "Pass a motif on · find a four-eyes edit partner"
+msgstr ""
+
+msgid "Community archive calls"
+msgstr ""
+
+msgid "Shared city-theme collections to build together"
+msgstr ""
+
+msgid "Post to the board…"
+msgstr ""
+
+msgid "Pin it"
+msgstr ""
+
+msgid "Q&A"
+msgstr ""
+
+msgid "Sign in to ask."
+msgstr ""
+
+msgid "Your question"
+msgstr ""
+
+msgid "Details (optional)"
+msgstr ""
+
+msgid "0412 · A discreet second opinion (members only)"
+msgstr ""
+
+msgid "Ask the room"
+msgstr ""
+
+msgid "No open votes right now."
+msgstr ""
+
+msgid "On a break — still a member, just resting."
+msgstr ""
+
+msgid "Alumnus — reading along from afar."
+msgstr ""
+
+msgid "Can help with"
+msgstr ""
+
+msgid "translation"
+msgstr ""
+
+msgid "A new member just joined — say hello and make them welcome."
+msgstr ""
+
+msgid "The workshop"
+msgstr ""
+
+msgid "The <em>pinboard</em>."
+msgstr ""
+
+msgid "Who can what"
+msgstr ""
+
+msgid "The <em>skill</em> directory."
+msgstr ""
+
+msgid "Retouching, analogue developing…"
+msgstr ""
+
+msgid "I can translate"
+msgstr ""
+
+msgid "Save my skills"
+msgstr ""
+
+msgid "Who’s around when"
+msgstr ""
+
+msgid "The <em>address book</em>."
+msgstr ""
+
+msgid "Neighbourhood"
+msgstr ""
+
+msgid "Members here"
+msgstr ""
+
+msgid "The district page"
+msgstr ""
+
+msgid "0432 · Code of conduct"
+msgstr ""
+
+msgid "0433 · How we talk about pictures"
+msgstr ""
+
+msgid "0436 · Statutes (a living document)"
+msgstr ""
+
+msgid "0419 · How we disagree"
+msgstr ""
+
+msgid "0437 · Who’s responsible for what"
+msgstr ""
+
+msgid "0438 · Handover rituals"
+msgstr ""
+
+msgid "0439 · Crisis contacts"
+msgstr ""
+
+msgid "0418 · Decisions, on the record"
+msgstr ""
+
+msgid "How we work together"
+msgstr ""
+
+msgid "The <em>handbook</em>."
+msgstr ""
+
+msgid "Community desk"
+msgstr ""
+
+msgid "Pages: %1$s · %2$s · %3$s · %4$s"
+msgstr ""
+
+msgid "Handbook"
+msgstr ""
+
+msgid "0414 · This month’s home curator"
+msgstr ""
+
+msgid "0431 · Guest programme (one per line)"
+msgstr ""
+
+msgid "0417/0434 · New vote / survey"
+msgstr ""
+
+msgid "Question"
+msgstr ""
+
+msgid "One option per line"
+msgstr ""
+
+msgid "Your <em>place</em> in it"
+msgstr ""
+
+msgid "On a break"
+msgstr ""
+
+msgid "Alumnus"
+msgstr ""
+
+msgid "When you’re usually around"
+msgstr ""
+
+msgid "Weekends, evenings…"
+msgstr ""
+
+msgid "Your home district"
+msgstr ""
+
+msgid "0416 · I’ll help welcome newcomers"
+msgstr ""
+
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
+msgstr ""

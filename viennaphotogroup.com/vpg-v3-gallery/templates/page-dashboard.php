@@ -1038,6 +1038,9 @@ get_header();
   <?php // Cluster 09 · the fuller artist page fields
   if ( function_exists( 'vpg_profile_extra_form' ) ) vpg_profile_extra_form(); ?>
 
+  <?php // Cluster 11 · community status, availability, welcomer
+  if ( function_exists( 'vpg_community_dashboard_form' ) ) vpg_community_dashboard_form(); ?>
+
 <?php endif; ?>
 
 </main>

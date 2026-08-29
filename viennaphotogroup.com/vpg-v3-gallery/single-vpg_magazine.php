@@ -113,13 +113,14 @@ $is_print  = ! empty( $_GET['vpg_print'] );
             <span><?php echo esc_html( $issue_no ?: vpg_roman_date( get_the_date( 'U' ) ) ); ?></span>
             <?php if ( $issue_dt ) : ?>  ·  <span><?php echo esc_html( $issue_dt ); ?></span><?php endif; ?>
         </p>
+        <?php if ( function_exists( 'vpg_mag_render_cover_meta' ) ) vpg_mag_render_cover_meta( get_the_ID() ); ?>
         <h1 class="vpg-cover__title"><?php the_title(); ?></h1>
         <?php if ( get_the_excerpt() ) : ?>
             <p class="vpg-cover__lede"><?php echo esc_html( get_the_excerpt() ); ?></p>
         <?php endif; ?>
         <?php if ( $pdf_url ) : ?>
             <p style="margin-top:var(--vpg-sp-6)">
-                <a class="g-btn g-btn--red" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Download PDF', 'vpg-v2' ); ?> ↓</a>
+                <a class="g-btn g-btn--red" href="<?php echo esc_url( add_query_arg( 'pdf', 1, get_permalink() ) ); ?>" target="_blank"><?php esc_html_e( 'Download PDF', 'vpg-v2' ); ?> ↓</a>
             </p>
         <?php endif; ?>
     </div>
@@ -137,7 +138,7 @@ $is_print  = ! empty( $_GET['vpg_print'] );
                 <h2><?php printf( esc_html( _n( '%d article', '%d articles', count( $articles ), 'vpg-v2' ) ), count( $articles ) ); ?> · <span style="font-family:var(--vpg-font-mono);font-size:.5em;letter-spacing:.18em;color:var(--vpg-muted)"><?php printf( esc_html__( '%d MIN READ', 'vpg-v2' ), $total_read ); ?></span></h2>
             </div>
             <?php if ( $pdf_url ) : ?>
-            <div class="vpg-section-head__meta"><a href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Read as PDF', 'vpg-v2' ); ?> ↓</a></div>
+            <div class="vpg-section-head__meta"><a href="<?php echo esc_url( add_query_arg( 'pdf', 1, get_permalink() ) ); ?>" target="_blank"><?php esc_html_e( 'Read as PDF', 'vpg-v2' ); ?> ↓</a></div>
             <?php endif; ?>
         </div>
 
@@ -199,8 +200,10 @@ $is_print  = ! empty( $_GET['vpg_print'] );
 
         <div class="vpg-wrap--prose">
             <div class="vpg-prose vpg-mag-article__body">
-                <?php echo wpautop( wp_kses_post( $a['body'] ?? '' ) ); ?>
+                <?php echo function_exists( 'vpg_mag_render_body' ) ? vpg_mag_render_body( $a['body'] ?? '', get_the_ID(), $i ) : wpautop( wp_kses_post( $a['body'] ?? '' ) ); ?>
             </div>
+            <?php // 0187 · cite this article ?>
+            <p class="vpg-mag-cite" style="margin-top:14px"><button type="button" class="vpg-cite-btn" data-url="<?php echo esc_attr( get_permalink() . '#' . $anchor ); ?>" data-cite="<?php echo esc_attr( sprintf( '%s — “%s”, %s. %s', $a['author'] ?: get_the_title(), $a['title'] ?: '', get_the_title(), get_permalink() . '#' . $anchor ) ); ?>" style="background:none;border:1px solid var(--g-line,#E6E5E1);padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">❝ <?php esc_html_e( 'Cite', 'vpg-v2' ); ?></button></p>
         </div>
 
         <?php if ( $is_break ) : ?>
@@ -217,6 +220,19 @@ $is_print  = ! empty( $_GET['vpg_print'] );
     </section>
 <?php endif; ?>
 
+<?php if ( function_exists( 'vpg_mag_render_extras' ) ) vpg_mag_render_extras( get_the_ID() ); ?>
+
+<script>
+(function(){ // 0187 · copy a citation
+  document.querySelectorAll('.vpg-cite-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=b.dataset.cite||b.dataset.url;
+      if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){var o=b.textContent;b.textContent='✓ <?php echo esc_js( __( 'Copied', 'vpg-v2' ) ); ?>';setTimeout(function(){b.textContent=o;},1500);});}
+    });
+  });
+})();
+</script>
+
 <!-- ────────  COLOPHON  ──────── -->
 <section class="vpg-section vpg-section--surface vpg-section--tight" style="text-align:center">
     <div class="vpg-wrap--narrow">
@@ -230,7 +246,7 @@ $is_print  = ! empty( $_GET['vpg_print'] );
             );
         ?></p>
         <?php if ( $pdf_url ) : ?>
-            <a class="g-btn g-btn--red" href="<?php echo esc_url( $pdf_url ); ?>" target="_blank"><?php esc_html_e( 'Download this issue', 'vpg-v2' ); ?> ↓</a>
+            <a class="g-btn g-btn--red" href="<?php echo esc_url( add_query_arg( 'pdf', 1, get_permalink() ) ); ?>" target="_blank"><?php esc_html_e( 'Download this issue', 'vpg-v2' ); ?> ↓</a>
         <?php endif; ?>
         <a class="g-btn g-btn--ghost" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>"><?php esc_html_e( 'All issues', 'vpg-v2' ); ?> →</a>
     </div>

@@ -52,8 +52,9 @@ add_action( 'admin_post_vpg_generate_pdf', function () {
 
     /* ── Gallery stylesheet · tokens from gallery.css, in pt/mm ── */
     $css = <<<'CSS'
-    body { font-family: 'archivo', sans-serif; color: #0B0B0B; line-height: 1.55; font-size: 10.5pt; }
-    h1, h2, h3 { margin: 0; line-height: 1.05; }
+    body { font-family: 'archivo', sans-serif; color: #0B0B0B; line-height: 1.55; font-size: 10.5pt; orphans: 2; widows: 2; hyphens: auto; }
+    .body p { orphans: 2; widows: 2; }
+    h1, h2, h3 { margin: 0; line-height: 1.05; page-break-after: avoid; }
     .g-kicker  { font-family: 'archivo', sans-serif; font-weight: bold; font-size: 7.5pt; letter-spacing: 2pt; text-transform: uppercase; color: #E5341F; }
     .g-meta    { font-family: 'archivo', sans-serif; font-size: 7pt; letter-spacing: 1.6pt; text-transform: uppercase; color: #6A6A6A; }
     .g-rule    { border-bottom: 0.4pt solid #E6E5E1; margin: 0; }
@@ -91,7 +92,7 @@ add_action( 'admin_post_vpg_generate_pdf', function () {
     .vpg-article .body figure.plate { page-break-before: always; page-break-after: always; margin: 0; }
     .vpg-article .body .pair figure { page-break-inside: avoid; }
     .vpg-article .body figcaption { font-size: 7pt; letter-spacing: 1.4pt; text-transform: uppercase; color: #6A6A6A; margin: 1.5mm 0 0; }
-    .vpg-article .body blockquote { margin: 5mm 0; padding: 0 0 0 5mm; border-left: 1.2pt solid #E5341F; font-style: italic; color: #2C2C2C; }
+    .vpg-article .body blockquote { margin: 5mm 0; padding: 0 0 0 5mm; border-left: 1.2pt solid #E5341F; font-family: 'freeserif', serif; font-style: italic; font-size: 12pt; color: #2C2C2C; }
     .vpg-article .body ul, .vpg-article .body ol { margin: 0 0 3.5mm 5mm; }
 
     /* ── Colophon ── */

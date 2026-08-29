@@ -68,7 +68,8 @@ require_once VPG_V2_DIR . '/inc/map-attributes.php';  // Cluster 01 · curated s
 require_once VPG_V2_DIR . '/inc/map-tools.php';       // Cluster 01 · poster/QR · legend · embed · mini-map
 require_once VPG_V2_DIR . '/inc/spot-quality.php';    // Cluster 02 · spot data · quality desk · districts
 require_once VPG_V2_DIR . '/inc/trails.php';          // Cluster 03 · trail format · print · live · curation
-require_once VPG_V2_DIR . '/inc/events.php';          // Cluster 04 · host desk · chat · live · programme       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
+require_once VPG_V2_DIR . '/inc/events.php';          // Cluster 04 · host desk · chat · live · programme
+require_once VPG_V2_DIR . '/inc/magazine.php';        // Cluster 05 · issue craft · cover vote · desk · metrics       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

@@ -6458,3 +6458,270 @@ msgid "%d backup code left."
 msgid_plural "%d backup codes left."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "0162 · Issue leitmotif"
+msgstr ""
+
+msgid "e.g. “Thresholds”"
+msgstr ""
+
+msgid "0167 · Quote of the month"
+msgstr ""
+
+msgid "One sentence from the community"
+msgstr ""
+
+msgid "0178 · Cover artist"
+msgstr ""
+
+msgid "Name for the cover credit page"
+msgstr ""
+
+msgid "0193 · Guest curator"
+msgstr ""
+
+msgid "If this issue is guest-curated"
+msgstr ""
+
+msgid "0191 · Issue playlist URL"
+msgstr ""
+
+msgid "0182 · Editorial deadline"
+msgstr ""
+
+msgid "0169 · Puzzle answer"
+msgstr ""
+
+msgid "Where is the puzzle photo?"
+msgstr ""
+
+msgid "Issue craft"
+msgstr ""
+
+msgid "Edition type"
+msgstr ""
+
+msgid "0175 · Special edition"
+msgstr ""
+
+msgid "0174 · Double issue"
+msgstr ""
+
+msgid "0169 · Puzzle photo"
+msgstr ""
+
+msgid "Choose"
+msgstr ""
+
+msgid "0177 · Cover drafts (vote)"
+msgstr ""
+
+msgid "Draft %d"
+msgstr ""
+
+msgid "Cover voting"
+msgstr ""
+
+msgid "Open community vote on the drafts"
+msgstr ""
+
+msgid "0181 · Proof status"
+msgstr ""
+
+msgid "— drafting —"
+msgstr ""
+
+msgid "In proof"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+msgid "Making of"
+msgstr ""
+
+msgid "Fresh off the press"
+msgstr ""
+
+msgid "Leitmotif · %s"
+msgstr ""
+
+msgid "Special edition"
+msgstr ""
+
+msgid "Double issue"
+msgstr ""
+
+msgid "Guest-curated by %s"
+msgstr ""
+
+msgid "The issue’s soundtrack"
+msgstr ""
+
+msgid "Cover photograph · %s"
+msgstr ""
+
+msgid "Pick the cover"
+msgstr ""
+
+msgid "Members choose the face of this issue."
+msgstr ""
+
+msgid "Sign in to vote."
+msgstr ""
+
+msgid "Where is this?"
+msgstr ""
+
+msgid "Reveal the answer"
+msgstr ""
+
+msgid "Classifieds · member flea market"
+msgstr ""
+
+msgid "Nothing on the market this issue."
+msgstr ""
+
+msgid "For sale / wanted…"
+msgstr ""
+
+msgid "One line"
+msgstr ""
+
+msgid "Post ad (reviewed)"
+msgstr ""
+
+msgid "Letters"
+msgstr ""
+
+msgid "A letter to the editors about this issue…"
+msgstr ""
+
+msgid "Send (curated back into the issue)"
+msgstr ""
+
+msgid "Sign in to pitch an issue theme."
+msgstr ""
+
+msgid "A theme for a future issue"
+msgstr ""
+
+msgid "Why it matters (optional)"
+msgstr ""
+
+msgid "Pitch it"
+msgstr ""
+
+msgid "The new issue is out · %s"
+msgstr ""
+
+msgid "A fresh issue has landed: %1$s. Read it here: %2$s"
+msgstr ""
+
+msgid "A new issue is out."
+msgstr ""
+
+msgid "Editorial desk"
+msgstr ""
+
+msgid "Normalised %d images to sRGB."
+msgstr ""
+
+msgid "0165 · Column slots · 0183 · Contribution budget"
+msgstr ""
+
+msgid "Section"
+msgstr ""
+
+msgid "Recurring voice"
+msgstr ""
+
+msgid "Target / issue"
+msgstr ""
+
+msgid "0185 · Theme pitch board"
+msgstr ""
+
+msgid "No pitches yet. Embed [vpg_pitch_board] on a page to collect them."
+msgstr ""
+
+msgid "0168 · Letters awaiting curation"
+msgstr ""
+
+msgid "No pending letters."
+msgstr ""
+
+msgid "0195 · Classifieds awaiting review"
+msgstr ""
+
+msgid "No pending ads."
+msgstr ""
+
+msgid "0186 · Issue metrics"
+msgstr ""
+
+msgid "Views"
+msgstr ""
+
+msgid "Avg. read depth"
+msgstr ""
+
+msgid "0180 · sRGB images"
+msgstr ""
+
+msgid "0166 · Start a dramaturgy"
+msgstr ""
+
+msgid "Seed a new draft issue with a rise / peak / close three-act scaffold."
+msgstr ""
+
+msgid "New issue · three-act scaffold"
+msgstr ""
+
+msgid "The rise"
+msgstr ""
+
+msgid "Open quietly. Establish the place and the mood."
+msgstr ""
+
+msgid "The peak"
+msgstr ""
+
+msgid "The strongest images sit here — the emotional high."
+msgstr ""
+
+msgid "The close"
+msgstr ""
+
+msgid "Resolve. A last, calmer frame to leave on."
+msgstr ""
+
+msgid "New issue (dramaturgy)"
+msgstr ""
+
+msgid "Partner swap-page"
+msgstr ""
+
+msgid "From the archive"
+msgstr ""
+
+msgid "Cite"
+msgstr ""
+
+msgid "Copied"
+msgstr ""
+
+msgid "%d day past deadline"
+msgid_plural "%d days past deadline"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d day to deadline"
+msgid_plural "%d days to deadline"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d frame"
+msgid_plural "%d frames"
+msgstr[0] ""
+msgstr[1] ""

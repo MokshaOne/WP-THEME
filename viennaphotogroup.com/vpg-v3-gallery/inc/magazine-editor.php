@@ -189,7 +189,18 @@ function vpg_magazine_edit_page() {
     wp_enqueue_editor();
     ?>
     <div class="wrap vpg-mag-edit">
-        <h1>📖 <?php echo $issue ? esc_html( $issue->post_title ?: '(untitled)' ) : esc_html__( 'New Issue', 'vpg-v2' ); ?></h1>
+        <h1>📖 <?php echo $issue ? esc_html( $issue->post_title ?: '(untitled)' ) : esc_html__( 'New Issue', 'vpg-v2' ); ?>
+        <?php // 0182 · deadline clock
+        $vpg_dl = $issue ? get_post_meta( $issue_id, '_vpg_issue_deadline', true ) : '';
+        if ( $vpg_dl && ( $vpg_dlt = strtotime( $vpg_dl ) ) ) :
+            $days = ceil( ( $vpg_dlt - time() ) / DAY_IN_SECONDS );
+            $col  = $days < 0 ? '#d63638' : ( $days <= 3 ? '#996800' : '#1A7A3C' );
+        ?>
+          <span style="font-size:13px;font-weight:600;color:<?php echo esc_attr( $col ); ?>;margin-left:12px;vertical-align:middle">⏱ <?php
+            echo $days < 0 ? esc_html( sprintf( _n( '%d day past deadline', '%d days past deadline', abs( $days ), 'vpg-v2' ), abs( $days ) ) )
+                           : esc_html( sprintf( _n( '%d day to deadline', '%d days to deadline', $days, 'vpg-v2' ), $days ) ); ?></span>
+        <?php endif; ?>
+        </h1>
 
         <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" id="vpg-mag-form">
             <?php wp_nonce_field( 'vpg_save_issue' ); ?>
@@ -242,6 +253,9 @@ function vpg_magazine_edit_page() {
                         </select>
                     </label>
                 </section>
+
+                <?php // Cluster 05 · issue craft fields (leitmotif, quote, cover credit, voting, puzzle, proof…)
+                if ( function_exists( 'vpg_mag_render_issue_fields' ) ) vpg_mag_render_issue_fields( $issue_id ); ?>
 
                 <!-- ─── Cover ─── -->
                 <section class="vpg-mag-panel">
@@ -730,6 +744,9 @@ add_action( 'admin_post_vpg_save_issue', function () {
     update_post_meta( $issue_id, '_vpg_next_teaser',  sanitize_textarea_field( wp_unslash( $_POST['next_teaser'] ?? '' ) ) );
     update_post_meta( $issue_id, '_vpg_editorial',    sanitize_textarea_field( wp_unslash( $_POST['editorial'] ?? '' ) ) );
     update_post_meta( $issue_id, '_vpg_articles',     wp_json_encode( $articles ) );
+
+    // Cluster 05 · persist the issue-craft fields (leitmotif, quote, covers, proof…)
+    if ( function_exists( 'vpg_mag_save_issue_fields' ) ) vpg_mag_save_issue_fields( $issue_id );
 
     $redirect = isset( $_POST['save_action'] ) && $_POST['save_action'] === 'save'
         ? admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $issue_id . '&saved=1' )

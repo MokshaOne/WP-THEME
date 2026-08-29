@@ -231,6 +231,39 @@ function vpg_rank_privileges( $uid = null ) {
     return apply_filters( 'vpg_rank_privileges', $priv, $uid, $count );
 }
 
+/* ─── Which types a rank may submit at all · the growth journey ─────
+ * The founding thought: the map comes first. You start by feeding it,
+ * then you earn the editorial formats.
+ *
+ *   Member (0–10)         Location · Studio · Shop — feed the map
+ *   Contributor (11+)     + Gear review · Tutorial pitch · Journal
+ *                         story — opinions need standing
+ *   Documentarian (51+)   + Photowalk/Event · Photo trail — curating
+ *                         and leading needs deep map knowledge
+ *   Resident (101+)       everything (no new types · full privileges)
+ *
+ * Unlocking runs on published count alone — submitting is safe because
+ * the review desk still guards publication at the lower ranks.
+ */
+function vpg_types_for_rank( $uid = null ) {
+    $uid = $uid ?: get_current_user_id();
+    $all = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [];
+    if ( $uid && user_can( $uid, 'edit_others_posts' ) ) return $all; // editorial submits anything
+
+    $count = $uid ? vpg_member_rank( $uid )['count'] : 0;
+    $tiers = apply_filters( 'vpg_types_by_rank', [
+        0  => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ],
+        11 => [ 'vpg_review', 'vpg_tutorial', 'post' ],
+        51 => [ 'vpg_event', 'vpg_trail' ],
+    ] );
+
+    $allowed = [];
+    foreach ( $tiers as $min => $types ) {
+        if ( $count >= $min ) $allowed = array_merge( $allowed, $types );
+    }
+    return array_values( array_intersect( $all, $allowed ) );
+}
+
 function vpg_can_instant_publish( $type, $uid = null ) {
     return in_array( $type, vpg_rank_privileges( $uid )['instant'], true );
 }

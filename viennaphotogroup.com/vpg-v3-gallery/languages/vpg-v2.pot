@@ -3145,3 +3145,11 @@ msgstr ""
 #: templates/page-dashboard.php
 msgid "Via the review desk — 11 works unlock instant map publishing"
 msgstr ""
+
+#: templates/page-submit.php
+msgid "unlocks at Contributor · 11 works"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "unlocks at Documentarian · 51 works"
+msgstr ""

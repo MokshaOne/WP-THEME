@@ -223,7 +223,9 @@ function vpg_handle_submit() {
     if ( ! vpg_antispam_passed() )  vpg_redirect_with_status( 'submit', 'ok' ); // silent drop
     if ( ! vpg_is_verified() )      vpg_redirect_with_status( 'submit', 'verify' );
 
-    $allowed = vpg_submittable_types();
+    // A member may only submit the types their rank has unlocked; editing
+    // an existing piece of a type stays valid (counts only ever grow).
+    $allowed = function_exists( 'vpg_types_for_rank' ) ? vpg_types_for_rank() : vpg_submittable_types();
     $type    = in_array( $_POST['submit_type'] ?? '', $allowed, true ) ? $_POST['submit_type'] : '';
     $title   = sanitize_text_field( wp_unslash( $_POST['title']    ?? '' ) );
     $lede    = sanitize_text_field( wp_unslash( $_POST['lede']     ?? '' ) );

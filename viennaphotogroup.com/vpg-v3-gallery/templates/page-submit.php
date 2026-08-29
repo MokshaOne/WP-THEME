@@ -115,15 +115,35 @@ get_header();
 
             <div class="g-field">
               <label for="submit_type"><?php esc_html_e( 'What are you submitting?', 'vpg-v2' ); ?></label>
+              <?php
+              // Locked types stay visible but disabled — everyone sees the
+              // ladder: the map first, the editorial formats as you grow.
+              $type_labels = [
+                  'vpg_location' => __( 'Location · a shooting spot', 'vpg-v2' ),
+                  'vpg_studio'   => __( 'Studio · a rental space', 'vpg-v2' ),
+                  'vpg_shop'     => __( 'Shop · a camera shop / lab / supplier', 'vpg-v2' ),
+                  'vpg_review'   => __( 'Gear review · with /10 scores', 'vpg-v2' ),
+                  'vpg_tutorial' => __( 'Tutorial pitch · we’ll discuss', 'vpg-v2' ),
+                  'post'         => __( 'Journal story · writing for the weekly journal', 'vpg-v2' ),
+                  'vpg_event'    => __( 'Photowalk / event · propose a meetup', 'vpg-v2' ),
+                  'vpg_trail'    => __( 'Photo trail · a walking route of map spots', 'vpg-v2' ),
+              ];
+              $unlock_hint = [
+                  'vpg_review'   => __( 'unlocks at Contributor · 11 works', 'vpg-v2' ),
+                  'vpg_tutorial' => __( 'unlocks at Contributor · 11 works', 'vpg-v2' ),
+                  'post'         => __( 'unlocks at Contributor · 11 works', 'vpg-v2' ),
+                  'vpg_event'    => __( 'unlocks at Documentarian · 51 works', 'vpg-v2' ),
+                  'vpg_trail'    => __( 'unlocks at Documentarian · 51 works', 'vpg-v2' ),
+              ];
+              $my_types = function_exists( 'vpg_types_for_rank' ) ? vpg_types_for_rank() : array_keys( $type_labels );
+              ?>
               <select class="g-select" id="submit_type" name="submit_type" required <?php disabled( (bool) $edit_post ); ?>>
-                <option value="vpg_location" <?php selected( $edit_post && $edit_post->post_type === 'vpg_location' ); ?>><?php esc_html_e( 'Location · a shooting spot', 'vpg-v2' ); ?></option>
-                <option value="vpg_studio" <?php selected( $edit_post && $edit_post->post_type === 'vpg_studio' ); ?>><?php esc_html_e( 'Studio · a rental space', 'vpg-v2' ); ?></option>
-                <option value="vpg_shop" <?php selected( $edit_post && $edit_post->post_type === 'vpg_shop' ); ?>><?php esc_html_e( 'Shop · a camera shop / lab / supplier', 'vpg-v2' ); ?></option>
-                <option value="vpg_review" <?php selected( $edit_post && $edit_post->post_type === 'vpg_review' ); ?>><?php esc_html_e( 'Gear review · with /10 scores', 'vpg-v2' ); ?></option>
-                <option value="vpg_tutorial" <?php selected( $edit_post && $edit_post->post_type === 'vpg_tutorial' ); ?>><?php esc_html_e( 'Tutorial pitch · we’ll discuss', 'vpg-v2' ); ?></option>
-                <option value="post" <?php selected( $edit_post && $edit_post->post_type === 'post' ); ?>><?php esc_html_e( 'Journal story · writing for the weekly journal', 'vpg-v2' ); ?></option>
-                <option value="vpg_event" <?php selected( $edit_post && $edit_post->post_type === 'vpg_event' ); ?>><?php esc_html_e( 'Photowalk / event · propose a meetup', 'vpg-v2' ); ?></option>
-                <option value="vpg_trail" <?php selected( $edit_post && $edit_post->post_type === 'vpg_trail' ); ?>><?php esc_html_e( 'Photo trail · a walking route of map spots', 'vpg-v2' ); ?></option>
+                <?php foreach ( $type_labels as $tt => $tl ) :
+                    $open = in_array( $tt, $my_types, true ); ?>
+                  <option value="<?php echo esc_attr( $tt ); ?>" <?php disabled( ! $open ); selected( $edit_post && $edit_post->post_type === $tt ); ?>><?php
+                      echo esc_html( $open ? $tl : $tl . ' — 🔒 ' . ( $unlock_hint[ $tt ] ?? '' ) );
+                  ?></option>
+                <?php endforeach; ?>
               </select>
               <?php if ( $edit_post ) : ?><input type="hidden" name="submit_type" value="<?php echo esc_attr( $edit_post->post_type ); ?>"><?php endif; ?>
             </div>

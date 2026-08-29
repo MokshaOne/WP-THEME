@@ -6057,3 +6057,404 @@ msgstr ""
 
 msgid "Save the stops I missed"
 msgstr ""
+
+msgid "Host desk"
+msgstr ""
+
+msgid "0124 · Co-hosts"
+msgstr ""
+
+msgid "Both leads appear on the event."
+msgstr ""
+
+msgid "0127 · Backup date (Plan B)"
+msgstr ""
+
+msgid "Used if the weather forces a shift."
+msgstr ""
+
+msgid "0134 · Photo task for the group"
+msgstr ""
+
+msgid "One theme, e.g. “reflections”"
+msgstr ""
+
+msgid "0147 · Language"
+msgstr ""
+
+msgid "— any —"
+msgstr ""
+
+msgid "0145 · Workshop material (URL)"
+msgstr ""
+
+msgid "Handout / slides for a workshop event."
+msgstr ""
+
+msgid "0146 · Analog dev after-meeting"
+msgstr ""
+
+msgid "e.g. two weeks later, lab XY"
+msgstr ""
+
+msgid "0152 · External event link"
+msgstr ""
+
+msgid "Marks this an external listing (exhibition / fair)."
+msgstr ""
+
+msgid "0128 · Meeting-point photo"
+msgstr ""
+
+msgid "Choose photo"
+msgstr ""
+
+msgid "Host-only feedback"
+msgstr ""
+
+msgid "This walk was cancelled."
+msgstr ""
+
+msgid "A new date: %s."
+msgstr ""
+
+msgid "Postponed for weather."
+msgstr ""
+
+msgid "Backup date: %s."
+msgstr ""
+
+msgid "Confirmed by the host — it’s on."
+msgstr ""
+
+msgid "Led by %s"
+msgstr ""
+
+msgid "Task: %s"
+msgstr ""
+
+msgid "This is the exact meeting point"
+msgstr ""
+
+msgid "Workshop material"
+msgstr ""
+
+msgid "Development meet-up: %s"
+msgstr ""
+
+msgid "The host’s recap"
+msgstr ""
+
+msgid "Group thread · attendees only"
+msgstr ""
+
+msgid "No messages yet — say hi."
+msgstr ""
+
+msgid "Message the group…"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Buddies for the day"
+msgstr ""
+
+msgid "Photo swap — give one image to…"
+msgstr ""
+
+msgid "Icebreaker"
+msgstr ""
+
+msgid "Another question"
+msgstr ""
+
+msgid "Where’s the group?"
+msgstr ""
+
+msgid "Share my location (15 min)"
+msgstr ""
+
+msgid "Catch up to the group"
+msgstr ""
+
+msgid "Host controls"
+msgstr ""
+
+msgid "✓ Confirm it’s on"
+msgstr ""
+
+msgid "⏳ Postpone (weather)"
+msgstr ""
+
+msgid "✕ Cancel & notify"
+msgstr ""
+
+msgid "Cancel this walk and notify everyone?"
+msgstr ""
+
+msgid "Three sentences on how the walk went (required after each event)…"
+msgstr ""
+
+msgid "Save recap"
+msgstr ""
+
+msgid "Host handbook"
+msgstr ""
+
+msgid "Memory collage"
+msgstr ""
+
+msgid "Rate for the host (private):"
+msgstr ""
+
+msgid "Optional note"
+msgstr ""
+
+msgid "Portrait etiquette"
+msgstr ""
+
+msgid "Ask before you photograph a person. Anyone can opt out of being photographed for the whole walk — say so at the start, and it’s respected without a reason."
+msgstr ""
+
+msgid "✓ I opted out of photos"
+msgstr ""
+
+msgid "Opt me out of photos"
+msgstr ""
+
+msgid "No geolocation."
+msgstr ""
+
+msgid "Sharing for 15 minutes…"
+msgstr ""
+
+msgid "Sharing ended."
+msgstr ""
+
+msgid "The group is about here — open map"
+msgstr ""
+
+msgid "No live location shared right now."
+msgstr ""
+
+msgid "What’s in your bag today — and what did you leave at home?"
+msgstr ""
+
+msgid "One photographer whose eye you’d steal for a day?"
+msgstr ""
+
+msgid "The last frame that surprised you?"
+msgstr ""
+
+msgid "Colour or black & white for this walk — and why?"
+msgstr ""
+
+msgid "A Vienna corner you think nobody shoots?"
+msgstr ""
+
+msgid "What made you pick up a camera in the first place?"
+msgstr ""
+
+msgid "Prime or zoom person?"
+msgstr ""
+
+msgid "The shot you keep failing to get right?"
+msgstr ""
+
+msgid "Cancelled: %s"
+msgstr ""
+
+msgid "Postponed: %s"
+msgstr ""
+
+msgid "The host has cancelled this walk. Thanks for understanding — we hope to see you at the next one."
+msgstr ""
+
+msgid "The host postponed this walk for the weather.%s"
+msgstr ""
+
+msgid "New date: %s."
+msgstr ""
+
+msgid "ago"
+msgstr ""
+
+msgid "For hosts"
+msgstr ""
+
+msgid "Lead your first <em>walk</em>."
+msgstr ""
+
+msgid "Before"
+msgstr ""
+
+msgid "Pick a meeting point that’s easy to find — add a photo of the exact spot."
+msgstr ""
+
+msgid "Set a realistic cap and a backup date for bad weather."
+msgstr ""
+
+msgid "Give the walk one photo task — a theme unites the group’s pictures."
+msgstr ""
+
+msgid "Confirm the day before. If the sky looks wrong, postpone by noon."
+msgstr ""
+
+msgid "During"
+msgstr ""
+
+msgid "Read the portrait etiquette aloud. Ask who wants to opt out of photos."
+msgstr ""
+
+msgid "Pair newcomers with an experienced buddy. Share your live location for the first quarter hour."
+msgstr ""
+
+msgid "Keep the pace gentle — a walk is not a race."
+msgstr ""
+
+msgid "After"
+msgstr ""
+
+msgid "Open the shared gallery and invite everyone to add a few frames."
+msgstr ""
+
+msgid "Write three sentences of recap. That’s the whole report."
+msgstr ""
+
+msgid "Run the photo swap — each person gifts one image."
+msgstr ""
+
+msgid "The %d walks · Vienna Photo Group"
+msgstr ""
+
+msgid "walks"
+msgstr ""
+
+msgid "%1$d walks · %2$d seats filled · across Wien, a member-run year."
+msgstr ""
+
+msgid "Thank you for walking"
+msgstr ""
+
+msgid "No gallery photos yet."
+msgstr ""
+
+msgid "Save / print"
+msgstr ""
+
+msgid "Programme desk"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
+msgstr ""
+
+msgid "0144 · Theme months"
+msgstr ""
+
+msgid "A leitmotif per month — shown on the events archive. e.g. February = Fog, June = Blue hour."
+msgstr ""
+
+msgid "0153 · Museum & partner conditions"
+msgstr ""
+
+msgid "One per line: “Partner — condition”. Shown on the events archive."
+msgstr ""
+
+msgid "0159 · Event templates"
+msgstr ""
+
+msgid "One per line: “Name | default title | cap | language(de/en/both)”. Offered as one-click starters when creating an event."
+msgstr ""
+
+msgid "Save programme"
+msgstr ""
+
+msgid "0151 · Host rotation — gentle nudges"
+msgstr ""
+
+msgid "Long-standing members who’ve walked a lot but never hosted — worth a friendly invitation to lead:"
+msgstr ""
+
+msgid "Everyone eligible has hosted. Lovely."
+msgstr ""
+
+msgid "0157 · Most-walked routes (trail seeds)"
+msgstr ""
+
+msgid "The best-attended walks — their meeting points are natural ground for a curated trail. Turn a popular route into a lasting trail."
+msgstr ""
+
+msgid "seats walked"
+msgstr ""
+
+msgid "This month’s theme"
+msgstr ""
+
+msgid "Open theme"
+msgstr ""
+
+msgid "Partner conditions"
+msgstr ""
+
+msgid "Start from a template:"
+msgstr ""
+
+msgid "frame"
+msgid_plural "frames"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d on the waitlist"
+msgid_plural "%d on the waitlist"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
+msgstr ""
+
+msgid "Your walks"
+msgstr ""
+
+msgid "%d view"
+msgid_plural "%d views"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d backup code left."
+msgid_plural "%d backup codes left."
+msgstr[0] ""
+msgstr[1] ""

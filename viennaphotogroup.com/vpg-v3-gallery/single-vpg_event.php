@@ -34,6 +34,8 @@ get_header();
       </div>
     </section>
 
+    <?php if ( function_exists( 'vpg_event_render_top' ) ) vpg_event_render_top( get_the_ID() ); ?>
+
     <?php
     // Meeting point · pinned by the proposer in the submit form
     $ev_lat = get_post_meta( get_the_ID(), '_vpg_event_lat', true );
@@ -239,6 +241,8 @@ get_header();
         <?php endif; ?>
       </div>
     </section>
+
+    <?php if ( function_exists( 'vpg_event_render_extras' ) ) vpg_event_render_extras( get_the_ID() ); ?>
 
     <section class="g-section g-section--dark" style="text-align:center">
       <div class="g-wrap">

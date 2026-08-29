@@ -271,6 +271,37 @@ get_header();
     </div>
   </section>
 
+  <?php // 0138 · attendance history — walks this member RSVP'd, most recent first
+  $vpg_attended = get_posts( [
+      'post_type'      => 'vpg_event',
+      'post_status'    => 'publish',
+      'posts_per_page' => 12,
+      'orderby'        => 'meta_value',
+      'meta_key'       => '_vpg_event_date',
+      'order'          => 'DESC',
+      'meta_query'     => [ [ 'key' => '_vpg_rsvps', 'value' => '"' . $u->ID . '"', 'compare' => 'LIKE' ] ],
+  ] );
+  $vpg_walk_n = (int) get_user_meta( $u->ID, '_vpg_walks_attended', true );
+  if ( $vpg_attended ) : ?>
+  <section class="g-section g-section--tight" id="walks">
+    <div class="g-wrap">
+      <div class="g-head"><div>
+        <span class="g-kicker"><?php esc_html_e( 'Your walks', 'vpg-v2' ); ?></span>
+        <h2 class="g-head__t"><?php echo (int) max( $vpg_walk_n, count( $vpg_attended ) ); ?> <em><?php esc_html_e( 'walks', 'vpg-v2' ); ?></em></h2>
+      </div></div>
+      <div class="g-list">
+        <?php foreach ( $vpg_attended as $ev ) : ?>
+          <a class="g-row" href="<?php echo esc_url( get_permalink( $ev ) ); ?>">
+            <span style="font-weight:700;color:var(--g-mid)"><?php echo esc_html( get_post_meta( $ev->ID, '_vpg_event_date', true ) ); ?></span>
+            <h3 class="g-row__title" style="margin:0"><?php echo esc_html( get_the_title( $ev ) ); ?></h3>
+            <span class="g-row__when"><?php echo esc_html( get_post_meta( $ev->ID, '_vpg_event_venue', true ) ); ?></span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Quick actions -->
   <section class="g-section g-section--tight" id="work">
     <div class="g-wrap">

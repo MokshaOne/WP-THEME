@@ -9152,3 +9152,189 @@ msgid "%s update from VPG"
 msgid_plural "%s updates from VPG"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Search the workbench…"
+msgstr ""
+
+msgid "Submissions queue"
+msgstr ""
+
+msgid "Workbench"
+msgstr ""
+
+msgid "VPG workbench"
+msgstr ""
+
+msgid "Dark mode for wp-admin (night shifts)"
+msgstr ""
+
+msgid "Away / out of office — release my claimed pieces so nothing stalls"
+msgstr ""
+
+msgid "Reviewing"
+msgstr ""
+
+msgid "Take over"
+msgstr ""
+
+msgid "You"
+msgstr ""
+
+msgid "Release"
+msgstr ""
+
+msgid "Claim this for review"
+msgstr ""
+
+msgid "Before publishing"
+msgstr ""
+
+msgid "Publish anyway (override)"
+msgstr ""
+
+msgid "Look again on"
+msgstr ""
+
+msgid "Internal notes"
+msgstr ""
+
+msgid "(never public)"
+msgstr ""
+
+msgid "Add a note…"
+msgstr ""
+
+msgid "Cover image set"
+msgstr ""
+
+msgid "Cover has alt text"
+msgstr ""
+
+msgid "Map pin (coordinates)"
+msgstr ""
+
+msgid "Has a title"
+msgstr ""
+
+msgid "Held as pending: the pre-publish checklist isn’t complete. Tick “Publish anyway” in the Editorial box to override."
+msgstr ""
+
+msgid "Published “%s”."
+msgstr ""
+
+msgid "Undo (revert to pending)"
+msgstr ""
+
+msgid "🎉 Milestone: we just passed %s members."
+msgstr ""
+
+msgid "Follow-up due: “%s”."
+msgstr ""
+
+msgid "No journal post in the last 7 days — a gap is opening."
+msgstr ""
+
+msgid "This preview link has expired."
+msgstr ""
+
+msgid "User ID"
+msgstr ""
+
+msgid "Tip: reach this instantly via ⌘K → a member’s name."
+msgstr ""
+
+msgid "Pick a member to see their full card."
+msgstr ""
+
+msgid "Joined"
+msgstr ""
+
+msgid "Published items"
+msgstr ""
+
+msgid "Hidden profile"
+msgstr ""
+
+msgid "Edit user"
+msgstr ""
+
+msgid "Their posts"
+msgstr ""
+
+msgid "Updated."
+msgstr ""
+
+msgid "Set moderation level"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Set %1$s on %2$d posts."
+msgstr ""
+
+msgid "Demo content created."
+msgstr ""
+
+msgid "Demo content removed."
+msgstr ""
+
+msgid "Editorial workbench"
+msgstr ""
+
+msgid "0858 · Bulk metadata"
+msgstr ""
+
+msgid "Post IDs (comma/space separated)"
+msgstr ""
+
+msgid "Meta key"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Apply to all"
+msgstr ""
+
+msgid "0849 · Enforce the pre-publish checklist"
+msgstr ""
+
+msgid "Hold posts as pending until cover, alt text and pin are present (override per post)."
+msgstr ""
+
+msgid "0871 · Staging demo content"
+msgstr ""
+
+msgid "Create demo posts"
+msgstr ""
+
+msgid "Remove demo posts"
+msgstr ""
+
+msgid "Demo posts are tagged and safe to bulk-remove — use on staging only."
+msgstr ""
+
+msgid "0860 · Content inventory"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "0872 / 0873 · Editor handbook"
+msgstr ""
+
+msgid "Review: open ⌘K → Submissions, claim a piece, read notes, run the checklist, approve."
+msgstr ""
+
+msgid "Plan: the calendar shows gaps; a week without a journal post nudges the team automatically."
+msgstr ""
+
+msgid "0874 Away: set your profile out-of-office and release claimed pieces so nothing stalls."
+msgstr ""
+
+msgid "0875 Escalate: send a knotty case to the collective mailbox (Trust & Safety → abuse mailbox)."
+msgstr ""
+
+msgid "0868 Trash empties itself after 30 days; 0878 a publish can be undone for 60 seconds."
+msgstr ""

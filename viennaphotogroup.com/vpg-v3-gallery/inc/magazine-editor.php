@@ -320,6 +320,10 @@ function vpg_magazine_edit_page() {
         .vpg-mag-article__title-input { font-weight: 600; font-size: 1rem; padding: .4rem .6rem !important; }
         .vpg-mag-article__remove { color: #b32d2e; cursor: pointer; background: none; border: 0; }
         .vpg-mag-article__body { width: 100%; min-height: 140px; padding: .6rem; border: 1px solid #ccd0d4; border-radius: 4px; font: 14px/1.6 'Inter', system-ui, sans-serif; }
+        .vpg-mag-article__snippets { display: flex; gap: .4rem; align-items: center; margin: 0 0 .4rem; }
+        .vpg-mag-article__snippets span { font-size: 11px; color: #646970; text-transform: uppercase; letter-spacing: .1em; }
+        .vpg-mag-article__snippets button { font-size: 11px; padding: .2rem .6rem; border: 1px solid #ccd0d4; background: #fff; border-radius: 3px; cursor: pointer; }
+        .vpg-mag-article__snippets button:hover { border-color: #2271b1; color: #2271b1; }
         .vpg-mag-article__meta { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: .8rem; align-items: center; margin-top: .8rem; }
         .vpg-mag-article__meta input { padding: .4rem .6rem; }
         .vpg-mag-article__img { width: 60px; height: 60px; background: #f0f0f0; border-radius: 4px; background-size: cover; background-position: center; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: #999; }
@@ -380,6 +384,23 @@ function vpg_magazine_edit_page() {
                     imgIn.value = a.id;
                     imgBtn.style.backgroundImage = 'url(' + a.url + ')';
                     imgBtn.textContent = '';
+                });
+            });
+
+            // Snippet buttons · insert layout blocks at the cursor
+            var SNIPPETS = {
+                pull:  '\n<blockquote class="pull">The line worth pulling out of the text.</blockquote>\n',
+                plate: '\n<figure class="plate"><img src="IMAGE-URL" alt=""><figcaption>Caption — Photographer</figcaption></figure>\n',
+                pair:  '\n<div class="pair"><figure><img src="IMAGE-URL" alt=""><figcaption>Left — Photographer</figcaption></figure><figure><img src="IMAGE-URL" alt=""><figcaption>Right — Photographer</figcaption></figure></div>\n'
+            };
+            var bodyTa = row.querySelector('[data-name="body"]');
+            row.querySelectorAll('[data-snippet]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var snip = SNIPPETS[btn.getAttribute('data-snippet')] || '';
+                    var s = bodyTa.selectionStart || bodyTa.value.length;
+                    bodyTa.value = bodyTa.value.slice(0, s) + snip + bodyTa.value.slice(bodyTa.selectionEnd || s);
+                    bodyTa.focus();
+                    bodyTa.selectionStart = bodyTa.selectionEnd = s + snip.length;
                 });
             });
 
@@ -538,6 +559,12 @@ function vpg_render_article_row( $i, $a ) {
             <button type="button" class="vpg-mag-article__remove" title="Remove">×</button>
         </div>
 
+        <div class="vpg-mag-article__snippets">
+            <span><?php esc_html_e( 'Insert:', 'vpg-v2' ); ?></span>
+            <button type="button" data-snippet="pull"><?php esc_html_e( 'Pull quote', 'vpg-v2' ); ?></button>
+            <button type="button" data-snippet="plate"><?php esc_html_e( 'Full-page plate', 'vpg-v2' ); ?></button>
+            <button type="button" data-snippet="pair"><?php esc_html_e( 'Image pair', 'vpg-v2' ); ?></button>
+        </div>
         <textarea data-name="body" class="vpg-mag-article__body" placeholder="Article body · plain text or basic HTML (paragraphs, links, &lt;em&gt;, &lt;strong&gt;)"><?php echo esc_textarea( $body ); ?></textarea>
 
         <div class="vpg-mag-article__meta">
@@ -844,4 +871,143 @@ add_action( 'wp_ajax_vpg_mag_pick_item', function () {
 
     $article['image_url'] = $article['image_id'] ? ( wp_get_attachment_image_url( $article['image_id'], 'thumbnail' ) ?: '' ) : '';
     wp_send_json_success( $article );
+} );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Editorial calendar · issues and journal by month, one screen     */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_menu', function () {
+    add_submenu_page( 'vpg-magazine', __( 'Calendar', 'vpg-v2' ), __( '📅 Calendar', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine-calendar', 'vpg_magazine_calendar_page' );
+}, 13 );
+
+function vpg_magazine_calendar_page() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+
+    // Everything editorial, 14 months back, grouped by month
+    $items = get_posts( [
+        'post_type'      => [ 'vpg_magazine', 'post', 'vpg_event' ],
+        'post_status'    => [ 'publish', 'draft', 'future', 'pending', 'private' ],
+        'posts_per_page' => 300,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+        'date_query'     => [ [ 'after' => '-14 months' ] ],
+    ] );
+    $months = [];
+    foreach ( $items as $p ) {
+        $months[ get_the_date( 'Y-m', $p ) ][] = $p;
+    }
+    ?>
+    <div class="wrap">
+        <h1>📅 <?php esc_html_e( 'Editorial calendar', 'vpg-v2' ); ?></h1>
+        <p class="description"><?php esc_html_e( 'Issues, journal posts and events by month. One click drafts a new issue from a month\'s content.', 'vpg-v2' ); ?></p>
+        <?php foreach ( $months as $ym => $list ) :
+            $label     = mysql2date( 'F Y', $ym . '-01 00:00:00' );
+            $has_issue = (bool) array_filter( $list, function ( $p ) { return $p->post_type === 'vpg_magazine'; } );
+            $draft_url = wp_nonce_url( admin_url( 'admin-post.php?action=vpg_issue_from_month&month=' . $ym ), 'vpg_issue_from_month' );
+        ?>
+        <h2 style="margin:1.6em 0 .4em;display:flex;align-items:center;gap:12px">
+            <?php echo esc_html( $label ); ?>
+            <?php if ( ! $has_issue ) : ?>
+                <a class="button button-small" href="<?php echo esc_url( $draft_url ); ?>"><?php esc_html_e( '↳ Draft issue from this month', 'vpg-v2' ); ?></a>
+            <?php endif; ?>
+        </h2>
+        <table class="widefat striped">
+            <tbody>
+            <?php foreach ( $list as $p ) : ?>
+                <tr>
+                    <td style="width:110px"><code><?php echo esc_html( str_replace( 'vpg_', '', $p->post_type ) ); ?></code></td>
+                    <td><a href="<?php echo esc_url( $p->post_type === 'vpg_magazine' ? admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $p->ID ) : get_edit_post_link( $p->ID ) ); ?>"><strong><?php echo esc_html( $p->post_title ?: '(untitled)' ); ?></strong></a></td>
+                    <td style="width:110px"><span class="vpg-mag-status vpg-mag-status--<?php echo esc_attr( $p->post_status ); ?>"><?php echo esc_html( $p->post_status ); ?></span></td>
+                    <td style="width:130px"><?php echo esc_html( get_the_date( 'M j, Y', $p ) ); ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php endforeach; ?>
+    </div>
+    <?php
+}
+
+/* ─── One-click month draft · journal + events + plates of a month ── */
+add_action( 'admin_post_vpg_issue_from_month', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+    check_admin_referer( 'vpg_issue_from_month' );
+
+    $ym = preg_match( '/^\d{4}-\d{2}$/', $_GET['month'] ?? '' ) ? $_GET['month'] : gmdate( 'Y-m', strtotime( 'last month' ) );
+    [ $year, $month ] = array_map( 'intval', explode( '-', $ym ) );
+    $label = mysql2date( 'F Y', $ym . '-01 00:00:00' );
+
+    $articles = [];
+
+    // Journal writing of the month
+    $posts = get_posts( [
+        'post_type'      => [ 'post', 'vpg_tutorial', 'vpg_review' ],
+        'post_status'    => 'publish',
+        'posts_per_page' => 8,
+        'date_query'     => [ [ 'year' => $year, 'month' => $month ] ],
+        'orderby'        => 'date',
+        'order'          => 'ASC',
+    ] );
+    foreach ( $posts as $p ) {
+        $articles[] = [
+            'title'            => $p->post_title,
+            'author'           => get_the_author_meta( 'display_name', $p->post_author ),
+            'body'             => $p->post_content,
+            'image_id'         => (int) get_post_thumbnail_id( $p ),
+            'page_break_after' => true,
+        ];
+    }
+
+    // Events of the month → one round-up chapter
+    $events = get_posts( [
+        'post_type'      => 'vpg_event',
+        'post_status'    => 'publish',
+        'posts_per_page' => 10,
+        'date_query'     => [ [ 'year' => $year, 'month' => $month ] ],
+    ] );
+    if ( $events ) {
+        $body = '';
+        foreach ( $events as $e ) {
+            $venue = get_post_meta( $e->ID, '_vpg_event_venue', true );
+            $body .= '<p><strong>' . esc_html( $e->post_title ) . '</strong>'
+                   . ( $venue ? ' — ' . esc_html( $venue ) : '' ) . '<br>'
+                   . esc_html( wp_trim_words( $e->post_content, 30 ) ) . '</p>' . "\n";
+        }
+        $articles[] = [ 'title' => sprintf( __( 'Events — %s', 'vpg-v2' ), $label ), 'author' => __( 'Events', 'vpg-v2' ), 'body' => $body, 'image_id' => 0, 'page_break_after' => true ];
+    }
+
+    // Plates · member photos uploaded that month
+    $photos = get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image',
+        'posts_per_page' => 8,
+        'date_query'     => [ [ 'year' => $year, 'month' => $month ] ],
+    ] );
+    if ( $photos ) {
+        $body = ''; $first = 0;
+        foreach ( $photos as $ph ) {
+            $url = wp_get_attachment_image_url( $ph->ID, 'large' );
+            if ( ! $url ) continue;
+            if ( ! $first ) $first = $ph->ID;
+            $credit = get_the_author_meta( 'display_name', $ph->post_author );
+            $body  .= '<figure class="plate"><img src="' . esc_url( $url ) . '" alt="">'
+                    . '<figcaption>' . esc_html( trim( ( $ph->post_title ?: '' ) . ( $credit ? ' — ' . $credit : '' ), ' —' ) ) . '</figcaption></figure>' . "\n";
+        }
+        if ( $body ) $articles[] = [ 'title' => __( 'Plates', 'vpg-v2' ), 'author' => __( 'Members of VPG', 'vpg-v2' ), 'body' => $body, 'image_id' => $first, 'page_break_after' => false ];
+    }
+
+    $issue_id = wp_insert_post( [
+        'post_type'    => 'vpg_magazine',
+        'post_title'   => $label,
+        'post_excerpt' => '',
+        'post_status'  => 'draft',
+        'post_content' => '',
+    ] );
+    update_post_meta( $issue_id, '_vpg_articles', wp_json_encode( $articles ) );
+    update_post_meta( $issue_id, '_vpg_issue_date', $label );
+    update_post_meta( $issue_id, '_vpg_issue_number', '' );
+
+    wp_safe_redirect( admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $issue_id . '&saved=1' ) );
+    exit;
 } );

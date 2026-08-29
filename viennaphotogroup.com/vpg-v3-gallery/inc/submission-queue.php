@@ -153,6 +153,7 @@ function vpg_render_submission_queue() {
                     <td>
                         <a class="button button-primary" href="<?php echo esc_url( $approve ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Approve and publish? The member gets a &quot;your work is live&quot; email.', 'vpg-v2' ) ); ?>')">✓ <?php esc_html_e( 'Approve', 'vpg-v2' ); ?></a>
                         <a class="button" href="<?php echo esc_url( $edit_url ); ?>"><?php esc_html_e( 'Edit', 'vpg-v2' ); ?></a>
+                        <a class="button" href="<?php echo esc_url( vpg_preview_url( get_the_ID() ) ); ?>" target="_blank" title="<?php esc_attr_e( 'Shareable preview link · works without login', 'vpg-v2' ); ?>">👁</a>
                         <a class="button button-link-delete" href="<?php echo esc_url( $reject ); ?>" onclick="var r=prompt('<?php echo esc_js( __( 'Feedback for the member (sent by email · leave empty for none):', 'vpg-v2' ) ); ?>'); if (r===null) return false; this.href += '&reason=' + encodeURIComponent(r); return true;">✕</a>
                     </td>
                 </tr>

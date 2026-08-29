@@ -7,16 +7,29 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 
-$paged  = max( 1, get_query_var( 'paged' ) );
-$issues = new WP_Query( [
+$paged       = max( 1, get_query_var( 'paged' ) );
+$filter_year = isset( $_GET['jahr'] ) ? (int) $_GET['jahr'] : 0;
+
+$issue_args = [
     'post_type'      => 'vpg_magazine',
     'posts_per_page' => 13,
     'post_status'    => 'publish',
     'paged'          => $paged,
     'orderby'        => 'date',
     'order'          => 'DESC',
-] );
-$total = (int) $issues->found_posts;
+];
+if ( $filter_year ) $issue_args['year'] = $filter_year;
+$issues = new WP_Query( $issue_args );
+$total  = (int) $issues->found_posts;
+
+// Cover-wall year chips · every year with at least one published issue
+$years = [];
+foreach ( get_posts( [ 'post_type' => 'vpg_magazine', 'posts_per_page' => -1, 'post_status' => 'publish', 'fields' => 'ids' ] ) as $yid ) {
+    $y = (int) get_the_date( 'Y', $yid );
+    if ( $y ) $years[ $y ] = true;
+}
+krsort( $years );
+$archive_base = get_post_type_archive_link( 'vpg_magazine' );
 ?>
 
 <main id="vpg-main">
@@ -40,9 +53,24 @@ $total = (int) $issues->found_posts;
 
   <?php if ( $issues->have_posts() ) : ?>
 
+    <?php if ( count( $years ) > 1 ) : ?>
+    <!-- Cover-wall year filter -->
+    <section class="g-section--tight" style="padding-top:0">
+      <div class="g-wrap">
+        <div class="vpg-map-filter" role="toolbar" aria-label="<?php esc_attr_e( 'Filter issues by year', 'vpg-v2' ); ?>">
+          <span class="vpg-map-filter__label">— <?php esc_html_e( 'Year', 'vpg-v2' ); ?></span>
+          <a href="<?php echo esc_url( $archive_base ); ?>" class="<?php if ( ! $filter_year ) echo 'is-active'; ?>"><button type="button"><?php esc_html_e( 'All', 'vpg-v2' ); ?></button></a>
+          <?php foreach ( array_keys( $years ) as $y ) : ?>
+            <a href="<?php echo esc_url( add_query_arg( 'jahr', $y, $archive_base ) ); ?>" class="<?php if ( $filter_year === $y ) echo 'is-active'; ?>"><button type="button"><?php echo (int) $y; ?></button></a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </section>
+    <?php endif; ?>
+
     <?php
-    // ── Lead: the most recent issue (only on page 1) ──
-    if ( $paged === 1 ) :
+    // ── Lead: the most recent issue (only on page 1 without a year filter) ──
+    if ( $paged === 1 && ! $filter_year ) :
         $issues->the_post();
         $lead_no  = get_post_meta( get_the_ID(), '_vpg_issue_number', true );
         $lead_dt  = get_post_meta( get_the_ID(), '_vpg_issue_date', true );

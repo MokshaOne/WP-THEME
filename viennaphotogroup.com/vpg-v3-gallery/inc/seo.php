@@ -33,6 +33,10 @@ add_action( 'wp_head', function () {
         $desc  = post_type_archive_title( '', false );
     }
 
+    if ( ! $image && is_singular() && function_exists( 'vpg_og_card_url' ) ) {
+        // No photo? Generate a branded share card for this exact page.
+        $image = vpg_og_card_url( get_queried_object_id() );
+    }
     if ( ! $image ) {
         // Fall back to the most recent magazine cover, then the custom-logo
         $latest = get_posts( [ 'post_type' => 'vpg_magazine', 'numberposts' => 1, 'orderby' => 'date' ] );

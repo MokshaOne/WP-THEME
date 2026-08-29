@@ -88,6 +88,8 @@ add_action( 'admin_post_vpg_generate_pdf', function () {
     .vpg-article .body a { color: #0B0B0B; text-decoration: none; border-bottom: 0.6pt solid #E5341F; }
     .vpg-article .body img { width: 100%; margin: 5mm 0 1.5mm; }
     .vpg-article .body figure { margin: 5mm 0; padding: 0; }
+    .vpg-article .body figure.plate { page-break-before: always; page-break-after: always; margin: 0; }
+    .vpg-article .body .pair figure { page-break-inside: avoid; }
     .vpg-article .body figcaption { font-size: 7pt; letter-spacing: 1.4pt; text-transform: uppercase; color: #6A6A6A; margin: 1.5mm 0 0; }
     .vpg-article .body blockquote { margin: 5mm 0; padding: 0 0 0 5mm; border-left: 1.2pt solid #E5341F; font-style: italic; color: #2C2C2C; }
     .vpg-article .body ul, .vpg-article .body ol { margin: 0 0 3.5mm 5mm; }
@@ -125,7 +127,7 @@ CSS;
             <?php foreach ( $articles as $i => $a ) : ?>
             <tr>
                 <td class="num"><?php printf( '%02d', $i + 1 ); ?></td>
-                <td class="title"><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></td>
+                <td class="title"><a href="#art-<?php echo (int) $i; ?>" style="text-decoration:none;color:#0B0B0B"><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></a></td>
                 <td class="author"><?php echo esc_html( $a['author'] ?? '' ); ?></td>
             </tr>
             <?php endforeach; ?>
@@ -141,6 +143,7 @@ CSS;
         $body_has_lead = $img_path && str_contains( $body, (string) wp_get_attachment_image_url( (int) $a['image_id'], 'large' ) );
     ?>
     <div class="vpg-article">
+        <a name="art-<?php echo (int) $i; ?>"></a><bookmark content="<?php echo esc_attr( $a['title'] ?: 'Untitled' ); ?>" />
         <p class="ar-kicker"><?php printf( '%02d', $i + 1 ); ?> — <?php echo esc_html( $a['author'] ?: 'Article' ); ?></p>
         <h2><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></h2>
         <p class="ar-author"><?php echo esc_html( trim( ( $a['author'] ?? '' ) . ' · Vienna Photo Group', ' ·' ) ); ?></p>

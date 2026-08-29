@@ -347,3 +347,39 @@ add_action( 'admin_post_vpg_geo_export', function () {
     }
     exit;
 } );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Shareable preview links · a pending/draft post gets a secret     */
+/*  token URL the author (or anyone with the link) can open.         */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_preview_url( $post_id ) {
+    $token = get_post_meta( $post_id, '_vpg_preview_token', true );
+    if ( ! $token ) {
+        $token = wp_generate_password( 24, false, false );
+        update_post_meta( $post_id, '_vpg_preview_token', $token );
+    }
+    return add_query_arg( [
+        'p'           => (int) $post_id,
+        'post_type'   => get_post_type( $post_id ),
+        'vpg_preview' => $token,
+    ], home_url( '/' ) );
+}
+
+add_filter( 'posts_results', function ( $posts, $query ) {
+    if ( is_admin() || ! $query->is_main_query() || $posts ) return $posts;
+    if ( empty( $_GET['vpg_preview'] ) ) return $posts;
+
+    $pid = (int) $query->get( 'p' );
+    if ( ! $pid ) return $posts;
+    $post = get_post( $pid );
+    if ( ! $post || ! in_array( $post->post_status, [ 'pending', 'draft' ], true ) ) return $posts;
+
+    $token = sanitize_text_field( wp_unslash( $_GET['vpg_preview'] ) );
+    $saved = (string) get_post_meta( $pid, '_vpg_preview_token', true );
+    if ( ! $saved || ! hash_equals( $saved, $token ) ) return $posts;
+
+    // Valid token · surface the post and keep robots away
+    add_action( 'wp_head', function () { echo '<meta name="robots" content="noindex,nofollow">' . "\n"; }, 1 );
+    $post->post_status = 'publish'; // in-memory only · lets the template render
+    return [ $post ];
+}, 10, 2 );

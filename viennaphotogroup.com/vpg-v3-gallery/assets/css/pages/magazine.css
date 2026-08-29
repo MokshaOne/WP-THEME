@@ -106,3 +106,47 @@
 .vpg-mag-cover-card .vpg-card__media { box-shadow: 0 12px 32px rgba(15,10,4,0.18); }
 .vpg-mag-cover-card--lead h3 { font-size: var(--vpg-fs-h3); }
 .vpg-mag-cover-card--lead { padding: var(--vpg-sp-6); }
+
+/* ── Typography pass · reading comfort in the issue reader ────────── */
+.vpg-mag-article__body {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-wrap: pretty;
+}
+.vpg-mag-article__body p { orphans: 2; widows: 2; }
+.vpg-mag-article__body figure { margin: 2.2rem 0; }
+.vpg-mag-article__body figcaption {
+  font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--g-mid, #6A6A6A); margin-top: .6rem;
+}
+
+/* Full-bleed plate · a photograph presented as its own wall */
+.vpg-mag-article__body figure.plate {
+  margin: 3rem calc(50% - 50vw); padding: 0 clamp(16px, 4vw, 48px);
+}
+.vpg-mag-article__body figure.plate img { width: 100%; height: auto; display: block; }
+.vpg-mag-article__body figure.plate figcaption { padding: 0 4px; }
+
+/* Pull quote · red hairline, editorial voice */
+.vpg-mag-article__body blockquote.pull {
+  border-left: 3px solid var(--g-red, #E5341F);
+  margin: 2.4rem 0; padding: .4rem 0 .4rem 1.4rem;
+  font-size: 1.35em; line-height: 1.35; font-style: italic; color: var(--g-ink-2, #2C2C2C);
+}
+
+/* Image pair · two frames side by side, stacked on small screens */
+.vpg-mag-article__body .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 2.2rem 0; }
+.vpg-mag-article__body .pair figure { margin: 0; }
+@media (max-width: 640px) { .vpg-mag-article__body .pair { grid-template-columns: 1fr; } }
+
+/* Continue-reading chip · offered when a reader returns to an issue */
+.vpg-continue {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 80;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--g-ink, #0B0B0B); color: #fff;
+  padding: 12px 18px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  box-shadow: 0 8px 30px rgba(0,0,0,.25);
+}
+.vpg-continue button { background: var(--g-red, #E5341F); color: #fff; border: 0; padding: 8px 14px;
+  font: inherit; cursor: pointer; }
+.vpg-continue .x { background: none; border: 0; color: rgba(255,255,255,.6); cursor: pointer; font-size: 16px; padding: 0 2px; }

@@ -44,6 +44,33 @@ $is_print  = ! empty( $_GET['vpg_print'] );
         if (!ticking) { ticking = true; requestAnimationFrame(paint); }
     }, { passive: true });
     paint();
+
+    // Continue reading · remembers the scroll position per issue (this browser only)
+    try {
+        var key = 'vpg-read-<?php echo (int) get_the_ID(); ?>';
+        var saved = parseInt(localStorage.getItem(key) || '0', 10);
+        if (saved > 800 && window.scrollY < 200) {
+            var chip = document.createElement('div');
+            chip.className = 'vpg-continue';
+            chip.innerHTML = '<span><?php echo esc_js( __( 'Continue where you left off?', 'vpg-v2' ) ); ?></span>' +
+                '<button type="button"><?php echo esc_js( __( 'Continue', 'vpg-v2' ) ); ?></button>' +
+                '<button type="button" class="x" aria-label="Dismiss">×</button>';
+            document.body.appendChild(chip);
+            chip.querySelector('button').addEventListener('click', function () {
+                window.scrollTo({ top: saved, behavior: 'smooth' });
+                chip.remove();
+            });
+            chip.querySelector('.x').addEventListener('click', function () { chip.remove(); });
+            setTimeout(function () { if (chip.parentNode) chip.remove(); }, 12000);
+        }
+        var saveT;
+        window.addEventListener('scroll', function () {
+            clearTimeout(saveT);
+            saveT = setTimeout(function () {
+                try { localStorage.setItem(key, String(Math.round(window.scrollY))); } catch (e) {}
+            }, 400);
+        }, { passive: true });
+    } catch (e) {}
 }());
 </script>
 <?php endif; ?>

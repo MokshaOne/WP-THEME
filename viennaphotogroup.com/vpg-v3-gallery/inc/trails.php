@@ -343,6 +343,7 @@ function vpg_trail_render_extras( $id ) {
         <button type="button" class="g-btn g-btn--ghost" id="vpg-trail-live" style="font-size:12px">▶ <?php esc_html_e( 'Live mode', 'vpg-v2' ); ?></button>
         <a class="g-btn g-btn--ghost" style="font-size:12px" href="<?php echo esc_url( home_url( '/trail-print/' . $id . '/' ) ); ?>" target="_blank">⧉ <?php esc_html_e( 'Print heft + QR', 'vpg-v2' ); ?></a>
         <a class="g-btn g-btn--ghost" style="font-size:12px" href="<?php echo esc_url( home_url( '/trail-bingo/' . $id . '/' ) ); ?>" target="_blank">▦ <?php esc_html_e( 'Bingo card', 'vpg-v2' ); ?></a>
+        <a class="g-btn g-btn--ghost" style="font-size:12px" href="<?php echo esc_url( home_url( '/print/leporello/' . $id . '/' ) ); ?>" target="_blank">📐 <?php esc_html_e( 'Leporello', 'vpg-v2' ); ?></a>
         <a class="g-btn g-btn--ghost" style="font-size:12px" href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_trail_gpx&trail=' . $id ) ); ?>">↓ GPX</a>
         <?php if ( $uid ) : ?>
           <?php foreach ( [ 'walk' => __( '✓ I walked this', 'vpg-v2' ), 'remix' => __( '⑃ Remix this route', 'vpg-v2' ), 'event' => __( '⚑ Make it a meetup', 'vpg-v2' ) ] as $act => $lbl ) : ?>
@@ -534,7 +535,7 @@ add_filter( 'query_vars', function ( $v ) { $v[] = 'vpg_trailprint'; $v[] = 'vpg
 /* Flush rewrite rules once when the rule set changes (registers the new
    trail endpoints — and any earlier cluster's rules — on an existing site). */
 add_action( 'init', function () {
-    $want = 'c04-events-1';
+    $want = 'c06-print-1';
     if ( get_option( 'vpg_rw_ver' ) !== $want ) {
         flush_rewrite_rules( false );
         update_option( 'vpg_rw_ver', $want, false );

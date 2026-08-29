@@ -249,6 +249,13 @@ $is_print  = ! empty( $_GET['vpg_print'] );
             <a class="g-btn g-btn--red" href="<?php echo esc_url( add_query_arg( 'pdf', 1, get_permalink() ) ); ?>" target="_blank"><?php esc_html_e( 'Download this issue', 'vpg-v2' ); ?> ↓</a>
         <?php endif; ?>
         <a class="g-btn g-btn--ghost" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>"><?php esc_html_e( 'All issues', 'vpg-v2' ); ?> →</a>
+        <?php // Cluster 06 · print this issue as a broadsheet or exhibition labels
+        if ( function_exists( 'vpg_print_link' ) ) : ?>
+        <p style="margin-top:14px;font-size:12px;color:var(--vpg-muted,#6A6A6A)"><?php esc_html_e( 'Also in print:', 'vpg-v2' ); ?>
+          <a href="<?php echo esc_url( vpg_print_link( 'broadsheet', get_the_ID() ) ); ?>" target="_blank">🗞 <?php esc_html_e( 'Broadsheet', 'vpg-v2' ); ?></a> ·
+          <a href="<?php echo esc_url( vpg_print_link( 'labels', get_the_ID() ) ); ?>" target="_blank">🏷 <?php esc_html_e( 'Exhibition labels', 'vpg-v2' ); ?></a>
+        </p>
+        <?php endif; ?>
     </div>
 </section>
 

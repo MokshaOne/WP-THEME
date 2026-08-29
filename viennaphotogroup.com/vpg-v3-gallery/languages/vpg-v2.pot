@@ -6725,3 +6725,257 @@ msgid "%d frame"
 msgid_plural "%d frames"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "0236 · Read the online version"
+msgstr ""
+
+msgid "Print / Save as PDF"
+msgstr ""
+
+msgid "Poster"
+msgstr ""
+
+msgid "Sticker sheet"
+msgstr ""
+
+msgid "Stickers"
+msgstr ""
+
+msgid "The red square for your camera cap. Cut along the dashes."
+msgstr ""
+
+msgid "Postcard set"
+msgstr ""
+
+msgid "Postcards of %s"
+msgstr ""
+
+msgid "No images."
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Business card"
+msgstr ""
+
+msgid "Member card"
+msgstr ""
+
+msgid "Exhibition labels"
+msgstr ""
+
+msgid "No works."
+msgstr ""
+
+msgid "Calendar %d"
+msgstr ""
+
+msgid "Leporello"
+msgstr ""
+
+msgid "Broadsheet"
+msgstr ""
+
+msgid "Shipping sleeve"
+msgstr ""
+
+msgid "Absender / Return:"
+msgstr ""
+
+msgid "Mailer"
+msgstr ""
+
+msgid "Archive box %d"
+msgstr ""
+
+msgid "The year on USB · Vienna Photo Group"
+msgstr ""
+
+msgid "Archive box"
+msgstr ""
+
+msgid "The stamp"
+msgstr ""
+
+msgid "Take this to a stamp maker, or print and cut for your prints."
+msgstr ""
+
+msgid "Stamp"
+msgstr ""
+
+msgid "0215 · Joint printer order"
+msgstr ""
+
+msgid "0231 · Print subscription interest"
+msgstr ""
+
+msgid "0229 · Print swap · ring exchange"
+msgstr ""
+
+msgid "0225 · Photo flea market (proceeds → coffee fund)"
+msgstr ""
+
+msgid "0240 · Archive scan day"
+msgstr ""
+
+msgid "0223 · Touring exhibition through the districts"
+msgstr ""
+
+msgid "0221 · Bookbinding workshop"
+msgstr ""
+
+msgid "Optional note (how many / what)"
+msgstr ""
+
+msgid "I’m in"
+msgstr ""
+
+msgid "Sign in to join the list."
+msgstr ""
+
+msgid "0207 · Print-on-demand — services that leave you free"
+msgstr ""
+
+msgid "We stay independent: no exclusive deal. Documented options and their trade-offs live here so any member can order without lock-in."
+msgstr ""
+
+msgid "0209 · Framing & passepartout sizes"
+msgstr ""
+
+msgid "Standard frame sizes per plate ratio, so a print drops straight into an off-the-shelf frame. 30×40, 40×50, 50×70 cm with matching mat cut-outs."
+msgstr ""
+
+msgid "0210 · Riso experiment"
+msgstr ""
+
+msgid "A special series in a two-colour risograph look — notes on separations, spot colours and paper stock."
+msgstr ""
+
+msgid "0212 · Photobook templates"
+msgstr ""
+
+msgid "InDesign & Scribus starting templates for member books — grids, bleed, spine calculators."
+msgstr ""
+
+msgid "0222 · Paper & profile guide"
+msgstr ""
+
+msgid "Which paper for which look — matte, baryta, newsprint — with the ICC profiles our labs expect."
+msgstr ""
+
+msgid "0228 · Hand-print labs in Vienna"
+msgstr ""
+
+msgid "A cared-for list of darkroom & hand-print labs (Belichter) — who does silver gelatin, who does C-print."
+msgstr ""
+
+msgid "0230 · Cyanotype insert"
+msgstr ""
+
+msgid "One handmade insert per year in a tiny edition — the recipe, the timing, who coats."
+msgstr ""
+
+msgid "0233 · Does the annual need an ISBN?"
+msgstr ""
+
+msgid "Clarified once: when an ISBN helps (libraries, shops) and how to register in Austria."
+msgstr ""
+
+msgid "0234 · Legal deposit (Pflichtexemplar)"
+msgstr ""
+
+msgid "What the Austrian National Library requires of a printed run, and how many copies to send."
+msgstr ""
+
+msgid "0235 · Exhibition insurance runbook"
+msgstr ""
+
+msgid "What a hanging really needs — transport, nail-to-nail cover, who signs. A checklist before any wall goes up."
+msgstr ""
+
+msgid "0237 · Print error culture"
+msgstr ""
+
+msgid "A page for our misprints, with humour. Every issue’s best typo, kept on purpose."
+msgstr ""
+
+msgid "0239 · Catalogue co-operation"
+msgstr ""
+
+msgid "An exhibition catalogue made with a friendly club — how costs, credits and print split."
+msgstr ""
+
+msgid "Print studio"
+msgstr ""
+
+msgid "Public studio page: %s"
+msgstr ""
+
+msgid "Knowledge base"
+msgstr ""
+
+msgid "Section title"
+msgstr ""
+
+msgid "0206/0213/0214/0224/0238 · Physical programme"
+msgstr ""
+
+msgid "One per line — shown on the studio page (exhibition concept, gallery evenings, shop windows, culture column, book launch…)."
+msgstr ""
+
+msgid "0220 · Photo walls in Vienna"
+msgstr ""
+
+msgid "Where photography hangs permanently. One per line: “Name | lat | lng | note”."
+msgstr ""
+
+msgid "Interest lists"
+msgstr ""
+
+msgid "Print knowledge"
+msgstr ""
+
+msgid "What we know about <em>print</em>."
+msgstr ""
+
+msgid "Wall calendar"
+msgstr ""
+
+msgid "My contact sheet"
+msgstr ""
+
+msgid "Off the screen"
+msgstr ""
+
+msgid "The <em>print</em> studio."
+msgstr ""
+
+msgid "Posters, postcards, stickers, a calendar, a contact sheet — every plate wants paper. Generate, print, hang."
+msgstr ""
+
+msgid "Generators"
+msgstr ""
+
+msgid "Print knowledge base"
+msgstr ""
+
+msgid "0220 · Where photography hangs in Wien"
+msgstr ""
+
+msgid "Physical programme"
+msgstr ""
+
+msgid "Count me in"
+msgstr ""
+
+msgid "%d member interested"
+msgid_plural "%d members interested"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Also in print:"
+msgstr ""
+
+msgid "This route is archived. Its up-to-date successor is <a href="%1$s"><strong>%2$s</strong></a>."
+msgstr ""

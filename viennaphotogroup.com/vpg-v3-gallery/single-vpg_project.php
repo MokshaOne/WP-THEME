@@ -12,10 +12,11 @@ get_header();
     $founder  = (int) get_post_field( 'post_author', get_the_ID() );
     $is_fndr  = $me && ( $me === $founder || current_user_can( 'edit_others_posts' ) );
     $is_done  = (bool) get_post_meta( get_the_ID(), '_vpg_project_done', true );
+    $is_circ  = get_post_meta( get_the_ID(), '_vpg_circle', true ) === '1';
 ?>
   <section class="g-phero"><div class="g-wrap"><div class="g-phero__grid">
     <div>
-      <p class="g-kicker" style="margin-bottom:16px">● <?php echo $is_done ? esc_html__( 'Project · finished — magazine-ready', 'vpg-v2' ) : esc_html__( 'Project room', 'vpg-v2' ); ?></p>
+      <p class="g-kicker" style="margin-bottom:16px">● <?php echo $is_done ? esc_html__( 'Project · finished — magazine-ready', 'vpg-v2' ) : ( $is_circ ? esc_html__( 'Critique circle · six chairs, honest eyes', 'vpg-v2' ) : esc_html__( 'Project room', 'vpg-v2' ) ); ?></p>
       <h1 class="g-display g-phero__title"><?php the_title(); ?></h1>
       <div class="g-prose" style="margin-top:16px"><?php the_content(); ?></div>
     </div>
@@ -98,6 +99,15 @@ get_header();
     </form>
   </div></section>
   <?php endif; endif; ?>
+
+  <?php // 0402 · circles live from feedback — the thread is members-only to write
+  if ( $is_circ && ( $is_in || current_user_can( 'edit_others_posts' ) ) ) : ?>
+  <section class="g-section"><div class="g-wrap" style="max-width:760px">
+    <div class="g-head"><div><span class="g-kicker"><?php esc_html_e( 'The critique thread', 'vpg-v2' ); ?></span>
+      <h2 class="g-head__t"><?php echo wp_kses_post( __( 'Say it <em>kindly, clearly</em>.', 'vpg-v2' ) ); ?></h2></div></div>
+    <?php comments_template(); ?>
+  </div></section>
+  <?php endif; ?>
 
 <?php endwhile; ?>
 </main>

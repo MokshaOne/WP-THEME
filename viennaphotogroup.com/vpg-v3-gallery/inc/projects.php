@@ -16,7 +16,7 @@ add_action( 'init', function () {
         'public'       => true,
         'show_in_rest' => true,
         'show_in_menu' => 'edit.php?post_type=vpg_event',
-        'supports'     => [ 'title', 'editor', 'thumbnail', 'author' ],
+        'supports'     => [ 'title', 'editor', 'thumbnail', 'author', 'comments' ],
         'has_archive'  => 'projects',
         'rewrite'      => [ 'slug' => 'project', 'with_front' => false ],
         'labels'       => [ 'name' => __( 'Project rooms', 'vpg-v2' ), 'singular_name' => __( 'Project', 'vpg-v2' ) ],
@@ -141,14 +141,17 @@ add_action( 'admin_post_vpg_project_create', function () {
     if ( ! $title ) { wp_safe_redirect( wp_get_referer() ?: home_url() ); exit; }
 
     $pid = wp_insert_post( [
-        'post_type'    => 'vpg_project',
-        'post_status'  => 'publish', // a room, not a publication — no review desk
-        'post_title'   => $title,
-        'post_content' => $about,
-        'post_author'  => get_current_user_id(),
+        'post_type'      => 'vpg_project',
+        'post_status'    => 'publish', // a room, not a publication — no review desk
+        'post_title'     => $title,
+        'post_content'   => $about,
+        'post_author'    => get_current_user_id(),
+        'comment_status' => 'open',
     ] );
     if ( $pid && ! is_wp_error( $pid ) ) {
         update_post_meta( $pid, '_vpg_project_members', [ get_current_user_id() ] );
+        // 0402 · a critique circle is a small room with feedback as its craft
+        if ( ! empty( $_POST['circle'] ) ) update_post_meta( $pid, '_vpg_circle', '1' );
         wp_safe_redirect( get_permalink( $pid ) );
         exit;
     }
@@ -167,6 +170,10 @@ add_action( 'admin_post_vpg_project_join', function () {
             if ( (int) get_post_field( 'post_author', $pid ) !== $uid ) { // the founder stays
                 $members = array_values( array_diff( $members, [ $uid ] ) );
             }
+        } elseif ( get_post_meta( $pid, '_vpg_circle', true ) === '1' && count( $members ) >= 6 ) {
+            // Circles stay small on purpose — six chairs, no more.
+            wp_safe_redirect( get_permalink( $pid ) );
+            exit;
         } else {
             $members[] = $uid;
             vpg_notify_user( (int) get_post_field( 'post_author', $pid ),

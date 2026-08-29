@@ -144,3 +144,27 @@ self.addEventListener('fetch', function (event) {
         })
     );
 });
+
+
+/* 0607 · Web push — payloads are encrypted server-side (RFC 8291) */
+self.addEventListener('push', function (event) {
+    var data = {};
+    try { data = event.data ? event.data.json() : {}; } catch (e) {}
+    event.waitUntil(self.registration.showNotification(data.title || 'Viennaphotogroup.', {
+        body: data.body || '',
+        icon: '/wp-content/themes/vpg-v3-gallery/assets/img/icon-192.png',
+        badge: '/wp-content/themes/vpg-v3-gallery/assets/img/icon-192.png',
+        data: { url: data.url || '/' }
+    }));
+});
+
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+    var url = (event.notification.data && event.notification.data.url) || '/';
+    event.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].url === url && 'focus' in list[i]) return list[i].focus();
+        }
+        return clients.openWindow(url);
+    }));
+});

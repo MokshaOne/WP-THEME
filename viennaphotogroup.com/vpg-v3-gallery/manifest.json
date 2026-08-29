@@ -35,6 +35,11 @@
     },
     "shortcuts": [
         {
+            "name": "Quick Pin",
+            "url": "/quickpin/",
+            "description": "Photo + position, one screen"
+        },
+        {
             "name": "The Map",
             "url": "/locations/",
             "description": "118+ curated Vienna locations"

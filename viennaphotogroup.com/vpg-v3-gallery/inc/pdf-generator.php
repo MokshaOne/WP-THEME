@@ -167,6 +167,7 @@ CSS;
             $sec_l = function_exists( 'vpg_mag_sections' ) ? ( vpg_mag_sections()[ $a['section'] ?? '' ] ?? '' ) : '';
             echo esc_html( trim( ( $sec_l && ( $a['section'] ?? '' ) !== '' ? $sec_l . ' · ' : '' ) . ( $a['author'] ?: 'Article' ) ) );
         ?></p>
+        <bookmark content="<?php echo esc_attr( $a['title'] ?: 'Untitled' ); ?>"></bookmark>
         <h2><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></h2>
         <p class="ar-author"><?php echo esc_html( trim( ( $a['author'] ?? '' ) . ' · Vienna Photo Group', ' ·' ) ); ?></p>
         <?php if ( $img_path && ! $body_has_lead && file_exists( $img_path ) ) : ?>
@@ -260,6 +261,10 @@ CSS;
         $mpdf->SetTitle( $title );
         $mpdf->SetAuthor( 'Vienna Photo Group' );
         $mpdf->SetCreator( 'VPG v3' );
+        // 0197 · every bit of structure a shared-hosting PDF can carry:
+        // document language, subject metadata, and a bookmark outline.
+        $mpdf->SetSubject( __( 'A free, member-run photography magazine — Vienna', 'vpg-v2' ) );
+        $mpdf->SetKeywords( 'photography, Vienna, Wien, magazine, community' );
 
         // Cover carries no folio · the footer is set only after the cover
         // page is closed (AddPage), so it starts with the contents page.

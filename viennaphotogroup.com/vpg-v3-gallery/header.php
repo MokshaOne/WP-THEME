@@ -70,6 +70,8 @@ $vpg_here = function_exists( 'vpg_current_url' ) ? vpg_current_url() : '';
             <?php else : ?>
                 <a class="g-btn g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join VPG', 'vpg-v2' ); ?></a>
             <?php endif; ?>
+            <?php $vpg_lang = function_exists( 'vpg_current_lang' ) ? vpg_current_lang() : 'en'; ?>
+            <a class="g-burger" style="display:inline-flex;font-size:10px;font-weight:800;letter-spacing:.08em;text-decoration:none" href="<?php echo esc_url( add_query_arg( 'lang', $vpg_lang === 'de' ? 'en' : 'de' ) ); ?>" aria-label="<?php esc_attr_e( 'Switch language', 'vpg-v2' ); ?>"><?php echo $vpg_lang === 'de' ? 'EN' : 'DE'; ?></a>
             <button type="button" id="vpg-cmdk-open" class="g-burger" style="display:inline-flex" aria-label="<?php esc_attr_e( 'Search (Cmd+K)', 'vpg-v2' ); ?>">⌕</button>
             <label class="g-burger" for="vpg-nav-toggle" aria-label="<?php esc_attr_e( 'Toggle menu', 'vpg-v2' ); ?>"><?php esc_html_e( 'Menu', 'vpg-v2' ); ?></label>
         </div>

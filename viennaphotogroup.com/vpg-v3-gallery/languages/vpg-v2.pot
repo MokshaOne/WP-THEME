@@ -4653,3 +4653,303 @@ msgstr ""
 #: templates/page-submit.php
 msgid "Street in five chapters"
 msgstr ""
+
+#: archive-vpg_competition.php
+msgid "The <em>chronicle</em>."
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "Every competition the collective has run — winners, jury words, and the open calls you can still enter. No leaderboards, just moments."
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "Held so far"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "Jury duty"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "Two sentences, always"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "decided"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "● open — enter now"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "— the jury"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "Winning photo by %s"
+msgstr ""
+
+#: archive-vpg_competition.php
+msgid "No competitions yet — the first monthly challenge starts the chronicle."
+msgstr ""
+
+#: header.php
+msgid "Switch language"
+msgstr ""
+
+#: inc/mobile.php
+msgid "✎ Draft restored from this device."
+msgstr ""
+
+#: inc/mobile.php
+msgid "Offline — keep writing, your draft is saved on this device."
+msgstr ""
+
+#: inc/pdf-generator.php
+msgid "A free, member-run photography magazine — Vienna"
+msgstr ""
+
+#: inc/security.php
+msgid "One-time code · only if you use 2FA"
+msgstr ""
+
+#: inc/security.php
+msgid "<strong>Error:</strong> your one-time code is missing or wrong."
+msgstr ""
+
+#: inc/security.php
+msgid "Editorial accounts need two-factor auth."
+msgstr ""
+
+#: inc/security.php
+msgid "You publish other people’s work — protect the keys."
+msgstr ""
+
+#: inc/security.php
+msgid "Set it up now →"
+msgstr ""
+
+#: inc/security.php
+msgid "This authenticator uses an unsupported key type."
+msgstr ""
+
+#: inc/security.php
+msgid "Sign in with a passkey"
+msgstr ""
+
+#: inc/security.php
+msgid "Passkey sign-in failed — use your password."
+msgstr ""
+
+#: inc/security.php
+msgid "Passkey sign-in cancelled."
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Critique circle · six chairs, honest eyes"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "The critique thread"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Say it <em>kindly, clearly</em>."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Critique circle (max. 6)"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Account security"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Two-factor is on — codes from your authenticator app protect every login."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Turn 2FA off"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Add this secret to your authenticator app (or open the link on your phone), then confirm with one code:"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Open in authenticator app →"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Confirm & arm 2FA"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Two-factor auth: a six-digit code from your phone on every login. Editors: this is expected of you."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Set up 2FA"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Passkeys"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Sign in with Face ID, fingerprint or your device PIN — no password typed, nothing to phish."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "+ Add a passkey"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Could not save the passkey."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Cancelled."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Push notifications"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Event reminders and replies on your lockscreen — opt-in, this device only, off with one tap."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Enable on this device"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Blocked by the browser."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "✓ On — this device now hears the collective."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Failed to register."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Your year"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Open your personal year in review →"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Members <em>pin</em>."
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Quick pin"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Seen it? <em>Pin it</em>."
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "One photo, your position, a name — editorial fills in the rest with you. Goes straight to the review desk."
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "The photo"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "What is it?"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Rooftop line at Sophienbrücke"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "One line for editorial · optional"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Best after rain, tripod ok."
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Reading your position…"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Pin it → review desk"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "No GPS — editorial will place the pin from your note."
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Position locked:"
+msgstr ""
+
+#: templates/page-quickpin.php
+msgid "Position unavailable — editorial will place the pin from your note."
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Your year is <em>yours</em>."
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Log in to see it"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "%d · your year"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Twelve months, counted honestly. Only you see this page."
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Other years"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "times your work was seen"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "quiet thank-yous received"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "walks you joined"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Your most-seen piece"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "%d views this year"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Where you stand"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "Next: %1$s — %2$d of %3$d on the current milestone."
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "A quiet year on the site — the city was still out there. Next year counts from January."
+msgstr ""

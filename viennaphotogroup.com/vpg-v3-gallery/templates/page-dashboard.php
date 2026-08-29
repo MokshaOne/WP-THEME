@@ -557,12 +557,136 @@ get_header();
           <input type="hidden" name="action" value="vpg_project_create">
           <input class="g-input" type="text" name="title" required placeholder="<?php esc_attr_e( 'Project title — e.g. “Wien bei Regen”', 'vpg-v2' ); ?>" style="flex:2;min-width:220px">
           <input class="g-input" type="text" name="about" placeholder="<?php esc_attr_e( 'One line on the idea', 'vpg-v2' ); ?>" style="flex:3;min-width:260px">
+          <label style="display:flex;gap:8px;align-items:center;font-size:12px;font-weight:700"><input type="checkbox" name="circle" value="1"> <?php esc_html_e( 'Critique circle (max. 6)', 'vpg-v2' ); ?></label>
           <button class="g-btn" type="submit"><?php esc_html_e( 'Open the room', 'vpg-v2' ); ?></button>
         </form>
       </div>
     </div>
   </section>
   <?php endif; ?>
+
+  <!-- 0779/0780/0607 · Security & signals -->
+  <section class="g-section g-section--tight" id="security" style="padding-bottom:0">
+    <div class="g-wrap">
+      <div style="border:1px solid var(--g-line-2);padding:18px 24px;display:grid;gap:20px">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Account security', 'vpg-v2' ); ?></span>
+          <?php $totp_on = get_user_meta( $u->ID, '_vpg_totp_on', true ) === '1';
+                $totp_pending = get_user_meta( $u->ID, '_vpg_totp_pending', true ); ?>
+          <?php if ( $totp_on ) : ?>
+            <p style="margin:6px 0 10px;font-size:13px"><strong style="color:var(--g-red)">●</strong> <?php esc_html_e( 'Two-factor is on — codes from your authenticator app protect every login.', 'vpg-v2' ); ?></p>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:flex;gap:10px;flex-wrap:wrap">
+              <?php wp_nonce_field( 'vpg_totp' ); ?>
+              <input type="hidden" name="action" value="vpg_totp_disable">
+              <input class="g-input" type="text" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" style="max-width:120px">
+              <button class="g-btn g-btn--ghost" type="submit"><?php esc_html_e( 'Turn 2FA off', 'vpg-v2' ); ?></button>
+            </form>
+          <?php elseif ( $totp_pending ) : ?>
+            <p style="margin:6px 0 10px;font-size:13px"><?php esc_html_e( 'Add this secret to your authenticator app (or open the link on your phone), then confirm with one code:', 'vpg-v2' ); ?></p>
+            <p style="font-family:ui-monospace,monospace;font-size:15px;letter-spacing:.12em;border:1px dashed var(--g-line);display:inline-block;padding:8px 14px"><?php echo esc_html( trim( chunk_split( $totp_pending, 4, ' ' ) ) ); ?></p>
+            <p style="margin:4px 0 10px"><a class="g-link" style="font-size:12px" href="<?php echo esc_url( 'otpauth://totp/' . rawurlencode( 'VPG:' . $u->user_login ) . '?secret=' . $totp_pending . '&issuer=' . rawurlencode( get_bloginfo( 'name' ) ) ); ?>"><?php esc_html_e( 'Open in authenticator app →', 'vpg-v2' ); ?></a></p>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:flex;gap:10px;flex-wrap:wrap">
+              <?php wp_nonce_field( 'vpg_totp' ); ?>
+              <input type="hidden" name="action" value="vpg_totp_confirm">
+              <input class="g-input" type="text" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" style="max-width:120px" required>
+              <button class="g-btn g-btn--red" type="submit"><?php esc_html_e( 'Confirm & arm 2FA', 'vpg-v2' ); ?></button>
+            </form>
+          <?php else : ?>
+            <p style="margin:6px 0 10px;font-size:13px;color:var(--g-mid)"><?php esc_html_e( 'Two-factor auth: a six-digit code from your phone on every login. Editors: this is expected of you.', 'vpg-v2' ); ?></p>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+              <?php wp_nonce_field( 'vpg_totp' ); ?>
+              <input type="hidden" name="action" value="vpg_totp_setup">
+              <button class="g-btn" type="submit"><?php esc_html_e( 'Set up 2FA', 'vpg-v2' ); ?></button>
+            </form>
+          <?php endif; ?>
+        </div>
+
+        <div style="border-top:1px solid var(--g-line);padding-top:16px">
+          <span class="g-kicker"><?php esc_html_e( 'Passkeys', 'vpg-v2' ); ?></span>
+          <p style="margin:6px 0 10px;font-size:13px;color:var(--g-mid)"><?php esc_html_e( 'Sign in with Face ID, fingerprint or your device PIN — no password typed, nothing to phish.', 'vpg-v2' ); ?></p>
+          <?php $pks = function_exists( 'vpg_passkeys' ) ? vpg_passkeys( $u->ID ) : []; ?>
+          <?php foreach ( $pks as $pk ) : ?>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-flex;gap:8px;align-items:center;margin:0 14px 8px 0">
+              <?php wp_nonce_field( 'vpg_passkey_remove' ); ?>
+              <input type="hidden" name="action" value="vpg_pk_remove">
+              <input type="hidden" name="key_id" value="<?php echo esc_attr( $pk['id'] ); ?>">
+              <span style="font-size:12px;font-weight:700">🔑 <?php echo esc_html( $pk['label'] ); ?></span>
+              <button type="submit" style="background:none;border:0;padding:0;cursor:pointer;color:var(--g-mid);font-size:11px">✕</button>
+            </form>
+          <?php endforeach; ?>
+          <p style="margin:4px 0 0"><button class="g-btn g-btn--ghost" type="button" id="vpg-pk-add"><?php esc_html_e( '+ Add a passkey', 'vpg-v2' ); ?></button>
+          <span id="vpg-pk-add-msg" class="g-meta"></span></p>
+          <script>
+          (function () {
+            var btn = document.getElementById('vpg-pk-add'), msg = document.getElementById('vpg-pk-add-msg');
+            if (!window.PublicKeyCredential) { btn.hidden = true; return; }
+            function b2b(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a.buffer; }
+            function b2u(b) { var a = new Uint8Array(b), s = ''; for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+            var ajax = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>, nonce = <?php echo wp_json_encode( wp_create_nonce( 'vpg_passkey' ) ); ?>;
+            btn.addEventListener('click', function () {
+              msg.textContent = '…';
+              fetch(ajax + '?action=vpg_pk_reg_options&_ajax_nonce=' + nonce).then(function (r) { return r.json(); }).then(function (res) {
+                var o = res.data;
+                o.challenge = b2b(o.challenge);
+                o.user.id = b2b(o.user.id);
+                o.excludeCredentials = (o.excludeCredentials || []).map(function (c) { return { type: c.type, id: b2b(c.id) }; });
+                return navigator.credentials.create({ publicKey: o });
+              }).then(function (cred) {
+                var body = new URLSearchParams();
+                body.set('action', 'vpg_pk_reg_verify'); body.set('_ajax_nonce', nonce);
+                body.set('clientDataJSON', b2u(cred.response.clientDataJSON));
+                body.set('attestationObject', b2u(cred.response.attestationObject));
+                body.set('label', navigator.platform || 'Device');
+                return fetch(ajax, { method: 'POST', body: body, credentials: 'same-origin' });
+              }).then(function (r) { return r.json(); }).then(function (res) {
+                if (res && res.success) location.reload();
+                else msg.textContent = (res && res.data) || <?php echo wp_json_encode( __( 'Could not save the passkey.', 'vpg-v2' ) ); ?>;
+              }).catch(function () { msg.textContent = <?php echo wp_json_encode( __( 'Cancelled.', 'vpg-v2' ) ); ?>; });
+            });
+          })();
+          </script>
+        </div>
+
+        <div style="border-top:1px solid var(--g-line);padding-top:16px">
+          <span class="g-kicker"><?php esc_html_e( 'Push notifications', 'vpg-v2' ); ?></span>
+          <p style="margin:6px 0 10px;font-size:13px;color:var(--g-mid)"><?php esc_html_e( 'Event reminders and replies on your lockscreen — opt-in, this device only, off with one tap.', 'vpg-v2' ); ?></p>
+          <p style="margin:0"><button class="g-btn g-btn--ghost" type="button" id="vpg-push-btn"><?php esc_html_e( 'Enable on this device', 'vpg-v2' ); ?></button>
+          <span id="vpg-push-msg" class="g-meta"></span></p>
+          <script>
+          (function () {
+            var btn = document.getElementById('vpg-push-btn'), msg = document.getElementById('vpg-push-msg');
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) { btn.hidden = true; return; }
+            var ajax = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>,
+                nonce = <?php echo wp_json_encode( wp_create_nonce( 'vpg_push' ) ); ?>,
+                vapid = <?php echo wp_json_encode( function_exists( 'vpg_vapid_keys' ) ? ( vpg_vapid_keys()['pub'] ?? '' ) : '' ); ?>;
+            function keyBuf(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+            btn.addEventListener('click', function () {
+              msg.textContent = '…';
+              Notification.requestPermission().then(function (perm) {
+                if (perm !== 'granted') { msg.textContent = <?php echo wp_json_encode( __( 'Blocked by the browser.', 'vpg-v2' ) ); ?>; return; }
+                navigator.serviceWorker.ready.then(function (reg) {
+                  return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBuf(vapid) });
+                }).then(function (sub) {
+                  var body = new URLSearchParams();
+                  body.set('action', 'vpg_push_subscribe'); body.set('_ajax_nonce', nonce);
+                  body.set('sub', JSON.stringify(sub));
+                  return fetch(ajax, { method: 'POST', body: body, credentials: 'same-origin' });
+                }).then(function (r) { return r.json(); }).then(function (res) {
+                  msg.textContent = res && res.success ? <?php echo wp_json_encode( __( '✓ On — this device now hears the collective.', 'vpg-v2' ) ); ?> : <?php echo wp_json_encode( __( 'Failed to register.', 'vpg-v2' ) ); ?>;
+                }).catch(function () { msg.textContent = <?php echo wp_json_encode( __( 'Failed to register.', 'vpg-v2' ) ); ?>; });
+              });
+            });
+          })();
+          </script>
+        </div>
+
+        <div style="border-top:1px solid var(--g-line);padding-top:16px">
+          <span class="g-kicker"><?php esc_html_e( 'Your year', 'vpg-v2' ); ?></span>
+          <p style="margin:6px 0 0;font-size:13px"><a class="g-link" href="<?php echo esc_url( home_url( '/year/' ) ); ?>"><?php esc_html_e( 'Open your personal year in review →', 'vpg-v2' ); ?></a></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- 0435 · Idea box · anonymous by design -->
   <section class="g-section--alt g-section--tight">

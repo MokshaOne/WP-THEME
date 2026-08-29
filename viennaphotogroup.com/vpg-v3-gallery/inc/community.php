@@ -25,6 +25,7 @@ function vpg_notify_user( $uid, $text, $url = '' ) {
         'read' => false,
     ] );
     update_user_meta( $uid, '_vpg_notifications', array_slice( $list, 0, 30 ) );
+    do_action( 'vpg_notified', (int) $uid, (string) $text, (string) $url );
 }
 
 function vpg_get_notifications( $uid = null ) {

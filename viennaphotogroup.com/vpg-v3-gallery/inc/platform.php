@@ -230,3 +230,30 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
         }
     } );
 }
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Faceted search · ?s= plus type / year / district filters          */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'pre_get_posts', function ( $q ) {
+    if ( is_admin() || ! $q->is_main_query() || ! $q->is_search() ) return;
+
+    $type = sanitize_key( $_GET['stype'] ?? '' );
+    $ok   = [ 'post', 'vpg_magazine', 'vpg_event', 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'vpg_trail' ];
+    if ( $type && in_array( $type, $ok, true ) ) {
+        $q->set( 'post_type', $type );
+    }
+
+    $year = (int) ( $_GET['syear'] ?? 0 );
+    if ( $year > 2000 && $year < 2100 ) {
+        $q->set( 'year', $year );
+    }
+
+    $district = sanitize_text_field( wp_unslash( $_GET['sdistrict'] ?? '' ) );
+    if ( $district ) {
+        $q->set( 'meta_query', [
+            'relation' => 'OR',
+            [ 'key' => 'location_district', 'value' => $district, 'compare' => 'LIKE' ],
+            [ 'key' => 'shop_district',     'value' => $district, 'compare' => 'LIKE' ],
+        ] );
+    }
+}, 20 );

@@ -30,6 +30,34 @@ $is_search = is_search();
     </div>
   </section>
 
+  <?php if ( $is_search ) :
+      $s_current = sanitize_key( $_GET['stype'] ?? '' );
+      $s_types = [
+          ''             => __( 'All', 'vpg-v2' ),
+          'post'         => __( 'Journal', 'vpg-v2' ),
+          'vpg_location' => __( 'Locations', 'vpg-v2' ),
+          'vpg_studio'   => __( 'Studios', 'vpg-v2' ),
+          'vpg_shop'     => __( 'Shops', 'vpg-v2' ),
+          'vpg_review'   => __( 'Reviews', 'vpg-v2' ),
+          'vpg_tutorial' => __( 'Tutorials', 'vpg-v2' ),
+          'vpg_event'    => __( 'Events', 'vpg-v2' ),
+      ];
+  ?>
+  <!-- Search facets · type chips (year/district also honoured via syear/sdistrict) -->
+  <section class="g-section--tight" style="padding-top:0">
+    <div class="g-wrap">
+      <div class="vpg-map-filter" role="toolbar" aria-label="<?php esc_attr_e( 'Filter results by type', 'vpg-v2' ); ?>">
+        <span class="vpg-map-filter__label">— <?php esc_html_e( 'Type', 'vpg-v2' ); ?></span>
+        <?php foreach ( $s_types as $t => $label ) :
+            $url = add_query_arg( array_filter( [ 's' => get_search_query(), 'stype' => $t ] ), home_url( '/' ) );
+        ?>
+          <a href="<?php echo esc_url( $url ); ?>" class="<?php if ( $s_current === $t ) echo 'is-active'; ?>"><button type="button"><?php echo esc_html( $label ); ?></button></a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <section class="g-section">
     <div class="g-wrap">
       <?php if ( have_posts() ) : ?>

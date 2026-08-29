@@ -18,6 +18,9 @@ add_filter( 'image_editor_output_format', function ( $formats ) {
     return $formats;
 } );
 
+/* ─── Cap giant originals · 2560px is plenty for a 1440 layout ──── */
+add_filter( 'big_image_size_threshold', function () { return 2560; } );
+
 /* ─── Lazy defaults on attachment images ────────────────────────── */
 add_filter( 'wp_get_attachment_image_attributes', function ( $attr ) {
     if ( empty( $attr['loading'] ) )  $attr['loading']  = 'lazy';

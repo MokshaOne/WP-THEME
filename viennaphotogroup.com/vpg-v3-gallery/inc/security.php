@@ -59,3 +59,36 @@ add_action( 'wp_login_failed', function ( $username ) {
 add_action( 'wp_login', function ( $username ) {
     delete_transient( vpg_login_throttle_key( $username ) );
 }, 10, 1 );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Roles · finer than all-or-nothing                                */
+/*    vpg_editor_circle — runs editorial: submissions, magazine,     */
+/*      publishing, comment moderation. No plugins/themes/users.     */
+/*    vpg_curator — assembles issues + reviews submissions, cannot   */
+/*      publish other people's standalone posts.                     */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'init', function () {
+    if ( ! get_role( 'vpg_editor_circle' ) ) {
+        add_role( 'vpg_editor_circle', __( 'VPG Editorial Circle', 'vpg-v2' ), [
+            'read'                   => true,
+            'edit_posts'             => true,
+            'edit_others_posts'      => true,
+            'edit_published_posts'   => true,
+            'publish_posts'          => true,
+            'delete_posts'           => true,
+            'delete_others_posts'    => true,
+            'delete_published_posts' => true,
+            'upload_files'           => true,
+            'moderate_comments'      => true,
+            'edit_pages'             => false,
+        ] );
+    }
+    if ( ! get_role( 'vpg_curator' ) ) {
+        add_role( 'vpg_curator', __( 'VPG Curator', 'vpg-v2' ), [
+            'read'              => true,
+            'edit_posts'        => true,
+            'edit_others_posts' => true,   // opens the magazine editor + queue
+            'upload_files'      => true,
+        ] );
+    }
+}, 5 );

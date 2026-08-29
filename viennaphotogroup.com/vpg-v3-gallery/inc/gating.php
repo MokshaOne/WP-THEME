@@ -52,6 +52,14 @@ function vpg_gate_render( $mode, $content, $atts = [] ) {
     $logged_in = is_user_logged_in();
     $show_real = ( $mode === 'members' ) ? $logged_in : ! $logged_in;
 
+    // tier="supporter|sustaining" narrows a members gate further
+    if ( $mode === 'members' && $show_real && ! empty( $a['tier'] ) ) {
+        $show_real = (bool) apply_filters( 'vpg_gate_tier_check', true, $a['tier'] );
+        if ( ! $show_real && ! $a['message'] ) {
+            $a['message'] = __( 'A supporter-tier extra · supporter tiers open later.', 'vpg-v2' );
+        }
+    }
+
     if ( $show_real ) {
         return do_shortcode( $content );
     }
@@ -156,3 +164,47 @@ add_action( 'wp_head', function () {
     </style>
     <?php
 } );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Supporter tiers · feature flags, ready before payment exists     */
+/*                                                                   */
+/*  A member's tier lives in `_vpg_tier` (member|supporter|          */
+/*  sustaining) — free members are 'member'. Which tier unlocks      */
+/*  which feature is one option map; nothing free ever moves behind  */
+/*  a flag (enforced: 'member' always passes features mapped to it). */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_member_tier( $uid = null ) {
+    $uid = $uid ?: get_current_user_id();
+    if ( ! $uid ) return '';
+    $tier = get_user_meta( $uid, '_vpg_tier', true );
+    return in_array( $tier, [ 'member', 'supporter', 'sustaining' ], true ) ? $tier : 'member';
+}
+
+function vpg_tier_features() {
+    $defaults = [
+        // feature        => minimum tier
+        'submissions'     => 'member',
+        'pdf_download'    => 'member',
+        'portfolio'       => 'member',
+        'print_run'       => 'supporter',
+        'early_access'    => 'supporter',
+        'colophon_credit' => 'sustaining',
+    ];
+    $stored = get_option( 'vpg_tier_features', [] );
+    return array_merge( $defaults, is_array( $stored ) ? $stored : [] );
+}
+
+function vpg_tier_can( $feature, $uid = null ) {
+    $rank = [ 'member' => 1, 'supporter' => 2, 'sustaining' => 3 ];
+    $map  = vpg_tier_features();
+    $need = $map[ $feature ] ?? 'member';
+    if ( ! is_user_logged_in() && $uid === null ) return false;
+    return ( $rank[ vpg_member_tier( $uid ) ] ?? 0 ) >= ( $rank[ $need ] ?? 1 );
+}
+
+/* The [vpg-members tier="supporter"] attribute now really gates */
+add_filter( 'vpg_gate_tier_check', function ( $ok, $tier ) {
+    if ( ! $tier || $tier === 'member' ) return $ok;
+    $rank = [ 'member' => 1, 'supporter' => 2, 'sustaining' => 3 ];
+    return ( $rank[ vpg_member_tier() ] ?? 0 ) >= ( $rank[ $tier ] ?? 1 );
+}, 10, 2 );

@@ -305,6 +305,7 @@ function vpg_attach_submission_photos( $post_id ) {
     $max_bytes   = 8 * MB_IN_BYTES;
     $attached    = 0;
     $skipped     = 0;
+    $all_atts    = [];
 
     $count = min( count( $_FILES['photos']['name'] ), 4 );
     for ( $i = 0; $i < $count; $i++ ) {
@@ -338,6 +339,7 @@ function vpg_attach_submission_photos( $post_id ) {
             set_post_thumbnail( $post_id, $att_id );
         }
         if ( ! $attached ) $first_att = $att_id;
+        $all_atts[] = $att_id;
         $attached++;
     }
 
@@ -346,7 +348,49 @@ function vpg_attach_submission_photos( $post_id ) {
         $gps_note = vpg_maybe_fill_gps_from_exif( $post_id, $first_att );
     }
 
+    // Privacy + credit pipeline · after the GPS suggestion is taken, strip
+    // EXIF (incl. GPS) from the stored JPEGs and embed the IPTC byline.
+    if ( ! empty( $all_atts ) ) {
+        $credit = wp_get_current_user()->display_name;
+        foreach ( $all_atts as $aid ) {
+            vpg_strip_and_credit_photo( $aid, $credit );
+        }
+    }
+
     return sprintf( 'Photos: %d attached%s%s', $attached, $skipped ? " · {$skipped} skipped (type/size)" : '', $gps_note );
+}
+
+/**
+ * Strip EXIF from a stored JPEG (privacy · GPS, serials) and embed an IPTC
+ * byline/copyright so the photographer's name travels with the file.
+ */
+function vpg_strip_and_credit_photo( $att_id, $credit ) {
+    if ( apply_filters( 'vpg_strip_photo_exif', true, $att_id ) === false ) return;
+    $file = get_attached_file( $att_id );
+    if ( ! $file || ! file_exists( $file ) ) return;
+    if ( strtolower( pathinfo( $file, PATHINFO_EXTENSION ) ) === 'png' ) return; // no EXIF/GPS there
+    if ( ! function_exists( 'imagecreatefromjpeg' ) ) return;
+    if ( get_post_mime_type( $att_id ) !== 'image/jpeg' ) return;
+
+    // Re-encode drops every EXIF block (GPS included)
+    $im = @imagecreatefromjpeg( $file );
+    if ( ! $im ) return;
+    imagejpeg( $im, $file, 92 );
+    imagedestroy( $im );
+
+    // IPTC byline (2:80) + copyright (2:116)
+    if ( function_exists( 'iptcembed' ) && $credit ) {
+        $make = function ( $tag, $value ) {
+            $value = substr( (string) $value, 0, 250 );
+            $len   = strlen( $value );
+            return chr( 0x1C ) . chr( 2 ) . chr( $tag ) . chr( $len >> 8 ) . chr( $len & 0xFF ) . $value;
+        };
+        $iptc = $make( 80, $credit ) . $make( 116, '© ' . gmdate( 'Y' ) . ' ' . $credit );
+        $out  = @iptcembed( $iptc, $file );
+        if ( is_string( $out ) && $out !== '' ) {
+            file_put_contents( $file, $out );
+        }
+    }
 }
 
 /**

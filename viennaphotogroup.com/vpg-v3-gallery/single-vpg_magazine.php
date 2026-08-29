@@ -71,6 +71,36 @@ $is_print  = ! empty( $_GET['vpg_print'] );
             }, 400);
         }, { passive: true });
     } catch (e) {}
+
+    // Read offline · saves this issue's page + images into the PWA cache
+    if ('serviceWorker' in navigator && window.isSecureContext) {
+        var offBtn = document.createElement('button');
+        offBtn.type = 'button';
+        offBtn.textContent = '↓ <?php echo esc_js( __( 'Read offline', 'vpg-v2' ) ); ?>';
+        offBtn.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:80;background:#0B0B0B;color:#fff;border:0;padding:12px 16px;font:700 11px/1 inherit;letter-spacing:.14em;text-transform:uppercase;cursor:pointer';
+        var offKey = 'vpg-offline-<?php echo (int) get_the_ID(); ?>';
+        try { if (localStorage.getItem(offKey)) offBtn.textContent = '✓ <?php echo esc_js( __( 'Saved offline', 'vpg-v2' ) ); ?>'; } catch (e) {}
+        document.body.appendChild(offBtn);
+        offBtn.addEventListener('click', function () {
+            navigator.serviceWorker.ready.then(function (reg) {
+                var urls = [window.location.pathname];
+                document.querySelectorAll('main img[src]').forEach(function (img) {
+                    try { if (new URL(img.src).origin === window.location.origin) urls.push(img.src); } catch (e) {}
+                });
+                document.querySelectorAll('link[rel="stylesheet"][href]').forEach(function (l) {
+                    try { if (new URL(l.href).origin === window.location.origin) urls.push(l.href); } catch (e) {}
+                });
+                navigator.serviceWorker.addEventListener('message', function onMsg(ev) {
+                    if (ev.data && ev.data.type === 'VPG_ISSUE_CACHED') {
+                        navigator.serviceWorker.removeEventListener('message', onMsg);
+                        offBtn.textContent = '✓ <?php echo esc_js( __( 'Saved offline', 'vpg-v2' ) ); ?>';
+                        try { localStorage.setItem(offKey, '1'); } catch (e) {}
+                    }
+                });
+                if (reg.active) reg.active.postMessage({ type: 'VPG_CACHE_ISSUE', key: offKey, urls: urls });
+            });
+        });
+    }
 }());
 </script>
 <?php endif; ?>

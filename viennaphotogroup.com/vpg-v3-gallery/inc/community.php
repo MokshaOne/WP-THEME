@@ -336,3 +336,74 @@ add_filter( 'comments_open', function ( $open, $post_id ) {
     }
     return $open;
 }, 10, 2 );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Moderation · members report a note, editors review in one queue  */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_post_vpg_report_comment', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_report_comment' );
+    $cid     = (int) ( $_GET['comment'] ?? 0 );
+    $comment = $cid ? get_comment( $cid ) : null;
+    if ( $comment ) {
+        $reporters = get_comment_meta( $cid, '_vpg_reports', true );
+        $reporters = is_array( $reporters ) ? $reporters : [];
+        $uid       = get_current_user_id();
+        if ( ! in_array( $uid, $reporters, true ) ) {
+            $reporters[] = $uid;
+            update_comment_meta( $cid, '_vpg_reports', $reporters );
+        }
+    }
+    wp_safe_redirect( ( wp_get_referer() ?: home_url() ) . '#comment-' . $cid );
+    exit;
+} );
+
+add_action( 'admin_menu', function () {
+    $reported = get_comments( [ 'meta_key' => '_vpg_reports', 'count' => true ] );
+    $badge    = $reported ? ' <span class="awaiting-mod"><span class="pending-count">' . (int) $reported . '</span></span>' : '';
+    add_submenu_page( 'vpg-magazine', __( 'Reported notes', 'vpg-v2' ), __( '⚑ Reports', 'vpg-v2' ) . $badge, 'moderate_comments', 'vpg-reports', function () {
+        if ( ! current_user_can( 'moderate_comments' ) ) wp_die( 'Forbidden' );
+
+        if ( ! empty( $_GET['vpg_act'] ) && ! empty( $_GET['comment'] ) && check_admin_referer( 'vpg_report_action' ) ) {
+            $cid = (int) $_GET['comment'];
+            if ( $_GET['vpg_act'] === 'hide' )    wp_set_comment_status( $cid, 'hold' );
+            if ( $_GET['vpg_act'] === 'dismiss' ) delete_comment_meta( $cid, '_vpg_reports' );
+            if ( $_GET['vpg_act'] === 'trash' )   wp_trash_comment( $cid );
+            wp_safe_redirect( admin_url( 'admin.php?page=vpg-reports' ) );
+            exit;
+        }
+
+        $reported = get_comments( [ 'meta_key' => '_vpg_reports' ] );
+        ?>
+        <div class="wrap">
+            <h1>⚑ <?php esc_html_e( 'Reported notes', 'vpg-v2' ); ?></h1>
+            <?php if ( ! $reported ) : ?>
+                <p><?php esc_html_e( 'Nothing reported. The wall is civil.', 'vpg-v2' ); ?></p>
+            <?php else : ?>
+            <table class="widefat striped" style="margin-top:1rem">
+                <thead><tr><th style="width:180px"><?php esc_html_e( 'Author', 'vpg-v2' ); ?></th><th><?php esc_html_e( 'Note', 'vpg-v2' ); ?></th><th style="width:90px"><?php esc_html_e( 'Reports', 'vpg-v2' ); ?></th><th style="width:260px"><?php esc_html_e( 'Actions', 'vpg-v2' ); ?></th></tr></thead>
+                <tbody>
+                <?php foreach ( $reported as $c ) :
+                    $n = count( (array) get_comment_meta( $c->comment_ID, '_vpg_reports', true ) );
+                    $mk = function ( $act ) use ( $c ) {
+                        return wp_nonce_url( admin_url( 'admin.php?page=vpg-reports&vpg_act=' . $act . '&comment=' . $c->comment_ID ), 'vpg_report_action' );
+                    };
+                ?>
+                    <tr>
+                        <td><?php echo esc_html( $c->comment_author ); ?></td>
+                        <td><a href="<?php echo esc_url( get_comment_link( $c ) ); ?>" target="_blank"><?php echo esc_html( wp_trim_words( $c->comment_content, 24 ) ); ?></a></td>
+                        <td><?php echo (int) $n; ?></td>
+                        <td>
+                            <a class="button button-small" href="<?php echo esc_url( $mk( 'dismiss' ) ); ?>"><?php esc_html_e( 'Dismiss', 'vpg-v2' ); ?></a>
+                            <a class="button button-small" href="<?php echo esc_url( $mk( 'hide' ) ); ?>"><?php esc_html_e( 'Unapprove', 'vpg-v2' ); ?></a>
+                            <a class="button button-small button-link-delete" href="<?php echo esc_url( $mk( 'trash' ) ); ?>"><?php esc_html_e( 'Trash', 'vpg-v2' ); ?></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+        </div>
+        <?php
+    } );
+}, 17 );

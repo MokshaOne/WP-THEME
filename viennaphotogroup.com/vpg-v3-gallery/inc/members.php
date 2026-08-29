@@ -73,6 +73,86 @@ add_action( 'template_redirect', function () {
             <?php endif; ?>
         </header>
         <span class="vpg-asterism vpg-asterism--mark"></span>
+
+        <?php
+        // Portfolio wall · frames the member picked and ordered themselves
+        $pf_ids = function_exists( 'vpg_get_portfolio' ) ? vpg_get_portfolio( $user->ID ) : [];
+        $pf     = [];
+        foreach ( $pf_ids as $aid ) {
+            $full  = wp_get_attachment_image_url( $aid, 'large' );
+            $thumb = wp_get_attachment_image_url( $aid, 'medium_large' );
+            if ( ! $full || ! $thumb ) continue;
+            $pf[] = [
+                'full'    => $full,
+                'thumb'   => $thumb,
+                'caption' => get_the_title( $aid ),
+                'exif'    => function_exists( 'vpg_photo_exif_label' ) ? vpg_photo_exif_label( $aid ) : '',
+            ];
+        }
+        if ( $pf ) :
+        ?>
+        <section class="vpg-section vpg-section--tight">
+            <div class="vpg-wrap">
+                <div class="vpg-section-head">
+                    <div><p class="vpg-caps">— <?php esc_html_e( 'Portfolio', 'vpg-v2' ); ?></p>
+                    <h2><?php printf( esc_html( _n( '%d frame', '%d frames', count( $pf ), 'vpg-v2' ) ), count( $pf ) ); ?></h2></div>
+                </div>
+                <div id="vpg-pf-wall" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px">
+                    <?php foreach ( $pf as $i => $p ) : ?>
+                    <figure style="margin:0">
+                        <button type="button" data-pf="<?php echo (int) $i; ?>" style="display:block;width:100%;aspect-ratio:4/5;overflow:hidden;border:0;padding:0;background:#EDECE8;cursor:zoom-in">
+                            <img src="<?php echo esc_url( $p['thumb'] ); ?>" alt="<?php echo esc_attr( $p['caption'] ); ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+                        </button>
+                        <?php if ( $p['caption'] ) : ?><figcaption class="vpg-caps" style="margin-top:8px"><?php echo esc_html( $p['caption'] ); ?> — <?php echo esc_html( $user->display_name ); ?></figcaption><?php endif; ?>
+                    </figure>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Lightbox · keyboard-first, EXIF wall label -->
+            <div id="vpg-pf-lb" hidden style="position:fixed;inset:0;z-index:9999;background:rgba(8,8,8,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+                <img id="vpg-pf-lb-img" src="" alt="" style="max-width:92vw;max-height:78vh;object-fit:contain">
+                <div id="vpg-pf-lb-cap" style="color:#9C9A95;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;text-align:center"></div>
+                <button type="button" id="vpg-pf-lb-x" aria-label="Close" style="position:absolute;top:18px;right:22px;background:none;border:0;color:#fff;font-size:30px;cursor:pointer">×</button>
+                <button type="button" id="vpg-pf-lb-prev" aria-label="Previous" style="position:absolute;left:14px;top:50%;background:none;border:0;color:#fff;font-size:34px;cursor:pointer">‹</button>
+                <button type="button" id="vpg-pf-lb-next" aria-label="Next" style="position:absolute;right:14px;top:50%;background:none;border:0;color:#fff;font-size:34px;cursor:pointer">›</button>
+            </div>
+            <script>
+            (function () {
+                var data = <?php echo wp_json_encode( array_map( function ( $p ) use ( $user ) {
+                    return [ 'full' => $p['full'], 'cap' => trim( $p['caption'] . ' — ' . $user->display_name, ' —' ), 'exif' => $p['exif'] ];
+                }, $pf ) ); ?>;
+                var lb = document.getElementById('vpg-pf-lb');
+                var img = document.getElementById('vpg-pf-lb-img');
+                var cap = document.getElementById('vpg-pf-lb-cap');
+                var cur = 0;
+                function show(i) {
+                    cur = (i + data.length) % data.length;
+                    img.src = data[cur].full;
+                    cap.textContent = data[cur].cap + (data[cur].exif ? '   ·   ' + data[cur].exif : '');
+                    lb.hidden = false;
+                    document.body.style.overflow = 'hidden';
+                }
+                function close() { lb.hidden = true; document.body.style.overflow = ''; }
+                document.getElementById('vpg-pf-wall').addEventListener('click', function (e) {
+                    var b = e.target.closest('[data-pf]');
+                    if (b) show(parseInt(b.getAttribute('data-pf'), 10));
+                });
+                document.getElementById('vpg-pf-lb-x').addEventListener('click', close);
+                document.getElementById('vpg-pf-lb-prev').addEventListener('click', function () { show(cur - 1); });
+                document.getElementById('vpg-pf-lb-next').addEventListener('click', function () { show(cur + 1); });
+                lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+                document.addEventListener('keydown', function (e) {
+                    if (lb.hidden) return;
+                    if (e.key === 'Escape') close();
+                    if (e.key === 'ArrowLeft') show(cur - 1);
+                    if (e.key === 'ArrowRight') show(cur + 1);
+                });
+            }());
+            </script>
+        </section>
+        <?php endif; ?>
+
         <section class="vpg-section vpg-section--tight">
             <div class="vpg-wrap">
                 <?php

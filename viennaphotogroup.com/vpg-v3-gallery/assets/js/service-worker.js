@@ -4,29 +4,60 @@
  * Content always fetched fresh from the network.
  */
 
-var CACHE_NAME    = 'vpg-shell-v1';
+var CACHE_NAME    = 'vpg-shell-v2';
+var ISSUE_CACHE   = 'vpg-issues-v1';
 var OFFLINE_URL   = '/offline/';
+
+// The SW lives at <theme>/assets/js/service-worker.js — derive the theme base
+// so the shell list survives theme-directory renames.
+var THEME_BASE = self.location.pathname.replace(/assets\/js\/service-worker\.js$/, '');
 
 // Files to precache on install — the app shell
 var SHELL_ASSETS = [
     '/',
     '/offline/',
-    '/wp-content/themes/vpg-final/assets/css/tokens.css',
-    '/wp-content/themes/vpg-final/assets/css/base.css',
-    '/wp-content/themes/vpg-final/assets/css/layout.css',
-    '/wp-content/themes/vpg-final/assets/css/components.css',
-    '/wp-content/themes/vpg-final/assets/js/main.js',
+    THEME_BASE + 'assets/css/gallery.css',
+    THEME_BASE + 'assets/css/base.css',
+    THEME_BASE + 'assets/css/layout.css',
+    THEME_BASE + 'assets/css/components.css',
+    THEME_BASE + 'assets/css/fonts.css',
+    THEME_BASE + 'assets/js/main.js',
 ];
 
-// ── Install: cache the shell ──────────────────────────────────────────────────
+// ── Install: cache the shell (tolerant · one 404 must not kill the SW) ───────
 self.addEventListener('install', function (event) {
     event.waitUntil(
         caches.open(CACHE_NAME).then(function (cache) {
-            return cache.addAll(SHELL_ASSETS);
+            return Promise.all(SHELL_ASSETS.map(function (asset) {
+                return cache.add(asset).catch(function () {});
+            }));
         }).then(function () {
             return self.skipWaiting();
         })
     );
+});
+
+// ── Offline issues · the page sends a list of URLs to keep ───────────────────
+self.addEventListener('message', function (event) {
+    var data = event.data || {};
+    if (data.type === 'VPG_CACHE_ISSUE' && Array.isArray(data.urls)) {
+        event.waitUntil(
+            caches.open(ISSUE_CACHE).then(function (cache) {
+                return Promise.all(data.urls.map(function (u) {
+                    return cache.add(u).catch(function () {});
+                }));
+            }).then(function () {
+                if (event.source) event.source.postMessage({ type: 'VPG_ISSUE_CACHED', key: data.key || '' });
+            })
+        );
+    }
+    if (data.type === 'VPG_DROP_ISSUE' && Array.isArray(data.urls)) {
+        event.waitUntil(
+            caches.open(ISSUE_CACHE).then(function (cache) {
+                return Promise.all(data.urls.map(function (u) { return cache.delete(u); }));
+            })
+        );
+    }
 });
 
 // ── Activate: remove old caches ───────────────────────────────────────────────
@@ -34,7 +65,7 @@ self.addEventListener('activate', function (event) {
     event.waitUntil(
         caches.keys().then(function (keys) {
             return Promise.all(
-                keys.filter(function (key) { return key !== CACHE_NAME; })
+                keys.filter(function (key) { return key !== CACHE_NAME && key !== ISSUE_CACHE; })
                     .map(function (key) { return caches.delete(key); })
             );
         }).then(function () {
@@ -100,13 +131,16 @@ self.addEventListener('fetch', function (event) {
         return;
     }
 
-    // Everything else: network first, fallback to offline page for HTML
+    // Everything else: network first · offline falls back to a saved issue,
+    // then the offline page for HTML navigations
     event.respondWith(
         fetch(request).catch(function () {
-            // If it's a page navigation and we're offline, show offline page
-            if (request.headers.get('Accept') && request.headers.get('Accept').includes('text/html')) {
-                return caches.match(OFFLINE_URL);
-            }
+            return caches.match(request).then(function (cached) {
+                if (cached) return cached;
+                if (request.headers.get('Accept') && request.headers.get('Accept').includes('text/html')) {
+                    return caches.match(OFFLINE_URL);
+                }
+            });
         })
     );
 });

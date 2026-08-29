@@ -34,6 +34,9 @@ if ( post_password_required() ) return;
                     <?php if ( $comment->comment_approved === '0' ) : ?><span class="g-meta" style="color:var(--g-red)"><?php esc_html_e( 'awaiting review', 'vpg-v2' ); ?></span><?php endif; ?>
                   </div>
                   <div style="font-size:15px;line-height:1.6;color:var(--g-ink-2)"><?php comment_text(); ?></div>
+                  <?php if ( is_user_logged_in() ) : ?>
+                    <a class="g-meta" style="display:inline-block;margin-top:8px" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_report_comment&comment=' . get_comment_ID() ), 'vpg_report_comment' ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Report this note to editorial?', 'vpg-v2' ) ); ?>')">⚑ <?php esc_html_e( 'Report', 'vpg-v2' ); ?></a>
+                  <?php endif; ?>
                 <?php
             },
         ] ); ?>

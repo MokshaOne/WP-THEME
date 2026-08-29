@@ -87,6 +87,50 @@ add_filter( 'pre_get_avatar_data', function ( $args, $id_or_email ) {
 }, 10, 2 );
 
 /* ════════════════════════════════════════════════════════════════ */
+/*  Portfolio · the member's own wall — picked and ordered by them   */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_post_vpg_save_portfolio', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_save_portfolio' );
+
+    $uid = get_current_user_id();
+    $raw = sanitize_text_field( wp_unslash( $_POST['portfolio'] ?? '' ) );
+    $ids = [];
+    foreach ( array_filter( array_map( 'intval', explode( ',', $raw ) ) ) as $aid ) {
+        $att = get_post( $aid );
+        if ( $att && $att->post_type === 'attachment'
+            && (int) $att->post_author === $uid
+            && wp_attachment_is_image( $aid ) ) {
+            $ids[] = $aid;
+        }
+        if ( count( $ids ) >= 24 ) break;
+    }
+    update_user_meta( $uid, '_vpg_portfolio', $ids );
+    vpg_redirect_with_status( 'dashboard', 'profile_saved' );
+} );
+
+function vpg_get_portfolio( $uid ) {
+    $ids = get_user_meta( $uid, '_vpg_portfolio', true );
+    return is_array( $ids ) ? array_values( array_filter( array_map( 'intval', $ids ) ) ) : [];
+}
+
+/* EXIF wall label for the lightbox · camera / aperture / shutter / iso */
+function vpg_photo_exif_label( $att_id ) {
+    $meta = wp_get_attachment_metadata( $att_id );
+    $img  = $meta['image_meta'] ?? [];
+    $bits = [];
+    if ( ! empty( $img['camera'] ) )        $bits[] = $img['camera'];
+    if ( ! empty( $img['aperture'] ) )      $bits[] = 'f/' . $img['aperture'];
+    if ( ! empty( $img['shutter_speed'] ) ) {
+        $s = (float) $img['shutter_speed'];
+        $bits[] = $s >= 1 ? round( $s, 1 ) . 's' : '1/' . round( 1 / max( $s, 0.000001 ) );
+    }
+    if ( ! empty( $img['iso'] ) )           $bits[] = 'ISO ' . $img['iso'];
+    if ( ! empty( $img['focal_length'] ) )  $bits[] = round( (float) $img['focal_length'] ) . 'mm';
+    return implode( ' · ', $bits );
+}
+
+/* ════════════════════════════════════════════════════════════════ */
 /*  Magic login link · passwordless sign-in                          */
 /* ════════════════════════════════════════════════════════════════ */
 add_action( 'admin_post_nopriv_vpg_magic_request', 'vpg_magic_request' );

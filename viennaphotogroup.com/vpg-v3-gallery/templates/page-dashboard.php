@@ -501,6 +501,74 @@ get_header();
         <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Save profile', 'vpg-v2' ); ?> <span class="a">→</span></button>
       </form>
 
+      <!-- Portfolio curator · pick and order the frames on your public wall -->
+      <?php
+      $my_photos = get_posts( [
+          'post_type'      => 'attachment',
+          'post_status'    => 'inherit',
+          'post_mime_type' => 'image',
+          'author'         => $u->ID,
+          'posts_per_page' => 36,
+          'orderby'        => 'date',
+          'order'          => 'DESC',
+      ] );
+      $curated = function_exists( 'vpg_get_portfolio' ) ? vpg_get_portfolio( $u->ID ) : [];
+      if ( $my_photos ) :
+      ?>
+      <div style="margin-top:36px;border-top:1px solid var(--g-line);padding-top:26px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px">
+          <span class="g-kicker"><?php esc_html_e( 'Your portfolio wall', 'vpg-v2' ); ?></span>
+          <span class="g-meta"><?php esc_html_e( 'Click to hang · click again to take down · order = click order · max 24', 'vpg-v2' ); ?></span>
+        </div>
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+          <?php wp_nonce_field( 'vpg_save_portfolio' ); ?>
+          <input type="hidden" name="action" value="vpg_save_portfolio">
+          <input type="hidden" name="portfolio" id="vpg-portfolio-order" value="<?php echo esc_attr( implode( ',', $curated ) ); ?>">
+          <div id="vpg-portfolio-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:14px 0 18px">
+            <?php foreach ( $my_photos as $ph ) :
+                $thumb = wp_get_attachment_image_url( $ph->ID, 'thumbnail' );
+                if ( ! $thumb ) continue;
+                $pos = array_search( $ph->ID, $curated, true );
+            ?>
+            <button type="button" data-pid="<?php echo (int) $ph->ID; ?>" style="position:relative;aspect-ratio:1;border:2px solid <?php echo $pos !== false ? 'var(--g-red)' : 'var(--g-line)'; ?>;background:none;padding:0;cursor:pointer">
+              <img src="<?php echo esc_url( $thumb ); ?>" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+              <span data-badge style="position:absolute;top:4px;left:4px;background:var(--g-red);color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;display:<?php echo $pos !== false ? 'flex' : 'none'; ?>;align-items:center;justify-content:center"><?php echo $pos !== false ? (int) $pos + 1 : ''; ?></span>
+            </button>
+            <?php endforeach; ?>
+          </div>
+          <button class="g-btn g-btn--red" type="submit"><?php esc_html_e( 'Save portfolio', 'vpg-v2' ); ?> <span class="a">→</span></button>
+        </form>
+        <script>
+        (function () {
+            var grid  = document.getElementById('vpg-portfolio-grid');
+            var input = document.getElementById('vpg-portfolio-order');
+            if (!grid || !input) return;
+            var order = input.value ? input.value.split(',').filter(Boolean) : [];
+            function paint() {
+                grid.querySelectorAll('[data-pid]').forEach(function (btn) {
+                    var idx = order.indexOf(btn.getAttribute('data-pid'));
+                    var badge = btn.querySelector('[data-badge]');
+                    btn.style.borderColor = idx !== -1 ? 'var(--g-red)' : 'var(--g-line)';
+                    badge.style.display = idx !== -1 ? 'flex' : 'none';
+                    badge.textContent = idx !== -1 ? (idx + 1) : '';
+                });
+                input.value = order.join(',');
+            }
+            grid.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-pid]');
+                if (!btn) return;
+                var pid = btn.getAttribute('data-pid');
+                var idx = order.indexOf(pid);
+                if (idx !== -1) order.splice(idx, 1);
+                else if (order.length < 24) order.push(pid);
+                paint();
+            });
+            paint();
+        }());
+        </script>
+      </div>
+      <?php endif; ?>
+
       <!-- Danger zone · GDPR self-service -->
       <details style="margin-top:36px;border-top:1px solid var(--g-line);padding-top:22px">
         <summary style="cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--g-mid)"><?php esc_html_e( 'Delete account', 'vpg-v2' ); ?></summary>

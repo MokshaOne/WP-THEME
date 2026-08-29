@@ -8609,3 +8609,36 @@ msgstr ""
 
 msgid "Works without JavaScript:"
 msgstr ""
+
+msgid "VPG error digest · %d PHP notices this week"
+msgstr ""
+
+msgid "Tech desk"
+msgstr ""
+
+msgid "Regenerated %d thumbnails (first batch)."
+msgstr ""
+
+msgid "PHP notices in the last digest (error budget: 0)."
+msgstr ""
+
+msgid "0637 · Performance budgets"
+msgstr ""
+
+msgid "JS ≤ 90 KB, CSS ≤ 60 KB per view; LCP ≤ 2.0s mobile."
+msgstr ""
+
+msgid "Every page lists its script budget; no page ships unused JS."
+msgstr ""
+
+msgid "0679 · Feature flags"
+msgstr ""
+
+msgid "Ops checklist (HTTP/3, cache, staging, rollbacks, backups…)"
+msgstr ""
+
+msgid "0680 · Tech-debt register (one per line, worst first)"
+msgstr ""
+
+msgid "0675 · Regenerate thumbnails (batch)"
+msgstr ""

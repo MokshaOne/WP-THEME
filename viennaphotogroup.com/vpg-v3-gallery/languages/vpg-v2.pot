@@ -5069,3 +5069,147 @@ msgstr ""
 #: templates/page-yearreview.php
 msgid "↓ Save this year as a postcard"
 msgstr ""
+
+#: inc/community.php
+msgid "Hello %1\$s,\n\nQuick reminder — \\"%2\$s\\" is tomorrow%3\$s.%5\$s\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/federation.php
+msgid "via the Fediverse"
+msgstr ""
+
+#: inc/federation.php
+msgid "Mentioned this: %s"
+msgstr ""
+
+#: inc/formats.php
+msgid "Editorial"
+msgstr ""
+
+#: inc/formats.php
+msgid "Untitled"
+msgstr ""
+
+#: inc/formats.php
+msgid "EPUB"
+msgstr ""
+
+#: inc/formats.php
+msgid "Pocket zine PDF"
+msgstr ""
+
+#: inc/formats.php
+msgid "Listen"
+msgstr ""
+
+#: inc/formats.php
+msgid "Stop"
+msgstr ""
+
+#: inc/formats.php
+msgid "Fold along the lines · a pocket edition."
+msgstr ""
+
+#: inc/formats.php
+msgid "Vienna Photo Group — the year %d"
+msgstr ""
+
+#: inc/formats.php
+msgid "Annual (PDF)"
+msgstr ""
+
+#: inc/formats.php
+msgid "📚 Annual (PDF)"
+msgstr ""
+
+#: inc/formats.php
+msgid "Bind a year of published issues — cover to colophon — into one PDF book."
+msgstr ""
+
+#: inc/formats.php
+msgid "No published issues yet."
+msgstr ""
+
+#: inc/formats.php
+msgid "Build %d annual →"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Visually similar"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "this frame"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "By colour"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "more like this →"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Nothing close enough yet — the archive grows with every upload."
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "⁂ Find visually similar"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "More in this colour"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Drag a box over a face or plate — release to pixelate. This overwrites the original."
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Pixelate this box"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Close"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "◐ Anonymise a face / plate"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Vision endpoint"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "🔎 Vision endpoint"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Save endpoint"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Connected — suggestions are live."
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Not connected — suggestions are off."
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "AI suggestion"
+msgstr ""
+
+#: inc/imagesearch.php
+msgid "Suggest alt-text & tags"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "%1\$s says something changed at \\"%2\$s\\" — access, hours or the place itself.\n\nCheck and update:\n%3\$s"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
+msgstr ""

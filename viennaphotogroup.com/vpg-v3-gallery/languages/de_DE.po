@@ -4336,3 +4336,207 @@ msgid_plural "members"
 msgstr[0] "Mitglied"
 msgstr[1] "Mitglieder"
 
+
+msgid "A frame that only works because of what is left out."
+msgstr "Ein Bild, das nur funktioniert wegen dem, was weggelassen wurde."
+
+msgid "A photograph you almost deleted — argue for it."
+msgstr "Eine Fotografie, die du fast gelöscht hättest — verteidige sie."
+
+msgid "AI suggestion"
+msgstr "KI-Vorschlag"
+
+msgid "Annual (PDF)"
+msgstr "Jahresband (PDF)"
+
+msgid "Bind a year of published issues — cover to colophon — into one PDF book."
+msgstr "Binde ein Jahr veröffentlichter Ausgaben — vom Cover bis zum Kolophon — in ein PDF-Buch."
+
+msgid "Bring one frame where the light did the work, not you."
+msgstr "Bring ein Bild, bei dem das Licht die Arbeit gemacht hat, nicht du."
+
+msgid "Build %d annual →"
+msgstr "Jahresband %d bauen →"
+
+msgid "By colour"
+msgstr "Nach Farbe"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Connected — suggestions are live."
+msgstr "Verbunden — Vorschläge sind live."
+
+msgid "Critique circles"
+msgstr "Kritik-Zirkel"
+
+msgid "Drag a box over a face or plate — release to pixelate. This overwrites the original."
+msgstr "Zieh ein Kästchen über ein Gesicht oder eine Tafel — loslassen pixelt. Das überschreibt das Original."
+
+msgid "EPUB"
+msgstr "EPUB"
+
+msgid "Each works once, in place of an app code, if you lose your phone."
+msgstr "Jeder funktioniert einmal, anstelle eines App-Codes, falls du dein Handy verlierst."
+
+msgid "Editorial"
+msgstr "Editorial"
+
+msgid "Enable push on this device first."
+msgstr "Aktiviere Push zuerst auf diesem Gerät."
+
+msgid "Event reminders"
+msgstr "Event-Erinnerungen"
+
+msgid "Every string the POT knows is translated to German. ✓"
+msgstr "Jeder String, den die POT kennt, ist auf Deutsch übersetzt. ✓"
+
+msgid "Everything else"
+msgstr "Alles andere"
+
+msgid "Fold along the lines · a pocket edition."
+msgstr "Entlang der Linien falten · eine Taschenausgabe."
+
+msgid "Language files not found in the theme’s /languages folder."
+msgstr "Sprachdateien nicht im /languages-Ordner des Themes gefunden."
+
+msgid "Listen"
+msgstr "Vorlesen"
+
+msgid "Mentioned this: %s"
+msgstr "Hat das erwähnt: %s"
+
+msgid "More in this colour"
+msgstr "Mehr in dieser Farbe"
+
+msgid "No published issues yet."
+msgstr "Noch keine veröffentlichten Ausgaben."
+
+msgid "Not connected — suggestions are off."
+msgstr "Nicht verbunden — Vorschläge sind aus."
+
+msgid "Nothing close enough yet — the archive grows with every upload."
+msgstr "Noch nichts nah genug — das Archiv wächst mit jedem Upload."
+
+msgid "One image, no crop — what would you reframe now?"
+msgstr "Ein Bild, kein Beschnitt — was würdest du jetzt anders rahmen?"
+
+msgid "Optional. A self-hosted image-captioning service (BLIP, llava, …) that accepts POST {image_url, want:[\"alt\",\"tags\"]} and returns {alt, tags:[…]}. When set, editors get alt-text and tag suggestions on member photos. Left empty, nothing is sent anywhere — the site stays local-first."
+msgstr "Optional. Ein selbst gehosteter Bild-Captioning-Dienst (BLIP, llava, …), der POST {image_url, want:[\"alt\",\"tags\"]} annimmt und {alt, tags:[…]} zurückgibt. Ist er gesetzt, bekommt die Redaktion Alt-Text- und Tag-Vorschläge zu Member-Fotos. Leer gelassen, verlässt nichts den Server — die Seite bleibt local-first."
+
+msgid "Pixelate this box"
+msgstr "Dieses Kästchen pixeln"
+
+msgid "Pocket zine PDF"
+msgstr "Taschen-Zine als PDF"
+
+msgid "Quiet hours · nothing 22:00–07:00"
+msgstr "Ruhezeiten · nichts von 22:00–07:00"
+
+msgid "Save endpoint"
+msgstr "Endpoint speichern"
+
+msgid "Save push preferences"
+msgstr "Push-Einstellungen speichern"
+
+msgid "Save these now — shown once"
+msgstr "Jetzt sichern — nur einmal gezeigt"
+
+msgid "Send a test push"
+msgstr "Test-Push senden"
+
+msgid "Sent — check your device."
+msgstr "Gesendet — sieh auf dein Gerät."
+
+msgid "Show a picture that breaks a rule you usually keep."
+msgstr "Zeig ein Bild, das eine Regel bricht, die du sonst einhältst."
+
+msgid "Silence by kind:"
+msgstr "Nach Art stummschalten:"
+
+msgid "Stop"
+msgstr "Stopp"
+
+msgid "Submission verdicts"
+msgstr "Einreichungs-Urteile"
+
+msgid "Suggest alt-text & tags"
+msgstr "Alt-Text & Tags vorschlagen"
+
+msgid "Test push — your lockscreen hears the collective. ✓"
+msgstr "Test-Push — dein Sperrbildschirm hört das Kollektiv. ✓"
+
+msgid "The chronicle →"
+msgstr "Die Chronik →"
+
+msgid "The quietest photo you made this month."
+msgstr "Das leiseste Foto, das du diesen Monat gemacht hast."
+
+msgid "This month in “%1$s”: %2$s"
+msgstr "Diesen Monat in „%1$s“: %2$s"
+
+msgid "Translation watch"
+msgstr "Übersetzungs-Wache"
+
+msgid "Translations"
+msgstr "Übersetzungen"
+
+msgid "Untitled"
+msgstr "Ohne Titel"
+
+msgid "Vienna Photo Group — the year %d"
+msgstr "Vienna Photo Group — das Jahr %d"
+
+msgid "Vision endpoint"
+msgstr "Vision-Endpoint"
+
+msgid "Visually similar"
+msgstr "Visuell ähnlich"
+
+msgid "more like this →"
+msgstr "mehr wie dieses →"
+
+msgid "this frame"
+msgstr "dieser Rahmen"
+
+msgid "via the Fediverse"
+msgstr "übers Fediverse"
+
+msgid "· generate backup codes"
+msgstr "· Backup-Codes erzeugen"
+
+msgid "· regenerate"
+msgstr "· neu erzeugen"
+
+msgid "⁂ Find visually similar"
+msgstr "⁂ Visuell Ähnliche finden"
+
+msgid "↓ Save this year as a postcard"
+msgstr "↓ Dieses Jahr als Postkarte sichern"
+
+msgid "◐ Anonymise a face / plate"
+msgstr "◐ Gesicht / Tafel anonymisieren"
+
+msgid "🌐 Translations"
+msgstr "🌐 Übersetzungen"
+
+msgid "📚 Annual (PDF)"
+msgstr "📚 Jahresband (PDF)"
+
+msgid "🔎 Vision endpoint"
+msgstr "🔎 Vision-Endpoint"
+
+msgid "%d backup code left."
+msgid_plural "%d backup codes left."
+msgstr[0] "%d Backup-Code übrig."
+msgstr[1] "%d Backup-Codes übrig."
+
+msgid "%d frame from the member archive."
+msgid_plural "%d frames from the member archive."
+msgstr[0] "%d Bild aus dem Member-Archiv."
+msgstr[1] "%d Bilder aus dem Member-Archiv."
+
+msgid "%d string still needs a German translation:"
+msgid_plural "%d strings still need a German translation:"
+msgstr[0] "%d String braucht noch eine deutsche Übersetzung:"
+msgstr[1] "%d Strings brauchen noch eine deutsche Übersetzung:"

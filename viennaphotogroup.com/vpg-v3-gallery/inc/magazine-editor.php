@@ -285,6 +285,7 @@ function vpg_magazine_edit_page() {
         .vpg-mag-compile { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
         .vpg-mag-compile > span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: #646970; }
         .vpg-pick-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .vpg-pick-overlay[hidden] { display: none; } /* author display:flex beats the UA's [hidden] rule — restore it */
         .vpg-pick-modal { background: #fff; border-radius: 8px; width: 640px; max-width: 100%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
         .vpg-pick-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid #ccd0d4; }
         .vpg-pick-head h2 { margin: 0; font-size: 1.05rem; }
@@ -481,6 +482,7 @@ function vpg_magazine_edit_page() {
         function closePicker() { overlay.hidden = true; pickList.innerHTML = ''; pickSearch.value = ''; }
         document.getElementById('vpg-pick-close').addEventListener('click', closePicker);
         overlay.addEventListener('click', function (e) { if (e.target === overlay) closePicker(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !overlay.hidden) closePicker(); });
 
         function fetchJSON(url) {
             return fetch(url, { credentials: 'same-origin' }).then(function (r) { return r.json(); });

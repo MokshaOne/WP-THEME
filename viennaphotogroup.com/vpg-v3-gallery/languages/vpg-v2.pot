@@ -3329,3 +3329,39 @@ msgstr ""
 #: templates/page-submit.php
 msgid "we’ll discuss"
 msgstr ""
+
+#: templates/page-submit.php
+msgid "Address not found — click the map to drop the pin."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "No pin yet — photo GPS fills it automatically, or leave it to editorial."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Pin a new shooting spot right in the form — map click, address search or photo GPS."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Pin set · "
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Pin set · %s, %s"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Remove pin"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Search failed — click the map to drop the pin."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Submissions are queued for editorial review. You’ll receive an email when your entry is approved and published. For map entries, drop the pin right in the form — or let your photo’s GPS set it."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Where exactly? · search or click the map"
+msgstr ""

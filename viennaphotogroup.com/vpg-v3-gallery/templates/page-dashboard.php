@@ -258,7 +258,7 @@ get_header();
         <a class="g-card" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>">
           <span class="g-cat"><?php esc_html_e( 'Submit', 'vpg-v2' ); ?></span>
           <h3 class="g-card__title"><?php esc_html_e( 'Add a location', 'vpg-v2' ); ?></h3>
-          <p class="g-row__lede"><?php esc_html_e( 'Pin a new shooting spot on the map. Coordinates auto-detected from address.', 'vpg-v2' ); ?></p>
+          <p class="g-row__lede"><?php esc_html_e( 'Pin a new shooting spot right in the form — map click, address search or photo GPS.', 'vpg-v2' ); ?></p>
         </a>
         <a class="g-card" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_magazine' ) ); ?>">
           <span class="g-cat"><?php esc_html_e( 'Magazine', 'vpg-v2' ); ?></span>

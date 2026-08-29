@@ -291,6 +291,23 @@ function vpg_handle_submit() {
         update_post_meta( $post_id, $key, $district );
     }
 
+    // Pin from the form's map picker · saved before the EXIF fallback,
+    // which only fills when no pin exists yet. Empty inputs change
+    // nothing, so an editorial pin never gets wiped by a re-submit.
+    $geo_keys = [
+        'vpg_location' => [ 'location_lat', 'location_lng' ],
+        'vpg_studio'   => [ 'studio_lat', 'studio_lng' ],
+        'vpg_shop'     => [ 'shop_lat', 'shop_lng' ],
+    ];
+    if ( isset( $geo_keys[ $type ] ) ) {
+        $plat = (float) ( $_POST['pin_lat'] ?? 0 );
+        $plng = (float) ( $_POST['pin_lng'] ?? 0 );
+        if ( $plat && $plng && abs( $plat ) <= 90 && abs( $plng ) <= 180 ) {
+            update_post_meta( $post_id, $geo_keys[ $type ][0], round( $plat, 6 ) );
+            update_post_meta( $post_id, $geo_keys[ $type ][1], round( $plng, 6 ) );
+        }
+    }
+
     // Type-specific extras · event proposals carry date + venue, trail
     // proposals carry their ordered location stops.
     if ( $type === 'vpg_event' ) {

@@ -193,6 +193,123 @@ get_header();
               <input class="g-input" id="district" type="text" name="district" value="<?php echo esc_attr( $ev( 'district' ) ); ?>" placeholder="<?php esc_attr_e( '1010 · Innere Stadt', 'vpg-v2' ); ?>">
             </div>
 
+            <!-- Pin picker · the exact spot, set by the person who found it -->
+            <?php
+            $pin_keys = [
+                'vpg_location' => [ 'location_lat', 'location_lng' ],
+                'vpg_studio'   => [ 'studio_lat', 'studio_lng' ],
+                'vpg_shop'     => [ 'shop_lat', 'shop_lng' ],
+            ];
+            $pin_lat = $pin_lng = '';
+            if ( $edit_post && isset( $pin_keys[ $edit_post->post_type ] ) ) {
+                $pin_lat = get_post_meta( $edit_post->ID, $pin_keys[ $edit_post->post_type ][0], true );
+                $pin_lng = get_post_meta( $edit_post->ID, $pin_keys[ $edit_post->post_type ][1], true );
+            }
+            ?>
+            <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop" hidden>
+              <label for="pin-search"><?php esc_html_e( 'Where exactly? · search or click the map', 'vpg-v2' ); ?></label>
+              <div style="display:flex;gap:10px">
+                <input class="g-input" id="pin-search" type="text" placeholder="<?php esc_attr_e( 'Karlsplatz 4, Wien', 'vpg-v2' ); ?>" autocomplete="off" style="flex:1">
+                <button class="g-btn" type="button" id="pin-go"><?php esc_html_e( 'Find', 'vpg-v2' ); ?></button>
+              </div>
+              <div id="vpg-pin-map" style="height:300px;border:1px solid var(--g-line-2);margin-top:10px"></div>
+              <input type="hidden" name="pin_lat" id="pin-lat" value="<?php echo esc_attr( $pin_lat ); ?>">
+              <input type="hidden" name="pin_lng" id="pin-lng" value="<?php echo esc_attr( $pin_lng ); ?>">
+              <p class="g-form__note" style="margin-top:6px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <span id="pin-state"><?php echo $pin_lat
+                    ? esc_html( sprintf( __( 'Pin set · %s, %s', 'vpg-v2' ), $pin_lat, $pin_lng ) )
+                    : esc_html__( 'No pin yet — photo GPS fills it automatically, or leave it to editorial.', 'vpg-v2' ); ?></span>
+                <button type="button" id="pin-clear" style="background:none;border:0;padding:0;cursor:pointer;font:inherit;color:var(--g-red);font-weight:700" <?php echo $pin_lat ? '' : 'hidden'; ?>><?php esc_html_e( 'Remove pin', 'vpg-v2' ); ?></button>
+              </p>
+            </div>
+
+            <script>
+            (function () {
+              var mapEl = document.getElementById('vpg-pin-map');
+              if (!mapEl) return;
+              var latIn = document.getElementById('pin-lat'), lngIn = document.getElementById('pin-lng');
+              var state = document.getElementById('pin-state'), clearBtn = document.getElementById('pin-clear');
+              var searchIn = document.getElementById('pin-search'), searchBtn = document.getElementById('pin-go');
+              var distIn = document.getElementById('district');
+              var map = null, marker = null;
+
+              function showState() {
+                if (latIn.value) {
+                  state.textContent = <?php echo wp_json_encode( __( 'Pin set · ', 'vpg-v2' ) ); ?> + latIn.value + ', ' + lngIn.value;
+                  clearBtn.hidden = false;
+                } else {
+                  state.textContent = <?php echo wp_json_encode( __( 'No pin yet — photo GPS fills it automatically, or leave it to editorial.', 'vpg-v2' ) ); ?>;
+                  clearBtn.hidden = true;
+                }
+              }
+              function setPin(lat, lng) {
+                latIn.value = lat.toFixed(6); lngIn.value = lng.toFixed(6);
+                if (marker) marker.setLatLng([lat, lng]);
+                else marker = L.marker([lat, lng], { draggable: true }).addTo(map).on('dragend', function (e) {
+                  var p = e.target.getLatLng();
+                  latIn.value = p.lat.toFixed(6); lngIn.value = p.lng.toFixed(6);
+                  showState();
+                });
+                showState();
+              }
+              function initMap() {
+                if (map || typeof L === 'undefined') return;
+                var lat = parseFloat(latIn.value) || 48.2082, lng = parseFloat(lngIn.value) || 16.3738;
+                map = L.map(mapEl, { scrollWheelZoom: false }).setView([lat, lng], latIn.value ? 16 : 12);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+                if (latIn.value && lngIn.value) setPin(lat, lng);
+                map.on('click', function (e) { setPin(e.latlng.lat, e.latlng.lng); });
+              }
+
+              // Init when the field group is (or becomes) visible — Leaflet
+              // can't measure a hidden container.
+              function maybeInit() {
+                if (!mapEl.closest('[data-for-types]').hidden) {
+                  initMap();
+                  if (map) setTimeout(function () { map.invalidateSize(); }, 60);
+                }
+              }
+              document.querySelectorAll('input[name="submit_type_pick"]').forEach(function (r) {
+                r.addEventListener('change', function () { setTimeout(maybeInit, 0); });
+              });
+              if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', maybeInit);
+              else setTimeout(maybeInit, 0);
+              window.addEventListener('load', maybeInit);
+
+              clearBtn.addEventListener('click', function () {
+                latIn.value = ''; lngIn.value = '';
+                if (marker && map) { map.removeLayer(marker); marker = null; }
+                showState();
+              });
+
+              function search() {
+                var q = searchIn.value.trim();
+                if (!q || !map) return;
+                searchBtn.disabled = true;
+                fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q + ', Vienna'), { headers: { 'Accept': 'application/json' } })
+                  .then(function (r) { return r.json(); })
+                  .then(function (res) {
+                    if (res && res[0]) {
+                      var lat = parseFloat(res[0].lat), lng = parseFloat(res[0].lon);
+                      map.setView([lat, lng], 17);
+                      setPin(lat, lng);
+                      if (distIn && !distIn.value && res[0].display_name) {
+                        var d = res[0].display_name.split(',').map(function (s) { return s.trim(); })
+                          .find(function (p) { return /^\d{4}/.test(p) || /Bezirk/.test(p); });
+                        if (d) distIn.value = d;
+                      }
+                    } else {
+                      state.textContent = <?php echo wp_json_encode( __( 'Address not found — click the map to drop the pin.', 'vpg-v2' ) ); ?>;
+                    }
+                  })
+                  .catch(function () { state.textContent = <?php echo wp_json_encode( __( 'Search failed — click the map to drop the pin.', 'vpg-v2' ) ); ?>; })
+                  .finally(function () { searchBtn.disabled = false; });
+              }
+              searchBtn.addEventListener('click', search);
+              searchIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); search(); } });
+            })();
+            </script>
+
             <!-- Event proposals · date + meeting point -->
             <div class="g-field g-field--row" data-for-types="vpg_event" hidden>
               <div>
@@ -330,7 +447,7 @@ get_header();
             }());
             </script>
             <p class="g-form__note">
-              <?php esc_html_e( 'Submissions are queued for editorial review. You’ll receive an email when your entry is approved and published. Coordinates can be added by the editor or by you later from the post edit screen · the map-picker is on the post editor.', 'vpg-v2' ); ?>
+              <?php esc_html_e( 'Submissions are queued for editorial review. You’ll receive an email when your entry is approved and published. For map entries, drop the pin right in the form — or let your photo’s GPS set it.', 'vpg-v2' ); ?>
             </p>
           </form>
         </div>

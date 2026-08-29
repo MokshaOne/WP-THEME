@@ -259,6 +259,15 @@ add_action( 'vpg_send_webmention', function ( $source, $target ) {
 function vpg_od_head( $title ) { status_header( 200 ); get_header(); echo '<main id="vpg-main" class="g-wrap" style="max-width:760px;margin:40px auto;padding:0 20px"><h1>' . esc_html( $title ) . '</h1>'; }
 function vpg_od_foot() { echo '</main>'; get_footer(); }
 
+/** Real liveness snapshot the status page & ping read (db · uploads · php). */
+function vpg_health_snapshot() {
+    global $wpdb;
+    $db = false;
+    if ( $wpdb instanceof wpdb ) { $db = ( '1' === (string) $wpdb->get_var( 'SELECT 1' ) ); }
+    $up = wp_is_writable( wp_upload_dir()['basedir'] ?? '' );
+    return [ 'database' => $db, 'uploads' => (bool) $up, 'php' => true ];
+}
+
 function vpg_status_page() { // 0956
     $checks = function_exists( 'vpg_health_snapshot' ) ? vpg_health_snapshot() : null;
     $hist = (array) get_option( 'vpg_status_history', [] );

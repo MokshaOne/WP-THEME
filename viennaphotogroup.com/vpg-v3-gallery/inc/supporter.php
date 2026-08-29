@@ -79,6 +79,18 @@ function vpg_supporter_page() {
     echo '<h2>' . esc_html__( 'Give in someone’s memory', 'vpg-v2' ) . '</h2>';
     echo '<p>' . esc_html__( 'You can support VPG in memory of someone who loved photography. Write to us and we’ll handle it with care.', 'vpg-v2' ) . ' <a href="' . esc_url( home_url( '/contact/' ) ) . '">' . esc_html__( 'Get in touch', 'vpg-v2' ) . '</a></p>';
 
+    // 0996 · supporter survey — ask before building
+    echo '<h2>' . esc_html__( 'Before we build: what would you want?', 'vpg-v2' ) . '</h2>';
+    if ( isset( $_GET['danke'] ) ) {
+        echo '<p role="status" style="border-left:3px solid var(--g-red,#E5341F);padding-left:12px">' . esc_html__( 'Thank you — that helps us shape supporting the right way.', 'vpg-v2' ) . '</p>';
+    }
+    echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" data-vpg-keep="supporter-survey" style="display:grid;gap:12px;max-width:520px">';
+    echo '<input type="hidden" name="action" value="vpg_supporter_survey">';
+    echo wp_nonce_field( 'vpg_srv', '_vpg_srv', true, false );
+    echo '<label>' . esc_html__( 'What would make supporting feel worth it to you?', 'vpg-v2' ) . '<br><textarea name="want" rows="3" class="g-input" style="width:100%"></textarea></label>';
+    echo '<label>' . esc_html__( 'What could you imagine giving, if anything?', 'vpg-v2' ) . '<br><input type="text" name="amount" class="g-input" placeholder="' . esc_attr__( 'e.g. €5/month, once a year, in kind…', 'vpg-v2' ) . '" style="width:100%"></label>';
+    echo '<p><button class="g-btn" type="submit">' . esc_html__( 'Send', 'vpg-v2' ) . '</button></p></form>';
+
     echo '<p style="margin-top:24px"><a href="' . esc_url( home_url( '/danke-wand/' ) ) . '">' . esc_html__( 'See the wall of thanks →', 'vpg-v2' ) . '</a></p>';
     vpg_sup_foot();
 }

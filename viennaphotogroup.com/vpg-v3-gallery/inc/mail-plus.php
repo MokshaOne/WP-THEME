@@ -139,8 +139,16 @@ function vpg_mail_notify( $uid, $kind, $subject, $body, $priority = 'normal' ) {
 }
 function vpg_mail_freq( $uid, $kind ) {
     $prefs = (array) get_user_meta( $uid, '_vpg_mail_freq', true );
-    return $prefs[ $kind ] ?? ( $prefs['*'] ?? 'immediate' );
+    // Default OFF: notification email is opt-in, so wiring vpg_notify_user →
+    // email never surprises a member who never chose a frequency.
+    return $prefs[ $kind ] ?? ( $prefs['*'] ?? 'off' );
 }
+/* route every in-app notification to email per the member's frequency choice */
+add_action( 'vpg_notified', function ( $uid, $text, $url, $kind ) {
+    $subject = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) . ': ' . wp_strip_all_tags( $text );
+    $body    = wp_strip_all_tags( $text ) . ( $url ? "\n\n" . $url : '' );
+    vpg_mail_notify( $uid, $kind ?: 'general', $subject, $body );
+}, 10, 4 );
 function vpg_mail_in_quiet_hours( $uid ) {
     $h = (int) wp_date( 'G' ); // site timezone
     return ( $h >= 22 || $h < 7 );
@@ -165,7 +173,8 @@ add_action( 'vpg_mail_digest_flush', function () {
         if ( '' !== $hour && (int) $hour !== (int) wp_date( 'G' ) && count( $send ) < 5 ) continue;
         $lines = array_map( fn( $i ) => '• ' . wp_strip_all_tags( $i['subject'] ), $send );
         $body  = __( 'Here’s what you missed on Vienna Photo Group:', 'vpg-v2' ) . "\n\n" . implode( "\n", $lines ) . "\n\n" . home_url( '/dashboard/' );
-        wp_mail( $u->user_email, sprintf( _n( '%s update from VPG', '%s updates from VPG', count( $send ), 'vpg-v2' ), number_format_i18n( count( $send ) ) ), $body );
+        // through the throttled outbox so a big flush stays gentle on shared hosting
+        vpg_mail_enqueue( [ $u->user_email ], sprintf( _n( '%s update from VPG', '%s updates from VPG', count( $send ), 'vpg-v2' ), number_format_i18n( count( $send ) ) ), $body );
         update_user_meta( $u->ID, '_vpg_mail_queue', array_values( $keep ) );
     }
 } );
@@ -302,7 +311,7 @@ add_action( 'vpg_profile_sections', function ( $user ) {
     wp_nonce_field( 'vpg_mailfreq', '_vpg_mailfreq' );
     echo '<table class="vpg-cardify"><tbody>';
     foreach ( $kinds as $k => $label ) {
-        $v = $cur[ $k ] ?? ( $cur['*'] ?? 'immediate' );
+        $v = $cur[ $k ] ?? ( $cur['*'] ?? 'off' );
         echo '<tr><td data-label="' . esc_attr__( 'Topic', 'vpg-v2' ) . '">' . esc_html( $label ) . '</td><td><select name="freq[' . esc_attr( $k ) . ']">';
         foreach ( [ 'immediate' => __( 'Right away', 'vpg-v2' ), 'daily' => __( 'Daily digest', 'vpg-v2' ), 'weekly' => __( 'Weekly digest', 'vpg-v2' ), 'off' => __( 'Off', 'vpg-v2' ) ] as $ov => $ol )
             echo '<option value="' . esc_attr( $ov ) . '"' . selected( $v, $ov, false ) . '>' . esc_html( $ol ) . '</option>';

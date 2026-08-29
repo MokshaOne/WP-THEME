@@ -111,9 +111,14 @@ add_action( 'template_redirect', function () {
         $path = untrailingslashit( parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ) );
         if ( isset( $rules[ $path ] ) ) { wp_redirect( $rules[ $path ], 301 ); exit; }
     }
+    // These two write to the DB, so throttle them to at most once per IP per
+    // minute — a hammering bot (404s especially) can’t turn a pageview into a
+    // per-hit option write, and the metric stays good enough for a small site.
+    $ip_gate = 'vpg_seo_gate_' . md5( $_SERVER['REMOTE_ADDR'] ?? '0' );
     if ( is_404() ) {
         $uri = sanitize_text_field( $_SERVER['REQUEST_URI'] ?? '' );
-        if ( $uri && strlen( $uri ) < 200 ) {
+        if ( $uri && strlen( $uri ) < 200 && ! get_transient( $ip_gate . '_404' ) ) {
+            set_transient( $ip_gate . '_404', 1, MINUTE_IN_SECONDS );
             $log = (array) get_option( 'vpg_404_log', [] );
             $log[ $uri ] = (int) ( $log[ $uri ] ?? 0 ) + 1;
             if ( count( $log ) > 300 ) { arsort( $log ); $log = array_slice( $log, 0, 200, true ); }
@@ -121,7 +126,8 @@ add_action( 'template_redirect', function () {
         }
     }
     // 0720 · direct-visit metric (no referrer, is a real page)
-    if ( ! is_admin() && empty( $_SERVER['HTTP_REFERER'] ) && ( is_front_page() || is_singular() ) && ! wp_doing_ajax() ) {
+    if ( ! is_admin() && empty( $_SERVER['HTTP_REFERER'] ) && ( is_front_page() || is_singular() ) && ! wp_doing_ajax() && ! get_transient( $ip_gate . '_dv' ) ) {
+        set_transient( $ip_gate . '_dv', 1, MINUTE_IN_SECONDS );
         $m = (array) get_option( 'vpg_direct_visits', [] );
         $k = gmdate( 'Y-m' );
         $m[ $k ] = (int) ( $m[ $k ] ?? 0 ) + 1;

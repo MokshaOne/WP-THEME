@@ -104,13 +104,14 @@ function vpg_ai_enqueue( $job ) {
     $q = (array) get_option( 'vpg_ai_queue', [] );
     $q[] = $job;
     update_option( 'vpg_ai_queue', array_slice( $q, -500 ), false );
+    // bundle the run for the small hours; only arm the cron once there is work
+    if ( ! wp_next_scheduled( 'vpg_ai_batch' ) ) wp_schedule_single_event( strtotime( 'tomorrow 3:00' ), 'vpg_ai_batch' );
 }
 add_action( 'vpg_ai_batch', function () {
-    do_action( 'vpg_ai_batch_run', (array) get_option( 'vpg_ai_queue', [] ) );
+    $q = (array) get_option( 'vpg_ai_queue', [] );
+    if ( ! $q ) return;
+    do_action( 'vpg_ai_batch_run', $q );
     update_option( 'vpg_ai_queue', [], false ); // consumers clear what they handled
-} );
-add_action( 'init', function () {
-    if ( ! wp_next_scheduled( 'vpg_ai_batch' ) ) wp_schedule_event( strtotime( 'tomorrow 3:00' ), 'daily', 'vpg_ai_batch' ); // night, bundled = kinder on energy
 } );
 
 /* ================================================================

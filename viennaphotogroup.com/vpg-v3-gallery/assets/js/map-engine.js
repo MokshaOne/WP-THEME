@@ -63,11 +63,72 @@
     }
     if (p.lede) html += '<span style="font-family:' + f + ';color:#2C2C2C;font-size:13px;line-height:1.5;display:block;margin-bottom:.5rem">' + p.lede + '</span>';
     if (p.url)  html += '<a href="' + p.url + '" style="font-family:' + f + ';font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#0B0B0B;border-bottom:2px solid #E5341F;text-decoration:none">View →</a>';
+    // Cluster 01 · curated attribute chips + light hint + seasons
+    html += attrChips(p);
     // 0019 · tour list — saved in this browser only
     if (p.id && p.url) {
       html += ' <a href="#" class="vpg-tour-add" data-id="' + p.id + '" data-title="' + (p.title || '').replace(/"/g, '&quot;') + '" data-url="' + p.url + '" style="font-family:' + f + ';font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#6A6A6A;margin-left:10px;text-decoration:none">☆ Save</a>';
     }
+    // 0023 · standort-verlauf · mark this spot visited, in this browser only
+    if (p.id) {
+      var seen = visited().indexOf(String(p.id)) !== -1;
+      html += ' <a href="#" class="vpg-visited" data-id="' + p.id + '" style="font-family:' + f + ';font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:' + (seen ? '#1A7A3C' : '#6A6A6A') + ';margin-left:10px;text-decoration:none">' + (seen ? '✓ visited' : '○ visited?') + '</a>';
+    }
     return html;
+  }
+
+  /* 0023 · visited set (localStorage) */
+  function visited() { try { return JSON.parse(localStorage.getItem('vpg_visited')) || []; } catch (e) { return []; } }
+  function toggleVisited(id) {
+    var v = visited(), i = v.indexOf(String(id));
+    if (i === -1) v.push(String(id)); else v.splice(i, 1);
+    try { localStorage.setItem('vpg_visited', JSON.stringify(v)); } catch (e) {}
+    return v.indexOf(String(id)) !== -1;
+  }
+
+  /* 0001 / 0007 · rough sun compass now — sunrise≈E, noon≈S, sunset≈W (Vienna) */
+  var COMPASS = { N: 0, NE: 45, E: 90, SE: 135, S: 180, SW: 225, W: 270, NW: 315 };
+  function sunAzimuthNow() {
+    var h = new Date().getHours() + new Date().getMinutes() / 60;
+    if (h < 6 || h > 21) return null;            // dark · no useful sun
+    return 90 + (h - 6) / 15 * 180;              // 6:00→90°(E) … 21:00→270°(W)
+  }
+  function lightHint(facing) {
+    var sun = sunAzimuthNow();
+    if (sun === null || !(facing in COMPASS)) return '';
+    var diff = Math.abs(((COMPASS[facing] - sun + 540) % 360) - 180); // 180=aligned
+    if (diff < 55)  return '<span style="color:#1A7A3C">☀ front-lit now</span>';
+    if (diff > 125) return '<span style="color:#E5341F">⚠ back-lit now</span>';
+    return '<span style="color:#6A6A6A">◐ side light now</span>';
+  }
+
+  /* Curated attribute chips from pin.attrs */
+  function attrChips(p) {
+    var a = p.attrs; if (!a || typeof a !== 'object') return '';
+    var f = "'Archivo','Helvetica Neue',Arial,sans-serif";
+    var chips = [];
+    var lbl = {
+      tripod: { ok: '△ tripod ok', tolerated: '△ tripod tolerated', no: '△ no tripod' },
+      indoor: '☂ rain-safe', night: '☾ night', stepfree: '♿ step-free', winter: '❄ winter',
+      toilets: '🚻 WC', drone: '🚁 drone restricted'
+    };
+    if (a.tripod && lbl.tripod[a.tripod]) chips.push(lbl.tripod[a.tripod]);
+    ['indoor', 'night', 'stepfree', 'winter', 'toilets', 'drone'].forEach(function (k) { if (a[k]) chips.push(lbl[k]); });
+    if (a.facing) chips.push('➤ faces ' + a.facing);
+    if (a.elev) chips.push('⛰ ' + a.elev + ' m');
+    if (a.station) chips.push('Ⓤ ' + a.station);
+    if (a.parking) chips.push('🅿 ' + a.parking);
+    (a.themes || []).forEach(function (t) { chips.push('#' + t); });
+    var out = '';
+    if (chips.length) {
+      out += '<span style="font-family:' + f + ';display:flex;flex-wrap:wrap;gap:4px;margin:.15rem 0 .5rem">';
+      chips.forEach(function (c) { out += '<span style="border:1px solid #E6E5E1;padding:2px 7px;font-size:10px;font-weight:700;color:#2C2C2C">' + c + '</span>'; });
+      out += '</span>';
+    }
+    var lh = a.facing ? lightHint(a.facing) : '';
+    if (lh) out += '<span style="font-family:' + f + ';font-size:11px;font-weight:700;display:block;margin-bottom:.4rem">' + lh + '</span>';
+    if (a.seasons && a.seasons.length) out += '<span style="font-family:' + f + ';font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6A6A6A;display:block;margin-bottom:.4rem">▦ ' + a.seasons.length + ' seasons on the page</span>';
+    return out;
   }
 
   function clusterIcon(cluster) {
@@ -344,6 +405,15 @@
   }
 
   document.addEventListener('click', function (e) {
+    // 0023 · toggle "visited" from a popup link
+    var vis = e.target.closest('.vpg-visited');
+    if (vis) {
+      e.preventDefault();
+      var on = toggleVisited(vis.dataset.id);
+      vis.textContent = on ? '✓ visited' : '○ visited?';
+      vis.style.color = on ? '#1A7A3C' : '#6A6A6A';
+      return;
+    }
     var add = e.target.closest('.vpg-tour-add');
     if (add) {
       e.preventDefault();

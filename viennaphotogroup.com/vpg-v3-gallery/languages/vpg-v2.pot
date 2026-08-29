@@ -5213,3 +5213,163 @@ msgstr ""
 #: inc/submission-queue.php
 msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
 msgstr ""
+
+#: inc/community.php
+msgid "Hello %1\$s,\n\nQuick reminder — \\"%2\$s\\" is tomorrow%3\$s.%5\$s\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Tripod"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "unknown"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "allowed"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "tolerated"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "forbidden"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "View faces"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "—"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Indoor / covered (rain-safe)"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Rain-safe"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Works after dark"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Step-free / wheelchair"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Step-free"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Open in winter"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Winter"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Toilets nearby"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Drone restricted / no-fly"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Elevation (m)"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Parking notes"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Nearest U-Bahn / tram"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Themes"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Related pin IDs (comma-sep · “from here you see…”)"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Brutalism"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Jugendstil"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Neon"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Water"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Green / parks"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Transit"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Rooftops"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Markets"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Spot attributes"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "yes"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Four-seasons photos (same spot across the year)"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Pick seasons photos"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Good to know"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Across the seasons"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "From here you can also shoot"
+msgstr ""
+
+#: inc/map-attributes.php
+msgid "Spot attributes · what you noticed there"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "%1\$s says something changed at \\"%2\$s\\" — access, hours or the place itself.\n\nCheck and update:\n%3\$s"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
+msgstr ""

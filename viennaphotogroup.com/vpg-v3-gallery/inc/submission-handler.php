@@ -352,6 +352,11 @@ function vpg_handle_submit() {
         }
     }
 
+    // Cluster 01 · curated spot attributes for map types
+    if ( in_array( $type, [ 'vpg_location', 'vpg_studio', 'vpg_shop' ], true ) && function_exists( 'vpg_save_spot_attrs_from_post' ) ) {
+        vpg_save_spot_attrs_from_post( $post_id, $_POST );
+    }
+
     update_post_meta( $post_id, '_vpg_submitted_at', current_time( 'mysql' ) );
 
     $photo_note = vpg_attach_submission_photos( $post_id );

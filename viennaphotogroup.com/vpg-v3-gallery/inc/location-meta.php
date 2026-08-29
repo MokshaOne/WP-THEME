@@ -356,6 +356,7 @@ add_action( 'save_post', function ( $post_id ) {
 
     // Bust the pin cache so the front-end map updates immediately
     delete_transient( 'vpg_location_pins' );
+    delete_transient( 'vpg_location_pins_v3' );
     delete_transient( 'vpg_location_districts' );
 }, 10 );
 
@@ -364,6 +365,7 @@ add_action( 'save_post', function ( $post_id ) {
 foreach ( [ 'vpg_location', 'vpg_studio', 'vpg_shop' ] as $cpt ) {
     add_action( 'save_post_' . $cpt, function () {
         delete_transient( 'vpg_location_pins' );
+        delete_transient( 'vpg_location_pins_v3' );
         delete_transient( 'vpg_location_districts' );
     } );
 }

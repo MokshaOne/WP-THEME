@@ -196,6 +196,8 @@ get_header();
               <input class="g-input" id="district" type="text" name="district" value="<?php echo esc_attr( $ev( 'district' ) ); ?>" placeholder="<?php esc_attr_e( '1010 · Innere Stadt', 'vpg-v2' ); ?>">
             </div>
 
+            <?php if ( function_exists( 'vpg_render_submit_attrs' ) ) vpg_render_submit_attrs( $edit_post ); ?>
+
             <!-- Pin picker · the exact spot, set by the person who found it -->
             <?php
             $pin_keys = [

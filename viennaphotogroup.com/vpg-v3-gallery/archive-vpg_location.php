@@ -42,7 +42,7 @@ $total = (int) $q->found_posts;
 
 /* ─── Build pins for ALL three CPTs (map shows everything; filter is visual) ─── */
 $nocache = isset( $_GET['nocache'] );
-$pins    = $nocache ? false : get_transient( 'vpg_location_pins_v2' );
+$pins    = $nocache ? false : get_transient( 'vpg_location_pins_v3' );
 $counts  = [ 'location' => 0, 'studio' => 0, 'shop' => 0 ];
 
 if ( false === $pins || ! is_array( $pins ) || empty( $pins ) ) {
@@ -68,10 +68,12 @@ if ( false === $pins || ! is_array( $pins ) || empty( $pins ) ) {
                 'best'     => $best,
                 'hours'    => $hours,
                 'open'     => ( $hours && function_exists( 'vpg_hours_open_now' ) ) ? vpg_hours_open_now( $hours ) : null,
+                'attrs'    => function_exists( 'vpg_spot_attrs' ) ? vpg_spot_attrs( $p->ID ) : [],
+                'year'     => (int) get_the_date( 'Y', $p ),
             ];
         }
     }
-    if ( $pins ) set_transient( 'vpg_location_pins_v2', $pins, HOUR_IN_SECONDS );
+    if ( $pins ) set_transient( 'vpg_location_pins_v3', $pins, HOUR_IN_SECONDS );
 }
 
 $pins_filtered = $pins;

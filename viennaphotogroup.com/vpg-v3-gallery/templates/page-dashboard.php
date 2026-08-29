@@ -561,6 +561,27 @@ get_header();
     </div>
   </section>
 
+  <?php // 0573 · saved searches · watchlist with remove links
+  $saved_s = array_filter( (array) get_user_meta( $u->ID, '_vpg_saved_searches', true ), 'is_array' );
+  if ( $saved_s ) : ?>
+  <section class="g-section g-section--tight" style="padding-bottom:0">
+    <div class="g-wrap">
+      <div style="border:1px solid var(--g-line-2);padding:18px 24px">
+        <span class="g-kicker"><?php esc_html_e( 'Saved searches', 'vpg-v2' ); ?></span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <?php foreach ( $saved_s as $ss ) : ?>
+            <span style="display:inline-flex;gap:8px;align-items:center;border:1px solid var(--g-line);padding:6px 12px;font-size:13px;font-weight:600">
+              <a href="<?php echo esc_url( home_url( '/?s=' . rawurlencode( $ss['term'] ) ) ); ?>"><?php echo esc_html( $ss['term'] ); ?></a>
+              <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_drop_search&term=' . rawurlencode( $ss['term'] ) ), 'vpg_drop_search' ) ); ?>" style="color:var(--g-red);font-weight:800" aria-label="<?php esc_attr_e( 'Remove', 'vpg-v2' ); ?>">×</a>
+            </span>
+          <?php endforeach; ?>
+        </div>
+        <p class="g-form__note" style="margin-top:8px"><?php esc_html_e( 'You get a notification when something new matches.', 'vpg-v2' ); ?></p>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Profile editor · everything self-service, no wp-admin -->
   <section class="g-section g-section--alt g-section--tight" id="profile">
     <div class="g-wrap">
@@ -627,6 +648,10 @@ get_header();
           <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600">
             <input type="checkbox" name="pref_coffee" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_pref_coffee', true ) === '1' ); ?>>
             <?php esc_html_e( 'Random coffee ☕ · pair me with another member once a month', 'vpg-v2' ); ?>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600">
+            <input type="checkbox" name="pref_event" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_pref_event', true ) !== '0' ); ?>>
+            <?php esc_html_e( 'Event reminders · mail me the day before a walk I RSVP’d to', 'vpg-v2' ); ?>
           </label>
           <label style="display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500">
             <input type="checkbox" name="directory_optin" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_directory_optin', true ) === '1' ); ?>>

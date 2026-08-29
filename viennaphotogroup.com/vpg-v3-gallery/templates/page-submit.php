@@ -338,6 +338,22 @@ get_header();
               </div>
             </div>
 
+            <!-- Event proposals · capacity + repeat -->
+            <div class="g-field g-field--row" data-for-types="vpg_event" hidden>
+              <div>
+                <label for="event_cap"><?php esc_html_e( 'Max participants · 0 = open', 'vpg-v2' ); ?></label>
+                <input class="g-input" id="event_cap" type="number" min="0" max="200" name="event_cap" value="<?php echo esc_attr( $edit_post ? (int) get_post_meta( $edit_post->ID, '_vpg_event_cap', true ) : 0 ); ?>">
+              </div>
+              <div>
+                <label for="event_repeat"><?php esc_html_e( 'Repeat', 'vpg-v2' ); ?></label>
+                <select class="g-select" id="event_repeat" name="event_repeat">
+                  <option value=""><?php esc_html_e( 'One-off', 'vpg-v2' ); ?></option>
+                  <option value="weekly"><?php esc_html_e( 'Weekly · 4 dates', 'vpg-v2' ); ?></option>
+                  <option value="monthly"><?php esc_html_e( 'Monthly · 3 dates', 'vpg-v2' ); ?></option>
+                </select>
+              </div>
+            </div>
+
             <!-- Event proposals · what to bring -->
             <div class="g-field" data-for-types="vpg_event" hidden>
               <label for="event_checklist"><?php esc_html_e( 'Bring along · one item per line', 'vpg-v2' ); ?></label>

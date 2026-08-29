@@ -323,6 +323,10 @@ function vpg_handle_submit() {
         if ( $ev_venue )                          update_post_meta( $post_id, '_vpg_event_venue', $ev_venue );
         $ev_check = sanitize_textarea_field( wp_unslash( $_POST['event_checklist'] ?? '' ) );
         if ( $ev_check !== '' ) update_post_meta( $post_id, '_vpg_event_checklist', $ev_check );
+        $ev_cap = min( 200, max( 0, (int) ( $_POST['event_cap'] ?? 0 ) ) );
+        if ( $ev_cap ) update_post_meta( $post_id, '_vpg_event_cap', $ev_cap );
+        $ev_rep = sanitize_key( $_POST['event_repeat'] ?? '' );
+        if ( in_array( $ev_rep, [ 'weekly', 'monthly' ], true ) ) update_post_meta( $post_id, '_vpg_event_repeat', $ev_rep );
     }
     if ( $type === 'vpg_trail' ) {
         $stops = array_slice( array_filter( array_map( 'intval', (array) ( $_POST['trail_stops'] ?? [] ) ) ), 0, 12 );

@@ -73,6 +73,14 @@ $is_search = is_search();
       </div>
       <?php endif; ?>
       <p style="text-align:right;margin:0 0 14px"><a class="g-link" style="font-size:12px" href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_random_frame' ) ); ?>">⚄ <?php esc_html_e( 'Random frame', 'vpg-v2' ); ?></a></p>
+      <?php if ( is_search() && is_user_logged_in() && get_search_query() ) : ?>
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0 0 14px;text-align:right">
+        <?php wp_nonce_field( 'vpg_save_search' ); ?>
+        <input type="hidden" name="action" value="vpg_save_search">
+        <input type="hidden" name="term" value="<?php echo esc_attr( get_search_query() ); ?>">
+        <button type="submit" style="background:none;border:1px solid var(--g-line-2);padding:7px 12px;cursor:pointer;font:700 12px/1 var(--g-sans);letter-spacing:.06em">☆ <?php esc_html_e( 'Watch this search', 'vpg-v2' ); ?></button>
+      </form>
+      <?php endif; ?>
       <?php if ( have_posts() ) : ?>
         <div class="g-list">
           <?php while ( have_posts() ) : the_post(); ?>

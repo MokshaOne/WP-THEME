@@ -3857,3 +3857,163 @@ msgstr ""
 #: inc/discovery.php
 msgid "🖼 Broken media"
 msgstr ""
+
+#: single-vpg_trail.php
+msgid "%1$s km · ~%2$dh %3$02dmin"
+msgstr ""
+
+#: inc/power.php
+msgid "%1$s · part %2$d of %3$d"
+msgstr ""
+
+#: inc/community.php
+msgid "A spot opened up — you’re in: %s"
+msgstr ""
+
+#: inc/power.php
+msgid "Add it"
+msgstr ""
+
+#: image.php
+msgid "Belongs to"
+msgstr ""
+
+#: inc/acf-fields.php
+msgid "Capacity"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Contact sheet"
+msgstr ""
+
+#: image.php
+msgid "Credit"
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "Distance"
+msgstr ""
+
+#: inc/power.php
+msgid "District %s"
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "Download route ↓"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Event reminders · mail me the day before a walk I RSVP’d to"
+msgstr ""
+
+#: inc/enqueue.php
+msgid "Full search for"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Full — join the waitlist"
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "GPX"
+msgstr ""
+
+#: inc/enqueue.php
+msgid "Go to"
+msgstr ""
+
+#: inc/power.php
+msgid "Know a spot?"
+msgstr ""
+
+#: inc/mail.php
+msgid "Manage emails"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Max participants · 0 = open"
+msgstr ""
+
+#: inc/acf-fields.php
+msgid "Max participants · 0 = unlimited. Full events run a waitlist."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Monthly · 3 dates"
+msgstr ""
+
+#: inc/power.php
+msgid "New on the site for your saved search “%1$s”: %2$s"
+msgstr ""
+
+#: inc/power.php
+msgid "Nothing pinned here yet — this district is waiting for its first member find."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "One-off"
+msgstr ""
+
+#: inc/power.php
+msgid "Open filtered map"
+msgstr ""
+
+#: image.php
+msgid "Photograph"
+msgstr ""
+
+#: inc/power.php
+msgid "Photography in %1$s · %2$s — Vienna Photo Group"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Print"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Repeat"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Saved searches"
+msgstr ""
+
+#: header.php
+msgid "Search (Cmd+K)"
+msgstr ""
+
+#: inc/power.php
+msgid "Search saved — we’ll notify you about new matches."
+msgstr ""
+
+#: inc/enqueue.php
+msgid "Search the site… (⌘K)"
+msgstr ""
+
+#: inc/power.php
+msgid "Series"
+msgstr ""
+
+#: index.php
+msgid "Watch this search"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Weekly · 4 dates"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "You get a notification when something new matches."
+msgstr ""
+
+#: inc/community.php
+msgid "You’re in — a spot opened up"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "⏳ On the waitlist · leave"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "▦ Contact sheet"
+msgstr ""

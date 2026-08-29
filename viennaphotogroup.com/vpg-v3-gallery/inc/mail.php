@@ -115,3 +115,28 @@ add_action( 'admin_menu', function () {
         <?php
     } );
 }, 16 );
+
+
+/* ─── 0801 · Every mail wears the identity · plain text in, HTML out ─
+ * The body stays written as plain text everywhere in the theme; this
+ * wrapper converts it at send time. Disable via the filter.
+ */
+add_filter( 'wp_mail', function ( $atts ) {
+    if ( ! apply_filters( 'vpg_html_mail_enabled', true ) ) return $atts;
+    $msg = (string) ( $atts['message'] ?? '' );
+    if ( stripos( $msg, '<html' ) !== false || stripos( $msg, '<p' ) !== false ) return $atts; // already HTML
+
+    $body = nl2br( make_clickable( esc_html( $msg ) ) );
+    $atts['message'] =
+        '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F5F4F1">' .
+        '<div style="max-width:560px;margin:0 auto;padding:24px 16px;font-family:Archivo,Helvetica,Arial,sans-serif">' .
+        '<p style="margin:0 0 20px;font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#0B0B0B">VIENNAPHOTOGROUP<span style="color:#E5341F">.</span></p>' .
+        '<div style="background:#FFFFFF;border:1px solid #E6E5E1;padding:24px;font-size:14px;line-height:1.65;color:#0B0B0B">' . $body . '</div>' .
+        '<p style="margin:16px 0 0;font-size:11px;color:#9C9A95">Vienna Photo Group · member-run · ad-free · <a href="' . esc_url( home_url( '/dashboard/#profile' ) ) . '" style="color:#9C9A95">' . esc_html__( 'Manage emails', 'vpg-v2' ) . '</a></p>' .
+        '</div></body></html>';
+
+    $headers = (array) ( $atts['headers'] ?? [] );
+    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+    $atts['headers'] = $headers;
+    return $atts;
+}, 20 );

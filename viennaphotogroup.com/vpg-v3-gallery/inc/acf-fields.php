@@ -25,6 +25,7 @@ function vpg_cpt_field_schema() {
             'title'  => __( 'Event details', 'vpg-v2' ),
             'fields' => [
                 [ 'key' => '_vpg_event_date',  'label' => __( 'Event date', 'vpg-v2' ),        'type' => 'date',   'instructions' => __( 'When it happens.', 'vpg-v2' ) ],
+                [ 'key' => '_vpg_event_cap',   'label' => __( 'Capacity', 'vpg-v2' ),          'type' => 'number', 'instructions' => __( 'Max participants · 0 = unlimited. Full events run a waitlist.', 'vpg-v2' ) ],
                 [ 'key' => '_vpg_event_venue', 'label' => __( 'Venue', 'vpg-v2' ),             'type' => 'text',   'instructions' => __( 'e.g. Spittelberg, 7. Bezirk', 'vpg-v2' ) ],
                 [ 'key' => '_vpg_event_url',   'label' => __( 'Tickets / RSVP URL', 'vpg-v2' ), 'type' => 'url' ],
             ],

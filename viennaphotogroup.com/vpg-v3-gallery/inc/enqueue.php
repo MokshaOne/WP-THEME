@@ -36,6 +36,24 @@ add_action( 'wp_enqueue_scripts', function () {
     // everywhere and win the cascade for the signature screens.
     wp_enqueue_style( 'vpg-gallery', VPG_V2_URI . '/assets/css/gallery.css', [ 'vpg-components' ], $ver( '/assets/css/gallery.css' ) );
 
+    // 0561/0580 · command palette doubles as live search
+    wp_enqueue_script( 'vpg-palette', VPG_V2_URI . '/assets/js/palette.js', [], $ver( '/assets/js/palette.js' ), true );
+    wp_localize_script( 'vpg-palette', 'vpgPalette', [
+        'ajax'            => admin_url( 'admin-ajax.php' ),
+        'home'            => home_url( '/' ),
+        'i18nSearch'      => __( 'Search', 'vpg-v2' ),
+        'i18nPlaceholder' => __( 'Search the site… (⌘K)', 'vpg-v2' ),
+        'i18nGoto'        => __( 'Go to', 'vpg-v2' ),
+        'i18nAll'         => __( 'Full search for', 'vpg-v2' ),
+        'links'           => [
+            [ __( 'The Map', 'vpg-v2' ), get_post_type_archive_link( 'vpg_location' ) ],
+            [ __( 'Magazine', 'vpg-v2' ), get_post_type_archive_link( 'vpg_magazine' ) ],
+            [ __( 'Submit', 'vpg-v2' ), home_url( '/submit/' ) ],
+            [ __( 'Dashboard', 'vpg-v2' ), home_url( '/dashboard/' ) ],
+            [ __( 'Events', 'vpg-v2' ), get_post_type_archive_link( 'vpg_event' ) ],
+        ],
+    ] );
+
     // Page-scoped sheets · only enqueue when needed
     if ( is_singular( 'vpg_magazine' ) || is_post_type_archive( 'vpg_magazine' ) ) {
         wp_enqueue_style( 'vpg-magazine', VPG_V2_URI . '/assets/css/pages/magazine.css', [ 'vpg-components' ], $ver( '/assets/css/pages/magazine.css' ) );

@@ -36,6 +36,11 @@ get_header();
             if ( isset( $tlabels[ $tdiff ] ) ) : ?>
             <dt><?php esc_html_e( 'Difficulty', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $tlabels[ $tdiff ] ); ?></dd>
             <?php endif; ?>
+            <?php $tgeo = function_exists( 'vpg_trail_geo' ) ? vpg_trail_geo( get_the_ID() ) : null;
+            if ( $tgeo && $tgeo['km'] > 0 ) : ?>
+            <dt><?php esc_html_e( 'Distance', 'vpg-v2' ); ?></dt><dd><?php printf( esc_html__( '%1$s km · ~%2$dh %3$02dmin', 'vpg-v2' ), esc_html( number_format_i18n( $tgeo['km'], 1 ) ), intdiv( $tgeo['minutes'], 60 ), $tgeo['minutes'] % 60 ); ?></dd>
+            <?php endif; ?>
+            <dt><?php esc_html_e( 'GPX', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_trail_gpx&trail=' . get_the_ID() ) ); ?>"><?php esc_html_e( 'Download route ↓', 'vpg-v2' ); ?></a></dd>
             <dt><?php esc_html_e( 'Curated by', 'vpg-v2' ); ?></dt><dd><?php the_author(); ?></dd>
           </dl>
         </div>

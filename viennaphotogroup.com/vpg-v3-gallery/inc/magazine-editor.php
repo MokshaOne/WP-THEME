@@ -42,6 +42,7 @@ add_action( 'admin_menu', function () {
     add_submenu_page( 'vpg-magazine', __( 'All Issues', 'vpg-v2' ), __( 'All Issues', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine', 'vpg_magazine_list_page' );
     add_submenu_page( 'vpg-magazine', __( 'New Issue', 'vpg-v2' ), __( '+ New Issue', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine-new', 'vpg_magazine_edit_page' );
     add_submenu_page( 'vpg-magazine', __( 'Duplicate Issue', 'vpg-v2' ), __( '↻ Duplicate Last', 'vpg-v2' ), 'edit_others_posts', 'vpg-magazine-duplicate', 'vpg_magazine_duplicate_handler' );
+    add_submenu_page( 'vpg-magazine', __( 'Contact sheet', 'vpg-v2' ), __( '▦ Contact sheet', 'vpg-v2' ), 'edit_others_posts', 'vpg-contact-sheet', 'vpg_contact_sheet_page' );
 
     // hidden edit page (linked from list)
     // pass an empty string for parent slug (PHP 8.1+ deprecates null here)
@@ -1104,3 +1105,47 @@ add_action( 'admin_post_vpg_issue_from_month', function () {
     wp_safe_redirect( admin_url( 'admin.php?page=vpg-magazine-edit&issue=' . $issue_id . '&saved=1' ) );
     exit;
 } );
+
+
+/* ─── Monthly contact sheet · every upload of a month as one grid ── */
+function vpg_contact_sheet_page() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+    $month = preg_match( '/^\d{4}-\d{2}$/', $_GET['m'] ?? '' ) ? $_GET['m'] : current_time( 'Y-m' );
+    [ $yy, $mm ] = array_map( 'intval', explode( '-', $month ) );
+    $shots = get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image',
+        'posts_per_page' => 200,
+        'date_query'     => [ [ 'year' => $yy, 'month' => $mm ] ],
+    ] );
+    ?>
+    <div class="wrap vpg-mag-admin">
+        <h1>▦ <?php esc_html_e( 'Contact sheet', 'vpg-v2' ); ?> · <?php echo esc_html( date_i18n( 'F Y', mktime( 0, 0, 0, $mm, 1, $yy ) ) ); ?></h1>
+        <form method="get" style="margin:12px 0 20px">
+            <input type="hidden" name="page" value="vpg-contact-sheet">
+            <input type="month" name="m" value="<?php echo esc_attr( $month ); ?>">
+            <button class="button"><?php esc_html_e( 'Show', 'vpg-v2' ); ?></button>
+            <button class="button" type="button" onclick="window.print()"><?php esc_html_e( 'Print', 'vpg-v2' ); ?></button>
+            <span class="description" style="margin-left:8px"><?php printf( esc_html( _n( '%d frame', '%d frames', count( $shots ), 'vpg-v2' ) ), count( $shots ) ); ?></span>
+        </form>
+        <style>
+            .vpg-sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+            .vpg-sheet figure { margin: 0; }
+            .vpg-sheet img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #F5F4F1; }
+            .vpg-sheet figcaption { font-size: 10px; color: #6A6A6A; margin-top: 3px; letter-spacing: .04em; }
+            @media print { #adminmenumain, #wpadminbar, form, h1 .page-title-action { display: none !important; } #wpcontent { margin: 0 !important; } }
+        </style>
+        <div class="vpg-sheet">
+            <?php foreach ( $shots as $sh ) :
+                $u = wp_get_attachment_image_url( $sh->ID, 'medium' );
+                if ( ! $u ) continue; ?>
+                <figure>
+                    <a href="<?php echo esc_url( get_edit_post_link( $sh->ID ) ); ?>"><img src="<?php echo esc_url( $u ); ?>" alt="" loading="lazy"></a>
+                    <figcaption>#<?php echo (int) $sh->ID; ?> · <?php echo esc_html( get_the_author_meta( 'display_name', $sh->post_author ) ); ?></figcaption>
+                </figure>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+}

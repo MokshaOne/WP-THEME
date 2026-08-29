@@ -101,19 +101,29 @@ get_header();
         <?php
         $rsvps    = function_exists( 'vpg_event_rsvps' ) ? vpg_event_rsvps( get_the_ID() ) : [];
         $is_going = is_user_logged_in() && in_array( get_current_user_id(), $rsvps, true );
+        $ev_cap   = (int) get_post_meta( get_the_ID(), '_vpg_event_cap', true );
+        $ev_wait  = array_values( array_filter( array_map( 'intval', (array) get_post_meta( get_the_ID(), '_vpg_waitlist', true ) ) ) );
+        $on_wait  = is_user_logged_in() && in_array( get_current_user_id(), $ev_wait, true );
+        $is_full  = $ev_cap > 0 && count( $rsvps ) >= $ev_cap;
         ?>
         <div class="g-head">
           <div>
             <span class="g-kicker"><?php esc_html_e( 'Who\'s coming', 'vpg-v2' ); ?></span>
-            <h2 class="g-head__t"><?php echo (int) count( $rsvps ); ?> <em><?php echo esc_html( _n( 'member', 'members', count( $rsvps ), 'vpg-v2' ) ); ?></em></h2>
+            <h2 class="g-head__t"><?php echo (int) count( $rsvps ); ?><?php if ( $ev_cap ) echo '<span style="color:var(--g-faint);font-size:.6em"> / ' . (int) $ev_cap . '</span>'; ?> <em><?php echo esc_html( _n( 'member', 'members', count( $rsvps ), 'vpg-v2' ) ); ?></em></h2>
+            <?php if ( $ev_wait ) : ?><p class="g-meta" style="margin-top:6px"><?php printf( esc_html( _n( '%d on the waitlist', '%d on the waitlist', count( $ev_wait ), 'vpg-v2' ) ), count( $ev_wait ) ); ?></p><?php endif; ?>
           </div>
           <?php if ( is_user_logged_in() ) : ?>
           <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
             <?php wp_nonce_field( 'vpg_rsvp' ); ?>
             <input type="hidden" name="action" value="vpg_rsvp">
             <input type="hidden" name="event" value="<?php echo (int) get_the_ID(); ?>">
-            <button class="g-btn <?php echo $is_going ? 'g-btn--ghost' : 'g-btn--red'; ?>" type="submit">
-              <?php echo $is_going ? esc_html__( '✓ You\'re coming · cancel', 'vpg-v2' ) : esc_html__( 'I\'m coming', 'vpg-v2' ); ?>
+            <button class="g-btn <?php echo ( $is_going || $on_wait ) ? 'g-btn--ghost' : 'g-btn--red'; ?>" type="submit">
+              <?php
+              if ( $is_going )     esc_html_e( '✓ You\'re coming · cancel', 'vpg-v2' );
+              elseif ( $on_wait )  esc_html_e( '⏳ On the waitlist · leave', 'vpg-v2' );
+              elseif ( $is_full )  esc_html_e( 'Full — join the waitlist', 'vpg-v2' );
+              else                 esc_html_e( 'I\'m coming', 'vpg-v2' );
+              ?>
             </button>
           </form>
           <?php else : ?>

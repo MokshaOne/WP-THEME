@@ -65,8 +65,34 @@ add_action( 'admin_post_vpg_rsvp', function () {
 
     $uid  = get_current_user_id();
     $list = vpg_event_rsvps( $event_id );
+    $cap  = (int) get_post_meta( $event_id, '_vpg_event_cap', true );
+    $wait = array_values( array_filter( array_map( 'intval', (array) get_post_meta( $event_id, '_vpg_waitlist', true ) ) ) );
+
+    if ( in_array( $uid, $wait, true ) ) {
+        // Leaving the waitlist
+        update_post_meta( $event_id, '_vpg_waitlist', array_values( array_diff( $wait, [ $uid ] ) ) );
+        wp_safe_redirect( get_permalink( $event_id ) . '#rsvp' );
+        exit;
+    }
+
     if ( in_array( $uid, $list, true ) ) {
         $list = array_values( array_diff( $list, [ $uid ] ) );
+        // 0122 · a freed seat promotes the first person waiting
+        if ( $wait ) {
+            $next = array_shift( $wait );
+            $list[] = $next;
+            update_post_meta( $event_id, '_vpg_waitlist', $wait );
+            vpg_notify_user( $next, sprintf( __( 'A spot opened up — you’re in: %s', 'vpg-v2' ), get_the_title( $event_id ) ), get_permalink( $event_id ) );
+            $nu = get_userdata( $next );
+            if ( $nu ) wp_mail( $nu->user_email, '[VPG] ' . __( 'You’re in — a spot opened up', 'vpg-v2' ),
+                sprintf( __( "Hello %1\$s,\n\nSomeone cancelled — you moved off the waitlist into “%2\$s”.\n\n%3\$s\n\n— Vienna Photo Group", 'vpg-v2' ), $nu->display_name, get_the_title( $event_id ), get_permalink( $event_id ) ) );
+        }
+    } elseif ( $cap > 0 && count( $list ) >= $cap ) {
+        // Full · onto the waitlist instead
+        $wait[] = $uid;
+        update_post_meta( $event_id, '_vpg_waitlist', array_values( array_unique( $wait ) ) );
+        wp_safe_redirect( get_permalink( $event_id ) . '#rsvp' );
+        exit;
     } else {
         $list[] = $uid;
         // Day-before reminder · scheduled once per event, when the date parses
@@ -117,6 +143,7 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
     foreach ( vpg_event_rsvps( $event_id ) as $uid ) {
         $user = get_userdata( $uid );
         if ( ! $user ) continue;
+        if ( get_user_meta( $uid, '_vpg_pref_event', true ) === '0' ) continue; // opted out (0804)
         wp_mail( $user->user_email,
             sprintf( __( '[VPG] Tomorrow · %s', 'vpg-v2' ), $event->post_title ),
             sprintf(
@@ -553,3 +580,38 @@ add_action( 'vpg_monthly_challenge', function () {
         );
     }
 } );
+
+
+/* ─── 0121 · Series dates · repeat an event weekly/monthly ──────── */
+add_action( 'transition_post_status', function ( $new, $old, $post ) {
+    if ( $new !== 'publish' || $post->post_type !== 'vpg_event' ) return;
+    $repeat = get_post_meta( $post->ID, '_vpg_event_repeat', true );
+    if ( ! $repeat || get_post_meta( $post->ID, '_vpg_repeat_done', true ) ) return;
+    update_post_meta( $post->ID, '_vpg_repeat_done', '1' );
+
+    $date = get_post_meta( $post->ID, '_vpg_event_date', true );
+    $ts   = $date ? strtotime( $date ) : false;
+    if ( ! $ts ) return;
+
+    [ $step, $count ] = $repeat === 'monthly' ? [ '+1 month', 3 ] : [ '+1 week', 4 ];
+    for ( $i = 1; $i < $count; $i++ ) {
+        $ts    = strtotime( $step, $ts );
+        $copy  = wp_insert_post( [
+            'post_type'    => 'vpg_event',
+            'post_status'  => 'publish',
+            'post_title'   => $post->post_title,
+            'post_content' => $post->post_content,
+            'post_excerpt' => $post->post_excerpt,
+            'post_author'  => $post->post_author,
+        ] );
+        if ( $copy && ! is_wp_error( $copy ) ) {
+            foreach ( [ '_vpg_event_venue', '_vpg_event_lat', '_vpg_event_lng', '_vpg_event_checklist', '_vpg_event_cap' ] as $mk ) {
+                $mv = get_post_meta( $post->ID, $mk, true );
+                if ( $mv !== '' ) update_post_meta( $copy, $mk, $mv );
+            }
+            update_post_meta( $copy, '_vpg_event_date', gmdate( 'Y-m-d', $ts ) );
+            update_post_meta( $copy, '_vpg_repeat_done', '1' ); // copies never multiply
+            if ( has_post_thumbnail( $post ) ) set_post_thumbnail( $copy, get_post_thumbnail_id( $post ) );
+        }
+    }
+}, 10, 3 );

@@ -86,6 +86,42 @@ get_header();
         <?php if ( $is_going ) : ?>
           <p class="g-form__note" style="margin-top:16px"><?php esc_html_e( 'We\'ll email you a reminder the day before.', 'vpg-v2' ); ?></p>
         <?php endif; ?>
+
+        <?php
+        // Live check-in · only on the event day
+        if ( function_exists( 'vpg_event_is_today' ) && vpg_event_is_today( get_the_ID() ) ) :
+            $checked = function_exists( 'vpg_event_checkins' ) ? vpg_event_checkins( get_the_ID() ) : [];
+            $is_here = is_user_logged_in() && in_array( get_current_user_id(), $checked, true );
+        ?>
+        <div style="margin-top:28px;border:2px solid var(--g-red);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <span class="g-kicker"><?php esc_html_e( 'Today · live', 'vpg-v2' ); ?></span>
+            <p style="margin:6px 0 0;font-weight:800;font-size:20px"><span id="vpg-checkin-n"><?php echo (int) count( $checked ); ?></span> <?php esc_html_e( 'checked in', 'vpg-v2' ); ?></p>
+          </div>
+          <?php if ( $is_going && ! $is_here ) : ?>
+          <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+            <?php wp_nonce_field( 'vpg_checkin' ); ?>
+            <input type="hidden" name="action" value="vpg_checkin">
+            <input type="hidden" name="event" value="<?php echo (int) get_the_ID(); ?>">
+            <button class="g-btn g-btn--red" type="submit"><?php esc_html_e( 'I\'m here', 'vpg-v2' ); ?></button>
+          </form>
+          <?php elseif ( $is_here ) : ?>
+            <span style="font-weight:800;color:var(--g-red)">✓ <?php esc_html_e( 'You\'re checked in', 'vpg-v2' ); ?></span>
+          <?php endif; ?>
+        </div>
+        <script>
+        (function () {
+            var n = document.getElementById('vpg-checkin-n');
+            if (!n) return;
+            setInterval(function () {
+                fetch('<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>?action=vpg_checkin_count&event=<?php echo (int) get_the_ID(); ?>', { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (res) { if (res && res.success) n.textContent = res.data.count; })
+                    .catch(function () {});
+            }, 10000);
+        }());
+        </script>
+        <?php endif; ?>
       </div>
     </section>
 

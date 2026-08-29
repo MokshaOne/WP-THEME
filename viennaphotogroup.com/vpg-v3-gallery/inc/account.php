@@ -251,7 +251,7 @@ add_action( 'admin_post_vpg_delete_account', function () {
 /* Goodbye toast on the front page */
 add_action( 'wp_footer', function () {
     if ( ( $_GET['vpg_status'] ?? '' ) !== 'deleted' ) return;
-    echo '<div class="vpg-toast vpg-toast--success is-visible" id="vpg-toast">'
+    echo '<div role="status" class="vpg-toast vpg-toast--success is-visible" id="vpg-toast">'
         . esc_html__( 'Your account is deleted. Thank you for having been part of it.', 'vpg-v2' )
         . '</div>';
 } );
@@ -307,7 +307,7 @@ add_action( 'wp_footer', function () {
     ];
     if ( ! isset( $map[ $status ] ) ) return;
     ?>
-    <div class="vpg-toast vpg-toast--<?php echo esc_attr( $map[ $status ][0] ); ?>" id="vpg-acct-toast"><?php echo esc_html( $map[ $status ][1] ); ?></div>
+    <div role="status" class="vpg-toast vpg-toast--<?php echo esc_attr( $map[ $status ][0] ); ?>" id="vpg-acct-toast"><?php echo esc_html( $map[ $status ][1] ); ?></div>
     <script>
     setTimeout(function () {
         var t = document.getElementById('vpg-acct-toast');

@@ -46,6 +46,7 @@ require_once VPG_V2_DIR . '/inc/community.php';            // RSVP · notificati
 require_once VPG_V2_DIR . '/inc/newsletter.php';           // double-opt-in newsletter list + CSV export
 require_once VPG_V2_DIR . '/inc/mail.php';                 // SMTP transport + delivery log
 require_once VPG_V2_DIR . '/inc/platform.php';             // analytics · JSON-LD · embeds · REST hardening · locale · WP-CLI
+require_once VPG_V2_DIR . '/inc/advanced.php';             // check-in · photo fingerprints · trust levels · bilingual search · AI alt text
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

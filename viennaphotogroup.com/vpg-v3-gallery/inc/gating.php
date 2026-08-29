@@ -208,3 +208,41 @@ add_filter( 'vpg_gate_tier_check', function ( $ok, $tier ) {
     $rank = [ 'member' => 1, 'supporter' => 2, 'sustaining' => 3 ];
     return ( $rank[ vpg_member_tier() ] ?? 0 ) >= ( $rank[ $tier ] ?? 1 );
 }, 10, 2 );
+
+/* ─── Manual tier assignment · bridges until payment exists ───────
+ * Admins set a member's tier on the user-edit screen. When Stripe
+ * arrives (see docs/runbooks/vpg-supporter-payment.md) the webhook
+ * writes the same meta and this UI keeps working as the override.
+ */
+add_action( 'edit_user_profile', 'vpg_tier_admin_field' );
+add_action( 'show_user_profile', 'vpg_tier_admin_field' );
+function vpg_tier_admin_field( $user ) {
+    if ( ! current_user_can( 'manage_options' ) ) return;
+    $tier = vpg_member_tier( $user->ID );
+    ?>
+    <h2><?php esc_html_e( 'VPG membership', 'vpg-v2' ); ?></h2>
+    <table class="form-table">
+        <tr>
+            <th><label for="vpg_tier"><?php esc_html_e( 'Tier', 'vpg-v2' ); ?></label></th>
+            <td>
+                <select name="vpg_tier" id="vpg_tier">
+                    <option value="member"     <?php selected( $tier, 'member' ); ?>><?php esc_html_e( 'Member · free', 'vpg-v2' ); ?></option>
+                    <option value="supporter"  <?php selected( $tier, 'supporter' ); ?>><?php esc_html_e( 'Supporter', 'vpg-v2' ); ?></option>
+                    <option value="sustaining" <?php selected( $tier, 'sustaining' ); ?>><?php esc_html_e( 'Sustaining', 'vpg-v2' ); ?></option>
+                </select>
+                <p class="description"><?php esc_html_e( 'Manual assignment · payment automation writes the same field later.', 'vpg-v2' ); ?></p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+add_action( 'edit_user_profile_update', 'vpg_tier_admin_save' );
+add_action( 'personal_options_update',  'vpg_tier_admin_save' );
+function vpg_tier_admin_save( $user_id ) {
+    if ( ! current_user_can( 'manage_options' ) ) return;
+    $tier = $_POST['vpg_tier'] ?? '';
+    if ( in_array( $tier, [ 'member', 'supporter', 'sustaining' ], true ) ) {
+        update_user_meta( $user_id, '_vpg_tier', $tier );
+        update_user_meta( $user_id, '_vpg_tier_status', 'active' );
+    }
+}

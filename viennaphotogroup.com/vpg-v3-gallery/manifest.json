@@ -8,7 +8,11 @@
     "orientation": "portrait-primary",
     "background_color": "#F9F7F4",
     "theme_color": "#1A1814",
-    "categories": ["photography", "lifestyle", "education"],
+    "categories": [
+        "photography",
+        "lifestyle",
+        "education"
+    ],
     "lang": "de-AT",
     "icons": [
         {
@@ -26,25 +30,20 @@
     ],
     "shortcuts": [
         {
-            "name": "Location Guide",
-            "short_name": "Locations",
-            "description": "Browse photo spots in Vienna",
-            "url": "/location-guide/",
-            "icons": [{ "src": "/wp-content/themes/vpg-final/assets/icons/icon-192.png", "sizes": "192x192" }]
+            "name": "The Map",
+            "url": "/locations/",
+            "description": "118+ curated Vienna locations"
         },
         {
             "name": "Magazine",
-            "short_name": "Magazine",
-            "description": "Latest VPG magazine issue",
             "url": "/magazine/",
-            "icons": [{ "src": "/wp-content/themes/vpg-final/assets/icons/icon-192.png", "sizes": "192x192" }]
+            "description": "Every issue"
         },
         {
             "name": "Dashboard",
-            "short_name": "Dashboard",
-            "description": "Member area",
             "url": "/dashboard/",
-            "icons": [{ "src": "/wp-content/themes/vpg-final/assets/icons/icon-192.png", "sizes": "192x192" }]
+            "description": "Your member dashboard"
         }
-    ]
+    ],
+    "id": "/"
 }

@@ -55,6 +55,9 @@ add_action( 'template_redirect', function () {
                 <?php if ( $founding ) : ?>
                     <span class="vpg-chip"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Founding member', 'vpg-v2' ); ?></span>
                 <?php endif; ?>
+                <?php if ( function_exists( 'vpg_trust_level' ) && vpg_trust_level( $user->ID ) >= 2 ) : ?>
+                    <span class="vpg-chip"><span class="vpg-chip__dot"></span> <?php echo esc_html( vpg_trust_label( vpg_trust_level( $user->ID ) ) ); ?></span>
+                <?php endif; ?>
             </div>
             <h1><?php echo esc_html( $user->display_name ); ?></h1>
             <?php if ( $user->description ) : ?>
@@ -110,8 +113,8 @@ add_action( 'template_redirect', function () {
             </div>
 
             <!-- Lightbox · keyboard-first, EXIF wall label -->
-            <div id="vpg-pf-lb" hidden style="position:fixed;inset:0;z-index:9999;background:rgba(8,8,8,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
-                <img id="vpg-pf-lb-img" src="" alt="" style="max-width:92vw;max-height:78vh;object-fit:contain">
+            <div id="vpg-pf-lb" hidden role="dialog" aria-modal="true" aria-label="Portfolio" style="position:fixed;inset:0;z-index:9999;background:rgba(8,8,8,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+                <img id="vpg-pf-lb-img" role="img" src="" alt="" style="max-width:92vw;max-height:78vh;object-fit:contain">
                 <div id="vpg-pf-lb-cap" style="color:#9C9A95;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;text-align:center"></div>
                 <button type="button" id="vpg-pf-lb-x" aria-label="Close" style="position:absolute;top:18px;right:22px;background:none;border:0;color:#fff;font-size:30px;cursor:pointer">×</button>
                 <button type="button" id="vpg-pf-lb-prev" aria-label="Previous" style="position:absolute;left:14px;top:50%;background:none;border:0;color:#fff;font-size:34px;cursor:pointer">‹</button>

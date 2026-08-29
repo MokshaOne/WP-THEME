@@ -470,3 +470,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{ 
   font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
   color: var(--g-faint, #9C9A95);
 }
+
+/* ── Accessibility pass · visible focus, calm motion ──────────────── */
+:focus-visible {
+  outline: 2px solid var(--g-red, #E5341F);
+  outline-offset: 2px;
+}
+.g-skip:focus-visible { outline-color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .g-ticker__track { animation: none !important; }
+  .g-rise, [class*="rise"] { animation: none !important; }
+  * { transition-duration: 0.01ms !important; }
+}

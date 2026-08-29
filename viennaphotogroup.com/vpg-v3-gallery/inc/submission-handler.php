@@ -350,14 +350,19 @@ function vpg_attach_submission_photos( $post_id ) {
 
     // Privacy + credit pipeline · after the GPS suggestion is taken, strip
     // EXIF (incl. GPS) from the stored JPEGs and embed the IPTC byline.
+    // Then fingerprint each photo (dHash) for duplicate/quality warnings.
+    $quality_notes = '';
     if ( ! empty( $all_atts ) ) {
         $credit = wp_get_current_user()->display_name;
         foreach ( $all_atts as $aid ) {
             vpg_strip_and_credit_photo( $aid, $credit );
+            if ( function_exists( 'vpg_check_photo_quality' ) ) {
+                $quality_notes .= vpg_check_photo_quality( $aid );
+            }
         }
     }
 
-    return sprintf( 'Photos: %d attached%s%s', $attached, $skipped ? " · {$skipped} skipped (type/size)" : '', $gps_note );
+    return sprintf( 'Photos: %d attached%s%s%s', $attached, $skipped ? " · {$skipped} skipped (type/size)" : '', $gps_note, $quality_notes );
 }
 
 /**
@@ -483,7 +488,7 @@ add_action( 'wp_footer', function () {
     $row = $messages[ $status ] ?? null;
     if ( ! $row ) return;
     ?>
-    <div class="vpg-toast vpg-toast--<?php echo esc_attr( $row[0] ); ?>" id="vpg-toast"><?php echo esc_html( $row[1] ); ?></div>
+    <div role="status" class="vpg-toast vpg-toast--<?php echo esc_attr( $row[0] ); ?>" id="vpg-toast"><?php echo esc_html( $row[1] ); ?></div>
     <script>
     setTimeout(function () {
         var t = document.getElementById('vpg-toast');

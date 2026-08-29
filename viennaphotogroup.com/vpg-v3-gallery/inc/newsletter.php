@@ -110,7 +110,7 @@ add_action( 'wp_footer', function () {
     ];
     if ( ! isset( $map[ $status ] ) ) return;
     ?>
-    <div class="vpg-toast vpg-toast--<?php echo esc_attr( $map[ $status ][0] ); ?> is-visible" id="vpg-nl-toast"><?php echo esc_html( $map[ $status ][1] ); ?></div>
+    <div role="status" class="vpg-toast vpg-toast--<?php echo esc_attr( $map[ $status ][0] ); ?> is-visible" id="vpg-nl-toast"><?php echo esc_html( $map[ $status ][1] ); ?></div>
     <script>setTimeout(function(){var t=document.getElementById('vpg-nl-toast');if(t)t.classList.remove('is-visible');},6000);</script>
     <?php
 } );

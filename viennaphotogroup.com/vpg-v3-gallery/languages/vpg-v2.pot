@@ -8845,3 +8845,149 @@ msgid "%s string still needs a German translation."
 msgid_plural "%s strings still need a German translation."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "A moderator left you a note."
+msgstr ""
+
+msgid "You have a formal warning — please review the community rules."
+msgstr ""
+
+msgid "Your posting is paused for now. A moderator will be in touch."
+msgstr ""
+
+msgid "Your posting is currently paused."
+msgstr ""
+
+msgid "Your comment can’t be posted. If this is a mistake, contact us."
+msgstr ""
+
+msgid "You’re posting a little fast for a new account — please try again later."
+msgstr ""
+
+msgid "This file’s contents don’t match an image format."
+msgstr ""
+
+msgid "This action is temporarily blocked."
+msgstr ""
+
+msgid "Active sign-ins"
+msgstr ""
+
+msgid "Sign out all other devices"
+msgstr ""
+
+msgid "Done — other devices signed out."
+msgstr ""
+
+msgid "New sign-in to your VPG account"
+msgstr ""
+
+msgid "A new device just signed in.\n\nWhen: %1\$s\nIP: %2\$s\n\nWasn’t you? Change your password and sign out other devices from your dashboard."
+msgstr ""
+
+msgid "Vienna Photo Group profile"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Moderation level"
+msgstr ""
+
+msgid "Directory listed"
+msgstr ""
+
+msgid "VPG profile"
+msgstr ""
+
+msgid "Trust & Safety"
+msgstr ""
+
+msgid "Deleted (two-moderator confirmed)."
+msgstr ""
+
+msgid "A different moderator must approve a deletion they didn’t request."
+msgstr ""
+
+msgid "0762 · Deletion approvals (four-eyes)"
+msgstr ""
+
+msgid "requested by"
+msgstr ""
+
+msgid "Approve deletion"
+msgstr ""
+
+msgid "No pending deletion requests."
+msgstr ""
+
+msgid "0773 · Word filter"
+msgstr ""
+
+msgid "Block list (one per line — comments containing these are refused):"
+msgstr ""
+
+msgid "Grey list (held for review, not blocked):"
+msgstr ""
+
+msgid "0790 · IP bans (auto-expire)"
+msgstr ""
+
+msgid "until %s"
+msgstr ""
+
+msgid "days"
+msgstr ""
+
+msgid "0785 · Content-Security-Policy"
+msgstr ""
+
+msgid "Safe headers (nosniff, referrer, permissions, COOP) are always on. A CSP is report-only until you enforce it — test in report-only first so nothing on the live site breaks."
+msgstr ""
+
+msgid "Enforce this CSP (otherwise report-only)"
+msgstr ""
+
+msgid "0799 · Abuse mailbox"
+msgstr ""
+
+msgid "Published in /.well-known/security.txt with a reply commitment."
+msgstr ""
+
+msgid "0770 / 0784 · Moderation & admin log"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Detail"
+msgstr ""
+
+msgid "Log is empty."
+msgstr ""
+
+msgid "Policy — written, lived, reviewed"
+msgstr ""
+
+msgid "0761 Moderation handbook · 0763 appeals path · 0764 no shadow-bans (principle)."
+msgstr ""
+
+msgid "0766 Copyright takedown flow with deadlines · 0767 reverse-image check on suspicion."
+msgstr ""
+
+msgid "0768 AI-image labelling duty · 0769 C2PA / Content Credentials watch."
+msgstr ""
+
+msgid "0777 Moderation cover for holidays · 0778 mod rotation & thank-you culture."
+msgstr ""
+
+msgid "0791 Breach plan (72h) · 0792 yearly data-minimisation audit · 0795 protection of minors."
+msgstr ""
+
+msgid "0800 Yearly external security review as a fixed date."
+msgstr ""
+
+msgid "%s device is signed in."
+msgid_plural "%s devices are signed in."
+msgstr[0] ""
+msgstr[1] ""

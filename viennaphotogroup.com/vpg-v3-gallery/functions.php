@@ -44,6 +44,7 @@ require_once VPG_V2_DIR . '/inc/cover-generator.php';      // GD-based auto-cove
 require_once VPG_V2_DIR . '/inc/members.php';              // profile pages · bookmarks · cross-CPT search
 require_once VPG_V2_DIR . '/inc/account.php';              // frontend profile editor · local avatars · magic login · deletion
 require_once VPG_V2_DIR . '/inc/community.php';            // RSVP · notifications · digest · photo of the week · trails · competitions
+require_once VPG_V2_DIR . '/inc/interviews.php';          // featured-artist interviews · questions, dashboard form, invites
 require_once VPG_V2_DIR . '/inc/newsletter.php';           // double-opt-in newsletter list + CSV export
 require_once VPG_V2_DIR . '/inc/mail.php';                 // SMTP transport + delivery log
 require_once VPG_V2_DIR . '/inc/platform.php';             // analytics · JSON-LD · embeds · REST hardening · locale · WP-CLI

@@ -517,6 +517,9 @@ function vpg_magazine_edit_page() {
                     var action = (kind === 'photos')
                         ? '<input type="checkbox" class="vpg-pick-check" value="' + it.id + '">'
                         : '<button type="button" class="button button-small vpg-pick-add" data-id="' + it.id + '">Add</button>';
+                    if (kind === 'artist' && !it.interviewed) {
+                        action += ' <button type="button" class="button button-small vpg-pick-invite" data-id="' + it.id + '" title="<?php echo esc_attr__( 'Mail + notify this member to answer the interview questions', 'vpg-v2' ); ?>"><?php echo esc_js( __( 'Request interview', 'vpg-v2' ) ); ?></button>';
+                    }
                     row.innerHTML = thumb +
                         '<span><span class="vpg-pick-item__title"></span><div class="vpg-pick-item__meta"></div></span>' +
                         action;
@@ -526,6 +529,15 @@ function vpg_magazine_edit_page() {
                 });
                 pickList.querySelectorAll('.vpg-pick-add').forEach(function (btn) {
                     btn.addEventListener('click', function () { addFromSource(pickKind, btn.getAttribute('data-id'), null); });
+                });
+                pickList.querySelectorAll('.vpg-pick-invite').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        btn.disabled = true;
+                        fetchJSON(ajaxUrl + '?action=vpg_interview_invite&_ajax_nonce=' + pickNonce + '&user=' + btn.getAttribute('data-id')).then(function (res) {
+                            btn.textContent = (res && res.success) ? <?php echo wp_json_encode( __( 'Invited ✓', 'vpg-v2' ) ); ?> : <?php echo wp_json_encode( __( 'Failed — retry', 'vpg-v2' ) ); ?>;
+                            btn.disabled = !!(res && res.success);
+                        });
+                    });
                 });
             });
         }
@@ -723,13 +735,16 @@ add_action( 'wp_ajax_vpg_mag_pick_list', function () {
     } elseif ( $kind === 'artist' ) {
         $users = get_users( [ 'role__in' => [ 'vpg_member', 'administrator', 'editor', 'author' ], 'number' => 60 ] );
         foreach ( $users as $u ) {
-            $works = count_user_posts( $u->ID, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'post' ], true );
+            $works       = count_user_posts( $u->ID, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'post' ], true );
+            $interviewed = function_exists( 'vpg_get_interview' ) && vpg_get_interview( $u->ID );
             $items[] = [
-                'id'    => $u->ID,
-                'title' => $u->display_name,
-                'meta'  => sprintf( _n( '%d published work', '%d published works', (int) $works, 'vpg-v2' ), (int) $works )
-                           . ' · ' . __( 'member since', 'vpg-v2' ) . ' ' . mysql2date( 'M Y', $u->user_registered ),
-                'thumb' => get_avatar_url( $u->ID, [ 'size' => 96 ] ),
+                'id'          => $u->ID,
+                'title'       => $u->display_name,
+                'meta'        => sprintf( _n( '%d published work', '%d published works', (int) $works, 'vpg-v2' ), (int) $works )
+                                 . ' · ' . __( 'member since', 'vpg-v2' ) . ' ' . mysql2date( 'M Y', $u->user_registered )
+                                 . ' · ' . ( $interviewed ? __( 'Interview ✓', 'vpg-v2' ) : __( 'no interview yet', 'vpg-v2' ) ),
+                'thumb'       => get_avatar_url( $u->ID, [ 'size' => 96 ] ),
+                'interviewed' => (bool) $interviewed,
             ];
         }
     } elseif ( $kind === 'event' ) {
@@ -810,6 +825,13 @@ add_action( 'wp_ajax_vpg_mag_pick_item', function () {
             $body  = '';
             if ( $u->description ) {
                 $body .= '<p><em>' . esc_html( $u->description ) . '</em></p>' . "\n";
+            }
+            // Interview answers from the dashboard become the article's Q&A spine.
+            if ( function_exists( 'vpg_get_interview' ) ) {
+                foreach ( vpg_get_interview( $u->ID ) as $qa ) {
+                    $body .= '<p><strong>' . esc_html( $qa['q'] ) . '</strong></p>' . "\n"
+                           . '<p>' . esc_html( $qa['a'] ) . '</p>' . "\n";
+                }
             }
             $first_img = 0;
             foreach ( $works as $w ) {

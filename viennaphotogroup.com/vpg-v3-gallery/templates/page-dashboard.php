@@ -418,6 +418,48 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <!-- Interview · answers feed the magazine's featured-artist section -->
+  <?php
+  $iv_questions = function_exists( 'vpg_interview_questions' ) ? vpg_interview_questions() : [];
+  $iv_answers   = get_user_meta( $u->ID, '_vpg_interview', true );
+  $iv_answers   = is_array( $iv_answers ) ? $iv_answers : [];
+  $iv_invited   = (int) get_user_meta( $u->ID, '_vpg_interview_invited', true );
+  $iv_done      = function_exists( 'vpg_get_interview' ) ? count( vpg_get_interview( $u->ID ) ) : 0;
+  if ( $iv_questions ) :
+  ?>
+  <section class="g-section g-section--tight" id="interview">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Your interview', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'In your own <em>words</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+        <div class="g-meta"><?php
+          echo esc_html( sprintf( __( '%1$d of %2$d answered', 'vpg-v2' ), $iv_done, count( $iv_questions ) ) );
+        ?></div>
+      </div>
+
+      <?php if ( $iv_invited && ! $iv_done ) : ?>
+        <p style="border-left:3px solid var(--g-red);padding:10px 16px;background:var(--g-bg-2);font-weight:600"><?php esc_html_e( 'Editorial wants to feature you as an upcoming featured artist — your answers below become the interview in the magazine.', 'vpg-v2' ); ?></p>
+      <?php else : ?>
+        <p class="g-lede" style="font-size:16px;color:var(--g-mid);max-width:60ch"><?php esc_html_e( 'When editorial features you in an issue, these answers become your interview. Answer what you like, skip what you don’t — short and honest beats polished.', 'vpg-v2' ); ?></p>
+      <?php endif; ?>
+
+      <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width:none;margin-top:22px">
+        <input type="hidden" name="action" value="vpg_save_interview">
+        <?php wp_nonce_field( 'vpg_save_interview' ); ?>
+        <?php foreach ( $iv_questions as $iv_i => $iv_q ) : ?>
+          <div class="g-field">
+            <label class="g-label" for="iv-q<?php echo (int) $iv_i; ?>"><?php echo esc_html( $iv_q ); ?></label>
+            <textarea class="g-textarea" id="iv-q<?php echo (int) $iv_i; ?>" name="interview[<?php echo (int) $iv_i; ?>]" rows="3"><?php echo esc_textarea( $iv_answers[ $iv_i ] ?? '' ); ?></textarea>
+          </div>
+        <?php endforeach; ?>
+        <div><button class="g-btn" type="submit"><?php esc_html_e( 'Save interview', 'vpg-v2' ); ?></button></div>
+      </form>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Profile editor · everything self-service, no wp-admin -->
   <section class="g-section g-section--alt g-section--tight" id="profile">
     <div class="g-wrap">

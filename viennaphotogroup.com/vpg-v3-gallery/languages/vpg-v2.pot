@@ -2969,3 +2969,91 @@ msgstr ""
 #: inc/community.php
 msgid "⚑ Reports"
 msgstr ""
+
+#: templates/page-dashboard.php
+msgid "%1$d of %2$d answered"
+msgstr ""
+
+#: inc/interviews.php
+msgid "A photograph (yours or not) that changed how you look?"
+msgstr ""
+
+#: inc/interviews.php
+msgid "Advice for someone shooting their first roll in Wien?"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Editorial wants to feature you as an upcoming featured artist — your answers below become the interview in the magazine."
+msgstr ""
+
+#: inc/interviews.php
+msgid "Editorial wants to feature you — answer your interview."
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Failed — retry"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "In your own <em>words</em>."
+msgstr ""
+
+#: inc/interviews.php
+msgid "Interview saved — editorial can feature you now."
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Interview ✓"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Invited ✓"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Mail + notify this member to answer the interview questions"
+msgstr ""
+
+#: inc/interviews.php
+msgid "One spot in the city you keep returning to — and why?"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Request interview"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Save interview"
+msgstr ""
+
+#: inc/interviews.php
+msgid "What are you working on next?"
+msgstr ""
+
+#: inc/interviews.php
+msgid "What does Wien look like through your viewfinder?"
+msgstr ""
+
+#: inc/interviews.php
+msgid "What is in your bag right now?"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "When editorial features you in an issue, these answers become your interview. Answer what you like, skip what you don’t — short and honest beats polished."
+msgstr ""
+
+#: inc/interviews.php
+msgid "Who are you, and what do you photograph?"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Your interview"
+msgstr ""
+
+#: inc/interviews.php
+msgid "[VPG] We want to feature you"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "no interview yet"
+msgstr ""

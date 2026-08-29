@@ -1,0 +1,2791 @@
+# Vienna Photo Group v3 theme · translation template
+msgid ""
+msgstr ""
+"Project-Id-Version: vpg-v3-gallery\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "\"rooftop of Café X with south view\" beats \"central Vienna\"."
+msgstr ""
+
+msgid "%1$d of %2$d done"
+msgstr ""
+
+msgid "%1$s–%2$s · %3$s–%4$s"
+msgstr ""
+
+msgid "%d MIN READ"
+msgstr ""
+
+msgid "%d curated Vienna locations — light notes, best times, coordinates. Member-curated, printed to take along."
+msgstr ""
+
+msgid "%d entries"
+msgstr ""
+
+msgid "%d entries have postcodes in the form 1001–1023 (wrong) instead of 1010–1230 (correct Wien format)."
+msgstr ""
+
+msgid "(copy)"
+msgstr ""
+
+msgid "+ Blank article"
+msgstr ""
+
+msgid "+ New Issue"
+msgstr ""
+
+msgid "1010 · Innere Stadt"
+msgstr ""
+
+msgid "118+ curated Vienna locations with light notes and best times — and the right to add your own."
+msgstr ""
+
+msgid "404 · Not found"
+msgstr ""
+
+msgid "72h editorial review"
+msgstr ""
+
+msgid "72h editorial turnaround"
+msgstr ""
+
+msgid "72h turnaround"
+msgstr ""
+
+msgid "<strong>Membership is free</strong> and active now — everything below, no fees. Optional <strong>supporter tiers</strong> come later, for people who want to fund the print side. Nothing that is free today ever moves behind a paywall."
+msgstr ""
+
+msgid "<strong>PDF download</strong> of every magazine issue"
+msgstr ""
+
+msgid "<strong>Submit</strong> to the map and the journal"
+msgstr ""
+
+msgid "A camera, lens, accessory you actually own · scored on Design / Performance / Price /10."
+msgstr ""
+
+msgid "A co-production · Raveenthiran × on1.agency"
+msgstr ""
+
+msgid "A free membership: contribute to the map and journal, build your public portfolio, and download every issue as a PDF. No ads, no fees — member-run."
+msgstr ""
+
+msgid "A how-to pitch"
+msgstr ""
+
+msgid "A member-curated map of shooting locations across Wien — light, access notes, optimal time of day, distance to a U-Bahn stop."
+msgstr ""
+
+msgid "A member-run photography magazine · Wien"
+msgstr ""
+
+msgid "A member-run photography magazine. Locations, studios, reviews and a weekly journal — written by photographers, for photographers in Wien and the diaspora."
+msgstr ""
+
+msgid "A public portfolio"
+msgstr ""
+
+msgid "A rental space"
+msgstr ""
+
+msgid "A shooting spot"
+msgstr ""
+
+msgid "A skill, technique or workflow you can write up. We’ll edit collaboratively."
+msgstr ""
+
+msgid "A small JPG of the cover · so you remember what month it is."
+msgstr ""
+
+msgid "A small editorial circle of photographers based in Wien. Founded December 2019. Member-run · ad-free · no investors. The platform is co-produced by Raveenthiran and on1.agency."
+msgstr ""
+
+msgid "A small editorial circle. Member-run, no hierarchy beyond the four roles required to ship an issue every month."
+msgstr ""
+
+msgid "A supplier"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "About VPG"
+msgstr ""
+
+msgid "Access"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Active creators contribute coordinates, structural checks and visual notes. The platform stays uncompromised because the people who feed it actually walk the city."
+msgstr ""
+
+msgid "Add %s"
+msgstr ""
+
+msgid "Add a location"
+msgstr ""
+
+msgid "Add from site:"
+msgstr ""
+
+msgid "Add new"
+msgstr ""
+
+msgid "Add new %s"
+msgstr ""
+
+msgid "Add selected as photo spread"
+msgstr ""
+
+msgid "Added"
+msgstr ""
+
+msgid "Address not found · click the map instead."
+msgstr ""
+
+msgid "Admin · 0 pins. Tools → VPG · Setup → run the diagnostic scan + migrate coordinates."
+msgstr ""
+
+msgid "Administrators can't self-delete here."
+msgstr ""
+
+msgid "Ads · trackers · upsells"
+msgstr ""
+
+msgid "After signup you receive an email with payment instructions (SEPA / IBAN for EU members, PayPal for international). Membership activates within 24 hours of payment confirmation."
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "All %s"
+msgstr ""
+
+msgid "All Issues"
+msgstr ""
+
+msgid "All articles"
+msgstr ""
+
+msgid "All districts"
+msgstr ""
+
+msgid "All entries have a district ✓"
+msgstr ""
+
+msgid "All events"
+msgstr ""
+
+msgid "All issues"
+msgstr ""
+
+msgid "All locations"
+msgstr ""
+
+msgid "All of it, <em>free</em>."
+msgstr ""
+
+msgid "All on your profile"
+msgstr ""
+
+msgid "All reviews"
+msgstr ""
+
+msgid "All shops"
+msgstr ""
+
+msgid "All studios"
+msgstr ""
+
+msgid "All trails"
+msgstr ""
+
+msgid "All tutorials"
+msgstr ""
+
+msgid "Already a member? Log in"
+msgstr ""
+
+msgid "Already in"
+msgstr ""
+
+msgid "An account already exists for that email · please log in."
+msgstr ""
+
+msgid "An address, GPS pin, light direction, optimal time of day, access notes."
+msgstr ""
+
+msgid "And membership itself stays free. We&rsquo;d rather you join and contribute than feel locked out."
+msgstr ""
+
+msgid "Apply to contribute"
+msgstr ""
+
+msgid "Approve"
+msgstr ""
+
+msgid "Approve and publish? The member gets a &quot;your work is live&quot; email."
+msgstr ""
+
+msgid "Article %02d"
+msgstr ""
+
+msgid "Articles"
+msgstr ""
+
+msgid "Articles published"
+msgstr ""
+
+msgid "Ask us <em>directly</em>."
+msgstr ""
+
+msgid "At least 8 characters"
+msgstr ""
+
+msgid "Avatar · JPG/PNG/WebP, max 4 MB"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Back <em>issues</em>."
+msgstr ""
+
+msgid "Back home"
+msgstr ""
+
+msgid "Batch done · %1$d filled · %2$d skipped · %3$d failed."
+msgstr ""
+
+msgid "Be specific. We read everything."
+msgstr ""
+
+msgid "Become a member"
+msgstr ""
+
+msgid "Beginner to ambient-expert"
+msgstr ""
+
+msgid "Best time"
+msgstr ""
+
+msgid "Best time / light"
+msgstr ""
+
+msgid "Bio · shown on your public page"
+msgstr ""
+
+msgid "Bio, social links, avatar · shown on your public member page."
+msgstr ""
+
+msgid "Body / notes"
+msgstr ""
+
+msgid "Booking status"
+msgstr ""
+
+msgid "Bookmarks"
+msgstr ""
+
+msgid "Brand image"
+msgstr ""
+
+msgid "Browse the index"
+msgstr ""
+
+msgid "Buggy district format detected"
+msgstr ""
+
+msgid "Build PDF"
+msgstr ""
+
+msgid "Build guide PDF"
+msgstr ""
+
+msgid "Buying guide"
+msgstr ""
+
+msgid "By"
+msgstr ""
+
+msgid "By submitting you agree to our <a href=\"%s\">privacy policy</a>. We never share your email."
+msgstr ""
+
+msgid "CPT"
+msgstr ""
+
+msgid "Cadence"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Camera shop, film lab, gear retailer · district, what they stock, opening hours."
+msgstr ""
+
+msgid "Camera shops, film suppliers, labs and gear retailers in Vienna — quietly reviewed by photographers who actually walked in."
+msgstr ""
+
+msgid "Cameras, film, labs."
+msgstr ""
+
+msgid "Cameras, lenses, analog equipment and accessories — scored on design, performance and price by members who actually own them."
+msgstr ""
+
+msgid "Can I cancel?"
+msgstr ""
+
+msgid "Can I write for the magazine?"
+msgstr ""
+
+msgid "Cartographer"
+msgstr ""
+
+msgid "Chapter 1"
+msgstr ""
+
+msgid "Choose cover"
+msgstr ""
+
+msgid "Choose your tier"
+msgstr ""
+
+msgid "Clear pin"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Colophon"
+msgstr ""
+
+msgid "Comma-separated location IDs, in walking order. The list below shows every pinned place."
+msgstr ""
+
+msgid "Common <em>questions</em>."
+msgstr ""
+
+msgid "Community"
+msgstr ""
+
+msgid "Competition"
+msgstr ""
+
+msgid "Competitions"
+msgstr ""
+
+msgid "Compile the issue from what the site already has — journal writing, a member as featured artist, events, photo spreads from member uploads — or start a blank article. Drag the handle to reorder. Each article becomes a section in the published issue and a chapter in the PDF."
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Confirm with your password"
+msgstr ""
+
+msgid "Confirm your <em>email</em> first."
+msgstr ""
+
+msgid "Confirm your VPG email"
+msgstr ""
+
+msgid "Confirm your VPG newsletter signup"
+msgstr ""
+
+msgid "Confirm your email"
+msgstr ""
+
+msgid "Confirm your email to unlock submissions — we sent you a link when you joined."
+msgstr ""
+
+msgid "Confirmation email sent · check your inbox."
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Contact email"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "Contents"
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
+msgid "Continue where you left off?"
+msgstr ""
+
+msgid "Contributions"
+msgstr ""
+
+msgid "Cover"
+msgstr ""
+
+msgid "Cover story"
+msgstr ""
+
+msgid "Cover · three titles · one link"
+msgstr ""
+
+msgid "Create the first issue →"
+msgstr ""
+
+msgid "Curated by"
+msgstr ""
+
+msgid "Curated shooting spots across Wien."
+msgstr ""
+
+msgid "Curates the monthly issue, commissions pitches, writes the editor's letter."
+msgstr ""
+
+msgid "Current issue"
+msgstr ""
+
+msgid "Customize design"
+msgstr ""
+
+msgid "Cycle"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "December 2019 · Wien"
+msgstr ""
+
+msgid "Decentralised · member-run"
+msgstr ""
+
+msgid "Default pages and menus are not set up yet. Run the wizard to create everything in one click."
+msgstr ""
+
+msgid "Delete account"
+msgstr ""
+
+msgid "Delete my account and everything I contributed — photos included"
+msgstr ""
+
+msgid "Delete my account permanently"
+msgstr ""
+
+msgid "Delete my account, keep my published work on the site (byline passes to editorial)"
+msgstr ""
+
+msgid "Delete your account permanently? This cannot be undone."
+msgstr ""
+
+msgid "Derive districts from coordinates"
+msgstr ""
+
+msgid "Derive next %1$d · %2$d still to go"
+msgstr ""
+
+msgid "Design"
+msgstr ""
+
+msgid "Design (0–10)"
+msgstr ""
+
+msgid "Diagnose · what is actually in the database"
+msgstr ""
+
+msgid "Diagnostic report"
+msgstr ""
+
+msgid "Direct"
+msgstr ""
+
+msgid "Display name"
+msgstr ""
+
+msgid "District"
+msgstr ""
+
+msgid "District / area"
+msgstr ""
+
+msgid "District set"
+msgstr ""
+
+msgid "Done for now?"
+msgstr ""
+
+msgid "Download .ics ↓"
+msgstr ""
+
+msgid "Download PDF"
+msgstr ""
+
+msgid "Download every issue of the magazine as a PDF. Forever-keepable."
+msgstr ""
+
+msgid "Download this issue"
+msgstr ""
+
+msgid "Draft saved · finish and submit it any time from your dashboard."
+msgstr ""
+
+msgid "Drafts"
+msgstr ""
+
+msgid "Duplicate Issue"
+msgstr ""
+
+msgid "Early access to new issues"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit %s"
+msgstr ""
+
+msgid "Edit Issue"
+msgstr ""
+
+msgid "Edit colours in the Customizer"
+msgstr ""
+
+msgid "Edit profile"
+msgstr ""
+
+msgid "Edit submission · still in review"
+msgstr ""
+
+msgid "Editor"
+msgstr ""
+
+msgid "Editor's note"
+msgstr ""
+
+msgid "Editorial calendar"
+msgstr ""
+
+msgid "Editorial enquiries, submissions, press, partnerships — one inbox, one editor reading every message."
+msgstr ""
+
+msgid "Editorial feedback:"
+msgstr ""
+
+msgid "Editorial guidelines"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Email confirmed · submissions are unlocked."
+msgstr ""
+
+msgid "Email me when my submissions are approved or get feedback"
+msgstr ""
+
+msgid "Email or username"
+msgstr ""
+
+msgid "Emails & visibility"
+msgstr ""
+
+msgid "Entering is a member thing — membership is free."
+msgstr ""
+
+msgid "Entries"
+msgstr ""
+
+msgid "Essays, field notes, portfolios and gear writing — published by members. The slow, finished pieces go to the magazine; this is where the conversation lives."
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Event date"
+msgstr ""
+
+msgid "Event details"
+msgstr ""
+
+msgid "Event discounts"
+msgstr ""
+
+msgid "Event kind"
+msgstr ""
+
+msgid "Event kinds"
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "Events · pick an event"
+msgstr ""
+
+msgid "Events — %s"
+msgstr ""
+
+msgid "Events, photowalks & competitions"
+msgstr ""
+
+msgid "Every <em>issue</em>."
+msgstr ""
+
+msgid "Every issue · PDF"
+msgstr ""
+
+msgid "Every monthly issue in PDF and print, submission rights to the map and journal, event discounts and the studio-share directory. Forever-keepable."
+msgstr ""
+
+msgid "Every monthly issue of the VPG editorial magazine — cover to colophon."
+msgstr ""
+
+msgid "Everything in Member"
+msgstr ""
+
+msgid "Everything in Supporter"
+msgstr ""
+
+msgid "Everything,"
+msgstr ""
+
+msgid "Existing pages with the same slug are left in place — only missing ones are created. Menus are wiped and rebuilt from the canonical list."
+msgstr ""
+
+msgid "Explore"
+msgstr ""
+
+msgid "Explore these"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "FAQ"
+msgstr ""
+
+msgid "Feature"
+msgstr ""
+
+msgid "Featured artist"
+msgstr ""
+
+msgid "Featured artist — %s"
+msgstr ""
+
+msgid "Feed the <em>matrix</em>."
+msgstr ""
+
+msgid "Feedback for the member (sent by email · leave empty for none):"
+msgstr ""
+
+msgid "Feedback on your submission \"%s\"."
+msgstr ""
+
+msgid "Feedback threads are members-only — honest critique, credited by name."
+msgstr ""
+
+msgid "Feedback · members only"
+msgstr ""
+
+msgid "Filter issues by year"
+msgstr ""
+
+msgid "Filter map markers"
+msgstr ""
+
+msgid "Filter…"
+msgstr ""
+
+msgid "Find"
+msgstr ""
+
+msgid "Finish & submit"
+msgstr ""
+
+msgid "First-hand"
+msgstr ""
+
+msgid "Five things you can submit"
+msgstr ""
+
+msgid "Focus"
+msgstr ""
+
+msgid "Focus / specialty"
+msgstr ""
+
+msgid "Footer · Community"
+msgstr ""
+
+msgid "Footer · Explore"
+msgstr ""
+
+msgid "Footer · Members"
+msgstr ""
+
+msgid "For every location, studio, or shop that has lat/lng but no district set, this calls OSM Nominatim to reverse-geocode the pin and extract the 4-digit Wien postcode (e.g. \"1010\"). The district filter on the unified /locations/ map then has data to filter on. Nominatim is rate-limited to 1 req/sec so this batches 20 entries per click — repeat until 0 remain."
+msgstr ""
+
+msgid "For everyone who takes looking seriously — two minutes to join, yours to keep."
+msgstr ""
+
+msgid "Forgot password?"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Format repaired · %d entries re-derived from coordinates."
+msgstr ""
+
+msgid "Formats"
+msgstr ""
+
+msgid "Founded"
+msgstr ""
+
+msgid "Founded in Wien"
+msgstr ""
+
+msgid "Founded year"
+msgstr ""
+
+msgid "Founding"
+msgstr ""
+
+msgid "Founding member"
+msgstr ""
+
+msgid "Founding · Photography"
+msgstr ""
+
+msgid "Founding · Platform &amp; editorial systems"
+msgstr ""
+
+msgid "Four <em>chairs</em>, rotating."
+msgstr ""
+
+msgid "Free"
+msgstr ""
+
+msgid "Free forever · you're logged in right away · we send one confirmation email to unlock submissions. No spam, leave anytime."
+msgstr ""
+
+msgid "Free membership · two minutes"
+msgstr ""
+
+msgid "Free · active now"
+msgstr ""
+
+msgid "Free · no signup needed"
+msgstr ""
+
+msgid "Free · takes two minutes"
+msgstr ""
+
+msgid "From the <em>desk</em>."
+msgstr ""
+
+msgid "Front page"
+msgstr ""
+
+msgid "Frontend"
+msgstr ""
+
+msgid "Frontend submission · members of the inner circle contribute directly to the matrix."
+msgstr ""
+
+msgid "Full-page plate"
+msgstr ""
+
+msgid "Gear"
+msgstr ""
+
+msgid "Gear review · with /10 scores"
+msgstr ""
+
+msgid "Gear reviews scored on Design, Performance, and Price by members who actually own the kit."
+msgstr ""
+
+msgid "Gear scored"
+msgstr ""
+
+msgid "Gear type"
+msgstr ""
+
+msgid "Gear types"
+msgstr ""
+
+msgid "Gear, <em>reviewed</em>."
+msgstr ""
+
+msgid "Get in touch"
+msgstr ""
+
+msgid "Get published"
+msgstr ""
+
+msgid "Get the <em>letter</em>."
+msgstr ""
+
+msgid "Getting started"
+msgstr ""
+
+msgid "Golden hour"
+msgstr ""
+
+msgid "Hang your <em>frame</em>."
+msgstr ""
+
+msgid "Heads up — similar entries exist:"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Honest beats nice. Specific beats vague. Your name stands next to it."
+msgstr ""
+
+msgid "Hourly rate"
+msgstr ""
+
+msgid "Hours"
+msgstr ""
+
+msgid "How do I add a location to the map?"
+msgstr ""
+
+msgid "How do I pay?"
+msgstr ""
+
+msgid "How often does the magazine ship?"
+msgstr ""
+
+msgid "How you appear on the <em>wall</em>."
+msgstr ""
+
+msgid "How-to, <em>in practice</em>."
+msgstr ""
+
+msgid "I'd like someone to walk with"
+msgstr ""
+
+msgid "I'll show newcomers around"
+msgstr ""
+
+msgid "I'm coming"
+msgstr ""
+
+msgid "Idempotent · safe to re-run."
+msgstr ""
+
+msgid "Identity & social"
+msgstr ""
+
+msgid "Identity & social details. These share storage with the Customizer (Identity & social) — edit in either place."
+msgstr ""
+
+msgid "If a non-standard meta key shows up that the migration does not know about, paste the key name here and I will add it to the candidate list."
+msgstr ""
+
+msgid "If that address has an account, a login link is on its way."
+msgstr ""
+
+msgid "If you imported from VPG v1, locations/studios/shops store their lat/lng in a single ACF field (e.g. \"coordinates\", \"studio_coordinates\"). Run this to split them into the v2 location_lat / studio_lat / shop_lat meta keys so the new map can read them. Tries seven candidate field-name variants per CPT · safe to re-run · skips entries already migrated."
+msgstr ""
+
+msgid "If your question is not on this page, send a note. One editor reads every message."
+msgstr ""
+
+msgid "Image pair"
+msgstr ""
+
+msgid "Imprint"
+msgstr ""
+
+msgid "In editorial review"
+msgstr ""
+
+msgid "In review"
+msgstr ""
+
+msgid "In summer 2023 came the transition — the first iteration of the dedicated VPG web platform, a static bridge hosting tutorials and archiving the imagery pulled from the Instagram network. The first step off borrowed land."
+msgstr ""
+
+msgid "Inbox zero. Nothing waiting for editorial."
+msgstr ""
+
+msgid "Includes"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Inner circle"
+msgstr ""
+
+msgid "Insert:"
+msgstr ""
+
+msgid "Instagram"
+msgstr ""
+
+msgid "Instagram URL"
+msgstr ""
+
+msgid "Instance URL"
+msgstr ""
+
+msgid "Invitation to the yearly editorial dinner"
+msgstr ""
+
+msgid "Is VPG a non-profit?"
+msgstr ""
+
+msgid "Is there an API?"
+msgstr ""
+
+msgid "Issue"
+msgstr ""
+
+msgid "Issue cover"
+msgstr ""
+
+msgid "Issue metadata"
+msgstr ""
+
+msgid "Issue number / volume"
+msgstr ""
+
+msgid "Issues published"
+msgstr ""
+
+msgid "Issues, journal posts and events by month. One click drafts a new issue from a month's content."
+msgstr ""
+
+msgid "JPG, PNG, WebP or AVIF · max 8 MB each · the first photo becomes the cover. Your photos stay yours, credited by name."
+msgstr ""
+
+msgid "Join VPG"
+msgstr ""
+
+msgid "Join free"
+msgstr ""
+
+msgid "Join free now"
+msgstr ""
+
+msgid "Join free to RSVP"
+msgstr ""
+
+msgid "Join in"
+msgstr ""
+
+msgid "Join the <em>collective</em>."
+msgstr ""
+
+msgid "Join the <em>studio</em>."
+msgstr ""
+
+msgid "Join the collective"
+msgstr ""
+
+msgid "Join the community"
+msgstr ""
+
+msgid "Join them"
+msgstr ""
+
+msgid "Joining <em>VPG</em>."
+msgstr ""
+
+msgid "Journal"
+msgstr ""
+
+msgid "Journal article"
+msgstr ""
+
+msgid "Journal articles will appear here as members publish them."
+msgstr ""
+
+msgid "Journal · free to read"
+msgstr ""
+
+msgid "Journal · pick an article"
+msgstr ""
+
+msgid "Karlsplatz 4, Wien"
+msgstr ""
+
+msgid "Keep me posted"
+msgstr ""
+
+msgid "Later · optional"
+msgstr ""
+
+msgid "Latest <em>writing</em>."
+msgstr ""
+
+msgid "Latest issue"
+msgstr ""
+
+msgid "Latitude"
+msgstr ""
+
+msgid "Layouts, PDF, print coordination, member communications. The boring-but-essential chair."
+msgstr ""
+
+msgid "Leave a note"
+msgstr ""
+
+msgid "Leave this field empty"
+msgstr ""
+
+msgid "Lede (1-2 sentence intro)"
+msgstr ""
+
+msgid "Legal"
+msgstr ""
+
+msgid "Legal links"
+msgstr ""
+
+msgid "Level"
+msgstr ""
+
+msgid "Levels"
+msgstr ""
+
+msgid "Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going."
+msgstr ""
+
+msgid "Light today"
+msgstr ""
+
+msgid "List me in the public members directory"
+msgstr ""
+
+msgid "Listed"
+msgstr ""
+
+msgid "Loading…"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Location details"
+msgstr ""
+
+msgid "Location on the map"
+msgstr ""
+
+msgid "Location type"
+msgstr ""
+
+msgid "Location types"
+msgstr ""
+
+msgid "Location · a shooting spot"
+msgstr ""
+
+msgid "Locations"
+msgstr ""
+
+msgid "Locations &amp; submissions"
+msgstr ""
+
+msgid "Locations index"
+msgstr ""
+
+msgid "Locations mapped"
+msgstr ""
+
+msgid "Locations that are clearly private / trespassing · entries we cannot verify on the ground · duplicates of existing pins · anything that endangers the photographer or the place. Most submissions are accepted with light edits."
+msgstr ""
+
+msgid "Locations · studios · shops · reviews · tutorials"
+msgstr ""
+
+msgid "Locations, studios and shops on one canvas. Member-curated — light + access notes, district + transit context. Toggle the layers below."
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Log in &rarr; <a href=\"%s\">/submit/</a> &rarr; pick \"Location\" &rarr; type the address (the form auto-pins it on the map) &rarr; add notes about light, access and best time of day. Editorial reviews within 72h."
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Logout"
+msgstr ""
+
+msgid "Longitude"
+msgstr ""
+
+msgid "Looking for company"
+msgstr ""
+
+msgid "Lost in the <em>archive</em>."
+msgstr ""
+
+msgid "Magazine"
+msgstr ""
+
+msgid "Magazine editor"
+msgstr ""
+
+msgid "Magazine issues"
+msgstr ""
+
+msgid "Mail log"
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
+msgid "Map"
+msgstr ""
+
+msgid "Mark all read"
+msgstr ""
+
+msgid "Member"
+msgstr ""
+
+msgid "Member <em>login</em>."
+msgstr ""
+
+msgid "Member competitions with honest feedback — the kind likes can't give you."
+msgstr ""
+
+msgid "Member since"
+msgstr ""
+
+msgid "Member since %s."
+msgstr ""
+
+msgid "Member · Active"
+msgstr ""
+
+msgid "Member-run · no hierarchy"
+msgstr ""
+
+msgid "Member-written"
+msgstr ""
+
+msgid "Member-written walkthroughs for lighting, develop, scan, archive, print."
+msgstr ""
+
+msgid "Members"
+msgstr ""
+
+msgid "Members <em>only</em>."
+msgstr ""
+
+msgid "Members area"
+msgstr ""
+
+msgid "Members get early access"
+msgstr ""
+
+msgid "Members of VPG"
+msgstr ""
+
+msgid "Members only"
+msgstr ""
+
+msgid "Members only · log in or join to read this."
+msgstr ""
+
+msgid "Members only."
+msgstr ""
+
+msgid "Members read all"
+msgstr ""
+
+msgid "Members see who — log in."
+msgstr ""
+
+msgid "Members submit locations, studios, shops, reviews and tutorial pitches directly to the index. Editorial reviews within 72 hours."
+msgstr ""
+
+msgid "Members who own the gear"
+msgstr ""
+
+msgid "Members · free"
+msgstr ""
+
+msgid "Members · pick the featured artist"
+msgstr ""
+
+msgid "Membership"
+msgstr ""
+
+msgid "Membership free · active"
+msgstr ""
+
+msgid "Membership is <em>free</em>."
+msgstr ""
+
+msgid "Membership is annual · no auto-renewal. If you don't renew, your Member tier downgrades to Reader at the end of the year — you still see everything, just no submissions or PDFs."
+msgstr ""
+
+msgid "Membership stays free either way. Leave your address and we send exactly one email when the optional supporter tiers launch."
+msgstr ""
+
+msgid "Membership stays free. Optional supporter tiers — print extras, a colophon credit — arrive once the community has found its feet. Nothing you get today ever moves behind a paywall."
+msgstr ""
+
+msgid "Membership · free"
+msgstr ""
+
+msgid "Membership · map · magazine"
+msgstr ""
+
+msgid "Membership, the location index, the magazine, submissions. If your question is not here, send a note · we read every message."
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Meta API changes exposed the fragility of building on borrowed infrastructure. A complete philosophical and technical restructuring followed. VPG became an independent, decentralised, data-driven community platform and location index."
+msgstr ""
+
+msgid "Migrate coordinates now"
+msgstr ""
+
+msgid "Migrate v1 coordinates"
+msgstr ""
+
+msgid "Monthly"
+msgstr ""
+
+msgid "Monthly cycle"
+msgstr ""
+
+msgid "Monthly · usually around the first of the month. Late only when the city gives us a reason to wait (special exhibitions, light conditions, members travelling)."
+msgstr ""
+
+msgid "Monthly · ~1KB"
+msgstr ""
+
+msgid "Monthly, four chairs"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Name listed in every issue&rsquo;s colophon"
+msgstr ""
+
+msgid "Native fields"
+msgstr ""
+
+msgid "Needs district"
+msgstr ""
+
+msgid "New Issue"
+msgstr ""
+
+msgid "New on the <em>wall</em>."
+msgstr ""
+
+msgid "New submission"
+msgstr ""
+
+msgid "Newsletter"
+msgstr ""
+
+msgid "Newsletter list"
+msgstr ""
+
+msgid "Newsletter when an issue ships"
+msgstr ""
+
+msgid "Next →"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "No ads, no investors, no <em>acquisition target</em>."
+msgstr ""
+
+msgid "No commitment, no payment requested. Just one email when supporter tiers open."
+msgstr ""
+
+msgid "No entries yet — the wall is waiting for the first frame."
+msgstr ""
+
+msgid "No events scheduled. Members can submit from the dashboard."
+msgstr ""
+
+msgid "No issues yet."
+msgstr ""
+
+msgid "No mail sent yet."
+msgstr ""
+
+msgid "No marketing. No drip campaigns. One short letter per month when the new issue is live · cover, contents, a 30-word editor’s line. That’s it."
+msgstr ""
+
+msgid "No public contributions yet."
+msgstr ""
+
+msgid "No stops pinned yet."
+msgstr ""
+
+msgid "Nobody is listed yet. Members choose to appear here from their dashboard profile — be the first."
+msgstr ""
+
+msgid "Nobody waiting right now."
+msgstr ""
+
+msgid "Nobody walks <em>alone</em>."
+msgstr ""
+
+msgid "Nobody yet — be the first."
+msgstr ""
+
+msgid "Nobody yet."
+msgstr ""
+
+msgid "Not a member yet?"
+msgstr ""
+
+msgid "Not a member?"
+msgstr ""
+
+msgid "Not a member? Join free"
+msgstr ""
+
+msgid "Not formally registered as one — practically, yes. Membership fees cover hosting, print services and small honorariums. No commercial profit, no equity, no acquisition target."
+msgstr ""
+
+msgid "Not now"
+msgstr ""
+
+msgid "Not open yet"
+msgstr ""
+
+msgid "Not run"
+msgstr ""
+
+msgid "Not yet. The data is REST-readable via WordPress's default endpoints for logged-in users · a proper public API with rate limits is on the 2026 roadmap."
+msgstr ""
+
+msgid "Nothing here yet for this filter."
+msgstr ""
+
+msgid "Nothing here yet."
+msgstr ""
+
+msgid "Nothing on your wall yet"
+msgstr ""
+
+msgid "Nothing saved yet — every article has a “Save for later” button. Whatever you star lands here."
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Older →"
+msgstr ""
+
+msgid "On the"
+msgstr ""
+
+msgid "On the <em>map</em>."
+msgstr ""
+
+msgid "On the map"
+msgstr ""
+
+msgid "One accent does the pointing. Defaults are the Gallery system."
+msgstr ""
+
+msgid "One click left · unlock your VPG submissions"
+msgstr ""
+
+msgid "One click, any email"
+msgstr ""
+
+msgid "One editor reads every <em>message</em>. We answer in the order received."
+msgstr ""
+
+msgid "One email when <em>the issue ships</em>."
+msgstr ""
+
+msgid "One email when supporter tiers <em>open</em>."
+msgstr ""
+
+msgid "One link"
+msgstr ""
+
+msgid "One more step — confirm the link we just mailed you."
+msgstr ""
+
+msgid "One step left"
+msgstr ""
+
+msgid "One vote per week"
+msgstr ""
+
+msgid "One-line description"
+msgstr ""
+
+msgid "One-time link, valid 15 minutes. No password needed."
+msgstr ""
+
+msgid "Open RSS feed"
+msgstr ""
+
+msgid "Open during beta"
+msgstr ""
+
+msgid "Open for entries"
+msgstr ""
+
+msgid "Open in OSM"
+msgstr ""
+
+msgid "Open now"
+msgstr ""
+
+msgid "Open submission form"
+msgstr ""
+
+msgid "Open the map"
+msgstr ""
+
+msgid "Open your dashboard"
+msgstr ""
+
+msgid "Open your profile"
+msgstr ""
+
+msgid "Opening hours"
+msgstr ""
+
+msgid "Opt-in · set in your profile"
+msgstr ""
+
+msgid "Optional · come later"
+msgstr ""
+
+msgid "Or click anywhere on the map to drop a pin."
+msgstr ""
+
+msgid "Or: email me a login link"
+msgstr ""
+
+msgid "Origin &amp; <em>evolution</em>."
+msgstr ""
+
+msgid "Overall"
+msgstr ""
+
+msgid "PDF download available for your tier · forever-keepable."
+msgstr ""
+
+msgid "PDF download of every magazine issue · submission rights to the location map and studio directory · event discounts · early access to new issues · a member profile page. See the <a href=\"%s\">full membership comparison</a>."
+msgstr ""
+
+msgid "PDF for members · print 2× a year"
+msgstr ""
+
+msgid "%d article"
+msgid_plural "%d articles"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d entry migrated."
+msgid_plural "%d entries migrated."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d note"
+msgid_plural "%d notes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d pin"
+msgid_plural "%d pins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d published work"
+msgid_plural "%d published works"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d work"
+msgid_plural "%d works"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "member"
+msgid_plural "members"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Page break after"
+msgstr ""
+
+msgid "Pages created with templates assigned"
+msgstr ""
+
+msgid "Paid supporter tiers come <em>later</em>."
+msgstr ""
+
+msgid "Palette"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password incorrect · account unchanged."
+msgstr ""
+
+msgid "Performance"
+msgstr ""
+
+msgid "Performance (0–10)"
+msgstr ""
+
+msgid "Photo <em>events</em>."
+msgstr ""
+
+msgid "Photo of the week"
+msgstr ""
+
+msgid "Photo spread"
+msgstr ""
+
+msgid "Photo · JPG/PNG/WebP, max 8 MB"
+msgstr ""
+
+msgid "Photos · tick the plates for the spread"
+msgstr ""
+
+msgid "Photos · up to 4"
+msgstr ""
+
+msgid "Photowalk buddies · members only"
+msgstr ""
+
+msgid "Photowalk buddies · optional"
+msgstr ""
+
+msgid "Photowalk trail"
+msgstr ""
+
+msgid "Photowalk trails"
+msgstr ""
+
+msgid "Photowalks and meetups across the 23 Bezirke — shoot with people who look."
+msgstr ""
+
+msgid "Pick <em>one</em>."
+msgstr ""
+
+msgid "Pick content"
+msgstr ""
+
+msgid "Pick this entry as the winner and close the competition?"
+msgstr ""
+
+msgid "Pick winner"
+msgstr ""
+
+msgid "Pin a new shooting spot on the map. Coordinates auto-detected from address."
+msgstr ""
+
+msgid "Pinned"
+msgstr ""
+
+msgid "Planned · for members who want to fund the print run and the platform."
+msgstr ""
+
+msgid "Planned · for photographers who want to support the platform structurally · keeps VPG ad-free forever."
+msgstr ""
+
+msgid "Plates"
+msgstr ""
+
+msgid "Please <em>log in</em>."
+msgstr ""
+
+msgid "Please confirm your email first · check your inbox or resend from the dashboard."
+msgstr ""
+
+msgid "Please fill all required fields."
+msgstr ""
+
+msgid "Post note"
+msgstr ""
+
+msgid "Posts"
+msgstr ""
+
+msgid "Prefer <em>RSS</em>?"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "Primary menu + 4 footer menus wired to theme locations"
+msgstr ""
+
+msgid "Primary navigation"
+msgstr ""
+
+msgid "Printable guide · PDF"
+msgstr ""
+
+msgid "Privacy"
+msgstr ""
+
+msgid "Produced by"
+msgstr ""
+
+msgid "Producer"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Profile saved."
+msgstr ""
+
+msgid "Provider (self-hosted)"
+msgstr ""
+
+msgid "Public · read-only"
+msgstr ""
+
+msgid "Publication date (free text)"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "Pull quote"
+msgstr ""
+
+msgid "Put your name <em>down</em>."
+msgstr ""
+
+msgid "Quick actions"
+msgstr ""
+
+msgid "Quick links"
+msgstr ""
+
+msgid "RSS"
+msgstr ""
+
+msgid "Range"
+msgstr ""
+
+msgid "Rate"
+msgstr ""
+
+msgid "Raveenthiran × on1.agency"
+msgstr ""
+
+msgid "Re-derives from coords · uses Nominatim cache · runs in seconds."
+msgstr ""
+
+msgid "Re-run setup"
+msgstr ""
+
+msgid "Read as PDF"
+msgstr ""
+
+msgid "Read the magazine"
+msgstr ""
+
+msgid "Read the magazine first"
+msgstr ""
+
+msgid "Read this issue"
+msgstr ""
+
+msgid "Read time (minutes)"
+msgstr ""
+
+msgid "Reader access"
+msgstr ""
+
+msgid "Reading"
+msgstr ""
+
+msgid "Rebuild guide PDF"
+msgstr ""
+
+msgid "Rejected submissions are not deleted from the queue · the editor will message you with feedback so you can revise. Most submissions go through with light edits."
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Rental photography studios across Vienna — cycloramas, daylight spaces, full strobe kits and vehicle access. Curated by members."
+msgstr ""
+
+msgid "Rental studios + studio-share."
+msgstr ""
+
+msgid "Repair district format"
+msgstr ""
+
+msgid "Resend the email"
+msgstr ""
+
+msgid "Reset it here"
+msgstr ""
+
+msgid "Response"
+msgstr ""
+
+msgid "Results for <em>%s</em>."
+msgstr ""
+
+msgid "Review"
+msgstr ""
+
+msgid "Review scores"
+msgstr ""
+
+msgid "Reviewed"
+msgstr ""
+
+msgid "Reviewer"
+msgstr ""
+
+msgid "Reviews"
+msgstr ""
+
+msgid "Reviews and approves location submissions, verifies coordinates, maintains the index."
+msgstr ""
+
+msgid "Rewrite rules flushed"
+msgstr ""
+
+msgid "Right now"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "Run diagnostic scan"
+msgstr ""
+
+msgid "Run setup now"
+msgstr ""
+
+msgid "Runs ~22 s · stays well under PHP max_execution_time."
+msgstr ""
+
+msgid "Safe"
+msgstr ""
+
+msgid "Save & build PDF"
+msgstr ""
+
+msgid "Save an article for later"
+msgstr ""
+
+msgid "Save as draft"
+msgstr ""
+
+msgid "Save for later"
+msgstr ""
+
+msgid "Save issue"
+msgstr ""
+
+msgid "Save profile"
+msgstr ""
+
+msgid "Save settings"
+msgstr ""
+
+msgid "Saved"
+msgstr ""
+
+msgid "Saved for <em>later</em>."
+msgstr ""
+
+msgid "Scans up to 5 sample posts per CPT, finds every meta key whose value looks like \"lat, lng\". Use this if the migration says it migrated 0 but the front-end still shows 0 pins · the report tells you the actual field name to look for."
+msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+msgid "Scored /10"
+msgstr ""
+
+msgid "Scoring"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Search %s"
+msgstr ""
+
+msgid "Search address"
+msgstr ""
+
+msgid "Search failed · click the map to drop a pin."
+msgstr ""
+
+msgid "Search locations, articles, issues…"
+msgstr ""
+
+msgid "See you <em>soon</em>."
+msgstr ""
+
+msgid "Selected works:"
+msgstr ""
+
+msgid "Send a <em>message</em>."
+msgstr ""
+
+msgid "Send a message"
+msgstr ""
+
+msgid "Send login link"
+msgstr ""
+
+msgid "Send me the member digest when an issue ships"
+msgstr ""
+
+msgid "Send message"
+msgstr ""
+
+msgid "Sent · thank you."
+msgstr ""
+
+msgid "Session"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings saved."
+msgstr ""
+
+msgid "Setup & tools"
+msgstr ""
+
+msgid "Setup complete · 17 pages + 5 menus created. Front page = Home, Journal = the posts page."
+msgstr ""
+
+msgid "Setup wizard"
+msgstr ""
+
+msgid "Shareable preview link · works without login"
+msgstr ""
+
+msgid "Shop"
+msgstr ""
+
+msgid "Shop details"
+msgstr ""
+
+msgid "Shop guide"
+msgstr ""
+
+msgid "Shop · a camera shop / lab / supplier"
+msgstr ""
+
+msgid "Shops"
+msgstr ""
+
+msgid "Show"
+msgstr ""
+
+msgid "Show entries processed"
+msgstr ""
+
+msgid "Showing newcomers around"
+msgstr ""
+
+msgid "Shown to logged-in members on the directory page, nowhere else."
+msgstr ""
+
+msgid "Sign in"
+msgstr ""
+
+msgid "Sign in to access your dashboard, submissions and member-only resources."
+msgstr ""
+
+msgid "Sign in to access your dashboard, your submissions, and member-only resources."
+msgstr ""
+
+msgid "Sign up"
+msgstr ""
+
+msgid "Signed annual print collection"
+msgstr ""
+
+msgid "Since your last visit"
+msgstr ""
+
+msgid "Site domain / Matomo site id"
+msgstr ""
+
+msgid "Sitemap"
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Size (m²)"
+msgstr ""
+
+msgid "Skip to content"
+msgstr ""
+
+msgid "Something went wrong · please try again or send us a message."
+msgstr ""
+
+msgid "South-facing terrace · 35m elevation · free access via café"
+msgstr ""
+
+msgid "Specific"
+msgstr ""
+
+msgid "Specific beats vague. You shot there, you bought there, you <em>own</em> the gear."
+msgstr ""
+
+msgid "Start the first issue of the Vienna Photo Group magazine."
+msgstr ""
+
+msgid "Static (Home)"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Stay logged in"
+msgstr ""
+
+msgid "Stay yours · credited by name"
+msgstr ""
+
+msgid "Still unsure"
+msgstr ""
+
+msgid "Stop by <em>stop</em>."
+msgstr ""
+
+msgid "Stops"
+msgstr ""
+
+msgid "Stored on this site — no Gravatar, no third parties."
+msgstr ""
+
+msgid "Straight to the issue. Members get the PDF link in the same email · readers get the web link."
+msgstr ""
+
+msgid "Structure"
+msgstr ""
+
+msgid "Studio"
+msgstr ""
+
+msgid "Studio details"
+msgstr ""
+
+msgid "Studio directory"
+msgstr ""
+
+msgid "Studio size, rate, daylight or strobe, vehicle access, booking link."
+msgstr ""
+
+msgid "Studio · a rental space"
+msgstr ""
+
+msgid "Studios"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Submission queue"
+msgstr ""
+
+msgid "Submissions"
+msgstr ""
+
+msgid "Submissions are <em>members-only</em>."
+msgstr ""
+
+msgid "Submissions are queued for editorial review. You’ll receive an email when your entry is approved and published. Coordinates can be added by the editor or by you later from the post edit screen · the map-picker is on the post editor."
+msgstr ""
+
+msgid "Submissions · portfolio · PDFs · events"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Submit a location, a review or a tutorial — with your photos. Editorial reviews within 72 hours, and your name goes under it."
+msgstr ""
+
+msgid "Submit a place"
+msgstr ""
+
+msgid "Submit entry"
+msgstr ""
+
+msgid "Submit for review"
+msgstr ""
+
+msgid "Submit something"
+msgstr ""
+
+msgid "Submit to the map and the journal — your work in the magazine, your name under it."
+msgstr ""
+
+msgid "Submit your first piece"
+msgstr ""
+
+msgid "Submitted by"
+msgstr ""
+
+msgid "Submitted → in review → live"
+msgstr ""
+
+msgid "Subscribe"
+msgstr ""
+
+msgid "Subscribe to %s in your reader. Cover, PDF and issue text as enclosures."
+msgstr ""
+
+msgid "Supporter tiers"
+msgstr ""
+
+msgid "Supporter tiers · later"
+msgstr ""
+
+msgid "Supporter · Later"
+msgstr ""
+
+msgid "Sustaining · Later"
+msgstr ""
+
+msgid "System &amp; architecture"
+msgstr ""
+
+msgid "Team"
+msgstr ""
+
+msgid "Technical"
+msgstr ""
+
+msgid "Tell us what you’ve <em>found</em>."
+msgstr ""
+
+msgid "Terms"
+msgstr ""
+
+msgid "Tests gear, writes shop and studio reviews, scores entries on Design / Performance / Price."
+msgstr ""
+
+msgid "That confirmation link is invalid or expired · resend it from your dashboard."
+msgstr ""
+
+msgid "That login link is invalid or expired · request a fresh one."
+msgstr ""
+
+msgid "The <em>calendar</em>."
+msgstr ""
+
+msgid "The <em>desk</em>."
+msgstr ""
+
+msgid "The <em>quiet</em> magazine for photographers who <em>look</em>."
+msgstr ""
+
+msgid "The <em>reviews</em>."
+msgstr ""
+
+msgid "The <em>skill</em> series."
+msgstr ""
+
+msgid "The <em>wall</em>."
+msgstr ""
+
+msgid "The Journal"
+msgstr ""
+
+msgid "The Magazine"
+msgstr ""
+
+msgid "The Map"
+msgstr ""
+
+msgid "The Map · member-curated"
+msgstr ""
+
+msgid "The Stephansdom rooftop · golden hour"
+msgstr ""
+
+msgid "The archive"
+msgstr ""
+
+msgid "The buying guide is being written. Members can submit from the dashboard."
+msgstr ""
+
+msgid "The editorial circle stays small on purpose — so every issue still has a person responsible for every <em>line</em>."
+msgstr ""
+
+msgid "The first issue is being assembled. Subscribe to be notified when it ships."
+msgstr ""
+
+msgid "The full interactive map. Locations, studios and shops on one canvas — toggle any layer."
+msgstr ""
+
+msgid "The headlines of the lead pieces. No clickbait, no curiosity gaps."
+msgstr ""
+
+msgid "The location index, studios and shops stay public — explore the map while you wait."
+msgstr ""
+
+msgid "The magazine"
+msgstr ""
+
+msgid "The map"
+msgstr ""
+
+msgid "The monthly Vienna Photo Group magazine. Members get every issue as a print-ready PDF, free, forever-keepable. Older issues are open-access here."
+msgstr ""
+
+msgid "The name under your photographs"
+msgstr ""
+
+msgid "The people on the <em>wall</em>."
+msgstr ""
+
+msgid "The photographers who keep this running — everyone here chose to be listed. Click through to their work."
+msgstr ""
+
+msgid "The pivot"
+msgstr ""
+
+msgid "The quiet magazine for photographers who look"
+msgstr ""
+
+msgid "The route"
+msgstr ""
+
+msgid "The winner"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
+msgid "This <em>month</em>."
+msgstr ""
+
+msgid "This creates the 17 site pages (Home, Journal, About, Contact, Join, etc.) with the correct page templates assigned, sets Home as the front page and Journal as the posts page, plus 5 nav menus (Primary + 4 footer columns) wired to their theme locations."
+msgstr ""
+
+msgid "Three article titles"
+msgstr ""
+
+msgid "Three lines, <em>one link</em>."
+msgstr ""
+
+msgid "Three lines, <em>one link</em>. No clickbait, no curiosity gaps."
+msgstr ""
+
+msgid "Three ways <em>in</em>."
+msgstr ""
+
+msgid "Three ways to <em>belong</em>."
+msgstr ""
+
+msgid "Tickets / RSVP URL"
+msgstr ""
+
+msgid "Tier"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Tip: install the free Advanced Custom Fields plugin for a richer editing UI on the CPTs. The theme works without it — native field boxes are used as a fallback."
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid "To protect the integrity of the index. Public write-access invites spam, AI-generated junk and astroturfed listings. Submissions go through members who walked the city · the data stays clean."
+msgstr ""
+
+msgid "Toggle menu"
+msgstr ""
+
+msgid "Too many failed attempts. Please wait 15 minutes and try again, or reset your password."
+msgstr ""
+
+msgid "Topic"
+msgstr ""
+
+msgid "Topics"
+msgstr ""
+
+msgid "Trail"
+msgstr ""
+
+msgid "Trail stops"
+msgstr ""
+
+msgid "Transport: PHP mail() — set the VPG_SMTP_* constants in wp-config.php for reliable delivery (see docs/runbooks/vpg-mail-deliverability.md)."
+msgstr ""
+
+msgid "Transport: SMTP via %s"
+msgstr ""
+
+msgid "Tutorial"
+msgstr ""
+
+msgid "Tutorial details"
+msgstr ""
+
+msgid "Tutorial pitch · we’ll discuss"
+msgstr ""
+
+msgid "Tutorials"
+msgstr ""
+
+msgid "Tutorials by members, for members. Lighting, develop, scan, archive, print. Beginner to ambient-expert."
+msgstr ""
+
+msgid "Tutorials in the pipeline. Members can submit from the dashboard."
+msgstr ""
+
+msgid "Twice-yearly print run, posted"
+msgstr ""
+
+msgid "Two minutes, no fees. Contribute to the map and journal, build your public portfolio, download every issue as a PDF."
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Under the <em>hood</em>."
+msgstr ""
+
+msgid "Unset"
+msgstr ""
+
+msgid "Unsorted"
+msgstr ""
+
+msgid "Unsubscribe"
+msgstr ""
+
+msgid "Use the member submission flow · faster review · auto-mapped · proper data capture."
+msgstr ""
+
+msgid "VPG Member"
+msgstr ""
+
+msgid "VPG functions as a highly structured, decentralised repository. Custom-coded · clean architecture · advanced data-mapping and location intelligence · optimised for seamless utility. To protect the integrity of the index, the frontend stays read-only for the public — a pure, uncompromised reference hub."
+msgstr ""
+
+msgid "VPG is in open beta. The magazine, buying guide, tutorials and events are reserved for logged-in members while we finalise the platform."
+msgstr ""
+
+msgid "VPG is member-run, ad-free, and built on people who actually walk the city. Membership is free — optional supporter tiers come later."
+msgstr ""
+
+msgid "VPG runs on its members, not on advertisers. There are no advertisers to please, no growth-at-all-costs investor expectations, no plan to flip to a content network. When supporter tiers arrive, they fund the print run — they never decide the editorial calendar. That stays in the hands of people who actually shoot Vienna."
+msgstr ""
+
+msgid "VPG was founded by a collective of local photographers. The initial phase was an algorithmic feature page on Instagram, curating visual work within the city's creative ecosystem."
+msgstr ""
+
+msgid "VPG · Analytics"
+msgstr ""
+
+msgid "VPG · Settings"
+msgstr ""
+
+msgid "Value (0–10)"
+msgstr ""
+
+msgid "Venue"
+msgstr ""
+
+msgid "Verifiable"
+msgstr ""
+
+msgid "Vienna Photo Group"
+msgstr ""
+
+msgid "Vienna Photo Group · %s · %s · Member-run, ad-free, forever-keepable."
+msgstr ""
+
+msgid "Vienna Photo Group · founded December 2019 · a decentralised, data-driven reference hub for photographers shooting Wien."
+msgstr ""
+
+msgid "Vienna · since 2018"
+msgstr ""
+
+msgid "Vienna,"
+msgstr ""
+
+msgid "View %s"
+msgstr ""
+
+msgid "View public page"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Visual mastery requires execution, not <em>validation</em>."
+msgstr ""
+
+msgid "Vote"
+msgstr ""
+
+msgid "Want to <em>submit</em> a location or studio?"
+msgstr ""
+
+msgid "We archive the city. We document the <em>light</em>."
+msgstr ""
+
+msgid "We read every message"
+msgstr ""
+
+msgid "We sent you a confirmation link when you joined. One click and submissions unlock."
+msgstr ""
+
+msgid "We use your email only to send issue notifications. Unsubscribe with one click in any email. See <a href=\"%s\">privacy</a>."
+msgstr ""
+
+msgid "We'll email you a reminder the day before."
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "Welcome <em>back</em>."
+msgstr ""
+
+msgid "Welcome to Viennaphotogroup"
+msgstr ""
+
+msgid "Welcome — you're a member. Check your inbox to confirm your email."
+msgstr ""
+
+msgid "Welcome, <em>%s</em>."
+msgstr ""
+
+msgid "What are you submitting?"
+msgstr ""
+
+msgid "What does my membership get me?"
+msgstr ""
+
+msgid "What feeds the <em>index</em>."
+msgstr ""
+
+msgid "What gets <em>accepted</em>."
+msgstr ""
+
+msgid "What gets rejected?"
+msgstr ""
+
+msgid "What members get"
+msgstr ""
+
+msgid "What we publish"
+msgstr ""
+
+msgid "What you get"
+msgstr ""
+
+msgid "What you photograph, and how you look at the city."
+msgstr ""
+
+msgid "When it happens."
+msgstr ""
+
+msgid "Where"
+msgstr ""
+
+msgid "Where Vienna is worth looking — every spot with light notes, best times and honest access. Pick a category, click a place, go shoot."
+msgstr ""
+
+msgid "Which tier interests you?"
+msgstr ""
+
+msgid "Who"
+msgstr ""
+
+msgid "Who owns submitted content?"
+msgstr ""
+
+msgid "Who runs Vienna Photo Group?"
+msgstr ""
+
+msgid "Who runs the <em>magazine</em>."
+msgstr ""
+
+msgid "Who we <em>are</em>."
+msgstr ""
+
+msgid "Who's coming"
+msgstr ""
+
+msgid "Why is the public site read-only?"
+msgstr ""
+
+msgid "Why member-run"
+msgstr ""
+
+msgid "Winner"
+msgstr ""
+
+msgid "Winner picked"
+msgstr ""
+
+msgid "Wired"
+msgstr ""
+
+msgid "Within 72 hours"
+msgstr ""
+
+msgid "Within 72 hours · weekday mornings, Vienna time."
+msgstr ""
+
+msgid "Workshops · walks · meetups"
+msgstr ""
+
+msgid "Workshops, openings, walks and meetups for photographers in Vienna. Members get early access and discounts."
+msgstr ""
+
+msgid "Workshops, walks, openings, meetups across Vienna."
+msgstr ""
+
+msgid "Write a short bio"
+msgstr ""
+
+msgid "Write to the <em>desk</em>."
+msgstr ""
+
+msgid "Writing, free to <em>read</em>."
+msgstr ""
+
+msgid "Written by"
+msgstr ""
+
+msgid "X / Twitter URL"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Yes · members can pitch articles via the submission form. Editorial reviews every pitch within two weeks. Approved pitches land in a future issue with full credit and a member profile link."
+msgstr ""
+
+msgid "You do. Members retain full copyright to text, photos and data. By submitting you grant VPG a non-exclusive, non-transferable licence to publish and archive the work indefinitely. Pull anytime."
+msgstr ""
+
+msgid "You voted this week"
+msgstr ""
+
+msgid "You&rsquo;re a <em>member</em>."
+msgstr ""
+
+msgid "You're off the list. No hard feelings."
+msgstr ""
+
+msgid "You're on the list. We write when an issue ships."
+msgstr ""
+
+msgid "Your VPG login link"
+msgstr ""
+
+msgid "Your account email"
+msgstr ""
+
+msgid "Your account is deleted. Thank you for having been part of it."
+msgstr ""
+
+msgid "Your control centre — status, content and the tools that run the site. The look is managed in the Customizer; pages & menus by the setup wizard."
+msgstr ""
+
+msgid "Your dashboard, submissions and member-only resources live behind the door."
+msgstr ""
+
+msgid "Your dashboard, your submissions, your <em>archive</em>."
+msgstr ""
+
+msgid "Your entry"
+msgstr ""
+
+msgid "Your first frame is <em>waiting</em>."
+msgstr ""
+
+msgid "Your name"
+msgstr ""
+
+msgid "Your name belongs <em>here</em>."
+msgstr ""
+
+msgid "Your note"
+msgstr ""
+
+msgid "Your own member page — a quiet place to show your best frames."
+msgstr ""
+
+msgid "Your photo stays yours · credited by name · one winner goes into the next issue."
+msgstr ""
+
+msgid "Your photo won a competition!"
+msgstr ""
+
+msgid "Your photograph. Your name under it. <em>Every time.</em>"
+msgstr ""
+
+msgid "Your photos"
+msgstr ""
+
+msgid "Your profile"
+msgstr ""
+
+msgid "Your public member profile page"
+msgstr ""
+
+msgid "Your public profile"
+msgstr ""
+
+msgid "Your published work"
+msgstr ""
+
+msgid "Your submission \"%s\" is live."
+msgstr ""
+
+msgid "[VPG] About your submission · %s"
+msgstr ""
+
+msgid "[VPG] The month — %s"
+msgstr ""
+
+msgid "[VPG] Tomorrow · %s"
+msgstr ""
+
+msgid "[VPG] Your work is live · %s"
+msgstr ""
+
+msgid "awaiting review"
+msgstr ""
+
+msgid "built %s"
+msgstr ""
+
+msgid "cleanest path for URLs, attachments, longer threads."
+msgstr ""
+
+msgid "clear"
+msgstr ""
+
+msgid "closed"
+msgstr ""
+
+msgid "drizzle"
+msgstr ""
+
+msgid "e.g. Film, labs, large format"
+msgstr ""
+
+msgid "e.g. Golden hour · 06:00, or Blue hour in winter"
+msgstr ""
+
+msgid "e.g. Mon–Fri 10–18"
+msgstr ""
+
+msgid "e.g. Spittelberg, 7. Bezirk"
+msgstr ""
+
+msgid "e.g. €45 / h"
+msgstr ""
+
+msgid "est. 2018"
+msgstr ""
+
+msgid "fog"
+msgstr ""
+
+msgid "heavy rain"
+msgstr ""
+
+msgid "in one place"
+msgstr ""
+
+msgid "live"
+msgstr ""
+
+msgid "locations"
+msgstr ""
+
+msgid "map"
+msgstr ""
+
+msgid "meetings by appointment only."
+msgstr ""
+
+msgid "member since"
+msgstr ""
+
+msgid "min"
+msgstr ""
+
+msgid "min read"
+msgstr ""
+
+msgid "mostly clear"
+msgstr ""
+
+msgid "new"
+msgstr ""
+
+msgid "no trespass, no endangered listings, no recommending hostile spaces."
+msgstr ""
+
+msgid "on the map"
+msgstr ""
+
+msgid "overcast"
+msgstr ""
+
+msgid "partly cloudy"
+msgstr ""
+
+msgid "pending"
+msgstr ""
+
+msgid "pinned"
+msgstr ""
+
+msgid "rain"
+msgstr ""
+
+msgid "showers"
+msgstr ""
+
+msgid "since %s"
+msgstr ""
+
+msgid "snow"
+msgstr ""
+
+msgid "submitting anyway is fine if yours adds something new."
+msgstr ""
+
+msgid "the place exists, the shop is still open, the lens is currently on sale."
+msgstr ""
+
+msgid "there"
+msgstr ""
+
+msgid "thunderstorm"
+msgstr ""
+
+msgid "unfinished"
+msgstr ""
+
+msgid "while you wait"
+msgstr ""
+
+msgid "you shot there, you bought from there, you actually own the gear."
+msgstr ""
+
+msgid "— Editorial principle"
+msgstr ""
+
+msgid "— The Philosophy"
+msgstr ""
+
+msgid "← Newer"
+msgstr ""
+
+msgid "← Previous"
+msgstr ""
+
+msgid "↑ %1$s · ↓ %2$s"
+msgstr ""
+
+msgid "↳ Draft issue from this month"
+msgstr ""
+
+msgid "↻ Duplicate Last"
+msgstr ""
+
+msgid "⌛ Reviewing"
+msgstr ""
+
+msgid "✉ Newsletter list"
+msgstr ""
+
+msgid "✓ You're coming · cancel"
+msgstr ""
+
+msgid "📅 Calendar"
+msgstr ""
+
+msgid "📮 Mail log"
+msgstr ""
+

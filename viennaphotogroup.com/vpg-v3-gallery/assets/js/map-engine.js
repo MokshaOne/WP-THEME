@@ -255,6 +255,9 @@
 
     addMapControls(el, map);
 
+    // Expose the live map so the trail live-mode module (0106) can drive it.
+    el._vpgMap = map; el._vpgById = byId; el._vpgPins = pins;
+
     // ── Unified client filtering · type + attribute + theme + year ──
     var allTypes = Object.keys(byType);
     var active   = new Set(allTypes);                 // type filter (existing)
@@ -763,4 +766,64 @@
     if (e.target.id === 'vpg-tour-clear') { save([]); render(); }
   });
   render();
+})();
+
+
+/* ── 0106 · Live trail mode · map follows you, next stop called out ── */
+(function () {
+  var el = document.getElementById('vpg-map');
+  if (!el || !navigator.geolocation || typeof L === 'undefined') return;
+
+  var w="'Archivo','Helvetica Neue',Arial,sans-serif";
+  var watch = null, me = null, banner = null, ring = null;
+
+  function haversine(a, b, c, d) {
+    var R = 6371000, p = Math.PI / 180;
+    var dLat = (c - a) * p, dLng = (d - b) * p;
+    var x = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(a * p) * Math.cos(c * p) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  }
+
+  window.vpgTrailLive = function () {
+    var map = el._vpgMap, pins = el._vpgPins || [];
+    if (!map || !pins.length) return;
+    if (watch !== null) { // toggle off
+      navigator.geolocation.clearWatch(watch); watch = null;
+      if (me) { map.removeLayer(me); me = null; }
+      if (ring) { map.removeLayer(ring); ring = null; }
+      if (banner) { banner.remove(); banner = null; }
+      return;
+    }
+    banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:700;background:#0B0B0B;color:#fff;font:700 13px/1.3 ' + w + ';padding:12px 18px;max-width:90vw;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.3)';
+    banner.textContent = 'Locating…';
+    document.body.appendChild(banner);
+
+    watch = navigator.geolocation.watchPosition(function (pos) {
+      var la = pos.coords.latitude, lo = pos.coords.longitude;
+      if (!me) {
+        me = L.circleMarker([la, lo], { radius: 8, color: '#E5341F', fillColor: '#E5341F', fillOpacity: 1, weight: 3 }).addTo(map);
+        ring = L.circle([la, lo], { radius: pos.coords.accuracy || 30, color: '#E5341F', weight: 1, fillOpacity: .06 }).addTo(map);
+      } else { me.setLatLng([la, lo]); ring.setLatLng([la, lo]).setRadius(pos.coords.accuracy || 30); }
+      map.panTo([la, lo]);
+
+      // nearest not-yet-visited stop (localStorage checkins, if present)
+      var done = {}; try { done = JSON.parse(localStorage.getItem('vpg_trail_' + (el.getAttribute('data-trail') || ''))) || {}; } catch (e) {}
+      var best = null, bd = Infinity, idx = -1;
+      pins.forEach(function (p, i) {
+        if (done[p.id]) return;
+        var dd = haversine(la, lo, p.lat, p.lng);
+        if (dd < bd) { bd = dd; best = p; idx = i; }
+      });
+      if (best) {
+        banner.innerHTML = '▶ ' + (best.title || ('Stop ' + (idx + 1))) +
+          ' · <strong>' + (bd < 1000 ? Math.round(bd) + ' m' : (bd / 1000).toFixed(1) + ' km') + '</strong> · <span style="opacity:.7">tap map ✕ to stop</span>';
+      } else {
+        banner.textContent = '✓ All stops done — nice walk.';
+      }
+    }, function () {
+      if (banner) banner.textContent = 'Location unavailable — check permissions.';
+    }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 });
+  };
 })();

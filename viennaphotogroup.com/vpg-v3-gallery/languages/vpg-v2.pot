@@ -5700,3 +5700,360 @@ msgid "%s — one district has no pin yet."
 msgid_plural "%s — these districts have no pins yet."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Night trail"
+msgstr ""
+
+msgid "Built for long exposures after dark."
+msgstr ""
+
+msgid "Rain-proof"
+msgstr ""
+
+msgid "Covered passages & museums — a bad-weather route."
+msgstr ""
+
+msgid "Stroller-friendly"
+msgstr ""
+
+msgid "No steps that block a pram."
+msgstr ""
+
+msgid "Winter caution"
+msgstr ""
+
+msgid "Icy passages possible in the cold months."
+msgstr ""
+
+msgid "Blind trail"
+msgstr ""
+
+msgid "Coordinates only — no motif hints. A training format."
+msgstr ""
+
+msgid "36-frame format"
+msgstr ""
+
+msgid "36 exposures for the whole walk — the film simulation."
+msgstr ""
+
+msgid "One-lens rule"
+msgstr ""
+
+msgid "A fixed focal length for the whole route, e.g. 50 mm."
+msgstr ""
+
+msgid "Light direction"
+msgstr ""
+
+msgid "Either way"
+msgstr ""
+
+msgid "As numbered"
+msgstr ""
+
+msgid "Reversed in the afternoon"
+msgstr ""
+
+msgid "Which way the light favours."
+msgstr ""
+
+msgid "Elevation gain (m)"
+msgstr ""
+
+msgid "Total climb — matters with a tripod in the bag."
+msgstr ""
+
+msgid "Season window"
+msgstr ""
+
+msgid "Any time"
+msgstr ""
+
+msgid "Cherry blossom"
+msgstr ""
+
+msgid "Autumn leaves"
+msgstr ""
+
+msgid "Advent markets"
+msgstr ""
+
+msgid "High summer"
+msgstr ""
+
+msgid "When this route is at its best."
+msgstr ""
+
+msgid "Barriers"
+msgstr ""
+
+msgid "Steps"
+msgstr ""
+
+msgid "Cobblestones"
+msgstr ""
+
+msgid "Steep gradient"
+msgstr ""
+
+msgid "Gravel / unpaved"
+msgstr ""
+
+msgid "Access notes for wheels and knees."
+msgstr ""
+
+msgid "Start · nearest stop"
+msgstr ""
+
+msgid "U-Bahn / tram at the start."
+msgstr ""
+
+msgid "End · nearest stop"
+msgstr ""
+
+msgid "U-Bahn / tram at the finish."
+msgstr ""
+
+msgid "Trail format & attributes"
+msgstr ""
+
+msgid "0086 · Rest / café stops"
+msgstr ""
+
+msgid "Stop IDs that are a coffee or Gasthaus break."
+msgstr ""
+
+msgid "0084 · Stage breaks after these stops"
+msgstr ""
+
+msgid "A half-day break splits the route into stages after each listed stop ID."
+msgstr ""
+
+msgid "0101 · Audio companion (mini-podcast)"
+msgstr ""
+
+msgid "0111 · Series name"
+msgstr ""
+
+msgid "Series part #"
+msgstr ""
+
+msgid "0119 · Superseded by (trail ID)"
+msgstr ""
+
+msgid "Marks this route archived and points to its replacement."
+msgstr ""
+
+msgid "0103 · Guest route by (collective)"
+msgstr ""
+
+msgid "This route is archived. Its up-to-date successor is <a href="%1$s"><strong>%2$s</strong></a>."
+msgstr ""
+
+msgid "Guest route · %s"
+msgstr ""
+
+msgid "%s only"
+msgstr ""
+
+msgid "A one-lens route."
+msgstr ""
+
+msgid "Best in this season."
+msgstr ""
+
+msgid "Access note."
+msgstr ""
+
+msgid "Getting there"
+msgstr ""
+
+msgid "Start: %s"
+msgstr ""
+
+msgid "End: %s"
+msgstr ""
+
+msgid "Best start time today"
+msgstr ""
+
+msgid "so the last stop lands in evening light"
+msgstr ""
+
+msgid "Rain outlook · 7 days"
+msgstr ""
+
+msgid "Shorter = drier. Red days are your window."
+msgstr ""
+
+msgid "Walk it with the maker"
+msgstr ""
+
+msgid "incl. a walked-together duet"
+msgstr ""
+
+msgid "Live mode"
+msgstr ""
+
+msgid "Print heft + QR"
+msgstr ""
+
+msgid "Bingo card"
+msgstr ""
+
+msgid "✓ I walked this"
+msgstr ""
+
+msgid "⑃ Remix this route"
+msgstr ""
+
+msgid "⚑ Make it a meetup"
+msgstr ""
+
+msgid "Shot along the way"
+msgstr ""
+
+msgid "How was the walk?"
+msgstr ""
+
+msgid "★★★★★ Loved it"
+msgstr ""
+
+msgid "★ Needs work"
+msgstr ""
+
+msgid "One line for the maker (optional)"
+msgstr ""
+
+msgid "Send feedback"
+msgstr ""
+
+msgid "Part of the series · %s"
+msgstr ""
+
+msgid "Sponsor-free by principle — no brand pays for a stop here. And no leaderboard: a route is a walk, not a race."
+msgstr ""
+
+msgid "Check off / skip"
+msgstr ""
+
+msgid "Missed stops saved ✓"
+msgstr ""
+
+msgid "Live needs the map above"
+msgstr ""
+
+msgid "%s — remix"
+msgstr ""
+
+msgid "Photowalk · %s"
+msgstr ""
+
+msgid "A group walk of the trail “%1$s”. Route: %2$s"
+msgstr ""
+
+msgid "Walk feedback"
+msgstr ""
+
+msgid "No feedback yet."
+msgstr ""
+
+msgid "stops"
+msgstr ""
+
+msgid "A reflection"
+msgstr ""
+
+msgid "Leading lines"
+msgstr ""
+
+msgid "A stranger’s hands"
+msgstr ""
+
+msgid "Something red"
+msgstr ""
+
+msgid "Shadow as subject"
+msgstr ""
+
+msgid "A doorway"
+msgstr ""
+
+msgid "Motion blur"
+msgstr ""
+
+msgid "Looking up"
+msgstr ""
+
+msgid "Texture close-up"
+msgstr ""
+
+msgid "A pattern of three"
+msgstr ""
+
+msgid "Negative space"
+msgstr ""
+
+msgid "A sign or letter"
+msgstr ""
+
+msgid "Framed by nature"
+msgstr ""
+
+msgid "The golden light"
+msgstr ""
+
+msgid "Someone waiting"
+msgstr ""
+
+msgid "A pop of blue"
+msgstr ""
+
+msgid "Trail bingo"
+msgstr ""
+
+msgid "Photo bingo"
+msgstr ""
+
+msgid "Trail of the month"
+msgstr ""
+
+msgid "Trail of month"
+msgstr ""
+
+msgid "Featured on the homepage via the [vpg_trail_of_month] shortcode."
+msgstr ""
+
+msgid "— none —"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "%d stop"
+msgid_plural "%d stops"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d member has walked this"
+msgid_plural "%d members have walked this"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d walk"
+msgid_plural "%d walks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Stop %02d"
+msgstr ""
+
+msgid "Coffee / rest stop"
+msgstr ""
+
+msgid "Stage break — half-day mark"
+msgstr ""
+
+msgid "Save the stops I missed"
+msgstr ""

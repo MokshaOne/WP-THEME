@@ -84,6 +84,12 @@ get_header();
                 ) );
             }
           ?></p>
+          <?php if ( $rank && $rank['next'] ) : ?>
+            <div class="g-ladder" style="margin:22px 0 0;max-width:420px;padding:10px 16px">
+              <span class="g-ladder__bar"><i style="width:<?php echo esc_attr( min( 100, round( $rank['next_have'] / max( 1, $rank['next_need'] ) * 100 ) ) ); ?>%"></i></span>
+              <span class="g-ladder__next"><?php echo esc_html( $rank['next_have'] . ' / ' . $rank['next_need'] ); ?></span>
+            </div>
+          <?php endif; ?>
         </div>
         <?php
         $priv_line = '';
@@ -113,6 +119,18 @@ get_header();
       </div>
     </div>
   </section>
+
+  <!-- Section jump nav · the dashboard is long, the way around it short -->
+  <nav class="g-secnav" aria-label="<?php esc_attr_e( 'Dashboard sections', 'vpg-v2' ); ?>">
+    <div class="g-wrap">
+      <a href="#work"><?php esc_html_e( 'Your work', 'vpg-v2' ); ?></a>
+      <a href="#wall"><?php esc_html_e( 'The wall', 'vpg-v2' ); ?></a>
+      <a href="#potw"><?php esc_html_e( 'Vote', 'vpg-v2' ); ?></a>
+      <a href="#interview"><?php esc_html_e( 'Interview', 'vpg-v2' ); ?></a>
+      <a href="#profile"><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></a>
+      <a href="#bookmarks"><?php esc_html_e( 'Saved', 'vpg-v2' ); ?></a>
+    </div>
+  </nav>
 
   <?php
   // Onboarding checklist · shown until every step is done
@@ -226,7 +244,7 @@ get_header();
   </section>
 
   <!-- Quick actions -->
-  <section class="g-section g-section--tight">
+  <section class="g-section g-section--tight" id="work">
     <div class="g-wrap">
       <div class="g-head">
         <div>
@@ -372,7 +390,7 @@ get_header();
   ] );
   if ( $fresh ) :
   ?>
-  <section class="g-section g-section--tight">
+  <section class="g-section g-section--tight" id="wall">
     <div class="g-wrap">
       <div class="g-head">
         <div>
@@ -401,7 +419,7 @@ get_header();
       $voted_for = (int) get_user_meta( $u->ID, '_' . $week_key, true );
       $votes_map = get_option( $week_key, [] );
   ?>
-  <section class="g-section g-section--alt g-section--tight">
+  <section class="g-section g-section--alt g-section--tight" id="potw">
     <div class="g-wrap">
       <div class="g-head">
         <div>
@@ -677,7 +695,7 @@ get_header();
   </section>
 
   <!-- Bookmarks · saved for later -->
-  <section class="g-section g-section--tight">
+  <section class="g-section g-section--tight" id="bookmarks">
     <div class="g-wrap">
       <div class="g-head">
         <div>

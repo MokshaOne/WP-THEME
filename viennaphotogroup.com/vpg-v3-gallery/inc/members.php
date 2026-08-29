@@ -158,6 +158,70 @@ add_action( 'template_redirect', function () {
         </section>
         <?php endif; ?>
 
+        <?php
+        // ─── In the magazine · issues this member appears in ─────────
+        // Compiled issues store their articles as JSON in _vpg_articles;
+        // an author match (interview, featured artist, photo credit)
+        // surfaces the issue on the member's portfolio automatically.
+        $in_issues = get_posts( [
+            'post_type'      => 'vpg_magazine',
+            'post_status'    => 'publish',
+            'posts_per_page' => 12,
+            'meta_query'     => [ [
+                'key'     => '_vpg_articles',
+                'value'   => $user->display_name,
+                'compare' => 'LIKE',
+            ] ],
+        ] );
+        if ( $in_issues ) : ?>
+        <section class="vpg-section vpg-section--tight" style="background:var(--g-ink,#0B0B0B);color:#fff">
+            <div class="vpg-wrap">
+                <div class="vpg-section-head">
+                    <div><p class="vpg-caps" style="color:var(--g-red,#E5341F)">— <?php esc_html_e( 'In the magazine', 'vpg-v2' ); ?></p>
+                    <h2 style="color:#fff"><?php printf( esc_html( _n( '%d issue', '%d issues', count( $in_issues ), 'vpg-v2' ) ), count( $in_issues ) ); ?></h2></div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px">
+                    <?php foreach ( $in_issues as $iss ) : ?>
+                        <a href="<?php echo esc_url( get_permalink( $iss ) ); ?>" style="display:block;color:#fff">
+                            <span style="display:block;aspect-ratio:3/4;background:#1A1A1A;overflow:hidden">
+                                <?php echo get_the_post_thumbnail( $iss, 'medium', [ 'style' => 'width:100%;height:100%;object-fit:cover' ] ); ?>
+                            </span>
+                            <span style="display:block;margin-top:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9C9A95"><?php echo esc_html( get_post_meta( $iss->ID, '_vpg_issue_number', true ) ?: get_the_date( 'F Y', $iss ) ); ?></span>
+                            <span style="display:block;font-weight:700;font-size:14px;line-height:1.3"><?php echo esc_html( $iss->post_title ); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+        <?php endif; ?>
+
+        <?php
+        // ─── Words · published journal writing by this member ────────
+        $words = get_posts( [
+            'author'         => $user->ID,
+            'post_type'      => 'post',
+            'post_status'    => 'publish',
+            'posts_per_page' => 6,
+        ] );
+        if ( $words ) : ?>
+        <section class="vpg-section vpg-section--tight">
+            <div class="vpg-wrap">
+                <div class="vpg-section-head">
+                    <div><p class="vpg-caps">— <?php esc_html_e( 'Words', 'vpg-v2' ); ?></p>
+                    <h2><?php printf( esc_html( _n( '%d story', '%d stories', count( $words ), 'vpg-v2' ) ), count( $words ) ); ?></h2></div>
+                </div>
+                <div style="display:grid;gap:0">
+                    <?php foreach ( $words as $w ) : ?>
+                        <a href="<?php echo esc_url( get_permalink( $w ) ); ?>" style="display:flex;justify-content:space-between;gap:20px;align-items:baseline;padding:14px 0;border-top:1px solid var(--g-line,#E6E5E1);font-weight:600">
+                            <span><?php echo esc_html( $w->post_title ); ?></span>
+                            <span style="flex:none;font-size:12px;color:var(--g-mid,#6A6A6A)"><?php echo esc_html( get_the_date( '', $w ) ); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+        <?php endif; ?>
+
         <section class="vpg-section vpg-section--tight">
             <div class="vpg-wrap">
                 <?php

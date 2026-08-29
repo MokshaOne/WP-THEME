@@ -368,6 +368,48 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{ 
 [hidden]{ display:none !important; }
 
 .g-field{ display:grid; gap:7px; }
+
+/* ── Submit page · type tiles, rank ladder strip, photo dropzone ───── */
+.g-typegrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+.g-type{ position:relative; display:grid; gap:4px; align-content:start; padding:14px 14px 12px;
+  border:1px solid var(--g-line-2); background:var(--g-bg); cursor:pointer; min-height:92px;
+  transition:border-color var(--g-t) var(--g-ease), background var(--g-t) var(--g-ease); }
+.g-type input{ position:absolute; opacity:0; pointer-events:none; }
+.g-type:hover{ border-color:var(--g-ink); }
+.g-type.is-active{ border:2px solid var(--g-red); padding:13px 13px 11px; }
+.g-type.is-active .g-type__ico{ color:var(--g-red); }
+.g-type__ico{ font-size:20px; line-height:1; color:var(--g-mid); }
+.g-type__name{ font-weight:800; font-size:13px; letter-spacing:.02em; text-transform:uppercase; }
+.g-type__desc{ font-size:11.5px; color:var(--g-mid); line-height:1.4; }
+.g-type__desc b{ color:var(--g-red); font-weight:700; }
+.g-type.is-locked{ cursor:not-allowed; background:var(--g-bg-2); }
+.g-type.is-locked .g-type__name{ color:var(--g-mid); }
+.g-type:has(input:focus-visible){ outline:3px solid var(--g-red); outline-offset:3px; }
+
+.g-ladder{ display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  border:1px solid var(--g-ink); padding:14px 20px; margin-bottom:32px; background:var(--g-bg); }
+.g-ladder__rank{ font-weight:900; font-stretch:118%; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--g-red); }
+.g-ladder__bar{ flex:1; min-width:120px; height:6px; background:var(--g-line); position:relative; }
+.g-ladder__bar i{ position:absolute; inset:0 auto 0 0; background:var(--g-red); }
+.g-ladder__next{ font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--g-mid); }
+
+.g-drop{ position:relative; border:2px dashed var(--g-line-2); background:var(--g-bg); padding:22px 16px; text-align:center;
+  transition:border-color var(--g-t) var(--g-ease); }
+.g-drop:hover,.g-drop:focus-within{ border-color:var(--g-red); }
+.g-drop__hint{ display:block; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--g-mid); margin-bottom:10px; }
+.g-drop input{ width:100%; font-size:13px; }
+
+/* ── Dashboard section nav · sticky jump chips ─────────────────────── */
+.g-secnav{ position:sticky; top:0; z-index:40; background:var(--g-bg);
+  border-top:1px solid var(--g-line); border-bottom:1px solid var(--g-line); }
+.g-secnav .g-wrap{ display:flex; gap:4px; overflow-x:auto; padding-top:0; padding-bottom:0; scrollbar-width:none; }
+.g-secnav .g-wrap::-webkit-scrollbar{ display:none; }
+.g-secnav a{ flex:none; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--g-mid); padding:12px 14px; border-bottom:2px solid transparent; white-space:nowrap;
+  transition:color var(--g-t) var(--g-ease); }
+.g-secnav a:hover{ color:var(--g-red); border-bottom-color:var(--g-red); }
+html{ scroll-behavior:smooth; scroll-padding-top:56px; }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
 .g-field--row{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
 .g-field label{ font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--g-mid); }
 .g-input,.g-textarea,.g-select{ font-family:var(--g-sans); font-size:15px; color:var(--g-ink);

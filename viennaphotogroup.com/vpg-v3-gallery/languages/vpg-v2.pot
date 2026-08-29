@@ -3225,3 +3225,107 @@ msgstr ""
 #: templates/page-submit.php
 msgid "unlocks at Contributor · 25 locations"
 msgstr ""
+
+#: templates/page-submit.php
+msgid "%1$d / %2$d %3$s → %4$s"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "%1$d of %2$d %3$s"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Contributor · 25 locations"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Dashboard sections"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Documentarian · 50 editorial works"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Drop photos here or browse"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Gear review"
+msgstr ""
+
+#: inc/members.php
+msgid "In the magazine"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Interview"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Journal story"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Photo trail"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Photowalk / event"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Resident — everything you submit goes live instantly."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Submission type"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "The wall"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Tutorial pitch"
+msgstr ""
+
+#: inc/members.php
+msgid "Words"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Your work"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "a rental space"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "a shooting spot"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "a walking route"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "for the weekly journal"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "propose a meetup"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "scored /10"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "shop · lab · supplier"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "we’ll discuss"
+msgstr ""

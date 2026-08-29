@@ -105,6 +105,21 @@ get_header();
   ?>
   <section class="g-section g-section--alt">
     <div class="g-wrap">
+
+      <?php // The ladder strip · where you stand, what the next rank needs
+      $sub_rank = function_exists( 'vpg_member_rank' ) ? vpg_member_rank( get_current_user_id() ) : null;
+      if ( $sub_rank ) : ?>
+      <div class="g-ladder">
+        <span class="g-ladder__rank">● <?php echo esc_html( $sub_rank['label'] ); ?></span>
+        <?php if ( $sub_rank['next'] ) : ?>
+          <span class="g-ladder__bar" role="img" aria-label="<?php echo esc_attr( sprintf( __( '%1$d of %2$d %3$s', 'vpg-v2' ), $sub_rank['next_have'], $sub_rank['next_need'], $sub_rank['next_goal'] ) ); ?>"><i style="width:<?php echo esc_attr( min( 100, round( $sub_rank['next_have'] / max( 1, $sub_rank['next_need'] ) * 100 ) ) ); ?>%"></i></span>
+          <span class="g-ladder__next"><?php printf( esc_html__( '%1$d / %2$d %3$s → %4$s', 'vpg-v2' ), (int) $sub_rank['next_have'], (int) $sub_rank['next_need'], esc_html( $sub_rank['next_goal'] ), esc_html( $sub_rank['next'] ) ); ?></span>
+        <?php else : ?>
+          <span class="g-ladder__next">★ <?php esc_html_e( 'Resident — everything you submit goes live instantly.', 'vpg-v2' ); ?></span>
+        <?php endif; ?>
+      </div>
+      <?php endif; ?>
+
       <div class="g-twocol">
         <div>
           <span class="g-kicker"><?php echo $edit_post ? esc_html__( 'Edit submission · still in review', 'vpg-v2' ) : esc_html__( 'New submission', 'vpg-v2' ); ?></span>
@@ -117,38 +132,45 @@ get_header();
             <?php echo vpg_antispam_fields(); ?>
 
             <div class="g-field">
-              <label for="submit_type"><?php esc_html_e( 'What are you submitting?', 'vpg-v2' ); ?></label>
+              <label><?php esc_html_e( 'What are you submitting?', 'vpg-v2' ); ?></label>
               <?php
               // Locked types stay visible but disabled — everyone sees the
               // ladder: the map first, the editorial formats as you grow.
-              $type_labels = [
-                  'vpg_location' => __( 'Location · a shooting spot', 'vpg-v2' ),
-                  'vpg_studio'   => __( 'Studio · a rental space', 'vpg-v2' ),
-                  'vpg_shop'     => __( 'Shop · a camera shop / lab / supplier', 'vpg-v2' ),
-                  'vpg_review'   => __( 'Gear review · with /10 scores', 'vpg-v2' ),
-                  'vpg_tutorial' => __( 'Tutorial pitch · we’ll discuss', 'vpg-v2' ),
-                  'post'         => __( 'Journal story · writing for the weekly journal', 'vpg-v2' ),
-                  'vpg_event'    => __( 'Photowalk / event · propose a meetup', 'vpg-v2' ),
-                  'vpg_trail'    => __( 'Photo trail · a walking route of map spots', 'vpg-v2' ),
+              $type_cards = [
+                  'vpg_location' => [ '◈', __( 'Location', 'vpg-v2' ), __( 'a shooting spot', 'vpg-v2' ) ],
+                  'vpg_studio'   => [ '▣', __( 'Studio', 'vpg-v2' ), __( 'a rental space', 'vpg-v2' ) ],
+                  'vpg_shop'     => [ '◧', __( 'Shop', 'vpg-v2' ), __( 'shop · lab · supplier', 'vpg-v2' ) ],
+                  'vpg_review'   => [ '★', __( 'Gear review', 'vpg-v2' ), __( 'scored /10', 'vpg-v2' ) ],
+                  'vpg_tutorial' => [ '✎', __( 'Tutorial pitch', 'vpg-v2' ), __( 'we’ll discuss', 'vpg-v2' ) ],
+                  'post'         => [ '¶', __( 'Journal story', 'vpg-v2' ), __( 'for the weekly journal', 'vpg-v2' ) ],
+                  'vpg_event'    => [ '◷', __( 'Photowalk / event', 'vpg-v2' ), __( 'propose a meetup', 'vpg-v2' ) ],
+                  'vpg_trail'    => [ '⇝', __( 'Photo trail', 'vpg-v2' ), __( 'a walking route', 'vpg-v2' ) ],
               ];
               $unlock_hint = [
-                  'vpg_review'   => __( 'unlocks at Contributor · 25 locations', 'vpg-v2' ),
-                  'vpg_tutorial' => __( 'unlocks at Contributor · 25 locations', 'vpg-v2' ),
-                  'post'         => __( 'unlocks at Contributor · 25 locations', 'vpg-v2' ),
-                  'vpg_event'    => __( 'unlocks at Documentarian · 50 editorial works', 'vpg-v2' ),
-                  'vpg_trail'    => __( 'unlocks at Documentarian · 50 editorial works', 'vpg-v2' ),
+                  'vpg_review'   => __( 'Contributor · 25 locations', 'vpg-v2' ),
+                  'vpg_tutorial' => __( 'Contributor · 25 locations', 'vpg-v2' ),
+                  'post'         => __( 'Contributor · 25 locations', 'vpg-v2' ),
+                  'vpg_event'    => __( 'Documentarian · 50 editorial works', 'vpg-v2' ),
+                  'vpg_trail'    => __( 'Documentarian · 50 editorial works', 'vpg-v2' ),
               ];
-              $my_types = function_exists( 'vpg_types_for_rank' ) ? vpg_types_for_rank() : array_keys( $type_labels );
+              $my_types  = function_exists( 'vpg_types_for_rank' ) ? vpg_types_for_rank() : array_keys( $type_cards );
+              $cur_type  = $edit_post ? $edit_post->post_type : 'vpg_location';
               ?>
-              <select class="g-select" id="submit_type" name="submit_type" required <?php disabled( (bool) $edit_post ); ?>>
-                <?php foreach ( $type_labels as $tt => $tl ) :
-                    $open = in_array( $tt, $my_types, true ); ?>
-                  <option value="<?php echo esc_attr( $tt ); ?>" <?php disabled( ! $open ); selected( $edit_post && $edit_post->post_type === $tt ); ?>><?php
-                      echo esc_html( $open ? $tl : $tl . ' — 🔒 ' . ( $unlock_hint[ $tt ] ?? '' ) );
-                  ?></option>
+              <div class="g-typegrid" role="radiogroup" aria-label="<?php esc_attr_e( 'Submission type', 'vpg-v2' ); ?>">
+                <?php foreach ( $type_cards as $tt => $tc ) :
+                    $open = in_array( $tt, $my_types, true );
+                    $sel  = $cur_type === $tt; ?>
+                  <label class="g-type<?php echo $open ? '' : ' is-locked'; echo $sel ? ' is-active' : ''; ?>">
+                    <input type="radio" name="submit_type_pick" value="<?php echo esc_attr( $tt ); ?>" <?php checked( $sel ); disabled( ! $open || (bool) $edit_post ); ?>>
+                    <span class="g-type__ico" aria-hidden="true"><?php echo esc_html( $open ? $tc[0] : '🔒' ); ?></span>
+                    <span class="g-type__name"><?php echo esc_html( $tc[1] ); ?></span>
+                    <span class="g-type__desc"><?php echo $open
+                        ? esc_html( $tc[2] )
+                        : '<b>' . esc_html( $unlock_hint[ $tt ] ?? '' ) . '</b>'; ?></span>
+                  </label>
                 <?php endforeach; ?>
-              </select>
-              <?php if ( $edit_post ) : ?><input type="hidden" name="submit_type" value="<?php echo esc_attr( $edit_post->post_type ); ?>"><?php endif; ?>
+              </div>
+              <input type="hidden" id="submit_type" name="submit_type" value="<?php echo esc_attr( $cur_type ); ?>">
             </div>
 
             <div class="g-field">
@@ -208,22 +230,34 @@ get_header();
 
             <script>
             (function () {
-              var sel = document.getElementById('submit_type');
-              if (!sel) return;
+              var hidden = document.getElementById('submit_type');
+              var radios = document.querySelectorAll('input[name="submit_type_pick"]');
+              if (!hidden || !radios.length) return;
               function syncFields() {
-                var t = sel.value;
+                var t = hidden.value;
                 document.querySelectorAll('[data-for-types]').forEach(function (el) {
                   el.hidden = el.getAttribute('data-for-types').split(' ').indexOf(t) === -1;
                 });
               }
-              sel.addEventListener('change', syncFields);
+              radios.forEach(function (r) {
+                r.addEventListener('change', function () {
+                  if (!r.checked) return;
+                  hidden.value = r.value;
+                  document.querySelectorAll('.g-type').forEach(function (c) { c.classList.remove('is-active'); });
+                  r.closest('.g-type').classList.add('is-active');
+                  syncFields();
+                });
+              });
               syncFields();
             })();
             </script>
 
             <div class="g-field">
               <label for="photos"><?php esc_html_e( 'Photos · up to 4', 'vpg-v2' ); ?></label>
-              <input class="g-input" id="photos" type="file" name="photos[]" multiple accept=".jpg,.jpeg,.png,.webp,.avif,image/jpeg,image/png,image/webp,image/avif">
+              <div class="g-drop">
+                <span class="g-drop__hint" aria-hidden="true">⇣ <?php esc_html_e( 'Drop photos here or browse', 'vpg-v2' ); ?></span>
+                <input id="photos" type="file" name="photos[]" multiple accept=".jpg,.jpeg,.png,.webp,.avif,image/jpeg,image/png,image/webp,image/avif">
+              </div>
               <div id="photo-preview" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"></div>
               <p class="g-form__note" style="margin-top:6px"><?php esc_html_e( 'JPG, PNG, WebP or AVIF · max 8 MB each · the first photo becomes the cover. Your photos stay yours, credited by name.', 'vpg-v2' ); ?></p>
               <script>

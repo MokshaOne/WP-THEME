@@ -22,6 +22,13 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* ─── Admin menu ─────────────────────────────────────────────────── */
+/* The editor screens set their headlines in the magazine's own face. */
+add_action( 'admin_enqueue_scripts', function () {
+    if ( strpos( sanitize_key( $_GET['page'] ?? '' ), 'vpg-magazine' ) === 0 ) {
+        wp_enqueue_style( 'vpg-archivo-admin', 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap', [], null );
+    }
+} );
+
 add_action( 'admin_menu', function () {
     add_menu_page(
         '📖 ' . __( 'Magazine', 'vpg-v2' ),
@@ -123,21 +130,23 @@ function vpg_magazine_list_page() {
     </div>
 
     <style>
+        /* Gallery identity · white museum, hairline, one red */
+        .vpg-mag-admin { font-family: 'Archivo', -apple-system, sans-serif; }
+        .vpg-mag-admin h1 { font-weight: 900; font-stretch: 118%; text-transform: uppercase; letter-spacing: .01em; }
         .vpg-mag-admin .vpg-mag-thumb {
-            width: 60px; height: 80px; border-radius: 4px;
-            background: linear-gradient(135deg, #E0D4BD, #C8601A);
-            background-size: cover; background-position: center;
+            width: 60px; height: 80px; border-radius: 0;
+            background: #0B0B0B; background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center;
-            color: rgba(255,255,255,0.5); font-size: 24px;
+            color: #E5341F; font-size: 24px; font-weight: 900;
         }
-        .vpg-mag-status { padding: .2rem .5rem; border-radius: 999px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-family: ui-monospace, monospace; }
-        .vpg-mag-status--publish { background: #DCE7DF; color: #1A4F2C; }
-        .vpg-mag-status--draft   { background: #F3F3F3; color: #555; }
-        .vpg-mag-status--future  { background: #F8E0CC; color: #7A3800; }
-        .vpg-mag-empty { background: #fff; border: 1px solid #ccd0d4; padding: 4rem 2rem; text-align: center; margin-top: 2rem; border-radius: 8px; }
+        .vpg-mag-status { padding: .2rem .6rem; border-radius: 0; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; border: 1px solid #E6E5E1; }
+        .vpg-mag-status--publish { background: #0B0B0B; color: #fff; border-color: #0B0B0B; }
+        .vpg-mag-status--draft   { background: #F5F4F1; color: #6A6A6A; }
+        .vpg-mag-status--future  { background: #fff; color: #E5341F; border-color: #E5341F; }
+        .vpg-mag-empty { background: #fff; border: 1px solid #E6E5E1; padding: 4rem 2rem; text-align: center; margin-top: 2rem; border-radius: 0; }
         .vpg-mag-empty h2 { font-size: 1.6rem; margin: 0 0 1rem; }
-        .vpg-mag-empty p  { color: #646970; margin: 0 0 2rem; }
-        .vpg-mag-table th { font-weight: 600; }
+        .vpg-mag-empty p  { color: #6A6A6A; margin: 0 0 2rem; }
+        .vpg-mag-table th { font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: .1em; }
     </style>
     <?php
 }
@@ -331,6 +340,44 @@ function vpg_magazine_edit_page() {
         .vpg-mag-article.is-dragging { opacity: .4; }
         .vpg-mag-article.is-over { border-color: #2271b1; background: #f0f6fc; }
         .vpg-mag-article__pb { font-size: 12px; color: #646970; display: inline-flex; gap: .3rem; align-items: center; }
+
+        /* ── Gallery identity · the editor wears the magazine's own look ──
+           White museum: sharp corners, hairline #E6E5E1, ink #0B0B0B,
+           exactly one red #E5341F. Overrides the WP defaults above. */
+        .vpg-mag-edit { font-family: 'Archivo', -apple-system, sans-serif; }
+        .vpg-mag-edit h1 { font-weight: 900; font-stretch: 118%; text-transform: uppercase; letter-spacing: .01em; }
+        .vpg-mag-panel, .vpg-mag-articles { border-radius: 0; border-color: #E6E5E1; box-shadow: none; }
+        .vpg-mag-panel h2, .vpg-mag-articles-head h2 { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #0B0B0B; }
+        .vpg-mag-panel h2::before, .vpg-mag-articles-head h2::before { content: '● '; color: #E5341F; font-size: 9px; vertical-align: 2px; }
+        .vpg-mag-row > span { color: #6A6A6A; font-weight: 700; letter-spacing: .14em; }
+        .vpg-mag-row input, .vpg-mag-row textarea, .vpg-mag-row select,
+        .vpg-mag-article__body, .vpg-mag-article__meta input, .vpg-pick-search input { border-radius: 0; border-color: #E6E5E1; }
+        .vpg-mag-row input:focus, .vpg-mag-row textarea:focus, .vpg-mag-article__body:focus,
+        .vpg-mag-article__title-input:focus, .vpg-pick-search input:focus { border-color: #E5341F; box-shadow: 0 0 0 1px #E5341F; outline: none; }
+        .vpg-cover-pick { border-radius: 0; background: #F5F4F1; border: 1px solid #E6E5E1; }
+        .vpg-cover-placeholder { color: #9C9A95; }
+        .vpg-mag-article { background: #fff; border-radius: 0; border-color: #E6E5E1; border-left: 3px solid #E6E5E1; transition: border-color .15s; }
+        .vpg-mag-article:hover { border-left-color: #0B0B0B; }
+        .vpg-mag-article.is-over { border-color: #E5341F; background: #fff; }
+        .vpg-mag-article__handle { color: #9C9A95; }
+        .vpg-mag-article__handle:hover { color: #E5341F; }
+        .vpg-mag-article__title-input { border-radius: 0; border-color: #E6E5E1; }
+        .vpg-mag-article__img { border-radius: 0; background-color: #F5F4F1; border: 1px solid #E6E5E1; }
+        .vpg-mag-article__snippets button { border-radius: 0; border-color: #E6E5E1; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+        .vpg-mag-article__snippets button:hover { border-color: #E5341F; color: #E5341F; }
+        .vpg-mag-compile .button { border-radius: 0; text-transform: uppercase; font-size: 11px; letter-spacing: .08em; font-weight: 700; border-color: #0B0B0B; color: #0B0B0B; background: #fff; }
+        .vpg-mag-compile .button:hover { border-color: #E5341F; color: #E5341F; }
+        .vpg-mag-compile .button-primary, .vpg-mag-edit .button-primary { background: #E5341F; border-color: #E5341F; color: #fff; border-radius: 0; text-shadow: none; }
+        .vpg-mag-compile .button-primary:hover, .vpg-mag-edit .button-primary:hover { background: #BE2410; border-color: #BE2410; color: #fff; }
+        .vpg-mag-edit .button-large { border-radius: 0; }
+        .vpg-pick-modal { border-radius: 0; border: 2px solid #0B0B0B; font-family: 'Archivo', -apple-system, sans-serif; }
+        .vpg-pick-head { border-bottom-color: #E6E5E1; }
+        .vpg-pick-head h2 { font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+        .vpg-pick-head h2::before { content: '● '; color: #E5341F; font-size: 9px; vertical-align: 2px; }
+        .vpg-pick-close:hover { color: #E5341F; }
+        .vpg-pick-item:hover { background: #F5F4F1; }
+        .vpg-pick-item__thumb { border-radius: 0; }
+        .vpg-pick-foot { border-top-color: #E6E5E1; }
     </style>
 
     <script>

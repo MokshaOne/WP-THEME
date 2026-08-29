@@ -3365,3 +3365,7 @@ msgstr ""
 #: templates/page-submit.php
 msgid "Where exactly? · search or click the map"
 msgstr ""
+
+#: single-vpg_event.php
+msgid "Open in OSM for directions ↗"
+msgstr ""

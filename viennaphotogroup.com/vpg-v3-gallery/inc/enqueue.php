@@ -40,7 +40,7 @@ add_action( 'wp_enqueue_scripts', function () {
     if ( is_singular( 'vpg_magazine' ) || is_post_type_archive( 'vpg_magazine' ) ) {
         wp_enqueue_style( 'vpg-magazine', VPG_V2_URI . '/assets/css/pages/magazine.css', [ 'vpg-components' ], $ver( '/assets/css/pages/magazine.css' ) );
     }
-    if ( is_post_type_archive( 'vpg_location' ) || is_singular( 'vpg_location' ) || is_singular( 'vpg_studio' ) || is_singular( 'vpg_shop' ) || is_singular( 'vpg_trail' ) || is_page_template( 'templates/page-map-guide.php' ) || is_page_template( 'templates/page-submit.php' ) || get_query_var( 'vpg_member' ) ) {
+    if ( is_post_type_archive( 'vpg_location' ) || is_singular( 'vpg_location' ) || is_singular( 'vpg_studio' ) || is_singular( 'vpg_shop' ) || is_singular( 'vpg_trail' ) || is_singular( 'vpg_event' ) || is_page_template( 'templates/page-map-guide.php' ) || is_page_template( 'templates/page-submit.php' ) || get_query_var( 'vpg_member' ) ) {
         // Leaflet core
         wp_enqueue_style( 'leaflet',  VPG_V2_URI . '/assets/vendor/leaflet/leaflet.css', [], '1.9.4' );
         wp_enqueue_script( 'leaflet', VPG_V2_URI . '/assets/vendor/leaflet/leaflet.js',  [], '1.9.4', true );

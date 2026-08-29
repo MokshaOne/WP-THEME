@@ -298,6 +298,7 @@ function vpg_handle_submit() {
         'vpg_location' => [ 'location_lat', 'location_lng' ],
         'vpg_studio'   => [ 'studio_lat', 'studio_lng' ],
         'vpg_shop'     => [ 'shop_lat', 'shop_lng' ],
+        'vpg_event'    => [ '_vpg_event_lat', '_vpg_event_lng' ], // meeting point
     ];
     if ( isset( $geo_keys[ $type ] ) ) {
         $plat = (float) ( $_POST['pin_lat'] ?? 0 );

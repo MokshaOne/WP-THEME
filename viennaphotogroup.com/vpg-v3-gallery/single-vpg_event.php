@@ -34,6 +34,30 @@ get_header();
       </div>
     </section>
 
+    <?php
+    // Meeting point · pinned by the proposer in the submit form
+    $ev_lat = get_post_meta( get_the_ID(), '_vpg_event_lat', true );
+    $ev_lng = get_post_meta( get_the_ID(), '_vpg_event_lng', true );
+    if ( $ev_lat && $ev_lng ) : ?>
+    <section class="g-wrap" style="margin:clamp(24px,4vw,40px) auto">
+      <p class="g-kicker" style="margin-bottom:12px">● <?php esc_html_e( 'Meeting point', 'vpg-v2' ); ?><?php
+        $ev_venue = get_post_meta( get_the_ID(), '_vpg_event_venue', true );
+        if ( $ev_venue ) echo ' · ' . esc_html( $ev_venue );
+      ?></p>
+      <div id="vpg-event-map" style="height:280px;border:1px solid var(--g-line, #E6E5E1)"></div>
+      <p class="g-meta" style="margin-top:8px"><a href="https://www.openstreetmap.org/?mlat=<?php echo esc_attr( $ev_lat ); ?>&mlon=<?php echo esc_attr( $ev_lng ); ?>#map=17/<?php echo esc_attr( $ev_lat ); ?>/<?php echo esc_attr( $ev_lng ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Open in OSM for directions ↗', 'vpg-v2' ); ?></a></p>
+      <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof L === 'undefined') return;
+        var lat = <?php echo (float) $ev_lat; ?>, lng = <?php echo (float) $ev_lng; ?>;
+        var m = L.map('vpg-event-map', { scrollWheelZoom: false }).setView([lat, lng], 16);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(m);
+        L.marker([lat, lng]).addTo(m);
+      });
+      </script>
+    </section>
+    <?php endif; ?>
+
     <?php if ( has_post_thumbnail() ) : ?>
       <figure class="g-wrap" style="margin:clamp(24px,4vw,48px) auto">
         <div class="g-fig g-fig--3x2"><?php the_post_thumbnail( 'large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?></div>

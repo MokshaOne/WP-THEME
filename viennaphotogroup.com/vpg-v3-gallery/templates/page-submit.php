@@ -188,7 +188,7 @@ get_header();
               <textarea class="g-textarea" id="body" name="body" rows="8" required placeholder="<?php esc_attr_e( 'Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $ev( 'post_content' ) ); ?></textarea>
             </div>
 
-            <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop vpg_review vpg_tutorial">
+            <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop">
               <label for="district"><?php esc_html_e( 'District / area', 'vpg-v2' ); ?></label>
               <input class="g-input" id="district" type="text" name="district" value="<?php echo esc_attr( $ev( 'district' ) ); ?>" placeholder="<?php esc_attr_e( '1010 · Innere Stadt', 'vpg-v2' ); ?>">
             </div>
@@ -199,6 +199,7 @@ get_header();
                 'vpg_location' => [ 'location_lat', 'location_lng' ],
                 'vpg_studio'   => [ 'studio_lat', 'studio_lng' ],
                 'vpg_shop'     => [ 'shop_lat', 'shop_lng' ],
+                'vpg_event'    => [ '_vpg_event_lat', '_vpg_event_lng' ],
             ];
             $pin_lat = $pin_lng = '';
             if ( $edit_post && isset( $pin_keys[ $edit_post->post_type ] ) ) {
@@ -206,7 +207,7 @@ get_header();
                 $pin_lng = get_post_meta( $edit_post->ID, $pin_keys[ $edit_post->post_type ][1], true );
             }
             ?>
-            <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop" hidden>
+            <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop vpg_event" hidden>
               <label for="pin-search"><?php esc_html_e( 'Where exactly? · search or click the map', 'vpg-v2' ); ?></label>
               <div style="display:flex;gap:10px">
                 <input class="g-input" id="pin-search" type="text" placeholder="<?php esc_attr_e( 'Karlsplatz 4, Wien', 'vpg-v2' ); ?>" autocomplete="off" style="flex:1">

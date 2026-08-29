@@ -4,6 +4,14 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* wp-admin gets the same Material language + Archivo, so backend desks match
+ * the site (one style everywhere). Loaded on every admin screen. */
+add_action( 'admin_enqueue_scripts', function () {
+    $ver = fn( $rel ) => file_exists( VPG_V2_DIR . $rel ) ? (string) filemtime( VPG_V2_DIR . $rel ) : VPG_V2_VERSION;
+    wp_enqueue_style( 'vpg-fonts', VPG_V2_URI . '/assets/css/fonts.css', [], $ver( '/assets/css/fonts.css' ) );
+    wp_enqueue_style( 'vpg-admin-material', VPG_V2_URI . '/assets/css/admin-material.css', [ 'vpg-fonts' ], $ver( '/assets/css/admin-material.css' ) );
+} );
+
 add_action( 'wp_enqueue_scripts', function () {
 
     $ver = function ( $rel ) {
@@ -35,6 +43,10 @@ add_action( 'wp_enqueue_scripts', function () {
     // components. Loaded last/globally so the `g-` classes are available
     // everywhere and win the cascade for the signature screens.
     wp_enqueue_style( 'vpg-gallery', VPG_V2_URI . '/assets/css/gallery.css', [ 'vpg-components' ], $ver( '/assets/css/gallery.css' ) );
+
+    // Material-leaning friendliness layer — loaded last so it lifts every
+    // g- component and vpg- widget (rounded shapes, elevation, focus, motion).
+    wp_enqueue_style( 'vpg-material', VPG_V2_URI . '/assets/css/material.css', [ 'vpg-gallery' ], $ver( '/assets/css/material.css' ) );
 
     // 0561/0580 · command palette doubles as live search
     wp_enqueue_script( 'vpg-palette', VPG_V2_URI . '/assets/js/palette.js', [], $ver( '/assets/js/palette.js' ), true );

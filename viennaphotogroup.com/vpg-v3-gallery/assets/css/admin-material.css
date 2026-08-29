@@ -1,0 +1,153 @@
+/* ══════════════════════════════════════════════════════════════════════
+ * VPG v3 · admin-material.css — the frontend's Material language, in wp-admin.
+ *
+ * So the VPG desks (Trust & Safety, Mail, A11y, AI, Open data, Supporter,
+ * Sustainability, Workbench, Fediverse & batch …) and the theme's edit
+ * screens feel like the site: Archivo, the red accent, rounded controls,
+ * gentle elevation, clear focus. Visual properties only — never layout,
+ * width or position — so core wp-admin keeps working. Loaded everywhere in
+ * admin; heavier touches are scoped to content, not the menu chrome.
+ * ════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --vpgadm-red: #E5341F;
+  --vpgadm-red-deep: #BE2410;
+  --vpgadm-ink: #0B0B0B;
+  --vpgadm-line: #E1E0DC;
+  --vpgadm-surface: #F6F5F2;
+  --vpgadm-r: 12px;
+  --vpgadm-r-pill: 999px;
+  --vpgadm-e1: 0 1px 2px rgba(11,11,11,.06), 0 1px 3px rgba(11,11,11,.10);
+  --vpgadm-e2: 0 2px 6px rgba(11,11,11,.08), 0 6px 16px rgba(11,11,11,.10);
+  --vpgadm-motion: 190ms cubic-bezier(.2, 0, 0, 1);
+}
+
+/* one typeface across the whole panel */
+body.wp-admin,
+body.wp-admin .wrap,
+body.wp-admin #wpbody-content,
+body.wp-admin #adminmenu,
+body.wp-admin .wp-menu-name,
+body.wp-admin .button,
+body.wp-admin input,
+body.wp-admin select,
+body.wp-admin textarea {
+  font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+}
+
+/* headings — the desk titles read like the site's */
+body.wp-admin .wrap h1,
+body.wp-admin .wrap h2 {
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+body.wp-admin .wrap h2 { margin-top: 1.4em; }
+
+/* ── Buttons — pill, elevated, brand-red primary ── */
+body.wp-admin .button,
+body.wp-admin .button-secondary {
+  border-radius: var(--vpgadm-r-pill);
+  border: 1.5px solid var(--vpgadm-line);
+  background: #fff;
+  box-shadow: var(--vpgadm-e1);
+  min-height: 34px;
+  padding: 3px 16px;
+  transition: box-shadow var(--vpgadm-motion), transform var(--vpgadm-motion), background-color var(--vpgadm-motion);
+}
+body.wp-admin .button:hover,
+body.wp-admin .button-secondary:hover { box-shadow: var(--vpgadm-e2); transform: translateY(-1px); background: var(--vpgadm-surface); border-color: var(--vpgadm-line); }
+body.wp-admin .button:active { transform: translateY(0); box-shadow: var(--vpgadm-e1); }
+body.wp-admin .button-primary {
+  background: var(--vpgadm-red) !important;
+  border-color: var(--vpgadm-red) !important;
+  color: #fff !important;
+  border-radius: var(--vpgadm-r-pill);
+  box-shadow: var(--vpgadm-e1);
+  text-shadow: none !important;
+}
+body.wp-admin .button-primary:hover { background: var(--vpgadm-red-deep) !important; border-color: var(--vpgadm-red-deep) !important; box-shadow: var(--vpgadm-e2); transform: translateY(-1px); }
+body.wp-admin .button-link { box-shadow: none; }
+
+/* ── Form controls — rounded, red focus ring ── */
+body.wp-admin input[type=text],
+body.wp-admin input[type=email],
+body.wp-admin input[type=url],
+body.wp-admin input[type=search],
+body.wp-admin input[type=number],
+body.wp-admin input[type=password],
+body.wp-admin input[type=date],
+body.wp-admin textarea,
+body.wp-admin select {
+  border-radius: 10px;
+  border: 1.5px solid var(--vpgadm-line);
+  background: var(--vpgadm-surface);
+  transition: border-color var(--vpgadm-motion), box-shadow var(--vpgadm-motion), background-color var(--vpgadm-motion);
+}
+body.wp-admin input[type=text]:focus,
+body.wp-admin input[type=email]:focus,
+body.wp-admin input[type=url]:focus,
+body.wp-admin input[type=search]:focus,
+body.wp-admin input[type=number]:focus,
+body.wp-admin input[type=password]:focus,
+body.wp-admin input[type=date]:focus,
+body.wp-admin textarea:focus,
+body.wp-admin select:focus {
+  border-color: var(--vpgadm-red);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(229,52,31,.14);
+  outline: none;
+}
+/* leave WP's checked checkmark intact — only brand the focus ring */
+body.wp-admin input[type=checkbox]:focus,
+body.wp-admin input[type=radio]:focus { box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(229,52,31,.4); border-color: var(--vpgadm-red); }
+
+/* ── Cards, tables, notices — contained and softly elevated ── */
+body.wp-admin .wrap .widefat,
+body.wp-admin .postbox,
+body.wp-admin .card {
+  border-radius: var(--vpgadm-r);
+  border: 1px solid var(--vpgadm-line);
+  box-shadow: var(--vpgadm-e1);
+  overflow: hidden;
+}
+body.wp-admin .wrap .widefat thead th,
+body.wp-admin .wrap .widefat tfoot th { background: var(--vpgadm-surface); font-weight: 700; }
+body.wp-admin .wrap .widefat.striped > tbody > :nth-child(odd) { background: #FBFAF8; }
+
+body.wp-admin .notice,
+body.wp-admin div.updated,
+body.wp-admin div.error {
+  border-radius: var(--vpgadm-r);
+  box-shadow: var(--vpgadm-e1);
+  border-left-width: 5px;
+}
+body.wp-admin .notice-success { border-left-color: #1F7A38; }
+body.wp-admin .notice-error, body.wp-admin div.error { border-left-color: var(--vpgadm-red-deep); }
+body.wp-admin .notice-warning { border-left-color: #B4791A; }
+
+/* code + preformatted blocks in the desks */
+body.wp-admin .wrap code,
+body.wp-admin .wrap pre { border-radius: 8px; }
+body.wp-admin .wrap textarea.code { border-radius: 10px; }
+
+/* our command palette (admin-tools.css) gets the elevated card too */
+#vpg-adm-cmdk .box { border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
+#vpg-adm-cmdk li { border-radius: 10px; }
+
+/* the theme's own top-level menu icon accent */
+body.wp-admin #adminmenu .toplevel_page_vpg-hub .wp-menu-image,
+body.wp-admin #adminmenu li.current a.menu-top { }
+
+/* dark-admin (per-user, from editorial-tools.php) keeps elevation subtle */
+body.vpg-admin-dark .wrap .widefat,
+body.vpg-admin-dark .postbox,
+body.vpg-admin-dark .card { box-shadow: 0 2px 10px rgba(0,0,0,.5); border-color: #33302a; }
+body.vpg-admin-dark input[type=text],
+body.vpg-admin-dark textarea,
+body.vpg-admin-dark select { background: #0f0e0b; border-color: #403a32; }
+
+@media (prefers-reduced-motion: reduce) {
+  body.wp-admin .button, body.wp-admin .button-primary,
+  body.wp-admin input, body.wp-admin select, body.wp-admin textarea { transition: none !important; }
+  body.wp-admin .button:hover, body.wp-admin .button-primary:hover { transform: none !important; }
+}

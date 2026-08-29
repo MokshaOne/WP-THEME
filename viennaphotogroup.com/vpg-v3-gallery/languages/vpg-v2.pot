@@ -7546,3 +7546,197 @@ msgstr[1] ""
 
 msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
 msgstr ""
+
+msgid "Map-Master"
+msgstr ""
+
+msgid "Wortstimme"
+msgstr ""
+
+msgid "Event-Seele"
+msgstr ""
+
+msgid "Trail-Weber"
+msgstr ""
+
+msgid "First pin"
+msgstr ""
+
+msgid "First text"
+msgstr ""
+
+msgid "First walk hosted"
+msgstr ""
+
+msgid "First issue credit"
+msgstr ""
+
+msgid "25 pins"
+msgstr ""
+
+msgid "Century of pins"
+msgstr ""
+
+msgid "Winter series"
+msgstr ""
+
+msgid "Honorary Resident"
+msgstr ""
+
+msgid "You’ve reached %s — quietly, and it’s earned."
+msgstr ""
+
+msgid "A small ceremony: %s"
+msgstr ""
+
+msgid "You've quietly reached %s at Vienna Photo Group. No fanfare — just a thank-you, and a certificate if you'd like one:\n%s"
+msgstr ""
+
+msgid "Someone you brought in just reached %s. Thank you for that."
+msgstr ""
+
+msgid "As a new Resident, the seven questions await you on your dashboard."
+msgstr ""
+
+msgid "Impact"
+msgstr ""
+
+msgid "Their pins, walks and words have been opened %s times by other photographers."
+msgstr ""
+
+msgid "First times"
+msgstr ""
+
+msgid "Rank certificate"
+msgstr ""
+
+msgid "Share card"
+msgstr ""
+
+msgid "You’ve reached %s."
+msgstr ""
+
+msgid "Quietly earned — a certificate is ready if you want one."
+msgstr ""
+
+msgid "Welcome back. Nothing you earned went anywhere — it’s all still here."
+msgstr ""
+
+msgid "It’s helped %d photographers so far."
+msgstr ""
+
+msgid "Residents may nominate members for a feature."
+msgstr ""
+
+msgid "Member to feature"
+msgstr ""
+
+msgid "Why (one line)"
+msgstr ""
+
+msgid "Nominate"
+msgstr ""
+
+msgid "Certificate"
+msgstr ""
+
+msgid "This certifies that"
+msgstr ""
+
+msgid "has quietly earned this rank through contribution since %s."
+msgstr ""
+
+msgid "Cover hall of fame"
+msgstr ""
+
+msgid "Every <em>cover</em>."
+msgstr ""
+
+msgid "The members"
+msgstr ""
+
+msgid "How we recognise"
+msgstr ""
+
+msgid "Quiet by <em>principle</em>."
+msgstr ""
+
+msgid "Together this year"
+msgstr ""
+
+msgid "No points"
+msgstr ""
+
+msgid "We keep no score. Ranks reflect contribution, not a leaderboard."
+msgstr ""
+
+msgid "No streaks"
+msgstr ""
+
+msgid "No daily counters. Photography is not a workout."
+msgstr ""
+
+msgid "Nothing is taken away"
+msgstr ""
+
+msgid "Inactivity never lowers what you reached. A rank, once earned, stays."
+msgstr ""
+
+msgid "No retroactive rules"
+msgstr ""
+
+msgid "If we change how ranks work, the change only ever applies going forward."
+msgstr ""
+
+msgid "Trust, explained"
+msgstr ""
+
+msgid "Once a year we explain plainly how the trust mechanic works and what it gates."
+msgstr ""
+
+msgid "How features happen"
+msgstr ""
+
+msgid "Residents nominate; the editors choose openly. The most active clusters get feature priority."
+msgstr ""
+
+msgid "Silent heroes"
+msgstr ""
+
+msgid "Recognition"
+msgstr ""
+
+msgid "Honorary Resident named."
+msgstr ""
+
+msgid "0375 · Collective goal"
+msgstr ""
+
+msgid "500 locations together"
+msgstr ""
+
+msgid "0365 · Name an Honorary Resident (member ID)"
+msgstr ""
+
+msgid "0396 · Traveling trophy holder"
+msgstr ""
+
+msgid "Photo of the Year holder"
+msgstr ""
+
+msgid "0384 · Silent heroes (one per line)"
+msgstr ""
+
+msgid "0382 · Feature nominations"
+msgstr ""
+
+msgid "No nominations. Embed [vpg_nominate]."
+msgstr ""
+
+msgid "Your pin “%1$s” turns %2$d."
+msgid_plural "Your pin “%1$s” turns %2$d."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
+msgstr ""

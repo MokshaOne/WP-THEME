@@ -148,6 +148,9 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <?php // Cluster 10 · promotion / comeback / anniversary notices
+  if ( function_exists( 'vpg_recognition_notices' ) ) vpg_recognition_notices(); ?>
+
   <!-- Section jump nav · the dashboard is long, the way around it short -->
   <nav class="g-secnav" aria-label="<?php esc_attr_e( 'Dashboard sections', 'vpg-v2' ); ?>">
     <div class="g-wrap">

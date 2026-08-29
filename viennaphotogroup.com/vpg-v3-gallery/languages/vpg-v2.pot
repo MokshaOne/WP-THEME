@@ -7347,3 +7347,202 @@ msgstr ""
 
 msgid "Why these hang"
 msgstr ""
+
+msgid "Collaboration"
+msgstr ""
+
+msgid "Commissions"
+msgstr ""
+
+msgid "Mentoring"
+msgstr ""
+
+msgid "Print sales"
+msgstr ""
+
+msgid "In memoriam — this profile is kept as a lasting tribute."
+msgstr ""
+
+msgid "Available as a reference"
+msgstr ""
+
+msgid "Statement"
+msgstr ""
+
+msgid "The journey"
+msgstr ""
+
+msgid "Highlights of the year"
+msgstr ""
+
+msgid "Sketchbook · work in progress"
+msgstr ""
+
+msgid "When they shoot"
+msgstr ""
+
+msgid "In the bag"
+msgstr ""
+
+msgid "Gear biography"
+msgstr ""
+
+msgid "Their Vienna"
+msgstr ""
+
+msgid "Elsewhere"
+msgstr ""
+
+msgid "Published in"
+msgstr ""
+
+msgid "Together with"
+msgstr ""
+
+msgid "Auto CV"
+msgstr ""
+
+msgid "Profile card (QR)"
+msgstr ""
+
+msgid "Export my content"
+msgstr ""
+
+msgid "Guestbook"
+msgstr ""
+
+msgid "Leave a kind word (moderated)…"
+msgstr ""
+
+msgid "Profile completeness"
+msgstr ""
+
+msgid "Only you see this. Fill what feels right."
+msgstr ""
+
+msgid "%d link on your profile looks dead — check Elsewhere & Published in."
+msgstr ""
+
+msgid "A new guestbook note awaits your OK"
+msgstr ""
+
+msgid "Curriculum vitae"
+msgstr ""
+
+msgid "Member of Vienna Photo Group since %s."
+msgstr ""
+
+msgid "Publications"
+msgstr ""
+
+msgid "Led photowalks"
+msgstr ""
+
+msgid "External mentions"
+msgstr ""
+
+msgid "Private series"
+msgstr ""
+
+msgid "Enter"
+msgstr ""
+
+msgid "Artist page"
+msgstr ""
+
+msgid "The <em>fuller</em> profile"
+msgstr ""
+
+msgid "Custom profile URL"
+msgstr ""
+
+msgid "Pronouns"
+msgstr ""
+
+msgid "Statement (five sentences)"
+msgstr ""
+
+msgid "Bio · English"
+msgstr ""
+
+msgid "Style tags (comma-separated, your words)"
+msgstr ""
+
+msgid "Available for"
+msgstr ""
+
+msgid "Contactable as a reference"
+msgstr ""
+
+msgid "Links elsewhere"
+msgstr ""
+
+msgid "In the bag (one per line)"
+msgstr ""
+
+msgid "Gear biography (one per line)"
+msgstr ""
+
+msgid "Published in / mentions (one per line)"
+msgstr ""
+
+msgid "Away note"
+msgstr ""
+
+msgid "On holiday until…"
+msgstr ""
+
+msgid "Year highlights (attachment IDs)"
+msgstr ""
+
+msgid "Sketchbook (IDs)"
+msgstr ""
+
+msgid "Favourite spots (location IDs)"
+msgstr ""
+
+msgid "Signature (attachment ID for print credits)"
+msgstr ""
+
+msgid "Duet partner (member ID)"
+msgstr ""
+
+msgid "Collaborators (member IDs)"
+msgstr ""
+
+msgid "Portfolio series — one per line: “Title | id,id,id | short text”"
+msgstr ""
+
+msgid "Private series (attachment IDs)"
+msgstr ""
+
+msgid "Private password"
+msgstr ""
+
+msgid "Live preview"
+msgstr ""
+
+msgid "Save artist page"
+msgstr ""
+
+msgid "VPG memorial"
+msgstr ""
+
+msgid "Memorial mode"
+msgstr ""
+
+msgid "Freeze this profile as a dignified tribute"
+msgstr ""
+
+msgid "%d year member"
+msgid_plural "%d years member"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d story"
+msgid_plural "%d stories"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
+msgstr ""

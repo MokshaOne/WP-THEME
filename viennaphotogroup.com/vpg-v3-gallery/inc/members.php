@@ -30,6 +30,11 @@ add_action( 'template_redirect', function () {
     if ( ! get_query_var( 'vpg_member' ) ) return;
     $username = sanitize_user( get_query_var( 'vpg_member' ) );
     $user     = get_user_by( 'login', $username ) ?: get_user_by( 'slug', $username );
+    // 0321 · custom profile slug
+    if ( ! $user ) {
+        $by_slug = get_users( [ 'meta_key' => '_vpg_slug', 'meta_value' => sanitize_title( get_query_var( 'vpg_member' ) ), 'number' => 1 ] );
+        if ( $by_slug ) $user = $by_slug[0];
+    }
 
     if ( ! $user ) {
         global $wp_query;
@@ -344,6 +349,7 @@ add_action( 'template_redirect', function () {
             </div>
         </section>
         <?php endif; ?>
+        <?php do_action( 'vpg_profile_sections', $user ); // Cluster 09 · Profile & Portfolio ?>
     </main>
     <?php
     get_footer();

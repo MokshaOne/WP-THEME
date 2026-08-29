@@ -1032,6 +1032,9 @@ get_header();
     </div>
   </section>
 
+  <?php // Cluster 09 · the fuller artist page fields
+  if ( function_exists( 'vpg_profile_extra_form' ) ) vpg_profile_extra_form(); ?>
+
 <?php endif; ?>
 
 </main>

@@ -581,6 +581,26 @@ get_header();
               <input class="g-input" type="text" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" style="max-width:120px">
               <button class="g-btn g-btn--ghost" type="submit"><?php esc_html_e( 'Turn 2FA off', 'vpg-v2' ); ?></button>
             </form>
+            <?php // 1017 · recovery codes
+            $bk_show = get_transient( 'vpg_backup_show_' . $u->ID );
+            $bk_left = function_exists( 'vpg_backup_codes_left' ) ? vpg_backup_codes_left( $u->ID ) : 0;
+            if ( $bk_show ) : delete_transient( 'vpg_backup_show_' . $u->ID ); ?>
+              <div style="border:1px solid var(--g-red);padding:12px 16px;margin-top:12px">
+                <p style="margin:0 0 8px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--g-red)"><?php esc_html_e( 'Save these now — shown once', 'vpg-v2' ); ?></p>
+                <div style="font-family:ui-monospace,monospace;font-size:15px;line-height:1.9;letter-spacing:.06em">
+                  <?php foreach ( $bk_show as $bc ) echo esc_html( $bc ) . '<br>'; ?>
+                </div>
+                <p style="margin:8px 0 0;font-size:12px;color:var(--g-mid)"><?php esc_html_e( 'Each works once, in place of an app code, if you lose your phone.', 'vpg-v2' ); ?></p>
+              </div>
+            <?php else : ?>
+              <p style="margin:10px 0 0;font-size:12px;color:var(--g-mid)"><?php printf( esc_html( _n( '%d backup code left.', '%d backup codes left.', (int) $bk_left, 'vpg-v2' ) ), (int) $bk_left ); ?>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline">
+                  <?php wp_nonce_field( 'vpg_totp' ); ?>
+                  <input type="hidden" name="action" value="vpg_totp_backup">
+                  <button type="submit" style="background:none;border:0;padding:0;cursor:pointer;color:var(--g-red);font-weight:700;font-size:12px"><?php echo $bk_left ? esc_html__( '· regenerate', 'vpg-v2' ) : esc_html__( '· generate backup codes', 'vpg-v2' ); ?></button>
+                </form>
+              </p>
+            <?php endif; ?>
           <?php elseif ( $totp_pending ) : ?>
             <p style="margin:6px 0 10px;font-size:13px"><?php esc_html_e( 'Add this secret to your authenticator app (or open the link on your phone), then confirm with one code:', 'vpg-v2' ); ?></p>
             <p style="font-family:ui-monospace,monospace;font-size:15px;letter-spacing:.12em;border:1px dashed var(--g-line);display:inline-block;padding:8px 14px"><?php echo esc_html( trim( chunk_split( $totp_pending, 4, ' ' ) ) ); ?></p>
@@ -678,6 +698,34 @@ get_header();
             });
           })();
           </script>
+          <?php // 1026 · send a test push; 1018 · per-kind + quiet hours
+          $pp = function_exists( 'vpg_push_prefs' ) ? vpg_push_prefs( $u->ID ) : [];
+          $pp_off = (array) ( $pp['off'] ?? [] ); ?>
+          <p style="margin:10px 0 0"><button class="g-btn g-btn--ghost" type="button" id="vpg-push-test"><?php esc_html_e( 'Send a test push', 'vpg-v2' ); ?></button>
+          <span id="vpg-push-test-msg" class="g-meta"></span></p>
+          <script>
+          (function () {
+            var b = document.getElementById('vpg-push-test'), m = document.getElementById('vpg-push-test-msg');
+            var ajax = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>, nonce = <?php echo wp_json_encode( wp_create_nonce( 'vpg_push' ) ); ?>;
+            b.addEventListener('click', function () {
+              m.textContent = '…';
+              var body = new URLSearchParams(); body.set('action', 'vpg_push_test'); body.set('_ajax_nonce', nonce);
+              fetch(ajax, { method: 'POST', body: body, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (res) {
+                m.textContent = res && res.success ? <?php echo wp_json_encode( __( 'Sent — check your device.', 'vpg-v2' ) ); ?> : <?php echo wp_json_encode( __( 'Enable push on this device first.', 'vpg-v2' ) ); ?>;
+              });
+            });
+          })();
+          </script>
+          <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:14px 0 0;display:grid;gap:6px">
+            <?php wp_nonce_field( 'vpg_push_prefs' ); ?>
+            <input type="hidden" name="action" value="vpg_push_prefs">
+            <span class="g-meta" style="font-size:11px"><?php esc_html_e( 'Silence by kind:', 'vpg-v2' ); ?></span>
+            <?php foreach ( [ 'event' => __( 'Event reminders', 'vpg-v2' ), 'review' => __( 'Submission verdicts', 'vpg-v2' ), 'circle' => __( 'Critique circles', 'vpg-v2' ), 'general' => __( 'Everything else', 'vpg-v2' ) ] as $k => $lbl ) : ?>
+              <label style="font-size:12px;display:flex;gap:8px;align-items:center"><input type="checkbox" name="off[]" value="<?php echo esc_attr( $k ); ?>" <?php checked( in_array( $k, $pp_off, true ) ); ?>> <?php echo esc_html( $lbl ); ?></label>
+            <?php endforeach; ?>
+            <label style="font-size:12px;display:flex;gap:8px;align-items:center;margin-top:4px"><input type="checkbox" name="quiet" value="1" <?php checked( ! empty( $pp['quiet'] ) ); ?>> <?php esc_html_e( 'Quiet hours · nothing 22:00–07:00', 'vpg-v2' ); ?></label>
+            <p style="margin:6px 0 0"><button class="g-btn g-btn--ghost" type="submit"><?php esc_html_e( 'Save push preferences', 'vpg-v2' ); ?></button></p>
+          </form>
         </div>
 
         <div style="border-top:1px solid var(--g-line);padding-top:16px">

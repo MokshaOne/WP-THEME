@@ -32,6 +32,7 @@
                         __( 'Gallery walls', 'vpg-v2' ) => get_post_type_archive_link( 'vpg_wall' ),
                         __( 'Collections',   'vpg-v2' ) => get_post_type_archive_link( 'vpg_collection' ),
                         __( 'Districts',     'vpg-v2' ) => home_url( '/bezirke/' ),
+                        __( 'Competitions',  'vpg-v2' ) => get_post_type_archive_link( 'vpg_competition' ),
                     ] as $label => $url ) {
                         if ( $url ) echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
                     }

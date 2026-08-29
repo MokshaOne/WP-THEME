@@ -46,6 +46,14 @@ add_action( 'admin_post_vpg_quickpin', function () {
             $att = media_handle_upload( 'photo', $post_id );
             if ( ! is_wp_error( $att ) ) {
                 set_post_thumbnail( $post_id, $att );
+                // 1020 · no device pin? read the photo's own GPS before we strip it
+                if ( ! get_post_meta( $post_id, 'location_lat', true ) ) {
+                    $geo = vpg_exif_latlng( get_attached_file( $att ) );
+                    if ( $geo && $geo[0] > 47 && $geo[0] < 49 && $geo[1] > 15 && $geo[1] < 17.5 ) {
+                        update_post_meta( $post_id, 'location_lat', round( $geo[0], 6 ) );
+                        update_post_meta( $post_id, 'location_lng', round( $geo[1], 6 ) );
+                    }
+                }
                 if ( function_exists( 'vpg_strip_and_credit_photo' ) ) vpg_strip_and_credit_photo( $att );
             }
         }
@@ -126,3 +134,26 @@ add_action( 'wp_footer', function () {
     </script>
     <?php
 }, 20 );
+
+
+/* ─── 1020 · pull decimal lat/lng from a JPEG's EXIF GPS block ───── */
+function vpg_exif_latlng( $file ) {
+    if ( ! $file || ! function_exists( 'exif_read_data' ) ) return null;
+    if ( ! in_array( strtolower( (string) pathinfo( $file, PATHINFO_EXTENSION ) ), [ 'jpg', 'jpeg', 'tiff' ], true ) ) return null;
+    $exif = @exif_read_data( $file );
+    if ( ! $exif || empty( $exif['GPSLatitude'] ) || empty( $exif['GPSLongitude'] ) ) return null;
+
+    $dms = function ( $parts, $ref ) {
+        $frac = function ( $v ) {
+            if ( strpos( (string) $v, '/' ) === false ) return (float) $v;
+            [ $n, $d ] = explode( '/', $v );
+            return $d ? (float) $n / (float) $d : 0.0;
+        };
+        $deg = $frac( $parts[0] ) + $frac( $parts[1] ) / 60 + $frac( $parts[2] ) / 3600;
+        return in_array( strtoupper( (string) $ref ), [ 'S', 'W' ], true ) ? -$deg : $deg;
+    };
+    $lat = $dms( $exif['GPSLatitude'], $exif['GPSLatitudeRef'] ?? 'N' );
+    $lng = $dms( $exif['GPSLongitude'], $exif['GPSLongitudeRef'] ?? 'E' );
+    if ( ! $lat || ! $lng ) return null;
+    return [ $lat, $lng ];
+}

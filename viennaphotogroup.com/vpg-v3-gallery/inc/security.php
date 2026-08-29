@@ -114,10 +114,10 @@ add_filter( 'wp_authenticate_user', function ( $user ) {
     if ( get_user_meta( $user->ID, '_vpg_totp_on', true ) !== '1' ) return $user;
     $secret = (string) get_user_meta( $user->ID, '_vpg_totp_secret', true );
     if ( ! $secret ) return $user;
-    if ( ! vpg_totp_verify( $secret, $_POST['vpg_totp'] ?? '', $user->ID ) ) {
-        return new WP_Error( 'vpg_totp', __( '<strong>Error:</strong> your one-time code is missing or wrong.', 'vpg-v2' ) );
-    }
-    return $user;
+    $code = (string) ( $_POST['vpg_totp'] ?? '' );
+    if ( vpg_totp_verify( $secret, $code, $user->ID ) ) return $user;
+    if ( vpg_consume_backup_code( $user->ID, $code ) ) return $user;   // 1017 · recovery path
+    return new WP_Error( 'vpg_totp', __( '<strong>Error:</strong> your one-time code is missing or wrong.', 'vpg-v2' ) );
 }, 30 );
 
 /* Editors run the presses · 2FA is not optional for them, so we nag. */
@@ -351,4 +351,55 @@ add_action( 'login_footer', function () {
     })();
     </script>
     <?php
+} );
+
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  1017 · Backup codes · ten single-use recovery codes for 2FA      */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_generate_backup_codes( $uid ) {
+    $plain = [];
+    $hashed = [];
+    for ( $i = 0; $i < 10; $i++ ) {
+        // groups of 4 from an unambiguous alphabet, e.g. 7Q4K-9F2M
+        $a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $code = '';
+        for ( $j = 0; $j < 8; $j++ ) $code .= $a[ random_int( 0, strlen( $a ) - 1 ) ];
+        $show      = substr( $code, 0, 4 ) . '-' . substr( $code, 4 );
+        $plain[]   = $show;
+        $hashed[]  = hash( 'sha256', strtoupper( $code ) );
+    }
+    update_user_meta( $uid, '_vpg_backup_codes', $hashed );
+    return $plain;
+}
+
+function vpg_backup_codes_left( $uid ) {
+    return count( array_filter( (array) get_user_meta( $uid, '_vpg_backup_codes', true ) ) );
+}
+
+function vpg_consume_backup_code( $uid, $code ) {
+    $norm = strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', (string) $code ) );
+    if ( strlen( $norm ) !== 8 ) return false;
+    $want   = hash( 'sha256', $norm );
+    $hashed = array_filter( (array) get_user_meta( $uid, '_vpg_backup_codes', true ) );
+    foreach ( $hashed as $k => $h ) {
+        if ( hash_equals( $h, $want ) ) {
+            unset( $hashed[ $k ] );                            // single use
+            update_user_meta( $uid, '_vpg_backup_codes', array_values( $hashed ) );
+            return true;
+        }
+    }
+    return false;
+}
+
+add_action( 'admin_post_vpg_totp_backup', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_totp' );
+    $uid = get_current_user_id();
+    if ( get_user_meta( $uid, '_vpg_totp_on', true ) === '1' ) {
+        $codes = vpg_generate_backup_codes( $uid );
+        set_transient( 'vpg_backup_show_' . $uid, $codes, 5 * MINUTE_IN_SECONDS );  // shown once
+    }
+    wp_safe_redirect( home_url( '/dashboard/#security' ) );
+    exit;
 } );

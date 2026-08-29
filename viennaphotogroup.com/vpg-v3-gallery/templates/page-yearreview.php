@@ -81,6 +81,51 @@ $rank = function_exists( 'vpg_member_rank' ) ? vpg_member_rank( $uid ) : null;
       <?php endforeach; ?>
     </div>
 
+    <?php // 1028 · a shareable postcard — drawn in the browser, opt-in ?>
+    <div style="margin-top:36px">
+      <button type="button" class="g-btn g-btn--ghost" id="vpg-card-btn"><?php esc_html_e( '↓ Save this year as a postcard', 'vpg-v2' ); ?></button>
+      <canvas id="vpg-card" width="1200" height="630" style="display:none"></canvas>
+    </div>
+    <script>
+    (function () {
+      var data = <?php echo wp_json_encode( [
+          'name'  => $u->display_name,
+          'year'  => $year,
+          'site'  => get_bloginfo( 'name' ),
+          'stats' => array_map( fn( $s ) => [ (int) $s[0], (string) $s[1] ], $stats ),
+      ] ); ?>;
+      var btn = document.getElementById('vpg-card-btn'), cv = document.getElementById('vpg-card');
+      btn.addEventListener('click', function () {
+        var g = cv.getContext('2d');
+        g.fillStyle = '#0B0B0B'; g.fillRect(0, 0, 1200, 630);
+        g.fillStyle = '#E5341F'; g.fillRect(0, 0, 1200, 10);
+        g.fillStyle = '#9C9A95'; g.font = '600 22px -apple-system,system-ui,sans-serif';
+        g.fillText(data.site.toUpperCase() + ' · ' + data.year, 64, 96);
+        g.fillStyle = '#F5F4F1'; g.font = '800 92px -apple-system,system-ui,sans-serif';
+        g.fillText(data.name, 60, 200);
+        g.fillStyle = '#E5341F'; g.fillText('.', 60 + g.measureText(data.name).width, 200);
+        var x = 64, y = 320;
+        data.stats.forEach(function (s, i) {
+          if (i === 2) { x = 64; y = 470; }
+          g.fillStyle = '#F5F4F1'; g.font = '800 84px -apple-system,system-ui,sans-serif';
+          g.fillText(String(s[0]), x, y + 70);
+          g.fillStyle = '#A5A29C'; g.font = '600 20px -apple-system,system-ui,sans-serif';
+          g.fillText(s[1], x, y + 104);
+          x += 560;
+        });
+        g.fillStyle = '#6A6A6A'; g.font = '600 18px -apple-system,system-ui,sans-serif';
+        g.fillText('viennaphotogroup.com', 64, 600);
+        cv.toBlob(function (blob) {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'vpg-' + data.year + '.png';
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        }, 'image/png');
+      });
+    })();
+    </script>
+
     <?php if ( $by_type ) : ?>
     <div style="margin-top:40px;display:flex;gap:10px;flex-wrap:wrap">
       <?php foreach ( $by_type as $tt => $n ) : $to = get_post_type_object( $tt ); if ( ! $to ) continue; ?>

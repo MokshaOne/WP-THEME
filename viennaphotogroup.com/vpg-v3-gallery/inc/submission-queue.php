@@ -51,11 +51,13 @@ function vpg_notify_submitter( $post_id, $verdict, $reason = '' ) {
             $verdict === 'approve'
                 ? sprintf( __( 'Your submission "%s" is live.', 'vpg-v2' ), $post->post_title )
                 : sprintf( __( 'Feedback on your submission "%s".', 'vpg-v2' ), $post->post_title ),
-            $verdict === 'approve' ? get_permalink( $post ) : home_url( '/dashboard/' )
+            $verdict === 'approve' ? get_permalink( $post ) : home_url( '/dashboard/' ),
+            'review'
         );
     }
     if ( get_user_meta( $author->ID, '_vpg_pref_feedback', true ) === '0' ) return; // member opted out of email
 
+    $sw = function_exists( 'vpg_switch_mail_locale' ) ? vpg_switch_mail_locale( $author->ID ) : false;   // 1025
     $title = $post->post_title;
 
     if ( $verdict === 'approve' ) {
@@ -79,6 +81,7 @@ function vpg_notify_submitter( $post_id, $verdict, $reason = '' ) {
     }
 
     wp_mail( $author->user_email, $subject, $body );
+    if ( function_exists( 'vpg_restore_mail_locale' ) ) vpg_restore_mail_locale( $sw );
 }
 
 function vpg_pending_submission_count() {

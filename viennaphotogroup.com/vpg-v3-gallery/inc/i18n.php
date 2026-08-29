@@ -51,6 +51,25 @@ add_action( 'after_setup_theme', function () {
     load_theme_textdomain( 'vpg-v2', get_template_directory() . '/languages' );
 }, 5 );
 
+/* ─── 1025 · Mail in the member’s language ───────────────────────
+   System mails build their strings at the send site, so we switch the
+   locale around the whole build-and-send for one recipient. */
+function vpg_user_locale( $uid ) {
+    $m = get_user_meta( $uid, '_vpg_lang', true );
+    return $m === 'de' ? 'de_DE' : ( $m === 'en' ? 'en_US' : '' );
+}
+function vpg_switch_mail_locale( $uid ) {
+    $loc = vpg_user_locale( $uid );
+    if ( $loc && $loc !== get_locale() && function_exists( 'switch_to_locale' ) ) {
+        switch_to_locale( $loc );
+        return true;
+    }
+    return false;
+}
+function vpg_restore_mail_locale( $switched ) {
+    if ( $switched && function_exists( 'restore_previous_locale' ) ) restore_previous_locale();
+}
+
 /* hreflang hints for search engines · both languages, same URL space */
 add_action( 'wp_head', function () {
     if ( ! is_singular() && ! is_front_page() ) return;

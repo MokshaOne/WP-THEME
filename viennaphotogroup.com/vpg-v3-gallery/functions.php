@@ -59,7 +59,8 @@ require_once VPG_V2_DIR . '/inc/security.php';        // Q7 · TOTP 2FA · passk
 require_once VPG_V2_DIR . '/inc/push.php';            // Q7 · self-hosted web push (VAPID + aes128gcm)
 require_once VPG_V2_DIR . '/inc/api.php';             // Q7 · public read-only JSON API v1
 require_once VPG_V2_DIR . '/inc/i18n.php';            // Q7 · DE/EN switch + hreflang
-require_once VPG_V2_DIR . '/inc/mobile.php';          // Q7 · quick pin · offline drafts       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
+require_once VPG_V2_DIR . '/inc/mobile.php';          // Q7 · quick pin · offline drafts
+require_once VPG_V2_DIR . '/inc/followups2.php';      // Q8 · circle rounds · xmlrpc harden · translation watch       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

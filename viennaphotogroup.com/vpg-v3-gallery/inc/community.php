@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* ════════════════════════════════════════════════════════════════ */
 /*  Notifications · tiny per-user inbox in usermeta                  */
 /* ════════════════════════════════════════════════════════════════ */
-function vpg_notify_user( $uid, $text, $url = '' ) {
+function vpg_notify_user( $uid, $text, $url = '', $kind = 'general' ) {
     $list = get_user_meta( $uid, '_vpg_notifications', true );
     $list = is_array( $list ) ? $list : [];
     array_unshift( $list, [
@@ -25,7 +25,7 @@ function vpg_notify_user( $uid, $text, $url = '' ) {
         'read' => false,
     ] );
     update_user_meta( $uid, '_vpg_notifications', array_slice( $list, 0, 30 ) );
-    do_action( 'vpg_notified', (int) $uid, (string) $text, (string) $url );
+    do_action( 'vpg_notified', (int) $uid, (string) $text, (string) $url, (string) $kind );
 }
 
 function vpg_get_notifications( $uid = null ) {
@@ -83,7 +83,7 @@ add_action( 'admin_post_vpg_rsvp', function () {
             $next = array_shift( $wait );
             $list[] = $next;
             update_post_meta( $event_id, '_vpg_waitlist', $wait );
-            vpg_notify_user( $next, sprintf( __( 'A spot opened up — you’re in: %s', 'vpg-v2' ), get_the_title( $event_id ) ), get_permalink( $event_id ) );
+            vpg_notify_user( $next, sprintf( __( 'A spot opened up — you’re in: %s', 'vpg-v2' ), get_the_title( $event_id ) ), get_permalink( $event_id ), 'event' );
             $nu = get_userdata( $next );
             if ( $nu ) wp_mail( $nu->user_email, '[VPG] ' . __( 'You’re in — a spot opened up', 'vpg-v2' ),
                 sprintf( __( "Hello %1\$s,\n\nSomeone cancelled — you moved off the waitlist into “%2\$s”.\n\n%3\$s\n\n— Vienna Photo Group", 'vpg-v2' ), $nu->display_name, get_the_title( $event_id ), get_permalink( $event_id ) ) );
@@ -145,6 +145,7 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
         $user = get_userdata( $uid );
         if ( ! $user ) continue;
         if ( get_user_meta( $uid, '_vpg_pref_event', true ) === '0' ) continue; // opted out (0804)
+        $sw = function_exists( 'vpg_switch_mail_locale' ) ? vpg_switch_mail_locale( $uid ) : false;   // 1025
         wp_mail( $user->user_email,
             sprintf( __( '[VPG] Tomorrow · %s', 'vpg-v2' ), $event->post_title ),
             sprintf(
@@ -159,6 +160,7 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
             [],
             $ics_file ? [ $ics_file ] : []
         );
+        if ( function_exists( 'vpg_restore_mail_locale' ) ) vpg_restore_mail_locale( $sw );
     }
     if ( $ics_file ) @unlink( $ics_file );
 } );

@@ -4953,3 +4953,119 @@ msgstr ""
 #: templates/page-yearreview.php
 msgid "A quiet year on the site — the city was still out there. Next year counts from January."
 msgstr ""
+
+#: archive-vpg_event.php
+msgid "The chronicle →"
+msgstr ""
+
+#: inc/followups2.php
+msgid "Bring one frame where the light did the work, not you."
+msgstr ""
+
+#: inc/followups2.php
+msgid "A photograph you almost deleted — argue for it."
+msgstr ""
+
+#: inc/followups2.php
+msgid "Show a picture that breaks a rule you usually keep."
+msgstr ""
+
+#: inc/followups2.php
+msgid "One image, no crop — what would you reframe now?"
+msgstr ""
+
+#: inc/followups2.php
+msgid "The quietest photo you made this month."
+msgstr ""
+
+#: inc/followups2.php
+msgid "A frame that only works because of what is left out."
+msgstr ""
+
+#: inc/followups2.php
+msgid "This month in “%1$s”: %2$s"
+msgstr ""
+
+#: inc/followups2.php
+msgid "Translations"
+msgstr ""
+
+#: inc/followups2.php
+msgid "🌐 Translations"
+msgstr ""
+
+#: inc/followups2.php
+msgid "Translation watch"
+msgstr ""
+
+#: inc/followups2.php
+msgid "Language files not found in the theme’s /languages folder."
+msgstr ""
+
+#: inc/followups2.php
+msgid "Every string the POT knows is translated to German. ✓"
+msgstr ""
+
+#: inc/push.php
+msgid "Test push — your lockscreen hears the collective. ✓"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Save these now — shown once"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Each works once, in place of an app code, if you lose your phone."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "· regenerate"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "· generate backup codes"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Send a test push"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Sent — check your device."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Enable push on this device first."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Silence by kind:"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Event reminders"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Submission verdicts"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Critique circles"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Everything else"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Quiet hours · nothing 22:00–07:00"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Save push preferences"
+msgstr ""
+
+#: templates/page-yearreview.php
+msgid "↓ Save this year as a postcard"
+msgstr ""

@@ -124,10 +124,52 @@ function vpg_push_send( $uid, $title, $body, $url = '' ) {
     if ( $changed ) update_user_meta( $uid, '_vpg_push_subs', $subs );
 }
 
+/* 1018 · which kinds a member silences, and their quiet hours */
+function vpg_push_prefs( $uid ) {
+    $p = get_user_meta( $uid, '_vpg_push_prefs', true );
+    return is_array( $p ) ? $p : [];
+}
+function vpg_push_wants( $uid, $kind ) {
+    $p = vpg_push_prefs( $uid );
+    if ( in_array( $kind, (array) ( $p['off'] ?? [] ), true ) ) return false;
+    // Quiet hours · no push between 22:00 and 07:00 site time, if set
+    if ( ! empty( $p['quiet'] ) ) {
+        $h = (int) wp_date( 'G' );
+        if ( $h >= 22 || $h < 7 ) return false;
+    }
+    return true;
+}
+
 /* Every in-app notification can also knock on the lockscreen */
-add_action( 'vpg_notified', function ( $uid, $text, $url ) {
+add_action( 'vpg_notified', function ( $uid, $text, $url, $kind = 'general' ) {
+    if ( ! vpg_push_wants( (int) $uid, (string) $kind ) ) return;
     vpg_push_send( (int) $uid, get_bloginfo( 'name' ), $text, $url );
-}, 10, 3 );
+}, 10, 4 );
+
+/* 1026 · Probe-Push · send one to yourself right now */
+add_action( 'wp_ajax_vpg_push_test', function () {
+    check_ajax_referer( 'vpg_push' );
+    $uid = get_current_user_id();
+    if ( ! array_filter( (array) get_user_meta( $uid, '_vpg_push_subs', true ), 'is_array' ) ) {
+        wp_send_json_error( 'no subscription' );
+    }
+    vpg_push_send( $uid, get_bloginfo( 'name' ), __( 'Test push — your lockscreen hears the collective. ✓', 'vpg-v2' ), home_url( '/dashboard/' ) );
+    wp_send_json_success();
+} );
+
+/* 1018 · save the per-kind opt-outs and quiet-hours toggle */
+add_action( 'admin_post_vpg_push_prefs', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_push_prefs' );
+    $known = [ 'event', 'review', 'circle', 'general' ];
+    $off   = array_values( array_intersect( $known, array_map( 'sanitize_key', (array) ( $_POST['off'] ?? [] ) ) ) );
+    update_user_meta( get_current_user_id(), '_vpg_push_prefs', [
+        'off'   => $off,
+        'quiet' => empty( $_POST['quiet'] ) ? 0 : 1,
+    ] );
+    wp_safe_redirect( home_url( '/dashboard/#security' ) );
+    exit;
+} );
 
 /* ─── Subscribe / unsubscribe · dashboard AJAX ───────────────────── */
 add_action( 'wp_ajax_vpg_push_subscribe', function () {

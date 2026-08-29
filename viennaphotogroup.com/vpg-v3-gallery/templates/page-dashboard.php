@@ -43,13 +43,13 @@ get_header();
 
     // Pending submissions by this user
     $pending = new WP_Query( [
-        'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ],
+        'post_type'      => vpg_submittable_types(),
         'author'         => $u->ID,
         'post_status'    => 'pending',
         'posts_per_page' => 10,
     ] );
     $published = new WP_Query( [
-        'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ],
+        'post_type'      => vpg_submittable_types(),
         'author'         => $u->ID,
         'post_status'    => 'publish',
         'posts_per_page' => 5,
@@ -57,7 +57,7 @@ get_header();
         'order'          => 'DESC',
     ] );
     $drafts = new WP_Query( [
-        'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ],
+        'post_type'      => vpg_submittable_types(),
         'author'         => $u->ID,
         'post_status'    => 'draft',
         'posts_per_page' => 10,

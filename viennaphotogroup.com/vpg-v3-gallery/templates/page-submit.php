@@ -117,6 +117,9 @@ get_header();
                 <option value="vpg_shop" <?php selected( $edit_post && $edit_post->post_type === 'vpg_shop' ); ?>><?php esc_html_e( 'Shop · a camera shop / lab / supplier', 'vpg-v2' ); ?></option>
                 <option value="vpg_review" <?php selected( $edit_post && $edit_post->post_type === 'vpg_review' ); ?>><?php esc_html_e( 'Gear review · with /10 scores', 'vpg-v2' ); ?></option>
                 <option value="vpg_tutorial" <?php selected( $edit_post && $edit_post->post_type === 'vpg_tutorial' ); ?>><?php esc_html_e( 'Tutorial pitch · we’ll discuss', 'vpg-v2' ); ?></option>
+                <option value="post" <?php selected( $edit_post && $edit_post->post_type === 'post' ); ?>><?php esc_html_e( 'Journal story · writing for the weekly journal', 'vpg-v2' ); ?></option>
+                <option value="vpg_event" <?php selected( $edit_post && $edit_post->post_type === 'vpg_event' ); ?>><?php esc_html_e( 'Photowalk / event · propose a meetup', 'vpg-v2' ); ?></option>
+                <option value="vpg_trail" <?php selected( $edit_post && $edit_post->post_type === 'vpg_trail' ); ?>><?php esc_html_e( 'Photo trail · a walking route of map spots', 'vpg-v2' ); ?></option>
               </select>
               <?php if ( $edit_post ) : ?><input type="hidden" name="submit_type" value="<?php echo esc_attr( $edit_post->post_type ); ?>"><?php endif; ?>
             </div>
@@ -136,10 +139,60 @@ get_header();
               <textarea class="g-textarea" id="body" name="body" rows="8" required placeholder="<?php esc_attr_e( 'Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $ev( 'post_content' ) ); ?></textarea>
             </div>
 
-            <div class="g-field">
+            <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop vpg_review vpg_tutorial">
               <label for="district"><?php esc_html_e( 'District / area', 'vpg-v2' ); ?></label>
               <input class="g-input" id="district" type="text" name="district" value="<?php echo esc_attr( $ev( 'district' ) ); ?>" placeholder="<?php esc_attr_e( '1010 · Innere Stadt', 'vpg-v2' ); ?>">
             </div>
+
+            <!-- Event proposals · date + meeting point -->
+            <div class="g-field g-field--row" data-for-types="vpg_event" hidden>
+              <div>
+                <label for="event_date"><?php esc_html_e( 'When?', 'vpg-v2' ); ?></label>
+                <input class="g-input" id="event_date" type="date" name="event_date" value="<?php echo esc_attr( $edit_post ? get_post_meta( $edit_post->ID, '_vpg_event_date', true ) : '' ); ?>">
+              </div>
+              <div>
+                <label for="event_venue"><?php esc_html_e( 'Meeting point', 'vpg-v2' ); ?></label>
+                <input class="g-input" id="event_venue" type="text" name="event_venue" value="<?php echo esc_attr( $edit_post ? get_post_meta( $edit_post->ID, '_vpg_event_venue', true ) : '' ); ?>" placeholder="<?php esc_attr_e( 'Karlsplatz · by the fountain', 'vpg-v2' ); ?>">
+              </div>
+            </div>
+
+            <!-- Trail proposals · pick the stops from the published map -->
+            <div class="g-field" data-for-types="vpg_trail" hidden>
+              <label><?php esc_html_e( 'Stops · pick from the map (tick in walking order)', 'vpg-v2' ); ?></label>
+              <?php
+              $trail_locs   = get_posts( [ 'post_type' => 'vpg_location', 'post_status' => 'publish', 'posts_per_page' => 200, 'orderby' => 'title', 'order' => 'ASC' ] );
+              $trail_chosen = $edit_post ? array_map( 'intval', array_filter( explode( ',', (string) get_post_meta( $edit_post->ID, '_vpg_trail_stops', true ) ) ) ) : [];
+              ?>
+              <div style="max-height:260px;overflow-y:auto;border:1px solid var(--g-line);padding:12px 16px;display:grid;gap:6px">
+                <?php if ( ! $trail_locs ) : ?>
+                  <p class="g-form__note" style="margin:0"><?php esc_html_e( 'No published locations yet — the map fills up first.', 'vpg-v2' ); ?></p>
+                <?php else : foreach ( $trail_locs as $tl ) : ?>
+                  <label style="display:flex;gap:10px;align-items:baseline;font-size:14px;font-weight:500">
+                    <input type="checkbox" name="trail_stops[]" value="<?php echo (int) $tl->ID; ?>" <?php checked( in_array( $tl->ID, $trail_chosen, true ) ); ?>>
+                    <span><?php echo esc_html( $tl->post_title ); ?><span style="color:var(--g-mid)"><?php
+                        $tl_d = get_post_meta( $tl->ID, 'location_district', true );
+                        echo $tl_d ? ' · ' . esc_html( $tl_d ) : '';
+                    ?></span></span>
+                  </label>
+                <?php endforeach; endif; ?>
+              </div>
+              <p class="g-form__note" style="margin-top:6px"><?php esc_html_e( 'Up to 12 stops · editorial fine-tunes the order before publishing.', 'vpg-v2' ); ?></p>
+            </div>
+
+            <script>
+            (function () {
+              var sel = document.getElementById('submit_type');
+              if (!sel) return;
+              function syncFields() {
+                var t = sel.value;
+                document.querySelectorAll('[data-for-types]').forEach(function (el) {
+                  el.hidden = el.getAttribute('data-for-types').split(' ').indexOf(t) === -1;
+                });
+              }
+              sel.addEventListener('change', syncFields);
+              syncFields();
+            })();
+            </script>
 
             <div class="g-field">
               <label for="photos"><?php esc_html_e( 'Photos · up to 4', 'vpg-v2' ); ?></label>

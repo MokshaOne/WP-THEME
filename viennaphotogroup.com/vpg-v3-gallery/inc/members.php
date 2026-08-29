@@ -161,7 +161,7 @@ add_action( 'template_redirect', function () {
                 <?php
                 $contribs = new WP_Query( [
                     'author'         => $user->ID,
-                    'post_type'      => [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ],
+                    'post_type'      => function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'vpg_location' ],
                     'posts_per_page' => 24,
                     'post_status'    => 'publish',
                 ] );

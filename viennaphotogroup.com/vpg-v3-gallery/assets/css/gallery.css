@@ -363,6 +363,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{ 
 
 /* ── Form ───────────────────────────────────────────────────────────── */
 .g-form{ display:grid; gap:18px; max-width:600px; }
+/* The hidden attribute always wins — author display rules (grid/flex)
+   on the same element must never resurrect a [hidden] node. */
+[hidden]{ display:none !important; }
+
 .g-field{ display:grid; gap:7px; }
 .g-field--row{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
 .g-field label{ font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--g-mid); }

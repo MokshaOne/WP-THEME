@@ -3057,3 +3057,39 @@ msgstr ""
 #: inc/magazine-editor.php
 msgid "no interview yet"
 msgstr ""
+
+#: templates/page-submit.php
+msgid "Journal story · writing for the weekly journal"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Karlsplatz · by the fountain"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Meeting point"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "No published locations yet — the map fills up first."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Photo trail · a walking route of map spots"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Photowalk / event · propose a meetup"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Stops · pick from the map (tick in walking order)"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Up to 12 stops · editorial fine-tunes the order before publishing."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "When?"
+msgstr ""

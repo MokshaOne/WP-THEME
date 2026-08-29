@@ -17,6 +17,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Render inside any front-end <form>: echo vpg_antispam_fields();
  * Check first thing in the handler: vpg_antispam_passed().
  */
+/**
+ * Everything a member can submit from the front end. The backend is a
+ * review desk, not an authoring tool — 'post' is the journal.
+ */
+function vpg_submittable_types() {
+    return apply_filters( 'vpg_submittable_types', [
+        'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial',
+        'post', 'vpg_event', 'vpg_trail',
+    ] );
+}
+
 function vpg_antispam_fields() {
     return sprintf(
         '<div style="position:absolute;left:-9999px;top:auto" aria-hidden="true">' .
@@ -212,7 +223,7 @@ function vpg_handle_submit() {
     if ( ! vpg_antispam_passed() )  vpg_redirect_with_status( 'submit', 'ok' ); // silent drop
     if ( ! vpg_is_verified() )      vpg_redirect_with_status( 'submit', 'verify' );
 
-    $allowed = [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ];
+    $allowed = vpg_submittable_types();
     $type    = in_array( $_POST['submit_type'] ?? '', $allowed, true ) ? $_POST['submit_type'] : '';
     $title   = sanitize_text_field( wp_unslash( $_POST['title']    ?? '' ) );
     $lede    = sanitize_text_field( wp_unslash( $_POST['lede']     ?? '' ) );
@@ -265,6 +276,21 @@ function vpg_handle_submit() {
         $key = ( $type === 'vpg_shop' ) ? 'shop_district' : 'location_district';
         update_post_meta( $post_id, $key, $district );
     }
+
+    // Type-specific extras · event proposals carry date + venue, trail
+    // proposals carry their ordered location stops.
+    if ( $type === 'vpg_event' ) {
+        $ev_date  = sanitize_text_field( wp_unslash( $_POST['event_date']  ?? '' ) );
+        $ev_venue = sanitize_text_field( wp_unslash( $_POST['event_venue'] ?? '' ) );
+        if ( $ev_date && strtotime( $ev_date ) )  update_post_meta( $post_id, '_vpg_event_date',  $ev_date );
+        if ( $ev_venue )                          update_post_meta( $post_id, '_vpg_event_venue', $ev_venue );
+    }
+    if ( $type === 'vpg_trail' ) {
+        $stops = array_slice( array_filter( array_map( 'intval', (array) ( $_POST['trail_stops'] ?? [] ) ) ), 0, 12 );
+        $stops = array_filter( $stops, fn( $sid ) => get_post_type( $sid ) === 'vpg_location' && get_post_status( $sid ) === 'publish' );
+        if ( $stops ) update_post_meta( $post_id, '_vpg_trail_stops', implode( ',', $stops ) );
+    }
+
     update_post_meta( $post_id, '_vpg_submitted_at', current_time( 'mysql' ) );
 
     $photo_note = vpg_attach_submission_photos( $post_id );
@@ -449,7 +475,7 @@ add_action( 'wp_ajax_vpg_dupe_check', function () {
 
     $q = new WP_Query( [
         's'              => $title,
-        'post_type'      => in_array( $type, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ], true ) ? $type : 'vpg_location',
+        'post_type'      => in_array( $type, vpg_submittable_types(), true ) ? $type : 'vpg_location',
         'post_status'    => [ 'publish', 'pending' ],
         'posts_per_page' => 3,
         'fields'         => 'ids',

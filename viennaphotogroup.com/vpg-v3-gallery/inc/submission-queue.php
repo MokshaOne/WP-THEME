@@ -84,7 +84,7 @@ function vpg_notify_submitter( $post_id, $verdict, $reason = '' ) {
 function vpg_pending_submission_count() {
     static $c = null;
     if ( $c !== null ) return $c;
-    $types = [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ];
+    $types = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ];
     $q = new WP_Query( [ 'post_type' => $types, 'post_status' => 'pending', 'posts_per_page' => 1, 'fields' => 'ids', 'no_found_rows' => false ] );
     return $c = (int) $q->found_posts;
 }
@@ -111,7 +111,7 @@ function vpg_render_submission_queue() {
         exit;
     }
 
-    $types = [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ];
+    $types = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ];
     $pending = new WP_Query( [
         'post_type'      => $types,
         'post_status'    => 'pending',

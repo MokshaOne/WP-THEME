@@ -131,11 +131,24 @@
     return out;
   }
 
+  /* 0024 · cluster ring shows its category mix as a conic gradient */
+  var TYPE_COLOR = { location: '#E5341F', studio: '#0B0B0B', shop: '#6A6A6A' };
   function clusterIcon(cluster) {
     var n = cluster.getChildCount();
     var size = n < 10 ? 36 : (n < 50 ? 44 : 52);
+    var ring = '';
+    try {
+      var mix = {};
+      cluster.getAllChildMarkers().forEach(function (m) { var t = m._vpgType || 'location'; mix[t] = (mix[t] || 0) + 1; });
+      var stops = [], acc = 0;
+      Object.keys(mix).forEach(function (t) {
+        var from = acc / n * 360; acc += mix[t]; var to = acc / n * 360;
+        stops.push((TYPE_COLOR[t] || '#9C9A95') + ' ' + from.toFixed(1) + 'deg ' + to.toFixed(1) + 'deg');
+      });
+      if (stops.length > 1) ring = 'background:conic-gradient(' + stops.join(',') + ');';
+    } catch (e) {}
     return L.divIcon({
-      html: '<span>' + n + '</span>',
+      html: '<span style="' + ring + '">' + n + '</span>',
       className: 'vpg-cluster',
       iconSize: L.point(size, size)
     });
@@ -202,6 +215,7 @@
       var marker = L.marker([p.lat, p.lng], { icon: makeIcon(t), title: p.title || '' });
       marker.bindPopup(popupHtml(p), { closeButton: true, autoPan: true });
       marker._vpgType = t;
+      marker._vpgPin = p;
       (byType[t] = byType[t] || []).push(marker);
       if (p.id) byId[p.id] = marker;
       rootGroup.addLayer(marker);
@@ -234,58 +248,246 @@
 
     addMapControls(el, map);
 
-    // ── Filter-bar wiring ──
-    // Looks for siblings or doc-wide `.vpg-map-filter[data-target="#vpg-map"]` and
-    // any buttons with [data-type="<type>"] or [data-type="all"]. Click toggles.
+    // ── Unified client filtering · type + attribute + theme + year ──
+    var allTypes = Object.keys(byType);
+    var active   = new Set(allTypes);                 // type filter (existing)
+    var fAttr    = new Set();                          // attribute flags (AND)
+    var fTheme   = new Set();                          // themes (OR)
+    var yMin = null, yMax = null;
+    pins.forEach(function (p) { if (p.year) { yMin = yMin === null ? p.year : Math.min(yMin, p.year); yMax = yMax === null ? p.year : Math.max(yMax, p.year); } });
+    var yLo = yMin, yHi = yMax;
+
+    function passes(m) {
+      if (!active.has(m._vpgType)) return false;
+      var a = (m._vpgPin && m._vpgPin.attrs) || {};
+      var ok = true;
+      fAttr.forEach(function (k) { if (!a[k]) ok = false; });
+      if (!ok) return false;
+      if (fTheme.size) { var th = a.themes || [], any = false; fTheme.forEach(function (t) { if (th.indexOf(t) !== -1) any = true; }); if (!any) return false; }
+      var yr = m._vpgPin && m._vpgPin.year;
+      if (yLo !== null && yr && (yr < yLo || yr > yHi)) return false;
+      return true;
+    }
+
+    function renderMarkers() {
+      rootGroup.clearLayers();
+      allTypes.forEach(function (t) { byType[t].forEach(function (m) { if (passes(m)) rootGroup.addLayer(m); }); });
+    }
+
+    // ── Type filter bar (existing server-rendered toolbar) ──
     var selector = el.id ? '#' + el.id : '.vpg-map';
     var filters  = document.querySelectorAll('.vpg-map-filter[data-target="' + selector + '"], .vpg-map-filter[data-target="' + el.id + '"]');
-    if (!filters.length) return;
-
-    var allTypes = Object.keys(byType);
-    var active   = new Set(allTypes);
-
-    // Restore a shared view · keep only URL types that exist on this map
-    var fromUrl = readUrlTypes();
-    if (fromUrl) {
-      var valid = fromUrl.filter(function (t) { return allTypes.indexOf(t) !== -1; });
-      if (valid.length) active = new Set(valid);
+    if (filters.length) {
+      var fromUrl = readUrlTypes();
+      if (fromUrl) { var valid = fromUrl.filter(function (t) { return allTypes.indexOf(t) !== -1; }); if (valid.length) active = new Set(valid); }
+      var paint = function () {
+        filters.forEach(function (bar) {
+          bar.querySelectorAll('button[data-type]').forEach(function (b) {
+            var t = b.getAttribute('data-type');
+            b.classList.toggle('is-active', t === 'all' ? active.size === allTypes.length : active.has(t));
+          });
+        });
+      };
+      filters.forEach(function (bar) {
+        bar.addEventListener('click', function (e) {
+          var btn = e.target.closest('button[data-type]'); if (!btn) return;
+          var type = btn.getAttribute('data-type');
+          if (type === 'all') active = new Set(allTypes);
+          else if (active.has(type) && active.size > 1) active.delete(type);
+          else active.add(type);
+          renderMarkers(); paint(); writeUrlTypes(active, allTypes.length);
+        });
+      });
+      paint();
     }
 
-    function paintButtons(bar) {
-      bar.querySelectorAll('button[data-type]').forEach(function (b) {
-        var t = b.getAttribute('data-type');
-        b.classList.toggle('is-active', t === 'all' ? active.size === allTypes.length : active.has(t));
-      });
-    }
+    renderMarkers();
 
-    function applyFilter() {
-      rootGroup.clearLayers();
-      allTypes.forEach(function (t) {
-        if (!active.has(t)) return;
-        byType[t].forEach(function (m) { rootGroup.addLayer(m); });
+    // ── The cluster-01 tools · additive, each guarded ──
+    try { addAttrFilters(el, pins, fAttr, fTheme, renderMarkers); } catch (e) {}
+    try { if (yMin !== null && yMax !== null && yMax > yMin) addYearSlider(el, yMin, yMax, function (lo, hi) { yLo = lo; yHi = hi; renderMarkers(); }); } catch (e) {}
+    try { addMapTools(el, map, byType, byId, pins); } catch (e) {}
+    try { addGoldenTimeline(el); } catch (e) {}
+    try {
+      // 0012 · spot combos · nearest three others, injected on popup open
+      map.on('popupopen', function (ev) {
+        var pin = ev.popup._source && ev.popup._source._vpgPin; if (!pin) return;
+        var node = ev.popup.getElement && ev.popup.getElement(); if (!node || node.querySelector('.vpg-kombi')) return;
+        var near = nearestPins(pin, pins, 3);
+        if (!near.length) return;
+        var box = document.createElement('div');
+        box.className = 'vpg-kombi';
+        box.style.cssText = 'margin-top:.5rem;font-family:\'Archivo\',sans-serif;font-size:10px;line-height:1.5';
+        box.innerHTML = '<span style="font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#6A6A6A">◈ Combine with</span><br>' +
+          near.map(function (n) { return '<a href="' + n.url + '" style="color:#0B0B0B">' + n.title + ' · ' + n.dist + '</a>'; }).join('<br>');
+        var content = node.querySelector('.leaflet-popup-content'); if (content) content.appendChild(box);
       });
-      filters.forEach(paintButtons);
-      writeUrlTypes(active, allTypes.length);
-    }
+    } catch (e) {}
+  }
 
-    filters.forEach(function (bar) {
-      bar.addEventListener('click', function (e) {
-        var btn = e.target.closest('button[data-type]');
-        if (!btn) return;
-        var type = btn.getAttribute('data-type');
-        if (type === 'all') {
-          active = new Set(allTypes);
-        } else if (active.has(type) && active.size > 1) {
-          active.delete(type);
-        } else {
-          active.add(type);
-        }
-        applyFilter();
-      });
+  /* Haversine metres → a friendly "450 m · 6 min walk" string */
+  function haversine(a, b, c, d) {
+    var R = 6371000, r = Math.PI / 180;
+    var dLat = (c - a) * r, dLng = (d - b) * r;
+    var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a * r) * Math.cos(c * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R * Math.asin(Math.sqrt(s));
+  }
+  function distLabel(m) {
+    var walk = Math.max(1, Math.round(m / 1000 / 4.8 * 60)); // 0011 · 4.8 km/h
+    return (m < 1000 ? Math.round(m) + ' m' : (m / 1000).toFixed(1) + ' km') + ' · ' + walk + ' min';
+  }
+  function nearestPins(pin, pins, k) {
+    return pins.filter(function (p) { return p.id !== pin.id && typeof p.lat === 'number'; })
+      .map(function (p) { return { title: p.title, url: p.url, d: haversine(pin.lat, pin.lng, p.lat, p.lng) }; })
+      .sort(function (a, b) { return a.d - b.d; })
+      .slice(0, k)
+      .map(function (p) { return { title: p.title, url: p.url, dist: distLabel(p.d) }; });
+  }
+
+  /* 0004/0005/0027/0028/0034/0037 · attribute + theme filter chips */
+  function addAttrFilters(el, pins, fAttr, fTheme, render) {
+    var flags = [
+      ['indoor', '☂ Rain-safe'], ['night', '☾ Night'], ['stepfree', '♿ Step-free'],
+      ['winter', '❄ Winter'], ['toilets', '🚻 WC'], ['drone', '🚁 Drone-free view']
+    ];
+    var haveFlag = {}, haveTheme = {};
+    pins.forEach(function (p) {
+      var a = p.attrs || {};
+      flags.forEach(function (f) { if (a[f[0]]) haveFlag[f[0]] = true; });
+      (a.themes || []).forEach(function (t) { haveTheme[t] = true; });
+    });
+    var avail = flags.filter(function (f) { return haveFlag[f[0]]; });
+    var themes = Object.keys(haveTheme);
+    if (!avail.length && !themes.length) return;
+
+    var bar = document.createElement('div');
+    bar.className = 'vpg-attr-filter';
+    bar.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;font-family:\'Archivo\',sans-serif';
+    function chip(label, on) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = label;
+      b.style.cssText = 'border:1px solid #0B0B0B;background:#fff;color:#0B0B0B;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer';
+      b.addEventListener('click', function () { on(b); render(); });
+      return b;
+    }
+    avail.forEach(function (f) {
+      bar.appendChild(chip(f[1], function (b) {
+        if (fAttr.has(f[0])) { fAttr.delete(f[0]); paintChip(b, false); }
+        else { fAttr.add(f[0]); paintChip(b, true); }
+      }));
+    });
+    themes.forEach(function (t) {
+      bar.appendChild(chip('#' + t, function (b) {
+        if (fTheme.has(t)) { fTheme.delete(t); paintChip(b, false); }
+        else { fTheme.add(t); paintChip(b, true); }
+      }));
+    });
+    function paintChip(b, on) { b.style.background = on ? '#E5341F' : '#fff'; b.style.borderColor = on ? '#E5341F' : '#0B0B0B'; b.style.color = on ? '#fff' : '#0B0B0B'; }
+    el.insertAdjacentElement('afterend', bar);
+  }
+
+  /* 0018 · Zeitreise · a year range slider under the map */
+  function addYearSlider(el, min, max, onChange) {
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;align-items:center;gap:10px;margin:10px 0 0;font-family:\'Archivo\',sans-serif;font-size:11px;font-weight:700;color:#6A6A6A';
+    var lo = document.createElement('input'), hi = document.createElement('input');
+    [lo, hi].forEach(function (s) { s.type = 'range'; s.min = min; s.max = max; s.step = 1; s.style.flex = '1'; });
+    lo.value = min; hi.value = max;
+    var out = document.createElement('span');
+    function upd() {
+      var a = Math.min(+lo.value, +hi.value), b = Math.max(+lo.value, +hi.value);
+      out.textContent = a === b ? a : a + '–' + b;
+      onChange(a, b);
+    }
+    lo.addEventListener('input', upd); hi.addEventListener('input', upd);
+    wrap.appendChild(document.createTextNode('⏱ ')); wrap.appendChild(lo); wrap.appendChild(hi); wrap.appendChild(out);
+    upd();
+    el.insertAdjacentElement('afterend', wrap);
+  }
+
+  /* 0016/0011 measure · 0030 radius · 0015 print — a small tool box */
+  function addMapTools(el, map, byType, byId, pins) {
+    ensureControlCss();
+    var box = document.createElement('div');
+    box.className = 'vpg-map-ctl'; box.style.top = '104px';
+
+    // Measure (distance + walking time)
+    var measuring = false, mPts = [], mLayer = L.layerGroup().addTo(map);
+    var measure = toolBtn('△', 'Measure distance');
+    measure.addEventListener('click', function () {
+      measuring = !measuring; measure.classList.toggle('is-on', measuring);
+      if (!measuring) { mLayer.clearLayers(); mPts = []; }
+    });
+    map.on('click', function (e) {
+      if (!measuring) return;
+      mPts.push(e.latlng);
+      var total = 0;
+      for (var i = 1; i < mPts.length; i++) total += haversine(mPts[i - 1].lat, mPts[i - 1].lng, mPts[i].lat, mPts[i].lng);
+      mLayer.clearLayers();
+      L.polyline(mPts, { color: '#E5341F', weight: 3, dashArray: '5,6' }).addTo(mLayer);
+      mPts.forEach(function (pt) { L.circleMarker(pt, { radius: 4, color: '#E5341F', fillColor: '#fff', fillOpacity: 1 }).addTo(mLayer); });
+      if (mPts.length > 1) L.marker(mPts[mPts.length - 1], { icon: L.divIcon({ className: 'vpg-measure-lbl', html: '<span style="background:#0B0B0B;color:#fff;padding:2px 7px;font:700 11px/1 sans-serif;white-space:nowrap">' + distLabel(total) + '</span>', iconSize: null }) }).addTo(mLayer);
     });
 
-    // Initial state · applies a restored URL filter and paints the buttons
-    applyFilter();
+    // Radius search
+    var radMode = false, radLayer = L.layerGroup().addTo(map);
+    var radius = toolBtn('◯', 'Find within a radius');
+    radius.addEventListener('click', function () { radMode = !radMode; radius.classList.toggle('is-on', radMode); if (!radMode) radLayer.clearLayers(); });
+    map.on('click', function (e) {
+      if (!radMode) return;
+      var r = 500;
+      radLayer.clearLayers();
+      L.circle(e.latlng, { radius: r, color: '#E5341F', weight: 1, fillOpacity: 0.06 }).addTo(radLayer);
+      var hits = pins.filter(function (p) { return typeof p.lat === 'number' && haversine(e.latlng.lat, e.latlng.lng, p.lat, p.lng) <= r; });
+      L.marker(e.latlng, { icon: L.divIcon({ html: '<span style="background:#0B0B0B;color:#fff;padding:2px 7px;font:700 11px/1 sans-serif;white-space:nowrap">' + hits.length + ' within ' + r + ' m</span>' }) }).addTo(radLayer);
+    });
+
+    // Print / snapshot (0015) — browser print of the map view
+    var pr = toolBtn('⎙', 'Print this view');
+    pr.addEventListener('click', function () { window.print(); });
+
+    box.appendChild(measure); box.appendChild(radius); box.appendChild(pr);
+    el.appendChild(box);
+    function toolBtn(txt, title) { var b = document.createElement('button'); b.type = 'button'; b.textContent = txt; b.title = title; b.setAttribute('aria-label', title); return b; }
+  }
+
+  /* 0029 · Golden-hour timeline · today's light bands for Vienna */
+  function addGoldenTimeline(el) {
+    var t = sunTimes(new Date(), 48.2082, 16.3738);
+    if (!t) return;
+    function pct(h) { return Math.max(0, Math.min(100, h / 24 * 100)); }
+    var bar = document.createElement('div');
+    bar.style.cssText = 'position:relative;height:26px;margin:10px 0 0;border:1px solid #E6E5E1;font-family:\'Archivo\',sans-serif';
+    function band(a, b, col, lbl) {
+      var d = document.createElement('span');
+      d.style.cssText = 'position:absolute;top:0;bottom:0;left:' + pct(a) + '%;width:' + (pct(b) - pct(a)) + '%;background:' + col;
+      if (lbl) { d.title = lbl; }
+      bar.appendChild(d);
+    }
+    band(t.sunrise, t.sunrise + 1, 'rgba(229,52,31,.35)', 'golden');       // morning golden
+    band(t.sunset - 1, t.sunset, 'rgba(229,52,31,.35)', 'golden');          // evening golden
+    band(t.sunset, t.dusk, 'rgba(11,11,60,.30)', 'blue');                   // blue hour
+    var now = new Date().getHours() + new Date().getMinutes() / 60;
+    var nl = document.createElement('span');
+    nl.style.cssText = 'position:absolute;top:-2px;bottom:-2px;left:' + pct(now) + '%;width:2px;background:#0B0B0B';
+    bar.appendChild(nl);
+    var lbl = document.createElement('span');
+    lbl.style.cssText = 'position:absolute;left:6px;top:5px;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6A6A6A';
+    lbl.textContent = '☀ ' + fmtH(t.sunrise) + ' · golden · ' + fmtH(t.sunset) + ' · blue';
+    bar.appendChild(lbl);
+    el.insertAdjacentElement('afterend', bar);
+  }
+  function fmtH(h) { var hh = Math.floor(h), mm = Math.round((h - hh) * 60); return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm; }
+  /* Compact NOAA sunrise/sunset (hours, local) — good enough for a timeline */
+  function sunTimes(date, lat, lng) {
+    try {
+      var rad = Math.PI / 180, day = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 864e5);
+      var decl = -23.44 * Math.cos(rad * (360 / 365) * (day + 10));
+      var ha = Math.acos(-Math.tan(lat * rad) * Math.tan(decl * rad)) / rad;
+      var tz = -date.getTimezoneOffset() / 60;
+      var solarNoon = 12 - lng / 15 + tz;
+      return { sunrise: solarNoon - ha / 15, sunset: solarNoon + ha / 15, dusk: solarNoon + (ha + 6) / 15 };
+    } catch (e) { return null; }
   }
 
   /* ── Corner controls · fullscreen + "near me" ── */
@@ -299,7 +501,9 @@
       '.vpg-map-ctl button{width:38px;height:38px;border:1px solid #0B0B0B;background:#fff;color:#0B0B0B;' +
       'font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}' +
       '.vpg-map-ctl button:hover{background:#E5341F;border-color:#E5341F;color:#fff}' +
-      '.vpg-map--fs{position:fixed!important;inset:0!important;width:auto!important;height:auto!important;z-index:9999;margin:0!important}';
+      '.vpg-map-ctl button.is-on{background:#E5341F;border-color:#E5341F;color:#fff}' +
+      '.vpg-map--fs{position:fixed!important;inset:0!important;width:auto!important;height:auto!important;z-index:9999;margin:0!important}' +
+      '@media print{body *{visibility:hidden}.vpg-map,.vpg-map *{visibility:visible}.vpg-map{position:absolute;left:0;top:0;width:100%;height:80vh}.vpg-map-ctl,.vpg-attr-filter{display:none!important}}';
     document.head.appendChild(s);
   }
 

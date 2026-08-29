@@ -315,6 +315,18 @@ function vpg_member_card_page() {
     echo '</div>';
 }
 
+/* 0870 · per-ressort JSON export — handled before any admin output is sent */
+add_action( 'admin_init', function () {
+    if ( empty( $_GET['export'] ) || ( $_GET['page'] ?? '' ) !== 'vpg-workbench' ) return;
+    if ( ! current_user_can( 'edit_others_posts' ) ) return;
+    $pt = sanitize_key( $_GET['export'] );
+    $rows = get_posts( [ 'post_type' => $pt, 'post_status' => 'any', 'numberposts' => -1 ] );
+    header( 'Content-Type: application/json' );
+    header( 'Content-Disposition: attachment; filename="vpg-' . $pt . '.json"' );
+    echo wp_json_encode( array_map( fn( $p ) => [ 'id' => $p->ID, 'title' => $p->post_title, 'status' => $p->post_status, 'date' => $p->post_date, 'author' => (int) $p->post_author ], $rows ) );
+    exit;
+} );
+
 /* ================================================================
  * 0858 bulk metadata · 0860 inventory · 0870 export · 0871 demo · handbook
  * ================================================================ */
@@ -332,14 +344,6 @@ function vpg_workbench_page() {
         update_option( 'vpg_enforce_checklist', ! empty( $_POST['enforce_checklist'] ) );
         if ( ! empty( $_POST['demo_make'] ) ) { vpg_demo_content( true ); $msg = __( 'Demo content created.', 'vpg-v2' ); }
         if ( ! empty( $_POST['demo_clear'] ) ) { vpg_demo_content( false ); $msg = __( 'Demo content removed.', 'vpg-v2' ); }
-    }
-    // 0870 · per-ressort JSON export
-    if ( ! empty( $_GET['export'] ) && current_user_can( 'edit_others_posts' ) ) {
-        $pt = sanitize_key( $_GET['export'] );
-        $rows = get_posts( [ 'post_type' => $pt, 'post_status' => 'any', 'numberposts' => -1 ] );
-        header( 'Content-Type: application/json' ); header( 'Content-Disposition: attachment; filename="vpg-' . $pt . '.json"' );
-        echo wp_json_encode( array_map( fn( $p ) => [ 'id' => $p->ID, 'title' => $p->post_title, 'status' => $p->post_status, 'date' => $p->post_date, 'author' => (int) $p->post_author ], $rows ) );
-        exit;
     }
     ?>
     <div class="wrap"><h1>🛠 <?php esc_html_e( 'Editorial workbench', 'vpg-v2' ); ?></h1>

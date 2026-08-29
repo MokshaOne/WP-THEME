@@ -185,8 +185,11 @@ function vpg_mail_enqueue( $to, $subject, $body ) {
 add_action( 'vpg_mail_outbox_flush', function () {
     $box = (array) get_option( 'vpg_mail_outbox', [] );
     $batch = (int) apply_filters( 'vpg_mail_outbox_batch', 20 ); // 20 per minute is gentle on shared hosting
+    $archived = array_column( array_slice( (array) get_option( 'vpg_mail_archive', [] ), -10 ), 'subject' );
     foreach ( array_splice( $box, 0, $batch ) as $m ) {
         if ( ! vpg_mail_suppressed( $m['to'] ) ) wp_mail( $m['to'], $m['s'], $m['b'] );
+        // 0820 · keep one public copy of each broadcast for the online archive
+        if ( ! in_array( $m['s'], $archived, true ) ) { vpg_mail_archive_add( $m['s'], wpautop( wp_kses_post( $m['b'] ) ) ); $archived[] = $m['s']; }
     }
     update_option( 'vpg_mail_outbox', array_values( $box ), false );
     if ( $box ) wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'vpg_mail_outbox_flush' );

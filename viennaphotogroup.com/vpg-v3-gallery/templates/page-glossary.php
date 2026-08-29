@@ -32,6 +32,13 @@ $terms = function_exists( 'vpg_glossary_terms' ) ? vpg_glossary_terms() : [];
             <span style="color:var(--g-mid);font-size:14.5px;line-height:1.6"><?php echo esc_html( $def ); ?></span>
           </div>
       <?php endforeach; endif; ?>
+      <?php // 0276 · members grow the Vienna lexicon
+      if ( shortcode_exists( 'vpg_lexicon_suggest' ) ) : ?>
+        <div style="border-top:1px solid var(--g-line,#E6E5E1);margin-top:32px;padding-top:20px">
+          <p class="g-kicker" style="margin-bottom:8px">● <?php esc_html_e( 'Missing a term?', 'vpg-v2' ); ?></p>
+          <?php echo do_shortcode( '[vpg_lexicon_suggest]' ); ?>
+        </div>
+      <?php endif; ?>
   </div></section>
 </main>
 <?php get_footer();

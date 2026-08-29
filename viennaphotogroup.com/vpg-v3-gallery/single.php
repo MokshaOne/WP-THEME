@@ -10,13 +10,16 @@ get_header();
       <div class="g-wrap">
         <p class="g-kicker" style="margin-bottom:16px">
           <?php
+          $fmt = function_exists( 'vpg_post_format_label' ) ? vpg_post_format_label( get_the_ID() ) : '';
           $cat = get_the_category();
-          echo esc_html( $cat ? $cat[0]->name : get_post_type_object( get_post_type() )->labels->singular_name );
+          echo esc_html( $fmt ?: ( $cat ? $cat[0]->name : get_post_type_object( get_post_type() )->labels->singular_name ) );
           ?>
         </p>
         <h1 class="g-display g-phero__title" style="max-width:20ch"><?php the_title(); ?></h1>
         <div class="g-byline" style="margin-top:20px">
           <span><?php echo esc_html( get_the_author() ); ?></span><span>·</span>
+          <?php $vpg_bx = function_exists( 'vpg_post_byline_extra' ) ? vpg_post_byline_extra( get_the_ID() ) : '';
+          if ( $vpg_bx ) : ?><span><?php echo esc_html( $vpg_bx ); ?></span><span>·</span><?php endif; ?>
           <span><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></span><span>·</span>
           <span><?php echo esc_html( function_exists( 'vpg_reading_time' ) ? vpg_reading_time( get_the_content() ) . ' ' . __( 'min read', 'vpg-v2' ) : '' ); ?></span>
         </div>

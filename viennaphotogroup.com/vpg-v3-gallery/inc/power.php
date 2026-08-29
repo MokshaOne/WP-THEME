@@ -212,6 +212,22 @@ add_action( 'template_redirect', function () {
           <p class="g-lede"><?php esc_html_e( 'Nothing pinned here yet — this district is waiting for its first member find.', 'vpg-v2' ); ?></p>
         <?php endif; ?>
       </div></section>
+
+      <?php // 0243 · district long-reads from the journal
+      $vpg_reads = function_exists( 'vpg_district_reads' ) ? vpg_district_reads( $code ) : [];
+      if ( $vpg_reads ) : ?>
+      <section class="g-section g-section--tight"><div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:12px">● <?php esc_html_e( 'Long-reads from this district', 'vpg-v2' ); ?></p>
+        <div class="g-grid3">
+          <?php foreach ( $vpg_reads as $r ) : ?>
+            <a class="g-card" href="<?php echo esc_url( get_permalink( $r ) ); ?>">
+              <?php if ( has_post_thumbnail( $r ) ) : ?><div class="g-fig g-fig--3x2"><?php echo get_the_post_thumbnail( $r, 'medium_large' ); ?></div><?php endif; ?>
+              <h3 class="g-card__title"><?php echo esc_html( get_the_title( $r ) ); ?></h3>
+            </a>
+          <?php endforeach; ?>
+        </div>
+      </div></section>
+      <?php endif; ?>
     </main>
     <?php get_footer();
     exit;

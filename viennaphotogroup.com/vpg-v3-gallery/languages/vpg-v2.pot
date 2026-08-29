@@ -6979,3 +6979,281 @@ msgstr ""
 
 msgid "This route is archived. Its up-to-date successor is <a href="%1$s"><strong>%2$s</strong></a>."
 msgstr ""
+
+msgid "One-image essay"
+msgstr ""
+
+msgid "District portrait"
+msgstr ""
+
+msgid "Law column"
+msgstr ""
+
+msgid "Tech myth"
+msgstr ""
+
+msgid "Before / after"
+msgstr ""
+
+msgid "Gear diary"
+msgstr ""
+
+msgid "The failed shoot"
+msgstr ""
+
+msgid "Archive find"
+msgstr ""
+
+msgid "Book review"
+msgstr ""
+
+msgid "Exhibition review"
+msgstr ""
+
+msgid "Guest voice"
+msgstr ""
+
+msgid "Work in progress"
+msgstr ""
+
+msgid "Caption art"
+msgstr ""
+
+msgid "Data story"
+msgstr ""
+
+msgid "In season"
+msgstr ""
+
+msgid "City sounds"
+msgstr ""
+
+msgid "Portfolio critique"
+msgstr ""
+
+msgid "In memoriam"
+msgstr ""
+
+msgid "First time"
+msgstr ""
+
+msgid "Year feature"
+msgstr ""
+
+msgid "Journal formats"
+msgstr ""
+
+msgid "Journal craft"
+msgstr ""
+
+msgid "0262 · Co-author"
+msgstr ""
+
+msgid "0253 · Guest byline (non-member)"
+msgstr ""
+
+msgid "Name of the guest writer"
+msgstr ""
+
+msgid "0259 · Translation (linked post)"
+msgstr ""
+
+msgid "The DE/EN counterpart post."
+msgstr ""
+
+msgid "0243 · District (long-read)"
+msgstr ""
+
+msgid "Shows on that /bezirk/ page."
+msgstr ""
+
+msgid "0263 · Places fact-checked vs map"
+msgstr ""
+
+msgid "Verified before publish"
+msgstr ""
+
+msgid "0270 · City-sound audio"
+msgstr ""
+
+msgid "Pick audio"
+msgstr ""
+
+msgid "0247/0250 · Before / after images"
+msgstr ""
+
+msgid "Renders a drag slider. Or use [vpg_ba before=ID after=ID] in the body."
+msgstr ""
+
+msgid "0277 · Corrections (one per line)"
+msgstr ""
+
+msgid "e.g. 3 May: corrected the district of the rooftop shot."
+msgstr ""
+
+msgid "0263 · This article names a district. Verify the places against the map, then tick “fact-checked” in Journal craft."
+msgstr ""
+
+msgid "Reveal edit"
+msgstr ""
+
+msgid "Listen to the place"
+msgstr ""
+
+msgid "Read this text in the other language"
+msgstr ""
+
+msgid "✓ Following this series"
+msgstr ""
+
+msgid "＋ Follow “%s” — mail me new parts"
+msgstr ""
+
+msgid "From the thread"
+msgstr ""
+
+msgid "Corrections"
+msgstr ""
+
+msgid "with %s"
+msgstr ""
+
+msgid "guest · %s"
+msgstr ""
+
+msgid "New in “%s”: %s"
+msgstr ""
+
+msgid "★ Un-highlight"
+msgstr ""
+
+msgid "☆ Highlight"
+msgstr ""
+
+msgid "Sign in to pitch a story."
+msgstr ""
+
+msgid "Working headline"
+msgstr ""
+
+msgid "The angle in one line"
+msgstr ""
+
+msgid "Why now / why you (optional)"
+msgstr ""
+
+msgid "Send pitch"
+msgstr ""
+
+msgid "Trails"
+msgstr ""
+
+msgid "Issues"
+msgstr ""
+
+msgid "Question of the week"
+msgstr ""
+
+msgid "Your short answer…"
+msgstr ""
+
+msgid "Answer"
+msgstr ""
+
+msgid "Term"
+msgstr ""
+
+msgid "A short definition"
+msgstr ""
+
+msgid "Suggest a term"
+msgstr ""
+
+msgid "Journal desk"
+msgstr ""
+
+msgid "Added to the glossary."
+msgstr ""
+
+msgid "0260 · Public style guide"
+msgstr ""
+
+msgid "Shown at /journal-stil/."
+msgstr ""
+
+msgid "0273 · Chronicle"
+msgstr ""
+
+msgid "One entry per line: “YYYY-MM-DD — what happened”. Shown at /chronik/."
+msgstr ""
+
+msgid "0272 · Question of the week"
+msgstr ""
+
+msgid "This week’s question (changing it resets answers)"
+msgstr ""
+
+msgid "0258 · Year reading piece (post ID)"
+msgstr ""
+
+msgid "0261 · Story pitches"
+msgstr ""
+
+msgid "No pitches yet. Embed [vpg_story_pitch] on a page."
+msgstr ""
+
+msgid "0276 · Lexicon suggestions"
+msgstr ""
+
+msgid "Add to glossary"
+msgstr ""
+
+msgid "No suggestions. Embed [vpg_lexicon_suggest] on the glossary page."
+msgstr ""
+
+msgid "How we write"
+msgstr ""
+
+msgid "The <em>style</em> guide."
+msgstr ""
+
+msgid "The style guide is being written."
+msgstr ""
+
+msgid "The collective, plainly"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "All formats"
+msgstr ""
+
+msgid "Any length"
+msgstr ""
+
+msgid "Short"
+msgstr ""
+
+msgid "Long read"
+msgstr ""
+
+msgid "District (1070)"
+msgstr ""
+
+msgid "Go"
+msgstr ""
+
+msgid "No published texts yet."
+msgstr ""
+
+msgid "%d text"
+msgid_plural "%d texts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Long-reads from this district"
+msgstr ""
+
+msgid "Missing a term?"
+msgstr ""

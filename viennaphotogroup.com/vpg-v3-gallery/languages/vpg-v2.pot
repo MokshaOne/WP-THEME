@@ -8549,3 +8549,63 @@ msgstr ""
 
 msgid "What this district is made of"
 msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Me"
+msgstr ""
+
+msgid "One-hand mode"
+msgstr ""
+
+msgid "Strip GPS location from my photo before upload"
+msgstr ""
+
+msgid "On the spot"
+msgstr ""
+
+msgid "Best light here: %s. Tap-lock exposure, keep horizons level, shoot a few frames."
+msgstr ""
+
+msgid "Tap-lock exposure, keep horizons level, shoot a few frames."
+msgstr ""
+
+msgid "Walk card (works offline)"
+msgstr ""
+
+msgid "Host: %1$s · Meeting point: %2$s"
+msgstr ""
+
+msgid "Save this page offline (↓ button) so it’s there without signal."
+msgstr ""
+
+msgid "Something broken here?"
+msgstr ""
+
+msgid "Mobile & PWA"
+msgstr ""
+
+msgid "0637 · Mobile performance budget"
+msgstr ""
+
+msgid "HTML ≤ 40 KB · CSS ≤ 60 KB · JS ≤ 90 KB per mobile view."
+msgstr ""
+
+msgid "Largest Contentful Paint ≤ 2.0 s on a mid-range phone / slow-4G."
+msgstr ""
+
+msgid "Any image over 250 KB must justify itself; hero images ship WebP."
+msgstr ""
+
+msgid "0638 · Device test matrix"
+msgstr ""
+
+msgid "0640 · Reported broken views"
+msgstr ""
+
+msgid "No reports."
+msgstr ""
+
+msgid "Works without JavaScript:"
+msgstr ""

@@ -40,6 +40,16 @@
             "description": "Photo + position, one screen"
         },
         {
+            "name": "Submit",
+            "url": "/submit/",
+            "description": "Add a place, studio or shop"
+        },
+        {
+            "name": "Check in",
+            "url": "/locations/?checkin=1",
+            "description": "Check in at today's walk"
+        },
+        {
             "name": "The Map",
             "url": "/locations/",
             "description": "118+ curated Vienna locations"

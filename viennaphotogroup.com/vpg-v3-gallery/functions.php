@@ -80,6 +80,7 @@ require_once VPG_V2_DIR . '/inc/competitions.php';    // Cluster 12 · challenge
 require_once VPG_V2_DIR . '/inc/learning.php';        // Cluster 13 · tutorials · tools · paths · bounties · desk
 require_once VPG_V2_DIR . '/inc/onboarding.php';      // Cluster 14 · onboarding mails · referral · growth desk       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
 require_once VPG_V2_DIR . '/inc/search.php';           // Cluster 15 · smart search · discovery · search desk
+require_once VPG_V2_DIR . '/inc/mobile-plus.php';     // Cluster 16 · PWA behaviours · thumb bar · GPS choice
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

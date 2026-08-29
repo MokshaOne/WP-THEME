@@ -389,6 +389,8 @@ add_action( 'vpg_caption_run', function () {
     ] );
 
     foreach ( $missing as $att ) {
+        // 0914 · respect a member's ML opt-out — their photos are never processed
+        if ( function_exists( 'vpg_ml_optout' ) && vpg_ml_optout( (int) $att->post_author ) ) continue;
         $file = get_attached_file( $att->ID );
         if ( ! $file || filesize( $file ) > 4 * MB_IN_BYTES ) continue;
         $mime = get_post_mime_type( $att->ID ) ?: 'image/jpeg';

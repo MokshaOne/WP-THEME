@@ -87,6 +87,7 @@ require_once VPG_V2_DIR . '/inc/a11y-i18n.php';       // Cluster 19 · skip link
 require_once VPG_V2_DIR . '/inc/trust-safety.php';    // Cluster 20 · rate-limit · reports · block/panic · word filter · escalation · audit log · security headers · sessions · security.txt · Trust desk
 require_once VPG_V2_DIR . '/inc/mail-plus.php';       // Cluster 21 · Reply-To · List-Unsubscribe · AltBody · dark mail · digest queue · outbox · bounce suppression · archive · Mail desk
 require_once VPG_V2_DIR . '/inc/editorial-tools.php'; // Cluster 22 · notes · checklist · claim · admin palette · member card · undo · dark admin · milestones · workbench
+require_once VPG_V2_DIR . '/inc/ai-assist.php';       // Cluster 23 · text-model drafts · ML opt-out · readability · local Bayes spam · rotation dedup · offline district · link bot · NL search · transparency · AI desk
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

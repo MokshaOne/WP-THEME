@@ -9338,3 +9338,213 @@ msgstr ""
 
 msgid "0868 Trash empties itself after 30 days; 0878 a publish can be undone for 60 seconds."
 msgstr ""
+
+msgid "Machine learning"
+msgstr ""
+
+msgid "Exclude my photos from all automated processing (alt-text, similarity, curation)"
+msgstr ""
+
+msgid "Your photos never train any model — this switch also excludes them from our own assistive tools."
+msgstr ""
+
+msgid "You translate editorial photography copy faithfully between German and English. Return only the translation."
+msgstr ""
+
+msgid "Translate this, keeping tone:"
+msgstr ""
+
+msgid "You write a one-sentence teaser for a photography magazine. No hype. Return only the teaser."
+msgstr ""
+
+msgid "Draft a teaser for:"
+msgstr ""
+
+msgid "You suggest three alternative headlines, plain and specific, one per line. No numbering."
+msgstr ""
+
+msgid "Headline options for:"
+msgstr ""
+
+msgid "You propose three thoughtful follow-up interview questions, one per line."
+msgstr ""
+
+msgid "Follow-up questions given these answers:"
+msgstr ""
+
+msgid "You flag house-style issues (hype words, clichés, passive voice) as a short bullet list. Suggest fixes, do not rewrite."
+msgstr ""
+
+msgid "Check this against a calm, plain house style:"
+msgstr ""
+
+msgid "AI drafts"
+msgstr ""
+
+msgid "Teaser"
+msgstr ""
+
+msgid "Title options"
+msgstr ""
+
+msgid "Translate DE↔EN"
+msgstr ""
+
+msgid "House-style check"
+msgstr ""
+
+msgid "Drafts only — you always decide. Nothing publishes itself."
+msgstr ""
+
+msgid "Readability"
+msgstr ""
+
+msgid "Add more text to see readability hints."
+msgstr ""
+
+msgid "Reading ease"
+msgstr ""
+
+msgid "%s words/sentence"
+msgstr ""
+
+msgid "Some long sentences — consider splitting a few."
+msgstr ""
+
+msgid "Sentence length reads comfortably."
+msgstr ""
+
+msgid "Heads-up"
+msgstr ""
+
+msgid "This photo’s capture date is in the future — the camera clock may be off. No action needed."
+msgstr ""
+
+msgid "This looks a little soft — a sharper frame may read better. Upload anyway if you like."
+msgstr ""
+
+msgid "Looks sharp."
+msgstr ""
+
+msgid "Parts of this piece were drafted with machine help and finalised by an editor."
+msgstr ""
+
+msgid "AI at Vienna Photo Group"
+msgstr ""
+
+msgid "Machines carry water; people curate. Everything here is self-hosted, opt-out, and finalised by a human."
+msgstr ""
+
+msgid "The ten sentences (our AI charter)"
+msgstr ""
+
+msgid "We use machines to assist, never to decide."
+msgstr ""
+
+msgid "No photo trains any model — not ours, not anyone’s."
+msgstr ""
+
+msgid "Every member can exclude their photos from all automated processing."
+msgstr ""
+
+msgid "Models run on our own server; images do not leave it."
+msgstr ""
+
+msgid "Machine-assisted text and images are always labelled as such."
+msgstr ""
+
+msgid "Nothing is ever published automatically — a person clicks publish."
+msgstr ""
+
+msgid "We prefer the smallest tool that does the job."
+msgstr ""
+
+msgid "We bundle inference at night to spend less energy."
+msgstr ""
+
+msgid "We say plainly which models run and what they see."
+msgstr ""
+
+msgid "When in doubt, the human wins."
+msgstr ""
+
+msgid "What runs right now"
+msgstr ""
+
+msgid "Alt-text assistance"
+msgstr ""
+
+msgid "on (self-hosted vision model)"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "Editorial text drafts"
+msgstr ""
+
+msgid "on (self-hosted text model, drafts only)"
+msgstr ""
+
+msgid "Duplicate & similarity detection"
+msgstr ""
+
+msgid "on (local perceptual hashing — no external service)"
+msgstr ""
+
+msgid "Readability & house-style hints"
+msgstr ""
+
+msgid "on (local, in the editor)"
+msgstr ""
+
+msgid "Opt out any time from your dashboard → profile → Machine learning."
+msgstr ""
+
+msgid "AI & Automation"
+msgstr ""
+
+msgid "View the public AI transparency page →"
+msgstr ""
+
+msgid "Self-hosted text model (OpenAI-compatible)"
+msgstr ""
+
+msgid "Chat completions endpoint URL"
+msgstr ""
+
+msgid "Model name"
+msgstr ""
+
+msgid "Leave empty to keep text drafts off. Vision alt-text is configured separately under “Vision endpoint”."
+msgstr ""
+
+msgid "0917 · Inference queue"
+msgstr ""
+
+msgid "%s jobs queued for the nightly batch run."
+msgstr ""
+
+msgid "0896 · Learned spam model"
+msgstr ""
+
+msgid "Trained on %1$s spam and %2$s approved comments; %3$s spam tokens known."
+msgstr ""
+
+msgid "0895 · Dead links"
+msgstr ""
+
+msgid "Link"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "No dead links found in the last sweep (or the bot hasn’t run yet)."
+msgstr ""
+
+msgid "0906 · Curation candidates (POTW pre-selection)"
+msgstr ""
+
+msgid "A starting shortlist by simple signals — the jury still chooses. Members who opted out never appear here."
+msgstr ""

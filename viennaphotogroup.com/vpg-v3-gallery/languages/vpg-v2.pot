@@ -4461,3 +4461,195 @@ msgstr ""
 #: templates/page-team.php
 msgid "Curates the monthly issue, commissions pitches, writes the editor\'s letter."
 msgstr ""
+
+#: archive-vpg_collection.php
+msgid "Curated <em>threads</em>."
+msgstr ""
+
+#: archive-vpg_collection.php
+msgid "Editorial collections across every content type — spots, stories, tutorials and frames tied together by one idea."
+msgstr ""
+
+#: archive-vpg_collection.php
+msgid "Scope"
+msgstr ""
+
+#: archive-vpg_collection.php
+msgid "Every content type"
+msgstr ""
+
+#: archive-vpg_collection.php
+msgid "No collections yet — editorial ties the first thread soon."
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Built <em>together</em>."
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Shared series in progress — a Documentarian opens a room, members join and hang their own published works. Finished rooms become spreads in the magazine."
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Open rooms"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Who creates"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Documentarian and up"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Who joins"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Every member"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Finished · magazine-ready"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "In progress"
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "No rooms yet — the first Documentarian to open one writes collective history."
+msgstr ""
+
+#: archive-vpg_project.php
+msgid "Open a room from your dashboard"
+msgstr ""
+
+#: archive-vpg_wall.php
+msgid "The <em>walls</em>."
+msgstr ""
+
+#: archive-vpg_wall.php
+msgid "Curated hangings from member uploads — each wall is one theme, one room, one walk through the collective eye."
+msgstr ""
+
+#: archive-vpg_wall.php
+msgid "Walls"
+msgstr ""
+
+#: archive-vpg_wall.php
+msgid "Curation"
+msgstr ""
+
+#: archive-vpg_wall.php
+msgid "Editorial, from uploads"
+msgstr ""
+
+#: archive-vpg_wall.php
+msgid "No walls hung yet — editorial curates them from member uploads."
+msgstr ""
+
+#: footer.php
+msgid "Districts"
+msgstr ""
+
+#: inc/followups.php
+msgid "A gallery photo was reported: “%s”."
+msgstr ""
+
+#: inc/followups.php
+msgid "Photography by district — Vienna Photo Group"
+msgstr ""
+
+#: inc/followups.php
+msgid "23 <em>districts</em>."
+msgstr ""
+
+#: inc/followups.php
+msgid "Every Bezirk has its own page — spots, studios and shops the members have pinned there."
+msgstr ""
+
+#: inc/followups.php
+msgid "Pinned places"
+msgstr ""
+
+#: inc/followups.php
+msgid "Gaps?"
+msgstr ""
+
+#: inc/followups.php
+msgid "Pin the first"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Walls · pick a curated hanging"
+msgstr ""
+
+#: inc/projects.php
+msgid "Pick images from the library"
+msgstr ""
+
+#: inc/projects.php
+msgid "Search the site, click to append…"
+msgstr ""
+
+#: inc/projects.php
+msgid "%1$s hung “%2$s” in project “%3$s”."
+msgstr ""
+
+#: inc/projects.php
+msgid "Project “%s” is finished — a group series ready for the magazine."
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Remove this photo permanently?"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "remove"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Report to editorial"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Project · finished — magazine-ready"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Reopen the room"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "⁂ Mark finished"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Take down"
+msgstr ""
+
+#: taxonomy-vpg_series.php
+msgid "Your progress"
+msgstr ""
+
+#: taxonomy-vpg_series.php
+msgid "Mark part as read"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Part of a series?"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "No — a standalone piece"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Or start a new series"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Street in five chapters"
+msgstr ""

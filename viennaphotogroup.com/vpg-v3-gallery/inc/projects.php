@@ -43,13 +43,72 @@ add_action( 'init', function () {
 
 /* ─── Shared curated-ids metabox for walls (attachments) and
        collections (any published content) ────────────────────────── */
+add_action( 'admin_enqueue_scripts', function () {
+    $s = get_current_screen();
+    if ( $s && in_array( $s->post_type ?? '', [ 'vpg_wall', 'vpg_collection' ], true ) ) wp_enqueue_media();
+} );
+
 add_action( 'add_meta_boxes', function () {
     foreach ( [ 'vpg_wall' => __( 'Attachment IDs · comma-separated, hanging order', 'vpg-v2' ),
                 'vpg_collection' => __( 'Post IDs · comma-separated, any public type', 'vpg-v2' ) ] as $cpt => $hint ) {
         add_meta_box( 'vpg-curated-ids', __( 'Curated set', 'vpg-v2' ), function ( $post ) use ( $hint ) {
             wp_nonce_field( 'vpg_curated_ids', 'vpg_curated_ids_nonce' );
-            printf( '<p class="description">%s</p><input type="text" name="vpg_curated_ids" value="%s" style="width:100%%" placeholder="12, 87, 43">',
+            printf( '<p class="description">%s</p><input type="text" id="vpg-curated-ids" name="vpg_curated_ids" value="%s" style="width:100%%" placeholder="12, 87, 43">',
                 esc_html( $hint ), esc_attr( get_post_meta( $post->ID, '_vpg_curated_ids', true ) ) );
+            // 1008 · nobody should have to hand-type IDs
+            if ( $post->post_type === 'vpg_wall' ) : ?>
+                <p><button type="button" class="button" id="vpg-curate-media">🖼 <?php esc_html_e( 'Pick images from the library', 'vpg-v2' ); ?></button></p>
+                <script>
+                jQuery(function () {
+                    var btn = document.getElementById('vpg-curate-media'), field = document.getElementById('vpg-curated-ids');
+                    if (!btn || !window.wp || !wp.media) return;
+                    btn.addEventListener('click', function () {
+                        var frame = wp.media({ multiple: 'add', library: { type: 'image' } });
+                        frame.on('select', function () {
+                            var ids = field.value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+                            frame.state().get('selection').forEach(function (a) {
+                                if (ids.indexOf(String(a.id)) === -1) ids.push(String(a.id));
+                            });
+                            field.value = ids.join(', ');
+                        });
+                        frame.open();
+                    });
+                });
+                </script>
+            <?php else : ?>
+                <p style="display:flex;gap:8px;align-items:center;max-width:520px">
+                    <input type="search" id="vpg-curate-search" class="regular-text" placeholder="<?php esc_attr_e( 'Search the site, click to append…', 'vpg-v2' ); ?>" style="flex:1">
+                </p>
+                <div id="vpg-curate-results"></div>
+                <script>
+                (function () {
+                    var q = document.getElementById('vpg-curate-search'), out = document.getElementById('vpg-curate-results'),
+                        field = document.getElementById('vpg-curated-ids'), t = 0;
+                    q.addEventListener('input', function () {
+                        clearTimeout(t);
+                        t = setTimeout(function () {
+                            if (q.value.trim().length < 2) { out.innerHTML = ''; return; }
+                            fetch(<?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?> + '?action=vpg_live_search&q=' + encodeURIComponent(q.value.trim()), { credentials: 'same-origin' })
+                                .then(function (r) { return r.json(); })
+                                .then(function (res) {
+                                    out.innerHTML = '';
+                                    ((res && res.data) || []).forEach(function (it) {
+                                        var b = document.createElement('button');
+                                        b.type = 'button'; b.className = 'button button-small'; b.style.margin = '2px';
+                                        b.textContent = '+ ' + it.title + ' (' + it.type + ')';
+                                        b.addEventListener('click', function () {
+                                            var ids = field.value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+                                            if (ids.indexOf(String(it.id)) === -1) ids.push(String(it.id));
+                                            field.value = ids.join(', ');
+                                        });
+                                        out.appendChild(b);
+                                    });
+                                });
+                        }, 250);
+                    });
+                })();
+                </script>
+            <?php endif;
         }, $cpt, 'normal', 'high' );
     }
 } );
@@ -133,6 +192,57 @@ add_action( 'admin_post_vpg_project_hang', function () {
         if ( ! in_array( $work->ID, $works, true ) ) {
             $works[] = $work->ID;
             update_post_meta( $pid, '_vpg_project_works', array_slice( $works, -60 ) );
+            // 1005 · the room hears about a fresh hanging — except the hanger
+            if ( function_exists( 'vpg_notify_user' ) ) {
+                foreach ( array_diff( vpg_project_members( $pid ), [ $uid ] ) as $mid ) {
+                    vpg_notify_user( (int) $mid,
+                        sprintf( __( '%1$s hung “%2$s” in project “%3$s”.', 'vpg-v2' ), wp_get_current_user()->display_name, $work->post_title, get_the_title( $pid ) ),
+                        get_permalink( $pid ) );
+                }
+            }
+        }
+    }
+    wp_safe_redirect( get_permalink( $pid ) ?: home_url() );
+    exit;
+} );
+
+
+/* 1003 · take a work down again — its owner or the founder decides */
+add_action( 'admin_post_vpg_project_unhang', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_project_unhang' );
+    $pid  = (int) ( $_POST['project'] ?? 0 );
+    $wid  = (int) ( $_POST['work'] ?? 0 );
+    $uid  = get_current_user_id();
+    if ( get_post_type( $pid ) === 'vpg_project' ) {
+        $is_founder = (int) get_post_field( 'post_author', $pid ) === $uid;
+        $is_owner   = (int) get_post_field( 'post_author', $wid ) === $uid;
+        if ( $is_founder || $is_owner || current_user_can( 'edit_others_posts' ) ) {
+            $works = array_filter( array_map( 'intval', (array) get_post_meta( $pid, '_vpg_project_works', true ) ) );
+            update_post_meta( $pid, '_vpg_project_works', array_values( array_diff( $works, [ $wid ] ) ) );
+        }
+    }
+    wp_safe_redirect( get_permalink( $pid ) ?: home_url() );
+    exit;
+} );
+
+/* 1004 · the founder declares the series finished — magazine-ready */
+add_action( 'admin_post_vpg_project_finish', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_project_finish' );
+    $pid = (int) ( $_POST['project'] ?? 0 );
+    $uid = get_current_user_id();
+    if ( get_post_type( $pid ) === 'vpg_project'
+        && ( (int) get_post_field( 'post_author', $pid ) === $uid || current_user_can( 'edit_others_posts' ) ) ) {
+        if ( get_post_meta( $pid, '_vpg_project_done', true ) ) {
+            delete_post_meta( $pid, '_vpg_project_done' );
+        } else {
+            update_post_meta( $pid, '_vpg_project_done', current_time( 'mysql' ) );
+            if ( function_exists( 'vpg_notify_user' ) ) {
+                foreach ( get_users( [ 'role__in' => [ 'administrator', 'editor' ], 'fields' => 'ID' ] ) as $eid ) {
+                    vpg_notify_user( (int) $eid, sprintf( __( 'Project “%s” is finished — a group series ready for the magazine.', 'vpg-v2' ), get_the_title( $pid ) ), get_permalink( $pid ) );
+                }
+            }
         }
     }
     wp_safe_redirect( get_permalink( $pid ) ?: home_url() );
@@ -151,6 +261,21 @@ add_action( 'admin_post_vpg_event_photo', function () {
     require_once ABSPATH . 'wp-admin/includes/file.php';
     require_once ABSPATH . 'wp-admin/includes/image.php';
     require_once ABSPATH . 'wp-admin/includes/media.php';
+
+    // 1007 · five frames per member per walk keep the wall a selection
+    $mine_here = get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'author'         => get_current_user_id(),
+        'posts_per_page' => 6,
+        'fields'         => 'ids',
+        'meta_key'       => '_vpg_event_gallery',
+        'meta_value'     => $event->ID,
+    ] );
+    if ( count( $mine_here ) >= 5 ) {
+        wp_safe_redirect( get_permalink( $event ) . '#gallery' );
+        exit;
+    }
 
     if ( ! empty( $_FILES['photo']['name'] ) ) {
         $check = wp_check_filetype( $_FILES['photo']['name'] );

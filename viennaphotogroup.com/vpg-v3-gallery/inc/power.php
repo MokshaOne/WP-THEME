@@ -21,7 +21,7 @@ function vpg_live_search() {
 
     $query = new WP_Query( [
         's'              => $q,
-        'post_type'      => [ 'post', 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'vpg_event', 'vpg_trail', 'vpg_magazine' ],
+        'post_type'      => [ 'post', 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'vpg_event', 'vpg_trail', 'vpg_magazine', 'vpg_project', 'vpg_wall', 'vpg_collection' ],
         'post_status'    => 'publish',
         'posts_per_page' => 8,
         'no_found_rows'  => true,
@@ -30,6 +30,7 @@ function vpg_live_search() {
     foreach ( $query->posts as $p ) {
         $obj   = get_post_type_object( $p->post_type );
         $out[] = [
+            'id'    => $p->ID,
             'title' => html_entity_decode( get_the_title( $p ), ENT_QUOTES ),
             'type'  => $obj ? $obj->labels->singular_name : '',
             'url'   => get_permalink( $p ),

@@ -9,10 +9,13 @@ get_header();
     $works    = array_filter( array_map( 'intval', (array) get_post_meta( get_the_ID(), '_vpg_project_works', true ) ) );
     $me       = get_current_user_id();
     $is_in    = $me && in_array( $me, $members, true );
+    $founder  = (int) get_post_field( 'post_author', get_the_ID() );
+    $is_fndr  = $me && ( $me === $founder || current_user_can( 'edit_others_posts' ) );
+    $is_done  = (bool) get_post_meta( get_the_ID(), '_vpg_project_done', true );
 ?>
   <section class="g-phero"><div class="g-wrap"><div class="g-phero__grid">
     <div>
-      <p class="g-kicker" style="margin-bottom:16px">● <?php esc_html_e( 'Project room', 'vpg-v2' ); ?></p>
+      <p class="g-kicker" style="margin-bottom:16px">● <?php echo $is_done ? esc_html__( 'Project · finished — magazine-ready', 'vpg-v2' ) : esc_html__( 'Project room', 'vpg-v2' ); ?></p>
       <h1 class="g-display g-phero__title"><?php the_title(); ?></h1>
       <div class="g-prose" style="margin-top:16px"><?php the_content(); ?></div>
     </div>
@@ -32,6 +35,14 @@ get_header();
         </a>
       <?php endforeach; ?>
     </div>
+    <?php if ( $is_fndr ) : ?>
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+        <?php wp_nonce_field( 'vpg_project_finish' ); ?>
+        <input type="hidden" name="action" value="vpg_project_finish">
+        <input type="hidden" name="project" value="<?php echo (int) get_the_ID(); ?>">
+        <button class="g-btn g-btn--ghost" type="submit"><?php echo $is_done ? esc_html__( 'Reopen the room', 'vpg-v2' ) : esc_html__( '⁂ Mark finished', 'vpg-v2' ); ?></button>
+      </form>
+    <?php endif; ?>
     <?php if ( is_user_logged_in() ) : ?>
       <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
         <?php wp_nonce_field( 'vpg_project_join' ); ?>
@@ -48,11 +59,22 @@ get_header();
       <h2 class="g-head__t"><?php echo count( $works ); ?> <em><?php esc_html_e( 'works', 'vpg-v2' ); ?></em></h2></div></div>
     <div class="g-grid3">
       <?php foreach ( $works as $wid ) : if ( get_post_status( $wid ) !== 'publish' ) continue; ?>
+        <div>
         <a class="g-card" href="<?php echo esc_url( get_permalink( $wid ) ); ?>">
           <?php if ( has_post_thumbnail( $wid ) ) : ?><div class="g-fig g-fig--3x2"><?php echo get_the_post_thumbnail( $wid, 'medium_large' ); ?></div><?php endif; ?>
           <span class="g-cat"><?php echo esc_html( get_the_author_meta( 'display_name', (int) get_post_field( 'post_author', $wid ) ) ); ?></span>
           <h3 class="g-card__title"><?php echo esc_html( get_the_title( $wid ) ); ?></h3>
         </a>
+        <?php if ( $me && ( $me === (int) get_post_field( 'post_author', $wid ) || $is_fndr ) ) : ?>
+          <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:6px 0 0">
+            <?php wp_nonce_field( 'vpg_project_unhang' ); ?>
+            <input type="hidden" name="action" value="vpg_project_unhang">
+            <input type="hidden" name="project" value="<?php echo (int) get_the_ID(); ?>">
+            <input type="hidden" name="work" value="<?php echo (int) $wid; ?>">
+            <button type="submit" style="background:none;border:0;padding:0;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g-mid)">✕ <?php esc_html_e( 'Take down', 'vpg-v2' ); ?></button>
+          </form>
+        <?php endif; ?>
+        </div>
       <?php endforeach; ?>
     </div>
   </div></section>

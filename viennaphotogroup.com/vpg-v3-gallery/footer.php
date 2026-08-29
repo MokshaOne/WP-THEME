@@ -28,6 +28,10 @@
                         __( 'Shops',         'vpg-v2' ) => get_post_type_archive_link( 'vpg_shop' ),
                         __( 'Buying guide',  'vpg-v2' ) => get_post_type_archive_link( 'vpg_review' ),
                         __( 'Tutorials',     'vpg-v2' ) => get_post_type_archive_link( 'vpg_tutorial' ),
+                        __( 'Project rooms', 'vpg-v2' ) => get_post_type_archive_link( 'vpg_project' ),
+                        __( 'Gallery walls', 'vpg-v2' ) => get_post_type_archive_link( 'vpg_wall' ),
+                        __( 'Collections',   'vpg-v2' ) => get_post_type_archive_link( 'vpg_collection' ),
+                        __( 'Districts',     'vpg-v2' ) => home_url( '/bezirke/' ),
                     ] as $label => $url ) {
                         if ( $url ) echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
                     }
@@ -63,6 +67,7 @@
                     echo '<li><a href="' . esc_url( home_url( '/team/' ) )    . '">' . esc_html__( 'Team',    'vpg-v2' ) . '</a></li>';
                     echo '<li><a href="' . esc_url( home_url( '/contact/' ) ) . '">' . esc_html__( 'Contact', 'vpg-v2' ) . '</a></li>';
                     echo '<li><a href="' . esc_url( home_url( '/faq/' ) )     . '">' . esc_html__( 'FAQ',     'vpg-v2' ) . '</a></li>';
+                    echo '<li><a href="' . esc_url( home_url( '/glossary/' ) ) . '">' . esc_html__( 'Glossary', 'vpg-v2' ) . '</a></li>';
                     echo '</ul>';
                 }
                 ?>

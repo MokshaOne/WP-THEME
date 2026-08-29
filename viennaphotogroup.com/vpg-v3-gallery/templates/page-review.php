@@ -12,7 +12,9 @@ if ( ! current_user_can( 'edit_others_posts' ) ) : ?>
 <?php get_footer(); return; endif;
 
 $types   = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'post' ];
-$pending = new WP_Query( [ 'post_type' => $types, 'post_status' => 'pending', 'posts_per_page' => 30, 'orderby' => 'date', 'order' => 'ASC' ] );
+$want    = sanitize_key( $_GET['type'] ?? '' );                        // 1014 · one type at a time
+$q_types = ( $want && in_array( $want, $types, true ) ) ? [ $want ] : $types;
+$pending = new WP_Query( [ 'post_type' => $q_types, 'post_status' => 'pending', 'posts_per_page' => 30, 'orderby' => 'date', 'order' => 'ASC' ] );
 ?>
 <main id="vpg-main">
   <section class="g-phero"><div class="g-wrap"><div class="g-phero__grid">
@@ -28,6 +30,12 @@ $pending = new WP_Query( [ 'post_type' => $types, 'post_status' => 'pending', 'p
   </div></div></section>
 
   <section class="g-section"><div class="g-wrap">
+    <p style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px">
+      <a href="<?php echo esc_url( get_permalink() ); ?>" class="g-btn <?php echo $want ? 'g-btn--ghost' : ''; ?>" style="font-size:11px;padding:8px 14px"><?php esc_html_e( 'All', 'vpg-v2' ); ?></a>
+      <?php foreach ( $types as $tt ) : $to = get_post_type_object( $tt ); if ( ! $to ) continue; ?>
+        <a href="<?php echo esc_url( add_query_arg( 'type', $tt, get_permalink() ) ); ?>" class="g-btn <?php echo $want === $tt ? '' : 'g-btn--ghost'; ?>" style="font-size:11px;padding:8px 14px"><?php echo esc_html( $to->labels->singular_name ); ?></a>
+      <?php endforeach; ?>
+    </p>
     <?php if ( ! $pending->have_posts() ) : ?>
       <p style="border:1px solid var(--g-line);padding:48px;text-align:center;font-weight:700">⁂ <?php esc_html_e( 'Inbox zero. Nothing waiting for editorial.', 'vpg-v2' ); ?></p>
     <?php else : ?>

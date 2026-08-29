@@ -326,6 +326,23 @@ get_header();
             })();
             </script>
 
+            <!-- 1009 · texts can join a series right at submission -->
+            <div class="g-field g-field--row" data-for-types="post vpg_tutorial" hidden>
+              <div>
+                <label for="series_pick"><?php esc_html_e( 'Part of a series?', 'vpg-v2' ); ?></label>
+                <select class="g-select" id="series_pick" name="series_pick">
+                  <option value=""><?php esc_html_e( 'No — a standalone piece', 'vpg-v2' ); ?></option>
+                  <?php foreach ( get_terms( [ 'taxonomy' => 'vpg_series', 'hide_empty' => false, 'number' => 40 ] ) as $st ) : if ( is_wp_error( $st ) ) break; ?>
+                    <option value="<?php echo (int) $st->term_id; ?>"><?php echo esc_html( $st->name ); ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div>
+                <label for="series_new"><?php esc_html_e( 'Or start a new series', 'vpg-v2' ); ?></label>
+                <input class="g-input" id="series_new" type="text" name="series_new" maxlength="60" placeholder="<?php esc_attr_e( 'Street in five chapters', 'vpg-v2' ); ?>">
+              </div>
+            </div>
+
             <!-- Event proposals · date + meeting point -->
             <div class="g-field g-field--row" data-for-types="vpg_event" hidden>
               <div>

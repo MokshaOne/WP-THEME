@@ -338,6 +338,20 @@ function vpg_handle_submit() {
         }
     }
 
+    // 1009 · a text may join or start a series
+    if ( in_array( $type, [ 'post', 'vpg_tutorial' ], true ) ) {
+        $series_new = mb_substr( sanitize_text_field( wp_unslash( $_POST['series_new'] ?? '' ) ), 0, 60 );
+        $series_id  = (int) ( $_POST['series_pick'] ?? 0 );
+        if ( $series_new !== '' ) {
+            $made = wp_insert_term( $series_new, 'vpg_series' );
+            if ( ! is_wp_error( $made ) )       $series_id = (int) $made['term_id'];
+            elseif ( ! empty( $made->error_data['term_exists'] ) ) $series_id = (int) $made->error_data['term_exists'];
+        }
+        if ( $series_id && term_exists( $series_id, 'vpg_series' ) ) {
+            wp_set_object_terms( $post_id, [ $series_id ], 'vpg_series' );
+        }
+    }
+
     update_post_meta( $post_id, '_vpg_submitted_at', current_time( 'mysql' ) );
 
     $photo_note = vpg_attach_submission_photos( $post_id );

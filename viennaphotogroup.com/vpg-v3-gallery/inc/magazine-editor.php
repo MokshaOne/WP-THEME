@@ -270,6 +270,7 @@ function vpg_magazine_edit_page() {
                         <button type="button" class="button" data-vpg-pick="journal">📰 <?php esc_html_e( 'Journal article', 'vpg-v2' ); ?></button>
                         <button type="button" class="button" data-vpg-pick="artist">👤 <?php esc_html_e( 'Featured artist', 'vpg-v2' ); ?></button>
                         <button type="button" class="button" data-vpg-pick="event">📅 <?php esc_html_e( 'Event', 'vpg-v2' ); ?></button>
+                        <button type="button" class="button" data-vpg-pick="wall">🧱 <?php esc_html_e( 'Gallery wall', 'vpg-v2' ); ?></button>
                         <button type="button" class="button" data-vpg-pick="photos">🖼 <?php esc_html_e( 'Photo spread', 'vpg-v2' ); ?></button>
                         <button type="button" class="button button-primary" id="vpg-add-article"><?php esc_html_e( '+ Blank article', 'vpg-v2' ); ?></button>
                     </div>
@@ -541,7 +542,8 @@ function vpg_magazine_edit_page() {
             journal: <?php echo wp_json_encode( __( 'Journal · pick an article', 'vpg-v2' ) ); ?>,
             artist:  <?php echo wp_json_encode( __( 'Members · pick the featured artist', 'vpg-v2' ) ); ?>,
             event:   <?php echo wp_json_encode( __( 'Events · pick an event', 'vpg-v2' ) ); ?>,
-            photos:  <?php echo wp_json_encode( __( 'Photos · tick the plates for the spread', 'vpg-v2' ) ); ?>
+            photos:  <?php echo wp_json_encode( __( 'Photos · tick the plates for the spread', 'vpg-v2' ) ); ?>,
+            wall:    <?php echo wp_json_encode( __( 'Walls · pick a curated hanging', 'vpg-v2' ) ); ?>
         };
 
         var pickSearch = document.getElementById('vpg-pick-search');
@@ -852,6 +854,17 @@ add_action( 'wp_ajax_vpg_mag_pick_list', function () {
                 'thumb' => get_the_post_thumbnail_url( $p, 'thumbnail' ) ?: '',
             ];
         }
+    } elseif ( $kind === 'wall' ) {
+        // 1016 · curated walls flow into the issue as ready-made spreads
+        foreach ( get_posts( [ 'post_type' => 'vpg_wall', 'post_status' => 'publish', 'posts_per_page' => 20 ] ) as $p ) {
+            $ids     = function_exists( 'vpg_curated_ids' ) ? vpg_curated_ids( $p->ID ) : [];
+            $items[] = [
+                'id'    => $p->ID,
+                'title' => $p->post_title,
+                'meta'  => sprintf( _n( '%d frame', '%d frames', count( $ids ), 'vpg-v2' ), count( $ids ) ),
+                'thumb' => get_the_post_thumbnail_url( $p, 'thumbnail' ) ?: ( $ids ? ( wp_get_attachment_image_url( $ids[0], 'thumbnail' ) ?: '' ) : '' ),
+            ];
+        }
     } elseif ( $kind === 'photos' ) {
         $q = new WP_Query( [
             'post_type'      => 'attachment',
@@ -972,6 +985,30 @@ add_action( 'wp_ajax_vpg_mag_pick_item', function () {
                 'author'   => __( 'Events', 'vpg-v2' ),
                 'body'     => $body,
                 'image_id' => (int) get_post_thumbnail_id( $p ),
+            ];
+        }
+    } elseif ( $kind === 'wall' && $id ) {
+        $p = get_post( $id );
+        if ( $p && $p->post_type === 'vpg_wall' ) {
+            $body      = $p->post_content ? $p->post_content . "\n" : '';
+            $first_img = 0;
+            $cids      = function_exists( 'vpg_curated_ids' ) ? vpg_curated_ids( $p->ID ) : [];
+            foreach ( array_slice( $cids, 0, 12 ) as $aid ) {
+                if ( ! wp_attachment_is_image( $aid ) ) continue;
+                if ( ! $first_img ) $first_img = $aid;
+                $url = wp_get_attachment_image_url( $aid, 'large' );
+                if ( ! $url ) continue;
+                $att   = get_post( $aid );
+                $cap   = wp_get_attachment_caption( $aid ) ?: ( $att->post_title ?? '' );
+                $cred  = $att ? get_the_author_meta( 'display_name', $att->post_author ) : '';
+                $body .= '<figure class="plate"><img src="' . esc_url( $url ) . '" alt="' . esc_attr( $cap ) . '">'
+                       . '<figcaption>' . esc_html( trim( $cap . ( $cred ? ' — ' . $cred : '' ), ' —' ) ) . '</figcaption></figure>' . "\n";
+            }
+            $article = [
+                'title'    => $p->post_title,
+                'author'   => __( 'Members of VPG', 'vpg-v2' ),
+                'body'     => $body,
+                'image_id' => $first_img ?: (int) get_post_thumbnail_id( $p ),
             ];
         }
     } elseif ( $kind === 'photos' && $ids ) {

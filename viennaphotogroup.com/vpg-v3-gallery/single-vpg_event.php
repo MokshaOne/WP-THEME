@@ -123,7 +123,24 @@ get_header();
               <a href="<?php echo esc_url( get_attachment_link( $gs->ID ) ); ?>" style="display:block;aspect-ratio:1;overflow:hidden;background:var(--g-bg)">
                 <img src="<?php echo esc_url( $gu ); ?>" alt="<?php echo esc_attr( get_the_title( $gs->ID ) ); ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
               </a>
-              <figcaption class="g-meta" style="margin-top:5px;font-size:10px"><?php echo esc_html( get_the_author_meta( 'display_name', (int) $gs->post_author ) ); ?></figcaption>
+              <figcaption class="g-meta" style="margin-top:5px;font-size:10px;display:flex;gap:8px;align-items:center">
+                <span><?php echo esc_html( get_the_author_meta( 'display_name', (int) $gs->post_author ) ); ?></span>
+                <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+                  <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0" onsubmit="return confirm('<?php echo esc_js( __( 'Remove this photo permanently?', 'vpg-v2' ) ); ?>')">
+                    <?php wp_nonce_field( 'vpg_gallery_remove' ); ?>
+                    <input type="hidden" name="action" value="vpg_gallery_remove">
+                    <input type="hidden" name="photo" value="<?php echo (int) $gs->ID; ?>">
+                    <button type="submit" style="background:none;border:0;padding:0;cursor:pointer;color:var(--g-red);font-size:10px;font-weight:800"><?php esc_html_e( 'remove', 'vpg-v2' ); ?></button>
+                  </form>
+                <?php elseif ( is_user_logged_in() ) : ?>
+                  <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+                    <?php wp_nonce_field( 'vpg_gallery_report' ); ?>
+                    <input type="hidden" name="action" value="vpg_gallery_report">
+                    <input type="hidden" name="photo" value="<?php echo (int) $gs->ID; ?>">
+                    <button type="submit" title="<?php esc_attr_e( 'Report to editorial', 'vpg-v2' ); ?>" style="background:none;border:0;padding:0;cursor:pointer;color:var(--g-faint);font-size:10px">⚑</button>
+                  </form>
+                <?php endif; ?>
+              </figcaption>
             </figure>
           <?php endforeach; ?>
         </div>

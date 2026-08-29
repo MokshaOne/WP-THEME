@@ -1,0 +1,83 @@
+/* VPG v3 · a11y.css — Cluster 19 · Barrierefreiheit & i18n.
+   Net-new media queries and preference classes only — the focus ring,
+   reduced-motion and dark-mode already live in gallery.css / mobile-extra.css. */
+
+/* 0730 · visible focus everywhere a keyboard lands (belt-and-braces over gallery.css) */
+:focus-visible { outline: 3px solid var(--g-red, #E5341F); outline-offset: 2px; }
+
+/* 0742 · extended skip links — a small skip menu, not just one link */
+.vpg-skips { position: absolute; left: 0; top: 0; z-index: 1000; }
+.vpg-skips a { position: absolute; left: -9999px; top: 0; background: var(--g-ink, #0B0B0B); color: #fff; padding: 10px 16px; font: 700 14px/1 'Archivo', sans-serif; }
+.vpg-skips a:focus { left: 0; }
+.vpg-skips a:nth-child(2):focus { left: 160px; }
+.vpg-skips a:nth-child(3):focus { left: 300px; }
+
+/* 0731 · zoom-200 guarantee — nothing forces horizontal scroll */
+html { overflow-x: hidden; }
+img, svg, video, table, pre { max-width: 100%; }
+
+/* 0732 · text-spacing tolerance (WCAG 1.4.12) — never clip on raised spacing */
+.g-prose, .entry-content, article, .g-card, .i span { overflow-wrap: break-word; }
+.g-btn, .g-chip, .g-tag { min-height: 1.4em; height: auto; white-space: normal; }
+
+/* 0734 · reduced-data honours the user's data-saver request */
+@media (prefers-reduced-data: reduce) {
+  [data-decor], .g-fig--decor, video[autoplay] { display: none !important; }
+  img { image-rendering: auto; }
+}
+
+/* 0735 · Windows High-Contrast / forced-colors mode */
+@media (forced-colors: active) {
+  .g-btn, .g-chip, .vpg-thumbbar a { border: 1px solid ButtonText; }
+  :focus-visible { outline: 3px solid Highlight; }
+  .g-topbar, .g-foot, .vpg-thumbbar { border-color: CanvasText; }
+  .g-hairline, hr { border-color: CanvasText; }
+}
+
+/* 0730b · prefers-contrast: more — thicken the hairline system */
+@media (prefers-contrast: more) {
+  :root { --g-line: #0B0B0B; --g-mid: #333; }
+  a { text-decoration: underline; }
+}
+
+/* 0743 · touch-and-mouse parity — hover-only affordances get a tap fallback */
+@media (hover: none) {
+  [data-hover-only] { display: block !important; opacity: 1 !important; }
+}
+
+/* 0746 · dyslexia-friendly reading — left-aligned, roomy, per-user opt-in */
+html.vpg-dyslexia body { letter-spacing: .03em; word-spacing: .12em; line-height: 1.7; }
+html.vpg-dyslexia .g-prose, html.vpg-dyslexia .entry-content, html.vpg-dyslexia p { text-align: left !important; hyphens: none; }
+html.vpg-dyslexia * { font-family: 'Atkinson Hyperlegible', 'Archivo', system-ui, sans-serif !important; }
+
+/* 0758 · Einfacher Modus / simple mode — strips decoration, one column, big type */
+html.vpg-simple [data-decor], html.vpg-simple .g-fig--decor,
+html.vpg-simple .vpg-parallax, html.vpg-simple .g-hero__media { display: none !important; }
+html.vpg-simple body { font-size: 18px; line-height: 1.75; }
+html.vpg-simple .g-grid3, html.vpg-simple .g-grid2, html.vpg-simple .g-cols { display: block !important; }
+html.vpg-simple .g-grid3 > *, html.vpg-simple .g-grid2 > * { margin-bottom: 20px; }
+html.vpg-simple * { animation: none !important; transition: none !important; }
+
+/* 0747 · colour-blind proof — map/category chips carry a shape, never colour alone */
+.g-cat::before { content: attr(data-shape); margin-right: .35em; font-weight: 700; }
+
+/* the a11y preferences launcher + panel */
+.vpg-a11y-btn { position: fixed; left: 8px; bottom: 8px; z-index: 640; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--g-ink, #0B0B0B); color: #fff; border: 0; font-size: 18px; cursor: pointer; }
+.vpg-a11y-panel { position: fixed; left: 8px; bottom: 56px; z-index: 641; width: 260px; max-width: calc(100vw - 16px);
+  background: var(--g-paper, #fff); color: var(--g-ink, #0B0B0B); border: 1px solid var(--g-line, #E6E5E1);
+  padding: 14px 16px; font: 14px/1.5 'Archivo', sans-serif; box-shadow: 0 8px 30px rgba(0,0,0,.15); }
+.vpg-a11y-panel[hidden] { display: none; }
+.vpg-a11y-panel h3 { font: 700 13px/1.2 'Archivo', sans-serif; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 10px; }
+.vpg-a11y-panel label { display: flex; align-items: center; gap: 8px; padding: 5px 0; cursor: pointer; }
+
+/* 0729 · the announcer is visually hidden but read by AT */
+.vpg-sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px; }
+
+/* 0741 · keyboard-shortcut help overlay */
+.vpg-help-ov { position: fixed; inset: 0; z-index: 900; background: rgba(11,11,11,.6); display: flex; align-items: center; justify-content: center; }
+.vpg-help-ov[hidden] { display: none; }
+.vpg-help-ov__box { background: var(--g-paper, #fff); color: var(--g-ink, #0B0B0B); max-width: 420px; width: calc(100vw - 32px); padding: 22px 26px; border: 1px solid var(--g-line, #E6E5E1); }
+.vpg-help-ov h2 { font: 700 18px/1.2 'Archivo', sans-serif; margin: 0 0 14px; }
+.vpg-help-ov dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 14px; }
+.vpg-help-ov kbd { font: 600 12px/1 ui-monospace, monospace; background: var(--g-wash, #F4F3F0); border: 1px solid var(--g-line, #E6E5E1); border-radius: 4px; padding: 3px 6px; }

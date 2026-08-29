@@ -3,7 +3,7 @@
 Der WebGL-Hover-Effekt (Ripple + RGB-Split auf den Bildern) lädt für die GPU
 eine **eigene, CORS-fähige Kopie** des Bildes. Solange Frontend und Bilder von
 **derselben** Domain kommen, funktioniert das ohne Zutun. Da die Bilder aber von
-`wp.m1o.at` (NAS) kommen und die Seite auf `raveenthiran.com` läuft, ist das
+`wp.<deine-domain>` (NAS) kommen und die Seite auf `raveenthiran.com` läuft, ist das
 **cross-origin** — dafür muss der NAS beim Ausliefern der Uploads einen
 CORS-Header senden.
 
@@ -52,10 +52,10 @@ Danach `nginx -t && systemctl reload nginx` (bzw. den Dienst im NAS neu laden).
 
 ## Cloudflare Tunnel davor?
 
-Wenn `wp.m1o.at` durch einen Cloudflare-Tunnel läuft, reicht der Origin-Header
+Wenn `wp.<deine-domain>` durch einen Cloudflare-Tunnel läuft, reicht der Origin-Header
 oben — Cloudflare reicht ihn durch. Alternativ ginge eine
 **Transform Rule → Response Header → Set `Access-Control-Allow-Origin`** auf
-`wp.m1o.at/wp-content/uploads/*`. Nur *eine* der beiden Stellen setzen, nicht
+`wp.<deine-domain>/wp-content/uploads/*`. Nur *eine* der beiden Stellen setzen, nicht
 beide (sonst doppelter Header).
 
 ---
@@ -64,7 +64,7 @@ beide (sonst doppelter Header).
 
 ```bash
 curl -I -H "Origin: https://raveenthiran.com" \
-  https://wp.m1o.at/wp-content/uploads/2026/…/EIN-BILD.avif
+  https://wp.<deine-domain>/wp-content/uploads/2026/…/EIN-BILD.avif
 ```
 
 In der Antwort muss stehen:

@@ -1,0 +1,19 @@
+/* VPG v3 · fonts.css — self-hosted variable Archivo (latin subset, woff2).
+ * Replaces the Google Fonts CDN: one host fewer, preloadable, GDPR-quiet.
+ * Full axes: wght 100–900 · wdth 62%–125% · italic. */
+@font-face {
+    font-family: 'Archivo';
+    font-style: normal;
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: swap;
+    src: url('../fonts/web/archivo-var-latin.woff2') format('woff2-variations');
+}
+@font-face {
+    font-family: 'Archivo';
+    font-style: italic;
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: swap;
+    src: url('../fonts/web/archivo-var-latin-italic.woff2') format('woff2-variations');
+}

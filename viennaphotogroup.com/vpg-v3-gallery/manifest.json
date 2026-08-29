@@ -1,0 +1,69 @@
+{
+    "name": "Vienna Photo Group",
+    "short_name": "VPG",
+    "description": "Community resource for photographers in Vienna — locations, shops, studios, events and magazine.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#F9F7F4",
+    "theme_color": "#1A1814",
+    "categories": [
+        "photography",
+        "lifestyle",
+        "education"
+    ],
+    "lang": "de-AT",
+    "icons": [
+        {
+            "src": "/wp-content/themes/vpg-final/assets/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/wp-content/themes/vpg-final/assets/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "share_target": {
+        "action": "/submit/",
+        "method": "GET",
+        "params": { "title": "shared_title", "text": "shared_text", "url": "shared_url" }
+    },
+    "shortcuts": [
+        {
+            "name": "Quick Pin",
+            "url": "/quickpin/",
+            "description": "Photo + position, one screen"
+        },
+        {
+            "name": "Submit",
+            "url": "/submit/",
+            "description": "Add a place, studio or shop"
+        },
+        {
+            "name": "Check in",
+            "url": "/locations/?checkin=1",
+            "description": "Check in at today's walk"
+        },
+        {
+            "name": "The Map",
+            "url": "/locations/",
+            "description": "118+ curated Vienna locations"
+        },
+        {
+            "name": "Magazine",
+            "url": "/magazine/",
+            "description": "Every issue"
+        },
+        {
+            "name": "Dashboard",
+            "url": "/dashboard/",
+            "description": "Your member dashboard"
+        }
+    ],
+    "id": "/"
+}

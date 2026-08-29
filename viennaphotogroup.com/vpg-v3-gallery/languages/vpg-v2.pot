@@ -8492,3 +8492,60 @@ msgid "%d member joined through you."
 msgid_plural "%d members joined through you."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Search your bookmarks…"
+msgstr ""
+
+msgid "Nothing matched — but here are a few doors that are open:"
+msgstr ""
+
+msgid "Discover"
+msgstr ""
+
+msgid "Three <em>doors</em> daily."
+msgstr ""
+
+msgid "By the month"
+msgstr ""
+
+msgid "The <em>archive</em> calendar."
+msgstr ""
+
+msgid "A–Z"
+msgstr ""
+
+msgid "The <em>register</em>."
+msgstr ""
+
+msgid "What Wien looks for"
+msgstr ""
+
+msgid "Most <em>searched</em>."
+msgstr ""
+
+msgid "Five overlooked gems from the archive this month:\n\n"
+msgstr ""
+
+msgid "Five you may have missed"
+msgstr ""
+
+msgid "Search desk"
+msgstr ""
+
+msgid "Operators: in:journal · vor:2025 · seit:märz · "exact phrase" · -exclude. Power users: site:viennaphotogroup.com in a web search."
+msgstr ""
+
+msgid "0595 · Top searches"
+msgstr ""
+
+msgid "0579 · Missed (no results)"
+msgstr ""
+
+msgid "0582 · Synonyms (one per line: term = alt1, alt2)"
+msgstr ""
+
+msgid "0593 · OCR paste (one per line: attachmentID :: recognised text)"
+msgstr ""
+
+msgid "What this district is made of"
+msgstr ""

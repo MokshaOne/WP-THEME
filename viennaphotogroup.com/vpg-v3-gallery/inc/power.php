@@ -213,6 +213,15 @@ add_action( 'template_redirect', function () {
         <?php endif; ?>
       </div></section>
 
+      <?php // 0591 · keyword cloud for this district
+      $vpg_kw = function_exists( 'vpg_district_keywords' ) ? vpg_district_keywords( $code ) : [];
+      if ( $vpg_kw ) : $vpg_kmax = max( $vpg_kw ); ?>
+      <section class="g-section g-section--tight"><div class="g-wrap">
+        <p class="g-kicker" style="margin-bottom:12px">● <?php esc_html_e( 'What this district is made of', 'vpg-v2' ); ?></p>
+        <p style="line-height:2.2"><?php foreach ( $vpg_kw as $w => $n ) { $sz = 12 + round( $n / $vpg_kmax * 20 ); echo '<a href="' . esc_url( home_url( '/?s=' . rawurlencode( $w ) ) ) . '" style="font-size:' . $sz . 'px;margin-right:12px;text-decoration:none;color:var(--g-ink)">' . esc_html( $w ) . '</a>'; } ?></p>
+      </div></section>
+      <?php endif; ?>
+
       <?php // 0243 · district long-reads from the journal
       $vpg_reads = function_exists( 'vpg_district_reads' ) ? vpg_district_reads( $code ) : [];
       if ( $vpg_reads ) : ?>

@@ -48,6 +48,12 @@ add_action( 'wp_enqueue_scripts', function () {
     // g- component and vpg- widget (rounded shapes, elevation, focus, motion).
     wp_enqueue_style( 'vpg-material', VPG_V2_URI . '/assets/css/material.css', [ 'vpg-gallery' ], $ver( '/assets/css/material.css' ) );
 
+    // When a logged-in member sees the admin bar on the front end, match it to
+    // the rebranded panel (the #wpadminbar rules are not .wp-admin-scoped).
+    if ( is_admin_bar_showing() ) {
+        wp_enqueue_style( 'vpg-admin-material', VPG_V2_URI . '/assets/css/admin-material.css', [ 'vpg-material' ], $ver( '/assets/css/admin-material.css' ) );
+    }
+
     // 0561/0580 · command palette doubles as live search
     wp_enqueue_script( 'vpg-palette', VPG_V2_URI . '/assets/js/palette.js', [], $ver( '/assets/js/palette.js' ), true );
     wp_localize_script( 'vpg-palette', 'vpgPalette', [

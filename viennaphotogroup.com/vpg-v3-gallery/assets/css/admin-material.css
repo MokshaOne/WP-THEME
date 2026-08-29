@@ -146,8 +146,101 @@ body.vpg-admin-dark input[type=text],
 body.vpg-admin-dark textarea,
 body.vpg-admin-dark select { background: #0f0e0b; border-color: #403a32; }
 
+/* ══════════════════════════════════════════════════════════════════════
+ * The whole panel, not just the desks — chrome, menu, bar, tabs, dashboard.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* warm the working surface a touch */
+body.wp-admin, body.wp-admin #wpwrap { background: #F4F3F0; }
+body.wp-admin #wpcontent { padding-left: 22px; }
+
+/* ── Left navigation rail — dark kept, WP-blue accents rebranded red ── */
+#adminmenu, #adminmenuback, #adminmenuwrap { background: #14130F; }
+#adminmenu a { transition: color 150ms ease, background-color 150ms ease; }
+#adminmenu div.wp-menu-name { font-weight: 600; letter-spacing: .01em; }
+/* hover / open */
+#adminmenu li.menu-top:hover > a.menu-top,
+#adminmenu li.opensub > a.menu-top,
+#adminmenu a.menu-top:focus,
+#adminmenu li > a.menu-top:focus { background: #221F18 !important; color: #FF7A66 !important; box-shadow: none; }
+#adminmenu li.menu-top:hover .wp-menu-image::before,
+#adminmenu li.opensub .wp-menu-image::before,
+#adminmenu li a:focus .wp-menu-image::before { color: #FF7A66 !important; }
+/* current section — brand-red indicator */
+#adminmenu li.wp-has-current-submenu > a.wp-has-current-submenu,
+#adminmenu li.current > a.current,
+#adminmenu li.wp-has-current-submenu.opensub > a.wp-has-current-submenu,
+.folded #adminmenu li.wp-has-current-submenu > a.wp-has-current-submenu {
+  background: var(--vpgadm-red) !important; color: #fff !important; box-shadow: none;
+}
+#adminmenu li.wp-has-current-submenu .wp-menu-image::before,
+#adminmenu li.current .wp-menu-image::before,
+#adminmenu li.wp-has-current-submenu:hover .wp-menu-image::before { color: #fff !important; }
+#adminmenu .wp-submenu { background: #1B1913; border-radius: 0 12px 12px 0; }
+#adminmenu .wp-submenu a:hover,
+#adminmenu .wp-submenu a:focus,
+#adminmenu li.current a.current,
+#adminmenu .wp-submenu li.current a,
+#adminmenu .wp-submenu li.current a:hover { color: #FF7A66 !important; }
+#adminmenu li.wp-has-current-submenu .wp-submenu .wp-submenu-head { color: #fff; }
+/* the collapse button */
+#collapse-button:hover { color: #FF7A66; }
+
+/* ── Screen title area, tabs, page headers ── */
+body.wp-admin .wrap > h1.wp-heading-inline { font-weight: 800; letter-spacing: -.01em; }
+body.wp-admin .nav-tab-wrapper { border-bottom: 1px solid var(--vpgadm-line); }
+body.wp-admin .nav-tab {
+  border: 0; background: transparent; border-radius: 10px 10px 0 0;
+  margin-bottom: -1px; font-weight: 600; color: var(--vpgadm-ink);
+  transition: color 150ms ease, box-shadow 150ms ease;
+}
+body.wp-admin .nav-tab:hover { background: var(--vpgadm-surface); color: var(--vpgadm-red); }
+body.wp-admin .nav-tab-active,
+body.wp-admin .nav-tab-active:focus,
+body.wp-admin .nav-tab-active:hover {
+  background: #fff; color: var(--vpgadm-red); border: 0;
+  box-shadow: inset 0 -3px 0 var(--vpgadm-red);
+}
+
+/* ── Meta boxes / postboxes / form tables ── */
+body.wp-admin .postbox-header { border-bottom: 1px solid var(--vpgadm-line); }
+body.wp-admin .postbox-header h2, body.wp-admin .postbox .hndle { font-weight: 700; }
+body.wp-admin .form-table th { font-weight: 600; }
+body.wp-admin .metabox-holder .postbox { margin-bottom: 16px; }
+
+/* ── Tablenav: search box, pagination, bulk actions ── */
+body.wp-admin .tablenav .tablenav-pages a,
+body.wp-admin .tablenav .tablenav-pages span.current {
+  border-radius: 8px; border: 1.5px solid var(--vpgadm-line); box-shadow: none;
+}
+body.wp-admin .tablenav .tablenav-pages span.current { background: var(--vpgadm-red); color: #fff; border-color: var(--vpgadm-red); }
+body.wp-admin .subsubsub a.current { color: var(--vpgadm-red); }
+
+/* ── Links & focus accents — brand primary, not WP blue ── */
+body.wp-admin a { color: #B02616; }
+body.wp-admin a:hover, body.wp-admin a:focus { color: var(--vpgadm-red); }
+body.wp-admin .row-actions a { color: #7a7873; }
+body.wp-admin .row-actions a:hover { color: var(--vpgadm-red); }
+body.wp-admin :focus { outline-color: var(--vpgadm-red); }
+/* keep the destructive/trash link readable, not brand-red */
+body.wp-admin .row-actions .trash a, body.wp-admin .submitdelete { color: #9a1b1b; }
+
+/* ── The admin bar (also loaded on the front end for logged-in members) ── */
+#wpadminbar { background: #14130F; }
+#wpadminbar .ab-item, #wpadminbar a.ab-item, #wpadminbar > #wp-toolbar span.ab-label { color: #E6E5E1; }
+#wpadminbar .ab-top-menu > li:hover > .ab-item,
+#wpadminbar .ab-top-menu > li.hover > .ab-item,
+#wpadminbar.nojq .quicklinks .ab-top-menu > li > .ab-item:focus,
+#wpadminbar .ab-top-menu > li > .ab-item:focus,
+#wpadminbar li:hover .ab-icon::before,
+#wpadminbar li:hover .ab-item::before { background: #221F18; color: #FF7A66; }
+#wpadminbar .quicklinks .menupop ul li a:hover,
+#wpadminbar .quicklinks .menupop ul li a:focus { color: #FF7A66; }
+#wpadminbar #wp-admin-bar-site-name > .ab-item:hover { color: #FF7A66; }
+
 @media (prefers-reduced-motion: reduce) {
   body.wp-admin .button, body.wp-admin .button-primary,
-  body.wp-admin input, body.wp-admin select, body.wp-admin textarea { transition: none !important; }
+  body.wp-admin input, body.wp-admin select, body.wp-admin textarea,
+  #adminmenu a, body.wp-admin .nav-tab { transition: none !important; }
   body.wp-admin .button:hover, body.wp-admin .button-primary:hover { transform: none !important; }
 }

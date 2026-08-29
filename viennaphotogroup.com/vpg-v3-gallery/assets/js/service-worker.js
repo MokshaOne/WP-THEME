@@ -92,6 +92,27 @@ self.addEventListener('fetch', function (event) {
         url.protocol !== 'https:'
     ) return;
 
+    // 0022 · Offline map tiles — cache-first for OSM tiles a visitor has
+    // already seen, so a district they browsed keeps working in a funk-hole.
+    if (url.hostname === 'tile.openstreetmap.org') {
+        event.respondWith(
+            caches.open('vpg-tiles-v1').then(function (cache) {
+                return cache.match(request).then(function (hit) {
+                    if (hit) return hit;
+                    return fetch(request).then(function (resp) {
+                        if (resp && (resp.ok || resp.type === 'opaque')) {
+                            cache.put(request, resp.clone());
+                            // soft cap ~600 tiles · trim the oldest occasionally
+                            cache.keys().then(function (keys) { if (keys.length > 600) for (var i = 0; i < 120; i++) cache.delete(keys[i]); });
+                        }
+                        return resp;
+                    }).catch(function () { return hit; });
+                });
+            })
+        );
+        return;
+    }
+
     // Shell assets: cache first
     var isShellAsset = SHELL_ASSETS.some(function (asset) {
         return url.pathname === asset || request.url.includes('/assets/css/') || request.url.includes('/assets/js/');

@@ -253,6 +253,7 @@
     var active   = new Set(allTypes);                 // type filter (existing)
     var fAttr    = new Set();                          // attribute flags (AND)
     var fTheme   = new Set();                          // themes (OR)
+    var fDist    = new Set();                          // 0017 compare · districts (OR)
     var yMin = null, yMax = null;
     pins.forEach(function (p) { if (p.year) { yMin = yMin === null ? p.year : Math.min(yMin, p.year); yMax = yMax === null ? p.year : Math.max(yMax, p.year); } });
     var yLo = yMin, yHi = yMax;
@@ -264,6 +265,7 @@
       fAttr.forEach(function (k) { if (!a[k]) ok = false; });
       if (!ok) return false;
       if (fTheme.size) { var th = a.themes || [], any = false; fTheme.forEach(function (t) { if (th.indexOf(t) !== -1) any = true; }); if (!any) return false; }
+      if (fDist.size) { var d = m._vpgPin && m._vpgPin.district; if (!d || !fDist.has(d)) return false; }
       var yr = m._vpgPin && m._vpgPin.year;
       if (yLo !== null && yr && (yr < yLo || yr > yHi)) return false;
       return true;
@@ -308,6 +310,12 @@
     try { if (yMin !== null && yMax !== null && yMax > yMin) addYearSlider(el, yMin, yMax, function (lo, hi) { yLo = lo; yHi = hi; renderMarkers(); }); } catch (e) {}
     try { addMapTools(el, map, byType, byId, pins); } catch (e) {}
     try { addGoldenTimeline(el); } catch (e) {}
+    try { addShadowDial(el); } catch (e) {}
+    try { addHeatToggle(el, map, pins); } catch (e) {}
+    try { addCompareSplit(el, pins, fDist, renderMarkers); } catch (e) {}
+    try { addMeetups(el, map); } catch (e) {}
+    try { addWeatherBadge(el); } catch (e) {}
+    try { runMapOnboarding(el); } catch (e) {}
     try {
       // 0012 · spot combos · nearest three others, injected on popup open
       map.on('popupopen', function (ev) {
@@ -488,6 +496,121 @@
       var solarNoon = 12 - lng / 15 + tz;
       return { sunrise: solarNoon - ha / 15, sunset: solarNoon + ha / 15, dusk: solarNoon + (ha + 6) / 15 };
     } catch (e) { return null; }
+  }
+
+  /* 0003 · shadow dial · where shadows fall right now (sun opposite) */
+  function addShadowDial(el) {
+    var sun = sunAzimuthNow();
+    var dial = document.createElement('div');
+    dial.style.cssText = 'position:absolute;left:10px;bottom:10px;z-index:800;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.94);border:1px solid #0B0B0B;font:700 8px/1 sans-serif';
+    if (sun === null) {
+      dial.innerHTML = '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#6A6A6A">☾ dark</span>';
+    } else {
+      var shadow = (sun + 180) % 360; // shadows point away from the sun
+      dial.title = 'Sun ' + Math.round(sun) + '° · shadows ' + Math.round(shadow) + '°';
+      dial.innerHTML =
+        '<span style="position:absolute;top:2px;left:50%;transform:translateX(-50%);color:#6A6A6A">N</span>' +
+        '<span style="position:absolute;top:50%;left:50%;width:2px;height:22px;background:#E5341F;transform-origin:top center;transform:translate(-50%,0) rotate(' + sun + 'deg)" title="sun"></span>' +
+        '<span style="position:absolute;top:50%;left:50%;width:2px;height:22px;background:#0B0B0B;transform-origin:top center;transform:translate(-50%,0) rotate(' + shadow + 'deg)" title="shadow"></span>' +
+        '<span style="position:absolute;left:50%;top:50%;width:4px;height:4px;background:#0B0B0B;border-radius:50%;transform:translate(-50%,-50%)"></span>';
+    }
+    el.appendChild(dial);
+  }
+
+  /* 0013 · upload heatmap · translucent discs darken where pins cluster */
+  function addHeatToggle(el, map, pins) {
+    ensureControlCss();
+    var box = el.querySelector('.vpg-map-ctl'); // reuse the last tool box if present
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.textContent = '❖'; btn.title = 'Upload density';
+    var layer = null;
+    btn.addEventListener('click', function () {
+      if (layer) { map.removeLayer(layer); layer = null; btn.classList.remove('is-on'); return; }
+      layer = L.layerGroup();
+      pins.forEach(function (p) { if (typeof p.lat === 'number') L.circle([p.lat, p.lng], { radius: 180, stroke: false, fillColor: '#E5341F', fillOpacity: 0.12 }).addTo(layer); });
+      layer.addTo(map); btn.classList.add('is-on');
+    });
+    if (box) box.appendChild(btn);
+    else { var b2 = document.createElement('div'); b2.className = 'vpg-map-ctl'; b2.style.top = '150px'; b2.appendChild(btn); el.appendChild(b2); }
+  }
+
+  /* 0017 · compare split · pick two districts, show only those */
+  function addCompareSplit(el, pins, fDist, render) {
+    var dists = {};
+    pins.forEach(function (p) { if (p.district) dists[p.district] = true; });
+    var list = Object.keys(dists).sort();
+    if (list.length < 2) return;
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:8px;align-items:center;margin:10px 0 0;font-family:\'Archivo\',sans-serif;font-size:11px;font-weight:700;color:#6A6A6A;flex-wrap:wrap';
+    function sel() { var s = document.createElement('select'); s.style.cssText = 'padding:5px 8px;border:1px solid #0B0B0B'; s.innerHTML = '<option value="">—</option>' + list.map(function (d) { return '<option>' + d + '</option>'; }).join(''); return s; }
+    var a = sel(), b = sel();
+    function upd() { fDist.clear(); if (a.value) fDist.add(a.value); if (b.value) fDist.add(b.value); render(); }
+    a.addEventListener('change', upd); b.addEventListener('change', upd);
+    wrap.appendChild(document.createTextNode('⇆ compare')); wrap.appendChild(a); wrap.appendChild(b);
+    el.insertAdjacentElement('afterend', wrap);
+  }
+
+  /* 0025 · meetups near me · upcoming events from data-events */
+  function addMeetups(el, map) {
+    var events; try { events = JSON.parse(el.getAttribute('data-events') || '[]'); } catch (e) { events = []; }
+    if (!events.length || !navigator.geolocation) return;
+    ensureControlCss();
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.textContent = '⚑'; btn.title = 'Meetups near me';
+    var layer = null;
+    btn.addEventListener('click', function () {
+      if (layer) { map.removeLayer(layer); layer = null; btn.classList.remove('is-on'); return; }
+      btn.textContent = '…';
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        btn.textContent = '⚑'; btn.classList.add('is-on');
+        layer = L.layerGroup();
+        events.forEach(function (ev) {
+          var d = haversine(pos.coords.latitude, pos.coords.longitude, ev.lat, ev.lng);
+          L.marker([ev.lat, ev.lng], { icon: L.divIcon({ className: '', html: '<span style="background:#0B0B0B;color:#fff;padding:3px 8px;font:700 11px/1 sans-serif;white-space:nowrap;border:2px solid #E5341F">⚑ ' + ev.title + '</span>' }) })
+            .bindPopup('<b>' + ev.title + '</b><br>' + (ev.date || '') + ' · ' + distLabel(d) + '<br><a href="' + ev.url + '">→</a>').addTo(layer);
+        });
+        layer.addTo(map);
+      }, function () { btn.textContent = '⚑'; });
+    });
+    var box = document.createElement('div'); box.className = 'vpg-map-ctl'; box.style.top = '196px'; box.appendChild(btn); el.appendChild(box);
+  }
+
+  /* 0039 · live weather badge · open-meteo current for Vienna, CORS-open */
+  function addWeatherBadge(el) {
+    var badge = document.createElement('a');
+    badge.href = 'https://open-meteo.com/'; badge.target = '_blank'; badge.rel = 'noopener';
+    badge.style.cssText = 'position:absolute;top:10px;left:10px;z-index:800;background:#fff;border:1px solid #0B0B0B;padding:5px 10px;font:700 11px/1 sans-serif;color:#0B0B0B;text-decoration:none;display:none';
+    el.appendChild(badge);
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=48.21&longitude=16.37&current=temperature_2m,cloud_cover,weather_code')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var c = d && d.current; if (!c) return;
+        var icon = c.cloud_cover > 70 ? '☁' : (c.cloud_cover > 30 ? '⛅' : '☀');
+        badge.textContent = icon + ' ' + Math.round(c.temperature_2m) + '°C · ' + Math.round(c.cloud_cover) + '% cloud';
+        badge.style.display = 'block';
+      }).catch(function () {});
+  }
+
+  /* 0040 · onboarding · a one-time 60-second nudge for first visitors */
+  function runMapOnboarding(el) {
+    var KEY = 'vpg_map_tour';
+    try { if (localStorage.getItem(KEY)) return; } catch (e) { return; }
+    var tip = document.createElement('div');
+    tip.style.cssText = 'position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:850;background:#0B0B0B;color:#fff;padding:12px 18px;max-width:320px;font:13px/1.5 \'Archivo\',sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.3)';
+    var steps = [
+      '👋 Welcome to the map. Click a pin for light notes, tripod rules and access — everything a member noticed on-site.',
+      '🧭 Use the chips under the map to filter: rain-safe, night, step-free, by theme.',
+      '🛠 Top-right tools: measure a walk, search a radius, go fullscreen. Bottom-left dial shows where shadows fall now.',
+      '☆ Save spots to a private tour, mark them visited — all in your browser only. Happy shooting.'
+    ];
+    var i = 0;
+    function show() {
+      tip.innerHTML = '<div>' + steps[i] + '</div><div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#A5A29C">' + (i + 1) + ' / ' + steps.length + '</span><button style="background:#E5341F;color:#fff;border:0;padding:6px 14px;font-weight:800;cursor:pointer">' + (i < steps.length - 1 ? 'Next →' : 'Got it') + '</button></div>';
+      tip.querySelector('button').addEventListener('click', function () {
+        i++; if (i >= steps.length) { try { localStorage.setItem(KEY, '1'); } catch (e) {} tip.remove(); } else show();
+      });
+    }
+    show(); el.appendChild(tip);
   }
 
   /* ── Corner controls · fullscreen + "near me" ── */

@@ -171,7 +171,20 @@ $h = $hero_copy[ $type_filter ];
         <span><span style="color:var(--g-red,#E5341F)">●</span> <?php esc_html_e( 'Blue hour', 'vpg-v2' ); ?> <?php echo esc_html( $lt['blue'] ); ?></span>
       </p>
       <?php endif; ?>
-      <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $map_pins ) ); ?>"></div>
+      <?php
+      // 0025 · upcoming events for the "meetups near me" toggle
+      $ev_pins = [];
+      foreach ( get_posts( [ 'post_type' => 'vpg_event', 'post_status' => 'publish', 'posts_per_page' => 40, 'meta_key' => '_vpg_event_date', 'meta_query' => [ [ 'key' => '_vpg_event_date', 'value' => gmdate( 'Y-m-d' ), 'compare' => '>=' ] ] ] ) as $ep ) {
+          $elat = get_post_meta( $ep->ID, '_vpg_event_lat', true ); $elng = get_post_meta( $ep->ID, '_vpg_event_lng', true );
+          if ( $elat && $elng ) $ev_pins[] = [ 'id' => $ep->ID, 'title' => get_the_title( $ep ), 'url' => get_permalink( $ep ), 'lat' => (float) $elat, 'lng' => (float) $elng, 'date' => get_post_meta( $ep->ID, '_vpg_event_date', true ) ];
+      }
+      ?>
+      <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $map_pins ) ); ?>" data-events="<?php echo esc_attr( wp_json_encode( $ev_pins ) ); ?>"></div>
+      <?php if ( is_user_logged_in() ) : ?>
+      <details style="margin:10px 0 0;font-size:12px;color:var(--g-mid,#6A6A6A)"><summary style="cursor:pointer;font-weight:700"><?php esc_html_e( 'Embed this map', 'vpg-v2' ); ?></summary>
+        <input type="text" readonly onclick="this.select()" style="width:100%;margin-top:8px;padding:8px;font-family:ui-monospace,monospace;font-size:11px" value="&lt;iframe src=&quot;<?php echo esc_url( home_url( '/embed/map/' ) ); ?>&quot; width=&quot;100%&quot; height=&quot;480&quot; style=&quot;border:1px solid #0B0B0B&quot; loading=&quot;lazy&quot;&gt;&lt;/iframe&gt;">
+      </details>
+      <?php endif; ?>
       <?php // 0014 · the blank districts, named — a standing call to fill them
       $blank = function_exists( 'vpg_missing_districts' ) ? vpg_missing_districts() : [];
       if ( $blank ) : ?>

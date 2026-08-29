@@ -64,7 +64,8 @@ require_once VPG_V2_DIR . '/inc/followups2.php';      // Q8 · circle rounds · 
 require_once VPG_V2_DIR . '/inc/imagesearch.php';     // Q9 · similar/colour search · anonymise · vision hooks
 require_once VPG_V2_DIR . '/inc/formats.php';         // Q9 · EPUB · zine · annual · listen
 require_once VPG_V2_DIR . '/inc/federation.php';      // Q9 · ActivityPub · webmentions
-require_once VPG_V2_DIR . '/inc/map-attributes.php';  // Cluster 01 · curated spot attributes       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
+require_once VPG_V2_DIR . '/inc/map-attributes.php';  // Cluster 01 · curated spot attributes
+require_once VPG_V2_DIR . '/inc/map-tools.php';       // Cluster 01 · poster/QR · legend · embed · mini-map       // Q6 · gallery moderation · district index · glossary autolinks          // Q5 · project rooms · event galleries · walls · collections         // Q3 · missing districts · coffee · idea box · views · stats
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

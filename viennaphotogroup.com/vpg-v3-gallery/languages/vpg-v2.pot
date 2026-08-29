@@ -5373,3 +5373,43 @@ msgstr ""
 #: inc/submission-queue.php
 msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
 msgstr ""
+
+#: archive-vpg_location.php
+msgid "Embed this map"
+msgstr ""
+
+#: inc/community.php
+msgid "Hello %1\$s,\n\nQuick reminder — \\"%2\$s\\" is tomorrow%3\$s.%5\$s\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/map-tools.php
+msgid "Scan to open the spot"
+msgstr ""
+
+#: inc/map-tools.php
+msgid "Map legend"
+msgstr ""
+
+#: inc/map-tools.php
+msgid "Symbols"
+msgstr ""
+
+#: inc/map-tools.php
+msgid "Print A6"
+msgstr ""
+
+#: inc/map-tools.php
+msgid "◑ A much-photographed spot. Worth looking for the frame everyone else misses."
+msgstr ""
+
+#: inc/map-tools.php
+msgid "Print poster (QR)"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "%1\$s says something changed at \\"%2\$s\\" — access, hours or the place itself.\n\nCheck and update:\n%3\$s"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
+msgstr ""

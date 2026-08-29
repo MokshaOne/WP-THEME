@@ -8991,3 +8991,164 @@ msgid "%s device is signed in."
 msgid_plural "%s devices are signed in."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "[VPG] Mail bounce rate is high"
+msgstr ""
+
+msgid "Failure ratio has crossed 15%% (%1$d failed of %2$d). Check deliverability."
+msgstr ""
+
+msgid "Here’s what you missed on Vienna Photo Group:"
+msgstr ""
+
+msgid "Link expired"
+msgstr ""
+
+msgid "Please manage your emails from your dashboard instead."
+msgstr ""
+
+msgid "You’re unsubscribed"
+msgstr ""
+
+msgid "No more routine emails. Thank you for telling us why."
+msgstr ""
+
+msgid "We’ll send just one gentle note a year — nothing else."
+msgstr ""
+
+msgid "Stop routine emails to %s?"
+msgstr ""
+
+msgid "One reason, if you like (optional):"
+msgstr ""
+
+msgid "Too many emails"
+msgstr ""
+
+msgid "Not relevant to me"
+msgstr ""
+
+msgid "I never signed up"
+msgstr ""
+
+msgid "Just taking a break"
+msgstr ""
+
+msgid "Keep just one yearly note from VPG"
+msgstr ""
+
+msgid "Email archive"
+msgstr ""
+
+msgid "Missed a digest? Read past sends here."
+msgstr ""
+
+msgid "No archived emails yet."
+msgstr ""
+
+msgid "Email preferences saved."
+msgstr ""
+
+msgid "Events & reminders"
+msgstr ""
+
+msgid "Community activity"
+msgstr ""
+
+msgid "Feedback on your work"
+msgstr ""
+
+msgid "General news"
+msgstr ""
+
+msgid "Email frequency"
+msgstr ""
+
+msgid "Right away"
+msgstr ""
+
+msgid "Daily digest"
+msgstr ""
+
+msgid "Weekly digest"
+msgstr ""
+
+msgid "Save email preferences"
+msgstr ""
+
+msgid "Digests never arrive between 22:00 and 07:00. Critical account emails always come right away."
+msgstr ""
+
+msgid "Mail & Notifications"
+msgstr ""
+
+msgid "VPG test email"
+msgstr ""
+
+msgid "Test email sent to you."
+msgstr ""
+
+msgid "Send failed — check the mail log."
+msgstr ""
+
+msgid "0810 · Deliverability"
+msgstr ""
+
+msgid "Sent %1$s · failed %2$s · outbox waiting %3$s"
+msgstr ""
+
+msgid "0811 · Suppressed (hard-bounced) addresses"
+msgstr ""
+
+msgid "restore"
+msgstr ""
+
+msgid "0808 · Reply-To"
+msgstr ""
+
+msgid "Where replies to system mail should land."
+msgstr ""
+
+msgid "0802 / 0822 · Preview & test-send"
+msgstr ""
+
+msgid "Hello from Vienna Photo Group."
+msgstr ""
+
+msgid "Send test to myself"
+msgstr ""
+
+msgid "View mail archive"
+msgstr ""
+
+msgid "0836 · Why people unsubscribe"
+msgstr ""
+
+msgid "0821 · Template variables"
+msgstr ""
+
+msgid "Notification bodies support: the recipient display name, the dashboard URL, and the unsubscribe link (added automatically as a List-Unsubscribe header). Keep bodies plain text — the HTML shell and a dark-mode style are applied at send time, and a plain-text twin is generated for you."
+msgstr ""
+
+msgid "0825 · Subject-line guidelines"
+msgstr ""
+
+msgid "Say the thing — no “Newsletter #14”, no empty teasers."
+msgstr ""
+
+msgid "Under ~50 characters; front-load the meaning."
+msgstr ""
+
+msgid "No ALL CAPS, no “!!!”, no fake “Re:”."
+msgstr ""
+
+msgid "Assess once — 0827 BIMI · 0840 template versioning · 0828 preference import"
+msgstr ""
+
+msgid "BIMI (logo in the inbox) needs DMARC at enforcement first — evaluate the effort once. Track mail-template changes in the repo like code. Keep the newsletter CSV export as the portable record of opt-outs so they survive a system change."
+msgstr ""
+
+msgid "%s update from VPG"
+msgid_plural "%s updates from VPG"
+msgstr[0] ""
+msgstr[1] ""

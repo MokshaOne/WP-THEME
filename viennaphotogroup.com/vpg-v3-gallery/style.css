@@ -4,7 +4,7 @@ Theme URI:   https://viennaphotogroup.com
 Author:      Raveenthiran × on1.agency
 Author URI:  https://on1.agency
 Description: Vienna Photo Group · v3 — the "Gallery" design: crisp white, image-led, modern grotesque (Archivo), one red accent. Built on the full v2 backend — seven CPT archives (events, locations, magazine, reviews, shops, studios, tutorials), member dashboards, submission flows, PWA, monthly magazine PDF generator, Leaflet location map. The presentation layer is re-skinned to the Gallery system (assets/css/gallery.css); design tokens are remapped in assets/css/tokens.css so every inner template follows. Pure PHP · CSS · vanilla JS. No page builder, no premium-plugin dependencies.
-Version:     3.32.0
+Version:     3.33.0
 Requires at least: 6.0
 Tested up to:      6.5
 Requires PHP:      8.0

@@ -85,6 +85,7 @@ require_once VPG_V2_DIR . '/inc/perf.php';            // Cluster 17 · speculati
 require_once VPG_V2_DIR . '/inc/seo-plus.php';        // Cluster 18 · JSON-LD · meta · canonical · redirects · /go/ · llms.txt · RSS · SEO desk
 require_once VPG_V2_DIR . '/inc/a11y-i18n.php';       // Cluster 19 · skip links · aria-live · simple/dyslexia modes · statement · barrier report · alt coverage · A11y desk
 require_once VPG_V2_DIR . '/inc/trust-safety.php';    // Cluster 20 · rate-limit · reports · block/panic · word filter · escalation · audit log · security headers · sessions · security.txt · Trust desk
+require_once VPG_V2_DIR . '/inc/mail-plus.php';       // Cluster 21 · Reply-To · List-Unsubscribe · AltBody · dark mail · digest queue · outbox · bounce suppression · archive · Mail desk
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

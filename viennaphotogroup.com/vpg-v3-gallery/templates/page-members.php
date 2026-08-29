@@ -46,7 +46,7 @@ $members = get_users( [
                 <div class="g-byline"><span><?php printf( esc_html__( 'since %s', 'vpg-v2' ), esc_html( mysql2date( 'M Y', $m->user_registered ) ) ); ?></span><span>·</span><span><?php printf( esc_html( _n( '%d work', '%d works', (int) $works, 'vpg-v2' ) ), (int) $works ); ?></span><?php
                 if ( function_exists( 'vpg_member_rank' ) ) {
                     $mr = vpg_member_rank( $m->ID );
-                    if ( $mr['count'] > 10 ) echo '<span>·</span><span style="color:var(--g-red);font-weight:700">' . esc_html( $mr['label'] ) . '</span>';
+                    if ( $mr['level'] >= 1 ) echo '<span>·</span><span style="color:var(--g-red);font-weight:700">' . esc_html( $mr['label'] ) . '</span>';
                 }
                 ?></div>
               </div>

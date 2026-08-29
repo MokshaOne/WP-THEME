@@ -129,11 +129,11 @@ get_header();
                   'vpg_trail'    => __( 'Photo trail · a walking route of map spots', 'vpg-v2' ),
               ];
               $unlock_hint = [
-                  'vpg_review'   => __( 'unlocks at Contributor · 11 works', 'vpg-v2' ),
-                  'vpg_tutorial' => __( 'unlocks at Contributor · 11 works', 'vpg-v2' ),
-                  'post'         => __( 'unlocks at Contributor · 11 works', 'vpg-v2' ),
-                  'vpg_event'    => __( 'unlocks at Documentarian · 51 works', 'vpg-v2' ),
-                  'vpg_trail'    => __( 'unlocks at Documentarian · 51 works', 'vpg-v2' ),
+                  'vpg_review'   => __( 'unlocks at Contributor · 25 map entries', 'vpg-v2' ),
+                  'vpg_tutorial' => __( 'unlocks at Contributor · 25 map entries', 'vpg-v2' ),
+                  'post'         => __( 'unlocks at Contributor · 25 map entries', 'vpg-v2' ),
+                  'vpg_event'    => __( 'unlocks at Documentarian · 50 editorial works', 'vpg-v2' ),
+                  'vpg_trail'    => __( 'unlocks at Documentarian · 50 editorial works', 'vpg-v2' ),
               ];
               $my_types = function_exists( 'vpg_types_for_rank' ) ? vpg_types_for_rank() : array_keys( $type_labels );
               ?>

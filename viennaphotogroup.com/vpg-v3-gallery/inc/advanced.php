@@ -160,18 +160,48 @@ function vpg_trust_label( $level ) {
  * moderation privileges come from vpg_trust_level() above. Ranks are
  * recognition — the ladder every profile and dashboard shows.
  */
-function vpg_member_ranks() {
-    return apply_filters( 'vpg_member_ranks', [
-        0   => __( 'Member', 'vpg-v2' ),        // 0–10
-        11  => __( 'Contributor', 'vpg-v2' ),   // 11–50
-        51  => __( 'Documentarian', 'vpg-v2' ), // 51–100
-        101 => __( 'Resident', 'vpg-v2' ),      // 100+
+/**
+ * The ladder · each rank is earned by proving yourself in the formats
+ * of the stage before it — the map comes first, always:
+ *
+ *   Member         the door · you feed the map
+ *   Contributor    25 published map entries (location/studio/shop)
+ *   Documentarian  + 50 published editorial works (review/tutorial/journal)
+ *   Resident       + 10 published events & trails
+ *
+ * Stages are strictly sequential: journal posts don't count until the
+ * 25 map entries exist. Filter vpg_rank_ladder to tune numbers/types.
+ */
+function vpg_rank_ladder() {
+    return apply_filters( 'vpg_rank_ladder', [
+        [
+            'label'   => __( 'Contributor', 'vpg-v2' ),
+            'need'    => 25,
+            'types'   => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ],
+            'goal'    => __( 'map entries', 'vpg-v2' ),
+            'unlocks' => [ 'vpg_review', 'vpg_tutorial', 'post' ],
+        ],
+        [
+            'label'   => __( 'Documentarian', 'vpg-v2' ),
+            'need'    => 50,
+            'types'   => [ 'vpg_review', 'vpg_tutorial', 'post' ],
+            'goal'    => __( 'editorial works', 'vpg-v2' ),
+            'unlocks' => [ 'vpg_event', 'vpg_trail' ],
+        ],
+        [
+            'label'   => __( 'Resident', 'vpg-v2' ),
+            'need'    => 10,
+            'types'   => [ 'vpg_event', 'vpg_trail' ],
+            'goal'    => __( 'events & trails', 'vpg-v2' ),
+            'unlocks' => [],
+        ],
     ] );
 }
 
 /**
  * Rank info for a member:
- * [ 'label', 'count', 'next' => label|null, 'next_at' => int|null ].
+ * [ 'label', 'level' => 0-3, 'count' => total published,
+ *   'next' => label|null, 'next_have', 'next_need', 'next_goal' ].
  */
 function vpg_member_rank( $uid ) {
     $count = (int) count_user_posts(
@@ -179,20 +209,24 @@ function vpg_member_rank( $uid ) {
         function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'post' ],
         true
     );
-    $ranks = vpg_member_ranks();
-    ksort( $ranks );
     $label = __( 'Member', 'vpg-v2' );
-    $next  = null;
-    $at    = null;
-    foreach ( $ranks as $min => $name ) {
-        if ( $count >= $min ) {
-            $label = $name;
-        } elseif ( $next === null ) {
-            $next = $name;
-            $at   = $min;
+    $level = 0;
+    foreach ( vpg_rank_ladder() as $stage ) {
+        $have = (int) count_user_posts( $uid, $stage['types'], true );
+        if ( $have < $stage['need'] ) {
+            return [
+                'label' => $label, 'level' => $level, 'count' => $count,
+                'next'  => $stage['label'], 'next_have' => $have,
+                'next_need' => $stage['need'], 'next_goal' => $stage['goal'],
+            ];
         }
+        $label = $stage['label'];
+        $level++;
     }
-    return [ 'label' => $label, 'count' => $count, 'next' => $next, 'next_at' => $at ];
+    return [
+        'label' => $label, 'level' => $level, 'count' => $count,
+        'next'  => null, 'next_have' => null, 'next_need' => null, 'next_goal' => null,
+    ];
 }
 
 /* ─── Rank privileges · earned rights, with the trust level as brake ─
@@ -214,21 +248,21 @@ function vpg_rank_privileges( $uid = null ) {
     $none  = [ 'instant' => [], 'edit_live' => false ];
     if ( ! $uid ) return $none;
 
-    $count = vpg_member_rank( $uid )['count'];
+    $level = vpg_member_rank( $uid )['level'];
     $priv  = $none;
 
     if ( vpg_trust_level( $uid ) >= 2 ) {
         $all = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [];
-        if ( $count >= 101 ) {
+        if ( $level >= 3 ) {        // Resident
             $priv = [ 'instant' => $all, 'edit_live' => true ];
-        } elseif ( $count >= 51 ) {
+        } elseif ( $level === 2 ) { // Documentarian
             $priv = [ 'instant' => array_values( array_diff( $all, [ 'post' ] ) ), 'edit_live' => true ];
-        } elseif ( $count >= 11 ) {
+        } elseif ( $level === 1 ) { // Contributor
             $priv = [ 'instant' => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ], 'edit_live' => false ];
         }
     }
 
-    return apply_filters( 'vpg_rank_privileges', $priv, $uid, $count );
+    return apply_filters( 'vpg_rank_privileges', $priv, $uid, $level );
 }
 
 /* ─── Which types a rank may submit at all · the growth journey ─────
@@ -250,16 +284,11 @@ function vpg_types_for_rank( $uid = null ) {
     $all = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [];
     if ( $uid && user_can( $uid, 'edit_others_posts' ) ) return $all; // editorial submits anything
 
-    $count = $uid ? vpg_member_rank( $uid )['count'] : 0;
-    $tiers = apply_filters( 'vpg_types_by_rank', [
-        0  => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ],
-        11 => [ 'vpg_review', 'vpg_tutorial', 'post' ],
-        51 => [ 'vpg_event', 'vpg_trail' ],
-    ] );
-
-    $allowed = [];
-    foreach ( $tiers as $min => $types ) {
-        if ( $count >= $min ) $allowed = array_merge( $allowed, $types );
+    // Everyone starts on the map · each completed stage adds its unlocks.
+    $allowed = [ 'vpg_location', 'vpg_studio', 'vpg_shop' ];
+    $level   = $uid ? vpg_member_rank( $uid )['level'] : 0;
+    foreach ( array_slice( vpg_rank_ladder(), 0, $level ) as $stage ) {
+        $allowed = array_merge( $allowed, $stage['unlocks'] );
     }
     return array_values( array_intersect( $all, $allowed ) );
 }

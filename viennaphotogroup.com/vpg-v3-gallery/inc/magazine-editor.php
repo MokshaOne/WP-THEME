@@ -525,6 +525,12 @@ function vpg_magazine_edit_page() {
                         action;
                     row.querySelector('.vpg-pick-item__title').textContent = it.title;
                     row.querySelector('.vpg-pick-item__meta').textContent  = it.meta;
+                    if (it.vip) {
+                        var vip = document.createElement('span');
+                        vip.textContent = '★ VIP';
+                        vip.style.cssText = 'margin-left:8px;font-size:10px;font-weight:800;letter-spacing:.08em;color:#fff;background:#E5341F;padding:2px 7px;border-radius:3px;vertical-align:1px';
+                        row.querySelector('.vpg-pick-item__title').appendChild(vip);
+                    }
                     pickList.appendChild(row);
                 });
                 pickList.querySelectorAll('.vpg-pick-add').forEach(function (btn) {
@@ -774,15 +780,24 @@ add_action( 'wp_ajax_vpg_mag_pick_list', function () {
             'orderby'        => 'date',
             'order'          => 'DESC',
         ] );
+        // Residents are VIP · their photos are flagged and float to the top.
+        $vip_cache = [];
         foreach ( $q->posts as $p ) {
+            $aid = (int) $p->post_author;
+            if ( ! isset( $vip_cache[ $aid ] ) ) {
+                $vip_cache[ $aid ] = function_exists( 'vpg_member_rank' ) && vpg_member_rank( $aid )['level'] >= 3;
+            }
             $items[] = [
                 'id'    => $p->ID,
                 'title' => $p->post_title ?: basename( get_attached_file( $p->ID ) ),
                 'meta'  => get_the_author_meta( 'display_name', $p->post_author )
-                           . ' · ' . mysql2date( 'M j, Y', $p->post_date ),
+                           . ' · ' . mysql2date( 'M j, Y', $p->post_date )
+                           . ( $vip_cache[ $aid ] ? ' · ' . __( 'Resident', 'vpg-v2' ) : '' ),
                 'thumb' => wp_get_attachment_image_url( $p->ID, 'thumbnail' ) ?: '',
+                'vip'   => $vip_cache[ $aid ],
             ];
         }
+        usort( $items, fn( $a, $b ) => (int) $b['vip'] <=> (int) $a['vip'] ); // stable · VIP first, dates keep order
     } else {
         wp_send_json_error( 'unknown kind' );
     }

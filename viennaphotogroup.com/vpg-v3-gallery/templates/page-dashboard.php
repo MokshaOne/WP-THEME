@@ -75,11 +75,12 @@ get_header();
             printf( esc_html__( 'Member since %s.', 'vpg-v2' ), esc_html( $member_since ) );
             if ( $rank && $rank['next'] ) {
                 echo ' ' . esc_html( sprintf(
-                    /* translators: 1: published count, 2: count still needed, 3: next rank name */
-                    __( '%1$d works published — %2$d more to %3$s.', 'vpg-v2' ),
-                    $rank['count'],
-                    $rank['next_at'] - $rank['count'],
-                    $rank['next']
+                    /* translators: 1: next rank name, 2: current milestone count, 3: needed count, 4: milestone kind (e.g. "map entries") */
+                    __( 'On the way to %1$s: %2$d of %3$d %4$s.', 'vpg-v2' ),
+                    $rank['next'],
+                    $rank['next_have'],
+                    $rank['next_need'],
+                    $rank['next_goal']
                 ) );
             }
           ?></p>
@@ -94,10 +95,10 @@ get_header();
                 $priv_line = __( 'Publishes instantly (journal reviewed) · edit live', 'vpg-v2' );
             } elseif ( $priv['instant'] ) {
                 $priv_line = __( 'Map entries publish instantly', 'vpg-v2' );
-            } elseif ( $rank['count'] >= 11 ) {
+            } elseif ( $rank['level'] >= 1 ) {
                 $priv_line = __( 'Privileges paused — confirm your email / open reports', 'vpg-v2' );
             } else {
-                $priv_line = __( 'Via the review desk — 11 works unlock instant map publishing', 'vpg-v2' );
+                $priv_line = __( 'Via the review desk — 25 map entries unlock Contributor', 'vpg-v2' );
             }
         }
         ?>

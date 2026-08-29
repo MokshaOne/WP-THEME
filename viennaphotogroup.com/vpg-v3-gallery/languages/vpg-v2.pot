@@ -3153,3 +3153,31 @@ msgstr ""
 #: templates/page-submit.php
 msgid "unlocks at Documentarian · 51 works"
 msgstr ""
+
+#: templates/page-dashboard.php
+msgid "On the way to %1$s: %2$d of %3$d %4$s."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Via the review desk — 25 map entries unlock Contributor"
+msgstr ""
+
+#: inc/advanced.php
+msgid "editorial works"
+msgstr ""
+
+#: inc/advanced.php
+msgid "events & trails"
+msgstr ""
+
+#: inc/advanced.php
+msgid "map entries"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "unlocks at Contributor · 25 map entries"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "unlocks at Documentarian · 50 editorial works"
+msgstr ""

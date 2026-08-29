@@ -575,20 +575,16 @@
     var box = document.createElement('div'); box.className = 'vpg-map-ctl'; box.style.top = '196px'; box.appendChild(btn); el.appendChild(box);
   }
 
-  /* 0039 · live weather badge · open-meteo current for Vienna, CORS-open */
+  /* 0039 · live weather badge · reuses the server-side vpg_weather()
+     result (Open-Meteo, cached 30 min) passed in via data-weather — no
+     separate per-visitor fetch, one cached source shared with the singles. */
   function addWeatherBadge(el) {
-    var badge = document.createElement('a');
-    badge.href = 'https://open-meteo.com/'; badge.target = '_blank'; badge.rel = 'noopener';
-    badge.style.cssText = 'position:absolute;top:10px;left:10px;z-index:800;background:#fff;border:1px solid #0B0B0B;padding:5px 10px;font:700 11px/1 sans-serif;color:#0B0B0B;text-decoration:none;display:none';
+    var wx; try { wx = JSON.parse(el.getAttribute('data-weather') || 'null'); } catch (e) { wx = null; }
+    if (!wx || !wx.temp) return;
+    var badge = document.createElement('span');
+    badge.style.cssText = 'position:absolute;top:10px;left:10px;z-index:800;background:#fff;border:1px solid #0B0B0B;padding:5px 10px;font:700 11px/1 sans-serif;color:#0B0B0B';
+    badge.textContent = '☁ ' + wx.temp + (wx.label ? ' · ' + wx.label : '');
     el.appendChild(badge);
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=48.21&longitude=16.37&current=temperature_2m,cloud_cover,weather_code')
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var c = d && d.current; if (!c) return;
-        var icon = c.cloud_cover > 70 ? '☁' : (c.cloud_cover > 30 ? '⛅' : '☀');
-        badge.textContent = icon + ' ' + Math.round(c.temperature_2m) + '°C · ' + Math.round(c.cloud_cover) + '% cloud';
-        badge.style.display = 'block';
-      }).catch(function () {});
   }
 
   /* 0040 · onboarding · a one-time 60-second nudge for first visitors */

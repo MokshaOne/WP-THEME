@@ -545,6 +545,25 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <?php // 0401 · found a project room — Documentarian and up
+  if ( $rank && $rank['level'] >= 2 ) : ?>
+  <section class="g-section g-section--tight" style="padding-bottom:0">
+    <div class="g-wrap">
+      <div style="border:1px solid var(--g-line-2);padding:18px 24px">
+        <span class="g-kicker"><?php esc_html_e( 'Project rooms', 'vpg-v2' ); ?></span>
+        <p style="margin:6px 0 12px;font-size:13px;color:var(--g-mid)"><?php esc_html_e( 'Found a shared series — members join, hang their works, and the best rooms become magazine features.', 'vpg-v2' ); ?></p>
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:flex;gap:10px;flex-wrap:wrap">
+          <?php wp_nonce_field( 'vpg_project_create' ); ?>
+          <input type="hidden" name="action" value="vpg_project_create">
+          <input class="g-input" type="text" name="title" required placeholder="<?php esc_attr_e( 'Project title — e.g. “Wien bei Regen”', 'vpg-v2' ); ?>" style="flex:2;min-width:220px">
+          <input class="g-input" type="text" name="about" placeholder="<?php esc_attr_e( 'One line on the idea', 'vpg-v2' ); ?>" style="flex:3;min-width:260px">
+          <button class="g-btn" type="submit"><?php esc_html_e( 'Open the room', 'vpg-v2' ); ?></button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- 0435 · Idea box · anonymous by design -->
   <section class="g-section--alt g-section--tight">
     <div class="g-wrap" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;padding-top:22px;padding-bottom:22px">
@@ -661,6 +680,12 @@ get_header();
 
         <div class="g-field">
           <label for="pf-buddy"><?php esc_html_e( 'Photowalk buddies · optional', 'vpg-v2' ); ?></label>
+          <label class="g-label" for="pf-theme" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--g-mid)"><?php esc_html_e( 'Profile look', 'vpg-v2' ); ?></label>
+          <select class="g-select" id="pf-theme" name="profile_theme" style="margin-bottom:14px">
+            <option value="" <?php selected( get_user_meta( $u->ID, '_vpg_profile_theme', true ), '' ); ?>><?php esc_html_e( 'Gallery white (default)', 'vpg-v2' ); ?></option>
+            <option value="dark" <?php selected( get_user_meta( $u->ID, '_vpg_profile_theme', true ), 'dark' ); ?>><?php esc_html_e( 'Darkroom black', 'vpg-v2' ); ?></option>
+            <option value="paper" <?php selected( get_user_meta( $u->ID, '_vpg_profile_theme', true ), 'paper' ); ?>><?php esc_html_e( 'Soft paper', 'vpg-v2' ); ?></option>
+          </select>
           <select class="g-select" id="pf-buddy" name="buddy_role">
             <?php $buddy = get_user_meta( $u->ID, '_vpg_buddy_role', true ) ?: 'off'; ?>
             <option value="off" <?php selected( $buddy, 'off' ); ?>><?php esc_html_e( 'Not now', 'vpg-v2' ); ?></option>
@@ -695,6 +720,7 @@ get_header();
         <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
           <?php wp_nonce_field( 'vpg_save_portfolio' ); ?>
           <input type="hidden" name="action" value="vpg_save_portfolio">
+          <p style="margin:0 0 14px"><a class="g-link" style="font-size:12px" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_portfolio_pdf' ), 'vpg_portfolio_pdf' ) ); ?>">⎙ <?php esc_html_e( 'Export portfolio as PDF', 'vpg-v2' ); ?></a></p>
           <input type="hidden" name="portfolio" id="vpg-portfolio-order" value="<?php echo esc_attr( implode( ',', $curated ) ); ?>">
           <div id="vpg-portfolio-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:14px 0 18px">
             <?php foreach ( $my_photos as $ph ) :

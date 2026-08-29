@@ -4017,3 +4017,447 @@ msgstr ""
 #: inc/magazine-editor.php
 msgid "▦ Contact sheet"
 msgstr ""
+
+#: inc/account.php
+msgid "Administrators can\'t self-delete here."
+msgstr ""
+
+#: inc/community.php
+msgid "Hello %1\$s,\n\nSomeone cancelled — you moved off the waitlist into “%2\$s”.\n\n%3\$s\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/community.php
+msgid "Hello %1\$s,\n\nQuick reminder — \\"%2\$s\\" is tomorrow%3\$s.%5\$s\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/community.php
+msgid "The month at Vienna Photo Group — %s.\n\n"
+msgstr ""
+
+#: inc/community.php
+msgid "New issue:\n"
+msgstr ""
+
+#: inc/community.php
+msgid "New on the map:\n"
+msgstr ""
+
+#: inc/community.php
+msgid "Coming up:\n"
+msgstr ""
+
+#: inc/community.php
+msgid "— Vienna Photo Group · member-run, ad-free\nManage emails: "
+msgstr ""
+
+#: inc/community.php
+msgid "Theme goes here — one line, open enough for every genre.\n\nDeadline: last Sunday of the month, midnight."
+msgstr ""
+
+#: inc/discovery.php
+msgid "Hello %1\$s,\n\nThe hat picked your coffee partner for this month: %2\$s.\n\n%3\$s\n\nWrite them, pick a café or a photowalk, talk pictures. No agenda, no protocol.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/discovery.php
+msgid "The week at Vienna Photo Group:\n\n"
+msgstr ""
+
+#: inc/discovery.php
+msgid "Most seen this week:\n"
+msgstr ""
+
+#: inc/editorial.php
+msgid "Published — the member got their “it’s live” mail."
+msgstr ""
+
+#: inc/editorial.php
+msgid "Returned with feedback — nothing disappears silently."
+msgstr ""
+
+#: inc/editorial.php
+msgid "none yet"
+msgstr ""
+
+#: inc/editorial.php
+msgid "in the review queue"
+msgstr ""
+
+#: inc/editorial.php
+msgid "comments awaiting moderation"
+msgstr ""
+
+#: inc/editorial.php
+msgid "reported notes"
+msgstr ""
+
+#: inc/editorial.php
+msgid "Work"
+msgstr ""
+
+#: inc/editorial.php
+msgid "current issue"
+msgstr ""
+
+#: inc/editorial.php
+msgid "→ Review desk in the frontend (no wp-admin needed)"
+msgstr ""
+
+#: inc/editorial.php
+msgid "Glossary"
+msgstr ""
+
+#: inc/editorial.php
+msgid "📖 Glossary"
+msgstr ""
+
+#: inc/editorial.php
+msgid "Saved."
+msgstr ""
+
+#: inc/editorial.php
+msgid "One term per line, term and definition separated by a pipe: “Blende | Die Öffnung im Objektiv …”. Rendered A–Z on the page using the Glossary template."
+msgstr ""
+
+#: inc/editorial.php
+msgid "Save glossary"
+msgstr ""
+
+#: inc/interviews.php
+msgid "Hello %1\$s,\n\nEditorial picked you as an upcoming featured artist. Answer the interview questions in your dashboard, in your own time:\n\n%2\$s\n\nShort answers are fine — honest beats polished.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "— Section"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Editorial (the opening page)"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "The editor’s letter — opens the issue in the reader and the PDF."
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Section — groups the table of contents"
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "Issues, journal posts and events by month. One click drafts a new issue from a month\'s content."
+msgstr ""
+
+#: inc/newsletter.php
+msgid "You\'re on the list. We write when an issue ships."
+msgstr ""
+
+#: inc/newsletter.php
+msgid "You\'re off the list. No hard feelings."
+msgstr ""
+
+#: inc/pdf-generator.php
+msgid "Curate your portfolio in the dashboard first."
+msgstr ""
+
+#: inc/projects.php
+msgid "Project rooms"
+msgstr ""
+
+#: inc/projects.php
+msgid "Project"
+msgstr ""
+
+#: inc/projects.php
+msgid "Gallery walls"
+msgstr ""
+
+#: inc/projects.php
+msgid "Wall"
+msgstr ""
+
+#: inc/projects.php
+msgid "Collections"
+msgstr ""
+
+#: inc/projects.php
+msgid "Collection"
+msgstr ""
+
+#: inc/projects.php
+msgid "Attachment IDs · comma-separated, hanging order"
+msgstr ""
+
+#: inc/projects.php
+msgid "Post IDs · comma-separated, any public type"
+msgstr ""
+
+#: inc/projects.php
+msgid "Curated set"
+msgstr ""
+
+#: inc/projects.php
+msgid "Project rooms open at Documentarian."
+msgstr ""
+
+#: inc/projects.php
+msgid "%1$s joined your project “%2$s”."
+msgstr ""
+
+#: inc/quickwins.php
+msgid "%1\$s says something changed at \\"%2\$s\\" — access, hours or the place itself.\n\nCheck and update:\n%3\$s"
+msgstr ""
+
+#: inc/submission-handler.php
+msgid "Hello %1\$s,\n\nOne click and your Viennaphotogroup membership is fully active:\n\n%2\$s\n\nUntil you confirm, you can browse everything but not submit to the map or journal.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/submission-handler.php
+msgid "Hello %s,\n\nQuick reminder — your membership is active, but submissions stay locked until you confirm your email. We just sent you a fresh confirmation link (separate message).\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/submission-handler.php
+msgid "Welcome — you\'re a member. Check your inbox to confirm your email."
+msgstr ""
+
+#: inc/submission-handler.php
+msgid "Published — your rank puts it live instantly. It\'s on the site now."
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: inc/submission-queue.php
+msgid "Revise and resubmit any time — most submissions go through with light edits.\n\n— Vienna Photo Group"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "The walk, seen by its walkers"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Add yours"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "No frames yet — you were there, you go first."
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Who\'s coming"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "✓ You\'re coming · cancel"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "I\'m coming"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "We\'ll email you a reminder the day before."
+msgstr ""
+
+#: single-vpg_event.php
+msgid "I\'m here"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "You\'re checked in"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Project room"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Founded by"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Works hung"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "✓ In · leave"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Join the project"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "The wall so far"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "works"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Hang one of your published works"
+msgstr ""
+
+#: single-vpg_project.php
+msgid "Hang it"
+msgstr ""
+
+#: single-vpg_wall.php
+msgid "Gallery wall"
+msgstr ""
+
+#: taxonomy-vpg_series.php
+msgid "Parts"
+msgstr ""
+
+#: taxonomy-vpg_series.php
+msgid "Order"
+msgstr ""
+
+#: taxonomy-vpg_series.php
+msgid "Start at 01"
+msgstr ""
+
+#: templates/page-about.php
+msgid "VPG was founded by a collective of local photographers. The initial phase was an algorithmic feature page on Instagram, curating visual work within the city\'s creative ecosystem."
+msgstr ""
+
+#: templates/page-about.php
+msgid "Editor\'s note"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Found a shared series — members join, hang their works, and the best rooms become magazine features."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Project title — e.g. “Wien bei Regen”"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "One line on the idea"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Open the room"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Profile look"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Gallery white (default)"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Darkroom black"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Soft paper"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "I\'ll show newcomers around"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "I\'d like someone to walk with"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Export portfolio as PDF"
+msgstr ""
+
+#: templates/page-faq.php
+msgid "Membership is annual · no auto-renewal. If you don\'t renew, your Member tier downgrades to Reader at the end of the year — you still see everything, just no submissions or PDFs."
+msgstr ""
+
+#: templates/page-faq.php
+msgid "Not yet. The data is REST-readable via WordPress\'s default endpoints for logged-in users · a proper public API with rate limits is on the 2026 roadmap."
+msgstr ""
+
+#: templates/page-glossary.php
+msgid "The <em>words</em>."
+msgstr ""
+
+#: templates/page-glossary.php
+msgid "Photography vocabulary, explained in one honest sentence each — the companion to every tutorial."
+msgstr ""
+
+#: templates/page-glossary.php
+msgid "Missing one?"
+msgstr ""
+
+#: templates/page-glossary.php
+msgid "The glossary is being written — first terms land soon."
+msgstr ""
+
+#: templates/page-join.php
+msgid "Free forever · you\'re logged in right away · we send one confirmation email to unlock submissions. No spam, leave anytime."
+msgstr ""
+
+#: templates/page-join.php
+msgid "Member competitions with honest feedback — the kind likes can\'t give you."
+msgstr ""
+
+#: templates/page-review.php
+msgid "Editors <em>only</em>."
+msgstr ""
+
+#: templates/page-review.php
+msgid "The review desk is where editorial works. Your submissions live in your dashboard."
+msgstr ""
+
+#: templates/page-review.php
+msgid "Review desk"
+msgstr ""
+
+#: templates/page-review.php
+msgid "<em>waiting</em>."
+msgstr ""
+
+#: templates/page-review.php
+msgid "Oldest first — the 72-hour promise starts when a member hits submit. Approve publishes and mails; reject always carries feedback."
+msgstr ""
+
+#: templates/page-review.php
+msgid "Promise"
+msgstr ""
+
+#: templates/page-review.php
+msgid "Backstage"
+msgstr ""
+
+#: templates/page-review.php
+msgid "Open the hub"
+msgstr ""
+
+#: templates/page-review.php
+msgid "%dh in queue"
+msgstr ""
+
+#: templates/page-review.php
+msgid "Full preview"
+msgstr ""
+
+#: templates/page-review.php
+msgid "Publish"
+msgstr ""
+
+#: templates/page-review.php
+msgid "Feedback for the member — required in spirit."
+msgstr ""
+
+#: templates/page-review.php
+msgid "Return with feedback"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Tripod\nND filter\nGood shoes"
+msgstr ""
+
+#: templates/page-team.php
+msgid "Curates the monthly issue, commissions pitches, writes the editor\'s letter."
+msgstr ""

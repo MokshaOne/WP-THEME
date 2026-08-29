@@ -41,6 +41,13 @@ add_action( 'template_redirect', function () {
     if ( locate_template( 'templates/member-profile.php' ) ) return;
 
     get_header();
+    // 0322 · the member picks how their wall is lit
+    $pf_theme = get_user_meta( $user->ID, '_vpg_profile_theme', true );
+    if ( $pf_theme === 'dark' ) {
+        echo '<style>#vpg-main{background:#0B0B0B;color:#F5F4F1}#vpg-main .vpg-page-hero h1,#vpg-main h2{color:#F5F4F1}#vpg-main .vpg-caps{color:#A5A29C}#vpg-main .vpg-section--tight{background:transparent}</style>';
+    } elseif ( $pf_theme === 'paper' ) {
+        echo '<style>#vpg-main{background:#F5F4F1}</style>';
+    }
     ?>
     <?php
     $works_count = count_user_posts( $user->ID, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial', 'post' ], true );

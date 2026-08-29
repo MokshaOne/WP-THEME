@@ -21,6 +21,19 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* 0161 · the magazine's fixed sections — every issue shares a skeleton */
+function vpg_mag_sections() {
+    return apply_filters( 'vpg_mag_sections', [
+        ''          => __( '— Section', 'vpg-v2' ),
+        'feature'   => __( 'Feature', 'vpg-v2' ),
+        'map'       => __( 'The Map', 'vpg-v2' ),
+        'interview' => __( 'Interview', 'vpg-v2' ),
+        'community' => __( 'Community', 'vpg-v2' ),
+        'review'    => __( 'Review', 'vpg-v2' ),
+        'journal'   => __( 'Journal', 'vpg-v2' ),
+    ] );
+}
+
 /* ─── Admin menu ─────────────────────────────────────────────────── */
 /* The editor screens set their headlines in the magazine's own face. */
 add_action( 'admin_enqueue_scripts', function () {
@@ -166,6 +179,7 @@ function vpg_magazine_edit_page() {
     $issue_no  = $issue ? get_post_meta( $issue_id, '_vpg_issue_number', true ) : '';
     $issue_dt  = $issue ? get_post_meta( $issue_id, '_vpg_issue_date',   true ) : '';
     $teaser    = $issue ? get_post_meta( $issue_id, '_vpg_next_teaser',  true ) : '';
+    $editorial = $issue ? get_post_meta( $issue_id, '_vpg_editorial',    true ) : '';
     $cover_id  = $issue ? (int) get_post_thumbnail_id( $issue_id ) : 0;
     $cover_url = $cover_id ? wp_get_attachment_image_url( $cover_id, 'medium' ) : '';
     $articles  = $issue ? vpg_get_articles( $issue_id ) : [];
@@ -206,6 +220,11 @@ function vpg_magazine_edit_page() {
                     <label class="vpg-mag-row">
                         <span><?php esc_html_e( 'Lede (1-2 sentence intro)', 'vpg-v2' ); ?></span>
                         <textarea name="lede" rows="3" placeholder="A short editorial preface that previews the issue."><?php echo esc_textarea( $lede ); ?></textarea>
+                    </label>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'Editorial (the opening page)', 'vpg-v2' ); ?></span>
+                        <textarea name="editorial" rows="5" placeholder="<?php esc_attr_e( 'The editor’s letter — opens the issue in the reader and the PDF.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $editorial ); ?></textarea>
                     </label>
 
                     <label class="vpg-mag-row">
@@ -643,6 +662,11 @@ function vpg_render_article_row( $i, $a ) {
 
         <div class="vpg-mag-article__meta">
             <input type="text" data-name="author" value="<?php echo esc_attr( $author ); ?>" placeholder="Author / byline">
+            <select data-name="section" title="<?php esc_attr_e( 'Section — groups the table of contents', 'vpg-v2' ); ?>">
+                <?php foreach ( vpg_mag_sections() as $sv => $sl ) : ?>
+                    <option value="<?php echo esc_attr( $sv ); ?>" <?php selected( ( $a['section'] ?? '' ), $sv ); ?>><?php echo esc_html( $sl ); ?></option>
+                <?php endforeach; ?>
+            </select>
             <input type="hidden" data-name="image_id" value="<?php echo esc_attr( $image_id ); ?>">
             <span class="vpg-mag-article__img" title="Article image" style="<?php echo $img_url ? 'background-image:url(' . esc_url( $img_url ) . ')' : ''; ?>"><?php echo $img_url ? '' : '+'; ?></span>
             <label class="vpg-mag-article__pb">
@@ -679,6 +703,7 @@ add_action( 'admin_post_vpg_save_issue', function () {
                 'body'             => wp_kses_post(       wp_unslash( $row['body']   ?? '' ) ),
                 'image_id'         => (int) ( $row['image_id'] ?? 0 ),
                 'page_break_after' => ! empty( $row['page_break_after'] ),
+                'section'          => array_key_exists( sanitize_key( $row['section'] ?? '' ), vpg_mag_sections() ) ? sanitize_key( $row['section'] ) : '',
             ];
         }
     }
@@ -701,6 +726,7 @@ add_action( 'admin_post_vpg_save_issue', function () {
     update_post_meta( $issue_id, '_vpg_issue_number', $issue_no );
     update_post_meta( $issue_id, '_vpg_issue_date',   $issue_dt );
     update_post_meta( $issue_id, '_vpg_next_teaser',  sanitize_textarea_field( wp_unslash( $_POST['next_teaser'] ?? '' ) ) );
+    update_post_meta( $issue_id, '_vpg_editorial',    sanitize_textarea_field( wp_unslash( $_POST['editorial'] ?? '' ) ) );
     update_post_meta( $issue_id, '_vpg_articles',     wp_json_encode( $articles ) );
 
     $redirect = isset( $_POST['save_action'] ) && $_POST['save_action'] === 'save'
@@ -932,6 +958,15 @@ add_action( 'wp_ajax_vpg_mag_pick_item', function () {
             $venue = get_post_meta( $p->ID, '_vpg_event_venue', true );
             $lead  = trim( ( $date ?: '' ) . ( $venue ? ' · ' . $venue : '' ), ' ·' );
             $body  = ( $lead ? '<p><strong>' . esc_html( $lead ) . '</strong></p>' . "\n" : '' ) . $p->post_content;
+            // 0137 · a walk's member gallery flows into the recap article
+            if ( function_exists( 'vpg_event_gallery' ) ) {
+                foreach ( array_slice( vpg_event_gallery( $p->ID ), 0, 6 ) as $g ) {
+                    $gu = wp_get_attachment_image_url( $g->ID, 'large' );
+                    if ( $gu ) {
+                        $body .= '<figure class="plate"><img src="' . esc_url( $gu ) . '" alt=""><figcaption>' . esc_html( get_the_title( $g->ID ) ) . ' — ' . esc_html( get_the_author_meta( 'display_name', $g->post_author ) ) . '</figcaption></figure>' . "\n";
+                    }
+                }
+            }
             $article = [
                 'title'    => $p->post_title,
                 'author'   => __( 'Events', 'vpg-v2' ),

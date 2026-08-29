@@ -118,20 +118,39 @@ CSS;
     <?php
     $cover_html = ob_get_clean();
 
-    /* ── Contents + articles + colophon HTML ── */
+    /* ── Editorial + contents + articles + colophon HTML ── */
     ob_start();
-    if ( $articles ) : ?>
+    $editorial = get_post_meta( $issue_id, '_vpg_editorial', true );
+    if ( $editorial ) : // 0163 · the editor's letter opens the issue ?>
+    <div style="padding:18mm 6mm 0">
+        <p style="font-size:8pt;font-weight:800;letter-spacing:2.4pt;text-transform:uppercase;color:#E5341F">● Editorial</p>
+        <div style="font-size:11.5pt;line-height:1.75;margin-top:6mm;max-width:130mm"><?php echo wpautop( esc_html( $editorial ) ); ?></div>
+    </div>
+    <pagebreak />
+    <?php endif;
+
+    if ( $articles ) :
+        // 0164 · contents grouped by section — the issue's skeleton visible
+        $sections = function_exists( 'vpg_mag_sections' ) ? vpg_mag_sections() : [];
+        $grouped  = [];
+        foreach ( $articles as $i => $a ) $grouped[ $a['section'] ?? '' ][] = $i;
+    ?>
     <div class="vpg-toc">
         <p class="head">Contents</p>
-        <table>
-            <?php foreach ( $articles as $i => $a ) : ?>
-            <tr>
-                <td class="num"><?php printf( '%02d', $i + 1 ); ?></td>
-                <td class="title"><a href="#art-<?php echo (int) $i; ?>" style="text-decoration:none;color:#0B0B0B"><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></a></td>
-                <td class="author"><?php echo esc_html( $a['author'] ?? '' ); ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
+        <?php foreach ( $grouped as $sec => $idxs ) : ?>
+            <?php if ( $sec !== '' && isset( $sections[ $sec ] ) ) : ?>
+                <p style="font-size:7.5pt;font-weight:800;letter-spacing:2.2pt;text-transform:uppercase;color:#E5341F;margin:5mm 0 1.5mm"><?php echo esc_html( $sections[ $sec ] ); ?></p>
+            <?php endif; ?>
+            <table>
+                <?php foreach ( $idxs as $i ) : $a = $articles[ $i ]; ?>
+                <tr>
+                    <td class="num"><?php printf( '%02d', $i + 1 ); ?></td>
+                    <td class="title"><a href="#art-<?php echo (int) $i; ?>" style="text-decoration:none;color:#0B0B0B"><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></a></td>
+                    <td class="author"><?php echo esc_html( $a['author'] ?? '' ); ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php endforeach; ?>
     </div>
     <pagebreak />
     <?php endif;
@@ -144,7 +163,10 @@ CSS;
     ?>
     <div class="vpg-article">
         <a name="art-<?php echo (int) $i; ?>"></a><bookmark content="<?php echo esc_attr( $a['title'] ?: 'Untitled' ); ?>" />
-        <p class="ar-kicker"><?php printf( '%02d', $i + 1 ); ?> — <?php echo esc_html( $a['author'] ?: 'Article' ); ?></p>
+        <p class="ar-kicker"><?php printf( '%02d', $i + 1 ); ?> — <?php
+            $sec_l = function_exists( 'vpg_mag_sections' ) ? ( vpg_mag_sections()[ $a['section'] ?? '' ] ?? '' ) : '';
+            echo esc_html( trim( ( $sec_l && ( $a['section'] ?? '' ) !== '' ? $sec_l . ' · ' : '' ) . ( $a['author'] ?: 'Article' ) ) );
+        ?></p>
         <h2><?php echo esc_html( $a['title'] ?: 'Untitled' ); ?></h2>
         <p class="ar-author"><?php echo esc_html( trim( ( $a['author'] ?? '' ) . ' · Vienna Photo Group', ' ·' ) ); ?></p>
         <?php if ( $img_path && ! $body_has_lead && file_exists( $img_path ) ) : ?>
@@ -367,4 +389,65 @@ CSS;
     } catch ( \Throwable $e ) {
         wp_die( 'Map guide PDF failed: ' . esc_html( $e->getMessage() ) );
     }
+} );
+
+
+/* ─── 0334 · Portfolio PDF · a member's application-ready booklet ── */
+add_action( 'admin_post_vpg_portfolio_pdf', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_portfolio_pdf' );
+
+    $autoload = VPG_V2_DIR . '/vendor/autoload.php';
+    if ( ! file_exists( $autoload ) ) wp_die( 'mPDF not installed (composer install).' );
+    require_once $autoload;
+
+    $uid  = get_current_user_id();
+    $user = wp_get_current_user();
+    $ids  = function_exists( 'vpg_get_portfolio' ) ? vpg_get_portfolio( $uid ) : [];
+    if ( ! $ids ) wp_die( esc_html__( 'Curate your portfolio in the dashboard first.', 'vpg-v2' ) );
+
+    $font_config = ( new \Mpdf\Config\FontVariables() )->getDefaults();
+    $font_data   = $font_config['fontdata'];
+    $font_dirs   = ( new \Mpdf\Config\ConfigVariables() )->getDefaults()['fontDir'];
+    $vpg_fonts   = VPG_V2_DIR . '/assets/fonts';
+    $default     = 'dejavusans';
+    if ( file_exists( $vpg_fonts . '/Archivo-400.ttf' ) ) {
+        $font_dirs[]          = $vpg_fonts;
+        $font_data['archivo'] = [ 'R' => 'Archivo-400.ttf', 'B' => file_exists( $vpg_fonts . '/Archivo-700.ttf' ) ? 'Archivo-700.ttf' : 'Archivo-400.ttf' ];
+        $default = 'archivo';
+    }
+
+    $mpdf = new \Mpdf\Mpdf( [
+        'tempDir'      => get_temp_dir(),
+        'fontDir'      => $font_dirs,
+        'fontdata'     => $font_data,
+        'default_font' => $default,
+        'margin_left'  => 14, 'margin_right' => 14, 'margin_top' => 16, 'margin_bottom' => 18,
+    ] );
+
+    // Cover
+    $mpdf->WriteHTML(
+        '<div style="margin-top:70mm">' .
+        '<p style="font-size:9pt;font-weight:bold;letter-spacing:3pt;text-transform:uppercase;color:#E5341F">Portfolio</p>' .
+        '<h1 style="font-size:34pt;text-transform:uppercase;letter-spacing:-0.5pt;margin:4mm 0 6mm">' . esc_html( $user->display_name ) . '<span style="color:#E5341F">.</span></h1>' .
+        ( $user->description ? '<p style="font-size:11pt;color:#6A6A6A;max-width:120mm">' . esc_html( $user->description ) . '</p>' : '' ) .
+        '<p style="font-size:9pt;color:#9C9A95;margin-top:10mm">Vienna Photo Group · ' . esc_html( home_url( '/members/' . $user->user_nicename . '/' ) ) . '</p>' .
+        '</div>'
+    );
+
+    foreach ( array_slice( $ids, 0, 24 ) as $aid ) {
+        $file = get_attached_file( $aid );
+        if ( ! $file || ! file_exists( $file ) ) continue;
+        $exif = function_exists( 'vpg_photo_exif_label' ) ? vpg_photo_exif_label( $aid ) : '';
+        $mpdf->AddPage();
+        $mpdf->WriteHTML(
+            '<div style="text-align:center"><img src="' . esc_attr( $file ) . '" style="max-width:180mm;max-height:230mm"></div>' .
+            '<p style="font-size:8pt;letter-spacing:1.6pt;text-transform:uppercase;color:#9C9A95;text-align:center;margin-top:4mm">' .
+            esc_html( trim( get_the_title( $aid ) . ( $exif ? ' · ' . $exif : '' ) ) ) . ' — ' . esc_html( $user->display_name ) . '</p>'
+        );
+    }
+
+    nocache_headers();
+    $mpdf->Output( sanitize_title( $user->display_name ) . '-portfolio.pdf', \Mpdf\Output\Destination::DOWNLOAD );
+    exit;
 } );

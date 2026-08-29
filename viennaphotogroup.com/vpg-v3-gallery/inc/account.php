@@ -38,6 +38,8 @@ add_action( 'admin_post_vpg_save_profile', function () {
     update_user_meta( $uid, '_vpg_pref_digest',   empty( $_POST['pref_digest'] )   ? '0' : '1' );
     update_user_meta( $uid, '_vpg_pref_coffee',   empty( $_POST['pref_coffee'] )   ? '0' : '1' );
     update_user_meta( $uid, '_vpg_pref_event',    empty( $_POST['pref_event'] )    ? '0' : '1' );
+    $ptheme = sanitize_key( $_POST['profile_theme'] ?? '' );
+    update_user_meta( $uid, '_vpg_profile_theme', in_array( $ptheme, [ 'dark', 'paper' ], true ) ? $ptheme : '' );
     update_user_meta( $uid, '_vpg_pref_feedback', empty( $_POST['pref_feedback'] ) ? '0' : '1' );
     update_user_meta( $uid, '_vpg_directory_optin', empty( $_POST['directory_optin'] ) ? '0' : '1' );
 

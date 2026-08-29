@@ -74,6 +74,8 @@ function vpg_hub_dashboard_page() {
         <h1><span class="dashicons dashicons-camera" style="font-size:28px;width:28px;height:28px;margin-right:6px"></span> <?php esc_html_e( 'Vienna Photo Group', 'vpg-v2' ); ?></h1>
         <p style="max-width:760px;color:#50575e"><?php esc_html_e( 'Your control centre — status, content and the tools that run the site. The look is managed in the Customizer; pages & menus by the setup wizard.', 'vpg-v2' ); ?></p>
 
+        <?php if ( function_exists( 'vpg_hub_work_tiles' ) ) vpg_hub_work_tiles(); ?>
+
         <h2><?php esc_html_e( 'Status', 'vpg-v2' ); ?></h2>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">
             <?php

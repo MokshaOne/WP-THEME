@@ -95,6 +95,45 @@ get_header();
     </section>
     <?php endif; endif; ?>
 
+    <?php // 0136 · the walk's shared gallery — opens once the day has passed
+    $gal_shots = function_exists( 'vpg_event_gallery' ) ? vpg_event_gallery( get_the_ID() ) : [];
+    $ev_over   = ( $gd = get_post_meta( get_the_ID(), '_vpg_event_date', true ) ) && strtotime( $gd ) < strtotime( 'today' );
+    if ( $gal_shots || ( $ev_over && is_user_logged_in() ) ) : ?>
+    <section class="g-section g-section--alt" id="gallery">
+      <div class="g-wrap">
+        <div class="g-head">
+          <div><span class="g-kicker"><?php esc_html_e( 'The walk, seen by its walkers', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo count( $gal_shots ); ?> <em><?php echo esc_html( _n( 'frame', 'frames', count( $gal_shots ), 'vpg-v2' ) ); ?></em></h2></div>
+          <?php if ( $ev_over && is_user_logged_in() ) : ?>
+          <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" style="display:flex;gap:10px;align-items:center;margin:0">
+            <?php wp_nonce_field( 'vpg_event_photo' ); ?>
+            <input type="hidden" name="action" value="vpg_event_photo">
+            <input type="hidden" name="event" value="<?php echo (int) get_the_ID(); ?>">
+            <input type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,.avif" required style="font-size:12px">
+            <button class="g-btn" type="submit"><?php esc_html_e( 'Add yours', 'vpg-v2' ); ?></button>
+          </form>
+          <?php endif; ?>
+        </div>
+        <?php if ( $gal_shots ) : ?>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px">
+          <?php foreach ( $gal_shots as $gs ) :
+              $gu = wp_get_attachment_image_url( $gs->ID, 'medium_large' );
+              if ( ! $gu ) continue; ?>
+            <figure style="margin:0">
+              <a href="<?php echo esc_url( get_attachment_link( $gs->ID ) ); ?>" style="display:block;aspect-ratio:1;overflow:hidden;background:var(--g-bg)">
+                <img src="<?php echo esc_url( $gu ); ?>" alt="<?php echo esc_attr( get_the_title( $gs->ID ) ); ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+              </a>
+              <figcaption class="g-meta" style="margin-top:5px;font-size:10px"><?php echo esc_html( get_the_author_meta( 'display_name', (int) $gs->post_author ) ); ?></figcaption>
+            </figure>
+          <?php endforeach; ?>
+        </div>
+        <?php else : ?>
+          <p class="g-lede" style="font-size:15px"><?php esc_html_e( 'No frames yet — you were there, you go first.', 'vpg-v2' ); ?></p>
+        <?php endif; ?>
+      </div>
+    </section>
+    <?php endif; ?>
+
     <!-- RSVP · members say they're coming -->
     <section class="g-section g-section--alt" id="rsvp">
       <div class="g-wrap">

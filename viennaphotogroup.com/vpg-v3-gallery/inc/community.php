@@ -361,7 +361,7 @@ add_action( 'admin_post_vpg_report_comment', function () {
 add_action( 'admin_menu', function () {
     $reported = get_comments( [ 'meta_key' => '_vpg_reports', 'count' => true ] );
     $badge    = $reported ? ' <span class="awaiting-mod"><span class="pending-count">' . (int) $reported . '</span></span>' : '';
-    add_submenu_page( 'vpg-magazine', __( 'Reported notes', 'vpg-v2' ), __( '⚑ Reports', 'vpg-v2' ) . $badge, 'moderate_comments', 'vpg-reports', function () {
+    add_submenu_page( 'edit.php?post_type=vpg_event', __( 'Reported notes', 'vpg-v2' ), __( '⚑ Reports', 'vpg-v2' ) . $badge, 'moderate_comments', 'vpg-reports', function () {
         if ( ! current_user_can( 'moderate_comments' ) ) wp_die( 'Forbidden' );
 
         if ( ! empty( $_GET['vpg_act'] ) && ! empty( $_GET['comment'] ) && check_admin_referer( 'vpg_report_action' ) ) {
@@ -369,7 +369,7 @@ add_action( 'admin_menu', function () {
             if ( $_GET['vpg_act'] === 'hide' )    wp_set_comment_status( $cid, 'hold' );
             if ( $_GET['vpg_act'] === 'dismiss' ) delete_comment_meta( $cid, '_vpg_reports' );
             if ( $_GET['vpg_act'] === 'trash' )   wp_trash_comment( $cid );
-            wp_safe_redirect( admin_url( 'admin.php?page=vpg-reports' ) );
+            wp_safe_redirect( admin_url( 'edit.php?post_type=vpg_event&page=vpg-reports' ) );
             exit;
         }
 
@@ -386,7 +386,7 @@ add_action( 'admin_menu', function () {
                 <?php foreach ( $reported as $c ) :
                     $n = count( (array) get_comment_meta( $c->comment_ID, '_vpg_reports', true ) );
                     $mk = function ( $act ) use ( $c ) {
-                        return wp_nonce_url( admin_url( 'admin.php?page=vpg-reports&vpg_act=' . $act . '&comment=' . $c->comment_ID ), 'vpg_report_action' );
+                        return wp_nonce_url( admin_url( 'edit.php?post_type=vpg_event&page=vpg-reports&vpg_act=' . $act . '&comment=' . $c->comment_ID ), 'vpg_report_action' );
                     };
                 ?>
                     <tr>

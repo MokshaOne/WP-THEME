@@ -2789,3 +2789,183 @@ msgstr ""
 msgid "📮 Mail log"
 msgstr ""
 
+
+#: inc/gating.php
+msgid "A supporter-tier extra · supporter tiers open later."
+msgstr ""
+
+#: inc/community.php
+msgid "Author"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Click to hang · click again to take down · order = click order · max 24"
+msgstr ""
+
+#: inc/community.php
+msgid "Dismiss"
+msgstr ""
+
+#: index.php
+msgid "Filter results by type"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "I'm here"
+msgstr ""
+
+#: front-page.php
+msgid "Make the next <em>issue</em>."
+msgstr ""
+
+#: inc/gating.php
+msgid "Manual assignment · payment automation writes the same field later."
+msgstr ""
+
+#: inc/gating.php
+msgid "Member · free"
+msgstr ""
+
+#: inc/advanced.php
+msgid "New"
+msgstr ""
+
+#: inc/admin-columns.php
+msgid "No coordinates yet"
+msgstr ""
+
+#: inc/community.php
+msgid "Note"
+msgstr ""
+
+#: inc/community.php
+msgid "Nothing reported. The wall is civil."
+msgstr ""
+
+#: inc/admin-columns.php
+msgid "PDF"
+msgstr ""
+
+#: inc/admin-columns.php
+msgid "Pin"
+msgstr ""
+
+#: inc/members.php
+msgid "Portfolio"
+msgstr ""
+
+#: inc/admin-columns.php
+msgid "RSVPs"
+msgstr ""
+
+#: single-vpg_magazine.php
+msgid "Read offline"
+msgstr ""
+
+#: comments.php
+msgid "Report"
+msgstr ""
+
+#: comments.php
+msgid "Report this note to editorial?"
+msgstr ""
+
+#: inc/community.php
+msgid "Reported notes"
+msgstr ""
+
+#: inc/community.php
+msgid "Reports"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Save portfolio"
+msgstr ""
+
+#: single-vpg_magazine.php
+msgid "Saved offline"
+msgstr ""
+
+#: front-page.php
+msgid "Submit a location, a photo or a story — everything members send in feeds the map, the journal and the monthly magazine."
+msgstr ""
+
+#: front-page.php
+msgid "Submit your work"
+msgstr ""
+
+#: inc/gating.php
+msgid "Supporter"
+msgstr ""
+
+#: inc/gating.php
+msgid "Sustaining"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Today · live"
+msgstr ""
+
+#: inc/community.php
+msgid "Trash"
+msgstr ""
+
+#: inc/advanced.php
+msgid "Trusted"
+msgstr ""
+
+#: inc/community.php
+msgid "Unapprove"
+msgstr ""
+
+#: inc/security.php
+msgid "VPG Curator"
+msgstr ""
+
+#: inc/security.php
+msgid "VPG Editorial Circle"
+msgstr ""
+
+#: inc/gating.php
+msgid "VPG membership"
+msgstr ""
+
+#: inc/advanced.php
+msgid "Veteran"
+msgstr ""
+
+#: front-page.php
+msgid "Vienna · since 2019"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "You're checked in"
+msgstr ""
+
+#: front-page.php
+msgid "Your dashboard"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Your portfolio wall"
+msgstr ""
+
+#: front-page.php
+msgid "You’re in"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "checked in"
+msgstr ""
+
+#: header.php
+msgid "est. 2019"
+msgstr ""
+
+#: inc/admin-columns.php
+msgid "open"
+msgstr ""
+
+#: inc/community.php
+msgid "⚑ Reports"
+msgstr ""

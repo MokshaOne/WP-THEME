@@ -8,25 +8,27 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* Lives in the 👥 Community cluster (events menu). */
 add_action( 'admin_menu', function () {
-    add_menu_page(
-        '✉ ' . __( 'Submissions', 'vpg-v2' ),
-        '✉ ' . __( 'Submissions', 'vpg-v2' ),
+    $count = vpg_pending_submission_count();
+    $badge = $count ? ' <span class="awaiting-mod"><span class="pending-count">' . (int) $count . '</span></span>' : '';
+    add_submenu_page(
+        'edit.php?post_type=vpg_event',
+        __( 'Submissions', 'vpg-v2' ),
+        '✉ ' . __( 'Submissions', 'vpg-v2' ) . $badge,
         'edit_others_posts',
         'vpg-submissions',
-        'vpg_render_submission_queue',
-        'dashicons-email-alt',
-        19
+        'vpg_render_submission_queue'
     );
 }, 14 );
 
-/* Add count bubble to menu like comments do */
+/* Pending-count bubble on the Community top-level item, like Comments. */
 add_filter( 'add_menu_classes', function ( $menu ) {
     $count = vpg_pending_submission_count();
     if ( ! $count ) return $menu;
     foreach ( $menu as $k => $item ) {
-        if ( isset( $item[2] ) && $item[2] === 'vpg-submissions' ) {
-            $menu[ $k ][0] = '✉ ' . __( 'Submissions', 'vpg-v2' ) . ' <span class="awaiting-mod"><span class="pending-count">' . (int) $count . '</span></span>';
+        if ( isset( $item[2] ) && $item[2] === 'edit.php?post_type=vpg_event' ) {
+            $menu[ $k ][0] .= ' <span class="awaiting-mod"><span class="pending-count">' . (int) $count . '</span></span>';
         }
     }
     return $menu;
@@ -105,7 +107,7 @@ function vpg_render_submission_queue() {
                 wp_update_post( [ 'ID' => $id, 'post_status' => 'trash' ] );
             }
         }
-        wp_safe_redirect( admin_url( 'admin.php?page=vpg-submissions&done=' . $act ) );
+        wp_safe_redirect( admin_url( 'edit.php?post_type=vpg_event&page=vpg-submissions&done=' . $act ) );
         exit;
     }
 
@@ -148,8 +150,8 @@ function vpg_render_submission_queue() {
                     $author    = get_the_author_meta( 'display_name' );
                     $type      = get_post_type();
                     $edit_url  = get_edit_post_link();
-                    $approve   = wp_nonce_url( admin_url( 'admin.php?page=vpg-submissions&vpg_act=approve&id=' . get_the_ID() ), 'vpg_submission_action' );
-                    $reject    = wp_nonce_url( admin_url( 'admin.php?page=vpg-submissions&vpg_act=reject&id='  . get_the_ID() ), 'vpg_submission_action' );
+                    $approve   = wp_nonce_url( admin_url( 'edit.php?post_type=vpg_event&page=vpg-submissions&vpg_act=approve&id=' . get_the_ID() ), 'vpg_submission_action' );
+                    $reject    = wp_nonce_url( admin_url( 'edit.php?post_type=vpg_event&page=vpg-submissions&vpg_act=reject&id='  . get_the_ID() ), 'vpg_submission_action' );
                 ?>
                 <tr>
                     <td>

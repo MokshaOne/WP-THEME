@@ -110,7 +110,7 @@ function vpg_hub_dashboard_page() {
             <a class="button button-primary" href="<?php echo esc_url( admin_url( 'customize.php?autofocus[panel]=vpg_v3' ) ); ?>"><?php esc_html_e( 'Customize design', 'vpg-v2' ); ?></a>
             <a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-hub-settings' ) ); ?>"><?php esc_html_e( 'Settings', 'vpg-v2' ); ?></a>
             <a class="button" href="<?php echo esc_url( admin_url( 'tools.php?page=vpg-setup' ) ); ?>"><?php esc_html_e( 'Setup & tools', 'vpg-v2' ); ?></a>
-            <a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-submissions' ) ); ?>"><?php esc_html_e( 'Submissions', 'vpg-v2' ); ?></a>
+            <a class="button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=vpg_event&page=vpg-submissions' ) ); ?>"><?php esc_html_e( 'Submissions', 'vpg-v2' ); ?></a>
             <a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=vpg-magazine' ) ); ?>"><?php esc_html_e( 'Magazine editor', 'vpg-v2' ); ?></a>
         </p>
     </div>

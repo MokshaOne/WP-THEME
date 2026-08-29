@@ -154,6 +154,47 @@ function vpg_trust_label( $level ) {
     return $labels[ max( 0, min( 3, (int) $level ) ) ];
 }
 
+/* ─── Contribution ranks · display titles from published work count ─
+ * Deliberately NOT WordPress roles: capabilities never change with
+ * volume (everything stays pending → review desk, whatever the rank);
+ * moderation privileges come from vpg_trust_level() above. Ranks are
+ * recognition — the ladder every profile and dashboard shows.
+ */
+function vpg_member_ranks() {
+    return apply_filters( 'vpg_member_ranks', [
+        0   => __( 'Member', 'vpg-v2' ),        // 0–10
+        11  => __( 'Contributor', 'vpg-v2' ),   // 11–50
+        51  => __( 'Documentarian', 'vpg-v2' ), // 51–100
+        101 => __( 'Resident', 'vpg-v2' ),      // 100+
+    ] );
+}
+
+/**
+ * Rank info for a member:
+ * [ 'label', 'count', 'next' => label|null, 'next_at' => int|null ].
+ */
+function vpg_member_rank( $uid ) {
+    $count = (int) count_user_posts(
+        $uid,
+        function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'post' ],
+        true
+    );
+    $ranks = vpg_member_ranks();
+    ksort( $ranks );
+    $label = __( 'Member', 'vpg-v2' );
+    $next  = null;
+    $at    = null;
+    foreach ( $ranks as $min => $name ) {
+        if ( $count >= $min ) {
+            $label = $name;
+        } elseif ( $next === null ) {
+            $next = $name;
+            $at   = $min;
+        }
+    }
+    return [ 'label' => $label, 'count' => $count, 'next' => $next, 'next_at' => $at ];
+}
+
 /* Trusted members' notes publish without moderation · new members queue */
 add_filter( 'pre_comment_approved', function ( $approved, $commentdata ) {
     $uid = (int) ( $commentdata['user_id'] ?? 0 );

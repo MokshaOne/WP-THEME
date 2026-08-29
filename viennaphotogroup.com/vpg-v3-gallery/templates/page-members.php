@@ -43,7 +43,12 @@ $members = get_users( [
               <?php echo get_avatar( $m->ID, 64, '', esc_attr( $m->display_name ), [ 'style' => 'display:block;width:64px;height:64px;object-fit:cover' ] ); ?>
               <div>
                 <h3 class="g-card__title" style="margin:0"><?php echo esc_html( $m->display_name ); ?></h3>
-                <div class="g-byline"><span><?php printf( esc_html__( 'since %s', 'vpg-v2' ), esc_html( mysql2date( 'M Y', $m->user_registered ) ) ); ?></span><span>·</span><span><?php printf( esc_html( _n( '%d work', '%d works', (int) $works, 'vpg-v2' ) ), (int) $works ); ?></span></div>
+                <div class="g-byline"><span><?php printf( esc_html__( 'since %s', 'vpg-v2' ), esc_html( mysql2date( 'M Y', $m->user_registered ) ) ); ?></span><span>·</span><span><?php printf( esc_html( _n( '%d work', '%d works', (int) $works, 'vpg-v2' ) ), (int) $works ); ?></span><?php
+                if ( function_exists( 'vpg_member_rank' ) ) {
+                    $mr = vpg_member_rank( $m->ID );
+                    if ( $mr['count'] > 10 ) echo '<span>·</span><span style="color:var(--g-red);font-weight:700">' . esc_html( $mr['label'] ) . '</span>';
+                }
+                ?></div>
               </div>
             </div>
             <?php if ( $m->description ) : ?>

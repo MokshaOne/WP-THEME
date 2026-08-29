@@ -3093,3 +3093,23 @@ msgstr ""
 #: templates/page-submit.php
 msgid "When?"
 msgstr ""
+
+#: templates/page-dashboard.php
+msgid "%1$d works published — %2$d more to %3$s."
+msgstr ""
+
+#: inc/advanced.php
+msgid "Contributor"
+msgstr ""
+
+#: inc/advanced.php
+msgid "Documentarian"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Rank"
+msgstr ""
+
+#: inc/advanced.php
+msgid "Resident"
+msgstr ""

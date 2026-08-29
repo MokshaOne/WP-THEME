@@ -51,7 +51,9 @@ add_action( 'template_redirect', function () {
         <header class="vpg-page-hero">
             <?php echo get_avatar( $user->ID, 120, '', esc_attr( $user->display_name ), [ 'style' => 'display:block;width:120px;height:120px;object-fit:cover;margin:0 auto 1.4rem' ] ); ?>
             <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.6rem">
-                <span class="vpg-chip vpg-chip--member"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Member', 'vpg-v2' ); ?></span>
+                <span class="vpg-chip vpg-chip--member"><span class="vpg-chip__dot"></span> <?php
+                    echo esc_html( function_exists( 'vpg_member_rank' ) ? vpg_member_rank( $user->ID )['label'] : __( 'Member', 'vpg-v2' ) );
+                ?></span>
                 <?php if ( $founding ) : ?>
                     <span class="vpg-chip"><span class="vpg-chip__dot"></span> <?php esc_html_e( 'Founding member', 'vpg-v2' ); ?></span>
                 <?php endif; ?>

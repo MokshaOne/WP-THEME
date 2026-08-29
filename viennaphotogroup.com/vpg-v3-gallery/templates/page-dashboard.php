@@ -64,16 +64,28 @@ get_header();
     ] );
 ?>
 
+  <?php $rank = function_exists( 'vpg_member_rank' ) ? vpg_member_rank( $u->ID ) : null; ?>
   <section class="g-phero">
     <div class="g-wrap">
       <div class="g-phero__grid">
         <div>
-          <p class="g-kicker" style="margin-bottom:18px">● <?php echo esc_html( ucfirst( $tier ) ); ?></p>
+          <p class="g-kicker" style="margin-bottom:18px">● <?php echo esc_html( $rank ? $rank['label'] : ucfirst( $tier ) ); ?></p>
           <h1 class="g-display g-phero__title"><?php printf( wp_kses_post( __( 'Welcome, <em>%s</em>.', 'vpg-v2' ) ), esc_html( $u->display_name ) ); ?></h1>
-          <p class="g-lede g-phero__lede"><?php printf( esc_html__( 'Member since %s.', 'vpg-v2' ), esc_html( $member_since ) ); ?></p>
+          <p class="g-lede g-phero__lede"><?php
+            printf( esc_html__( 'Member since %s.', 'vpg-v2' ), esc_html( $member_since ) );
+            if ( $rank && $rank['next'] ) {
+                echo ' ' . esc_html( sprintf(
+                    /* translators: 1: published count, 2: count still needed, 3: next rank name */
+                    __( '%1$d works published — %2$d more to %3$s.', 'vpg-v2' ),
+                    $rank['count'],
+                    $rank['next_at'] - $rank['count'],
+                    $rank['next']
+                ) );
+            }
+          ?></p>
         </div>
         <dl class="g-phero__aside">
-          <dt><?php esc_html_e( 'Tier', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( ucfirst( $tier ) ); ?></dd>
+          <dt><?php esc_html_e( 'Rank', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $rank ? $rank['label'] : ucfirst( $tier ) ); ?></dd>
           <dt><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'View public page', 'vpg-v2' ); ?></a></dd>
           <dt><?php esc_html_e( 'Session', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>"><?php esc_html_e( 'Log out', 'vpg-v2' ); ?></a></dd>
         </dl>

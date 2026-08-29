@@ -164,6 +164,7 @@ function vpg_magazine_edit_page() {
     $lede      = $issue ? $issue->post_excerpt : '';
     $issue_no  = $issue ? get_post_meta( $issue_id, '_vpg_issue_number', true ) : '';
     $issue_dt  = $issue ? get_post_meta( $issue_id, '_vpg_issue_date',   true ) : '';
+    $teaser    = $issue ? get_post_meta( $issue_id, '_vpg_next_teaser',  true ) : '';
     $cover_id  = $issue ? (int) get_post_thumbnail_id( $issue_id ) : 0;
     $cover_url = $cover_id ? wp_get_attachment_image_url( $cover_id, 'medium' ) : '';
     $articles  = $issue ? vpg_get_articles( $issue_id ) : [];
@@ -204,6 +205,11 @@ function vpg_magazine_edit_page() {
                     <label class="vpg-mag-row">
                         <span><?php esc_html_e( 'Lede (1-2 sentence intro)', 'vpg-v2' ); ?></span>
                         <textarea name="lede" rows="3" placeholder="A short editorial preface that previews the issue."><?php echo esc_textarea( $lede ); ?></textarea>
+                    </label>
+
+                    <label class="vpg-mag-row">
+                        <span><?php esc_html_e( 'In the next issue (teaser)', 'vpg-v2' ); ?></span>
+                        <textarea name="next_teaser" rows="2" placeholder="<?php esc_attr_e( 'One or two lines on what the next issue brings.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $teaser ); ?></textarea>
                     </label>
 
                     <label class="vpg-mag-row">
@@ -693,6 +699,7 @@ add_action( 'admin_post_vpg_save_issue', function () {
     if ( $cover_id ) set_post_thumbnail( $issue_id, $cover_id ); else delete_post_thumbnail( $issue_id );
     update_post_meta( $issue_id, '_vpg_issue_number', $issue_no );
     update_post_meta( $issue_id, '_vpg_issue_date',   $issue_dt );
+    update_post_meta( $issue_id, '_vpg_next_teaser',  sanitize_textarea_field( wp_unslash( $_POST['next_teaser'] ?? '' ) ) );
     update_post_meta( $issue_id, '_vpg_articles',     wp_json_encode( $articles ) );
 
     $redirect = isset( $_POST['save_action'] ) && $_POST['save_action'] === 'save'

@@ -40,6 +40,18 @@ get_header();
         <span class="g-kicker"><?php esc_html_e( 'The winner', 'vpg-v2' ); ?></span>
         <figure style="margin:28px auto 0;max-width:820px">
           <img src="<?php echo esc_url( wp_get_attachment_image_url( $winner, 'large' ) ); ?>" alt="" style="width:100%;display:block">
+          <?php $jury = get_post_meta( get_the_ID(), '_vpg_comp_reason', true ); if ( $jury ) : ?>
+            <blockquote style="margin:18px 0 0;padding:14px 20px;border-left:3px solid var(--g-red,#E5341F);font-size:15px;line-height:1.6"><?php echo esc_html( $jury ); ?><br><cite style="font-style:normal;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--g-mid,#6A6A6A)">— <?php esc_html_e( 'The jury', 'vpg-v2' ); ?></cite></blockquote>
+          <?php endif; ?>
+          <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:14px">
+              <?php wp_nonce_field( 'vpg_winner_reason' ); ?>
+              <input type="hidden" name="action" value="vpg_winner_reason">
+              <input type="hidden" name="competition" value="<?php echo (int) get_the_ID(); ?>">
+              <textarea name="reason" rows="2" style="width:100%;font:inherit;padding:8px" placeholder="<?php esc_attr_e( 'Why this picture won — two sentences from the jury.', 'vpg-v2' ); ?>"><?php echo esc_textarea( $jury ); ?></textarea>
+              <button class="g-btn" type="submit" style="margin-top:8px"><?php esc_html_e( 'Save jury note', 'vpg-v2' ); ?></button>
+            </form>
+          <?php endif; ?>
           <figcaption class="g-meta" style="margin-top:12px;color:rgba(255,255,255,.7)">
             <?php echo esc_html( get_the_author_meta( 'display_name', (int) get_post_field( 'post_author', $winner ) ) ); ?>
           </figcaption>

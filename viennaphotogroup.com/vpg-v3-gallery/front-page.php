@@ -126,6 +126,10 @@ $journal_url = get_option( 'page_for_posts' ) ? get_permalink( (int) get_option(
         <p class="g-mapband__big" style="margin:18px 0 20px"><?php echo esc_html( $loc_count ); ?> <em><?php esc_html_e( 'locations', 'vpg-v2' ); ?></em>.</p>
         <p class="g-lede" style="color:rgba(255,255,255,.78);margin-bottom:28px"><?php esc_html_e( 'Where Vienna is worth looking — every spot with light notes, best times and honest access. Pick a category, click a place, go shoot.', 'vpg-v2' ); ?></p>
         <div><a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( $loc_archive ); ?>"><?php esc_html_e( 'Open the map', 'vpg-v2' ); ?> <span class="a">→</span></a></div>
+        <?php $sotw = function_exists( 'vpg_spot_of_week' ) ? vpg_spot_of_week() : 0; if ( $sotw ) : ?>
+          <p style="margin:22px 0 0;font-size:13px;color:rgba(255,255,255,.7)"><span style="color:var(--g-red,#E5341F);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:10px">● <?php esc_html_e( 'Spot of the week', 'vpg-v2' ); ?></span><br>
+          <a href="<?php echo esc_url( get_permalink( $sotw ) ); ?>" style="color:#fff;font-weight:700"><?php echo esc_html( get_the_title( $sotw ) ); ?> →</a></p>
+        <?php endif; ?>
       </div>
       <?php
       // Use a recent location's photo as the band image; fall back to a dark panel.

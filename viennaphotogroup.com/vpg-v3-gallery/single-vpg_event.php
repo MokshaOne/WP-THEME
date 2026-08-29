@@ -70,6 +70,30 @@ get_header();
       </div>
     </section>
 
+    <?php // 0125 · what to bring, from the host
+    $checklist = array_filter( array_map( 'trim', explode( "\n", (string) get_post_meta( get_the_ID(), '_vpg_event_checklist', true ) ) ) );
+    if ( $checklist ) : ?>
+    <section class="g-wrap" style="margin:0 auto clamp(24px,4vw,40px)">
+      <p class="g-kicker" style="margin-bottom:12px">● <?php esc_html_e( 'Bring along', 'vpg-v2' ); ?></p>
+      <ul style="list-style:none;padding:0;margin:0;display:grid;gap:6px;max-width:60ch">
+        <?php foreach ( $checklist as $ci ) : ?>
+          <li style="padding:8px 0;border-top:1px solid var(--g-line,#E6E5E1);font-weight:600">□ <?php echo esc_html( $ci ); ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </section>
+    <?php endif; ?>
+
+    <?php // 0155 · live weather box on the day itself
+    if ( function_exists( 'vpg_event_is_today' ) && vpg_event_is_today( get_the_ID() ) && function_exists( 'vpg_weather' ) ) :
+        $wlat = (float) ( get_post_meta( get_the_ID(), '_vpg_event_lat', true ) ?: 48.2082 );
+        $wlng = (float) ( get_post_meta( get_the_ID(), '_vpg_event_lng', true ) ?: 16.3738 );
+        $wx   = vpg_weather( $wlat, $wlng );
+        if ( $wx ) : ?>
+    <section class="g-wrap" style="margin:0 auto clamp(24px,4vw,40px)">
+      <p style="border:1px solid var(--g-ink,#0B0B0B);padding:12px 18px;font-weight:700;font-size:14px;display:inline-block">☂ <?php printf( esc_html__( 'Right now at the meeting point: %1$s · %2$s', 'vpg-v2' ), esc_html( $wx['temp'] ), esc_html( $wx['label'] ) ); ?></p>
+    </section>
+    <?php endif; endif; ?>
+
     <!-- RSVP · members say they're coming -->
     <section class="g-section g-section--alt" id="rsvp">
       <div class="g-wrap">

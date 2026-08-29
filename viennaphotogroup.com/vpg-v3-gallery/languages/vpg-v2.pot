@@ -3577,3 +3577,111 @@ msgstr ""
 #: templates/page-dashboard.php
 msgid "the ladder"
 msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Around this time last year you published <a href=\"%1$s\">%2$s</a>."
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Bring along"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Bring along · one item per line"
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "Difficulty"
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "Easy"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Easy · flat, any shoes"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Flag received — editorial will check and update the entry."
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "In the next issue (teaser)"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Last confirmed accurate: %s"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Last heartbeat: %s. Digest, reminders and challenges depend on it — check the easyname cronjob (see docs/runbooks/vpg-deploy-easyname.md)."
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "Moderate"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Moderate · some climbs or length"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Not yet confirmed by a member on site."
+msgstr ""
+
+#: inc/magazine-editor.php
+msgid "One or two lines on what the next issue brings."
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Outdated info flagged · %s"
+msgstr ""
+
+#: index.php
+msgid "Random frame"
+msgstr ""
+
+#: single-vpg_event.php
+msgid "Right now at the meeting point: %1$s · %2$s"
+msgstr ""
+
+#: single-vpg_competition.php
+msgid "Save jury note"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Something changed"
+msgstr ""
+
+#: single-vpg_trail.php
+msgid "Sporty"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Sporty · bring stamina"
+msgstr ""
+
+#: front-page.php
+msgid "Spot of the week"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Still accurate"
+msgstr ""
+
+#: inc/quickwins.php
+msgid "Thank you — the spot now carries today as its confirmed date."
+msgstr ""
+
+#: single-vpg_competition.php
+msgid "The jury"
+msgstr ""
+
+#: single-vpg_competition.php
+msgid "Why this picture won — two sentences from the jury."
+msgstr ""
+
+#: inc/quickwins.php
+msgid "wp_cron has stopped beating."
+msgstr ""

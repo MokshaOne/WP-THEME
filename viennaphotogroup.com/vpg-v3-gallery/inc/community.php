@@ -98,6 +98,22 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
         }
     }
 
+    // 0816 · the reminder carries its own calendar file
+    $ics_file = '';
+    $ev_date  = get_post_meta( $event_id, '_vpg_event_date', true );
+    $ev_ts    = $ev_date ? strtotime( $ev_date . ' 18:00' ) : false;
+    if ( $ev_ts ) {
+        $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Vienna Photo Group//Event//EN\r\nBEGIN:VEVENT\r\n"
+             . 'UID:vpg-event-' . $event_id . '@' . wp_parse_url( home_url(), PHP_URL_HOST ) . "\r\n"
+             . 'DTSTART:' . gmdate( 'Ymd\THis\Z', $ev_ts ) . "\r\n"
+             . 'DTEND:' . gmdate( 'Ymd\THis\Z', $ev_ts + 2 * HOUR_IN_SECONDS ) . "\r\n"
+             . 'SUMMARY:' . str_replace( [ ',', ';' ], [ '\,', '\;' ], $event->post_title ) . "\r\n"
+             . ( $venue ? 'LOCATION:' . str_replace( [ ',', ';' ], [ '\,', '\;' ], $venue ) . "\r\n" : '' )
+             . 'URL:' . get_permalink( $event_id ) . "\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n";
+        $ics_file = wp_tempnam( 'vpg-event.ics' );
+        if ( $ics_file ) file_put_contents( $ics_file, $ics );
+    }
+
     foreach ( vpg_event_rsvps( $event_id ) as $uid ) {
         $user = get_userdata( $uid );
         if ( ! $user ) continue;
@@ -111,9 +127,12 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
                 $venue ? ' · ' . $venue : '',
                 get_permalink( $event_id ),
                 $wx_line
-            )
+            ),
+            [],
+            $ics_file ? [ $ics_file ] : []
         );
     }
+    if ( $ics_file ) @unlink( $ics_file );
 } );
 
 /* ════════════════════════════════════════════════════════════════ */
@@ -220,6 +239,12 @@ add_action( 'add_meta_boxes', function () {
         wp_nonce_field( 'vpg_trail_stops', 'vpg_trail_stops_nonce' );
         $places = get_posts( [ 'post_type' => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ], 'posts_per_page' => -1, 'post_status' => 'publish', 'orderby' => 'title', 'order' => 'ASC' ] );
         ?>
+        <p style="margin-bottom:6px"><label><?php esc_html_e( 'Difficulty', 'vpg-v2' ); ?>
+            <select name="vpg_trail_difficulty">
+                <?php foreach ( [ 'easy' => __( 'Easy', 'vpg-v2' ), 'moderate' => __( 'Moderate', 'vpg-v2' ), 'sporty' => __( 'Sporty', 'vpg-v2' ) ] as $dv => $dl ) : ?>
+                    <option value="<?php echo esc_attr( $dv ); ?>" <?php selected( get_post_meta( $post->ID, '_vpg_trail_difficulty', true ), $dv ); ?>><?php echo esc_html( $dl ); ?></option>
+                <?php endforeach; ?>
+            </select></label></p>
         <p class="description"><?php esc_html_e( 'Comma-separated location IDs, in walking order. The list below shows every pinned place.', 'vpg-v2' ); ?></p>
         <input type="text" name="vpg_trail_stops" value="<?php echo esc_attr( $stops ); ?>" style="width:100%" placeholder="12, 87, 43">
         <div style="max-height:180px;overflow-y:auto;margin-top:8px;font-size:12px;color:#646970">
@@ -238,6 +263,10 @@ add_action( 'save_post_vpg_trail', function ( $post_id ) {
     $raw = sanitize_text_field( wp_unslash( $_POST['vpg_trail_stops'] ?? '' ) );
     $ids = implode( ',', array_filter( array_map( 'intval', explode( ',', $raw ) ) ) );
     update_post_meta( $post_id, '_vpg_trail_stops', $ids );
+    $diff = sanitize_key( $_POST['vpg_trail_difficulty'] ?? '' );
+    if ( in_array( $diff, [ 'easy', 'moderate', 'sporty' ], true ) ) {
+        update_post_meta( $post_id, '_vpg_trail_difficulty', $diff );
+    }
 } );
 
 function vpg_trail_stops( $trail_id ) {
@@ -329,6 +358,18 @@ add_action( 'admin_post_vpg_competition_winner', function () {
         }
     }
     wp_safe_redirect( get_permalink( $comp ) );
+    exit;
+} );
+
+/* 0457 · The jury owes two sentences — why this picture won */
+add_action( 'admin_post_vpg_winner_reason', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+    check_admin_referer( 'vpg_winner_reason' );
+    $comp = get_post( (int) ( $_POST['competition'] ?? 0 ) );
+    if ( $comp && $comp->post_type === 'vpg_competition' ) {
+        update_post_meta( $comp->ID, '_vpg_comp_reason', sanitize_textarea_field( wp_unslash( $_POST['reason'] ?? '' ) ) );
+    }
+    wp_safe_redirect( $comp ? get_permalink( $comp ) : home_url() );
     exit;
 } );
 

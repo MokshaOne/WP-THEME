@@ -60,9 +60,20 @@ $is_search = is_search();
 
   <section class="g-section">
     <div class="g-wrap">
+      <p style="text-align:right;margin:0 0 14px"><a class="g-link" style="font-size:12px" href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_random_frame' ) ); ?>">⚄ <?php esc_html_e( 'Random frame', 'vpg-v2' ); ?></a></p>
       <?php if ( have_posts() ) : ?>
         <div class="g-list">
           <?php while ( have_posts() ) : the_post(); ?>
+            <?php if ( get_post_format() === 'aside' ) : // 0266 · a note — no image, no excerpt theatre ?>
+            <a class="g-row" href="<?php the_permalink(); ?>" style="grid-template-columns:1fr auto;border-left:3px solid var(--g-red);padding-left:18px">
+              <div>
+                <span class="g-cat"><?php esc_html_e( 'Note', 'vpg-v2' ); ?></span>
+                <h3 class="g-row__title" style="font-size:19px"><?php the_title(); ?></h3>
+                <div class="g-byline"><span><?php echo esc_html( get_the_author() ); ?></span></div>
+              </div>
+              <span class="g-row__when"><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></span>
+            </a>
+            <?php continue; endif; ?>
             <a class="g-row" href="<?php the_permalink(); ?>">
               <div class="g-fig"><?php if ( has_post_thumbnail() ) the_post_thumbnail( 'medium_large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?></div>
               <div>

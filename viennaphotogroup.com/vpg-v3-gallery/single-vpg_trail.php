@@ -31,6 +31,11 @@ get_header();
           </div>
           <dl class="g-phero__aside">
             <dt><?php esc_html_e( 'Stops', 'vpg-v2' ); ?></dt><dd><?php echo count( $stops ); ?></dd>
+            <?php $tdiff = get_post_meta( get_the_ID(), '_vpg_trail_difficulty', true );
+            $tlabels = [ 'easy' => __( 'Easy', 'vpg-v2' ), 'moderate' => __( 'Moderate', 'vpg-v2' ), 'sporty' => __( 'Sporty', 'vpg-v2' ) ];
+            if ( isset( $tlabels[ $tdiff ] ) ) : ?>
+            <dt><?php esc_html_e( 'Difficulty', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $tlabels[ $tdiff ] ); ?></dd>
+            <?php endif; ?>
             <dt><?php esc_html_e( 'Curated by', 'vpg-v2' ); ?></dt><dd><?php the_author(); ?></dd>
           </dl>
         </div>

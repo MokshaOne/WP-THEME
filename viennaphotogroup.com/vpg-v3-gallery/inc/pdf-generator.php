@@ -159,9 +159,28 @@ CSS;
     <?php endif; ?>
     <?php endforeach; ?>
 
+    <?php
+    // 0171 · contributors, collected from the articles themselves
+    $contributors = array_values( array_unique( array_filter( array_map(
+        fn( $a ) => trim( (string) ( $a['author'] ?? '' ) ), $articles
+    ) ) ) );
+    sort( $contributors );
+    // 0172 · the issue in numbers
+    $word_count  = array_sum( array_map( fn( $a ) => str_word_count( wp_strip_all_tags( (string) ( $a['body'] ?? '' ) ) ), $articles ) );
+    $photo_count = array_sum( array_map( fn( $a ) => substr_count( (string) ( $a['body'] ?? '' ), '<img' ) + ( empty( $a['image_id'] ) ? 0 : 1 ), $articles ) );
+    // 0173 · what the next issue brings
+    $next_teaser = get_post_meta( $issue_id, '_vpg_next_teaser', true );
+    ?>
     <div class="vpg-foot-page">
         <p class="brand">Viennaphotogroup<span class="dot">.</span></p>
         <p class="line"><?php echo esc_html( trim( ( $issue_no ?: 'Issue' ) . ' · ' . ( $issue_dt ?: gmdate( 'F Y' ) ), ' ·' ) ); ?></p>
+        <?php if ( $contributors ) : ?>
+            <p class="line" style="margin-top:6mm"><strong>Contributors</strong> — <?php echo esc_html( implode( ' · ', $contributors ) ); ?></p>
+        <?php endif; ?>
+        <p class="line"><?php printf( '%d articles · %d photographs · %s words', count( $articles ), (int) $photo_count, number_format_i18n( $word_count ) ); ?></p>
+        <?php if ( $next_teaser ) : ?>
+            <p class="line" style="margin-top:6mm"><strong>In the next issue</strong> — <?php echo esc_html( $next_teaser ); ?></p>
+        <?php endif; ?>
         <p class="line">© <?php echo esc_html( gmdate( 'Y' ) ); ?> viennaphotogroup.com — a member-run photography magazine · Wien</p>
         <p class="line">Photographs remain the property of their photographers · credited by name</p>
     </div>

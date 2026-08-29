@@ -316,11 +316,17 @@ function vpg_handle_submit() {
         $ev_venue = sanitize_text_field( wp_unslash( $_POST['event_venue'] ?? '' ) );
         if ( $ev_date && strtotime( $ev_date ) )  update_post_meta( $post_id, '_vpg_event_date',  $ev_date );
         if ( $ev_venue )                          update_post_meta( $post_id, '_vpg_event_venue', $ev_venue );
+        $ev_check = sanitize_textarea_field( wp_unslash( $_POST['event_checklist'] ?? '' ) );
+        if ( $ev_check !== '' ) update_post_meta( $post_id, '_vpg_event_checklist', $ev_check );
     }
     if ( $type === 'vpg_trail' ) {
         $stops = array_slice( array_filter( array_map( 'intval', (array) ( $_POST['trail_stops'] ?? [] ) ) ), 0, 12 );
         $stops = array_filter( $stops, fn( $sid ) => get_post_type( $sid ) === 'vpg_location' && get_post_status( $sid ) === 'publish' );
         if ( $stops ) update_post_meta( $post_id, '_vpg_trail_stops', implode( ',', $stops ) );
+        $t_diff = sanitize_key( $_POST['trail_difficulty'] ?? '' );
+        if ( in_array( $t_diff, [ 'easy', 'moderate', 'sporty' ], true ) ) {
+            update_post_meta( $post_id, '_vpg_trail_difficulty', $t_diff );
+        }
     }
 
     update_post_meta( $post_id, '_vpg_submitted_at', current_time( 'mysql' ) );

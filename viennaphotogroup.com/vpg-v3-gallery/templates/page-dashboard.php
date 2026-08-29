@@ -118,12 +118,35 @@ get_header();
                 }
             ?></dd>
           <?php endif; ?>
-          <dt><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'View public page', 'vpg-v2' ); ?></a></dd>
+          <dt><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'View public page', 'vpg-v2' ); ?></a><?php
+            $pviews = (int) get_user_meta( $u->ID, '_vpg_profile_views', true );
+            if ( $pviews ) printf( ' · %s', esc_html( sprintf( _n( '%d view', '%d views', $pviews, 'vpg-v2' ), $pviews ) ) );
+          ?></dd>
           <dt><?php esc_html_e( 'Session', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>"><?php esc_html_e( 'Log out', 'vpg-v2' ); ?></a></dd>
         </dl>
       </div>
     </div>
   </section>
+
+  <?php // 0346 · today, one year ago — your own memory
+  $memory = get_posts( [
+      'post_type'      => vpg_submittable_types(),
+      'post_status'    => 'publish',
+      'author'         => $u->ID,
+      'posts_per_page' => 1,
+      'date_query'     => [ [
+          'after'  => gmdate( 'Y-m-d', strtotime( '-1 year -14 days' ) ),
+          'before' => gmdate( 'Y-m-d', strtotime( '-1 year +14 days' ) ),
+      ] ],
+  ] );
+  if ( $memory ) : ?>
+  <section class="g-section--alt g-section--tight">
+    <div class="g-wrap" style="padding-top:16px;padding-bottom:16px;font-size:13px;font-weight:600;color:var(--g-mid)">
+      ◷ <?php printf( wp_kses_post( __( 'Around this time last year you published <a href="%1$s">%2$s</a>.', 'vpg-v2' ) ),
+          esc_url( get_permalink( $memory[0] ) ), esc_html( $memory[0]->post_title ) ); ?>
+    </div>
+  </section>
+  <?php endif; ?>
 
   <!-- Section jump nav · the dashboard is long, the way around it short -->
   <nav class="g-secnav" aria-label="<?php esc_attr_e( 'Dashboard sections', 'vpg-v2' ); ?>">

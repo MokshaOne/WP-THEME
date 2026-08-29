@@ -335,6 +335,22 @@ get_header();
               </div>
             </div>
 
+            <!-- Event proposals · what to bring -->
+            <div class="g-field" data-for-types="vpg_event" hidden>
+              <label for="event_checklist"><?php esc_html_e( 'Bring along · one item per line', 'vpg-v2' ); ?></label>
+              <textarea class="g-textarea" id="event_checklist" name="event_checklist" rows="3" placeholder="<?php esc_attr_e( "Tripod\nND filter\nGood shoes", 'vpg-v2' ); ?>"><?php echo esc_textarea( $edit_post ? get_post_meta( $edit_post->ID, '_vpg_event_checklist', true ) : '' ); ?></textarea>
+            </div>
+
+            <!-- Trail proposals · how demanding is the walk -->
+            <div class="g-field" data-for-types="vpg_trail" hidden>
+              <label for="trail_difficulty"><?php esc_html_e( 'Difficulty', 'vpg-v2' ); ?></label>
+              <select class="g-select" id="trail_difficulty" name="trail_difficulty">
+                <?php foreach ( [ 'easy' => __( 'Easy · flat, any shoes', 'vpg-v2' ), 'moderate' => __( 'Moderate · some climbs or length', 'vpg-v2' ), 'sporty' => __( 'Sporty · bring stamina', 'vpg-v2' ) ] as $dv => $dl ) : ?>
+                  <option value="<?php echo esc_attr( $dv ); ?>" <?php selected( $edit_post && get_post_meta( $edit_post->ID, '_vpg_trail_difficulty', true ) === $dv ); ?>><?php echo esc_html( $dl ); ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
             <!-- Trail proposals · pick the stops from the published map -->
             <div class="g-field" data-for-types="vpg_trail" hidden>
               <label><?php esc_html_e( 'Stops · pick from the map (tick in walking order)', 'vpg-v2' ); ?></label>

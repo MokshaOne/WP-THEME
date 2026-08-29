@@ -30,10 +30,9 @@ get_header();
           <h2 class="g-head__t" style="margin:14px 0 22px"><?php echo wp_kses_post( __( 'Get the <em>letter</em>.', 'vpg-v2' ) ); ?></h2>
 
           <form class="g-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-            <?php wp_nonce_field( 'vpg_contact' ); ?>
-            <input type="hidden" name="action" value="vpg_contact">
-            <input type="hidden" name="topic" value="Newsletter signup">
-            <input type="hidden" name="message" value="Newsletter signup request">
+            <?php wp_nonce_field( 'vpg_newsletter' ); ?>
+            <input type="hidden" name="action" value="vpg_newsletter">
+            <?php if ( function_exists( 'vpg_antispam_fields' ) ) echo vpg_antispam_fields(); ?>
             <div class="g-field">
               <label for="name"><?php esc_html_e( 'Your name', 'vpg-v2' ); ?></label>
               <input class="g-input" id="name" type="text" name="name" required autocomplete="name">

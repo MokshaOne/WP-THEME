@@ -69,6 +69,7 @@ get_header();
         </div>
     </section>
 
+<?php comments_template(); ?>
 <?php endwhile; ?>
 </main>
 

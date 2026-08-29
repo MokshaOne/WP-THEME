@@ -61,6 +61,42 @@ $members = get_users( [
     </div>
   </section>
 
+  <?php if ( is_user_logged_in() ) :
+      $mentors = get_users( [ 'meta_key' => '_vpg_buddy_role', 'meta_value' => 'mentor',  'number' => 30 ] );
+      $looking = get_users( [ 'meta_key' => '_vpg_buddy_role', 'meta_value' => 'looking', 'number' => 30 ] );
+      if ( $mentors || $looking ) :
+  ?>
+  <section class="g-section g-section--alt">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Photowalk buddies · members only', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'Nobody walks <em>alone</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+        <div class="g-meta"><a class="g-link" href="<?php echo esc_url( home_url( '/dashboard/#profile' ) ); ?>"><?php esc_html_e( 'Join in', 'vpg-v2' ); ?> <span class="a">→</span></a></div>
+      </div>
+      <div class="g-twocol">
+        <div>
+          <p class="g-kicker g-kicker--ink" style="margin-bottom:14px"><?php esc_html_e( 'Showing newcomers around', 'vpg-v2' ); ?></p>
+          <?php if ( $mentors ) : foreach ( $mentors as $b ) : ?>
+            <p style="margin:0 0 10px"><a href="<?php echo esc_url( home_url( '/members/' . $b->user_nicename . '/' ) ); ?>" style="font-weight:700"><?php echo esc_html( $b->display_name ); ?></a></p>
+          <?php endforeach; else : ?>
+            <p class="g-meta"><?php esc_html_e( 'Nobody yet — be the first.', 'vpg-v2' ); ?></p>
+          <?php endif; ?>
+        </div>
+        <div>
+          <p class="g-kicker g-kicker--ink" style="margin-bottom:14px"><?php esc_html_e( 'Looking for company', 'vpg-v2' ); ?></p>
+          <?php if ( $looking ) : foreach ( $looking as $b ) : ?>
+            <p style="margin:0 0 10px"><a href="<?php echo esc_url( home_url( '/members/' . $b->user_nicename . '/' ) ); ?>" style="font-weight:700"><?php echo esc_html( $b->display_name ); ?></a></p>
+          <?php endforeach; else : ?>
+            <p class="g-meta"><?php esc_html_e( 'Nobody waiting right now.', 'vpg-v2' ); ?></p>
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+  </section>
+  <?php endif; endif; ?>
+
   <section class="g-section--dark g-section">
     <div class="g-wrap" style="text-align:center">
       <span class="g-kicker"><?php esc_html_e( 'Membership · free', 'vpg-v2' ); ?></span>

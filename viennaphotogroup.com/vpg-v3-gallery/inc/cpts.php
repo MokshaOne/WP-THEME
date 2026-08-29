@@ -67,6 +67,20 @@ add_action( 'init', function () {
             'menu_icon'      => 'dashicons-welcome-learn-more',
             'has_archive'    => 'tutorials',
         ],
+        'vpg_trail' => [
+            'label_plural'   => __( 'Photowalk trails', 'vpg-v2' ),
+            'label_singular' => __( 'Trail', 'vpg-v2' ),
+            'slug'           => 'trail',
+            'menu_icon'      => 'dashicons-randomize',
+            'has_archive'    => 'trails',
+        ],
+        'vpg_competition' => [
+            'label_plural'   => __( 'Competitions', 'vpg-v2' ),
+            'label_singular' => __( 'Competition', 'vpg-v2' ),
+            'slug'           => 'competition',
+            'menu_icon'      => 'dashicons-awards',
+            'has_archive'    => 'competitions',
+        ],
     ];
 
     foreach ( $types as $slug => $cfg ) {

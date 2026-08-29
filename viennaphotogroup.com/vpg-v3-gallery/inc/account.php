@@ -39,6 +39,10 @@ add_action( 'admin_post_vpg_save_profile', function () {
     update_user_meta( $uid, '_vpg_pref_feedback', empty( $_POST['pref_feedback'] ) ? '0' : '1' );
     update_user_meta( $uid, '_vpg_directory_optin', empty( $_POST['directory_optin'] ) ? '0' : '1' );
 
+    // Buddy matching · opt-in, two roles
+    $buddy = in_array( $_POST['buddy_role'] ?? '', [ 'off', 'mentor', 'looking' ], true ) ? $_POST['buddy_role'] : 'off';
+    update_user_meta( $uid, '_vpg_buddy_role', $buddy );
+
     // Avatar upload · images only, 4 MB, stored as attachment
     if ( ! empty( $_FILES['avatar']['name'] ) && (int) $_FILES['avatar']['error'] === UPLOAD_ERR_OK ) {
         if ( (int) $_FILES['avatar']['size'] <= 4 * MB_IN_BYTES ) {

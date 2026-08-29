@@ -46,6 +46,49 @@ get_header();
       </div>
     </section>
 
+    <!-- RSVP · members say they're coming -->
+    <section class="g-section g-section--alt" id="rsvp">
+      <div class="g-wrap">
+        <?php
+        $rsvps    = function_exists( 'vpg_event_rsvps' ) ? vpg_event_rsvps( get_the_ID() ) : [];
+        $is_going = is_user_logged_in() && in_array( get_current_user_id(), $rsvps, true );
+        ?>
+        <div class="g-head">
+          <div>
+            <span class="g-kicker"><?php esc_html_e( 'Who\'s coming', 'vpg-v2' ); ?></span>
+            <h2 class="g-head__t"><?php echo (int) count( $rsvps ); ?> <em><?php echo esc_html( _n( 'member', 'members', count( $rsvps ), 'vpg-v2' ) ); ?></em></h2>
+          </div>
+          <?php if ( is_user_logged_in() ) : ?>
+          <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+            <?php wp_nonce_field( 'vpg_rsvp' ); ?>
+            <input type="hidden" name="action" value="vpg_rsvp">
+            <input type="hidden" name="event" value="<?php echo (int) get_the_ID(); ?>">
+            <button class="g-btn <?php echo $is_going ? 'g-btn--ghost' : 'g-btn--red'; ?>" type="submit">
+              <?php echo $is_going ? esc_html__( '✓ You\'re coming · cancel', 'vpg-v2' ) : esc_html__( 'I\'m coming', 'vpg-v2' ); ?>
+            </button>
+          </form>
+          <?php else : ?>
+            <a class="g-btn g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join free to RSVP', 'vpg-v2' ); ?> →</a>
+          <?php endif; ?>
+        </div>
+        <?php if ( $rsvps && is_user_logged_in() ) : ?>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+          <?php foreach ( array_slice( $rsvps, 0, 24 ) as $rid ) : $ru = get_userdata( $rid ); if ( ! $ru ) continue; ?>
+            <a href="<?php echo esc_url( home_url( '/members/' . $ru->user_nicename . '/' ) ); ?>" title="<?php echo esc_attr( $ru->display_name ); ?>" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+              <?php echo get_avatar( $rid, 36, '', esc_attr( $ru->display_name ), [ 'style' => 'display:block;width:36px;height:36px;object-fit:cover' ] ); ?>
+              <span style="font-size:12px;font-weight:600"><?php echo esc_html( $ru->display_name ); ?></span>
+            </a>
+          <?php endforeach; ?>
+        </div>
+        <?php elseif ( $rsvps ) : ?>
+          <p class="g-meta"><?php esc_html_e( 'Members see who — log in.', 'vpg-v2' ); ?></p>
+        <?php endif; ?>
+        <?php if ( $is_going ) : ?>
+          <p class="g-form__note" style="margin-top:16px"><?php esc_html_e( 'We\'ll email you a reminder the day before.', 'vpg-v2' ); ?></p>
+        <?php endif; ?>
+      </div>
+    </section>
+
     <section class="g-section g-section--dark" style="text-align:center">
       <div class="g-wrap">
         <a class="g-btn g-btn--red g-btn--lg" href="<?php echo esc_url( get_post_type_archive_link( 'vpg_event' ) ); ?>"><?php esc_html_e( 'All events', 'vpg-v2' ); ?> <span class="a">&rarr;</span></a>

@@ -41,7 +41,18 @@ function vpg_notify_submitter( $post_id, $verdict, $reason = '' ) {
     if ( ! $post ) return;
     $author = get_userdata( $post->post_author );
     if ( ! $author || ! is_email( $author->user_email ) ) return;
-    if ( get_user_meta( $author->ID, '_vpg_pref_feedback', true ) === '0' ) return; // member opted out
+
+    // In-app notification always; email honours the member's preference
+    if ( function_exists( 'vpg_notify_user' ) ) {
+        vpg_notify_user(
+            $author->ID,
+            $verdict === 'approve'
+                ? sprintf( __( 'Your submission "%s" is live.', 'vpg-v2' ), $post->post_title )
+                : sprintf( __( 'Feedback on your submission "%s".', 'vpg-v2' ), $post->post_title ),
+            $verdict === 'approve' ? get_permalink( $post ) : home_url( '/dashboard/' )
+        );
+    }
+    if ( get_user_meta( $author->ID, '_vpg_pref_feedback', true ) === '0' ) return; // member opted out of email
 
     $title = $post->post_title;
 

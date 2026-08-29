@@ -131,6 +131,43 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <?php
+  // Notification center · unread first
+  $notes  = function_exists( 'vpg_get_notifications' ) ? vpg_get_notifications( $u->ID ) : [];
+  $unread = count( array_filter( $notes, function ( $n ) { return empty( $n['read'] ); } ) );
+  if ( $notes ) :
+  ?>
+  <section class="g-section g-section--tight" style="padding-bottom:0">
+    <div class="g-wrap">
+      <div style="border:1px solid var(--g-line-2);padding:20px 26px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+          <span class="g-kicker"><?php esc_html_e( 'Notifications', 'vpg-v2' ); ?><?php if ( $unread ) : ?> · <span style="color:var(--g-red)"><?php echo (int) $unread; ?> <?php esc_html_e( 'new', 'vpg-v2' ); ?></span><?php endif; ?></span>
+          <?php if ( $unread ) : ?>
+          <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+            <?php wp_nonce_field( 'vpg_notifications_read' ); ?>
+            <input type="hidden" name="action" value="vpg_notifications_read">
+            <button type="submit" class="g-link" style="background:none;border:0;cursor:pointer"><?php esc_html_e( 'Mark all read', 'vpg-v2' ); ?></button>
+          </form>
+          <?php endif; ?>
+        </div>
+        <div style="display:grid;gap:8px">
+          <?php foreach ( array_slice( $notes, 0, 6 ) as $n ) : ?>
+            <div style="display:flex;gap:12px;align-items:baseline;font-size:14px;<?php echo empty( $n['read'] ) ? 'font-weight:700' : 'color:var(--g-mid)'; ?>">
+              <span style="width:8px;height:8px;flex:none;background:<?php echo empty( $n['read'] ) ? 'var(--g-red)' : 'var(--g-line-2)'; ?>"></span>
+              <?php if ( ! empty( $n['url'] ) ) : ?>
+                <a href="<?php echo esc_url( $n['url'] ); ?>"><?php echo esc_html( $n['text'] ); ?></a>
+              <?php else : ?>
+                <span><?php echo esc_html( $n['text'] ); ?></span>
+              <?php endif; ?>
+              <span class="g-meta" style="margin-left:auto;white-space:nowrap"><?php echo esc_html( human_time_diff( (int) $n['time'] ) ); ?></span>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Quick stats row -->
   <section class="g-section g-section--tight">
     <div class="g-wrap">
@@ -283,6 +320,104 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <?php
+  // Activity feed · what changed since the member's last visit
+  $last_seen = (int) get_user_meta( $u->ID, '_vpg_last_seen', true );
+  update_user_meta( $u->ID, '_vpg_last_seen', time() );
+  $since = $last_seen ?: strtotime( '-7 days' );
+  $fresh = get_posts( [
+      'post_type'      => [ 'post', 'vpg_location', 'vpg_event', 'vpg_magazine', 'vpg_review', 'vpg_tutorial' ],
+      'post_status'    => 'publish',
+      'posts_per_page' => 6,
+      'date_query'     => [ [ 'after' => gmdate( 'Y-m-d H:i:s', $since ) ] ],
+  ] );
+  if ( $fresh ) :
+  ?>
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Since your last visit', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'New on the <em>wall</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+      </div>
+      <div class="g-list">
+        <?php foreach ( $fresh as $fp ) : ?>
+          <a class="g-row" style="grid-template-columns:auto 1fr auto" href="<?php echo esc_url( get_permalink( $fp ) ); ?>">
+            <?php vpg_chip( $fp->post_type ); ?>
+            <h3 class="g-row__title" style="margin:0"><?php echo esc_html( get_the_title( $fp ) ); ?></h3>
+            <span class="g-row__when"><?php echo esc_html( get_the_date( 'M j', $fp ) ); ?></span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <?php
+  // Photo of the week · one vote per member per week
+  $potw = function_exists( 'vpg_potw_candidates' ) ? vpg_potw_candidates( 8 ) : [];
+  if ( $potw ) :
+      $week_key  = vpg_potw_week_key();
+      $voted_for = (int) get_user_meta( $u->ID, '_' . $week_key, true );
+      $votes_map = get_option( $week_key, [] );
+  ?>
+  <section class="g-section g-section--alt g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Photo of the week', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'Pick <em>one</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+        <div class="g-meta"><?php echo $voted_for ? esc_html__( 'You voted this week', 'vpg-v2' ) : esc_html__( 'One vote per week', 'vpg-v2' ); ?></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px" id="vpg-potw">
+        <?php foreach ( $potw as $ph ) :
+            $thumb = wp_get_attachment_image_url( $ph->ID, 'medium' );
+            if ( ! $thumb ) continue;
+            $n = (int) ( $votes_map[ $ph->ID ] ?? 0 );
+        ?>
+        <figure style="margin:0">
+          <div style="aspect-ratio:1;overflow:hidden;background:var(--g-bg-2)"><img src="<?php echo esc_url( $thumb ); ?>" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover"></div>
+          <figcaption style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+            <span class="g-meta"><?php echo esc_html( get_the_author_meta( 'display_name', $ph->post_author ) ); ?></span>
+            <?php if ( $voted_for === (int) $ph->ID ) : ?>
+              <span style="font-size:11px;font-weight:800;color:var(--g-red)">★ <span data-votes><?php echo $n; ?></span></span>
+            <?php elseif ( $voted_for ) : ?>
+              <span class="g-meta" data-votes><?php echo $n; ?></span>
+            <?php else : ?>
+              <button type="button" class="g-link" data-potw="<?php echo (int) $ph->ID; ?>" style="background:none;border:0;cursor:pointer;font-size:11px"><?php esc_html_e( 'Vote', 'vpg-v2' ); ?> (<span data-votes><?php echo $n; ?></span>)</button>
+            <?php endif; ?>
+          </figcaption>
+        </figure>
+        <?php endforeach; ?>
+      </div>
+      <script>
+      (function () {
+          var grid = document.getElementById('vpg-potw');
+          if (!grid) return;
+          grid.addEventListener('click', function (e) {
+              var btn = e.target.closest('[data-potw]');
+              if (!btn) return;
+              var fd = new FormData();
+              fd.append('action', 'vpg_potw_vote');
+              fd.append('_ajax_nonce', '<?php echo esc_js( wp_create_nonce( 'vpg_potw' ) ); ?>');
+              fd.append('photo', btn.getAttribute('data-potw'));
+              fetch('<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>', { method: 'POST', credentials: 'same-origin', body: fd })
+                  .then(function (r) { return r.json(); })
+                  .then(function (res) {
+                      if (res && res.success) {
+                          btn.outerHTML = '<span style="font-size:11px;font-weight:800;color:var(--g-red)">★ ' + res.data.votes + '</span>';
+                          grid.querySelectorAll('[data-potw]').forEach(function (b) { b.disabled = true; b.style.opacity = .4; });
+                      }
+                  }).catch(function () {});
+          });
+      }());
+      </script>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Profile editor · everything self-service, no wp-admin -->
   <section class="g-section g-section--alt g-section--tight" id="profile">
     <div class="g-wrap">
@@ -350,6 +485,17 @@ get_header();
             <input type="checkbox" name="directory_optin" value="1" <?php checked( get_user_meta( $u->ID, '_vpg_directory_optin', true ) === '1' ); ?>>
             <?php esc_html_e( 'List me in the public members directory', 'vpg-v2' ); ?>
           </label>
+        </div>
+
+        <div class="g-field">
+          <label for="pf-buddy"><?php esc_html_e( 'Photowalk buddies · optional', 'vpg-v2' ); ?></label>
+          <select class="g-select" id="pf-buddy" name="buddy_role">
+            <?php $buddy = get_user_meta( $u->ID, '_vpg_buddy_role', true ) ?: 'off'; ?>
+            <option value="off" <?php selected( $buddy, 'off' ); ?>><?php esc_html_e( 'Not now', 'vpg-v2' ); ?></option>
+            <option value="mentor" <?php selected( $buddy, 'mentor' ); ?>><?php esc_html_e( 'I\'ll show newcomers around', 'vpg-v2' ); ?></option>
+            <option value="looking" <?php selected( $buddy, 'looking' ); ?>><?php esc_html_e( 'I\'d like someone to walk with', 'vpg-v2' ); ?></option>
+          </select>
+          <p class="g-form__note" style="margin-top:6px"><?php esc_html_e( 'Shown to logged-in members on the directory page, nowhere else.', 'vpg-v2' ); ?></p>
         </div>
 
         <button class="g-btn g-btn--lg g-btn--red" type="submit"><?php esc_html_e( 'Save profile', 'vpg-v2' ); ?> <span class="a">→</span></button>

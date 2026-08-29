@@ -42,6 +42,8 @@ require_once VPG_V2_DIR . '/inc/seo.php';                  // OG + Twitter + RSS
 require_once VPG_V2_DIR . '/inc/cover-generator.php';      // GD-based auto-cover fallback
 require_once VPG_V2_DIR . '/inc/members.php';              // profile pages · bookmarks · cross-CPT search
 require_once VPG_V2_DIR . '/inc/account.php';              // frontend profile editor · local avatars · magic login · deletion
+require_once VPG_V2_DIR . '/inc/community.php';            // RSVP · notifications · digest · photo of the week · trails · competitions
+require_once VPG_V2_DIR . '/inc/newsletter.php';           // double-opt-in newsletter list + CSV export
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

@@ -1,0 +1,338 @@
+<?php
+/**
+ * VPG v3 — Community.
+ *
+ *   - Event RSVP · "I'm coming" with attendee list + day-before reminder
+ *   - Notification center · per-member inbox on the dashboard
+ *   - Activity feed · what's new since the member's last visit
+ *   - Monthly member digest · one mail when the month turns
+ *   - Photo of the week · one member vote per week
+ *   - Photowalk trails · ordered location stops on a vpg_trail
+ *   - Competitions · photo entries on a vpg_competition, editors pick
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Notifications · tiny per-user inbox in usermeta                  */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_notify_user( $uid, $text, $url = '' ) {
+    $list = get_user_meta( $uid, '_vpg_notifications', true );
+    $list = is_array( $list ) ? $list : [];
+    array_unshift( $list, [
+        'text' => sanitize_text_field( $text ),
+        'url'  => esc_url_raw( $url ),
+        'time' => time(),
+        'read' => false,
+    ] );
+    update_user_meta( $uid, '_vpg_notifications', array_slice( $list, 0, 30 ) );
+}
+
+function vpg_get_notifications( $uid = null ) {
+    $uid  = $uid ?: get_current_user_id();
+    $list = get_user_meta( $uid, '_vpg_notifications', true );
+    return is_array( $list ) ? $list : [];
+}
+
+add_action( 'admin_post_vpg_notifications_read', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_notifications_read' );
+    $uid  = get_current_user_id();
+    $list = vpg_get_notifications( $uid );
+    foreach ( $list as &$n ) $n['read'] = true;
+    unset( $n );
+    update_user_meta( $uid, '_vpg_notifications', $list );
+    wp_safe_redirect( wp_get_referer() ?: home_url( '/dashboard/' ) );
+    exit;
+} );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Event RSVP · toggle, attendee list, day-before reminder          */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_event_rsvps( $event_id ) {
+    $ids = get_post_meta( $event_id, '_vpg_rsvps', true );
+    return is_array( $ids ) ? array_values( array_filter( array_map( 'intval', $ids ) ) ) : [];
+}
+
+add_action( 'admin_post_vpg_rsvp', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_rsvp' );
+
+    $event_id = (int) ( $_POST['event'] ?? 0 );
+    $event    = get_post( $event_id );
+    if ( ! $event || $event->post_type !== 'vpg_event' || $event->post_status !== 'publish' ) {
+        wp_die( 'Event not found', 404 );
+    }
+
+    $uid  = get_current_user_id();
+    $list = vpg_event_rsvps( $event_id );
+    if ( in_array( $uid, $list, true ) ) {
+        $list = array_values( array_diff( $list, [ $uid ] ) );
+    } else {
+        $list[] = $uid;
+        // Day-before reminder · scheduled once per event, when the date parses
+        $date = get_post_meta( $event_id, '_vpg_event_date', true );
+        $ts   = $date ? strtotime( $date . ' 09:00' ) : false;
+        if ( $ts && $ts - DAY_IN_SECONDS > time() && ! get_post_meta( $event_id, '_vpg_rsvp_reminder', true ) ) {
+            wp_schedule_single_event( $ts - DAY_IN_SECONDS, 'vpg_event_reminder', [ $event_id ] );
+            update_post_meta( $event_id, '_vpg_rsvp_reminder', '1' );
+        }
+    }
+    update_post_meta( $event_id, '_vpg_rsvps', $list );
+    wp_safe_redirect( get_permalink( $event_id ) . '#rsvp' );
+    exit;
+} );
+
+add_action( 'vpg_event_reminder', function ( $event_id ) {
+    $event = get_post( $event_id );
+    if ( ! $event || $event->post_status !== 'publish' ) return;
+    $venue = get_post_meta( $event_id, '_vpg_event_venue', true );
+    foreach ( vpg_event_rsvps( $event_id ) as $uid ) {
+        $user = get_userdata( $uid );
+        if ( ! $user ) continue;
+        wp_mail( $user->user_email,
+            sprintf( __( '[VPG] Tomorrow · %s', 'vpg-v2' ), $event->post_title ),
+            sprintf(
+                /* translators: 1: name, 2: event title, 3: venue, 4: permalink */
+                __( "Hello %1\$s,\n\nQuick reminder — \"%2\$s\" is tomorrow%3\$s.\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group", 'vpg-v2' ),
+                $user->display_name,
+                $event->post_title,
+                $venue ? ' · ' . $venue : '',
+                get_permalink( $event_id )
+            )
+        );
+    }
+} );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Monthly digest · first day of the month, 08:00 site time         */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'init', function () {
+    if ( ! wp_next_scheduled( 'vpg_monthly_digest' ) ) {
+        wp_schedule_single_event( strtotime( 'first day of next month 08:00' ), 'vpg_monthly_digest' );
+    }
+} );
+
+add_action( 'vpg_monthly_digest', function () {
+    // Re-arm for the following month first · a failed send never kills the loop
+    wp_schedule_single_event( strtotime( 'first day of next month 08:00' ), 'vpg_monthly_digest' );
+
+    $last  = strtotime( 'first day of last month' );
+    $year  = (int) gmdate( 'Y', $last );
+    $month = (int) gmdate( 'n', $last );
+    $label = date_i18n( 'F Y', $last );
+
+    $issue     = get_posts( [ 'post_type' => 'vpg_magazine', 'posts_per_page' => 1, 'post_status' => 'publish', 'date_query' => [ [ 'year' => $year, 'month' => $month ] ] ] );
+    $locations = get_posts( [ 'post_type' => 'vpg_location', 'posts_per_page' => 5, 'post_status' => 'publish', 'date_query' => [ [ 'year' => $year, 'month' => $month ] ] ] );
+    $upcoming  = get_posts( [ 'post_type' => 'vpg_event', 'posts_per_page' => 5, 'post_status' => 'publish', 'meta_key' => '_vpg_event_date', 'orderby' => 'meta_value', 'order' => 'ASC', 'meta_query' => [ [ 'key' => '_vpg_event_date', 'value' => gmdate( 'Y-m-d' ), 'compare' => '>=' ] ] ] );
+
+    $body = sprintf( __( "The month at Vienna Photo Group — %s.\n\n", 'vpg-v2' ), $label );
+    if ( $issue ) {
+        $body .= __( "New issue:\n", 'vpg-v2' ) . '  ' . $issue[0]->post_title . ' — ' . get_permalink( $issue[0] ) . "\n\n";
+    }
+    if ( $locations ) {
+        $body .= __( "New on the map:\n", 'vpg-v2' );
+        foreach ( $locations as $l ) $body .= '  · ' . $l->post_title . ' — ' . get_permalink( $l ) . "\n";
+        $body .= "\n";
+    }
+    if ( $upcoming ) {
+        $body .= __( "Coming up:\n", 'vpg-v2' );
+        foreach ( $upcoming as $e ) {
+            $body .= '  · ' . ( get_post_meta( $e->ID, '_vpg_event_date', true ) ?: '' ) . ' ' . $e->post_title . ' — ' . get_permalink( $e ) . "\n";
+        }
+        $body .= "\n";
+    }
+    if ( ! $issue && ! $locations && ! $upcoming ) return; // nothing worth a mail
+
+    $body .= __( "— Vienna Photo Group · member-run, ad-free\nManage emails: ", 'vpg-v2' ) . home_url( '/dashboard/#profile' ) . "\n";
+
+    $members = get_users( [ 'role__in' => [ 'vpg_member', 'administrator', 'editor', 'author' ], 'fields' => [ 'ID', 'user_email', 'display_name' ] ] );
+    foreach ( $members as $m ) {
+        if ( get_user_meta( $m->ID, '_vpg_pref_digest', true ) === '0' ) continue;
+        if ( ! vpg_is_verified( $m->ID ) ) continue;
+        wp_mail( $m->user_email, sprintf( __( '[VPG] The month — %s', 'vpg-v2' ), $label ), "Hello {$m->display_name},\n\n" . $body );
+    }
+} );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Photo of the week · one vote per member per ISO week             */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_potw_week_key() {
+    return 'vpg_potw_' . current_time( 'o-\WW' ); // e.g. vpg_potw_2026-W35
+}
+
+function vpg_potw_candidates( $limit = 8 ) {
+    return get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image',
+        'posts_per_page' => $limit,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+    ] );
+}
+
+add_action( 'wp_ajax_vpg_potw_vote', function () {
+    check_ajax_referer( 'vpg_potw' );
+    $uid = get_current_user_id();
+    if ( ! $uid ) wp_send_json_error( 'login', 403 );
+
+    $photo = (int) ( $_POST['photo'] ?? 0 );
+    if ( ! $photo || ! wp_attachment_is_image( $photo ) ) wp_send_json_error( 'bad photo' );
+
+    $week = vpg_potw_week_key();
+    if ( get_user_meta( $uid, '_' . $week, true ) ) wp_send_json_error( 'already voted' );
+
+    $votes = get_option( $week, [] );
+    $votes = is_array( $votes ) ? $votes : [];
+    $votes[ $photo ] = (int) ( $votes[ $photo ] ?? 0 ) + 1;
+    update_option( $week, $votes, false );
+    update_user_meta( $uid, '_' . $week, $photo );
+
+    wp_send_json_success( [ 'votes' => $votes[ $photo ] ] );
+} );
+
+function vpg_potw_leader() {
+    $votes = get_option( vpg_potw_week_key(), [] );
+    if ( ! is_array( $votes ) || ! $votes ) return 0;
+    arsort( $votes );
+    return (int) array_key_first( $votes );
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Photowalk trails · ordered location stops on vpg_trail           */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'add_meta_boxes', function () {
+    add_meta_box( 'vpg-trail-stops', __( 'Trail stops', 'vpg-v2' ), function ( $post ) {
+        $stops = get_post_meta( $post->ID, '_vpg_trail_stops', true );
+        wp_nonce_field( 'vpg_trail_stops', 'vpg_trail_stops_nonce' );
+        $places = get_posts( [ 'post_type' => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ], 'posts_per_page' => -1, 'post_status' => 'publish', 'orderby' => 'title', 'order' => 'ASC' ] );
+        ?>
+        <p class="description"><?php esc_html_e( 'Comma-separated location IDs, in walking order. The list below shows every pinned place.', 'vpg-v2' ); ?></p>
+        <input type="text" name="vpg_trail_stops" value="<?php echo esc_attr( $stops ); ?>" style="width:100%" placeholder="12, 87, 43">
+        <div style="max-height:180px;overflow-y:auto;margin-top:8px;font-size:12px;color:#646970">
+            <?php foreach ( $places as $pl ) : ?>
+                <div><code><?php echo (int) $pl->ID; ?></code> <?php echo esc_html( $pl->post_title ); ?></div>
+            <?php endforeach; ?>
+        </div>
+        <?php
+    }, 'vpg_trail', 'normal', 'high' );
+} );
+
+add_action( 'save_post_vpg_trail', function ( $post_id ) {
+    if ( ! isset( $_POST['vpg_trail_stops_nonce'] ) || ! wp_verify_nonce( $_POST['vpg_trail_stops_nonce'], 'vpg_trail_stops' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+    $raw = sanitize_text_field( wp_unslash( $_POST['vpg_trail_stops'] ?? '' ) );
+    $ids = implode( ',', array_filter( array_map( 'intval', explode( ',', $raw ) ) ) );
+    update_post_meta( $post_id, '_vpg_trail_stops', $ids );
+} );
+
+function vpg_trail_stops( $trail_id ) {
+    $raw = get_post_meta( $trail_id, '_vpg_trail_stops', true );
+    $out = [];
+    foreach ( array_filter( array_map( 'intval', explode( ',', (string) $raw ) ) ) as $pid ) {
+        $post = get_post( $pid );
+        if ( ! $post || $post->post_status !== 'publish' ) continue;
+        $coords = function_exists( 'vpg_get_coords' ) ? vpg_get_coords( $pid ) : null;
+        $out[] = [ 'post' => $post, 'coords' => $coords ];
+    }
+    return $out;
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Competitions · photo entries, editors pick the winner            */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'admin_post_vpg_competition_enter', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_competition_enter' );
+    if ( function_exists( 'vpg_is_verified' ) && ! vpg_is_verified() ) {
+        wp_safe_redirect( add_query_arg( 'vpg_status', 'verify', wp_get_referer() ?: home_url() ) );
+        exit;
+    }
+
+    $comp_id = (int) ( $_POST['competition'] ?? 0 );
+    $comp    = get_post( $comp_id );
+    if ( ! $comp || $comp->post_type !== 'vpg_competition' || $comp->post_status !== 'publish' ) {
+        wp_die( 'Competition not found', 404 );
+    }
+    if ( get_post_meta( $comp_id, '_vpg_comp_closed', true ) === '1' ) {
+        wp_safe_redirect( get_permalink( $comp_id ) );
+        exit;
+    }
+
+    if ( empty( $_FILES['entry']['name'] ) || (int) $_FILES['entry']['error'] !== UPLOAD_ERR_OK ) {
+        wp_safe_redirect( add_query_arg( 'vpg_status', 'invalid', get_permalink( $comp_id ) ) );
+        exit;
+    }
+    if ( (int) $_FILES['entry']['size'] > 8 * MB_IN_BYTES ) {
+        wp_safe_redirect( add_query_arg( 'vpg_status', 'invalid', get_permalink( $comp_id ) ) );
+        exit;
+    }
+    $check = wp_check_filetype_and_ext( $_FILES['entry']['tmp_name'], sanitize_file_name( $_FILES['entry']['name'] ) );
+    if ( empty( $check['ext'] ) || ! in_array( strtolower( $check['ext'] ), [ 'jpg', 'jpeg', 'png', 'webp' ], true ) ) {
+        wp_safe_redirect( add_query_arg( 'vpg_status', 'invalid', get_permalink( $comp_id ) ) );
+        exit;
+    }
+
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    $att = media_handle_upload( 'entry', $comp_id );
+    if ( is_wp_error( $att ) ) {
+        wp_safe_redirect( add_query_arg( 'vpg_status', 'fail', get_permalink( $comp_id ) ) );
+        exit;
+    }
+    update_post_meta( $att, '_vpg_competition', $comp_id );
+
+    wp_safe_redirect( add_query_arg( 'vpg_status', 'ok', get_permalink( $comp_id ) ) . '#entries' );
+    exit;
+} );
+
+function vpg_competition_entries( $comp_id ) {
+    return get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image',
+        'posts_per_page' => 60,
+        'meta_key'       => '_vpg_competition',
+        'meta_value'     => (int) $comp_id,
+        'orderby'        => 'date',
+        'order'          => 'ASC',
+    ] );
+}
+
+/* Winner picker · editors see a "make winner" link under each entry */
+add_action( 'admin_post_vpg_competition_winner', function () {
+    if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+    check_admin_referer( 'vpg_competition_winner' );
+    $comp  = (int) ( $_GET['competition'] ?? 0 );
+    $entry = (int) ( $_GET['entry'] ?? 0 );
+    if ( $comp && $entry && (int) get_post_meta( $entry, '_vpg_competition', true ) === $comp ) {
+        update_post_meta( $comp, '_vpg_comp_winner', $entry );
+        update_post_meta( $comp, '_vpg_comp_closed', '1' );
+        $author = get_post_field( 'post_author', $entry );
+        if ( $author ) {
+            vpg_notify_user( $author, __( 'Your photo won a competition!', 'vpg-v2' ), get_permalink( $comp ) );
+        }
+    }
+    wp_safe_redirect( get_permalink( $comp ) );
+    exit;
+} );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Comments as feedback threads · members-only on member CPTs       */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'init', function () {
+    foreach ( [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ] as $cpt ) {
+        add_post_type_support( $cpt, 'comments' );
+    }
+}, 20 );
+
+/* Only members write feedback · guests see the gate in the template */
+add_filter( 'comments_open', function ( $open, $post_id ) {
+    $type = get_post_type( $post_id );
+    if ( in_array( $type, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ], true ) ) {
+        return is_user_logged_in();
+    }
+    return $open;
+}, 10, 2 );

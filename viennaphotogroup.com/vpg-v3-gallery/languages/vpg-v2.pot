@@ -8642,3 +8642,30 @@ msgstr ""
 
 msgid "0675 · Regenerate thumbnails (batch)"
 msgstr ""
+
+msgid "Meta description"
+msgstr ""
+
+msgid "≤160 chars, click-honest. Leave blank to auto-generate."
+msgstr ""
+
+msgid "SEO & reach"
+msgstr ""
+
+msgid "direct visits tracked (0720 — the real goal). llms.txt:"
+msgstr ""
+
+msgid "0688 · Top 404s"
+msgstr ""
+
+msgid "0720 · Direct visits / month"
+msgstr ""
+
+msgid "0689 · Redirects (one per line: /old-path => https://…/new)"
+msgstr ""
+
+msgid "Reach checklist & outreach notes"
+msgstr ""
+
+msgid "Title formulas (0686): “{Title} · {Type} — Vienna Photo Group”. Preview cards at opengraph.xyz before publishing (0707)."
+msgstr ""

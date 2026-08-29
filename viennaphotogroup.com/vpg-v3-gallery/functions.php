@@ -82,6 +82,7 @@ require_once VPG_V2_DIR . '/inc/onboarding.php';      // Cluster 14 · onboardin
 require_once VPG_V2_DIR . '/inc/search.php';           // Cluster 15 · smart search · discovery · search desk
 require_once VPG_V2_DIR . '/inc/mobile-plus.php';     // Cluster 16 · PWA behaviours · thumb bar · GPS choice
 require_once VPG_V2_DIR . '/inc/perf.php';            // Cluster 17 · speculation · view transitions · flags · tech desk
+require_once VPG_V2_DIR . '/inc/seo-plus.php';        // Cluster 18 · JSON-LD · meta · canonical · redirects · /go/ · llms.txt · RSS · SEO desk
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

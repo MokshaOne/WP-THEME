@@ -153,6 +153,7 @@ $h = $hero_copy[ $type_filter ];
         <a href="<?php echo esc_url( $mk_url( 'location' ) ); ?>" class="<?php if ( $type_filter === 'location' ) echo 'is-active'; ?>"><button type="button" data-type="location"><?php esc_html_e( 'Locations', 'vpg-v2' ); ?> · <?php echo (int) $counts['location']; ?></button></a>
         <a href="<?php echo esc_url( $mk_url( 'studio' ) ); ?>"   class="<?php if ( $type_filter === 'studio' )   echo 'is-active'; ?>"><button type="button" data-type="studio"><?php esc_html_e( 'Studios', 'vpg-v2' ); ?> · <?php echo (int) $counts['studio']; ?></button></a>
         <a href="<?php echo esc_url( $mk_url( 'shop' ) ); ?>"     class="<?php if ( $type_filter === 'shop' )     echo 'is-active'; ?>"><button type="button" data-type="shop"><?php esc_html_e( 'Shops', 'vpg-v2' ); ?> · <?php echo (int) $counts['shop']; ?></button></a>
+        <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_random_spot' ) ); ?>"><button type="button" title="<?php esc_attr_e( 'Jump to a random spot', 'vpg-v2' ); ?>">⚄ <?php esc_html_e( 'Surprise me', 'vpg-v2' ); ?></button></a>
         <?php if ( is_user_logged_in() ) : ?>
           <span class="vpg-map-filter__label" style="margin-left:auto">— <?php esc_html_e( 'Export', 'vpg-v2' ); ?></span>
           <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_geo_export' ) ); ?>"><button type="button">GeoJSON ↓</button></a>
@@ -160,6 +161,14 @@ $h = $hero_copy[ $type_filter ];
         <?php endif; ?>
       </div>
 
+      <?php // 0002 · today's light windows, computed for Vienna — no API
+      $lt = function_exists( 'vpg_light_times' ) ? vpg_light_times() : null;
+      if ( $lt ) : ?>
+      <p style="display:flex;gap:24px;flex-wrap:wrap;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--g-mid,#6A6A6A);margin:0 0 10px">
+        <span><span style="color:var(--g-red,#E5341F)">●</span> <?php esc_html_e( 'Golden hour today', 'vpg-v2' ); ?> <?php echo esc_html( $lt['golden'] ); ?></span>
+        <span><span style="color:var(--g-red,#E5341F)">●</span> <?php esc_html_e( 'Blue hour', 'vpg-v2' ); ?> <?php echo esc_html( $lt['blue'] ); ?></span>
+      </p>
+      <?php endif; ?>
       <div id="vpg-map" class="vpg-map vpg-map--tall" data-pins="<?php echo esc_attr( wp_json_encode( $map_pins ) ); ?>"></div>
     </div>
   </section>

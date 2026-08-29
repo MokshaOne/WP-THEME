@@ -212,6 +212,7 @@ get_header();
               <div style="display:flex;gap:10px">
                 <input class="g-input" id="pin-search" type="text" placeholder="<?php esc_attr_e( 'Karlsplatz 4, Wien', 'vpg-v2' ); ?>" autocomplete="off" style="flex:1">
                 <button class="g-btn" type="button" id="pin-go"><?php esc_html_e( 'Find', 'vpg-v2' ); ?></button>
+                <button class="g-btn g-btn--ghost" type="button" id="pin-locate" title="<?php esc_attr_e( 'Use my current position', 'vpg-v2' ); ?>">◎</button>
               </div>
               <div id="vpg-pin-map" style="height:300px;border:1px solid var(--g-line-2);margin-top:10px"></div>
               <input type="hidden" name="pin_lat" id="pin-lat" value="<?php echo esc_attr( $pin_lat ); ?>">
@@ -308,6 +309,17 @@ get_header();
               }
               searchBtn.addEventListener('click', search);
               searchIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); search(); } });
+
+              // 0603 · one tap puts the pin where the phone is
+              document.getElementById('pin-locate').addEventListener('click', function () {
+                if (!navigator.geolocation || !map) return;
+                navigator.geolocation.getCurrentPosition(function (pos) {
+                  map.setView([pos.coords.latitude, pos.coords.longitude], 17);
+                  setPin(pos.coords.latitude, pos.coords.longitude);
+                }, function () {
+                  state.textContent = <?php echo wp_json_encode( __( 'Position unavailable — search or click the map instead.', 'vpg-v2' ) ); ?>;
+                });
+              });
             })();
             </script>
 

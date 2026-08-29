@@ -3369,3 +3369,211 @@ msgstr ""
 #: single-vpg_event.php
 msgid "Open in OSM for directions ↗"
 msgstr ""
+
+#: inc/community.php
+msgid "%1$s says thanks for “%2$s”."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "+ %1$d published %2$s"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "A member-run collective owes its members the numbers. What running this costs, where any support goes, and the promises that never change."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Ad-free"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Advertising"
+msgstr ""
+
+#: archive-vpg_location.php
+msgid "Blue hour"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Cost"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Earned, never <em>bought</em>."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Entry"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Every feature that exists today stays free. Future supporter perks add — they never subtract."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Four ranks, one direction: the map comes first. Every rank is earned in the formats of the stage before it — and brings real privileges, never obligations."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Free · always"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Free · forever"
+msgstr ""
+
+#: archive-vpg_location.php
+msgid "Golden hour today"
+msgstr ""
+
+#: archive-vpg_location.php
+msgid "Jump to a random spot"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Member-run"
+msgstr ""
+
+#: inc/community.php
+msgid "Monthly challenge draft is waiting"
+msgstr ""
+
+#: inc/community.php
+msgid "Monthly challenge · %s"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Next"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "No ads, no tracking"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "No banners, no sponsored posts, no data sold. Analytics are cookie-free and self-hosted."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "No investor, no parent company. The collective decides, the books stay open, this page stays current."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "No paywall, ever"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "None · ever"
+msgstr ""
+
+#: front-page.php
+msgid "One year <em>ago</em>."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Open <em>books</em>."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Owned by nobody"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Position unavailable — search or click the map instead."
+msgstr ""
+
+#: inc/community.php
+msgid "Right now at the spot: %1$s, %2$s — check the forecast before you pack."
+msgstr ""
+
+#: inc/community.php
+msgid "Say thanks — quietly, to the author"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Stages are strictly sequential: sixty journal drafts don’t count until the locations exist. Instant publishing requires a confirmed email and a clean record — open reports pause every privilege until resolved, whatever your rank. You never lose a rank for taking a break. Rule changes never apply retroactively. And nothing here is for sale."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Step one"
+msgstr ""
+
+#: archive-vpg_event.php
+msgid "Subscribe · .ics ↓"
+msgstr ""
+
+#: archive-vpg_location.php
+msgid "Surprise me"
+msgstr ""
+
+#: inc/community.php
+msgid "Thanks delivered — quietly, to the author."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "The backbone. Everything you submit goes live instantly, journal included, and your photos carry a VIP mark in the magazine’s photo picker — editorial reaches for your work first."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "The constants"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "The door. You join free, confirm your email, and start feeding the map: locations, studios, shops — everything through the review desk within 72 hours."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "The fine print — short and honest"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "The ladder"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "The map is <em>waiting</em>."
+msgstr ""
+
+#: front-page.php
+msgid "Time capsule"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Transparency"
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Unlocks gear reviews, tutorial pitches and journal stories. Your map entries now publish instantly — you earned the map’s trust on the map."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Unlocks photowalk proposals and photo trails — curating routes and leading people needs deep map knowledge. Everything but journal stories publishes instantly, and you can edit your own live pieces."
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "Updated"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Use my current position"
+msgstr ""
+
+#: inc/advanced.php
+msgid "Visually related"
+msgstr ""
+
+#: templates/page-transparency.php
+msgid "What never <em>changes</em>."
+msgstr ""
+
+#: inc/community.php
+msgid "You thanked the author for this."
+msgstr ""
+
+#: templates/page-ranks.php
+msgid "Your rank"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "the ladder"
+msgstr ""

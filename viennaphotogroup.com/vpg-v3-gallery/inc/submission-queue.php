@@ -162,7 +162,13 @@ function vpg_render_submission_queue() {
                     </td>
                     <td><code><?php echo esc_html( str_replace( 'vpg_', '', $type ) ); ?></code></td>
                     <td><?php echo esc_html( $author ); ?></td>
-                    <td><?php echo esc_html( get_the_date( 'M j, Y · H:i' ) ); ?></td>
+                    <td><?php
+                        echo esc_html( get_the_date( 'M j, Y · H:i' ) );
+                        // 0846 · SLA clock — 72h promise, colour shifts as it ages
+                        $age_h = ( time() - get_post_time( 'U', true ) ) / HOUR_IN_SECONDS;
+                        $sla   = $age_h >= 72 ? '#d63638' : ( $age_h >= 48 ? '#996800' : '#646970' );
+                        printf( ' <span style="color:%s;font-weight:700;font-size:11px">· %dh</span>', esc_attr( $sla ), (int) $age_h );
+                    ?></td>
                     <td>
                         <a class="button button-primary" href="<?php echo esc_url( $approve ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Approve and publish? The member gets a &quot;your work is live&quot; email.', 'vpg-v2' ) ); ?>')">✓ <?php esc_html_e( 'Approve', 'vpg-v2' ); ?></a>
                         <a class="button" href="<?php echo esc_url( $edit_url ); ?>"><?php esc_html_e( 'Edit', 'vpg-v2' ); ?></a>

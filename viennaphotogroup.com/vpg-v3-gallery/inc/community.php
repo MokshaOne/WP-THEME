@@ -86,6 +86,18 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
     $event = get_post( $event_id );
     if ( ! $event || $event->post_status !== 'publish' ) return;
     $venue = get_post_meta( $event_id, '_vpg_event_venue', true );
+
+    // 0817 · Current Vienna weather as a hint in the reminder mail
+    $wx_line = '';
+    if ( function_exists( 'vpg_weather' ) ) {
+        $wx_lat = (float) ( get_post_meta( $event_id, '_vpg_event_lat', true ) ?: 48.2082 );
+        $wx_lng = (float) ( get_post_meta( $event_id, '_vpg_event_lng', true ) ?: 16.3738 );
+        $wx     = vpg_weather( $wx_lat, $wx_lng );
+        if ( $wx ) {
+            $wx_line = "\n" . sprintf( __( 'Right now at the spot: %1$s, %2$s — check the forecast before you pack.', 'vpg-v2' ), $wx['temp'], $wx['label'] );
+        }
+    }
+
     foreach ( vpg_event_rsvps( $event_id ) as $uid ) {
         $user = get_userdata( $uid );
         if ( ! $user ) continue;
@@ -93,11 +105,12 @@ add_action( 'vpg_event_reminder', function ( $event_id ) {
             sprintf( __( '[VPG] Tomorrow · %s', 'vpg-v2' ), $event->post_title ),
             sprintf(
                 /* translators: 1: name, 2: event title, 3: venue, 4: permalink */
-                __( "Hello %1\$s,\n\nQuick reminder — \"%2\$s\" is tomorrow%3\$s.\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group", 'vpg-v2' ),
+                __( "Hello %1\$s,\n\nQuick reminder — \"%2\$s\" is tomorrow%3\$s.%5\$s\n\nDetails: %4\$s\n\nBring a camera.\n\n— Vienna Photo Group", 'vpg-v2' ),
                 $user->display_name,
                 $event->post_title,
                 $venue ? ' · ' . $venue : '',
-                get_permalink( $event_id )
+                get_permalink( $event_id ),
+                $wx_line
             )
         );
     }
@@ -407,3 +420,95 @@ add_action( 'admin_menu', function () {
         <?php
     } );
 }, 17 );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  0370 · Thanks — one quiet thank-you per member per piece         */
+/*  No likes, no counters on the page: the author gets a             */
+/*  notification, the sender gets a toast, nobody gets a scoreboard. */
+/* ════════════════════════════════════════════════════════════════ */
+add_filter( 'the_content', function ( $content ) {
+    if ( ! is_singular() || ! in_the_loop() || ! is_main_query() || ! is_user_logged_in() ) return $content;
+    $types = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [];
+    $post  = get_post();
+    if ( ! $post || ! in_array( $post->post_type, $types, true ) ) return $content;
+    if ( (int) $post->post_author === get_current_user_id() ) return $content;
+
+    $thanked = in_array( get_current_user_id(), array_map( 'intval', (array) get_post_meta( $post->ID, '_vpg_thanks', true ) ), true );
+    ob_start(); ?>
+    <div style="margin-top:32px;padding-top:18px;border-top:1px solid var(--g-line,#E6E5E1)">
+        <?php if ( $thanked ) : ?>
+            <span style="font-size:13px;font-weight:700;color:var(--g-mid,#6A6A6A)">☺ <?php esc_html_e( 'You thanked the author for this.', 'vpg-v2' ); ?></span>
+        <?php else : ?>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline">
+                <?php wp_nonce_field( 'vpg_thanks' ); ?>
+                <input type="hidden" name="action" value="vpg_thanks">
+                <input type="hidden" name="post" value="<?php echo (int) $post->ID; ?>">
+                <button type="submit" style="background:none;border:1px solid var(--g-line-2,#D9D7D2);padding:8px 16px;cursor:pointer;font:inherit;font-size:13px;font-weight:700">☺ <?php esc_html_e( 'Say thanks — quietly, to the author', 'vpg-v2' ); ?></button>
+            </form>
+        <?php endif; ?>
+    </div>
+    <?php
+    return $content . ob_get_clean();
+}, 30 );
+
+add_action( 'admin_post_vpg_thanks', function () {
+    if ( ! is_user_logged_in() ) wp_die( 'Members only.', 403 );
+    check_admin_referer( 'vpg_thanks' );
+    $post = get_post( (int) ( $_POST['post'] ?? 0 ) );
+    $uid  = get_current_user_id();
+    if ( $post && $post->post_status === 'publish' && (int) $post->post_author !== $uid ) {
+        $list = array_map( 'intval', (array) get_post_meta( $post->ID, '_vpg_thanks', true ) );
+        if ( ! in_array( $uid, $list, true ) ) {
+            $list[] = $uid;
+            update_post_meta( $post->ID, '_vpg_thanks', $list );
+            $sender = wp_get_current_user();
+            vpg_notify_user( $post->post_author,
+                sprintf( __( '%1$s says thanks for “%2$s”.', 'vpg-v2' ), $sender->display_name, $post->post_title ),
+                get_permalink( $post )
+            );
+        }
+    }
+    wp_safe_redirect( add_query_arg( 'vpg_status', 'thanked', $post ? get_permalink( $post ) : home_url() ) );
+    exit;
+} );
+
+add_action( 'wp_footer', function () {
+    if ( sanitize_key( $_GET['vpg_status'] ?? '' ) !== 'thanked' ) return;
+    ?>
+    <div role="status" class="vpg-toast vpg-toast--success is-visible" id="vpg-thx-toast"><?php esc_html_e( 'Thanks delivered — quietly, to the author.', 'vpg-v2' ); ?></div>
+    <script>setTimeout(function(){var t=document.getElementById('vpg-thx-toast');if(t)t.classList.remove('is-visible');},6000);</script>
+    <?php
+} );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  0441 · Monthly challenge — a draft competition on the 1st        */
+/*  Editorial fills in the theme and publishes; nothing goes live    */
+/*  automatically.                                                   */
+/* ════════════════════════════════════════════════════════════════ */
+add_action( 'init', function () {
+    if ( ! wp_next_scheduled( 'vpg_monthly_challenge' ) ) {
+        wp_schedule_single_event( strtotime( 'first day of next month 07:00' ), 'vpg_monthly_challenge' );
+    }
+} );
+
+add_action( 'vpg_monthly_challenge', function () {
+    wp_schedule_single_event( strtotime( 'first day of next month 07:00' ), 'vpg_monthly_challenge' );
+
+    $month_key = current_time( 'Y-m' );
+    $existing  = get_posts( [ 'post_type' => 'vpg_competition', 'post_status' => 'any', 'meta_key' => '_vpg_challenge_month', 'meta_value' => $month_key, 'posts_per_page' => 1, 'fields' => 'ids' ] );
+    if ( $existing ) return;
+
+    $id = wp_insert_post( [
+        'post_type'    => 'vpg_competition',
+        'post_status'  => 'draft',
+        'post_title'   => sprintf( __( 'Monthly challenge · %s', 'vpg-v2' ), date_i18n( 'F Y' ) ),
+        'post_content' => __( "Theme goes here — one line, open enough for every genre.\n\nDeadline: last Sunday of the month, midnight.", 'vpg-v2' ),
+    ] );
+    if ( $id && ! is_wp_error( $id ) ) {
+        update_post_meta( $id, '_vpg_challenge_month', $month_key );
+        wp_mail( get_theme_mod( 'vpg_email', get_option( 'admin_email' ) ),
+            '[VPG] ' . __( 'Monthly challenge draft is waiting', 'vpg-v2' ),
+            __( "The new month's challenge draft is created — add the theme and publish:\n", 'vpg-v2' ) . get_edit_post_link( $id, '' )
+        );
+    }
+} );

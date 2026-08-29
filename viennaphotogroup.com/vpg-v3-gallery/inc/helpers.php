@@ -383,3 +383,61 @@ add_filter( 'posts_results', function ( $posts, $query ) {
     $post->post_status = 'publish'; // in-memory only · lets the template render
     return [ $post ];
 }, 10, 2 );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  Quick batch · random spot, events feed, light times              */
+/* ════════════════════════════════════════════════════════════════ */
+
+/* ─── 0074 · Surprise me — jump to a random published location ──── */
+add_action( 'admin_post_nopriv_vpg_random_spot', 'vpg_random_spot' );
+add_action( 'admin_post_vpg_random_spot',        'vpg_random_spot' );
+function vpg_random_spot() {
+    $ids = get_posts( [ 'post_type' => 'vpg_location', 'post_status' => 'publish', 'fields' => 'ids', 'posts_per_page' => 500 ] );
+    wp_safe_redirect( $ids ? get_permalink( $ids[ array_rand( $ids ) ] ) : get_post_type_archive_link( 'vpg_location' ) );
+    exit;
+}
+
+/* ─── 0143 · One iCal feed with every upcoming event ────────────── */
+add_action( 'admin_post_nopriv_vpg_events_feed', 'vpg_events_feed' );
+add_action( 'admin_post_vpg_events_feed',        'vpg_events_feed' );
+function vpg_events_feed() {
+    $events = get_posts( [
+        'post_type'      => 'vpg_event',
+        'post_status'    => 'publish',
+        'posts_per_page' => 50,
+        'meta_key'       => '_vpg_event_date',
+        'orderby'        => 'meta_value',
+        'order'          => 'ASC',
+        'meta_query'     => [ [ 'key' => '_vpg_event_date', 'value' => gmdate( 'Y-m-d' ), 'compare' => '>=' ] ],
+    ] );
+    nocache_headers();
+    header( 'Content-Type: text/calendar; charset=utf-8' );
+    header( 'Content-Disposition: attachment; filename="vpg-events.ics"' );
+    $out = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Vienna Photo Group//Events//EN\r\nX-WR-CALNAME:Vienna Photo Group\r\n";
+    foreach ( $events as $e ) {
+        $ts = strtotime( get_post_meta( $e->ID, '_vpg_event_date', true ) . ' 18:00' );
+        if ( ! $ts ) continue;
+        $venue = get_post_meta( $e->ID, '_vpg_event_venue', true );
+        $out  .= "BEGIN:VEVENT\r\n"
+               . 'UID:vpg-event-' . $e->ID . '@' . wp_parse_url( home_url(), PHP_URL_HOST ) . "\r\n"
+               . 'DTSTART:' . gmdate( 'Ymd\THis\Z', $ts ) . "\r\n"
+               . 'DTEND:'   . gmdate( 'Ymd\THis\Z', $ts + 2 * HOUR_IN_SECONDS ) . "\r\n"
+               . 'SUMMARY:' . str_replace( [ ',', ';' ], [ '\,', '\;' ], $e->post_title ) . "\r\n"
+               . ( $venue ? 'LOCATION:' . str_replace( [ ',', ';' ], [ '\,', '\;' ], $venue ) . "\r\n" : '' )
+               . 'URL:' . get_permalink( $e ) . "\r\n"
+               . "END:VEVENT\r\n";
+    }
+    echo $out . "END:VCALENDAR\r\n";
+    exit;
+}
+
+/* ─── 0002 · Today's golden and blue hour for Vienna ────────────── */
+function vpg_light_times() {
+    $sun = date_sun_info( strtotime( current_time( 'Y-m-d' ) . ' 12:00' ), 48.2082, 16.3738 );
+    if ( empty( $sun['sunset'] ) || empty( $sun['civil_twilight_end'] ) ) return null;
+    $fmt = fn( $ts ) => wp_date( get_option( 'time_format' ), $ts );
+    return [
+        'golden' => $fmt( $sun['sunset'] - 40 * MINUTE_IN_SECONDS ) . '–' . $fmt( $sun['sunset'] ),
+        'blue'   => $fmt( $sun['sunset'] ) . '–' . $fmt( $sun['civil_twilight_end'] ),
+    ];
+}

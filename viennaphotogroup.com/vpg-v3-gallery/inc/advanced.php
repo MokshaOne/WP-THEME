@@ -419,3 +419,57 @@ add_action( 'vpg_caption_run', function () {
         }
     }
 } );
+
+/* ════════════════════════════════════════════════════════════════ */
+/*  0290 · Similar images — dHash neighbours under a piece           */
+/*  The fingerprints already exist from the upload pipeline; this    */
+/*  just surfaces them: up to four visually related member photos,   */
+/*  each linking to the piece it belongs to.                         */
+/* ════════════════════════════════════════════════════════════════ */
+function vpg_similar_images( $att_id, $limit = 4, $max_dist = 22 ) {
+    $hash = (string) get_post_meta( $att_id, '_vpg_dhash', true );
+    if ( strlen( $hash ) !== 64 ) return [];
+
+    $pool = get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image',
+        'posts_per_page' => 300,
+        'exclude'        => [ $att_id ],
+        'meta_key'       => '_vpg_dhash',
+        'fields'         => 'ids',
+    ] );
+    $scored = [];
+    foreach ( $pool as $rid ) {
+        $d = vpg_hamming( $hash, (string) get_post_meta( $rid, '_vpg_dhash', true ) );
+        if ( $d <= $max_dist && $d > 0 ) $scored[ $rid ] = $d;
+    }
+    asort( $scored );
+    return array_slice( array_keys( $scored ), 0, $limit );
+}
+
+add_filter( 'the_content', function ( $content ) {
+    if ( ! is_singular( [ 'post', 'vpg_location' ] ) || ! in_the_loop() || ! is_main_query() ) return $content;
+    $thumb = get_post_thumbnail_id();
+    if ( ! $thumb ) return $content;
+    $similar = vpg_similar_images( $thumb );
+    if ( count( $similar ) < 2 ) return $content;
+
+    ob_start(); ?>
+    <div style="margin-top:36px">
+        <p style="font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--g-red,#E5341F);margin-bottom:12px">● <?php esc_html_e( 'Visually related', 'vpg-v2' ); ?></p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">
+            <?php foreach ( $similar as $sid ) :
+                $parent = get_post_parent( $sid );
+                $url    = $parent && $parent->post_status === 'publish' ? get_permalink( $parent ) : wp_get_attachment_url( $sid );
+                $img    = wp_get_attachment_image_url( $sid, 'medium' );
+                if ( ! $img ) continue; ?>
+                <a href="<?php echo esc_url( $url ); ?>" style="display:block;aspect-ratio:1;overflow:hidden;background:var(--g-bg-2,#F5F4F1)">
+                    <img src="<?php echo esc_url( $img ); ?>" alt="<?php echo esc_attr( get_post_meta( $sid, '_wp_attachment_image_alt', true ) ?: get_the_title( $sid ) ); ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+    return $content . ob_get_clean();
+}, 25 );

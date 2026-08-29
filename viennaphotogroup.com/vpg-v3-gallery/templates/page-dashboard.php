@@ -111,7 +111,12 @@ get_header();
         <dl class="g-phero__aside">
           <dt><?php esc_html_e( 'Rank', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $rank ? $rank['label'] : ucfirst( $tier ) ); ?></dd>
           <?php if ( $priv_line ) : ?>
-            <dt><?php esc_html_e( 'Privileges', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $priv_line ); ?></dd>
+            <dt><?php esc_html_e( 'Privileges', 'vpg-v2' ); ?></dt>
+            <dd><?php echo esc_html( $priv_line );
+                if ( get_page_by_path( 'ranks' ) ) {
+                    echo ' — <a href="' . esc_url( home_url( '/ranks/' ) ) . '">' . esc_html__( 'the ladder', 'vpg-v2' ) . '</a>';
+                }
+            ?></dd>
           <?php endif; ?>
           <dt><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'View public page', 'vpg-v2' ); ?></a></dd>
           <dt><?php esc_html_e( 'Session', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>"><?php esc_html_e( 'Log out', 'vpg-v2' ); ?></a></dd>

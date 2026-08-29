@@ -181,6 +181,39 @@ $journal_url = get_option( 'page_for_posts' ) ? get_permalink( (int) get_option(
     </div>
   </section>
 
+  <!-- ── 0575 · Time capsule · published one year ago ── -->
+  <?php
+  $capsule = get_posts( [
+      'post_type'      => array_merge( [ 'post', 'vpg_magazine' ], function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [] ),
+      'post_status'    => 'publish',
+      'posts_per_page' => 3,
+      'date_query'     => [ [
+          'after'  => gmdate( 'Y-m-d', strtotime( '-1 year -21 days' ) ),
+          'before' => gmdate( 'Y-m-d', strtotime( '-1 year +21 days' ) ),
+      ] ],
+  ] );
+  if ( $capsule ) : ?>
+  <section class="g-section g-section--tight">
+    <div class="g-wrap">
+      <div class="g-head">
+        <div>
+          <span class="g-kicker"><?php esc_html_e( 'Time capsule', 'vpg-v2' ); ?></span>
+          <h2 class="g-head__t"><?php echo wp_kses_post( __( 'One year <em>ago</em>.', 'vpg-v2' ) ); ?></h2>
+        </div>
+      </div>
+      <div class="g-grid3">
+        <?php foreach ( $capsule as $cp ) : ?>
+          <a class="g-card" href="<?php echo esc_url( get_permalink( $cp ) ); ?>">
+            <?php if ( has_post_thumbnail( $cp ) ) : ?><div class="g-fig g-fig--3x2"><?php echo get_the_post_thumbnail( $cp, 'medium_large' ); ?></div><?php endif; ?>
+            <span class="g-cat"><?php echo esc_html( get_the_date( 'F Y', $cp ) ); ?></span>
+            <h3 class="g-card__title"><?php echo esc_html( $cp->post_title ); ?></h3>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- ── JOIN / MEMBER CTA · members see their tools, visitors see the door ── -->
   <section class="g-section--dark g-section">
     <div class="g-wrap" style="text-align:center">

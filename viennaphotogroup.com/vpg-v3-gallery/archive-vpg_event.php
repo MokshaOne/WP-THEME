@@ -22,6 +22,7 @@ $total = (int) $q->found_posts;
           <dt><?php esc_html_e( 'Listed', 'vpg-v2' ); ?></dt><dd><?php printf( esc_html__( '%d entries', 'vpg-v2' ), $total ); ?></dd>
           <dt><?php esc_html_e( 'Format', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Workshops · walks · meetups', 'vpg-v2' ); ?></dd>
           <dt><?php esc_html_e( 'Access', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Members get early access', 'vpg-v2' ); ?></dd>
+          <dt><?php esc_html_e( 'Calendar', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( admin_url( 'admin-post.php?action=vpg_events_feed' ) ); ?>"><?php esc_html_e( 'Subscribe · .ics ↓', 'vpg-v2' ); ?></a></dd>
         </dl>
       </div>
     </div>

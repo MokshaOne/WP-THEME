@@ -85,6 +85,8 @@ add_action( 'template_redirect', function () {
             'name'              => get_bloginfo( 'name' ),
             'summary'           => get_bloginfo( 'description' ),
             'url'               => home_url( '/' ),
+            // 1036 · the actor carries the site icon so it shows an avatar in the Fediverse
+            'icon'              => ( $ico = get_site_icon_url( 512 ) ) ? [ 'type' => 'Image', 'url' => $ico ] : null,
             'inbox'             => home_url( '/activitypub/inbox' ),
             'outbox'            => home_url( '/activitypub/outbox' ),
             'publicKey'         => [
@@ -266,6 +268,18 @@ function vpg_fed_handle_inbox() {
                     'comment_meta'         => [ '_vpg_fediverse' => 1, '_vpg_fed_id' => $obj['id'] ?? '' ],
                 ] );
             }
+        }
+        status_header( 202 ); exit;
+    }
+
+    // 1037 · Fediverse resonance — count boosts (Announce) and likes (Like) per post
+    if ( $type === 'Announce' || $type === 'Like' ) {
+        $obj = $act['object'] ?? '';
+        $ref = is_array( $obj ) ? ( $obj['id'] ?? '' ) : $obj;
+        $pid = $ref ? url_to_postid( (string) $ref ) : 0;
+        if ( $pid ) {
+            $key = 'Announce' === $type ? '_vpg_fed_boosts' : '_vpg_fed_likes';
+            update_post_meta( $pid, $key, (int) get_post_meta( $pid, $key, true ) + 1 );
         }
         status_header( 202 ); exit;
     }

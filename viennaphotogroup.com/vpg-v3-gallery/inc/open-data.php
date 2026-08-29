@@ -323,6 +323,9 @@ function vpg_interop_page() { // 0959 / 0957 / 0960
     echo '</ul>';
     echo '<h2>' . esc_html__( 'API deprecation policy (0957)', 'vpg-v2' ) . '</h2><p>' . esc_html__( 'Breaking changes to the API are announced at least six months in advance, with a migration note.', 'vpg-v2' ) . '</p>';
     echo '<h2>' . esc_html__( 'No walled garden — yearly self-audit (0960)', 'vpg-v2' ) . '</h2><p>' . esc_html__( 'Once a year we check ourselves against lock-in: can a member leave with everything? Can others build on us? The answer must stay yes.', 'vpg-v2' ) . '</p>';
+    // 1040 · federation numbers — how many follow us in the open social web
+    $fed_followers = count( (array) get_option( 'vpg_fed_followers', [] ) );
+    echo '<h2>' . esc_html__( 'In the Fediverse', 'vpg-v2' ) . '</h2><p>' . esc_html( sprintf( _n( '%s account follows us across the Fediverse.', '%s accounts follow us across the Fediverse.', $fed_followers, 'vpg-v2' ), number_format_i18n( $fed_followers ) ) ) . ' <a href="' . esc_url( home_url( '/fediverse/' ) ) . '">' . esc_html__( 'Member directory →', 'vpg-v2' ) . '</a></p>';
     vpg_od_foot();
 }
 

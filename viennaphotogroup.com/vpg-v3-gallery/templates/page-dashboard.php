@@ -627,6 +627,9 @@ get_header();
                 <div style="font-family:ui-monospace,monospace;font-size:15px;line-height:1.9;letter-spacing:.06em">
                   <?php foreach ( $bk_show as $bc ) echo esc_html( $bc ) . '<br>'; ?>
                 </div>
+                <?php // 1039 · download the codes as a .txt (built inline; shown once)
+                $bk_txt = "Vienna Photo Group — 2FA backup codes\n" . str_repeat( '=', 38 ) . "\n\n" . implode( "\n", array_map( 'strval', (array) $bk_show ) ) . "\n\n" . __( 'Each code works once, in place of an app code.', 'vpg-v2' ) . "\n"; ?>
+                <p style="margin:8px 0 0"><a class="g-btn g-btn--ghost" style="font-size:12px" download="vpg-backup-codes.txt" href="data:text/plain;charset=utf-8,<?php echo rawurlencode( $bk_txt ); ?>">⬇ <?php esc_html_e( 'Download as .txt', 'vpg-v2' ); ?></a></p>
                 <p style="margin:8px 0 0;font-size:12px;color:var(--g-mid)"><?php esc_html_e( 'Each works once, in place of an app code, if you lose your phone.', 'vpg-v2' ); ?></p>
               </div>
             <?php else : ?>

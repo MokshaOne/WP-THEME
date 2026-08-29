@@ -127,26 +127,43 @@ add_action( 'wp_footer', function () {
         document.querySelectorAll('.vpg-listen').forEach(function (b) { b.hidden = true; });
         return;
       }
-      var speaking = false;
-      function textOf() {
+      var LBL = { listen: '🔊 <?php echo esc_js( __( 'Listen', 'vpg-v2' ) ); ?>', stop: '⏹ <?php echo esc_js( __( 'Stop', 'vpg-v2' ) ); ?>', pause: '⏸ <?php echo esc_js( __( 'Pause', 'vpg-v2' ) ); ?>', resume: '▶ <?php echo esc_js( __( 'Resume', 'vpg-v2' ) ); ?>' };
+      var speaking = false, els = [], offsets = [], hl = null;
+      function collect() {
         var main = document.getElementById('vpg-main') || document.body;
-        var parts = [];
+        els = []; offsets = []; var parts = [], pos = 0;
         main.querySelectorAll('h1, h2, p, li, figcaption').forEach(function (el) {
           if (el.closest('.g-foot, nav, form')) return;
           var t = el.textContent.trim();
-          if (t) parts.push(t);
+          if (t) { els.push(el); offsets.push(pos); parts.push(t); pos += t.length + 2; }
         });
         return parts.join('. ');
       }
+      function clearHL() { if (hl) { hl.style.background = ''; hl = null; } }
+      // 1038 · highlight the sentence/block currently being read
+      function highlightAt(idx) {
+        var i = 0; for (var k = 0; k < offsets.length; k++) { if (offsets[k] <= idx) i = k; else break; }
+        if (els[i] && els[i] !== hl) { clearHL(); hl = els[i]; hl.style.background = 'rgba(229,52,31,.14)'; }
+      }
       document.querySelectorAll('.vpg-listen').forEach(function (btn) {
+        // 1038 · a Pause/Resume button alongside the Listen/Stop toggle
+        var pauseBtn = document.createElement('button');
+        pauseBtn.type = 'button'; pauseBtn.className = btn.className; pauseBtn.style.cssText = btn.style.cssText; pauseBtn.hidden = true;
+        pauseBtn.textContent = LBL.pause; pauseBtn.style.marginLeft = '6px';
+        btn.after(pauseBtn);
+        function reset() { speaking = false; clearHL(); btn.textContent = LBL.listen; pauseBtn.hidden = true; pauseBtn.textContent = LBL.pause; }
         btn.addEventListener('click', function () {
-          if (speaking) { speechSynthesis.cancel(); speaking = false; btn.textContent = '🔊 <?php echo esc_js( __( 'Listen', 'vpg-v2' ) ); ?>'; return; }
-          var u = new SpeechSynthesisUtterance(textOf());
-          u.lang = (document.documentElement.lang || 'en');
-          u.rate = 0.98;
-          u.onend = function () { speaking = false; btn.textContent = '🔊 <?php echo esc_js( __( 'Listen', 'vpg-v2' ) ); ?>'; };
+          if (speaking) { speechSynthesis.cancel(); reset(); return; }
+          var u = new SpeechSynthesisUtterance(collect());
+          u.lang = (document.documentElement.lang || 'en'); u.rate = 0.98;
+          u.onboundary = function (e) { if (e.name === 'sentence' || e.charIndex != null) highlightAt(e.charIndex); };
+          u.onend = reset;
           speechSynthesis.cancel(); speechSynthesis.speak(u);
-          speaking = true; btn.textContent = '⏹ <?php echo esc_js( __( 'Stop', 'vpg-v2' ) ); ?>';
+          speaking = true; btn.textContent = LBL.stop; pauseBtn.hidden = false;
+        });
+        pauseBtn.addEventListener('click', function () {
+          if (speechSynthesis.paused) { speechSynthesis.resume(); pauseBtn.textContent = LBL.pause; }
+          else { speechSynthesis.pause(); pauseBtn.textContent = LBL.resume; }
         });
       });
     })();
@@ -216,7 +233,13 @@ add_action( 'admin_post_vpg_annual', function () {
     @wp_mkdir_p( wp_upload_dir()['basedir'] . '/vpg-pdf/tmp' );
     $mpdf->SetTitle( sprintf( __( 'Vienna Photo Group — the year %d', 'vpg-v2' ), $year ) );
 
-    $cover = '<div style="text-align:center;padding-top:70mm"><p style="font-size:9pt;letter-spacing:4pt;text-transform:uppercase;color:#E5341F">' . esc_html( get_bloginfo( 'name' ) ) . '</p><h1 style="font-size:64pt;margin:6mm 0">' . (int) $year . '<span style="color:#E5341F">.</span></h1><p style="color:#666">' . esc_html( sprintf( _n( '%d issue', '%d issues', count( $issues ), 'vpg-v2' ), count( $issues ) ) ) . '</p></div>';
+    // 1035 · an optional chosen cover image for the bound year
+    $cover_img = '';
+    $cover_id  = (int) get_option( 'vpg_annual_cover_' . $year, 0 );
+    if ( $cover_id && ( $src = wp_get_attachment_image_url( $cover_id, 'full' ) ) ) {
+        $cover_img = '<div style="text-align:center;margin-bottom:8mm"><img src="' . esc_url( $src ) . '" style="max-width:120mm;max-height:130mm"></div>';
+    }
+    $cover = '<div style="text-align:center;padding-top:' . ( $cover_img ? '20mm' : '70mm' ) . '">' . $cover_img . '<p style="font-size:9pt;letter-spacing:4pt;text-transform:uppercase;color:#E5341F">' . esc_html( get_bloginfo( 'name' ) ) . '</p><h1 style="font-size:64pt;margin:6mm 0">' . (int) $year . '<span style="color:#E5341F">.</span></h1><p style="color:#666">' . esc_html( sprintf( _n( '%d issue', '%d issues', count( $issues ), 'vpg-v2' ), count( $issues ) ) ) . '</p></div>';
     $mpdf->WriteHTML( $cover, \Mpdf\HTMLParserMode::HTML_BODY );
 
     foreach ( $issues as $iss ) {
@@ -241,13 +264,24 @@ add_action( 'admin_post_vpg_annual', function () {
 add_action( 'admin_menu', function () {
     add_submenu_page( 'vpg-magazine', __( 'Annual (PDF)', 'vpg-v2' ), __( '📚 Annual (PDF)', 'vpg-v2' ), 'edit_others_posts', 'vpg-annual', function () {
         if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Forbidden' );
+        // 1035 · save a chosen cover (attachment ID) per year
+        if ( isset( $_POST['_vpg_annual_cover'] ) && wp_verify_nonce( $_POST['_vpg_annual_cover'], 'vpg_annual_cover' ) ) {
+            $y = (int) $_POST['cover_year']; $cid = (int) $_POST['cover_id'];
+            $cid ? update_option( 'vpg_annual_cover_' . $y, $cid ) : delete_option( 'vpg_annual_cover_' . $y );
+            echo '<div class="notice notice-success"><p>' . esc_html__( 'Cover saved.', 'vpg-v2' ) . '</p></div>';
+        }
         $years = $GLOBALS['wpdb']->get_col( "SELECT DISTINCT YEAR(post_date) FROM {$GLOBALS['wpdb']->posts} WHERE post_type='vpg_magazine' AND post_status='publish' ORDER BY 1 DESC" );
         echo '<div class="wrap"><h1>📚 ' . esc_html__( 'Annual (PDF)', 'vpg-v2' ) . '</h1><p class="description">' . esc_html__( 'Bind a year of published issues — cover to colophon — into one PDF book.', 'vpg-v2' ) . '</p><ul>';
         if ( ! $years ) echo '<li>' . esc_html__( 'No published issues yet.', 'vpg-v2' ) . '</li>';
         foreach ( $years as $y ) {
             $url = wp_nonce_url( admin_url( 'admin-post.php?action=vpg_annual&year=' . (int) $y ), 'vpg_annual' );
-            echo '<li style="margin:6px 0"><a class="button" href="' . esc_url( $url ) . '">' . esc_html( sprintf( __( 'Build %d annual →', 'vpg-v2' ), (int) $y ) ) . '</a></li>';
+            $cid = (int) get_option( 'vpg_annual_cover_' . (int) $y, 0 );
+            echo '<li style="margin:10px 0"><a class="button button-primary" href="' . esc_url( $url ) . '">' . esc_html( sprintf( __( 'Build %d annual →', 'vpg-v2' ), (int) $y ) ) . '</a> ';
+            echo '<form method="post" style="display:inline-flex;gap:6px;align-items:center;margin-left:8px">' . wp_nonce_field( 'vpg_annual_cover', '_vpg_annual_cover', true, false );
+            echo '<input type="hidden" name="cover_year" value="' . (int) $y . '"><input type="number" name="cover_id" value="' . ( $cid ?: '' ) . '" placeholder="' . esc_attr__( 'cover image ID', 'vpg-v2' ) . '" style="width:120px"> <button class="button">' . esc_html__( 'Set cover', 'vpg-v2' ) . '</button>';
+            if ( $cid ) echo ' ' . wp_get_attachment_image( $cid, [ 34, 34 ] );
+            echo '</form></li>';
         }
-        echo '</ul></div>';
+        echo '</ul><p class="description">' . esc_html__( 'The cover image ID is the attachment ID from the media library (shown in its URL).', 'vpg-v2' ) . '</p></div>';
     } );
 }, 14 );

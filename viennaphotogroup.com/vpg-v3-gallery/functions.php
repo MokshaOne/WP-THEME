@@ -90,6 +90,7 @@ require_once VPG_V2_DIR . '/inc/editorial-tools.php'; // Cluster 22 · notes · 
 require_once VPG_V2_DIR . '/inc/ai-assist.php';       // Cluster 23 · text-model drafts · ML opt-out · readability · local Bayes spam · rotation dedup · offline district · link bot · NL search · transparency · AI desk
 require_once VPG_V2_DIR . '/inc/open-data.php';       // Cluster 24 · CC licences · API tokens · webhooks · CSV/KML/JSON-LD · OpenAPI · oEmbed · microformats · fediverse dir · status · data garden
 require_once VPG_V2_DIR . '/inc/supporter.php';       // Cluster 25 · supporter page · thanks wall · cancel/pause dignity · survey · annual report · ten-year letter · sustainability desk
+require_once VPG_V2_DIR . '/inc/backlog.php';         // Backlog 1029–1040 · federation switch/followers · archive format buttons · vision stack · discover-by-image · original backup · resonance
 require_once VPG_V2_DIR . '/inc/location-meta.php';        // map meta box · pin picker for location/studio/shop
 require_once VPG_V2_DIR . '/inc/gating.php';               // [vpg-members] / [vpg-public] shortcodes + helpers
 require_once VPG_V2_DIR . '/inc/cpt-gating.php';           // Magazine, Buying guide, Tutorials, Events · logged-in only during beta

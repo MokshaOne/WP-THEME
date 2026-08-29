@@ -9992,3 +9992,92 @@ msgstr ""
 
 msgid "0994 Compare hosting alternatives yearly against price shocks; keep the six-month cushion."
 msgstr ""
+
+msgid "Pocket zine"
+msgstr ""
+
+msgid "From the Fediverse:"
+msgstr ""
+
+msgid "Fediverse & batch"
+msgstr ""
+
+msgid "Queued %d images for the nightly vision batch."
+msgstr ""
+
+msgid "1029 · Federation"
+msgstr ""
+
+msgid "Turn federation off (stop ActivityPub actor, delivery and inbox)"
+msgstr ""
+
+msgid "1032 · Vision stack — alt text over the whole library"
+msgstr ""
+
+msgid "Queue all images missing alt text"
+msgstr ""
+
+msgid "%d jobs currently queued; they run bundled in the small hours."
+msgstr ""
+
+msgid "Set a vision endpoint first (Hub → Vision endpoint). Members who opted out of ML are always skipped."
+msgstr ""
+
+msgid "Discover by image"
+msgstr ""
+
+msgid "Two ways in: pick a colour, or start from a photo and find its visual neighbours."
+msgstr ""
+
+msgid "By similarity"
+msgstr ""
+
+msgid "Find visually similar"
+msgstr ""
+
+msgid "No images yet."
+msgstr ""
+
+msgid "%s boost"
+msgid_plural "%s boosts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%s like"
+msgid_plural "%s likes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%s follower in the Fediverse."
+msgid_plural "%s followers in the Fediverse."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Pause"
+msgstr ""
+
+msgid "Resume"
+msgstr ""
+
+msgid "Cover saved."
+msgstr ""
+
+msgid "cover image ID"
+msgstr ""
+
+msgid "Set cover"
+msgstr ""
+
+msgid "The cover image ID is the attachment ID from the media library (shown in its URL)."
+msgstr ""
+
+msgid "In the Fediverse"
+msgstr ""
+
+msgid "Member directory →"
+msgstr ""
+
+msgid "%s account follows us across the Fediverse."
+msgid_plural "%s accounts follow us across the Fediverse."
+msgstr[0] ""
+msgstr[1] ""

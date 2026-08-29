@@ -148,6 +148,9 @@ get_header();
   </section>
   <?php endif; ?>
 
+  <?php // Cluster 14 · welcome gift / first-steps for new members
+  if ( function_exists( 'vpg_onboarding_dashboard' ) ) vpg_onboarding_dashboard(); ?>
+
   <?php // Cluster 10 · promotion / comeback / anniversary notices
   if ( function_exists( 'vpg_recognition_notices' ) ) vpg_recognition_notices(); ?>
 

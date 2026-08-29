@@ -8310,3 +8310,185 @@ msgid "%d tutorial completed"
 msgid_plural "%d tutorials completed"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Someone you invited just joined — thank you for growing the collective."
+msgstr ""
+
+msgid "Welcome. Start with one pin — a place in Wien you love to photograph."
+msgstr ""
+
+msgid "Your archive is yours here. Add a few frames to your portfolio wall."
+msgstr ""
+
+msgid "Come to a photowalk — the easiest way to meet the others."
+msgstr ""
+
+msgid "Read a tutorial, then go and shoot the exercise. No exams, ever."
+msgstr ""
+
+msgid "Say hello in the community. This is a workshop, not a feed."
+msgstr ""
+
+msgid "Your first week · day %d"
+msgstr ""
+
+msgid "Still there? Your first pin is waiting"
+msgstr ""
+
+msgid "You joined but haven’t added anything yet — no rush, but if you got stuck, just reply. One pin is a lovely start."
+msgstr ""
+
+msgid "Wien is still waiting for your eye"
+msgstr ""
+
+msgid "It’s been a while. No pressure — but a new season is good light. Here’s what’s new:"
+msgstr ""
+
+msgid "Your invitation link:"
+msgstr ""
+
+msgid "Someone joined %s ago — and %d others this month."
+msgstr ""
+
+msgid "Welcome gift"
+msgstr ""
+
+msgid "the latest issue is yours to download."
+msgstr ""
+
+msgid "dismiss"
+msgstr ""
+
+msgid "Your first three steps"
+msgstr ""
+
+msgid "Add one pin on the map."
+msgstr ""
+
+msgid "Put three frames on your wall."
+msgstr ""
+
+msgid "Come to a photowalk."
+msgstr ""
+
+msgid "⚠ Test mode — nothing you submit here is saved. Practise freely."
+msgstr ""
+
+msgid "Join at the walk"
+msgstr ""
+
+msgid "E-mail"
+msgstr ""
+
+msgid "A place you love to shoot"
+msgstr ""
+
+msgid "Finish online:"
+msgstr ""
+
+msgid "Welcome"
+msgstr ""
+
+msgid "A quick <em>tour</em>."
+msgstr ""
+
+msgid "Add a pin — tap the map, drop a place, describe the light."
+msgstr ""
+
+msgid "Curate your wall — pick your strongest frames."
+msgstr ""
+
+msgid "Join a walk — the fastest way to belong."
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "A look inside"
+msgstr ""
+
+msgid "The members’ <em>side</em>."
+msgstr ""
+
+msgid "A read-only peek — no account needed. When it feels right, join (free)."
+msgstr ""
+
+msgid "Press kit"
+msgstr ""
+
+msgid "Why we exist"
+msgstr ""
+
+msgid "The numbers"
+msgstr ""
+
+msgid "Partners & funnels"
+msgstr ""
+
+msgid "%1$d members · %2$d locations · %3$d issues · member-run, ad-free, since 2019."
+msgstr ""
+
+msgid "Coming soon."
+msgstr ""
+
+msgid "Before you go"
+msgstr ""
+
+msgid "One last <em>word</em>?"
+msgstr ""
+
+msgid "Leaving is fine — your work stays online in dignity. If you’d like, tell us why (optional, anonymous)."
+msgstr ""
+
+msgid "Send & sign out"
+msgstr ""
+
+msgid "Growth desk"
+msgstr ""
+
+msgid "first-pin quote (0553)"
+msgstr ""
+
+msgid "avg. days to first publish (0554)"
+msgstr ""
+
+msgid "0550/0551 · Joins & activation per month (cohorts)"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
+msgid "Joins"
+msgstr ""
+
+msgid "Activated"
+msgstr ""
+
+msgid "0552 · Onboarding A/B notes"
+msgstr ""
+
+msgid "0534 · Press kit"
+msgstr ""
+
+msgid "0535 · Founder story"
+msgstr ""
+
+msgid "0532/0533/0536 · Positioning & numbers note"
+msgstr ""
+
+msgid "0528–0531/0544–0546 · Partners & funnels"
+msgstr ""
+
+msgid "0555 · Welcome tour step images (attachment IDs)"
+msgstr ""
+
+msgid "0549 · Exit feedback"
+msgstr ""
+
+msgid "None yet."
+msgstr ""
+
+msgid "%d member joined through you."
+msgid_plural "%d members joined through you."
+msgstr[0] ""
+msgstr[1] ""

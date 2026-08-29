@@ -3181,3 +3181,47 @@ msgstr ""
 #: templates/page-submit.php
 msgid "unlocks at Documentarian · 50 editorial works"
 msgstr ""
+
+#: templates/page-submit.php
+msgid "A photowalk"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "A story"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "A walking route"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Chain map spots into a route worth an afternoon. Unlocks at Documentarian."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Map · reviews · journal · events · trails"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Members feed the site from here — the map first, then reviews, journal stories, events and trails as your rank grows. Editorial reviews within 72 hours; higher ranks publish instantly."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Propose a meetup with date and meeting point — RSVP, reminders and check-in come built in. Unlocks at Documentarian."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Via the review desk — 25 locations unlock Contributor"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "What you can submit"
+msgstr ""
+
+#: templates/page-submit.php
+msgid "Writing for the weekly journal — a walk, a theme, a portrait of a place. Unlocks at Contributor."
+msgstr ""
+
+#: templates/page-submit.php
+msgid "unlocks at Contributor · 25 locations"
+msgstr ""

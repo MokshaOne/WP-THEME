@@ -11,12 +11,12 @@ get_header();
         <div>
           <p class="g-kicker" style="margin-bottom:18px">● <?php esc_html_e( 'Submit', 'vpg-v2' ); ?></p>
           <h1 class="g-display g-phero__title"><?php echo wp_kses_post( __( 'Feed the <em>matrix</em>.', 'vpg-v2' ) ); ?></h1>
-          <p class="g-lede g-phero__lede"><?php esc_html_e( 'Members submit locations, studios, shops, reviews and tutorial pitches directly to the index. Editorial reviews within 72 hours.', 'vpg-v2' ); ?></p>
+          <p class="g-lede g-phero__lede"><?php esc_html_e( 'Members feed the site from here — the map first, then reviews, journal stories, events and trails as your rank grows. Editorial reviews within 72 hours; higher ranks publish instantly.', 'vpg-v2' ); ?></p>
         </div>
         <dl class="g-phero__aside">
           <dt><?php esc_html_e( 'Access', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Members only', 'vpg-v2' ); ?></dd>
           <dt><?php esc_html_e( 'Review', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( '72h editorial turnaround', 'vpg-v2' ); ?></dd>
-          <dt><?php esc_html_e( 'Submit', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Locations · studios · shops · reviews · tutorials', 'vpg-v2' ); ?></dd>
+          <dt><?php esc_html_e( 'Submit', 'vpg-v2' ); ?></dt><dd><?php esc_html_e( 'Map · reviews · journal · events · trails', 'vpg-v2' ); ?></dd>
         </dl>
       </div>
     </div>
@@ -59,7 +59,7 @@ get_header();
     <div class="g-wrap">
       <div class="g-head">
         <div>
-          <span class="g-kicker"><?php esc_html_e( 'Five things you can submit', 'vpg-v2' ); ?></span>
+          <span class="g-kicker"><?php esc_html_e( 'What you can submit', 'vpg-v2' ); ?></span>
           <h2 class="g-head__t"><?php echo wp_kses_post( __( 'What feeds the <em>index</em>.', 'vpg-v2' ) ); ?></h2>
         </div>
         <div class="g-meta"><?php esc_html_e( '72h editorial review', 'vpg-v2' ); ?></div>
@@ -70,6 +70,9 @@ get_header();
         <article class="g-card"><span class="g-cat"><?php esc_html_e( 'Shop', 'vpg-v2' ); ?></span><h3 class="g-card__title"><?php esc_html_e( 'A supplier', 'vpg-v2' ); ?></h3><p class="g-row__lede"><?php esc_html_e( 'Camera shop, film lab, gear retailer · district, what they stock, opening hours.', 'vpg-v2' ); ?></p></article>
         <article class="g-card"><span class="g-cat"><?php esc_html_e( 'Review', 'vpg-v2' ); ?></span><h3 class="g-card__title"><?php esc_html_e( 'Gear scored', 'vpg-v2' ); ?></h3><p class="g-row__lede"><?php esc_html_e( 'A camera, lens, accessory you actually own · scored on Design / Performance / Price /10.', 'vpg-v2' ); ?></p></article>
         <article class="g-card"><span class="g-cat"><?php esc_html_e( 'Tutorial', 'vpg-v2' ); ?></span><h3 class="g-card__title"><?php esc_html_e( 'A how-to pitch', 'vpg-v2' ); ?></h3><p class="g-row__lede"><?php esc_html_e( 'A skill, technique or workflow you can write up. We’ll edit collaboratively.', 'vpg-v2' ); ?></p></article>
+        <article class="g-card"><span class="g-cat"><?php esc_html_e( 'Journal', 'vpg-v2' ); ?></span><h3 class="g-card__title"><?php esc_html_e( 'A story', 'vpg-v2' ); ?></h3><p class="g-row__lede"><?php esc_html_e( 'Writing for the weekly journal — a walk, a theme, a portrait of a place. Unlocks at Contributor.', 'vpg-v2' ); ?></p></article>
+        <article class="g-card"><span class="g-cat"><?php esc_html_e( 'Event', 'vpg-v2' ); ?></span><h3 class="g-card__title"><?php esc_html_e( 'A photowalk', 'vpg-v2' ); ?></h3><p class="g-row__lede"><?php esc_html_e( 'Propose a meetup with date and meeting point — RSVP, reminders and check-in come built in. Unlocks at Documentarian.', 'vpg-v2' ); ?></p></article>
+        <article class="g-card"><span class="g-cat"><?php esc_html_e( 'Trail', 'vpg-v2' ); ?></span><h3 class="g-card__title"><?php esc_html_e( 'A walking route', 'vpg-v2' ); ?></h3><p class="g-row__lede"><?php esc_html_e( 'Chain map spots into a route worth an afternoon. Unlocks at Documentarian.', 'vpg-v2' ); ?></p></article>
       </div>
     </div>
   </section>
@@ -129,9 +132,9 @@ get_header();
                   'vpg_trail'    => __( 'Photo trail · a walking route of map spots', 'vpg-v2' ),
               ];
               $unlock_hint = [
-                  'vpg_review'   => __( 'unlocks at Contributor · 25 map entries', 'vpg-v2' ),
-                  'vpg_tutorial' => __( 'unlocks at Contributor · 25 map entries', 'vpg-v2' ),
-                  'post'         => __( 'unlocks at Contributor · 25 map entries', 'vpg-v2' ),
+                  'vpg_review'   => __( 'unlocks at Contributor · 25 locations', 'vpg-v2' ),
+                  'vpg_tutorial' => __( 'unlocks at Contributor · 25 locations', 'vpg-v2' ),
+                  'post'         => __( 'unlocks at Contributor · 25 locations', 'vpg-v2' ),
                   'vpg_event'    => __( 'unlocks at Documentarian · 50 editorial works', 'vpg-v2' ),
                   'vpg_trail'    => __( 'unlocks at Documentarian · 50 editorial works', 'vpg-v2' ),
               ];

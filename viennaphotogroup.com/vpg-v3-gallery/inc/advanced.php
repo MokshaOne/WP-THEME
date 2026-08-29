@@ -165,7 +165,8 @@ function vpg_trust_label( $level ) {
  * of the stage before it — the map comes first, always:
  *
  *   Member         the door · you feed the map
- *   Contributor    25 published map entries (location/studio/shop)
+ *   Contributor    25 published locations — real shooting spots;
+ *                  studios/shops are submittable but don't count
  *   Documentarian  + 50 published editorial works (review/tutorial/journal)
  *   Resident       + 10 published events & trails
  *
@@ -177,8 +178,8 @@ function vpg_rank_ladder() {
         [
             'label'   => __( 'Contributor', 'vpg-v2' ),
             'need'    => 25,
-            'types'   => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ],
-            'goal'    => __( 'map entries', 'vpg-v2' ),
+            'types'   => [ 'vpg_location' ],
+            'goal'    => __( 'locations', 'vpg-v2' ),
             'unlocks' => [ 'vpg_review', 'vpg_tutorial', 'post' ],
         ],
         [

@@ -98,7 +98,7 @@ get_header();
             } elseif ( $rank['level'] >= 1 ) {
                 $priv_line = __( 'Privileges paused — confirm your email / open reports', 'vpg-v2' );
             } else {
-                $priv_line = __( 'Via the review desk — 25 map entries unlock Contributor', 'vpg-v2' );
+                $priv_line = __( 'Via the review desk — 25 locations unlock Contributor', 'vpg-v2' );
             }
         }
         ?>

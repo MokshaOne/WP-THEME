@@ -9548,3 +9548,219 @@ msgstr ""
 
 msgid "A starting shortlist by simple signals — the jury still chooses. Members who opted out never appear here."
 msgstr ""
+
+msgid "CC0 — public domain"
+msgstr ""
+
+msgid "All rights reserved"
+msgstr ""
+
+msgid "Licence"
+msgstr ""
+
+msgid "— site default —"
+msgstr ""
+
+msgid "Licence:"
+msgstr ""
+
+msgid "API tokens"
+msgstr ""
+
+msgid "For building with our open data. Read-only. Keep them secret."
+msgstr ""
+
+msgid "Copy it now — it is not shown again."
+msgstr ""
+
+msgid "What is it for?"
+msgstr ""
+
+msgid "New token"
+msgstr ""
+
+msgid "A live look at whether the essentials are up."
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "Media storage"
+msgstr ""
+
+msgid "Application"
+msgstr ""
+
+msgid "All systems operational."
+msgstr ""
+
+msgid "We’re looking into an issue."
+msgstr ""
+
+msgid "Last 30 days"
+msgstr ""
+
+msgid "Machine-readable:"
+msgstr ""
+
+msgid "VPG in the Fediverse"
+msgstr ""
+
+msgid "Follow the collective at @vpg — and find members who live in the open social web."
+msgstr ""
+
+msgid "No members have shared a Fediverse address yet — add yours under profile links."
+msgstr ""
+
+msgid "Why we stay open"
+msgstr ""
+
+msgid "An interoperability manifesto — and the promises that keep us honest."
+msgstr ""
+
+msgid "Manifesto"
+msgstr ""
+
+msgid "Your data is yours — export it any time, in open formats."
+msgstr ""
+
+msgid "We speak standard protocols (ActivityPub, Webmention, GeoJSON, iCalendar, RSS)."
+msgstr ""
+
+msgid "No lock-in: everything here can be left behind cleanly."
+msgstr ""
+
+msgid "We give back — verified data flows to OpenStreetMap and the commons."
+msgstr ""
+
+msgid "API deprecation policy (0957)"
+msgstr ""
+
+msgid "Breaking changes to the API are announced at least six months in advance, with a migration note."
+msgstr ""
+
+msgid "No walled garden — yearly self-audit (0960)"
+msgstr ""
+
+msgid "Once a year we check ourselves against lock-in: can a member leave with everything? Can others build on us? The answer must stay yes."
+msgstr ""
+
+msgid "The data garden"
+msgstr ""
+
+msgid "Everything we open up, in one place — take it, build on it, credit us."
+msgstr ""
+
+msgid "Datasets & endpoints"
+msgstr ""
+
+msgid "Locations (JSON)"
+msgstr ""
+
+msgid "Locations (GeoJSON)"
+msgstr ""
+
+msgid "Locations (CSV)"
+msgstr ""
+
+msgid "Locations (KML)"
+msgstr ""
+
+msgid "Events (JSON)"
+msgstr ""
+
+msgid "Events (schema.org)"
+msgstr ""
+
+msgid "Events (iCalendar)"
+msgstr ""
+
+msgid "Changes feed (JSON)"
+msgstr ""
+
+msgid "OpenAPI spec"
+msgstr ""
+
+msgid "API docs"
+msgstr ""
+
+msgid "Licence: CC BY 4.0 unless an individual photo states otherwise. Tokens & webhooks: see your dashboard profile."
+msgstr ""
+
+msgid "How to pull VPG-relevant OSM data (0930)"
+msgstr ""
+
+msgid "On the roadmap"
+msgstr ""
+
+msgid "0929 Feed verified corrections back to OpenStreetMap."
+msgstr ""
+
+msgid "0931 Surface City of Vienna open datasets as map layers."
+msgstr ""
+
+msgid "0940 Link public-transport (GTFS) officially, not hand-rolled."
+msgstr ""
+
+msgid "0942 Open the data to urban researchers."
+msgstr ""
+
+msgid "0943 A long-term archiving hand-over with an institution."
+msgstr ""
+
+msgid "0947 A gallery of third-party apps built on the API."
+msgstr ""
+
+msgid "0948 A one-day open-data hackday for Vienna’s makers."
+msgstr ""
+
+msgid "0952 A directory of sister collectives worldwide."
+msgstr ""
+
+msgid "0953 A shared city data schema with Graz and Berlin."
+msgstr ""
+
+msgid "0954 A public Git mirror of the open data."
+msgstr ""
+
+msgid "0955 A torrent of the yearly data package."
+msgstr ""
+
+msgid "0958 Small client-library sketches as a starting point."
+msgstr ""
+
+msgid "Read why we stay open →"
+msgstr ""
+
+msgid "Open data & API"
+msgstr ""
+
+msgid "Open data"
+msgstr ""
+
+msgid "View the public data garden →"
+msgstr ""
+
+msgid "Interop manifesto"
+msgstr ""
+
+msgid "0933 · Default licence for new photos"
+msgstr ""
+
+msgid "Members can override this per photo in the media library."
+msgstr ""
+
+msgid "0928 · Webhook subscribers"
+msgstr ""
+
+msgid "No webhook subscribers. Builders subscribe with a personal token via POST to admin-post.php?action=vpg_webhook_sub."
+msgstr ""
+
+msgid "0949 · Embed builder"
+msgstr ""
+
+msgid "Copy-paste to embed VPG anywhere:"
+msgstr ""
+
+msgid "Gallery"
+msgstr ""

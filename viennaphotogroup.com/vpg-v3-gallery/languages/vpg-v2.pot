@@ -8669,3 +8669,179 @@ msgstr ""
 
 msgid "Title formulas (0686): “{Title} · {Type} — Vienna Photo Group”. Preview cards at opengraph.xyz before publishing (0707)."
 msgstr ""
+
+msgid "Accessibility"
+msgstr ""
+
+msgid "Reading comfort"
+msgstr ""
+
+msgid "Simple mode"
+msgstr ""
+
+msgid "Dyslexia-friendly text"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "Accessibility statement"
+msgstr ""
+
+msgid "Keyboard shortcuts"
+msgstr ""
+
+msgid "Show this help"
+msgstr ""
+
+msgid "Open search palette"
+msgstr ""
+
+msgid "Move to next control"
+msgstr ""
+
+msgid "Close dialogs & overlays"
+msgstr ""
+
+msgid "Previous / next photo in the lightbox"
+msgstr ""
+
+msgid "Toggle photo info in the lightbox"
+msgstr ""
+
+msgid "Skip links"
+msgstr ""
+
+msgid "Skip to map"
+msgstr ""
+
+msgid "Skip to search"
+msgstr ""
+
+msgid "Vienna Photo Group is a free, member-run collective. We want everyone — in any language, with any device, for any eye — to be able to read the map, the magazine and each other’s work."
+msgstr ""
+
+msgid "What we commit to"
+msgstr ""
+
+msgid "Keyboard reachable — every core flow works without a mouse (press ? for shortcuts)."
+msgstr ""
+
+msgid "Visible focus, honoured reduced-motion, reduced-data and high-contrast preferences."
+msgstr ""
+
+msgid "Meaningful alt text on editorial images; categories never coded by colour alone."
+msgstr ""
+
+msgid "A simple mode and a dyslexia-friendly reading mode, both one tap away (♿ button, lower left)."
+msgstr ""
+
+msgid "Readable at 200 % zoom without horizontal scrolling; layouts survive raised text spacing."
+msgstr ""
+
+msgid "Standard & status"
+msgstr ""
+
+msgid "We aim at WCAG 2.1 AA. We are not perfect yet — this is a living effort and your reports move it forward."
+msgstr ""
+
+msgid "Contact in sign language"
+msgstr ""
+
+msgid "Reach us with a sign-language video message"
+msgstr ""
+
+msgid "Report a barrier (two clicks)"
+msgstr ""
+
+msgid "Thank you — your report reached us. We read every one."
+msgstr ""
+
+msgid "Where did you hit a barrier?"
+msgstr ""
+
+msgid "What went wrong?"
+msgstr ""
+
+msgid "Email for a reply (optional)"
+msgstr ""
+
+msgid "Send report"
+msgstr ""
+
+msgid "[VPG] A barrier was reported"
+msgstr ""
+
+msgid "Reply to"
+msgstr ""
+
+msgid "Accessibility & i18n"
+msgstr ""
+
+msgid "0737 · Alt-text coverage"
+msgstr ""
+
+msgid "%1$s of %2$s image attachments have alt text."
+msgstr ""
+
+msgid "Recomputed daily. The AI backfill cron fills gaps automatically; editorial images still deserve a human sentence."
+msgstr ""
+
+msgid "0749 · Reported barriers"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "What"
+msgstr ""
+
+msgid "Reply"
+msgstr ""
+
+msgid "link"
+msgstr ""
+
+msgid "No barriers reported. Good — but keep asking."
+msgstr ""
+
+msgid "0759 · Sign-language contact link"
+msgstr ""
+
+msgid "A link where deaf members can reach us with a signed video (e.g. a relay service or a booking form). Shown on the statement page when set."
+msgstr ""
+
+msgid "Human review — the parts code can’t finish"
+msgstr ""
+
+msgid "0725 Screenreader test day — half-yearly pass with a real user (NVDA / VoiceOver)."
+msgstr ""
+
+msgid "0726 Focus-order audit — document the tab path of every core flow."
+msgstr ""
+
+msgid "0730 Contrast sweep — every grey checked against both backgrounds (a11y.css adds prefers-contrast)."
+msgstr ""
+
+msgid "0736 Alt-text guide — describe, don’t decorate; decorative images stay alt=""."
+msgstr ""
+
+msgid "0750 Third-party audit — budget an external review as a yearly goal."
+msgstr ""
+
+msgid "0751 Axe checks in CI — block a11y regressions before merge."
+msgstr ""
+
+msgid "0752 Component a11y notes — every UI component carries an accessibility note."
+msgstr ""
+
+msgid "0756 PDF tags — export magazine PDFs with a tagged reading order."
+msgstr ""
+
+msgid "0760 Inclusion council — affected members as a standing voice."
+msgstr ""
+
+msgid "%s string still needs a German translation."
+msgid_plural "%s strings still need a German translation."
+msgstr[0] ""
+msgstr[1] ""

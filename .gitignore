@@ -11,3 +11,7 @@ m1o.at/m1o-v2/assets/fonts/avoiste-laverta.woff
 
 # built theme deliverables (generated, not source)
 still.zip
+
+# VPG release builds: das ZIP entsteht aus tools/build-zip.sh, vendor/ kommt aus composer
+viennaphotogroup.com/dist/
+viennaphotogroup.com/vpg-v3-gallery/vendor/

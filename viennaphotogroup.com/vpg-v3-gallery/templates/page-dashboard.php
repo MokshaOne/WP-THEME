@@ -84,8 +84,28 @@ get_header();
             }
           ?></p>
         </div>
+        <?php
+        $priv_line = '';
+        if ( $rank && function_exists( 'vpg_rank_privileges' ) ) {
+            $priv = vpg_rank_privileges( $u->ID );
+            if ( $priv['edit_live'] && in_array( 'post', $priv['instant'], true ) ) {
+                $priv_line = __( 'Everything publishes instantly · edit live', 'vpg-v2' );
+            } elseif ( $priv['edit_live'] ) {
+                $priv_line = __( 'Publishes instantly (journal reviewed) · edit live', 'vpg-v2' );
+            } elseif ( $priv['instant'] ) {
+                $priv_line = __( 'Map entries publish instantly', 'vpg-v2' );
+            } elseif ( $rank['count'] >= 11 ) {
+                $priv_line = __( 'Privileges paused — confirm your email / open reports', 'vpg-v2' );
+            } else {
+                $priv_line = __( 'Via the review desk — 11 works unlock instant map publishing', 'vpg-v2' );
+            }
+        }
+        ?>
         <dl class="g-phero__aside">
           <dt><?php esc_html_e( 'Rank', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $rank ? $rank['label'] : ucfirst( $tier ) ); ?></dd>
+          <?php if ( $priv_line ) : ?>
+            <dt><?php esc_html_e( 'Privileges', 'vpg-v2' ); ?></dt><dd><?php echo esc_html( $priv_line ); ?></dd>
+          <?php endif; ?>
           <dt><?php esc_html_e( 'Profile', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'View public page', 'vpg-v2' ); ?></a></dd>
           <dt><?php esc_html_e( 'Session', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>"><?php esc_html_e( 'Log out', 'vpg-v2' ); ?></a></dd>
         </dl>
@@ -319,13 +339,19 @@ get_header();
         </div>
         <div class="g-meta"><a class="g-link" href="<?php echo esc_url( home_url( '/members/' . $u->user_login . '/' ) ); ?>"><?php esc_html_e( 'All on your profile', 'vpg-v2' ); ?> <span class="a">→</span></a></div>
       </div>
+      <?php $can_edit_live = function_exists( 'vpg_can_edit_live' ) && vpg_can_edit_live( $u->ID ); ?>
       <div class="g-grid3">
         <?php while ( $published->have_posts() ) : $published->the_post(); ?>
-          <a class="g-card" href="<?php the_permalink(); ?>">
-            <?php vpg_chip( get_post_type() ); ?>
-            <h3 class="g-card__title"><?php the_title(); ?></h3>
-            <p class="g-row__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18 ) ); ?></p>
-          </a>
+          <div class="g-card">
+            <a href="<?php the_permalink(); ?>" style="display:block">
+              <?php vpg_chip( get_post_type() ); ?>
+              <h3 class="g-card__title"><?php the_title(); ?></h3>
+              <p class="g-row__lede"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18 ) ); ?></p>
+            </a>
+            <?php if ( $can_edit_live ) : ?>
+              <a class="g-link" style="font-size:12px;margin-top:10px" href="<?php echo esc_url( add_query_arg( 'edit', get_the_ID(), home_url( '/submit/' ) ) ); ?>"><?php esc_html_e( 'Edit live', 'vpg-v2' ); ?> <span class="a">→</span></a>
+            <?php endif; ?>
+          </div>
         <?php endwhile; wp_reset_postdata(); ?>
       </div>
     </div>

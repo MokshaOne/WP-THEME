@@ -3113,3 +3113,35 @@ msgstr ""
 #: inc/advanced.php
 msgid "Resident"
 msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Edit live"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Everything publishes instantly · edit live"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Map entries publish instantly"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Privileges"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Privileges paused — confirm your email / open reports"
+msgstr ""
+
+#: inc/submission-handler.php
+msgid "Published — your rank puts it live instantly. It's on the site now."
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Publishes instantly (journal reviewed) · edit live"
+msgstr ""
+
+#: templates/page-dashboard.php
+msgid "Via the review desk — 11 works unlock instant map publishing"
+msgstr ""

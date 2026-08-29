@@ -233,22 +233,34 @@ function vpg_handle_submit() {
     // "Save as draft" keeps the piece private until the member submits it.
     // A draft only needs a title; a real submission needs the body too.
     $as_draft = ( $_POST['save_action'] ?? '' ) === 'draft';
-    $status   = $as_draft ? 'draft' : 'pending';
+    // Rank privilege: earned instant publishing — trust level ≥ 2 required,
+    // enforced inside vpg_can_instant_publish (reports pull it back).
+    $instant = ! $as_draft
+        && function_exists( 'vpg_can_instant_publish' )
+        && vpg_can_instant_publish( $type );
+    $status  = $as_draft ? 'draft' : ( $instant ? 'publish' : 'pending' );
 
     if ( ! $type || ! $title || ( ! $as_draft && ! $body ) ) {
         vpg_redirect_with_status( 'submit', 'invalid' );
     }
 
-    // Editing an own draft or still-pending submission replaces it in place.
+    // Editing in place: drafts and pending always; live pieces only with
+    // the Documentarian+ edit_live privilege (edits then stay live).
     $edit_id = (int) ( $_POST['edit_id'] ?? 0 );
     if ( $edit_id ) {
-        $existing = get_post( $edit_id );
-        $editable = $existing
+        $existing  = get_post( $edit_id );
+        $can_live  = function_exists( 'vpg_can_edit_live' ) && vpg_can_edit_live();
+        $statuses  = $can_live ? [ 'pending', 'draft', 'publish' ] : [ 'pending', 'draft' ];
+        $editable  = $existing
             && (int) $existing->post_author === get_current_user_id()
-            && in_array( $existing->post_status, [ 'pending', 'draft' ], true )
+            && in_array( $existing->post_status, $statuses, true )
             && in_array( $existing->post_type, $allowed, true );
         if ( ! $editable ) {
             vpg_redirect_with_status( 'submit', 'fail' );
+        }
+        if ( $existing->post_status === 'publish' && ! $as_draft ) {
+            $status  = 'publish'; // a live piece stays live under edit_live
+            $instant = true;
         }
         $post_id = wp_update_post( [
             'ID'           => $edit_id,
@@ -304,6 +316,16 @@ function vpg_handle_submit() {
     $to     = get_theme_mod( 'vpg_email', get_option( 'admin_email' ) );
     $author = wp_get_current_user();
     $review = admin_url( 'post.php?post=' . $post_id . '&action=edit' );
+    if ( $instant ) {
+        // Went straight live on a rank privilege · editorial gets a
+        // spot-check note instead of a review request.
+        wp_mail( $to,
+            "[VPG · live · rank privilege] {$title}",
+            "Type: {$type}\nFrom: {$author->display_name} <{$author->user_email}> (" . ( function_exists( 'vpg_member_rank' ) ? vpg_member_rank( $author->ID )['label'] : 'member' ) . ")\n{$photo_note}\nPublished directly — spot-check:\n" . get_permalink( $post_id ) . "\nEdit: {$review}"
+        );
+        vpg_redirect_with_status( 'submit', 'live' );
+    }
+
     $subject_tag = $edit_id ? 'submission updated' : 'submission';
     wp_mail( $to,
         "[VPG · {$subject_tag}] {$title}",
@@ -503,6 +525,7 @@ add_action( 'wp_footer', function () {
         'ok'          => [ 'success', __( 'Sent · thank you.', 'vpg-v2' ) ],
         'welcome'     => [ 'success', __( 'Welcome — you\'re a member. Check your inbox to confirm your email.', 'vpg-v2' ) ],
         'draft_saved' => [ 'success', __( 'Draft saved · finish and submit it any time from your dashboard.', 'vpg-v2' ) ],
+        'live'        => [ 'success', __( 'Published — your rank puts it live instantly. It\'s on the site now.', 'vpg-v2' ) ],
         'verified'    => [ 'success', __( 'Email confirmed · submissions are unlocked.', 'vpg-v2' ) ],
         'verify_sent' => [ 'success', __( 'Confirmation email sent · check your inbox.', 'vpg-v2' ) ],
         'verify'      => [ 'error',   __( 'Please confirm your email first · check your inbox or resend from the dashboard.', 'vpg-v2' ) ],

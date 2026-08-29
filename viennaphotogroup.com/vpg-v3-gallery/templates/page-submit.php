@@ -76,14 +76,18 @@ get_header();
 
   <!-- The submission form -->
   <?php
-  // Edit mode · a member may rework their own submission while it is pending.
+  // Edit mode · drafts and pending always; live pieces with the
+  // Documentarian+ edit_live rank privilege.
   $edit_post = null;
   if ( ! empty( $_GET['edit'] ) ) {
-      $maybe = get_post( (int) $_GET['edit'] );
+      $maybe    = get_post( (int) $_GET['edit'] );
+      $statuses = ( function_exists( 'vpg_can_edit_live' ) && vpg_can_edit_live() )
+          ? [ 'pending', 'draft', 'publish' ]
+          : [ 'pending', 'draft' ];
       if ( $maybe
           && (int) $maybe->post_author === get_current_user_id()
-          && in_array( $maybe->post_status, [ 'pending', 'draft' ], true )
-          && in_array( $maybe->post_type, [ 'vpg_location', 'vpg_studio', 'vpg_shop', 'vpg_review', 'vpg_tutorial' ], true ) ) {
+          && in_array( $maybe->post_status, $statuses, true )
+          && in_array( $maybe->post_type, function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [ 'vpg_location' ], true ) ) {
           $edit_post = $maybe;
       }
   }

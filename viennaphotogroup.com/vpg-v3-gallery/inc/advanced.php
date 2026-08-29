@@ -195,6 +195,50 @@ function vpg_member_rank( $uid ) {
     return [ 'label' => $label, 'count' => $count, 'next' => $next, 'next_at' => $at ];
 }
 
+/* ─── Rank privileges · earned rights, with the trust level as brake ─
+ *
+ *   Member (0–10)          everything through the review desk
+ *   Contributor (11+)      map entries (location/studio/shop) go live
+ *                          instantly
+ *   Documentarian (51+)    everything but journal stories goes live
+ *                          instantly · may edit own live pieces
+ *   Resident (101+)        everything goes live instantly, journal
+ *                          included · may edit own live pieces
+ *
+ * Safety valve: privileges require trust level ≥ 2 (verified, no pile
+ * of reports). A member who collects reports drops back to the review
+ * desk automatically, whatever their rank.
+ */
+function vpg_rank_privileges( $uid = null ) {
+    $uid   = $uid ?: get_current_user_id();
+    $none  = [ 'instant' => [], 'edit_live' => false ];
+    if ( ! $uid ) return $none;
+
+    $count = vpg_member_rank( $uid )['count'];
+    $priv  = $none;
+
+    if ( vpg_trust_level( $uid ) >= 2 ) {
+        $all = function_exists( 'vpg_submittable_types' ) ? vpg_submittable_types() : [];
+        if ( $count >= 101 ) {
+            $priv = [ 'instant' => $all, 'edit_live' => true ];
+        } elseif ( $count >= 51 ) {
+            $priv = [ 'instant' => array_values( array_diff( $all, [ 'post' ] ) ), 'edit_live' => true ];
+        } elseif ( $count >= 11 ) {
+            $priv = [ 'instant' => [ 'vpg_location', 'vpg_studio', 'vpg_shop' ], 'edit_live' => false ];
+        }
+    }
+
+    return apply_filters( 'vpg_rank_privileges', $priv, $uid, $count );
+}
+
+function vpg_can_instant_publish( $type, $uid = null ) {
+    return in_array( $type, vpg_rank_privileges( $uid )['instant'], true );
+}
+
+function vpg_can_edit_live( $uid = null ) {
+    return (bool) vpg_rank_privileges( $uid )['edit_live'];
+}
+
 /* Trusted members' notes publish without moderation · new members queue */
 add_filter( 'pre_comment_approved', function ( $approved, $commentdata ) {
     $uid = (int) ( $commentdata['user_id'] ?? 0 );

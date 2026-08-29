@@ -48,8 +48,15 @@
   function popupHtml(p) {
     var f = "'Archivo','Helvetica Neue',Arial,sans-serif";
     var html = '';
-    if (p.img) {
-      html += '<div style="margin:-14px -20px 10px;height:110px;overflow:hidden"><img src="' + p.img + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
+    /* 0072 · photo rotation — pick one of the spot's images at random so the
+       same pin doesn't always show the identical hero shot. */
+    var pool = (p.imgs && p.imgs.length) ? p.imgs.slice() : (p.img ? [p.img] : []);
+    if (pool.length) {
+      var shot = pool[Math.floor(Math.random() * pool.length)];
+      html += '<div style="margin:-14px -20px 10px;height:110px;overflow:hidden;position:relative">'
+            + '<img src="' + shot + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block">'
+            + (pool.length > 1 ? '<span style="position:absolute;right:6px;bottom:6px;background:rgba(11,11,11,.72);color:#fff;font:700 9px/1 ' + f + ';letter-spacing:.08em;padding:3px 6px;border-radius:2px">1/' + pool.length + '</span>' : '')
+            + '</div>';
     }
     html += '<strong style="font-family:' + f + ';font-weight:800;font-size:15px;letter-spacing:-.01em;text-transform:uppercase;display:block;margin-bottom:.35rem;color:#0B0B0B">' + (p.title || '') + '</strong>';
     var meta = [];

@@ -43,6 +43,21 @@ function vpg_spot_attr_schema() {
         'elev'     => [ 'type' => 'int',  'label' => __( 'Elevation (m)', 'vpg-v2' ), 'chip' => '⛰' ],
         'parking'  => [ 'type' => 'text', 'label' => __( 'Parking notes', 'vpg-v2' ), 'chip' => '🅿' ],
         'station'  => [ 'type' => 'text', 'label' => __( 'Nearest U-Bahn / tram', 'vpg-v2' ), 'chip' => 'Ⓤ' ],
+        'focal'    => [ 'type' => 'text', 'label' => __( 'Recommended focal length(s)', 'vpg-v2' ), 'chip' => '⌖' ],
+        'crowd'    => [ 'type' => 'select', 'label' => __( 'Crowding', 'vpg-v2' ), 'chip' => '☺',
+                        'options' => [ '' => __( 'unknown', 'vpg-v2' ), 'empty' => __( 'usually empty', 'vpg-v2' ), 'ok' => __( 'okay', 'vpg-v2' ), 'busy' => __( 'often crowded', 'vpg-v2' ) ] ],
+        'entry'    => [ 'type' => 'select', 'label' => __( 'Entry', 'vpg-v2' ), 'chip' => '⌸',
+                        'options' => [ '' => __( 'unknown', 'vpg-v2' ), 'free' => __( 'free', 'vpg-v2' ), 'ticket' => __( 'ticket', 'vpg-v2' ), 'register' => __( 'registration', 'vpg-v2' ) ] ],
+        'price'    => [ 'type' => 'select', 'label' => __( 'Price level', 'vpg-v2' ), 'chip' => '€',
+                        'options' => [ '' => __( 'unknown', 'vpg-v2' ), '1' => '€', '2' => '€€', '3' => '€€€' ] ],
+        'safety'   => [ 'type' => 'text', 'label' => __( 'Safety notes (honest)', 'vpg-v2' ), 'chip' => '⚠' ],
+        'standpoint' => [ 'type' => 'text', 'label' => __( 'Exact standpoint', 'vpg-v2' ), 'chip' => '⊹' ],
+        'angle'    => [ 'type' => 'text', 'label' => __( 'Anti-cliché angle', 'vpg-v2' ), 'chip' => '∡' ],
+        'history'  => [ 'type' => 'text', 'label' => __( 'History in three sentences', 'vpg-v2' ), 'chip' => '🕰' ],
+        'genres'   => [ 'type' => 'multi', 'label' => __( 'Genres', 'vpg-v2' ), 'options' => 'vpg_spot_genres' ],
+        'equip'    => [ 'type' => 'multi', 'label' => __( 'Equipment warnings', 'vpg-v2' ), 'options' => 'vpg_spot_equip' ],
+        'construction' => [ 'type' => 'bool', 'label' => __( 'Temporarily blocked (construction)', 'vpg-v2' ), 'chip' => '🚧', 'filter' => __( 'Blocked', 'vpg-v2' ) ],
+        'closeduntil' => [ 'type' => 'text', 'label' => __( 'Blocked until (YYYY-MM-DD)', 'vpg-v2' ), 'chip' => '⏳' ],
         'themes'   => [ 'type' => 'themes', 'label' => __( 'Themes', 'vpg-v2' ) ],
         'related'  => [ 'type' => 'text', 'label' => __( 'Related pin IDs (comma-sep · “from here you see…”)', 'vpg-v2' ) ],
     ] );
@@ -55,13 +70,28 @@ function vpg_spot_themes() {
         'transit' => __( 'Transit', 'vpg-v2' ), 'rooftop' => __( 'Rooftops', 'vpg-v2' ), 'market' => __( 'Markets', 'vpg-v2' ),
     ] );
 }
+function vpg_spot_genres() {
+    return apply_filters( 'vpg_spot_genres', [
+        'street' => __( 'Street', 'vpg-v2' ), 'architecture' => __( 'Architecture', 'vpg-v2' ), 'portrait' => __( 'Portrait', 'vpg-v2' ),
+        'macro' => __( 'Macro', 'vpg-v2' ), 'landscape' => __( 'Landscape', 'vpg-v2' ), 'analog' => __( 'Analog', 'vpg-v2' ),
+        'night' => __( 'Night', 'vpg-v2' ), 'abstract' => __( 'Abstract', 'vpg-v2' ),
+    ] );
+}
+function vpg_spot_equip() {
+    return apply_filters( 'vpg_spot_equip', [
+        'nd' => __( 'ND filter helps', 'vpg-v2' ), 'wide' => __( 'Wide-angle', 'vpg-v2' ), 'tele' => __( 'Telephoto', 'vpg-v2' ),
+        'tripod' => __( 'Tripod needed', 'vpg-v2' ), 'noflash' => __( 'No flash', 'vpg-v2' ), 'fast' => __( 'Fast lens / low light', 'vpg-v2' ),
+    ] );
+}
+/** Resolve a multi field's vocab (options is a callable name). */
+function vpg_attr_vocab( $def ) { $o = $def['options'] ?? []; return is_string( $o ) && function_exists( $o ) ? $o() : (array) $o; }
 
 /** Read one spot's attributes as a clean array (only set values). */
 function vpg_spot_attrs( $post_id ) {
     $out = [];
     foreach ( vpg_spot_attr_schema() as $key => $def ) {
         $v = get_post_meta( $post_id, '_vpg_a_' . $key, true );
-        if ( $def['type'] === 'themes' ) { $v = array_filter( (array) $v ); if ( $v ) $out[ $key ] = array_values( $v ); }
+        if ( $def['type'] === 'themes' || $def['type'] === 'multi' ) { $v = array_filter( (array) $v ); if ( $v ) $out[ $key ] = array_values( $v ); }
         elseif ( $def['type'] === 'bool' ) { if ( $v === '1' ) $out[ $key ] = true; }
         elseif ( $v !== '' && $v !== null ) { $out[ $key ] = $def['type'] === 'int' ? (int) $v : $v; }
     }
@@ -100,6 +130,11 @@ function vpg_render_spot_attrs_box( $post ) {
         } elseif ( $def['type'] === 'themes' ) {
             echo '<span style="display:flex;flex-wrap:wrap;gap:6px 12px">';
             foreach ( $themes as $tk => $tl ) echo '<label style="font-weight:400"><input type="checkbox" name="vpg_a_themes[]" value="' . esc_attr( $tk ) . '"' . checked( in_array( $tk, $set_th, true ), true, false ) . '> ' . esc_html( $tl ) . '</label>';
+            echo '</span>';
+        } elseif ( $def['type'] === 'multi' ) {
+            $set_m = (array) get_post_meta( $post->ID, '_vpg_a_' . $key, true );
+            echo '<span style="display:flex;flex-wrap:wrap;gap:6px 12px">';
+            foreach ( vpg_attr_vocab( $def ) as $mk => $ml ) echo '<label style="font-weight:400"><input type="checkbox" name="vpg_a_' . esc_attr( $key ) . '[]" value="' . esc_attr( $mk ) . '"' . checked( in_array( $mk, $set_m, true ), true, false ) . '> ' . esc_html( $ml ) . '</label>';
             echo '</span>';
         } else {
             echo '<input type="text" name="vpg_a_' . esc_attr( $key ) . '" value="' . esc_attr( $v ) . '" style="width:100%">';
@@ -150,6 +185,10 @@ function vpg_save_spot_attrs_from_post( $post_id, $src ) {
             $valid = array_keys( vpg_spot_themes() );
             $sel   = array_values( array_intersect( $valid, array_map( 'sanitize_key', (array) ( $src['vpg_a_themes'] ?? [] ) ) ) );
             $sel ? update_post_meta( $post_id, $mk, $sel ) : delete_post_meta( $post_id, $mk );
+        } elseif ( $def['type'] === 'multi' ) {
+            $valid = array_keys( vpg_attr_vocab( $def ) );
+            $sel   = array_values( array_intersect( $valid, array_map( 'sanitize_key', (array) ( $src[ 'vpg_a_' . $key ] ?? [] ) ) ) );
+            $sel ? update_post_meta( $post_id, $mk, $sel ) : delete_post_meta( $post_id, $mk );
         } elseif ( $def['type'] === 'select' ) {
             $v = sanitize_text_field( wp_unslash( $src[ 'vpg_a_' . $key ] ?? '' ) );
             $v && isset( $def['options'][ $v ] ) ? update_post_meta( $post_id, $mk, $v ) : delete_post_meta( $post_id, $mk );
@@ -165,12 +204,12 @@ function vpg_save_spot_attrs_from_post( $post_id, $src ) {
         $ids = array_slice( array_filter( array_map( 'intval', explode( ',', (string) $src['vpg_a_seasons'] ) ) ), 0, 4 );
         $ids ? update_post_meta( $post_id, '_vpg_a_seasons', $ids ) : delete_post_meta( $post_id, '_vpg_a_seasons' );
     }
-    delete_transient( 'vpg_location_pins_v3' );
+    delete_transient( 'vpg_location_pins_v4' );
 }
 
 /* Bust the attribute-aware pin cache on any spot save */
 foreach ( VPG_SPOT_ATTR_TYPES as $cpt ) {
-    add_action( 'save_post_' . $cpt, function () { delete_transient( 'vpg_location_pins_v3' ); } );
+    add_action( 'save_post_' . $cpt, function () { delete_transient( 'vpg_location_pins_v4' ); } );
 }
 
 /* ─── Popup enrichment · attribute chips + seasons, appended to the
@@ -189,6 +228,7 @@ add_filter( 'the_content', function ( $content ) {
             if ( $k === 'seasons' || $k === 'related' ) continue;
             $def = $schema[ $k ] ?? null; if ( ! $def ) continue;
             if ( $k === 'themes' ) { foreach ( $v as $tk ) { $tl = vpg_spot_themes()[ $tk ] ?? $tk; echo '<span style="border:1px solid var(--g-line);padding:5px 11px;font-size:12px;font-weight:700">#' . esc_html( $tl ) . '</span>'; } continue; }
+            if ( $def['type'] === 'multi' ) { $vocab = vpg_attr_vocab( $def ); foreach ( $v as $mk ) echo '<span style="border:1px solid var(--g-line);padding:5px 11px;font-size:12px;font-weight:700">' . esc_html( ( $def['chip'] ?? '' ) . ' ' . ( $vocab[ $mk ] ?? $mk ) ) . '</span>'; continue; }
             $chip = $def['chip'] ?? '·';
             $txt  = $v === true ? ( $def['filter'] ?? $def['label'] ) : ( isset( $def['options'] ) ? ( $def['options'][ $v ] ?? $v ) : ( $def['label'] . ': ' . $v ) );
         ?>
@@ -220,7 +260,7 @@ function vpg_render_submit_attrs( $edit_post = null ) {
     $get = fn( $k, $d = '' ) => $edit_post ? get_post_meta( $edit_post->ID, '_vpg_a_' . $k, true ) : $d;
     $schema = vpg_spot_attr_schema();
     // The subset a member can honestly answer standing at the spot.
-    $show = [ 'tripod', 'facing', 'indoor', 'night', 'stepfree', 'winter', 'toilets', 'drone', 'parking', 'station' ];
+    $show = [ 'tripod', 'facing', 'crowd', 'entry', 'price', 'focal', 'indoor', 'night', 'stepfree', 'winter', 'toilets', 'drone', 'construction', 'parking', 'station', 'safety', 'standpoint', 'angle', 'history' ];
     ?>
     <div class="g-field" data-for-types="vpg_location vpg_studio vpg_shop" hidden>
       <label><?php esc_html_e( 'Spot attributes · what you noticed there', 'vpg-v2' ); ?></label>
@@ -234,6 +274,10 @@ function vpg_render_submit_attrs( $edit_post = null ) {
               </select>
             <?php elseif ( $def['type'] === 'bool' ) : ?>
               <label style="font-weight:400"><input type="checkbox" name="vpg_a_<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $v, '1' ); ?>> <?php esc_html_e( 'yes', 'vpg-v2' ); ?></label>
+            <?php elseif ( $def['type'] === 'multi' ) : $set_m = (array) $v; ?>
+              <span style="display:flex;flex-wrap:wrap;gap:4px 10px">
+              <?php foreach ( vpg_attr_vocab( $def ) as $mk => $ml ) : ?><label style="font-weight:400;font-size:12px"><input type="checkbox" name="vpg_a_<?php echo esc_attr( $key ); ?>[]" value="<?php echo esc_attr( $mk ); ?>" <?php checked( in_array( $mk, $set_m, true ) ); ?>> <?php echo esc_html( $ml ); ?></label><?php endforeach; ?>
+              </span>
             <?php else : ?>
               <input class="g-input" type="text" name="vpg_a_<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $v ); ?>">
             <?php endif; ?>
@@ -248,6 +292,13 @@ function vpg_render_submit_attrs( $edit_post = null ) {
         <?php endforeach; ?>
         </span>
       </label>
+      <?php foreach ( [ 'genres', 'equip' ] as $mkey ) : $mdef = $schema[ $mkey ]; $mset = (array) $get( $mkey, [] ); ?>
+      <label style="display:block;margin-top:12px;font-size:13px"><span style="display:block;font-weight:600;color:var(--g-mid);margin-bottom:4px;font-size:12px"><?php echo esc_html( $mdef['label'] ); ?></span>
+        <span style="display:flex;flex-wrap:wrap;gap:6px 14px">
+        <?php foreach ( vpg_attr_vocab( $mdef ) as $mk => $ml ) : ?><label style="font-weight:400"><input type="checkbox" name="vpg_a_<?php echo esc_attr( $mkey ); ?>[]" value="<?php echo esc_attr( $mk ); ?>" <?php checked( in_array( $mk, $mset, true ) ); ?>> <?php echo esc_html( $ml ); ?></label><?php endforeach; ?>
+        </span>
+      </label>
+      <?php endforeach; ?>
     </div>
     <?php
 }

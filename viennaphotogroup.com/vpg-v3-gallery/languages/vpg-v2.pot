@@ -5413,3 +5413,290 @@ msgstr ""
 #: inc/submission-queue.php
 msgid "Hello %1\$s,\n\nYour submission \\"%2\$s\\" was approved and is now live — your name under it:\n\n%3\$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
 msgstr ""
+
+msgid "Best-time matrix & audio"
+msgstr ""
+
+msgid "Dawn"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
+msgid "Dusk"
+msgstr ""
+
+msgid "Mon"
+msgstr ""
+
+msgid "Tue"
+msgstr ""
+
+msgid "Wed"
+msgstr ""
+
+msgid "Thu"
+msgstr ""
+
+msgid "Fri"
+msgstr ""
+
+msgid "Sat"
+msgstr ""
+
+msgid "Sun"
+msgstr ""
+
+msgid "0042 · click cells to cycle: — / okay / great. Rendered as a heat table on the spot page."
+msgstr ""
+
+msgid "0058 · Audio note (30s voice memo)"
+msgstr ""
+
+msgid "Pick / upload audio"
+msgstr ""
+
+msgid "0073 · Season pair (outdoor)"
+msgstr ""
+
+msgid "A winter and a summer view of the same spot — the light and mood change completely."
+msgstr ""
+
+msgid "❄ Winter view"
+msgstr ""
+
+msgid "☀ Summer view"
+msgstr ""
+
+msgid "Choose image"
+msgstr ""
+
+msgid "0067 · Opening hours"
+msgstr ""
+
+msgid "⟳ Fetch hours from OpenStreetMap"
+msgstr ""
+
+msgid "Looks for a matching shop node near this pin and suggests its opening_hours for the Hours field."
+msgstr ""
+
+msgid "Set the shop coordinates first, then hours can be synced from OSM."
+msgstr ""
+
+msgid "No example photo yet — a spot without a picture rarely helps anyone. Add a featured image."
+msgstr ""
+
+msgid "Colour character"
+msgstr ""
+
+msgid "%d%% complete"
+msgstr ""
+
+msgid "kept current by %s"
+msgstr ""
+
+msgid "pin %d m from photo GPS"
+msgstr ""
+
+msgid "♥ Useful ✓"
+msgstr ""
+
+msgid "♡ Useful"
+msgstr ""
+
+msgid "✓ Verified"
+msgstr ""
+
+msgid "⊙ I was there — verify"
+msgstr ""
+
+msgid "🛡 You keep this current"
+msgstr ""
+
+msgid "🛡 Adopt this pin"
+msgstr ""
+
+msgid "A word from whoever found it"
+msgstr ""
+
+msgid "The same spot, two seasons"
+msgstr ""
+
+msgid "Summer"
+msgstr ""
+
+msgid "Season pair incomplete — add the missing winter or summer view."
+msgstr ""
+
+msgid "What members shot here"
+msgstr ""
+
+msgid "Adjacent districts"
+msgstr ""
+
+msgid "If you like this spot"
+msgstr ""
+
+msgid "Changelog"
+msgstr ""
+
+msgid "Often shot around %s (from %d member photos)."
+msgstr ""
+
+msgid "What helps most: an exact pin, a photo from the spot, the best time and light, and honest access notes — tripod, entry, safety."
+msgstr ""
+
+msgid "Quality desk"
+msgstr ""
+
+msgid "%d spots imported as pending drafts for review."
+msgstr ""
+
+msgid "Weakest 20 pins (complete them first)"
+msgstr ""
+
+msgid "Spot"
+msgstr ""
+
+msgid "Score"
+msgstr ""
+
+msgid "Stale — not touched in 18 months"
+msgstr ""
+
+msgid "Nothing stale. The index is fresh."
+msgstr ""
+
+msgid "Possible duplicates (same type, <40 m)"
+msgstr ""
+
+msgid "No obvious duplicates."
+msgstr ""
+
+msgid "merge → keep first"
+msgstr ""
+
+msgid "Contact links to fix"
+msgstr ""
+
+msgid "No dead links found in the last sweep."
+msgstr ""
+
+msgid "Mass import"
+msgstr ""
+
+msgid "Paste GeoJSON (FeatureCollection) or CSV lines "Title,lat,lng". Creates pending location drafts for review. Max 200."
+msgstr ""
+
+msgid "Import as pending"
+msgstr ""
+
+msgid "District profiles"
+msgstr ""
+
+msgid "A short character text per district, shown on its /bezirk/ landing page."
+msgstr ""
+
+msgid "Save profiles"
+msgstr ""
+
+msgid "0069 · Contact check:"
+msgstr ""
+
+msgid "verified by %d member"
+msgid_plural "verified by %d members"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d link looks dead."
+msgid_plural "%d links look dead."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Recommended focal length(s)"
+msgstr ""
+
+msgid "Crowding"
+msgstr ""
+
+msgid "usually empty"
+msgstr ""
+
+msgid "okay"
+msgstr ""
+
+msgid "often crowded"
+msgstr ""
+
+msgid "free"
+msgstr ""
+
+msgid "ticket"
+msgstr ""
+
+msgid "registration"
+msgstr ""
+
+msgid "Price level"
+msgstr ""
+
+msgid "Safety notes (honest)"
+msgstr ""
+
+msgid "Exact standpoint"
+msgstr ""
+
+msgid "Anti-cliché angle"
+msgstr ""
+
+msgid "History in three sentences"
+msgstr ""
+
+msgid "Genres"
+msgstr ""
+
+msgid "Equipment warnings"
+msgstr ""
+
+msgid "Temporarily blocked (construction)"
+msgstr ""
+
+msgid "Blocked"
+msgstr ""
+
+msgid "Blocked until (YYYY-MM-DD)"
+msgstr ""
+
+msgid "Landscape"
+msgstr ""
+
+msgid "Abstract"
+msgstr ""
+
+msgid "ND filter helps"
+msgstr ""
+
+msgid "Wide-angle"
+msgstr ""
+
+msgid "Telephoto"
+msgstr ""
+
+msgid "Tripod needed"
+msgstr ""
+
+msgid "No flash"
+msgstr ""
+
+msgid "Fast lens / low light"
+msgstr ""
+
+msgid "%d member-curated place to photograph in the %s."
+msgid_plural "%d member-curated places to photograph in the %s."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%s — one district has no pin yet."
+msgid_plural "%s — these districts have no pins yet."
+msgstr[0] ""
+msgstr[1] ""

@@ -85,7 +85,7 @@ add_action( 'template_redirect', function () {
 
     /* 0038 · a chrome-free map for embedding in blogs */
     if ( get_query_var( 'vpg_mapembed' ) ) {
-        $pins = get_transient( 'vpg_location_pins_v3' );
+        $pins = get_transient( 'vpg_location_pins_v4' );
         if ( ! is_array( $pins ) ) $pins = [];
         header( 'Content-Type: text/html; charset=utf-8' );
         $leaflet_css = get_template_directory_uri() . '/assets/vendor/leaflet/leaflet.css';

@@ -188,6 +188,9 @@ add_action( 'template_redirect', function () {
           <p class="g-kicker" style="margin-bottom:16px">● <?php printf( esc_html__( 'District %s', 'vpg-v2' ), esc_html( $code ) ); ?></p>
           <h1 class="g-display g-phero__title"><?php echo esc_html( $name ); ?><span style="color:var(--g-red)">.</span></h1>
           <p class="g-lede g-phero__lede"><?php printf( esc_html( _n( '%d member-curated place to photograph in the %s.', '%d member-curated places to photograph in the %s.', count( $spots ), 'vpg-v2' ) ), count( $spots ), esc_html( $code ) ); ?></p>
+          <?php /* 0066 · editable district character text */
+          $profile = function_exists( 'vpg_district_text' ) ? vpg_district_text( $code ) : '';
+          if ( $profile ) : ?><p style="font-size:15px;line-height:1.6;color:var(--g-mid);max-width:44ch"><?php echo esc_html( $profile ); ?></p><?php endif; ?>
         </div>
         <dl class="g-phero__aside">
           <dt><?php esc_html_e( 'On the map', 'vpg-v2' ); ?></dt><dd><a href="<?php echo esc_url( add_query_arg( 'district', $code, get_post_type_archive_link( 'vpg_location' ) ) ); ?>"><?php esc_html_e( 'Open filtered map', 'vpg-v2' ); ?></a></dd>

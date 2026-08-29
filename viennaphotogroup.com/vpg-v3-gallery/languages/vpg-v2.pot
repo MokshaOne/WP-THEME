@@ -7257,3 +7257,93 @@ msgstr ""
 
 msgid "Missing a term?"
 msgstr ""
+
+msgid "Seen"
+msgstr ""
+
+msgid "Camera"
+msgstr ""
+
+msgid "See where it was shot"
+msgstr ""
+
+msgid "See it framed"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Exposure playground"
+msgstr ""
+
+msgid "This frame’s settings — drag to feel the trade-offs."
+msgstr ""
+
+msgid "aperture · depth of field"
+msgstr ""
+
+msgid "sensitivity · noise"
+msgstr ""
+
+msgid "Wide open — creamy background, thin focus."
+msgstr ""
+
+msgid "Stopped down — everything sharp, needs light."
+msgstr ""
+
+msgid "A balanced middle aperture."
+msgstr ""
+
+msgid "shutter"
+msgstr ""
+
+msgid "motion"
+msgstr ""
+
+msgid "Long — motion blurs, use a tripod."
+msgstr ""
+
+msgid "Fast — freezes action crisp."
+msgstr ""
+
+msgid "Hand-holdable for still subjects."
+msgstr ""
+
+msgid "High — grain climbs, saves dark scenes."
+msgstr ""
+
+msgid "Clean, low noise."
+msgstr ""
+
+msgid "On a wall"
+msgstr ""
+
+msgid "Click to flip through"
+msgstr ""
+
+msgid "Photo of the day"
+msgstr ""
+
+msgid "New photographs"
+msgstr ""
+
+msgid "Shot on"
+msgstr ""
+
+msgid "Wall budget"
+msgstr ""
+
+msgid "%1$d frames · ~%2$s MB total."
+msgstr ""
+
+msgid "Over the %d MB wall budget — consider fewer or lighter frames."
+msgstr ""
+
+msgid "Within budget. Loads fast."
+msgstr ""
+
+msgid "0320 · Why these hang"
+msgstr ""
+
+msgid "Why these hang"
+msgstr ""

@@ -32,13 +32,15 @@ get_header();
     </div>
   </section>
 
+  <?php if ( function_exists( 'vpg_gallery_image_extras' ) ) vpg_gallery_image_extras( get_the_ID() ); ?>
+
   <?php if ( function_exists( 'vpg_similar_images' ) ) :
       $similar = vpg_similar_images( get_the_ID() );
       if ( count( $similar ) >= 2 ) : ?>
   <section class="g-section--alt g-section--tight">
     <div class="g-wrap">
       <span class="g-kicker"><?php esc_html_e( 'Visually related', 'vpg-v2' ); ?></span>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px">
+      <div data-vpg-gallery data-vpg-grid style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px">
         <?php foreach ( $similar as $sid ) :
             $img = wp_get_attachment_image_url( $sid, 'medium' );
             if ( ! $img ) continue; ?>

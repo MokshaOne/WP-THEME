@@ -9764,3 +9764,231 @@ msgstr ""
 
 msgid "Gallery"
 msgstr ""
+
+msgid "Support Vienna Photo Group"
+msgstr ""
+
+msgid "Free to use, run by members, kept alive by the people who love it. Support is later, voluntary, and never a paywall."
+msgstr ""
+
+msgid "Our promise"
+msgstr ""
+
+msgid "Every feature that is free today stays free — forever. No ads, no tracking, no investors. Supporter perks only ever add; they never take anything away."
+msgstr ""
+
+msgid "Give what feels right"
+msgstr ""
+
+msgid "Give once"
+msgstr ""
+
+msgid "Give monthly"
+msgstr ""
+
+msgid "Prefer a bank transfer?"
+msgstr ""
+
+msgid "Pay what you want — there are no price tiers, no pressure, no minimum."
+msgstr ""
+
+msgid "Supporting is being prepared — it is not open yet. When it opens, it will be pay-what-you-want, cancellable in one click, and pausable any time."
+msgstr ""
+
+msgid "Or give in kind"
+msgstr ""
+
+msgid "Time — help at a walk, an exhibition, the archive."
+msgstr ""
+
+msgid "Skills — tax advice, design, legal, pro bono."
+msgstr ""
+
+msgid "Gear — an old camera passed to a beginner; a repair before a new buy."
+msgstr ""
+
+msgid "What it actually costs"
+msgstr ""
+
+msgid "Hosting (year)"
+msgstr ""
+
+msgid "Domains (year)"
+msgstr ""
+
+msgid "Print (per issue)"
+msgstr ""
+
+msgid "Everything else (year)"
+msgstr ""
+
+msgid "Item"
+msgstr ""
+
+msgid "Give in someone’s memory"
+msgstr ""
+
+msgid "You can support VPG in memory of someone who loved photography. Write to us and we’ll handle it with care."
+msgstr ""
+
+msgid "See the wall of thanks →"
+msgstr ""
+
+msgid "Wall of thanks"
+msgstr ""
+
+msgid "The people who keep VPG going — named only because they chose to be."
+msgstr ""
+
+msgid "No names yet — supporters appear here only if they opt in."
+msgstr ""
+
+msgid "Every supporter is invisible by default. Naming is a choice, made in your dashboard, revocable any time."
+msgstr ""
+
+msgid "Annual report %s"
+msgstr ""
+
+msgid "An honest look back — what we built, what it cost, where we stand."
+msgstr ""
+
+msgid "Journal posts"
+msgstr ""
+
+msgid "Map locations"
+msgstr ""
+
+msgid "The written retrospective for this year is still to come."
+msgstr ""
+
+msgid "The ten-year letter"
+msgstr ""
+
+msgid "A letter to our future selves is being written."
+msgstr ""
+
+msgid "Sealed. A letter written today, to be opened when VPG turns older."
+msgstr ""
+
+msgid "Opens on %s."
+msgstr ""
+
+msgid "Written years ago. Opened now."
+msgstr ""
+
+msgid "Your support is paused — welcome back any time."
+msgstr ""
+
+msgid "Understood — your support will end. Thank you for everything."
+msgstr ""
+
+msgid "Your support"
+msgstr ""
+
+msgid "Name me on the public wall of thanks (off by default)"
+msgstr ""
+
+msgid "Resume support"
+msgstr ""
+
+msgid "Pause support"
+msgstr ""
+
+msgid "End support"
+msgstr ""
+
+msgid "Pausing keeps your place without charge. Ending is one click, no dark patterns, no guilt — and thank you, sincerely."
+msgstr ""
+
+msgid "Sustainability & support"
+msgstr ""
+
+msgid "Sustainability"
+msgstr ""
+
+msgid "Supporter page"
+msgstr ""
+
+msgid "Annual report"
+msgstr ""
+
+msgid "Ten-year letter"
+msgstr ""
+
+msgid "0961/0964/0965 · Support links (external — never a paywall)"
+msgstr ""
+
+msgid "One-time link"
+msgstr ""
+
+msgid "Monthly link"
+msgstr ""
+
+msgid "Bank details (shown as text)"
+msgstr ""
+
+msgid "0963 · Cost transparency (€)"
+msgstr ""
+
+msgid "Hosting/yr"
+msgstr ""
+
+msgid "Domains/yr"
+msgstr ""
+
+msgid "Print/issue"
+msgstr ""
+
+msgid "Other/yr"
+msgstr ""
+
+msgid "0993 · Reserves (six months as a cushion)"
+msgstr ""
+
+msgid "Target €"
+msgstr ""
+
+msgid "Have €"
+msgstr ""
+
+msgid "0982 · Annual report — this year’s retrospective"
+msgstr ""
+
+msgid "1000 · The ten-year letter (sealed until 2036)"
+msgstr ""
+
+msgid "Where should VPG stand in 2036? Write it today."
+msgstr ""
+
+msgid "0996 · Supporter survey"
+msgstr ""
+
+msgid "%s responses collected."
+msgstr ""
+
+msgid "The Notfallordner — govern, endure, hand over"
+msgstr ""
+
+msgid "0970/0971 Legal form & charitable status — clarify the Verein for the bank account and liability, check donation deductibility."
+msgstr ""
+
+msgid "0972/0973 Funding — systematically scan City of Vienna culture funds and EU Creative Europe."
+msgstr ""
+
+msgid "0974/0991/0992 Sponsorship rules, an exclusion list (with whom never), and an independence clause (no funder over 20%)."
+msgstr ""
+
+msgid "0979/0980/0981 Succession: keys, domains, accounts in a sealed emergency folder; every critical thing known to at least two people."
+msgstr ""
+
+msgid "0978 What happens to money if the collective ever ends (avoid the dead hand)."
+msgstr ""
+
+msgid "0983/0984/0985 Yearly footprint of server & print; recycled paper as a rule; ask the host about green power."
+msgstr ""
+
+msgid "0986/0987/0988/0989/0990 Gear-donation bridge, repair before replace, a fair-price code, and time & skill donations as equal currency."
+msgstr ""
+
+msgid "0994 Compare hosting alternatives yearly against price shocks; keep the six-month cushion."
+msgstr ""

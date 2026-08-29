@@ -7949,3 +7949,219 @@ msgstr[1] ""
 
 msgid "Around this time last year you published <a href="%1$s">%2$s</a>."
 msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "First-year class"
+msgstr ""
+
+msgid "Analogue"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Series (3 images)"
+msgstr ""
+
+msgid "District teams"
+msgstr ""
+
+msgid "Challenge setup"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Jury mode"
+msgstr ""
+
+msgid "Editor picks"
+msgstr ""
+
+msgid "Blind jury (names hidden)"
+msgstr ""
+
+msgid "Public + jury prize"
+msgstr ""
+
+msgid "Deadline"
+msgstr ""
+
+msgid "Prize (material, not money)"
+msgstr ""
+
+msgid "A roll of film, a book…"
+msgstr ""
+
+msgid "Max entries per member"
+msgstr ""
+
+msgid "Prop that must appear"
+msgstr ""
+
+msgid "Sound to interpret (URL)"
+msgstr ""
+
+msgid "Journal line to answer"
+msgstr ""
+
+msgid "Weather roulette (task revealed with the forecast)"
+msgstr ""
+
+msgid "Perspective lottery"
+msgstr ""
+
+msgid "Best-caption award"
+msgstr ""
+
+msgid "AI images excluded"
+msgstr ""
+
+msgid "The task / rules (one sentence is enough)"
+msgstr ""
+
+msgid "ground level"
+msgstr ""
+
+msgid "hip height"
+msgstr ""
+
+msgid "above the head"
+msgstr ""
+
+msgid "Deadline %s (Sunday midnight)"
+msgstr ""
+
+msgid "Max %d entries"
+msgstr ""
+
+msgid "No AI images"
+msgstr ""
+
+msgid "This object must appear in every frame: %s"
+msgstr ""
+
+msgid "Interpret this piece of music"
+msgstr ""
+
+msgid "Answer this line with a photograph: “%s”"
+msgstr ""
+
+msgid "Your drawn viewpoint: %s"
+msgstr ""
+
+msgid "Weather roulette — right now it’s %1$s, %2$s. Shoot to that."
+msgstr ""
+
+msgid "People’s choice"
+msgstr ""
+
+msgid "%1$d entries · %2$d members voted."
+msgstr ""
+
+msgid "Three questions to the winner"
+msgstr ""
+
+msgid "You won — the three questions"
+msgstr ""
+
+msgid "What were you after?"
+msgstr ""
+
+msgid "The hardest part?"
+msgstr ""
+
+msgid "One tip for the next entrant?"
+msgstr ""
+
+msgid "Publish answers"
+msgstr ""
+
+msgid "A challenge theme"
+msgstr ""
+
+msgid "Suggest"
+msgstr ""
+
+msgid "Planned ahead"
+msgstr ""
+
+msgid "The challenge <em>calendar</em>."
+msgstr ""
+
+msgid "Suggest a theme"
+msgstr ""
+
+msgid "Hall of fame"
+msgstr ""
+
+msgid "Every <em>winner</em>."
+msgstr ""
+
+msgid "How our challenges work"
+msgstr ""
+
+msgid "Fair by <em>rule</em>."
+msgstr ""
+
+msgid "One deadline, always"
+msgstr ""
+
+msgid "Every challenge closes Sunday at midnight. Same day, every time."
+msgstr ""
+
+msgid "Curate, don’t flood"
+msgstr ""
+
+msgid "A submission limit per member. Choosing your best is part of the exercise."
+msgstr ""
+
+msgid "These are photographs. AI-generated pictures are excluded — the rule is visible on every challenge."
+msgstr ""
+
+msgid "Prizes, not money"
+msgstr ""
+
+msgid "A roll of film, a book. Small, material, kind."
+msgstr ""
+
+msgid "Sponsoring: yes, influence: no"
+msgstr ""
+
+msgid "A sponsor may give a prize. A sponsor never shapes the theme or the jury. This is documented."
+msgstr ""
+
+msgid "Honest consolation"
+msgstr ""
+
+msgid "No participation medals — but real, named mentions. Every entry gets a reaction."
+msgstr ""
+
+msgid "The return match"
+msgstr ""
+
+msgid "The winning theme sets the next challenge’s task."
+msgstr ""
+
+msgid "Challenge desk"
+msgstr ""
+
+msgid "Pages: /challenge-kalender/ · /challenge-ruhm/ · /challenge-regeln/"
+msgstr ""
+
+msgid "Calendar (one per line: “Month — theme”)"
+msgstr ""
+
+msgid "Cross-collective battles (Graz, Linz…)"
+msgstr ""
+
+msgid "Theme suggestions"
+msgstr ""
+
+msgid "None yet. Embed [vpg_challenge_suggest]."
+msgstr ""
+
+msgid "Anonymous"
+msgstr ""

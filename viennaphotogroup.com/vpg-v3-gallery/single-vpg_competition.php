@@ -27,11 +27,14 @@ get_header();
       </div>
     </section>
 
+    <?php if ( function_exists( 'vpg_competition_header' ) ) vpg_competition_header( get_the_ID() ); ?>
+
     <?php if ( get_the_content() ) : ?>
     <section class="g-section g-section--tight">
       <div class="g-wrap"><div class="g-prose" style="margin:0 auto"><?php the_content(); ?></div></div>
     </section>
     <?php endif; ?>
+    <?php $vpg_cm = function_exists( 'vpg_comp_meta' ) ? vpg_comp_meta( get_the_ID() ) : [ 'jury' => 'editor' ]; ?>
 
     <?php if ( $winner && wp_attachment_is_image( $winner ) ) : ?>
     <!-- The winner · hung on its own wall -->
@@ -108,7 +111,11 @@ get_header();
               <img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">
             </div>
             <figcaption style="display:flex;justify-content:space-between;gap:10px;margin-top:8px">
-              <span class="g-meta"><?php echo esc_html( get_the_author_meta( 'display_name', (int) $e->post_author ) ); ?><?php if ( $winner === (int) $e->ID ) : ?> · <strong style="color:var(--g-red)"><?php esc_html_e( 'Winner', 'vpg-v2' ); ?></strong><?php endif; ?></span>
+              <?php $blind = ( $vpg_cm['jury'] ?? '' ) === 'blind' && ! $closed; ?>
+              <span class="g-meta"><?php echo $blind ? esc_html__( 'Anonymous', 'vpg-v2' ) : esc_html( get_the_author_meta( 'display_name', (int) $e->post_author ) ); ?><?php if ( $winner === (int) $e->ID ) : ?> · <strong style="color:var(--g-red)"><?php esc_html_e( 'Winner', 'vpg-v2' ); ?></strong><?php endif; ?></span>
+              <?php if ( ! $closed && ( $vpg_cm['jury'] ?? '' ) === 'public' && is_user_logged_in() ) : ?>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0"><?php wp_nonce_field( 'vpg_comp_vote' ); ?><input type="hidden" name="action" value="vpg_comp_vote"><input type="hidden" name="entry" value="<?php echo (int) $e->ID; ?>"><button class="g-meta" style="background:none;border:0;color:var(--g-red);cursor:pointer;font:inherit">♥ <?php echo (int) count( array_filter( (array) get_post_meta( $e->ID, '_vpg_entry_votes', true ) ) ); ?></button></form>
+              <?php endif; ?>
               <?php if ( ! $closed && current_user_can( 'edit_others_posts' ) ) : ?>
                 <a class="g-meta" style="color:var(--g-red)" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vpg_competition_winner&competition=' . get_the_ID() . '&entry=' . $e->ID ), 'vpg_competition_winner' ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Pick this entry as the winner and close the competition?', 'vpg-v2' ) ); ?>')"><?php esc_html_e( 'Pick winner', 'vpg-v2' ); ?></a>
               <?php endif; ?>
@@ -121,6 +128,8 @@ get_header();
         <?php endif; ?>
       </div>
     </section>
+
+    <?php if ( function_exists( 'vpg_competition_extras' ) ) vpg_competition_extras( get_the_ID(), $entries ); ?>
 
 <?php endwhile; ?>
 </main>

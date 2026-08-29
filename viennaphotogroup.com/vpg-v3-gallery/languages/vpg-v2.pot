@@ -8165,3 +8165,148 @@ msgstr ""
 
 msgid "Anonymous"
 msgstr ""
+
+msgid "Tutorial extras"
+msgstr ""
+
+msgid "0483 · Exercise (go out and do)"
+msgstr ""
+
+msgid "0497 · Quiz — one “Question || Answer” per line"
+msgstr ""
+
+msgid "0508 · Last reviewed"
+msgstr ""
+
+msgid "0512 · Translation (post ID)"
+msgstr ""
+
+msgid "This tutorial in the other language"
+msgstr ""
+
+msgid "0483 · Exercise"
+msgstr ""
+
+msgid "Submit your result"
+msgstr ""
+
+msgid "Self-test (ungraded)"
+msgstr ""
+
+msgid "A6 cheat sheet"
+msgstr ""
+
+msgid "Large print"
+msgstr ""
+
+msgid "✓ Completed"
+msgstr ""
+
+msgid "Mark as done"
+msgstr ""
+
+msgid "Last reviewed for accuracy: %s"
+msgstr ""
+
+msgid "Spotted an error or improvement? Tell the editors…"
+msgstr ""
+
+msgid "Suggest a fix"
+msgstr ""
+
+msgid "A tutorial you wish existed…"
+msgstr ""
+
+msgid "Request it"
+msgstr ""
+
+msgid "What do you want to learn?"
+msgstr ""
+
+msgid "Find a mentor"
+msgstr ""
+
+msgid "A member is looking to learn: “%s”"
+msgstr ""
+
+msgid "Bodies & settings"
+msgstr ""
+
+msgid "Camera <em>profiles</em>."
+msgstr ""
+
+msgid "Learn"
+msgstr ""
+
+msgid "The <em>school</em>."
+msgstr ""
+
+msgid "No exams, no certificate theatre — just craft, shared. Read, then go and make."
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "Interactive histogram"
+msgstr ""
+
+msgid "Exposure triangle"
+msgstr ""
+
+msgid "Focal comparison"
+msgstr ""
+
+msgid "Mentor matching"
+msgstr ""
+
+msgid "Wished-for tutorials"
+msgstr ""
+
+msgid "0498 · Learn from mistakes"
+msgstr ""
+
+msgid "0513 · External courses"
+msgstr ""
+
+msgid "0514 · Photo libraries in Wien"
+msgstr ""
+
+msgid "Every Documentarian writes one tutorial — knowledge is a donation, not a possession. And we learn without exams: the point is the picture, not a certificate."
+msgstr ""
+
+msgid "Search the answered-questions knowledge base"
+msgstr ""
+
+msgid "Learning desk"
+msgstr ""
+
+msgid "Camera profiles (one per line: “Model | community settings”)"
+msgstr ""
+
+msgid "External courses (one per line)"
+msgstr ""
+
+msgid "Libraries (one per line)"
+msgstr ""
+
+msgid "Error gallery (attachment IDs, comma-separated)"
+msgstr ""
+
+msgid "Tutorials needing a review (>1 year)"
+msgstr ""
+
+msgid "Proofreading suggestions"
+msgstr ""
+
+msgid "None pending."
+msgstr ""
+
+msgid "%d member offers mentoring."
+msgid_plural "%d members offer mentoring."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d tutorial completed"
+msgid_plural "%d tutorials completed"
+msgstr[0] ""
+msgstr[1] ""

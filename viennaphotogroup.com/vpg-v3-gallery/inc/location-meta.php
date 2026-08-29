@@ -251,9 +251,9 @@ function vpg_render_location_meta_box( $post ) {
             var startZ   = (latInput.value && lngInput.value) ? 16 : 12;
 
             var map = L.map(mapEl).setView([startLat, startLng], startZ);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: '&copy; CARTO · OSM'
+                attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
             var marker = null;

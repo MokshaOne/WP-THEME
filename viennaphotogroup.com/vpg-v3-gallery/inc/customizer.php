@@ -29,7 +29,7 @@ add_action( 'customize_register', function ( $wp ) {
         'vpg_email'            => [ 'Contact email',  get_option( 'admin_email' ), 'sanitize_email' ],
         'vpg_location'         => [ 'Location',       'Wien · UTC+1',              'sanitize_text_field' ],
         'vpg_booking'          => [ 'Booking status', 'Q3 · slots open',           'sanitize_text_field' ],
-        'vpg_since'            => [ 'Founded year',   '2018',                      'sanitize_text_field' ],
+        'vpg_since'            => [ 'Founded year',   '2019',                      'sanitize_text_field' ],
         'vpg_social_instagram' => [ 'Instagram URL',  '',                          'esc_url_raw' ],
         'vpg_social_x'         => [ 'X / Twitter URL', '',                         'esc_url_raw' ],
     ] as $id => $row ) {

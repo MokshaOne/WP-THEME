@@ -124,7 +124,7 @@ function vpg_hub_settings_page() {
         'vpg_email'            => [ __( 'Contact email', 'vpg-v2' ),   get_option( 'admin_email' ) ],
         'vpg_location'         => [ __( 'Location', 'vpg-v2' ),        'Wien · UTC+1' ],
         'vpg_booking'          => [ __( 'Booking status', 'vpg-v2' ),  'Q3 · slots open' ],
-        'vpg_since'            => [ __( 'Founded year', 'vpg-v2' ),    '2018' ],
+        'vpg_since'            => [ __( 'Founded year', 'vpg-v2' ),    '2019' ],
         'vpg_social_instagram' => [ __( 'Instagram URL', 'vpg-v2' ),   '' ],
         'vpg_social_x'         => [ __( 'X / Twitter URL', 'vpg-v2' ), '' ],
     ];

@@ -25,7 +25,7 @@ function vpg_identity() {
         'email'    => get_theme_mod( 'vpg_email',    get_option( 'admin_email' ) ),
         'location' => get_theme_mod( 'vpg_location', 'Wien · UTC+1' ),
         'booking'  => get_theme_mod( 'vpg_booking',  'Q3 · slots open' ),
-        'since'    => get_theme_mod( 'vpg_since',    '2018' ),
+        'since'    => get_theme_mod( 'vpg_since',    '2019' ),
     ];
 }
 

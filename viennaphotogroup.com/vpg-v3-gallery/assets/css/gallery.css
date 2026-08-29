@@ -114,6 +114,9 @@ em{ font-style:italic; }
 .g-head__t em{ font-style:italic; color:var(--g-red); }
 .g-head .g-kicker{ margin-bottom:14px; display:block; }
 
+/* ── Map tiles · museum grayscale over keyless OSM (markers stay red) ── */
+.leaflet-tile-pane{ filter:grayscale(1) contrast(.92) brightness(1.06); }
+
 /* ── Image treatment ────────────────────────────────────────────────── */
 .g-fig{ position:relative; overflow:hidden; background:var(--g-bg-2); }
 .g-fig img{ width:100%; height:100%; object-fit:cover; transition:transform .6s var(--g-ease); }
@@ -125,7 +128,9 @@ em{ font-style:italic; }
 a:hover .g-fig img,.g-card:hover .g-fig img{ transform:scale(1.04); }
 
 /* ── Responsive base ────────────────────────────────────────────────── */
-@media (max-width:880px){
+/* Nine items plus brand and buttons need ~1100px of air — below that the
+   row gets cramped, so the burger takes over well before phone widths. */
+@media (max-width:1080px){
   .g-top__in{ grid-template-columns:1fr auto; }
   .g-nav{ display:none; }
   .g-burger{ display:inline-flex; }

@@ -45,7 +45,7 @@ $id = vpg_identity();
             <p>If you subscribe to the issue-alert newsletter, we store your email until you unsubscribe. One-click unsubscribe in every email. We never send marketing, promotions, partner offers or surveys.</p>
 
             <h2>Map &amp; location data</h2>
-            <p>The Leaflet map loads tiles from <a href="https://carto.com/" target="_blank" rel="noopener">CARTO</a> (CartoDB Voyager). Address search uses <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap Nominatim</a>. These third parties may log map-tile and search requests per their own privacy terms. We do not pass user-identifying data to them.</p>
+            <p>The Leaflet map loads tiles from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>. Address search uses <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap Nominatim</a>. These third parties may log map-tile and search requests per their own privacy terms. We do not pass user-identifying data to them.</p>
 
             <h2>Third-party services</h2>
             <ul>

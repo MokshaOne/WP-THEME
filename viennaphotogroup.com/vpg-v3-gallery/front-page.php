@@ -33,13 +33,17 @@ $journal_url = get_option( 'page_for_posts' ) ? get_permalink( (int) get_option(
     <div class="g-wrap">
       <div class="g-hero__grid">
         <div class="g-rise">
-          <p class="g-kicker" style="margin-bottom:20px">● <?php esc_html_e( 'Vienna · since 2018', 'vpg-v2' ); ?></p>
+          <p class="g-kicker" style="margin-bottom:20px">● <?php esc_html_e( 'Vienna · since 2019', 'vpg-v2' ); ?></p>
           <h1 class="g-display g-hero__title"><?php
             echo wp_kses_post( __( 'The <em>quiet</em> magazine for photographers who <em>look</em>.', 'vpg-v2' ) );
           ?></h1>
           <p class="g-lede g-hero__lede"><?php esc_html_e( 'A member-run photography magazine. Locations, studios, reviews and a weekly journal — written by photographers, for photographers in Wien and the diaspora.', 'vpg-v2' ); ?></p>
           <div class="g-hero__row">
-            <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join the community', 'vpg-v2' ); ?> <span class="a">→</span></a>
+            <?php if ( is_user_logged_in() ) : ?>
+              <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your work', 'vpg-v2' ); ?> <span class="a">→</span></a>
+            <?php else : ?>
+              <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Join the community', 'vpg-v2' ); ?> <span class="a">→</span></a>
+            <?php endif; ?>
             <a class="g-link" href="<?php echo esc_url( $mag_archive ); ?>"><?php esc_html_e( 'Read the magazine', 'vpg-v2' ); ?> <span class="a">→</span></a>
           </div>
         </div>
@@ -163,7 +167,7 @@ $journal_url = get_option( 'page_for_posts' ) ? get_permalink( (int) get_option(
   <section class="g-section--alt g-section--tight">
     <div class="g-wrap">
       <div class="g-stats">
-        <div class="g-stat"><div class="g-stat__n"><em><?php echo esc_html( get_theme_mod( 'vpg_since', '2018' ) ); ?></em></div><div class="g-stat__l"><?php esc_html_e( 'Founded in Wien', 'vpg-v2' ); ?></div></div>
+        <div class="g-stat"><div class="g-stat__n"><em><?php echo esc_html( get_theme_mod( 'vpg_since', '2019' ) ); ?></em></div><div class="g-stat__l"><?php esc_html_e( 'Founded in Wien', 'vpg-v2' ); ?></div></div>
         <div class="g-stat"><div class="g-stat__n"><?php echo esc_html( $loc_count ); ?><sup>+</sup></div><div class="g-stat__l"><?php esc_html_e( 'Locations mapped', 'vpg-v2' ); ?></div></div>
         <div class="g-stat"><div class="g-stat__n"><?php echo esc_html( $post_count ?: $mag_count ); ?></div><div class="g-stat__l"><?php esc_html_e( 'Articles published', 'vpg-v2' ); ?></div></div>
         <div class="g-stat">
@@ -177,16 +181,26 @@ $journal_url = get_option( 'page_for_posts' ) ? get_permalink( (int) get_option(
     </div>
   </section>
 
-  <!-- ── JOIN CTA ── -->
+  <!-- ── JOIN / MEMBER CTA · members see their tools, visitors see the door ── -->
   <section class="g-section--dark g-section">
     <div class="g-wrap" style="text-align:center">
-      <span class="g-kicker"><?php esc_html_e( 'Membership · free', 'vpg-v2' ); ?></span>
-      <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'Join the <em>studio</em>.', 'vpg-v2' ) ); ?></h2>
-      <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Every monthly issue in PDF and print, submission rights to the map and journal, event discounts and the studio-share directory. Forever-keepable.', 'vpg-v2' ); ?></p>
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Become a member', 'vpg-v2' ); ?> <span class="a">→</span></a>
-        <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'What we publish', 'vpg-v2' ); ?></a>
-      </div>
+      <?php if ( is_user_logged_in() ) : ?>
+        <span class="g-kicker"><?php esc_html_e( 'You’re in', 'vpg-v2' ); ?></span>
+        <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'Make the next <em>issue</em>.', 'vpg-v2' ) ); ?></h2>
+        <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Submit a location, a photo or a story — everything members send in feeds the map, the journal and the monthly magazine.', 'vpg-v2' ); ?></p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your work', 'vpg-v2' ); ?> <span class="a">→</span></a>
+          <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>"><?php esc_html_e( 'Your dashboard', 'vpg-v2' ); ?></a>
+        </div>
+      <?php else : ?>
+        <span class="g-kicker"><?php esc_html_e( 'Membership · free', 'vpg-v2' ); ?></span>
+        <h2 class="g-display g-cta__title" style="margin:18px auto 22px;max-width:16ch"><?php echo wp_kses_post( __( 'Join the <em>studio</em>.', 'vpg-v2' ) ); ?></h2>
+        <p class="g-lede" style="color:rgba(255,255,255,.8);margin:0 auto 32px;text-align:center"><?php esc_html_e( 'Every monthly issue in PDF and print, submission rights to the map and journal, event discounts and the studio-share directory. Forever-keepable.', 'vpg-v2' ); ?></p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <a class="g-btn g-btn--lg g-btn--red" href="<?php echo esc_url( home_url( '/join/' ) ); ?>"><?php esc_html_e( 'Become a member', 'vpg-v2' ); ?> <span class="a">→</span></a>
+          <a class="g-btn g-btn--lg g-btn--on-dark" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'What we publish', 'vpg-v2' ); ?></a>
+        </div>
+      <?php endif; ?>
     </div>
   </section>
 

@@ -104,10 +104,11 @@
 
     var map = L.map(el, { scrollWheelZoom: false, zoomControl: true, maxZoom: 18 });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    // Keyless OSM tiles; the museum look comes from a grayscale filter on
+    // the tile pane (gallery.css), so markers and popups keep their red.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> · &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-      subdomains: 'abcd'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     if (!pins.length) {

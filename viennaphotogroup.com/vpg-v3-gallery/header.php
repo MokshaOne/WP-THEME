@@ -77,7 +77,7 @@ $vpg_here = function_exists( 'vpg_current_url' ) ? vpg_current_url() : '';
 
 <div class="g-strip">
     <div class="g-strip__in">
-        <span>Wien · <b><?php esc_html_e( 'est. 2018', 'vpg-v2' ); ?></b></span>
+        <span>Wien · <b><?php esc_html_e( 'est. 2019', 'vpg-v2' ); ?></b></span>
         <span class="hide-sm"><?php echo esc_html( get_bloginfo( 'description' ) ?: __( 'The quiet magazine for photographers who look', 'vpg-v2' ) ); ?></span>
         <span>
             <?php if ( is_user_logged_in() ) : ?>

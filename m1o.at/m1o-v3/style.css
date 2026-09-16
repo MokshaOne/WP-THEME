@@ -1,0 +1,16 @@
+/*
+Theme Name: M1O Transmission
+Theme URI: https://m1o.at
+Author: Nishuthan Raveenthiran
+Author URI: https://raveenthiran.com
+Description: M1O v3 — the transmission console. Compact brutalist landing for m1o.at: hard white rules, a channel-index ledger, and rationed gold magic (preloader gate, particle field, decode labels, inversion hover, velocity skew). Drop-in successor to M1O Hub v2 — reads the same wp_options (m1o_identity_*, m1o_channels, m1o_show_*), so switching themes keeps all content. Music channel embeds a real Spotify or YouTube player. Pure PHP/CSS/vanilla-JS + GSAP; no builders, no plugins required.
+Version: 3.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: m1o
+Tags: dark, brutalist, portfolio, link-hub, one-column, gold
+*/
+
+/* All visual styles live in assets/css/main.css */

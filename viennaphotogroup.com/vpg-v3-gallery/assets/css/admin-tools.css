@@ -1,0 +1,49 @@
+/* VPG v3 · admin-tools.css — Cluster 22 · Redaktions-Tools & Admin. */
+
+/* 0862 · wp-admin command palette */
+#vpg-adm-cmdk { position: fixed; inset: 0; z-index: 100000; background: rgba(11,11,11,.5); display: none; }
+#vpg-adm-cmdk.open { display: block; }
+#vpg-adm-cmdk .box { max-width: 560px; margin: 12vh auto 0; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+#vpg-adm-cmdk input { width: 100%; border: 0; border-bottom: 1px solid #E6E5E1; padding: 16px 18px; font-size: 16px; outline: none; }
+#vpg-adm-cmdk ul { list-style: none; margin: 0; padding: 6px; max-height: 50vh; overflow: auto; }
+#vpg-adm-cmdk li { padding: 9px 12px; border-radius: 5px; cursor: pointer; display: flex; gap: 10px; align-items: center; font-size: 13px; }
+#vpg-adm-cmdk li.sel, #vpg-adm-cmdk li:hover { background: #F4F3F0; }
+#vpg-adm-cmdk li .k { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #9C9A95; margin-left: auto; }
+
+/* 0863 · mobile admin pass — queue & report tables usable on a phone */
+@media (max-width: 782px) {
+  .wrap .widefat { display: block; overflow-x: auto; }
+  .vpg-adm-card { display: block; border: 1px solid #E6E5E1; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+}
+
+/* 0880 · queue-zero wellness — a calm empty state */
+.vpg-queue-zero { text-align: center; padding: 40px 20px; color: #6A6A6A; }
+.vpg-queue-zero b { display: block; font-size: 34px; color: #E5341F; margin-bottom: 8px; }
+
+/* 0878 · undo-window notice */
+.vpg-undo-note code { background: #fff; }
+
+/* 0879 · wp-admin dark mode (opt-in per user; class on <body>) */
+body.vpg-admin-dark,
+body.vpg-admin-dark #wpcontent,
+body.vpg-admin-dark #wpbody,
+body.vpg-admin-dark .wrap { background: #14130f !important; color: #E6E5E1 !important; }
+body.vpg-admin-dark .wrap h1,
+body.vpg-admin-dark .wrap h2,
+body.vpg-admin-dark .wrap h3,
+body.vpg-admin-dark label,
+body.vpg-admin-dark p,
+body.vpg-admin-dark td,
+body.vpg-admin-dark th { color: #E6E5E1 !important; }
+body.vpg-admin-dark .widefat,
+body.vpg-admin-dark .postbox,
+body.vpg-admin-dark .card { background: #1d1b16 !important; border-color: #33302a !important; }
+body.vpg-admin-dark .widefat td,
+body.vpg-admin-dark .widefat th { border-color: #33302a !important; }
+body.vpg-admin-dark input[type=text],
+body.vpg-admin-dark input[type=email],
+body.vpg-admin-dark input[type=url],
+body.vpg-admin-dark textarea,
+body.vpg-admin-dark select { background: #0f0e0b !important; color: #E6E5E1 !important; border-color: #403a32 !important; }
+body.vpg-admin-dark a { color: #E5341F; }
+body.vpg-admin-dark .striped > tbody > :nth-child(odd) { background: #1a1813 !important; }

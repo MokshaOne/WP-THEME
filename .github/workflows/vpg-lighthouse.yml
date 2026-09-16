@@ -1,0 +1,28 @@
+name: VPG · Lighthouse budget
+
+# Performance watchdog for the live site. Runs weekly and on demand;
+# fails when the budgets below regress, so slowdowns surface as a red run
+# instead of a slow site nobody noticed.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1' # Mondays 05:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Audit key pages
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            https://viennaphotogroup.com/
+            https://viennaphotogroup.com/join/
+            https://viennaphotogroup.com/locations/
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: .github/lighthouse/lighthouserc.json

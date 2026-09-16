@@ -1,0 +1,16 @@
+/*
+Theme Name: M1O v2 — raveenthiran
+Theme URI: https://raveenthiran.com
+Author: Nishuthan Raveenthiran
+Author URI: https://raveenthiran.com
+Description: M1O v2 — the master theme, evolved. Everything moksha1one learned (Obscura + Aurelius + VOID): a no-scroll singularity home, horizontal-scroll archives, vertical single pages, a real WebGL 3D layer on desktop, and a "Magic Control" panel to steer it. New in v2: a couture display face (Avoiste Laverta) on the largest headlines, a self-contained obsidian film-grain layer, hardened reduced-motion behaviour, and two free-build page templates — "Canvas" and "Blank Canvas" — for hand-coding pages straight in WordPress with no PHP file per idea. Shares the same content engine (nr_* CPTs, ACF fields, shortcodes, Theme Settings) so it installs alongside the siblings and you can switch freely. Obsidian canvas, gilt gold, Avoiste + Syne + JetBrains Mono, self-hosted. Self-built WebP / PWA / SMTP. Compatible with ACF Pro.
+Version: 2.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: raveenthiran
+Tags: photography, portfolio, dark, obsidian, gold, webgl, 3d, horizontal-scroll, magic, multipage, canvas
+*/
+
+/* All visual styles live in assets/css/theme.css */

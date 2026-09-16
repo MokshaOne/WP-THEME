@@ -1,0 +1,45 @@
+/* VPG v3 · mobile-extra.css — Cluster 16 · Mobile & PWA. */
+
+/* 0622 · iOS safe areas / notch */
+body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+.g-topbar, .vpg-thumbbar { padding-bottom: env(safe-area-inset-bottom); }
+
+/* 0629 · 16px inputs to stop iOS auto-zoom */
+@media (max-width: 640px) {
+  input:not([type=checkbox]):not([type=radio]), select, textarea, .g-input { font-size: 16px !important; }
+}
+
+/* 0611 / 0612 · thumb-zone bottom bar + one-hand mode */
+.vpg-thumbbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 700; display: none; background: var(--g-paper, #fff); border-top: 1px solid var(--g-line, #E6E5E1); justify-content: space-around; }
+.vpg-thumbbar a { flex: 1; text-align: center; padding: 12px 0; font: 700 11px/1.4 'Archivo', sans-serif; text-decoration: none; color: var(--g-ink, #0B0B0B); }
+@media (max-width: 640px) { .vpg-thumbbar { display: flex; } body { padding-bottom: 60px; } }
+html.vpg-onehand main { transform: scale(.92); transform-origin: bottom center; }
+
+/* 0628 · data tables become card stacks on mobile */
+@media (max-width: 640px) {
+  table.vpg-cardify, table.vpg-cardify thead, table.vpg-cardify tbody, table.vpg-cardify tr, table.vpg-cardify td { display: block; width: 100%; }
+  table.vpg-cardify thead { display: none; }
+  table.vpg-cardify tr { border: 1px solid var(--g-line, #E6E5E1); margin-bottom: 10px; padding: 8px; }
+  table.vpg-cardify td { border: 0; padding: 4px 0; }
+  table.vpg-cardify td::before { content: attr(data-label) " "; font-weight: 700; }
+}
+
+/* 0634 · landscape gallery uses full width */
+@media (orientation: landscape) and (max-width: 900px) {
+  .vpg-lb-img { max-height: 92vh; max-width: 98vw; }
+  .g-grid3 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* 0614 · data-saver hides decorative media */
+.vpg-datasaver .g-fig--decor, .vpg-datasaver [data-decor] { display: none; }
+
+/* 0631 · low-power: kill non-essential animation */
+html.vpg-lowpower *, html.vpg-lowpower *::before, html.vpg-lowpower *::after { animation: none !important; transition: none !important; }
+
+/* 0613 · dark-mode automatic (system) with manual override honoured elsewhere */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-vpg-theme="light"]) body { background: #0B0B0B; color: #E6E5E1; }
+}
+
+/* 0630 · remove tap delay */
+a, button, .g-btn, [role=button] { touch-action: manipulation; }

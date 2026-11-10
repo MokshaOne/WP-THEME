@@ -4,6 +4,30 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.7.0 — 2026-11-10 · Site Control, rebuilt
+
+The WordPress start screen (theme `raveenthiran-headless`) now speaks the live
+site's language and says what to do next. Frontend unchanged apart from the
+version in the footer. **Needs the new theme zip uploaded in WP → Themes.**
+
+- **Publish knows what is waiting.** The theme keeps a change log (projects,
+  journal posts, albums/services/series, Site settings) since the last
+  publish. Headline: "2 changes to publish" with the list, or "Everything is
+  live". The toolbar button shows the count. Deploy result (triggered / no
+  token / failed with the HTTP code) is the headline, not a notice.
+- **Work shows what is unfinished.** Each project as a frame with its real
+  featured image (cropped at its focal point) and a data sheet: year/place,
+  gallery count, homepage flag, SEO description. Missing pieces are flagged.
+- **Enquiries on the start screen.** Total, last 30 days, estimated pipeline,
+  split by session — the dashboard widget's numbers, which the redirect to
+  Site Control had made unreachable.
+- **Settings as eight cells**, one per tab, with status where it can be
+  checked (contact email, SMTP, deploy token, Turnstile). Replaces the
+  separate setup checklist; Turnstile is a new check.
+- **Look:** Anton / Archivo / Space Mono self-hosted in the theme (OFL), dark
+  canvas, one accent, no rounded corners. Rainbow tiles are gone.
+- Code: screen moved to `inc/site-control.php` + `assets/site-control.css`.
+
 ## 4.6.3 — 2026-11-10 · Honest with little content
 
 The live site holds two projects and no honors yet; this release makes that

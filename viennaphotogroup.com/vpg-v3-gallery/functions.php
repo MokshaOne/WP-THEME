@@ -23,10 +23,10 @@ require_once VPG_V2_DIR . '/inc/enqueue.php';
 require_once VPG_V2_DIR . '/inc/performance.php';     // WebP · lazy media · emoji removal
 require_once VPG_V2_DIR . '/inc/helpers.php';
 require_once VPG_V2_DIR . '/inc/cpts.php';
-require_once VPG_V2_DIR . '/inc/admin-columns.php';       // list columns · filters · at-a-glance
+if ( is_admin() ) require_once VPG_V2_DIR . '/inc/admin-columns.php';   // list columns · filters · at-a-glance (admin-only)
 require_once VPG_V2_DIR . '/inc/acf-fields.php';      // CPT field groups (ACF + native fallback)
 require_once VPG_V2_DIR . '/inc/customizer.php';
-require_once VPG_V2_DIR . '/inc/admin-panel.php';     // "Vienna Photo Group" admin hub
+if ( is_admin() ) require_once VPG_V2_DIR . '/inc/admin-panel.php';     // "Vienna Photo Group" admin hub (admin-only)
 require_once VPG_V2_DIR . '/inc/security.php';
 
 // ── Magazine workflow ───────────────────────────────────────
@@ -34,7 +34,7 @@ require_once VPG_V2_DIR . '/inc/magazine-editor.php';
 require_once VPG_V2_DIR . '/inc/pdf-generator.php';
 
 // ── One-click setup wizard (pages + menus + rewrites) ──────
-require_once VPG_V2_DIR . '/inc/setup-wizard.php';
+if ( is_admin() ) require_once VPG_V2_DIR . '/inc/setup-wizard.php';   // setup wizard + activation seeding (admin-only)
 
 // ── Phase-2 extensions ─────────────────────────────────────
 require_once VPG_V2_DIR . '/inc/submission-handler.php';   // /contact /join /submit POST handlers

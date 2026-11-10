@@ -1,11 +1,7 @@
 /* Site Control — wp-admin start screen. Speaks the live site's language:
    Anton / Archivo / Space Mono, #0B0B0B canvas, #F4F2ED ink, one accent.
-   Spacing only from 8 / 16 / 24 / 32 / 48 / 64 / 96. No radii, no shadows. */
-
-@font-face { font-family: "Anton"; src: url(../fonts/anton-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Archivo"; src: url(../fonts/archivo-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Space Mono"; src: url(../fonts/space-mono-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Space Mono"; src: url(../fonts/space-mono-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+   Spacing only from 8 / 16 / 24 / 32 / 48 / 64 / 96. No radii, no shadows.
+   Fonts are declared in admin.css, which always loads first. */
 
 /* ── Page shell: take over the content area of this one screen ── */
 body.toplevel_page_site-control,

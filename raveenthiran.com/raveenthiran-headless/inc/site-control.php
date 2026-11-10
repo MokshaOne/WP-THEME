@@ -360,6 +360,7 @@ function rvn_site_control_page() {
 				<a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>">Plugins</a>
 				<a href="<?php echo esc_url( admin_url( 'users.php' ) ); ?>">Users</a>
 				<a href="<?php echo esc_url( admin_url( 'tools.php' ) ); ?>">Tools</a>
+				<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>">Updates</a>
 				<a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">WP Settings</a>
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=acf-field-group' ) ); ?>">Fields (ACF)</a>
 			</nav>

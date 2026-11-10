@@ -272,11 +272,9 @@ add_action( 'wp_head', function () {
 	if ( is_admin_bar_showing() ) { echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{color:#ffd76e!important;font-weight:600}</style>'; }
 } );
 
-/* ── Redesign WP Admin — icon-only sidebar + Site Control as the start screen ── */
-// Collapse the admin menu to icons by default (native folded look, with fly-out submenus).
-add_filter( 'admin_body_class', function ( $classes ) {
-	return trim( $classes . ' folded' );
-} );
+/* ── Site Control as the start screen ── */
+// The sidebar keeps its labels (it used to be forced to icons-only): with the
+// skin in inc/admin-skin.php the menu is short enough to read at a glance.
 // The default Dashboard becomes the Site Control tile board — only for users
 // who can actually open it; anyone else keeps the stock dashboard.
 add_action( 'load-index.php', function () {
@@ -308,8 +306,8 @@ add_action( 'acf/init', function () {
 /* Branded styles + self-hosted fonts for the Site Control page only. */
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
 	if ( $hook !== 'toplevel_page_site-control' ) { return; }
-	wp_enqueue_style( 'rvn-site-control', get_template_directory_uri() . '/assets/site-control.css', array(), wp_get_theme()->get( 'Version' ) );
-} );
+	wp_enqueue_style( 'rvn-site-control', get_template_directory_uri() . '/assets/site-control.css', array( 'rvn-admin' ), wp_get_theme()->get( 'Version' ) );
+}, 10000 );
 
 /** GitHub deploy token — wp-config constant wins, else the Site settings field. */
 function rvn_gh_token() {
@@ -359,6 +357,9 @@ add_action( 'admin_post_rvn_publish', function () {
 /* The Site Control screen itself (markup, change log, enquiry stats) lives in
    inc/site-control.php; its styles in assets/site-control.css. */
 require_once get_template_directory() . '/inc/site-control.php';
+
+/* The skin for the rest of the panel: menu, toolbar, lists, forms, ACF, login. */
+require_once get_template_directory() . '/inc/admin-skin.php';
 
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'rvn/v1', '/site', array(

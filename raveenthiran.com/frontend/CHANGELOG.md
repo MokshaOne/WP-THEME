@@ -4,6 +4,27 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.8.0 — 2026-11-11 · The whole panel
+
+The skin from Site Control now covers the rest of wp-admin. Frontend unchanged
+apart from the footer version. **Needs the new theme zip uploaded in WP → Themes.**
+
+- **Dark skin everywhere:** sidebar, toolbar, list tables, forms, buttons,
+  notices, meta boxes, ACF fields (tabs, repeaters, switches), media, login.
+  Same palette and type as the live site; no rounded corners.
+- **How:** `assets/admin-dark.css` is generated — every colour in the stock
+  admin + ACF stylesheets remapped onto the site palette
+  (`tools/build-admin-dark.py`; re-run after a major WordPress/ACF update).
+  `assets/admin.css` is the hand-written layer on top.
+- **Leaner menu:** Site Control, Work, Journal (was "Posts"), Media first;
+  Dashboard and Comments removed (Dashboard already redirected; the static
+  site has no comments). Updates moved to Site Control → WordPress.
+- **Sidebar shows its labels again** instead of being forced to icons-only.
+- **Toolbar:** WordPress logo and comments bubble removed.
+- **Login:** wordmark instead of the WordPress logo, same skin.
+- Admin colour schemes are pinned to the default (the skin replaces them).
+- **Not skinned on purpose:** the block editor. It keeps the stock look.
+
 ## 4.7.0 — 2026-11-10 · Site Control, rebuilt
 
 The WordPress start screen (theme `raveenthiran-headless`) now speaks the live

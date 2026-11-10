@@ -177,8 +177,14 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 	</a>
 	<div class="whois__body">
 		<div class="sec__hint">{hasRecog ? '06' : '05'} — THE PHOTOGRAPHER</div>
-		<p class="whois__line">{site.studio.lede || 'Nishuthan Raveenthiran — portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.'}</p>
-		<a class="chipline" href="/about/">ABOUT THE STUDIO →</a>
+		<h2 class="whois__name">NISHUTHAN<br />RAVEENTHIRAN</h2>
+		<p class="whois__line">{site.studio.lede || 'Portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.'}</p>
+		{site.studio.spec.length > 0 && (
+			<dl class="whois__spec">
+				{site.studio.spec.slice(0, 4).map((r) => <div><dt>{up(r.label)}</dt><dd>{up(r.value)}</dd></div>)}
+			</dl>
+		)}
+		<a class="btn" href="/about/">About the studio</a>
 	</div>
 </section>
 

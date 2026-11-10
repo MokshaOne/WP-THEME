@@ -311,16 +311,16 @@ export function initFX(opts = {}) {
 	/* EU cookie notice (dismissal remembered) */
 	if (!localStorage.getItem('rvn-cookie-ok')) {
 		const cb = document.createElement('div');
-		cb.style.cssText = "position:fixed;left:28px;right:28px;bottom:24px;z-index:10004;background:#1a1815;border:1px solid #3a372f;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 24px;font-family:'Archivo',sans-serif;transform:translateY(140%);transition:transform .7s " + ease;
+		cb.style.cssText = "position:fixed;left:clamp(12px,2vw,28px);right:clamp(12px,2vw,28px);bottom:clamp(12px,2vw,24px);z-index:10004;background:#1a1815;border:1px solid #3a372f;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:18px clamp(16px,2vw,24px);font-family:'Archivo',sans-serif;transform:translateY(140%);transition:transform .7s " + ease;
 		const txt = document.createElement('div');
-		txt.style.cssText = 'font-size:11px;letter-spacing:.06em;line-height:1.6;color:#b5aea1;max-width:640px';
+		txt.style.cssText = 'flex:1 1 260px;font-size:11px;letter-spacing:.06em;line-height:1.6;color:#b5aea1;max-width:640px';
 		txt.innerHTML = '<span style="letter-spacing:.2em;color:#efece6;font-weight:600">COOKIES.</span> This site uses only technically necessary cookies. Analytics and embeds load after your consent — see <a href="/legal/datenschutz/" style="text-decoration:underline">Datenschutz</a>.';
 		const row = document.createElement('div');
-		row.style.cssText = 'display:flex;gap:12px;flex:0 0 auto';
+		row.style.cssText = 'display:flex;gap:12px;flex:0 1 auto;flex-wrap:wrap';
 		const mk = (label, primary) => {
 			const b = document.createElement('button');
 			b.textContent = label;
-			b.style.cssText = "font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.18em;font-weight:700;padding:12px 20px;cursor:pointer;" + (primary ? 'background:#efece6;color:#121110;border:none' : 'background:none;color:#8a847a;border:1px solid #3a372f');
+			b.style.cssText = "font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.18em;font-weight:700;min-height:44px;padding:12px 20px;flex:1 1 auto;cursor:pointer;" + (primary ? 'background:#efece6;color:#121110;border:1px solid #efece6' : 'background:none;color:#b5aea1;border:1px solid #3a372f');
 			b.addEventListener('click', () => { localStorage.setItem('rvn-cookie-ok', primary ? 'all' : 'necessary'); cb.style.transform = 'translateY(140%)'; setTimeout(() => cb.remove(), 700); });
 			return b;
 		};

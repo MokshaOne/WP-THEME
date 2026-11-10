@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getProjects, getProject } from '../../lib/wp';
+import { getProjects, getProject, getSite } from '../../lib/wp';
 
 export async function getStaticPaths() {
 	const projects = await getProjects();
@@ -33,6 +33,14 @@ const meta = ([
 	['LOCATION', p.location],
 	['SERVICES', p.services.join(' · ')],
 ] as [string, string][]).filter(([, v]) => v);
+
+// Booking bridge: the enquiry calculator opens on the session that matches this
+// project's album (when the studio offers one) and carries the project along as
+// the visual reference.
+const site = await getSite();
+const session = site.pricing.sessions.find((s) => p.category && s.name.toLowerCase().includes(p.category.toLowerCase()));
+const bookHref = `/enquire/?${session ? `session=${encodeURIComponent(p.category.toLowerCase())}&` : ''}ref=${encodeURIComponent(p.slug)}`;
+const bookLabel = session ? `BOOK A ${up(p.category)} SESSION` : 'START A COMMISSION';
 
 const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0 }];
 
@@ -96,10 +104,9 @@ const breadcrumbLd = {
 				</h1>
 			</div>
 			{meta.length > 0 && (
-				<div class="meta-row" data-intro>
-					{meta.map(([k]) => <span class="k">{k}</span>)}
-					{meta.map(([, v]) => <span>{v}</span>)}
-				</div>
+				<dl class="meta-row" data-intro>
+					{meta.map(([k, v]) => <div><dt class="k">{k}</dt><dd>{v}</dd></div>)}
+				</dl>
 			)}
 		</div>
 		<div class="proj-hero__right" data-intro>
@@ -109,15 +116,22 @@ const breadcrumbLd = {
 
 	<!-- GALLERY RAIL -->
 	<section class="proj-gallery">
-		<div class="rail" data-drag>
+		<div class="rail" data-drag data-rail tabindex="0" aria-label={`${p.title} — gallery, ${gallery.length} frames`}>
 			{gallery.map((g, i) => (
 				<div class="card">
 					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} /></div>
-					<div class="cap"><span class="n">{String(i + 1).padStart(2, '0')}</span><span>{up(p.title)}</span></div>
+					<div class="cap"><span class="n">{String(i + 1).padStart(2, '0')}</span><span class="c">/ {String(gallery.length).padStart(2, '0')}</span></div>
 				</div>
 			))}
 		</div>
-		<div class="wrap" style="padding-top:24px;font-size:11px;letter-spacing:0.2em;color:var(--faint)">SCROLL SIDEWAYS ——→</div>
+		<div class="rail-nav">
+			<span class="rail-nav__hint">DRAG, SCROLL OR USE THE ARROWS — CLICK A FRAME TO OPEN IT</span>
+			<div class="slide-nav" data-rail-nav>
+				<button class="rbtn" data-rail-prev aria-label="Previous frame">←</button>
+				<span class="slide-count"><span data-rail-count>01</span><span class="of"> / {String(gallery.length).padStart(2, '0')}</span></span>
+				<button class="rbtn" data-rail-next aria-label="Next frame">→</button>
+			</div>
+		</div>
 	</section>
 
 	<!-- STATEMENT + CREDITS -->
@@ -136,6 +150,16 @@ const breadcrumbLd = {
 				<><span class="k">WEBSITE</span><span><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
 			)}
 		</div>
+	</section>
+
+	<!-- BOOKING BRIDGE — from looking to asking, with this project as the reference -->
+	<section class="booklike" data-reveal>
+		<div>
+			<div class="sec__hint">COMMISSION</div>
+			<p class="booklike__t">WANT FRAMES LIKE THESE?</p>
+			<p class="booklike__p">The calculator opens with this project attached as your reference — you get an orientation figure now and a written offer within 24 hours.</p>
+		</div>
+		<a class="btn btn--solid" href={bookHref}>{bookLabel} →</a>
 	</section>
 
 	<!-- FROM THE SERIES — the other frames that belong to this series -->

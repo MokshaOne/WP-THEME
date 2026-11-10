@@ -4,6 +4,30 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.9.0 — 2026-11-11 · From looking to asking (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed.
+
+- **Booking bridge.** Every project ends with "Want frames like these?". The
+  button opens the calculator on the matching session (`?session=portrait`)
+  with the project attached as reference (`?ref=<slug>`). The reference shows
+  as a removable chip and travels inside the enquiry message, so it reaches
+  the stored enquiry and both mails without a backend change.
+- **Enquiry draft.** Configuration and typed details survive a reload or a
+  detour to a project page (this tab only, sessionStorage). Cleared on send.
+- **Preferred date** opens the native date picker; no past dates.
+- **Gallery rail controls.** Arrow buttons, a frame counter (03 / 05) and
+  left/right keys; captions count frames instead of repeating the title.
+- **Fixed:** project meta labels sat above the wrong values when a project
+  has no client; cookie notice was squeezed and cut off on phones.
+- **Small archive:** with one or two projects the Work grid uses the full
+  width instead of leaving a third column empty.
+- **Home:** the photographer block carries the name, focus/base/since and a
+  real button; Recognition rows run the full width; the hero sub-copy is
+  readable over bright frames.
+- **Enquiry FAQ** gets a heading and lines up with the page gutter.
+- **Contrast:** secondary greys raised so small labels pass 4.5:1.
+
 ## 4.8.0 — 2026-11-10 · The whole panel
 
 The skin from Site Control now covers the rest of wp-admin. Frontend unchanged

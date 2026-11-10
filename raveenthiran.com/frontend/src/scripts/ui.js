@@ -31,6 +31,7 @@ function boot() {
 	initQuotes();
 	initFilter();
 	initEnquire();
+	initRail();
 }
 
 /* ── mobile overlay menu ─────────────────────────────────────────────────── */
@@ -316,7 +317,78 @@ function initEnquire() {
 	} else if (preset === 'private') {
 		sel = 0; usage = 'private';
 	}
+
+	// /enquire/?session=portrait&ref=<project-slug> — arriving from a project
+	// page: open on the matching session and attach the project as reference.
+	// The title comes from the build-time slug map, never from the URL.
+	const qs = new URLSearchParams(location.search);
+	const want = (qs.get('session') || '').toLowerCase();
+	if (want) {
+		const k = svcs.findIndex((b) => (b.dataset.name || '').toLowerCase().includes(want));
+		if (k >= 0) { sel = k; }
+	}
+	let refs = {};
+	try { refs = JSON.parse(document.getElementById('enquire-refs')?.textContent || '{}'); } catch (e) {}
+	const refBox = root.querySelector('[data-ref]');
+	const setRef = (slug) => {
+		const title = slug && Object.prototype.hasOwnProperty.call(refs, slug) ? refs[slug] : '';
+		root.dataset.refSlug = title ? slug : '';
+		root.dataset.refTitle = title;
+		if (!refBox) return;
+		refBox.hidden = !title;
+		const a = refBox.querySelector('[data-ref-link]');
+		if (a && title) { a.textContent = title.toUpperCase(); a.setAttribute('href', '/work/' + encodeURIComponent(slug) + '/'); }
+	};
+	const onRefClear = () => { setRef(''); save(); };
+	refBox?.querySelector('[data-ref-clear]')?.addEventListener('click', onRefClear);
+
+	// Draft: the configuration and the typed details survive a reload or a trip
+	// to a project page and back (this tab only — sessionStorage, nothing leaves
+	// the browser). An explicit ?for / ?session / ?ref link wins over the draft.
+	const form0 = root.querySelector('form');
+	const KEY = 'rvn-enquiry-draft';
+	const fieldNames = ['name', 'email', 'date', 'location', 'message'];
+	const save = () => {
+		try {
+			const f = {};
+			fieldNames.forEach((n) => { f[n] = form0?.elements[n]?.value || ''; });
+			sessionStorage.setItem(KEY, JSON.stringify({
+				sel, extra, usage, km: kmInput?.value || '0', ref: root.dataset.refSlug || '',
+				addons: addonBtns.filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.label), f,
+			}));
+		} catch (e) {}
+	};
+	let draft = null;
+	try { draft = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+	const linked = preset || want || qs.get('ref');
+	if (draft) {
+		if (!linked) {
+			if (draft.sel >= 0 && draft.sel < svcs.length) { sel = draft.sel; }
+			extra = Math.max(0, Math.min(8, Number(draft.extra) || 0));
+			if (['tfp', 'private', 'commercial'].includes(draft.usage)) { usage = draft.usage; }
+			if (kmInput) { kmInput.value = String(Math.max(0, Math.min(2000, Number(draft.km) || 0))); }
+			addonBtns.forEach((b) => b.setAttribute('aria-pressed', String((draft.addons || []).includes(b.dataset.label))));
+		}
+		fieldNames.forEach((n) => { const el = form0?.elements[n]; if (el && draft.f && typeof draft.f[n] === 'string') { el.value = draft.f[n]; } });
+	}
+	setRef(qs.get('ref') || (draft && !linked ? draft.ref : '') || '');
 	render();
+	const onDraft = () => save();
+	root.addEventListener('click', onDraft);
+	root.addEventListener('input', onDraft);
+	pageCleanups.push(() => { root.removeEventListener('click', onDraft); root.removeEventListener('input', onDraft); });
+
+	// Preferred date: a plain field until it is used, then the native date picker
+	// (keeps the placeholder readable; no past dates).
+	const dateEl = root.querySelector('[data-date]');
+	if (dateEl) {
+		const toDate = () => { dateEl.type = 'date'; dateEl.min = new Date().toISOString().slice(0, 10); try { dateEl.showPicker && dateEl.showPicker(); } catch (e) {} };
+		const toText = () => { if (!dateEl.value) { dateEl.type = 'text'; } };
+		if (/^\d{4}-\d{2}-\d{2}$/.test(dateEl.value)) { dateEl.type = 'date'; }
+		dateEl.addEventListener('focus', toDate);
+		dateEl.addEventListener('blur', toText);
+		pageCleanups.push(() => { dateEl.removeEventListener('focus', toDate); dateEl.removeEventListener('blur', toText); });
+	}
 
 	const form = root.querySelector('form');
 	if (form) {
@@ -331,6 +403,12 @@ function initEnquire() {
 			fd.set('km', root.dataset.selKm || '0');
 			fd.set('usage', root.dataset.selUsage || 'private');
 			fd.set('estimate', root.dataset.selTotal || '');
+			// The reference project travels inside the message, so it reaches the
+			// stored enquiry and both mails without a backend change.
+			const refLine = root.dataset.refTitle
+				? 'Reference: ' + root.dataset.refTitle + ' — ' + location.origin + '/work/' + root.dataset.refSlug + '/\n\n'
+				: '';
+			fd.set('message', refLine + (fd.get('message') || ''));
 			const btn = form.querySelector('[type="submit"]');
 			btn && (btn.disabled = true);
 			if (msg) { msg.className = 'est__msg'; msg.textContent = 'Sending…'; }
@@ -340,6 +418,8 @@ function initEnquire() {
 				if (!res.ok) throw new Error('HTTP ' + res.status);
 				if (msg) { msg.className = 'est__msg ok'; msg.textContent = 'Sent. You will have a written offer within 24 hours.'; }
 				form.reset();
+				try { sessionStorage.removeItem('rvn-enquiry-draft'); } catch (e) {}
+				setRef('');
 			} catch (err) {
 				// graceful fallback to a prefilled mail draft
 				const to = form.dataset.mailto || 'hello@raveenthiran.com';
@@ -391,4 +471,58 @@ if ('serviceWorker' in navigator) {
 }
 if (typeof caches !== 'undefined' && caches.keys) {
 	caches.keys().then((ks) => ks.forEach((k) => caches.delete(k))).catch(() => {});
+}
+
+/* ── project gallery rail: arrows, frame counter, keyboard ───────────────── */
+function initRail() {
+	const rail = document.querySelector('[data-rail]');
+	const nav = document.querySelector('[data-rail-nav]');
+	if (!rail || !nav) return;
+	const cards = [...rail.querySelectorAll('.card')];
+	const prev = nav.querySelector('[data-rail-prev]');
+	const next = nav.querySelector('[data-rail-next]');
+	const count = nav.querySelector('[data-rail-count]');
+	const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const pad = () => parseFloat(getComputedStyle(rail).paddingLeft) || 0;
+	// The current frame is the one whose left edge is closest to the rail's inset.
+	const current = () => {
+		const x = rail.scrollLeft + pad();
+		let best = 0, dist = Infinity;
+		cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - x); if (d < dist) { dist = d; best = i; } });
+		return best;
+	};
+	const go = (i) => {
+		const c = cards[Math.max(0, Math.min(cards.length - 1, i))];
+		c && rail.scrollTo({ left: c.offsetLeft - pad(), behavior: calm ? 'auto' : 'smooth' });
+	};
+	const sync = () => {
+		const max = rail.scrollWidth - rail.clientWidth;
+		const end = rail.scrollLeft >= max - 2;
+		const i = end ? cards.length - 1 : current();
+		count && (count.textContent = String(i + 1).padStart(2, '0'));
+		prev && (prev.disabled = rail.scrollLeft <= 2);
+		next && (next.disabled = end);
+		nav.hidden = max <= 2;
+	};
+	const onPrev = () => go(current() - 1);
+	const onNext = () => go(current() + 1);
+	const onKey = (e) => {
+		if (e.key === 'ArrowRight') { e.preventDefault(); onNext(); }
+		else if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev(); }
+	};
+	prev?.addEventListener('click', onPrev);
+	next?.addEventListener('click', onNext);
+	rail.addEventListener('keydown', onKey);
+	rail.addEventListener('scroll', sync, { passive: true });
+	window.addEventListener('resize', sync);
+	window.addEventListener('load', sync);
+	sync();
+	pageCleanups.push(() => {
+		prev?.removeEventListener('click', onPrev);
+		next?.removeEventListener('click', onNext);
+		rail.removeEventListener('keydown', onKey);
+		rail.removeEventListener('scroll', sync);
+		window.removeEventListener('resize', sync);
+		window.removeEventListener('load', sync);
+	});
 }

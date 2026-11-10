@@ -1,10 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getSite } from '../lib/wp';
+import { getSite, getProjects } from '../lib/wp';
 
 const site = await getSite();
 const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 const turnstile = site.security.turnstile_site;
+// slug → title, so /enquire/?ref=<slug> can name the reference project without
+// trusting any text from the URL.
+const refs = Object.fromEntries((await getProjects()).map((p) => [p.slug, p.title]));
 
 // The calculator follows the studio's real pricing model: there is no price
 // list — session type × duration × distance from Vienna + add-ons define the
@@ -100,11 +103,16 @@ const faqSchema = site.faq.length ? {
 			<p class="usage__note">TFP — time for print: a collaborative shoot, both sides keep the frames, no fee. Offered at my discretion; tell me your idea below.</p>
 
 			<p class="enq__step mt">06 — DETAILS</p>
+			<p class="enq__ref" data-ref hidden>
+				<span class="enq__ref-k">REFERENCE</span>
+				<a data-ref-link href="/work/"></a>
+				<button type="button" data-ref-clear aria-label="Remove the reference project">×</button>
+			</p>
 			<form action={endpoint} method="POST" data-mailto={site.contact.email}>
 				<div class="fields">
 					<input name="name" placeholder="Name" aria-label="Name" required autocomplete="name" />
 					<input name="email" type="email" placeholder="Email" aria-label="Email" required autocomplete="email" />
-					<input name="date" placeholder="Preferred date" aria-label="Preferred date" />
+					<input name="date" placeholder="Preferred date" aria-label="Preferred date" data-date />
 					<input name="location" placeholder="Location" aria-label="Location" />
 				</div>
 				<textarea name="message" placeholder="Tell me about the shoot…" aria-label="About the shoot" rows="4"></textarea>
@@ -164,9 +172,11 @@ const faqSchema = site.faq.length ? {
 		</div>
 	</section>
 
+	<script type="application/json" id="enquire-refs" set:html={JSON.stringify(refs)} is:inline />
 	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />}
 	{site.faq.length > 0 && (
 		<section class="faq">
+			<div class="faq__head"><div class="sec__hint">QUESTIONS</div><h2>BEFORE YOU ASK</h2></div>
 			{site.faq.map((f) => (
 				<details class="faq__item">
 					<summary class="faq__q">{f.q}<span class="pm" aria-hidden="true">+</span></summary>

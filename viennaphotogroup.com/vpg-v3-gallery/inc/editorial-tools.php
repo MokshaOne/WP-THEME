@@ -243,17 +243,6 @@ add_action( 'init', function () {
 } );
 
 /* ================================================================
- * 0876 · Viennese holidays pause SLA clocks (helper other desks can use)
- * ================================================================ */
-function vpg_is_holiday( $ts = null ) {
-    $ts  = $ts ?: time();
-    $md  = wp_date( 'm-d', $ts );
-    $fixed = [ '01-01', '01-06', '05-01', '08-15', '10-26', '11-01', '12-08', '12-25', '12-26' ]; // AT public holidays (fixed-date subset)
-    $extra = (array) get_option( 'vpg_holidays', [] ); // movable feasts / editorial closures, admin-set as Y-m-d
-    return in_array( $md, $fixed, true ) || in_array( wp_date( 'Y-m-d', $ts ), $extra, true );
-}
-
-/* ================================================================
  * 0855 · curator role — curate without deleting
  * ================================================================ */
 add_action( 'after_switch_theme', function () {

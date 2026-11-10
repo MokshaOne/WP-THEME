@@ -49,14 +49,11 @@ add_action( 'wp_body_open', function () {
        . '</nav>';
 }, 1 );
 
-/* ---- 0753 · locale-aware date · 0754 · locale-aware number (thin, honest wrappers) ---- */
+/* ---- 0753 · locale-aware date (number formatting uses WP's number_format_i18n directly) ---- */
 function vpg_i18n_date( $ts, $fmt = '' ) {
     $ts  = is_numeric( $ts ) ? (int) $ts : strtotime( (string) $ts );
     $fmt = $fmt ?: ( get_option( 'date_format' ) ?: 'j. F Y' );
     return function_exists( 'wp_date' ) ? wp_date( $fmt, $ts ) : date_i18n( $fmt, $ts );
-}
-function vpg_i18n_num( $n, $dec = 0 ) {
-    return number_format_i18n( (float) $n, (int) $dec );
 }
 
 /* ================================================================

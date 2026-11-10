@@ -9,8 +9,8 @@
  *   vpg_ai_text() pluggable text model (0890/0891/0892/0900/0903/0907) w/ opt-out
  *   0917 bundled inference queue · 0914 per-member ML opt-out · 0916 AI label
  *   0893 readability · 0896 local Bayesian spam · 0883 rotation dedup
- *   0898 offline district fallback · 0889 EXIF anomaly · 0895 broken-link bot
- *   0905 natural-language map query · 0906/0902/0911/0897 heuristics · 0884 blur hint
+ *   0889 EXIF anomaly · 0895 broken-link bot
+ *   0905 natural-language map query · 0906/0911 heuristics · 0884 blur hint
  *   0913/0915/0918/0919/0920 transparency page + ethics charter · AI desk
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -188,25 +188,6 @@ add_action( 'add_attachment', function ( $aid ) {
 }, 20 );
 
 /* ================================================================
- * 0898 · offline district fallback — nearest Bezirk centroid (approx.)
- * ================================================================ */
-function vpg_district_offline( $lat, $lng ) {
-    // Approximate centroids of Vienna's 23 districts (lat, lng). Offline fallback
-    // when Nominatim is unreachable — good enough to pre-fill, editor confirms.
-    $c = [
-        1=>[48.2093,16.3705],2=>[48.2167,16.3958],3=>[48.1957,16.3940],4=>[48.1917,16.3720],
-        5=>[48.1870,16.3600],6=>[48.1957,16.3490],7=>[48.2030,16.3480],8=>[48.2110,16.3470],
-        9=>[48.2250,16.3560],10=>[48.1620,16.3820],11=>[48.1730,16.4300],12=>[48.1740,16.3330],
-        13=>[48.1790,16.2660],14=>[48.2130,16.2660],15=>[48.1940,16.3300],16=>[48.2110,16.3130],
-        17=>[48.2320,16.3300],18=>[48.2330,16.3360],19=>[48.2560,16.3390],20=>[48.2400,16.3760],
-        21=>[48.2760,16.4010],22=>[48.2340,16.4770],23=>[48.1400,16.3000],
-    ];
-    $best = 0; $bd = INF;
-    foreach ( $c as $d => $p ) { $dist = ( $lat - $p[0] ) ** 2 + ( $lng - $p[1] ) ** 2; if ( $dist < $bd ) { $bd = $dist; $best = $d; } }
-    return $best ? sprintf( '1%02d0', $best ) : ''; // Vienna postcode form 1DD0
-}
-
-/* ================================================================
  * 0889 · EXIF anomaly — a future/absurd timestamp, asked kindly
  * ================================================================ */
 add_action( 'add_attachment', function ( $aid ) {
@@ -289,19 +270,6 @@ add_action( 'add_attachment', function ( $aid ) {
     set_transient( $k, $n, HOUR_IN_SECONDS );
     if ( 30 === $n && function_exists( 'vpg_mod_log' ) ) vpg_mod_log( 'anomaly_upload_spike', '30+ uploads in an hour', $uid );
 } );
-/** 0897 · similar-pin warning by title trigram overlap (offline, semantic-ish). */
-function vpg_similar_pins( $title, $exclude = 0 ) {
-    $tri = fn( $s ) => array_unique( array_map( fn( $i ) => mb_substr( $s, $i, 3 ), range( 0, max( 0, mb_strlen( $s ) - 3 ) ) ) );
-    $a = $tri( mb_strtolower( $title ) ); if ( count( $a ) < 2 ) return [];
-    $hits = [];
-    foreach ( get_posts( [ 'post_type' => 'vpg_location', 'post_status' => 'publish', 'numberposts' => 200, 'exclude' => [ $exclude ] ] ) as $p ) {
-        $b = $tri( mb_strtolower( $p->post_title ) );
-        $sim = $b ? count( array_intersect( $a, $b ) ) / count( array_unique( array_merge( $a, $b ) ) ) : 0;
-        if ( $sim > 0.5 ) $hits[] = [ 'id' => $p->ID, 'title' => $p->post_title, 'sim' => round( $sim, 2 ) ];
-    }
-    return $hits;
-}
-
 /* ================================================================
  * 0884 · client-side blur hint on the submit form
  * ================================================================ */

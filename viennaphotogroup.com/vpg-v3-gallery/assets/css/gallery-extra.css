@@ -1,0 +1,46 @@
+/* VPG v3 · gallery-extra.css — Cluster 08 · Galerie & Präsentation. */
+
+/* 0296 · Ken Burns — gentle drift on the lightbox image, toggleable */
+@keyframes vpgKB { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.12) translate(-2%, -2%); } }
+.vpg-lb-img.vpg-kb { animation: vpgKB 12s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .vpg-lb-img.vpg-kb { animation: none; } }
+
+/* 0292 · portrait respect — don't crop tall images in member/wall grids */
+.vpg-portrait-safe .g-fig,
+.vpg-portrait-safe figure { aspect-ratio: auto !important; }
+.vpg-portrait-safe img { height: auto !important; object-fit: contain !important; }
+
+/* 0303 · dark gallery — museum hall for gallery pages */
+body.vpg-dark-gallery { background: #0B0B0B; color: #E6E5E1; }
+body.vpg-dark-gallery .g-fig, body.vpg-dark-gallery figure { background: #050505; }
+body.vpg-dark-gallery a { color: #E6E5E1; }
+
+/* 0306 / 0307 · diptych & triptych blocks */
+.vpg-diptych { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 24px 0; }
+.vpg-triptych { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin: 24px 0; }
+.vpg-diptych img, .vpg-triptych img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 3/4; }
+@media (max-width: 640px) { .vpg-triptych { grid-template-columns: 1fr; } .vpg-diptych { grid-template-columns: 1fr; } }
+
+/* 0293 · panorama scroller for very wide images inline */
+.vpg-pano { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 24px 0; }
+.vpg-pano img { height: 60vh; max-height: 520px; width: auto; max-width: none; display: block; }
+
+/* 0309 · print view — how it looks framed on a wall */
+.vpg-framed { background: #EDECE8; padding: 6% 6% 9%; display: inline-block; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
+.vpg-framed .mat { background: #fff; padding: 7%; border: 1px solid #ddd; }
+.vpg-framed img { display: block; width: 100%; }
+
+/* 0297 · credit overlay — quiet, appears on hover, never blocks the image */
+.vpg-credited { position: relative; }
+.vpg-credited .vpg-credit { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 10px; font: 700 10px/1.3 'Archivo', sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.55)); opacity: 0; transition: opacity .25s; pointer-events: none; }
+.vpg-credited:hover .vpg-credit, .vpg-credited:focus-within .vpg-credit { opacity: 1; }
+
+/* 0298 · subtle opt-in watermark for display */
+.vpg-wm { position: relative; }
+.vpg-wm::after { content: attr(data-wm); position: absolute; right: 8px; bottom: 8px; font: 700 10px/1 'Archivo', sans-serif; letter-spacing: .1em; color: rgba(255,255,255,.6); text-shadow: 0 1px 2px rgba(0,0,0,.5); pointer-events: none; }
+
+/* 0313 · exposure playground */
+.vpg-expo { border: 1px solid var(--g-line, #E6E5E1); padding: 16px; margin: 20px 0; }
+.vpg-expo label { display: block; font: 700 11px/1.6 'Archivo', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--g-mid, #6A6A6A); }
+.vpg-expo input[type=range] { width: 100%; accent-color: var(--g-red, #E5341F); }
+.vpg-expo .read { font-weight: 700; }

@@ -1,0 +1,53 @@
+/*
+Theme Name: Latent
+Theme URI: https://raveenthiran.com
+Author: Nishuthan Raveenthiran
+Author URI: https://raveenthiran.com
+Description: Latent — a modern block (Full Site Editing) theme for a photographer's portfolio. Obsidian canvas, gilt-gold accents, an editorial serif display. Everything — templates, header, footer, colours and type — is edited visually in the WordPress Site Editor: no page builder, no ACF. Fresh, minimal content engine: a single "Work" post type for the portfolio, native blocks for everything else.
+Requires at least: 6.5
+Tested up to: 6.7
+Requires PHP: 8.0
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: latent
+Tags: full-site-editing, block-patterns, photography, portfolio, dark, one-column, custom-colors, editor-style, featured-images, blog, translation-ready
+*/
+
+/*
+ * Block themes get almost all of their styling from theme.json.
+ * This file is the theme header (required) plus a few small enhancements
+ * that are awkward to express in theme.json.
+ */
+
+/* Smooth in-page anchor scrolling, disabled for reduced-motion visitors. */
+@media (prefers-reduced-motion: no-preference) {
+	html { scroll-behavior: smooth; }
+}
+
+/* Subtle obsidian film-grain over the whole site (static SVG noise, no asset). */
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 9998;
+	pointer-events: none;
+	opacity: 0.035;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Gilt-hairline underline that grows on hover for text links in content. */
+.wp-block-post-content a:not(.wp-element-button),
+.wp-block-post-excerpt a {
+	text-underline-offset: 0.2em;
+	text-decoration-thickness: 1px;
+}
+
+/* Portfolio cards: quiet zoom on hover. */
+.latent-card img { transition: transform 0.8s cubic-bezier(.22,.61,.2,1); }
+.latent-card:hover img { transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+	.latent-card img { transition: none; }
+}

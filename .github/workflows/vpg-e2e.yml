@@ -1,0 +1,33 @@
+name: VPG · E2E smoke
+
+# Manual click-check after a staging deploy: join → dashboard → submit gate.
+# Point it at STAGING — every run creates a throwaway member on the target.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Target site (staging!)'
+        required: true
+        default: 'https://staging.viennaphotogroup.com'
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm i -D @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Run journey
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: npx playwright test tests/e2e --reporter=list

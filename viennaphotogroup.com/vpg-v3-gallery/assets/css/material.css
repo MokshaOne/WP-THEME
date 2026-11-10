@@ -1,0 +1,142 @@
+/* ══════════════════════════════════════════════════════════════════════
+ * VPG v3 · material.css — a Material-leaning friendliness layer.
+ *
+ * Keeps the brand (Archivo, the single red accent, the restrained palette)
+ * but softens the "museum" austerity toward Material: rounded shapes, gentle
+ * elevation, tonal state layers, snappier motion, bigger touch targets and
+ * clearer focus. Loaded LAST on the front end, built on the existing --g-*
+ * tokens so it lifts every g- component and every vpg- widget at once.
+ * A matching admin-material.css does the same for wp-admin.
+ * ════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* shape */
+  --md-r-sm: 10px;
+  --md-r:    14px;
+  --md-r-lg: 20px;
+  --md-r-pill: 999px;
+  /* elevation (soft, brand-neutral shadows) */
+  --md-e1: 0 1px 2px rgba(11,11,11,.06), 0 1px 3px rgba(11,11,11,.10);
+  --md-e2: 0 2px 6px rgba(11,11,11,.08), 0 6px 16px rgba(11,11,11,.10);
+  --md-e3: 0 8px 22px rgba(11,11,11,.14), 0 14px 34px rgba(11,11,11,.12);
+  /* motion — Material standard easing, short */
+  --md-motion: 190ms cubic-bezier(.2, 0, 0, 1);
+  /* tonal state layers */
+  --md-tint: rgba(229,52,31,.10);   /* red state layer   */
+  --md-tint-ink: rgba(11,11,11,.06);/* neutral state layer */
+  --md-surface-2: #F6F5F2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-vpg-theme="light"]) {
+    --md-e1: 0 1px 2px rgba(0,0,0,.4);
+    --md-e2: 0 2px 8px rgba(0,0,0,.5);
+    --md-e3: 0 10px 30px rgba(0,0,0,.6);
+    --md-tint-ink: rgba(255,255,255,.08);
+    --md-surface-2: #17150F;
+  }
+}
+
+/* ── Buttons — filled, pill-rounded, elevated, with a tonal press state ── */
+.g-btn {
+  border-radius: var(--md-r-pill);
+  min-height: 42px;
+  padding: 11px 22px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--md-e1);
+  transition: box-shadow var(--md-motion), background-color var(--md-motion), color var(--md-motion), transform var(--md-motion);
+  isolation: isolate;
+}
+.g-btn::after {                 /* the Material state layer */
+  content: ""; position: absolute; inset: 0; background: currentColor;
+  opacity: 0; transition: opacity var(--md-motion); z-index: -1;
+}
+.g-btn:hover { box-shadow: var(--md-e2); transform: translateY(-1px); }
+.g-btn:hover::after { opacity: .12; }
+.g-btn:active { box-shadow: var(--md-e1); transform: translateY(0); }
+.g-btn:active::after { opacity: .2; }
+.g-btn:focus-visible { outline: 3px solid var(--g-red); outline-offset: 2px; }
+/* ghost → Material "outlined": keep the ink, tint on hover instead of full invert */
+.g-btn--ghost { border-color: var(--g-line-2); box-shadow: none; }
+.g-btn--ghost:hover { background: var(--md-surface-2); color: var(--g-ink); box-shadow: none; transform: none; }
+.g-btn--ghost:hover::after { opacity: 0; }
+
+/* ── Chips — pill with a tonal state layer ── */
+.g-chip { border-radius: var(--md-r-pill); transition: background-color var(--md-motion), border-color var(--md-motion), color var(--md-motion); }
+.g-chip:hover { background: var(--md-surface-2); }
+.g-chip--on { box-shadow: var(--md-e1); }
+
+/* ── Inputs — filled/outlined Material fields with a focus ring ── */
+.g-input, .g-textarea, .g-select {
+  border-radius: var(--md-r-sm);
+  border: 1.5px solid var(--g-line-2);
+  background: var(--md-surface-2);
+  transition: border-color var(--md-motion), box-shadow var(--md-motion), background-color var(--md-motion);
+}
+.g-input:focus, .g-textarea:focus, .g-select:focus {
+  border-color: var(--g-red);
+  background: var(--g-bg, #fff);
+  box-shadow: 0 0 0 3px var(--md-tint);
+}
+
+/* ── Cards & surfaces — gentle elevation and rounded media ── */
+.g-fig, .g-card .g-fig, .g-fig img { border-radius: var(--md-r); overflow: hidden; }
+.g-plan, .g-callout, .g-note-card, .g-panel {
+  border-radius: var(--md-r-lg);
+  box-shadow: var(--md-e1);
+  transition: box-shadow var(--md-motion), transform var(--md-motion);
+}
+.g-plan:hover, .g-callout:hover { box-shadow: var(--md-e2); }
+
+/* ── Tables → soft, rounded, contained ── */
+table.vpg-cardify, .g-table { border-radius: var(--md-r); overflow: hidden; }
+
+/* ══ VPG widgets shipped by the clusters — same Material language ══════ */
+
+/* mobile thumb bar → a rounded, elevated bottom app bar */
+.vpg-thumbbar {
+  border-top: 0;
+  border-radius: var(--md-r-lg) var(--md-r-lg) 0 0;
+  box-shadow: var(--md-e3);
+}
+.vpg-thumbbar a { border-radius: var(--md-r-sm); margin: 4px; transition: background-color var(--md-motion); }
+.vpg-thumbbar a:active { background: var(--md-tint-ink); }
+
+/* accessibility FAB + panel (Cluster 19) */
+.vpg-a11y-btn {
+  border-radius: 50%;
+  box-shadow: var(--md-e2);
+  transition: box-shadow var(--md-motion), transform var(--md-motion);
+}
+.vpg-a11y-btn:hover { box-shadow: var(--md-e3); transform: translateY(-1px); }
+.vpg-a11y-panel { border-radius: var(--md-r); box-shadow: var(--md-e3); border-color: transparent; }
+.vpg-a11y-panel h3 { color: var(--g-red); }
+
+/* keyboard-shortcut overlay */
+.vpg-help-ov__box { border-radius: var(--md-r-lg); box-shadow: var(--md-e3); border: 0; }
+.vpg-help-ov kbd { border-radius: 6px; }
+
+/* skip links, report button, toasts */
+.vpg-skips a { border-radius: 0 0 var(--md-r-sm) 0; }
+#vpg-report-view { box-shadow: var(--md-e1); transition: box-shadow var(--md-motion), transform var(--md-motion); }
+#vpg-report-view:hover { box-shadow: var(--md-e2); transform: translateY(-1px); }
+.vpg-toast { border-radius: var(--md-r); box-shadow: var(--md-e2); }
+
+/* AI editor label, license line, fediverse resonance — soft chips of meta */
+.vpg-ai-label, .vpg-license, .vpg-fed-resonance {
+  background: var(--md-surface-2);
+  border-radius: var(--md-r-sm);
+  padding: 8px 12px;
+  border-top: 0 !important;
+}
+
+/* ── Global friendliness: consistent focus + smooth links ── */
+a { transition: color var(--md-motion); }
+:focus-visible { outline: 3px solid var(--g-red); outline-offset: 2px; border-radius: 3px; }
+
+/* Motion is a nicety, never a barrier */
+@media (prefers-reduced-motion: reduce) {
+  .g-btn, .g-chip, .g-input, .g-textarea, .g-select, .g-plan, .vpg-a11y-btn,
+  #vpg-report-view, .g-btn::after, a { transition: none !important; }
+  .g-btn:hover, .vpg-a11y-btn:hover, #vpg-report-view:hover { transform: none !important; }
+}

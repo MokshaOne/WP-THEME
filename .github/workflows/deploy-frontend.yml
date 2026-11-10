@@ -1,6 +1,6 @@
 name: Deploy frontend to easyname
 
-# Builds the Astro site (pulling live content from WordPress at wp.m1o.at) and
+# Builds the Astro site (pulling live content from the WordPress backend) and
 # uploads the static output to easyname over FTPS. Runs on push to frontend/**,
 # on a manual trigger, and nightly (so new WordPress content goes live daily).
 #
@@ -17,7 +17,7 @@ name: Deploy frontend to easyname
 on:
   push:
     branches: [ "Theme-folder", "claude/headless-wordpress-easyname-8eu9fj" ]
-    paths: [ "frontend/**", ".github/workflows/deploy-frontend.yml" ]
+    paths: [ "raveenthiran.com/frontend/**", ".github/workflows/deploy-frontend.yml" ]
   workflow_dispatch:
   schedule:
     - cron: "0 4 * * *"   # 04:00 UTC daily rebuild
@@ -39,20 +39,34 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: raveenthiran.com/frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: raveenthiran.com/frontend
         run: npm ci
 
+      # WP_REQUIRE_LIVE makes the build FAIL when WordPress is unreachable
+      # instead of quietly falling back to sample data — sample content must
+      # never be uploaded over the live site. On the nightly schedule a failed
+      # build is tolerated (the NAS may simply be asleep): the job stays green,
+      # every later step is skipped, and the live site keeps its current build.
+      # On a push or manual run the failure is loud.
       - name: Build (pulls content from WordPress)
-        working-directory: frontend
+        id: build
+        working-directory: raveenthiran.com/frontend
+        continue-on-error: ${{ github.event_name == 'schedule' }}
         env:
           WP_BASE: ${{ secrets.WP_BASE }}
+          WP_REQUIRE_LIVE: "1"
         run: npm run build
 
+      - name: Note skipped deploy
+        if: steps.build.outcome != 'success'
+        run: echo "::warning title=Deploy skipped::WordPress did not answer during the build — nothing was uploaded; the live site keeps its current build."
+
       - name: Generate OG share cards
-        working-directory: frontend
+        if: steps.build.outcome == 'success'
+        working-directory: raveenthiran.com/frontend
         run: |
           npm i --no-save playwright@^1.48
           npx playwright install --with-deps chromium
@@ -60,6 +74,7 @@ jobs:
 
       - name: Check deploy config
         id: cfg
+        if: steps.build.outcome == 'success'
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
@@ -85,7 +100,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
-          local-dir: ./frontend/dist/
+          local-dir: ./raveenthiran.com/frontend/dist/
           server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}
 
       # Purge the Cloudflare cache so the new build is visible immediately —

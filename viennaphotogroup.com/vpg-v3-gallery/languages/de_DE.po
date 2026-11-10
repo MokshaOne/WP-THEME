@@ -1,0 +1,4542 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: vpg-v3-gallery 3.8.0\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: vpg-tools\n"
+
+msgid "\"rooftop of Café X with south view\" beats \"central Vienna\"."
+msgstr "„Dach des Café X mit Südblick“ schlägt „zentrales Wien“."
+
+msgid "%1$d / %2$d %3$s → %4$s"
+msgstr "%1$d / %2$d %3$s → %4$s"
+
+msgid "%1$d of %2$d %3$s"
+msgstr "%1$d von %2$d %3$s"
+
+msgid "%1$d of %2$d answered"
+msgstr "%1$d von %2$d beantwortet"
+
+msgid "%1$d of %2$d done"
+msgstr "%1$d von %2$d erledigt"
+
+msgid "%1$s hung “%2$s” in project “%3$s”."
+msgstr "%1$s hat „%2$s“ im Projekt „%3$s“ aufgehängt."
+
+msgid "%1$s joined your project “%2$s”."
+msgstr "%1$s ist deinem Projekt „%2$s“ beigetreten."
+
+msgid "%1$s km · ~%2$dh %3$02dmin"
+msgstr "%1$s km · ~%2$dh %3$02dmin"
+
+msgid "%1$s says something changed at \"%2$s\" — access, hours or the place itself.\n\nCheck and update:\n%3$s"
+msgstr "%1$s meldet: Bei „%2$s“ hat sich etwas geändert — Zugang, Zeiten oder der Ort selbst.\n\nPrüfen und aktualisieren:\n%3$s"
+
+msgid "%1$s says thanks for “%2$s”."
+msgstr "%1$s sagt Danke für „%2$s“."
+
+msgid "%1$s · part %2$d of %3$d"
+msgstr "%1$s · Teil %2$d von %3$d"
+
+msgid "%1$s–%2$s · %3$s–%4$s"
+msgstr "%1$s–%2$s · %3$s–%4$s"
+
+msgid "%d MIN READ"
+msgstr "%d MIN LESEZEIT"
+
+msgid "%d curated Vienna locations — light notes, best times, coordinates. Member-curated, printed to take along."
+msgstr "%d kuratierte Wiener Orte — Lichtnotizen, beste Zeiten, Koordinaten. Von Membern gepflegt, zum Mitnehmen gedruckt."
+
+msgid "%d entries have postcodes in the form 1001–1023 (wrong) instead of 1010–1230 (correct Wien format)."
+msgstr "%d Einträge haben Postleitzahlen der Form 1001–1023 (falsch) statt 1010–1230 (korrektes Wien-Format)."
+
+msgid "%d views this year"
+msgstr "%d Aufrufe dieses Jahr"
+
+msgid "%d · your year"
+msgstr "%d · dein Jahr"
+
+msgid "%dh in queue"
+msgstr "%dh in der Queue"
+
+msgid "(copy)"
+msgstr "(Kopie)"
+
+msgid "+ %1$d published %2$s"
+msgstr "+ %1$d veröffentlichte %2$s"
+
+msgid "+ Add a passkey"
+msgstr "+ Passkey hinzufügen"
+
+msgid "+ Blank article"
+msgstr "+ Leerer Artikel"
+
+msgid "+ New Issue"
+msgstr "+ Neue Ausgabe"
+
+msgid "1010 · Innere Stadt"
+msgstr "1010 · Innere Stadt"
+
+msgid "118+ curated Vienna locations with light notes and best times — and the right to add your own."
+msgstr "118+ kuratierte Wiener Orte mit Lichtnotizen und besten Zeiten — und das Recht, eigene hinzuzufügen."
+
+msgid "23 <em>districts</em>."
+msgstr "23 <em>Bezirke</em>."
+
+msgid "404 · Not found"
+msgstr "404 · Nicht gefunden"
+
+msgid "72h editorial review"
+msgstr "72h redaktionelle Prüfung"
+
+msgid "72h editorial turnaround"
+msgstr "72h redaktionelle Bearbeitung"
+
+msgid "72h turnaround"
+msgstr "72h Bearbeitungszeit"
+
+msgid "<em>waiting</em>."
+msgstr "<em>warten</em>."
+
+msgid "<strong>Error:</strong> your one-time code is missing or wrong."
+msgstr "<strong>Fehler:</strong> Dein Einmal-Code fehlt oder ist falsch."
+
+msgid "<strong>Membership is free</strong> and active now — everything below, no fees. Optional <strong>supporter tiers</strong> come later, for people who want to fund the print side. Nothing that is free today ever moves behind a paywall."
+msgstr "<strong>Die Mitgliedschaft ist kostenlos</strong> und sofort aktiv — alles hier, ohne Gebühren. Optionale <strong>Supporter-Stufen</strong> kommen später, für Menschen, die den Druck mitfinanzieren wollen. Nichts, was heute frei ist, wandert je hinter eine Paywall."
+
+msgid "<strong>PDF download</strong> of every magazine issue"
+msgstr "<strong>PDF-Download</strong> jeder Magazin-Ausgabe"
+
+msgid "<strong>Submit</strong> to the map and the journal"
+msgstr "<strong>Einreichen</strong> für Karte und Journal"
+
+msgid "A camera, lens, accessory you actually own · scored on Design / Performance / Price /10."
+msgstr "Kamera, Objektiv oder Zubehör, das du wirklich besitzt · bewertet nach Design / Leistung / Preis /10."
+
+msgid "A co-production · Raveenthiran × on1.agency"
+msgstr "Eine Koproduktion · Raveenthiran × on1.agency"
+
+msgid "A free membership: contribute to the map and journal, build your public portfolio, and download every issue as a PDF. No ads, no fees — member-run."
+msgstr "Eine kostenlose Mitgliedschaft: Trage zu Karte und Journal bei, baue dein öffentliches Portfolio und lade jede Ausgabe als PDF. Keine Werbung, keine Gebühren — member-run."
+
+msgid "A free, member-run photography magazine — Vienna"
+msgstr "Ein freies, member-run Fotografie-Magazin — Wien"
+
+msgid "A gallery photo was reported: “%s”."
+msgstr "Ein Galerie-Foto wurde gemeldet: „%s“."
+
+msgid "A how-to pitch"
+msgstr "Ein How-to-Pitch"
+
+msgid "A member-curated map of shooting locations across Wien — light, access notes, optimal time of day, distance to a U-Bahn stop."
+msgstr "Eine von Membern kuratierte Karte von Foto-Locations in ganz Wien — Licht, Zugangsnotizen, beste Tageszeit, Entfernung zur U-Bahn."
+
+msgid "A member-run collective owes its members the numbers. What running this costs, where any support goes, and the promises that never change."
+msgstr "Ein member-run Kollektiv schuldet seinen Membern die Zahlen. Was der Betrieb kostet, wohin Unterstützung fließt, und die Versprechen, die sich nie ändern."
+
+msgid "A member-run photography magazine · Wien"
+msgstr "Ein member-run Fotografie-Magazin · Wien"
+
+msgid "A member-run photography magazine. Locations, studios, reviews and a weekly journal — written by photographers, for photographers in Wien and the diaspora."
+msgstr "Ein member-run Fotografie-Magazin. Locations, Studios, Reviews und ein wöchentliches Journal — geschrieben von Fotograf:innen, für Fotograf:innen in Wien und der Diaspora."
+
+msgid "A photograph (yours or not) that changed how you look?"
+msgstr "Eine Fotografie (deine oder fremde), die deinen Blick verändert hat?"
+
+msgid "A photowalk"
+msgstr "Ein Photowalk"
+
+msgid "A public portfolio"
+msgstr "Ein öffentliches Portfolio"
+
+msgid "A quiet year on the site — the city was still out there. Next year counts from January."
+msgstr "Ein stilles Jahr auf der Seite — die Stadt war trotzdem da draußen. Nächstes Jahr zählt ab Januar."
+
+msgid "A rental space"
+msgstr "Ein Mietraum"
+
+msgid "A shooting spot"
+msgstr "Ein Foto-Spot"
+
+msgid "A skill, technique or workflow you can write up. We’ll edit collaboratively."
+msgstr "Eine Technik oder ein Workflow, den du aufschreiben kannst. Wir redigieren gemeinsam."
+
+msgid "A small JPG of the cover · so you remember what month it is."
+msgstr "Ein kleines JPG des Covers · damit du weißt, welcher Monat es ist."
+
+msgid "A small editorial circle of photographers based in Wien. Founded December 2019. Member-run · ad-free · no investors. The platform is co-produced by Raveenthiran and on1.agency."
+msgstr "Ein kleiner redaktioneller Kreis von Fotograf:innen in Wien. Gegründet Dezember 2019. Member-run · werbefrei · ohne Investoren. Die Plattform ist eine Koproduktion von Raveenthiran und on1.agency."
+
+msgid "A small editorial circle. Member-run, no hierarchy beyond the four roles required to ship an issue every month."
+msgstr "Ein kleiner redaktioneller Kreis. Member-run, keine Hierarchie außer den vier Rollen, die es braucht, um jeden Monat eine Ausgabe zu liefern."
+
+msgid "A spot opened up — you’re in: %s"
+msgstr "Ein Platz ist frei geworden — du bist dabei: %s"
+
+msgid "A story"
+msgstr "Eine Geschichte"
+
+msgid "A supplier"
+msgstr "Ein Händler"
+
+msgid "A supporter-tier extra · supporter tiers open later."
+msgstr "Ein Supporter-Extra · Supporter-Stufen öffnen später."
+
+msgid "A walking route"
+msgstr "Eine Gehroute"
+
+msgid "About"
+msgstr "Über uns"
+
+msgid "About VPG"
+msgstr "Über VPG"
+
+msgid "Access"
+msgstr "Zugang"
+
+msgid "Account security"
+msgstr "Konto-Sicherheit"
+
+msgid "Actions"
+msgstr "Aktionen"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Active creators contribute coordinates, structural checks and visual notes. The platform stays uncompromised because the people who feed it actually walk the city."
+msgstr "Aktive Mitglieder liefern Koordinaten, Struktur-Checks und visuelle Notizen. Die Plattform bleibt unverfälscht, weil die Menschen, die sie füttern, wirklich durch die Stadt gehen."
+
+msgid "Ad-free"
+msgstr "Werbefrei"
+
+msgid "Add %s"
+msgstr "%s hinzufügen"
+
+msgid "Add a location"
+msgstr "Location hinzufügen"
+
+msgid "Add from site:"
+msgstr "Von der Seite übernehmen:"
+
+msgid "Add it"
+msgstr "Eintragen"
+
+msgid "Add new"
+msgstr "Neu anlegen"
+
+msgid "Add new %s"
+msgstr "%s neu anlegen"
+
+msgid "Add selected as photo spread"
+msgstr "Auswahl als Fotostrecke übernehmen"
+
+msgid "Add this secret to your authenticator app (or open the link on your phone), then confirm with one code:"
+msgstr "Trag dieses Secret in deine Authenticator-App ein (oder öffne den Link am Handy) und bestätige mit einem Code:"
+
+msgid "Add yours"
+msgstr "Deins dazu"
+
+msgid "Added"
+msgstr "Hinzugefügt"
+
+msgid "Address not found · click the map instead."
+msgstr "Adresse nicht gefunden · klick stattdessen auf die Karte."
+
+msgid "Address not found — click the map to drop the pin."
+msgstr "Adresse nicht gefunden — klick auf die Karte, um den Pin zu setzen."
+
+msgid "Admin · 0 pins. Tools → VPG · Setup → run the diagnostic scan + migrate coordinates."
+msgstr "Admin · 0 Pins. Werkzeuge → VPG · Setup → Diagnose-Scan ausführen + Koordinaten migrieren."
+
+msgid "Administrators can't self-delete here."
+msgstr "Administratoren können sich hier nicht selbst löschen."
+
+msgid "Ads · trackers · upsells"
+msgstr "Werbung · Tracker · Upsells"
+
+msgid "Advertising"
+msgstr "Werbung"
+
+msgid "Advice for someone shooting their first roll in Wien?"
+msgstr "Ein Rat für jemanden, der seine erste Filmrolle in Wien belichtet?"
+
+msgid "After signup you receive an email with payment instructions (SEPA / IBAN for EU members, PayPal for international). Membership activates within 24 hours of payment confirmation."
+msgstr "Nach der Anmeldung bekommst du eine E-Mail mit Zahlungsinfos (SEPA / IBAN für EU, PayPal international). Die Mitgliedschaft ist binnen 24 Stunden nach Zahlungseingang aktiv."
+
+msgid "All"
+msgstr "Alle"
+
+msgid "All %s"
+msgstr "Alle %s"
+
+msgid "All Issues"
+msgstr "Alle Ausgaben"
+
+msgid "All articles"
+msgstr "Alle Artikel"
+
+msgid "All districts"
+msgstr "Alle Bezirke"
+
+msgid "All entries have a district ✓"
+msgstr "Alle Einträge haben einen Bezirk ✓"
+
+msgid "All events"
+msgstr "Alle Events"
+
+msgid "All issues"
+msgstr "Alle Ausgaben"
+
+msgid "All locations"
+msgstr "Alle Locations"
+
+msgid "All of it, <em>free</em>."
+msgstr "Alles davon — <em>frei</em>."
+
+msgid "All on your profile"
+msgstr "Alles auf deinem Profil"
+
+msgid "All reviews"
+msgstr "Alle Reviews"
+
+msgid "All shops"
+msgstr "Alle Shops"
+
+msgid "All studios"
+msgstr "Alle Studios"
+
+msgid "All trails"
+msgstr "Alle Trails"
+
+msgid "All tutorials"
+msgstr "Alle Tutorials"
+
+msgid "Already a member? Log in"
+msgstr "Schon Mitglied? Anmelden"
+
+msgid "Already in"
+msgstr "Schon dabei"
+
+msgid "An account already exists for that email · please log in."
+msgstr "Für diese E-Mail existiert bereits ein Konto · bitte melde dich an."
+
+msgid "An address, GPS pin, light direction, optimal time of day, access notes."
+msgstr "Adresse, GPS-Pin, Lichtrichtung, beste Tageszeit, Zugangsnotizen."
+
+msgid "Analog"
+msgstr "Analog"
+
+msgid "And membership itself stays free. We&rsquo;d rather you join and contribute than feel locked out."
+msgstr "Und die Mitgliedschaft selbst bleibt kostenlos. Lieber trittst du bei und machst mit, als dich ausgesperrt zu fühlen."
+
+msgid "Anonymous idea from the box"
+msgstr "Anonyme Idee aus dem Briefkasten"
+
+msgid "Apply to contribute"
+msgstr "Als Contributor bewerben"
+
+msgid "Approve"
+msgstr "Freigeben"
+
+msgid "Approve and publish? The member gets a &quot;your work is live&quot; email."
+msgstr "Freigeben und veröffentlichen? Das Mitglied bekommt eine „Dein Beitrag ist live“-Mail."
+
+msgid "Architecture"
+msgstr "Architektur"
+
+msgid "Around this time last year you published <a href=\"%1$s\">%2$s</a>."
+msgstr "Ungefähr um diese Zeit letztes Jahr hast du <a href=\"%1$s\">%2$s</a> veröffentlicht."
+
+msgid "Article %02d"
+msgstr "Artikel %02d"
+
+msgid "Articles"
+msgstr "Artikel"
+
+msgid "Articles published"
+msgstr "Veröffentlichte Artikel"
+
+msgid "Ask us <em>directly</em>."
+msgstr "Frag uns <em>direkt</em>."
+
+msgid "At least 8 characters"
+msgstr "Mindestens 8 Zeichen"
+
+msgid "Attachment IDs · comma-separated, hanging order"
+msgstr "Anhang-IDs · kommagetrennt, in Hängereihenfolge"
+
+msgid "Author"
+msgstr "Autor:in"
+
+msgid "Avatar · JPG/PNG/WebP, max 4 MB"
+msgstr "Avatar · JPG/PNG/WebP, max. 4 MB"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Back <em>issues</em>."
+msgstr "Ältere <em>Ausgaben</em>."
+
+msgid "Back home"
+msgstr "Zur Startseite"
+
+msgid "Backstage"
+msgstr "Hinter den Kulissen"
+
+msgid "Batch done · %1$d filled · %2$d skipped · %3$d failed."
+msgstr "Batch fertig · %1$d befüllt · %2$d übersprungen · %3$d fehlgeschlagen."
+
+msgid "Be specific. We read everything."
+msgstr "Sei konkret. Wir lesen alles."
+
+msgid "Become a member"
+msgstr "Mitglied werden"
+
+msgid "Beginner to ambient-expert"
+msgstr "Einsteiger bis Ambient-Profi"
+
+msgid "Belongs to"
+msgstr "Gehört zu"
+
+msgid "Best after rain, tripod ok."
+msgstr "Am besten nach Regen, Stativ ok."
+
+msgid "Best time"
+msgstr "Beste Zeit"
+
+msgid "Best time / light"
+msgstr "Beste Zeit / Licht"
+
+msgid "Bio · shown on your public page"
+msgstr "Bio · sichtbar auf deiner öffentlichen Seite"
+
+msgid "Bio, social links, avatar · shown on your public member page."
+msgstr "Bio, Social-Links, Avatar · sichtbar auf deiner öffentlichen Member-Seite."
+
+msgid "Blocked by the browser."
+msgstr "Vom Browser blockiert."
+
+msgid "Blue hour"
+msgstr "Blaue Stunde"
+
+msgid "Body / notes"
+msgstr "Text / Notizen"
+
+msgid "Booking status"
+msgstr "Buchungsstatus"
+
+msgid "Bookmarks"
+msgstr "Lesezeichen"
+
+msgid "Brand image"
+msgstr "Markenbild"
+
+msgid "Bring along"
+msgstr "Mitbringen"
+
+msgid "Bring along · one item per line"
+msgstr "Mitbringen · ein Punkt pro Zeile"
+
+msgid "Broken media"
+msgstr "Kaputte Medien"
+
+msgid "Browse the index"
+msgstr "Index durchstöbern"
+
+msgid "Buggy district format detected"
+msgstr "Fehlerhaftes Bezirksformat erkannt"
+
+msgid "Build PDF"
+msgstr "PDF bauen"
+
+msgid "Build guide PDF"
+msgstr "Guide-PDF bauen"
+
+msgid "Built <em>together</em>."
+msgstr "Gemeinsam <em>gebaut</em>."
+
+msgid "Buying guide"
+msgstr "Kaufberatung"
+
+msgid "By"
+msgstr "Von"
+
+msgid "By submitting you agree to our <a href=\"%s\">privacy policy</a>. We never share your email."
+msgstr "Mit dem Absenden akzeptierst du unsere <a href=\"%s\">Datenschutzerklärung</a>. Wir geben deine E-Mail nie weiter."
+
+msgid "CPT"
+msgstr "CPT"
+
+msgid "Cadence"
+msgstr "Rhythmus"
+
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Camera shop, film lab, gear retailer · district, what they stock, opening hours."
+msgstr "Kamerageschäft, Fotolabor, Zubehörhändler · Bezirk, Sortiment, Öffnungszeiten."
+
+msgid "Camera shops, film suppliers, labs and gear retailers in Vienna — quietly reviewed by photographers who actually walked in."
+msgstr "Kamerageschäfte, Filmhändler, Labore und Gear-Händler in Wien — leise rezensiert von Fotograf:innen, die wirklich drin waren."
+
+msgid "Cameras, film, labs."
+msgstr "Kameras, Film, Labore."
+
+msgid "Cameras, lenses, analog equipment and accessories — scored on design, performance and price by members who actually own them."
+msgstr "Kameras, Objektive, Analog-Ausrüstung und Zubehör — bewertet nach Design, Leistung und Preis von Membern, die sie wirklich besitzen."
+
+msgid "Can I cancel?"
+msgstr "Kann ich kündigen?"
+
+msgid "Can I write for the magazine?"
+msgstr "Kann ich fürs Magazin schreiben?"
+
+msgid "Cancelled."
+msgstr "Abgebrochen."
+
+msgid "Canned feedback · picked text prefills the reject note"
+msgstr "Feedback-Bausteine · gewählter Text füllt die Rückgabe-Notiz vor"
+
+msgid "Capacity"
+msgstr "Kapazität"
+
+msgid "Cartographer"
+msgstr "Kartograf:in"
+
+msgid "Chain map spots into a route worth an afternoon. Unlocks at Documentarian."
+msgstr "Verkette Karten-Spots zu einer Route, die einen Nachmittag wert ist. Ab Documentarian."
+
+msgid "Chapter 1"
+msgstr "Kapitel 1"
+
+msgid "Checks featured images and local content images of the latest posts."
+msgstr "Prüft Beitragsbilder und lokale Content-Bilder der neuesten Beiträge."
+
+msgid "Choose cover"
+msgstr "Cover wählen"
+
+msgid "Choose your tier"
+msgstr "Wähl deine Stufe"
+
+msgid "Clear pin"
+msgstr "Pin entfernen"
+
+msgid "Click to hang · click again to take down · order = click order · max 24"
+msgstr "Klick zum Aufhängen · nochmal Klicken nimmt ab · Reihenfolge = Klickreihenfolge · max. 24"
+
+msgid "Closed"
+msgstr "Geschlossen"
+
+msgid "Collection"
+msgstr "Sammlung"
+
+msgid "Collections"
+msgstr "Sammlungen"
+
+msgid "Colophon"
+msgstr "Impressum & Kolophon"
+
+msgid "Coming up:\n"
+msgstr "Demnächst:\n"
+
+msgid "Comma-separated location IDs, in walking order. The list below shows every pinned place."
+msgstr "Kommagetrennte Location-IDs in Gehreihenfolge. Die Liste unten zeigt jeden verzeichneten Ort."
+
+msgid "Common <em>questions</em>."
+msgstr "Häufige <em>Fragen</em>."
+
+msgid "Community"
+msgstr "Community"
+
+msgid "Competition"
+msgstr "Wettbewerb"
+
+msgid "Competitions"
+msgstr "Wettbewerbe"
+
+msgid "Compile the issue from what the site already has — journal writing, a member as featured artist, events, photo spreads from member uploads — or start a blank article. Drag the handle to reorder. Each article becomes a section in the published issue and a chapter in the PDF."
+msgstr "Stell die Ausgabe aus dem zusammen, was die Seite schon hat — Journal-Texte, ein Mitglied als Featured Artist, Events, Fotostrecken aus Member-Uploads — oder beginne mit einem leeren Artikel. Zieh am Griff zum Umsortieren. Jeder Artikel wird eine Sektion der Ausgabe und ein Kapitel im PDF."
+
+msgid "Complete"
+msgstr "Vollständig"
+
+msgid "Confirm & arm 2FA"
+msgstr "Bestätigen & 2FA scharfschalten"
+
+msgid "Confirm with your password"
+msgstr "Mit deinem Passwort bestätigen"
+
+msgid "Confirm your <em>email</em> first."
+msgstr "Bestätige zuerst deine <em>E-Mail</em>."
+
+msgid "Confirm your VPG email"
+msgstr "Bestätige deine VPG-E-Mail"
+
+msgid "Confirm your VPG newsletter signup"
+msgstr "Bestätige deine VPG-Newsletter-Anmeldung"
+
+msgid "Confirm your email"
+msgstr "Bestätige deine E-Mail"
+
+msgid "Confirm your email to unlock submissions — we sent you a link when you joined."
+msgstr "Bestätige deine E-Mail, um Einreichungen freizuschalten — den Link haben wir dir beim Beitritt geschickt."
+
+msgid "Confirmation email sent · check your inbox."
+msgstr "Bestätigungsmail verschickt · sieh in dein Postfach."
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "Contact email"
+msgstr "Kontakt-E-Mail"
+
+msgid "Contact sheet"
+msgstr "Kontaktbogen"
+
+msgid "Content"
+msgstr "Inhalt"
+
+msgid "Contents"
+msgstr "Inhalt"
+
+msgid "Continue"
+msgstr "Weiter"
+
+msgid "Continue where you left off?"
+msgstr "Weitermachen, wo du warst?"
+
+msgid "Contributions"
+msgstr "Beiträge"
+
+msgid "Contributor"
+msgstr "Contributor"
+
+msgid "Contributor · 25 locations"
+msgstr "Contributor · 25 Locations"
+
+msgid "Cost"
+msgstr "Kosten"
+
+msgid "Could not save the passkey."
+msgstr "Passkey konnte nicht gespeichert werden."
+
+msgid "Cover"
+msgstr "Cover"
+
+msgid "Cover story"
+msgstr "Coverstory"
+
+msgid "Cover · three titles · one link"
+msgstr "Cover · drei Titel · ein Link"
+
+msgid "Create the first issue →"
+msgstr "Erste Ausgabe anlegen →"
+
+msgid "Credit"
+msgstr "Credit"
+
+msgid "Critique circle (max. 6)"
+msgstr "Kritik-Zirkel (max. 6)"
+
+msgid "Critique circle · six chairs, honest eyes"
+msgstr "Kritik-Zirkel · sechs Stühle, ehrliche Augen"
+
+msgid "Curate your portfolio in the dashboard first."
+msgstr "Kuratiere zuerst dein Portfolio im Dashboard."
+
+msgid "Curated <em>threads</em>."
+msgstr "Kuratierte <em>Fäden</em>."
+
+msgid "Curated by"
+msgstr "Kuratiert von"
+
+msgid "Curated hangings from member uploads — each wall is one theme, one room, one walk through the collective eye."
+msgstr "Kuratierte Hängungen aus Member-Uploads — jede Wand ist ein Thema, ein Raum, ein Gang durch den kollektiven Blick."
+
+msgid "Curated set"
+msgstr "Kuratiertes Set"
+
+msgid "Curated shooting spots across Wien."
+msgstr "Kuratierte Foto-Spots in ganz Wien."
+
+msgid "Curates the monthly issue, commissions pitches, writes the editor's letter."
+msgstr "Kuratiert die Monatsausgabe, vergibt Pitches, schreibt das Editorial."
+
+msgid "Curation"
+msgstr "Kuration"
+
+msgid "Current issue"
+msgstr "Aktuelle Ausgabe"
+
+msgid "Customize design"
+msgstr "Design anpassen"
+
+msgid "Cycle"
+msgstr "Zyklus"
+
+msgid "Darkroom black"
+msgstr "Dunkelkammer-Schwarz"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Dashboard sections"
+msgstr "Dashboard-Bereiche"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "December 2019 · Wien"
+msgstr "Dezember 2019 · Wien"
+
+msgid "Decentralised · member-run"
+msgstr "Dezentral · member-run"
+
+msgid "Default pages and menus are not set up yet. Run the wizard to create everything in one click."
+msgstr "Standardseiten und Menüs sind noch nicht eingerichtet. Der Assistent erstellt alles mit einem Klick."
+
+msgid "Delete account"
+msgstr "Konto löschen"
+
+msgid "Delete my account and everything I contributed — photos included"
+msgstr "Mein Konto und alles, was ich beigetragen habe, löschen — Fotos inklusive"
+
+msgid "Delete my account permanently"
+msgstr "Mein Konto endgültig löschen"
+
+msgid "Delete my account, keep my published work on the site (byline passes to editorial)"
+msgstr "Mein Konto löschen, veröffentlichte Beiträge bleiben (Byline geht an die Redaktion)"
+
+msgid "Delete your account permanently? This cannot be undone."
+msgstr "Dein Konto endgültig löschen? Das lässt sich nicht rückgängig machen."
+
+msgid "Derive districts from coordinates"
+msgstr "Bezirke aus Koordinaten ableiten"
+
+msgid "Derive next %1$d · %2$d still to go"
+msgstr "Nächste %1$d ableiten · noch %2$d offen"
+
+msgid "Design"
+msgstr "Design"
+
+msgid "Design (0–10)"
+msgstr "Design (0–10)"
+
+msgid "Diagnose · what is actually in the database"
+msgstr "Diagnose · was wirklich in der Datenbank steht"
+
+msgid "Diagnostic report"
+msgstr "Diagnosebericht"
+
+msgid "Difficulty"
+msgstr "Schwierigkeit"
+
+msgid "Direct"
+msgstr "Direkt"
+
+msgid "Dismiss"
+msgstr "Ausblenden"
+
+msgid "Display name"
+msgstr "Anzeigename"
+
+msgid "Distance"
+msgstr "Distanz"
+
+msgid "District"
+msgstr "Bezirk"
+
+msgid "District %s"
+msgstr "Bezirk %s"
+
+msgid "District / area"
+msgstr "Bezirk / Gegend"
+
+msgid "District set"
+msgstr "Bezirk gesetzt"
+
+msgid "Districts"
+msgstr "Bezirke"
+
+msgid "Documentarian"
+msgstr "Documentarian"
+
+msgid "Documentarian and up"
+msgstr "Ab Documentarian"
+
+msgid "Documentarian · 50 editorial works"
+msgstr "Documentarian · 50 redaktionelle Beiträge"
+
+msgid "Done for now?"
+msgstr "Fürs Erste fertig?"
+
+msgid "Download .ics ↓"
+msgstr ".ics herunterladen ↓"
+
+msgid "Download PDF"
+msgstr "PDF herunterladen"
+
+msgid "Download every issue of the magazine as a PDF. Forever-keepable."
+msgstr "Lade jede Ausgabe des Magazins als PDF. Für immer behaltbar."
+
+msgid "Download route ↓"
+msgstr "Route herunterladen ↓"
+
+msgid "Download this issue"
+msgstr "Diese Ausgabe herunterladen"
+
+msgid "Draft saved · finish and submit it any time from your dashboard."
+msgstr "Entwurf gespeichert · jederzeit im Dashboard fertigstellen und einreichen."
+
+msgid "Drafts"
+msgstr "Entwürfe"
+
+msgid "Drop a thought — it reaches editorial with no name attached. Anonymity is the point."
+msgstr "Wirf einen Gedanken ein — er erreicht die Redaktion ohne Namen. Anonymität ist der Punkt."
+
+msgid "Drop it in"
+msgstr "Einwerfen"
+
+msgid "Drop photos here or browse"
+msgstr "Fotos hierher ziehen oder auswählen"
+
+msgid "Duplicate Issue"
+msgstr "Ausgabe duplizieren"
+
+msgid "Early access to new issues"
+msgstr "Früher Zugriff auf neue Ausgaben"
+
+msgid "Earned, never <em>bought</em>."
+msgstr "Verdient, nie <em>gekauft</em>."
+
+msgid "Easy"
+msgstr "Leicht"
+
+msgid "Easy · flat, any shoes"
+msgstr "Leicht · flach, jedes Schuhwerk"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Edit %s"
+msgstr "%s bearbeiten"
+
+msgid "Edit Issue"
+msgstr "Ausgabe bearbeiten"
+
+msgid "Edit colours in the Customizer"
+msgstr "Farben im Customizer bearbeiten"
+
+msgid "Edit live"
+msgstr "Live bearbeiten"
+
+msgid "Edit profile"
+msgstr "Profil bearbeiten"
+
+msgid "Edit submission · still in review"
+msgstr "Einreichung bearbeiten · noch in Prüfung"
+
+msgid "Editor"
+msgstr "Editor:in"
+
+msgid "Editor's note"
+msgstr "Anmerkung der Redaktion"
+
+msgid "Editorial (the opening page)"
+msgstr "Editorial (die Eröffnungsseite)"
+
+msgid "Editorial accounts need two-factor auth."
+msgstr "Redaktions-Konten brauchen Zwei-Faktor-Auth."
+
+msgid "Editorial calendar"
+msgstr "Redaktionskalender"
+
+msgid "Editorial collections across every content type — spots, stories, tutorials and frames tied together by one idea."
+msgstr "Redaktionelle Sammlungen quer durch alle Inhaltstypen — Spots, Geschichten, Tutorials und Bilder, verbunden durch eine Idee."
+
+msgid "Editorial enquiries, submissions, press, partnerships — one inbox, one editor reading every message."
+msgstr "Redaktionelle Anfragen, Einreichungen, Presse, Partnerschaften — ein Postfach, eine Redaktion, die jede Nachricht liest."
+
+msgid "Editorial feedback:"
+msgstr "Feedback der Redaktion:"
+
+msgid "Editorial guidelines"
+msgstr "Redaktionsrichtlinien"
+
+msgid "Editorial wants to feature you as an upcoming featured artist — your answers below become the interview in the magazine."
+msgstr "Die Redaktion möchte dich als kommenden Featured Artist zeigen — deine Antworten unten werden das Interview im Magazin."
+
+msgid "Editorial wants to feature you — answer your interview."
+msgstr "Die Redaktion möchte dich featuren — beantworte dein Interview."
+
+msgid "Editorial, from uploads"
+msgstr "Redaktionell, aus Uploads"
+
+msgid "Editors <em>only</em>."
+msgstr "Nur für die <em>Redaktion</em>."
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Email confirmed · submissions are unlocked."
+msgstr "E-Mail bestätigt · Einreichungen sind freigeschaltet."
+
+msgid "Email me when my submissions are approved or get feedback"
+msgstr "Mail an mich, wenn meine Einreichungen freigegeben werden oder Feedback bekommen"
+
+msgid "Email or username"
+msgstr "E-Mail oder Benutzername"
+
+msgid "Emails & visibility"
+msgstr "E-Mails & Sichtbarkeit"
+
+msgid "Enable on this device"
+msgstr "Auf diesem Gerät aktivieren"
+
+msgid "Entering is a member thing — membership is free."
+msgstr "Mitmachen ist Member-Sache — die Mitgliedschaft ist kostenlos."
+
+msgid "Entries"
+msgstr "Einreichungen"
+
+msgid "Entry"
+msgstr "Einreichung"
+
+msgid "Essays, field notes, portfolios and gear writing — published by members. The slow, finished pieces go to the magazine; this is where the conversation lives."
+msgstr "Essays, Feldnotizen, Portfolios und Gear-Texte — veröffentlicht von Membern. Die langsamen, fertigen Stücke gehen ins Magazin; hier lebt das Gespräch."
+
+msgid "Event"
+msgstr "Event"
+
+msgid "Event date"
+msgstr "Event-Datum"
+
+msgid "Event details"
+msgstr "Event-Details"
+
+msgid "Event discounts"
+msgstr "Event-Rabatte"
+
+msgid "Event kind"
+msgstr "Event-Art"
+
+msgid "Event kinds"
+msgstr "Event-Arten"
+
+msgid "Event reminders and replies on your lockscreen — opt-in, this device only, off with one tap."
+msgstr "Event-Erinnerungen und Antworten auf deinem Sperrbildschirm — Opt-in, nur dieses Gerät, mit einem Tipp wieder aus."
+
+msgid "Event reminders · mail me the day before a walk I RSVP’d to"
+msgstr "Event-Erinnerungen · Mail am Tag vor einem Walk, dem ich zugesagt habe"
+
+msgid "Events"
+msgstr "Events"
+
+msgid "Events · pick an event"
+msgstr "Events · Event wählen"
+
+msgid "Events — %s"
+msgstr "Events — %s"
+
+msgid "Events, photowalks & competitions"
+msgstr "Events, Photowalks & Wettbewerbe"
+
+msgid "Every <em>issue</em>."
+msgstr "Jede <em>Ausgabe</em>."
+
+msgid "Every Bezirk has its own page — spots, studios and shops the members have pinned there."
+msgstr "Jeder Bezirk hat seine eigene Seite — Spots, Studios und Shops, die Member dort verzeichnet haben."
+
+msgid "Every competition the collective has run — winners, jury words, and the open calls you can still enter. No leaderboards, just moments."
+msgstr "Jeder Wettbewerb, den das Kollektiv je ausgetragen hat — Sieger, Juryworte und die offenen Calls, bei denen du noch mitmachen kannst. Keine Ranglisten, nur Momente."
+
+msgid "Every content type"
+msgstr "Jeder Inhaltstyp"
+
+msgid "Every feature that exists today stays free. Future supporter perks add — they never subtract."
+msgstr "Jedes Feature, das es heute gibt, bleibt frei. Künftige Supporter-Extras kommen dazu — sie nehmen nie etwas weg."
+
+msgid "Every issue · PDF"
+msgstr "Jede Ausgabe · PDF"
+
+msgid "Every member"
+msgstr "Jedes Mitglied"
+
+msgid "Every monthly issue in PDF and print, submission rights to the map and journal, event discounts and the studio-share directory. Forever-keepable."
+msgstr "Jede Monatsausgabe als PDF und Print, Einreichrechte für Karte und Journal, Event-Rabatte und das Studio-Share-Verzeichnis. Für immer behaltbar."
+
+msgid "Every monthly issue of the VPG editorial magazine — cover to colophon."
+msgstr "Jede Monatsausgabe des VPG-Magazins — vom Cover bis zum Kolophon."
+
+msgid "Everything in Member"
+msgstr "Alles aus Member"
+
+msgid "Everything in Supporter"
+msgstr "Alles aus Supporter"
+
+msgid "Everything publishes instantly · edit live"
+msgstr "Alles erscheint sofort · live bearbeiten"
+
+msgid "Everything,"
+msgstr "Alles,"
+
+msgid "Existing pages with the same slug are left in place — only missing ones are created. Menus are wiped and rebuilt from the canonical list."
+msgstr "Bestehende Seiten mit gleichem Slug bleiben unangetastet — nur fehlende werden angelegt. Menüs werden geleert und aus der kanonischen Liste neu gebaut."
+
+msgid "Explore"
+msgstr "Entdecken"
+
+msgid "Explore these"
+msgstr "Schau hier weiter"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Export CSV"
+msgstr "CSV exportieren"
+
+msgid "Export portfolio as PDF"
+msgstr "Portfolio als PDF exportieren"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Failed to register."
+msgstr "Registrierung fehlgeschlagen."
+
+msgid "Failed — retry"
+msgstr "Fehlgeschlagen — nochmal"
+
+msgid "Feature"
+msgstr "Feature"
+
+msgid "Featured artist"
+msgstr "Featured Artist"
+
+msgid "Featured artist — %s"
+msgstr "Featured Artist — %s"
+
+msgid "Feed the <em>matrix</em>."
+msgstr "Füttere die <em>Matrix</em>."
+
+msgid "Feedback for the member (sent by email · leave empty for none):"
+msgstr "Feedback ans Mitglied (geht per E-Mail · leer lassen für keins):"
+
+msgid "Feedback for the member — required in spirit."
+msgstr "Feedback ans Mitglied — dem Geist nach Pflicht."
+
+msgid "Feedback on your submission \"%s\"."
+msgstr "Feedback zu deiner Einreichung „%s“."
+
+msgid "Feedback threads are members-only — honest critique, credited by name."
+msgstr "Feedback-Threads sind nur für Member — ehrliche Kritik, mit Namen gezeichnet."
+
+msgid "Feedback · members only"
+msgstr "Feedback · nur für Member"
+
+msgid "Feedback…"
+msgstr "Feedback…"
+
+msgid "Filter issues by year"
+msgstr "Ausgaben nach Jahr filtern"
+
+msgid "Filter map markers"
+msgstr "Kartenmarker filtern"
+
+msgid "Filter results by type"
+msgstr "Ergebnisse nach Typ filtern"
+
+msgid "Filter…"
+msgstr "Filtern…"
+
+msgid "Find"
+msgstr "Finden"
+
+msgid "Finish & submit"
+msgstr "Fertigstellen & einreichen"
+
+msgid "Finished · magazine-ready"
+msgstr "Fertig · heftreif"
+
+msgid "First-hand"
+msgstr "Aus erster Hand"
+
+msgid "Flag received — editorial will check and update the entry."
+msgstr "Meldung erhalten — die Redaktion prüft und aktualisiert den Eintrag."
+
+msgid "Focus"
+msgstr "Schwerpunkt"
+
+msgid "Focus / specialty"
+msgstr "Schwerpunkt / Spezialität"
+
+msgid "Footer · Community"
+msgstr "Footer · Community"
+
+msgid "Footer · Explore"
+msgstr "Footer · Entdecken"
+
+msgid "Footer · Members"
+msgstr "Footer · Members"
+
+msgid "For every location, studio, or shop that has lat/lng but no district set, this calls OSM Nominatim to reverse-geocode the pin and extract the 4-digit Wien postcode (e.g. \"1010\"). The district filter on the unified /locations/ map then has data to filter on. Nominatim is rate-limited to 1 req/sec so this batches 20 entries per click — repeat until 0 remain."
+msgstr "Für jede Location, jedes Studio und jeden Shop mit lat/lng aber ohne Bezirk fragt dies OSM Nominatim ab, um den Pin rückwärts zu geokodieren und die 4-stellige Wiener PLZ (z. B. „1010“) zu ziehen. Der Bezirksfilter auf der /locations/-Karte hat dann Daten. Nominatim ist auf 1 Anfrage/Sek. limitiert, daher 20 Einträge pro Klick — wiederholen bis 0 übrig."
+
+msgid "For everyone who takes looking seriously — two minutes to join, yours to keep."
+msgstr "Für alle, die das Schauen ernst nehmen — zwei Minuten zum Beitreten, für immer deins."
+
+msgid "Forgot password?"
+msgstr "Passwort vergessen?"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Format repaired · %d entries re-derived from coordinates."
+msgstr "Format repariert · %d Einträge neu aus Koordinaten abgeleitet."
+
+msgid "Formats"
+msgstr "Formate"
+
+msgid "Found a shared series — members join, hang their works, and the best rooms become magazine features."
+msgstr "Gründe eine gemeinsame Serie — Member treten bei, hängen ihre Arbeiten, und die besten Räume werden Magazin-Features."
+
+msgid "Founded"
+msgstr "Gegründet"
+
+msgid "Founded by"
+msgstr "Gegründet von"
+
+msgid "Founded in Wien"
+msgstr "Gegründet in Wien"
+
+msgid "Founded year"
+msgstr "Gründungsjahr"
+
+msgid "Founding"
+msgstr "Gründung"
+
+msgid "Founding member"
+msgstr "Gründungsmitglied"
+
+msgid "Founding · Photography"
+msgstr "Gründung · Fotografie"
+
+msgid "Founding · Platform &amp; editorial systems"
+msgstr "Gründung · Plattform &amp; Redaktionssysteme"
+
+msgid "Four <em>chairs</em>, rotating."
+msgstr "Vier <em>Stühle</em>, rotierend."
+
+msgid "Four ranks, one direction: the map comes first. Every rank is earned in the formats of the stage before it — and brings real privileges, never obligations."
+msgstr "Vier Ränge, eine Richtung: Die Karte kommt zuerst. Jeder Rang wird in den Formaten der Stufe davor verdient — und bringt echte Privilegien, nie Pflichten."
+
+msgid "Free"
+msgstr "Kostenlos"
+
+msgid "Free forever · you're logged in right away · we send one confirmation email to unlock submissions. No spam, leave anytime."
+msgstr "Für immer kostenlos · du bist sofort eingeloggt · eine Bestätigungsmail schaltet Einreichungen frei. Kein Spam, jederzeit raus."
+
+msgid "Free membership · two minutes"
+msgstr "Kostenlose Mitgliedschaft · zwei Minuten"
+
+msgid "Free · active now"
+msgstr "Kostenlos · sofort aktiv"
+
+msgid "Free · always"
+msgstr "Kostenlos · immer"
+
+msgid "Free · forever"
+msgstr "Kostenlos · für immer"
+
+msgid "Free · no signup needed"
+msgstr "Kostenlos · ohne Anmeldung"
+
+msgid "Free · takes two minutes"
+msgstr "Kostenlos · dauert zwei Minuten"
+
+msgid "From the <em>desk</em>."
+msgstr "Vom <em>Schreibtisch</em>."
+
+msgid "Front page"
+msgstr "Startseite"
+
+msgid "Frontend"
+msgstr "Frontend"
+
+msgid "Frontend submission · members of the inner circle contribute directly to the matrix."
+msgstr "Frontend-Einreichung · Member des inneren Kreises füttern die Matrix direkt."
+
+msgid "Full preview"
+msgstr "Vollständige Vorschau"
+
+msgid "Full search for"
+msgstr "Volle Suche nach"
+
+msgid "Full — join the waitlist"
+msgstr "Voll — auf die Warteliste"
+
+msgid "Full-page plate"
+msgstr "Ganzseitige Tafel"
+
+msgid "GPX"
+msgstr "GPX"
+
+msgid "Gallery wall"
+msgstr "Galerie-Wand"
+
+msgid "Gallery walls"
+msgstr "Galerie-Wände"
+
+msgid "Gallery white (default)"
+msgstr "Galerie-Weiß (Standard)"
+
+msgid "Gaps?"
+msgstr "Lücken?"
+
+msgid "Gear"
+msgstr "Ausrüstung"
+
+msgid "Gear review"
+msgstr "Gear-Review"
+
+msgid "Gear reviews scored on Design, Performance, and Price by members who actually own the kit."
+msgstr "Gear-Reviews, bewertet nach Design, Leistung und Preis von Membern, die die Ausrüstung wirklich besitzen."
+
+msgid "Gear scored"
+msgstr "Bewertete Ausrüstung"
+
+msgid "Gear type"
+msgstr "Gear-Typ"
+
+msgid "Gear types"
+msgstr "Gear-Typen"
+
+msgid "Gear, <em>reviewed</em>."
+msgstr "Ausrüstung, <em>rezensiert</em>."
+
+msgid "Get in touch"
+msgstr "Melde dich"
+
+msgid "Get published"
+msgstr "Veröffentlicht werden"
+
+msgid "Get the <em>letter</em>."
+msgstr "Hol dir den <em>Brief</em>."
+
+msgid "Getting started"
+msgstr "Erste Schritte"
+
+msgid "Glossary"
+msgstr "Glossar"
+
+msgid "Go to"
+msgstr "Gehe zu"
+
+msgid "Golden hour"
+msgstr "Goldene Stunde"
+
+msgid "Golden hour today"
+msgstr "Goldene Stunde heute"
+
+msgid "Great spot — needs a photo before we can publish. Resubmit with one?"
+msgstr "Starker Spot — braucht ein Foto vor der Veröffentlichung. Mit einem neu einreichen?"
+
+msgid "Hang it"
+msgstr "Aufhängen"
+
+msgid "Hang one of your published works"
+msgstr "Häng eine deiner veröffentlichten Arbeiten auf"
+
+msgid "Hang your <em>frame</em>."
+msgstr "Häng deinen <em>Rahmen</em>."
+
+msgid "Heads up — similar entries exist:"
+msgstr "Achtung — ähnliche Einträge existieren:"
+
+msgid "Held so far"
+msgstr "Bisher ausgetragen"
+
+msgid "Hello %1$s,\n\nEditorial picked you as an upcoming featured artist. Answer the interview questions in your dashboard, in your own time:\n\n%2$s\n\nShort answers are fine — honest beats polished.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nDie Redaktion hat dich als kommenden Featured Artist ausgewählt. Beantworte die Interviewfragen in deinem Dashboard, in deinem Tempo:\n\n%2$s\n\nKurze Antworten sind fein — ehrlich schlägt poliert.\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nHere is your one-time login link — valid for 15 minutes:\n\n%2$s\n\nIf you didn't request this, ignore this email; nothing happens without the link.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nHier ist dein Einmal-Login-Link — 15 Minuten gültig:\n\n%2$s\n\nFalls du das nicht angefordert hast, ignoriere diese Mail; ohne den Link passiert nichts.\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nOne click and you're on the list — we write when an issue ships, not more:\n\n%2$s\n\nNot you? Ignore this email and nothing happens.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nEin Klick und du bist auf der Liste — wir schreiben, wenn eine Ausgabe erscheint, nicht öfter:\n\n%2$s\n\nNicht du? Ignoriere diese Mail und nichts passiert.\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nOne click and your Viennaphotogroup membership is fully active:\n\n%2$s\n\nUntil you confirm, you can browse everything but not submit to the map or journal.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nEin Klick und deine Viennaphotogroup-Mitgliedschaft ist voll aktiv:\n\n%2$s\n\nBis zur Bestätigung kannst du alles ansehen, aber nichts für Karte oder Journal einreichen.\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nQuick reminder — \"%2$s\" is tomorrow%3$s.%5$s\n\nDetails: %4$s\n\nBring a camera.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nKurze Erinnerung — „%2$s“ ist morgen%3$s.%5$s\n\nDetails: %4$s\n\nNimm eine Kamera mit.\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nSomeone cancelled — you moved off the waitlist into “%2$s”.\n\n%3$s\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nJemand hat abgesagt — du bist von der Warteliste in „%2$s“ nachgerückt.\n\n%3$s\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nThe hat picked your coffee partner for this month: %2$s.\n\n%3$s\n\nWrite them, pick a café or a photowalk, talk pictures. No agenda, no protocol.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nDer Hut hat deinen Kaffee-Partner für diesen Monat gezogen: %2$s.\n\n%3$s\n\nSchreib ihnen, such ein Café oder einen Photowalk aus, redet über Bilder. Keine Agenda, kein Protokoll.\n\n— Vienna Photo Group"
+
+msgid "Hello %1$s,\n\nWe couldn't publish \"%2$s\" this time."
+msgstr "Hallo %1$s,\n\n„%2$s“ konnten wir diesmal nicht veröffentlichen."
+
+msgid "Hello %1$s,\n\nYour submission \"%2$s\" was approved and is now live — your name under it:\n\n%3$s\n\nThank you for feeding the index.\n\n— Vienna Photo Group"
+msgstr "Hallo %1$s,\n\nDeine Einreichung „%2$s“ wurde freigegeben und ist jetzt live — dein Name darunter:\n\n%3$s\n\nDanke, dass du den Index fütterst.\n\n— Vienna Photo Group"
+
+msgid "Hello %s,\n\nQuick reminder — your membership is active, but submissions stay locked until you confirm your email. We just sent you a fresh confirmation link (separate message).\n\n— Vienna Photo Group"
+msgstr "Hallo %s,\n\nKurze Erinnerung — deine Mitgliedschaft ist aktiv, aber Einreichungen bleiben gesperrt, bis du deine E-Mail bestätigst. Ein frischer Bestätigungslink ist unterwegs (eigene Nachricht).\n\n— Vienna Photo Group"
+
+msgid "Hello %s,\n\nWelcome — you're a member. Membership is free: no ads, no fees, member-run.\n\nYou can now contribute to the map and the journal, build your public portfolio, and download every issue as a PDF. Confirm your email (separate message in your inbox) to unlock submissions.\n\nYour dashboard: %s\n\n— Vienna Photo Group"
+msgstr "Hallo %s,\n\nWillkommen — du bist Mitglied. Die Mitgliedschaft ist kostenlos: keine Werbung, keine Gebühren, member-run.\n\nDu kannst jetzt zu Karte und Journal beitragen, dein öffentliches Portfolio aufbauen und jede Ausgabe als PDF laden. Bestätige deine E-Mail (eigene Nachricht in deinem Postfach), um Einreichungen freizuschalten.\n\nDein Dashboard: %s\n\n— Vienna Photo Group"
+
+msgid "Home"
+msgstr "Startseite"
+
+msgid "Honest beats nice. Specific beats vague. Your name stands next to it."
+msgstr "Ehrlich schlägt nett. Konkret schlägt vage. Dein Name steht daneben."
+
+msgid "Hourly rate"
+msgstr "Stundensatz"
+
+msgid "Hours"
+msgstr "Öffnungszeiten"
+
+msgid "How do I add a location to the map?"
+msgstr "Wie füge ich eine Location zur Karte hinzu?"
+
+msgid "How do I pay?"
+msgstr "Wie bezahle ich?"
+
+msgid "How often does the magazine ship?"
+msgstr "Wie oft erscheint das Magazin?"
+
+msgid "How you appear on the <em>wall</em>."
+msgstr "Wie du an der <em>Wand</em> erscheinst."
+
+msgid "How-to, <em>in practice</em>."
+msgstr "How-to, <em>in der Praxis</em>."
+
+msgid "I'd like someone to walk with"
+msgstr "Ich hätte gern Begleitung beim Gehen"
+
+msgid "I'll show newcomers around"
+msgstr "Ich zeige Neuen die Runde"
+
+msgid "I'm coming"
+msgstr "Ich komme"
+
+msgid "I'm here"
+msgstr "Ich bin da"
+
+msgid "Idea box"
+msgstr "Ideen-Briefkasten"
+
+msgid "Idea dropped in the box — anonymously. Thank you."
+msgstr "Idee eingeworfen — anonym. Danke."
+
+msgid "Idempotent · safe to re-run."
+msgstr "Idempotent · gefahrlos wiederholbar."
+
+msgid "Identity & social"
+msgstr "Identität & Social"
+
+msgid "Identity & social details. These share storage with the Customizer (Identity & social) — edit in either place."
+msgstr "Identität & Social-Details. Teilen sich den Speicher mit dem Customizer (Identität & Social) — an beiden Orten editierbar."
+
+msgid "If a non-standard meta key shows up that the migration does not know about, paste the key name here and I will add it to the candidate list."
+msgstr "Wenn ein unbekannter Meta-Key auftaucht, den die Migration nicht kennt, füge den Key-Namen hier ein und ich nehme ihn in die Kandidatenliste auf."
+
+msgid "If that address has an account, a login link is on its way."
+msgstr "Wenn zu dieser Adresse ein Konto existiert, ist ein Login-Link unterwegs."
+
+msgid "If you imported from VPG v1, locations/studios/shops store their lat/lng in a single ACF field (e.g. \"coordinates\", \"studio_coordinates\"). Run this to split them into the v2 location_lat / studio_lat / shop_lat meta keys so the new map can read them. Tries seven candidate field-name variants per CPT · safe to re-run · skips entries already migrated."
+msgstr "Wenn du aus VPG v1 importiert hast, speichern Locations/Studios/Shops ihre lat/lng in einem einzelnen ACF-Feld (z. B. „coordinates“, „studio_coordinates“). Dieser Lauf teilt sie in die v2-Keys location_lat / studio_lat / shop_lat auf, damit die neue Karte sie lesen kann. Probiert sieben Feldnamen-Varianten je CPT · gefahrlos wiederholbar · überspringt bereits Migriertes."
+
+msgid "If your question is not on this page, send a note. One editor reads every message."
+msgstr "Wenn deine Frage nicht auf dieser Seite steht, schick eine Nachricht. Eine Redaktion liest jede."
+
+msgid "Image pair"
+msgstr "Bildpaar"
+
+msgid "Imprint"
+msgstr "Impressum"
+
+msgid "In editorial review"
+msgstr "In redaktioneller Prüfung"
+
+msgid "In progress"
+msgstr "In Arbeit"
+
+msgid "In review"
+msgstr "In Prüfung"
+
+msgid "In summer 2023 came the transition — the first iteration of the dedicated VPG web platform, a static bridge hosting tutorials and archiving the imagery pulled from the Instagram network. The first step off borrowed land."
+msgstr "Im Sommer 2023 kam der Übergang — die erste Iteration der eigenen VPG-Webplattform, eine statische Brücke für Tutorials und das Archiv der Bilder aus dem Instagram-Netzwerk. Der erste Schritt weg von geliehenem Land."
+
+msgid "In the magazine"
+msgstr "Im Magazin"
+
+msgid "In the next issue (teaser)"
+msgstr "In der nächsten Ausgabe (Teaser)"
+
+msgid "In your own <em>words</em>."
+msgstr "In deinen eigenen <em>Worten</em>."
+
+msgid "Inbox zero. Nothing waiting for editorial."
+msgstr "Inbox null. Nichts wartet auf die Redaktion."
+
+msgid "Includes"
+msgstr "Enthält"
+
+msgid "Index"
+msgstr "Index"
+
+msgid "Inner circle"
+msgstr "Innerer Kreis"
+
+msgid "Insert:"
+msgstr "Einfügen:"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "Instagram URL"
+msgstr "Instagram-URL"
+
+msgid "Instance URL"
+msgstr "Instanz-URL"
+
+msgid "Interview"
+msgstr "Interview"
+
+msgid "Interview saved — editorial can feature you now."
+msgstr "Interview gespeichert — die Redaktion kann dich jetzt featuren."
+
+msgid "Interview ✓"
+msgstr "Interview ✓"
+
+msgid "Invitation to the yearly editorial dinner"
+msgstr "Einladung zum jährlichen Redaktionsessen"
+
+msgid "Invited ✓"
+msgstr "Eingeladen ✓"
+
+msgid "Is VPG a non-profit?"
+msgstr "Ist VPG gemeinnützig?"
+
+msgid "Is there an API?"
+msgstr "Gibt es eine API?"
+
+msgid "Issue"
+msgstr "Ausgabe"
+
+msgid "Issue cover"
+msgstr "Ausgaben-Cover"
+
+msgid "Issue metadata"
+msgstr "Ausgaben-Metadaten"
+
+msgid "Issue number / volume"
+msgstr "Ausgabennummer / Band"
+
+msgid "Issues published"
+msgstr "Veröffentlichte Ausgaben"
+
+msgid "Issues, journal posts and events by month. One click drafts a new issue from a month's content."
+msgstr "Ausgaben, Journal-Posts und Events nach Monat. Ein Klick entwirft eine neue Ausgabe aus dem Inhalt eines Monats."
+
+msgid "JPG, PNG, WebP or AVIF · max 8 MB each · the first photo becomes the cover. Your photos stay yours, credited by name."
+msgstr "JPG, PNG, WebP oder AVIF · je max. 8 MB · das erste Foto wird das Cover. Deine Fotos bleiben deine, mit Namen gezeichnet."
+
+msgid "Join VPG"
+msgstr "VPG beitreten"
+
+msgid "Join free"
+msgstr "Kostenlos beitreten"
+
+msgid "Join free now"
+msgstr "Jetzt kostenlos beitreten"
+
+msgid "Join free to RSVP"
+msgstr "Kostenlos beitreten zum Zusagen"
+
+msgid "Join in"
+msgstr "Mach mit"
+
+msgid "Join the <em>collective</em>."
+msgstr "Tritt dem <em>Kollektiv</em> bei."
+
+msgid "Join the <em>studio</em>."
+msgstr "Tritt dem <em>Studio</em> bei."
+
+msgid "Join the collective"
+msgstr "Dem Kollektiv beitreten"
+
+msgid "Join the community"
+msgstr "Der Community beitreten"
+
+msgid "Join the project"
+msgstr "Dem Projekt beitreten"
+
+msgid "Join them"
+msgstr "Mach mit"
+
+msgid "Joining <em>VPG</em>."
+msgstr "<em>VPG</em> beitreten."
+
+msgid "Journal"
+msgstr "Journal"
+
+msgid "Journal article"
+msgstr "Journal-Artikel"
+
+msgid "Journal articles will appear here as members publish them."
+msgstr "Journal-Artikel erscheinen hier, sobald Member sie veröffentlichen."
+
+msgid "Journal story"
+msgstr "Journal-Story"
+
+msgid "Journal · free to read"
+msgstr "Journal · frei lesbar"
+
+msgid "Journal · pick an article"
+msgstr "Journal · Artikel wählen"
+
+msgid "Jump to a random spot"
+msgstr "Zu einem zufälligen Spot springen"
+
+msgid "Jury duty"
+msgstr "Jury-Pflicht"
+
+msgid "Karlsplatz 4, Wien"
+msgstr "Karlsplatz 4, Wien"
+
+msgid "Karlsplatz · by the fountain"
+msgstr "Karlsplatz · beim Brunnen"
+
+msgid "Keep me posted"
+msgstr "Halt mich auf dem Laufenden"
+
+msgid "Know a spot there? Add it →"
+msgstr "Kennst du dort einen Spot? Trag ihn ein →"
+
+msgid "Know a spot?"
+msgstr "Kennst du einen Spot?"
+
+msgid "Last confirmed accurate: %s"
+msgstr "Zuletzt als korrekt bestätigt: %s"
+
+msgid "Last heartbeat: %s. Digest, reminders and challenges depend on it — check the easyname cronjob (see docs/runbooks/vpg-deploy-easyname.md)."
+msgstr "Letzter Heartbeat: %s. Digest, Erinnerungen und Challenges hängen daran — prüf den easyname-Cronjob (siehe docs/runbooks/vpg-deploy-easyname.md)."
+
+msgid "Later · optional"
+msgstr "Später · optional"
+
+msgid "Latest <em>writing</em>."
+msgstr "Neueste <em>Texte</em>."
+
+msgid "Latest issue"
+msgstr "Neueste Ausgabe"
+
+msgid "Latitude"
+msgstr "Breitengrad"
+
+msgid "Layouts, PDF, print coordination, member communications. The boring-but-essential chair."
+msgstr "Layouts, PDF, Druckkoordination, Member-Kommunikation. Der langweilig-aber-essentielle Stuhl."
+
+msgid "Leave a note"
+msgstr "Hinterlass eine Notiz"
+
+msgid "Leave this field empty"
+msgstr "Dieses Feld leer lassen"
+
+msgid "Lede (1-2 sentence intro)"
+msgstr "Lede (1–2 Sätze Einstieg)"
+
+msgid "Legal"
+msgstr "Rechtliches"
+
+msgid "Legal links"
+msgstr "Rechtliche Links"
+
+msgid "Level"
+msgstr "Stufe"
+
+msgid "Levels"
+msgstr "Stufen"
+
+msgid "Light direction, best time of day, what to bring, access notes, anything you wish you’d known before going."
+msgstr "Lichtrichtung, beste Tageszeit, was mitbringen, Zugangsnotizen — alles, was du vorher gern gewusst hättest."
+
+msgid "Light today"
+msgstr "Licht heute"
+
+msgid "List me in the public members directory"
+msgstr "Führe mich im öffentlichen Member-Verzeichnis"
+
+msgid "Listed"
+msgstr "Verzeichnet"
+
+msgid "Loading…"
+msgstr "Lädt…"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Location details"
+msgstr "Location-Details"
+
+msgid "Location on the map"
+msgstr "Ort auf der Karte"
+
+msgid "Location type"
+msgstr "Location-Typ"
+
+msgid "Location types"
+msgstr "Location-Typen"
+
+msgid "Locations"
+msgstr "Locations"
+
+msgid "Locations &amp; submissions"
+msgstr "Locations &amp; Einreichungen"
+
+msgid "Locations index"
+msgstr "Location-Index"
+
+msgid "Locations mapped"
+msgstr "Kartierte Locations"
+
+msgid "Locations that are clearly private / trespassing · entries we cannot verify on the ground · duplicates of existing pins · anything that endangers the photographer or the place. Most submissions are accepted with light edits."
+msgstr "Eindeutig private Orte / Hausfriedensbruch · Einträge, die wir vor Ort nicht prüfen können · Duplikate bestehender Pins · alles, was Fotograf:in oder Ort gefährdet. Die meisten Einreichungen werden mit leichten Änderungen angenommen."
+
+msgid "Locations, studios and shops on one canvas. Member-curated — light + access notes, district + transit context. Toggle the layers below."
+msgstr "Locations, Studios und Shops auf einer Karte. Von Membern kuratiert — Licht- + Zugangsnotizen, Bezirk + Öffi-Kontext. Ebenen unten umschaltbar."
+
+msgid "Log in"
+msgstr "Anmelden"
+
+msgid "Log in &rarr; <a href=\"%s\">/submit/</a> &rarr; pick \"Location\" &rarr; type the address (the form auto-pins it on the map) &rarr; add notes about light, access and best time of day. Editorial reviews within 72h."
+msgstr "Anmelden &rarr; <a href=\"%s\">/submit/</a> &rarr; „Location“ wählen &rarr; Adresse tippen (das Formular pinnt sie automatisch auf die Karte) &rarr; Notizen zu Licht, Zugang und bester Tageszeit ergänzen. Die Redaktion prüft binnen 72h."
+
+msgid "Log in to see it"
+msgstr "Zum Ansehen anmelden"
+
+msgid "Log out"
+msgstr "Abmelden"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Longitude"
+msgstr "Längengrad"
+
+msgid "Looking for company"
+msgstr "Suche Begleitung"
+
+msgid "Lost in the <em>archive</em>."
+msgstr "Verloren im <em>Archiv</em>."
+
+msgid "Macro"
+msgstr "Makro"
+
+msgid "Magazine"
+msgstr "Magazin"
+
+msgid "Magazine editor"
+msgstr "Magazin-Editor"
+
+msgid "Magazine issues"
+msgstr "Magazin-Ausgaben"
+
+msgid "Mail + notify this member to answer the interview questions"
+msgstr "Mail + Benachrichtigung an dieses Mitglied, die Interviewfragen zu beantworten"
+
+msgid "Mail log"
+msgstr "Mail-Log"
+
+msgid "Make the next <em>issue</em>."
+msgstr "Mach die nächste <em>Ausgabe</em>."
+
+msgid "Manage"
+msgstr "Verwalten"
+
+msgid "Manage emails"
+msgstr "E-Mails verwalten"
+
+msgid "Manual assignment · payment automation writes the same field later."
+msgstr "Manuelle Zuweisung · die Zahlungsautomatik schreibt später dasselbe Feld."
+
+msgid "Map"
+msgstr "Karte"
+
+msgid "Map entries publish instantly"
+msgstr "Karteneinträge erscheinen sofort"
+
+msgid "Map · reviews · journal · events · trails"
+msgstr "Karte · Reviews · Journal · Events · Trails"
+
+msgid "Mark all read"
+msgstr "Alle als gelesen markieren"
+
+msgid "Mark part as read"
+msgstr "Teil als gelesen markieren"
+
+msgid "Max participants · 0 = open"
+msgstr "Max. Teilnehmende · 0 = offen"
+
+msgid "Max participants · 0 = unlimited. Full events run a waitlist."
+msgstr "Max. Teilnehmende · 0 = unbegrenzt. Volle Events führen eine Warteliste."
+
+msgid "Meeting point"
+msgstr "Treffpunkt"
+
+msgid "Member"
+msgstr "Member"
+
+msgid "Member <em>login</em>."
+msgstr "Member-<em>Login</em>."
+
+msgid "Member competitions with honest feedback — the kind likes can't give you."
+msgstr "Member-Wettbewerbe mit ehrlichem Feedback — der Sorte, die Likes dir nicht geben können."
+
+msgid "Member since"
+msgstr "Mitglied seit"
+
+msgid "Member since %s."
+msgstr "Mitglied seit %s."
+
+msgid "Member · Active"
+msgstr "Member · Aktiv"
+
+msgid "Member · free"
+msgstr "Member · kostenlos"
+
+msgid "Member-run"
+msgstr "Member-run"
+
+msgid "Member-run · no hierarchy"
+msgstr "Member-run · keine Hierarchie"
+
+msgid "Member-written"
+msgstr "Von Membern geschrieben"
+
+msgid "Member-written walkthroughs for lighting, develop, scan, archive, print."
+msgstr "Von Membern geschriebene Anleitungen für Licht, Entwicklung, Scan, Archiv, Druck."
+
+msgid "Members"
+msgstr "Members"
+
+msgid "Members <em>only</em>."
+msgstr "Nur für <em>Member</em>."
+
+msgid "Members <em>pin</em>."
+msgstr "Member <em>pinnen</em>."
+
+msgid "Members area"
+msgstr "Member-Bereich"
+
+msgid "Members feed the site from here — the map first, then reviews, journal stories, events and trails as your rank grows. Editorial reviews within 72 hours; higher ranks publish instantly."
+msgstr "Von hier füttern Member die Seite — zuerst die Karte, dann Reviews, Journal-Storys, Events und Trails, wie dein Rang wächst. Die Redaktion prüft binnen 72 Stunden; höhere Ränge veröffentlichen sofort."
+
+msgid "Members get early access"
+msgstr "Member haben früher Zugriff"
+
+msgid "Members of VPG"
+msgstr "Member der VPG"
+
+msgid "Members only"
+msgstr "Nur für Member"
+
+msgid "Members only · log in or join to read this."
+msgstr "Nur für Member · melde dich an oder tritt bei, um das zu lesen."
+
+msgid "Members only."
+msgstr "Nur für Member."
+
+msgid "Members read all"
+msgstr "Member lesen alles"
+
+msgid "Members see who — log in."
+msgstr "Member sehen wer — anmelden."
+
+msgid "Members who own the gear"
+msgstr "Member, denen die Ausrüstung gehört"
+
+msgid "Members · free"
+msgstr "Member · kostenlos"
+
+msgid "Members · pick the featured artist"
+msgstr "Members · Featured Artist wählen"
+
+msgid "Membership"
+msgstr "Mitgliedschaft"
+
+msgid "Membership free · active"
+msgstr "Mitgliedschaft kostenlos · aktiv"
+
+msgid "Membership is <em>free</em>."
+msgstr "Die Mitgliedschaft ist <em>kostenlos</em>."
+
+msgid "Membership is annual · no auto-renewal. If you don't renew, your Member tier downgrades to Reader at the end of the year — you still see everything, just no submissions or PDFs."
+msgstr "Die Mitgliedschaft gilt jährlich · keine automatische Verlängerung. Ohne Verlängerung wird dein Member-Status zum Jahresende zum Reader — du siehst weiter alles, nur ohne Einreichungen und PDFs."
+
+msgid "Membership stays free either way. Leave your address and we send exactly one email when the optional supporter tiers launch."
+msgstr "Die Mitgliedschaft bleibt so oder so kostenlos. Hinterlass deine Adresse und wir schicken genau eine E-Mail, wenn die optionalen Supporter-Stufen starten."
+
+msgid "Membership stays free. Optional supporter tiers — print extras, a colophon credit — arrive once the community has found its feet. Nothing you get today ever moves behind a paywall."
+msgstr "Die Mitgliedschaft bleibt kostenlos. Optionale Supporter-Stufen — Print-Extras, ein Kolophon-Credit — kommen, sobald die Community steht. Nichts, was du heute bekommst, wandert je hinter eine Paywall."
+
+msgid "Membership · free"
+msgstr "Mitgliedschaft · kostenlos"
+
+msgid "Membership · map · magazine"
+msgstr "Mitgliedschaft · Karte · Magazin"
+
+msgid "Membership, the location index, the magazine, submissions. If your question is not here, send a note · we read every message."
+msgstr "Mitgliedschaft, der Location-Index, das Magazin, Einreichungen. Wenn deine Frage fehlt, schick eine Nachricht · wir lesen jede."
+
+msgid "Menu"
+msgstr "Menü"
+
+msgid "Message"
+msgstr "Nachricht"
+
+msgid "Meta API changes exposed the fragility of building on borrowed infrastructure. A complete philosophical and technical restructuring followed. VPG became an independent, decentralised, data-driven community platform and location index."
+msgstr "Metas API-Änderungen zeigten, wie zerbrechlich Bauen auf geliehener Infrastruktur ist. Eine komplette philosophische und technische Neuordnung folgte. VPG wurde eine unabhängige, dezentrale, datengetriebene Community-Plattform und ein Location-Index."
+
+msgid "Migrate coordinates now"
+msgstr "Koordinaten jetzt migrieren"
+
+msgid "Migrate v1 coordinates"
+msgstr "v1-Koordinaten migrieren"
+
+msgid "Missing one?"
+msgstr "Fehlt eine?"
+
+msgid "Moderate"
+msgstr "Mittel"
+
+msgid "Moderate · some climbs or length"
+msgstr "Mittel · etwas Steigung oder Länge"
+
+msgid "Monthly"
+msgstr "Monatlich"
+
+msgid "Monthly challenge draft is waiting"
+msgstr "Der Entwurf zur Monats-Challenge wartet"
+
+msgid "Monthly challenge · %s"
+msgstr "Monats-Challenge · %s"
+
+msgid "Monthly cycle"
+msgstr "Monatszyklus"
+
+msgid "Monthly · 3 dates"
+msgstr "Monatlich · 3 Termine"
+
+msgid "Monthly · usually around the first of the month. Late only when the city gives us a reason to wait (special exhibitions, light conditions, members travelling)."
+msgstr "Monatlich · meist um den Monatsersten. Später nur, wenn die Stadt uns einen Grund gibt (Sonderausstellungen, Lichtlagen, reisende Member)."
+
+msgid "Monthly · ~1KB"
+msgstr "Monatlich · ~1 KB"
+
+msgid "Monthly, four chairs"
+msgstr "Monatlich, vier Stühle"
+
+msgid "Most seen this week"
+msgstr "Meistgesehen diese Woche"
+
+msgid "Most seen this week:\n"
+msgstr "Meistgesehen diese Woche:\n"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Name listed in every issue&rsquo;s colophon"
+msgstr "Name im Kolophon jeder Ausgabe"
+
+msgid "Native fields"
+msgstr "Native Felder"
+
+msgid "Needs district"
+msgstr "Braucht Bezirk"
+
+msgid "Needs more detail: access, best time, what to expect on site."
+msgstr "Braucht mehr Detail: Zugang, beste Zeit, was einen vor Ort erwartet."
+
+msgid "New"
+msgstr "Neu"
+
+msgid "New Issue"
+msgstr "Neue Ausgabe"
+
+msgid "New issue:\n"
+msgstr "Neue Ausgabe:\n"
+
+msgid "New on the <em>wall</em>."
+msgstr "Neu an der <em>Wand</em>."
+
+msgid "New on the map:\n"
+msgstr "Neu auf der Karte:\n"
+
+msgid "New on the site for your saved search “%1$s”: %2$s"
+msgstr "Neu auf der Seite für deine gespeicherte Suche „%1$s“: %2$s"
+
+msgid "New submission"
+msgstr "Neue Einreichung"
+
+msgid "Newsletter"
+msgstr "Newsletter"
+
+msgid "Newsletter list"
+msgstr "Newsletter-Liste"
+
+msgid "Newsletter when an issue ships"
+msgstr "Newsletter, wenn eine Ausgabe erscheint"
+
+msgid "Next"
+msgstr "Weiter"
+
+msgid "Next →"
+msgstr "Weiter →"
+
+msgid "Next: %1$s — %2$d of %3$d on the current milestone."
+msgstr "Als Nächstes: %1$s — %2$d von %3$d am aktuellen Meilenstein."
+
+msgid "Night"
+msgstr "Nacht"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "No GPS — editorial will place the pin from your note."
+msgstr "Kein GPS — die Redaktion setzt den Pin nach deiner Notiz."
+
+msgid "No ads, no investors, no <em>acquisition target</em>."
+msgstr "Keine Werbung, keine Investoren, kein <em>Übernahmeziel</em>."
+
+msgid "No ads, no tracking"
+msgstr "Keine Werbung, kein Tracking"
+
+msgid "No banners, no sponsored posts, no data sold. Analytics are cookie-free and self-hosted."
+msgstr "Keine Banner, keine gesponserten Posts, keine verkauften Daten. Analytics sind cookiefrei und selbst gehostet."
+
+msgid "No collections yet — editorial ties the first thread soon."
+msgstr "Noch keine Sammlungen — die Redaktion knüpft den ersten Faden bald."
+
+msgid "No commitment, no payment requested. Just one email when supporter tiers open."
+msgstr "Keine Verpflichtung, keine Zahlung. Nur eine E-Mail, wenn die Supporter-Stufen öffnen."
+
+msgid "No competitions yet — the first monthly challenge starts the chronicle."
+msgstr "Noch keine Wettbewerbe — die erste Monats-Challenge beginnt die Chronik."
+
+msgid "No coordinates yet"
+msgstr "Noch keine Koordinaten"
+
+msgid "No entries yet — the wall is waiting for the first frame."
+msgstr "Noch keine Einträge — die Wand wartet auf den ersten Rahmen."
+
+msgid "No events scheduled. Members can submit from the dashboard."
+msgstr "Keine Events geplant. Member können welche über das Dashboard einreichen."
+
+msgid "No frames yet — you were there, you go first."
+msgstr "Noch keine Bilder — du warst dabei, du fängst an."
+
+msgid "No investor, no parent company. The collective decides, the books stay open, this page stays current."
+msgstr "Kein Investor, kein Mutterkonzern. Das Kollektiv entscheidet, die Bücher bleiben offen, diese Seite bleibt aktuell."
+
+msgid "No issues yet."
+msgstr "Noch keine Ausgaben."
+
+msgid "No mail sent yet."
+msgstr "Noch keine Mail verschickt."
+
+msgid "No marketing. No drip campaigns. One short letter per month when the new issue is live · cover, contents, a 30-word editor’s line. That’s it."
+msgstr "Kein Marketing. Keine Drip-Kampagnen. Ein kurzer Brief pro Monat, wenn die neue Ausgabe live ist · Cover, Inhalt, eine 30-Wörter-Zeile der Redaktion. Das ist alles."
+
+msgid "No paywall, ever"
+msgstr "Keine Paywall, nie"
+
+msgid "No pin yet — photo GPS fills it automatically, or leave it to editorial."
+msgstr "Noch kein Pin — Foto-GPS füllt ihn automatisch, oder überlass es der Redaktion."
+
+msgid "No public contributions yet."
+msgstr "Noch keine öffentlichen Beiträge."
+
+msgid "No published locations yet — the map fills up first."
+msgstr "Noch keine veröffentlichten Locations — die Karte füllt sich zuerst."
+
+msgid "No rooms yet — the first Documentarian to open one writes collective history."
+msgstr "Noch keine Räume — wer als erster Documentarian einen öffnet, schreibt Kollektiv-Geschichte."
+
+msgid "No stops pinned yet."
+msgstr "Noch keine Stops gepinnt."
+
+msgid "No walls hung yet — editorial curates them from member uploads."
+msgstr "Noch keine Wände gehängt — die Redaktion kuratiert sie aus Member-Uploads."
+
+msgid "No — a standalone piece"
+msgstr "Nein — ein eigenständiges Stück"
+
+msgid "Nobody is listed yet. Members choose to appear here from their dashboard profile — be the first."
+msgstr "Noch niemand gelistet. Member erscheinen hier über ihr Dashboard-Profil — sei die erste Person."
+
+msgid "Nobody waiting right now."
+msgstr "Gerade wartet niemand."
+
+msgid "Nobody walks <em>alone</em>."
+msgstr "Niemand geht <em>allein</em>."
+
+msgid "Nobody yet — be the first."
+msgstr "Noch niemand — sei die erste Person."
+
+msgid "Nobody yet."
+msgstr "Noch niemand."
+
+msgid "None · ever"
+msgstr "Keine · nie"
+
+msgid "Not a member yet?"
+msgstr "Noch kein Mitglied?"
+
+msgid "Not a member?"
+msgstr "Kein Mitglied?"
+
+msgid "Not a member? Join free"
+msgstr "Kein Mitglied? Kostenlos beitreten"
+
+msgid "Not formally registered as one — practically, yes. Membership fees cover hosting, print services and small honorariums. No commercial profit, no equity, no acquisition target."
+msgstr "Formal nicht eingetragen — praktisch ja. Mitgliedsbeiträge decken Hosting, Druck und kleine Honorare. Kein kommerzieller Gewinn, kein Eigenkapital, kein Übernahmeziel."
+
+msgid "Not now"
+msgstr "Nicht jetzt"
+
+msgid "Not open yet"
+msgstr "Noch nicht offen"
+
+msgid "Not run"
+msgstr "Nicht gelaufen"
+
+msgid "Not yet confirmed by a member on site."
+msgstr "Noch nicht von einem Mitglied vor Ort bestätigt."
+
+msgid "Not yet. The data is REST-readable via WordPress's default endpoints for logged-in users · a proper public API with rate limits is on the 2026 roadmap."
+msgstr "Noch nicht. Die Daten sind für eingeloggte Nutzer über WordPress-Standard-Endpoints REST-lesbar · eine echte öffentliche API mit Rate-Limits steht auf der 2026er-Roadmap."
+
+msgid "Note"
+msgstr "Notiz"
+
+msgid "Nothing broken — every checked image resolves to a file."
+msgstr "Nichts kaputt — jedes geprüfte Bild führt zu einer Datei."
+
+msgid "Nothing here yet for this filter."
+msgstr "Für diesen Filter ist hier noch nichts."
+
+msgid "Nothing here yet."
+msgstr "Hier ist noch nichts."
+
+msgid "Nothing on your wall yet"
+msgstr "Noch nichts an deiner Wand"
+
+msgid "Nothing pinned here yet — this district is waiting for its first member find."
+msgstr "Hier ist noch nichts gepinnt — dieser Bezirk wartet auf seinen ersten Member-Fund."
+
+msgid "Nothing reported. The wall is civil."
+msgstr "Nichts gemeldet. Die Wand ist zivilisiert."
+
+msgid "Nothing saved yet — every article has a “Save for later” button. Whatever you star lands here."
+msgstr "Noch nichts gespeichert — jeder Artikel hat einen „Für später merken“-Knopf. Was du markierst, landet hier."
+
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+msgid "Off"
+msgstr "Aus"
+
+msgid "Offline — keep writing, your draft is saved on this device."
+msgstr "Offline — schreib weiter, dein Entwurf ist auf diesem Gerät gespeichert."
+
+msgid "Older →"
+msgstr "Ältere →"
+
+msgid "Oldest first — the 72-hour promise starts when a member hits submit. Approve publishes and mails; reject always carries feedback."
+msgstr "Älteste zuerst — das 72-Stunden-Versprechen beginnt, wenn ein Mitglied auf Einreichen drückt. Freigeben veröffentlicht und mailt; Zurückgeben trägt immer Feedback."
+
+msgid "On the"
+msgstr "Am"
+
+msgid "On the <em>map</em>."
+msgstr "Auf der <em>Karte</em>."
+
+msgid "On the map"
+msgstr "Auf der Karte"
+
+msgid "On the way to %1$s: %2$d of %3$d %4$s."
+msgstr "Auf dem Weg zu %1$s: %2$d von %3$d %4$s."
+
+msgid "One accent does the pointing. Defaults are the Gallery system."
+msgstr "Ein Akzent zeigt die Richtung. Standard ist das Gallery-System."
+
+msgid "One click left · unlock your VPG submissions"
+msgstr "Ein Klick noch · schalte deine VPG-Einreichungen frei"
+
+msgid "One click, any email"
+msgstr "Ein Klick, jede E-Mail"
+
+msgid "One editor reads every <em>message</em>. We answer in the order received."
+msgstr "Eine Redaktion liest jede <em>Nachricht</em>. Wir antworten in Eingangsreihenfolge."
+
+msgid "One email when <em>the issue ships</em>."
+msgstr "Eine E-Mail, wenn <em>die Ausgabe erscheint</em>."
+
+msgid "One email when supporter tiers <em>open</em>."
+msgstr "Eine E-Mail, wenn Supporter-Stufen <em>öffnen</em>."
+
+msgid "One line for editorial · optional"
+msgstr "Eine Zeile für die Redaktion · optional"
+
+msgid "One line on the idea"
+msgstr "Eine Zeile zur Idee"
+
+msgid "One link"
+msgstr "Ein Link"
+
+msgid "One more step — confirm the link we just mailed you."
+msgstr "Ein Schritt noch — bestätige den Link, den wir dir gerade gemailt haben."
+
+msgid "One or two lines on what the next issue brings."
+msgstr "Ein, zwei Zeilen dazu, was die nächste Ausgabe bringt."
+
+msgid "One photo, your position, a name — editorial fills in the rest with you. Goes straight to the review desk."
+msgstr "Ein Foto, deine Position, ein Name — den Rest ergänzt die Redaktion mit dir. Geht direkt an den Review-Desk."
+
+msgid "One spot in the city you keep returning to — and why?"
+msgstr "Ein Ort in der Stadt, zu dem du immer wieder zurückkehrst — und warum?"
+
+msgid "One step left"
+msgstr "Ein Schritt noch"
+
+msgid "One term per line, term and definition separated by a pipe: “Blende | Die Öffnung im Objektiv …”. Rendered A–Z on the page using the Glossary template."
+msgstr "Ein Begriff pro Zeile, Begriff und Definition durch einen Strich getrennt: „Blende | Die Öffnung im Objektiv …“. Auf der Seite mit dem Glossar-Template A–Z gerendert."
+
+msgid "One vote per week"
+msgstr "Eine Stimme pro Woche"
+
+msgid "One year <em>ago</em>."
+msgstr "Vor einem <em>Jahr</em>."
+
+msgid "One-line description"
+msgstr "Beschreibung in einer Zeile"
+
+msgid "One-off"
+msgstr "Einmalig"
+
+msgid "One-time code · only if you use 2FA"
+msgstr "Einmal-Code · nur wenn du 2FA nutzt"
+
+msgid "One-time link, valid 15 minutes. No password needed."
+msgstr "Einmal-Link, 15 Minuten gültig. Kein Passwort nötig."
+
+msgid "Open <em>books</em>."
+msgstr "Offene <em>Bücher</em>."
+
+msgid "Open RSS feed"
+msgstr "RSS-Feed öffnen"
+
+msgid "Open a room from your dashboard"
+msgstr "Öffne einen Raum über dein Dashboard"
+
+msgid "Open during beta"
+msgstr "Offen während der Beta"
+
+msgid "Open filtered map"
+msgstr "Gefilterte Karte öffnen"
+
+msgid "Open for entries"
+msgstr "Offen für Einreichungen"
+
+msgid "Open in OSM"
+msgstr "In OSM öffnen"
+
+msgid "Open in OSM for directions ↗"
+msgstr "In OSM öffnen für Wegbeschreibung ↗"
+
+msgid "Open in authenticator app →"
+msgstr "In Authenticator-App öffnen →"
+
+msgid "Open now"
+msgstr "Jetzt geöffnet"
+
+msgid "Open rooms"
+msgstr "Offene Räume"
+
+msgid "Open submission form"
+msgstr "Einreichformular öffnen"
+
+msgid "Open the hub"
+msgstr "Hub öffnen"
+
+msgid "Open the map"
+msgstr "Karte öffnen"
+
+msgid "Open the room"
+msgstr "Raum öffnen"
+
+msgid "Open your dashboard"
+msgstr "Dashboard öffnen"
+
+msgid "Open your personal year in review →"
+msgstr "Öffne deinen persönlichen Jahresrückblick →"
+
+msgid "Open your profile"
+msgstr "Profil öffnen"
+
+msgid "Opening hours"
+msgstr "Öffnungszeiten"
+
+msgid "Opt-in · set in your profile"
+msgstr "Opt-in · im Profil einstellbar"
+
+msgid "Optional · come later"
+msgstr "Optional · kommen später"
+
+msgid "Or click anywhere on the map to drop a pin."
+msgstr "Oder klick irgendwo auf die Karte, um einen Pin zu setzen."
+
+msgid "Or start a new series"
+msgstr "Oder starte eine neue Serie"
+
+msgid "Or: email me a login link"
+msgstr "Oder: Mail mir einen Login-Link"
+
+msgid "Order"
+msgstr "Reihenfolge"
+
+msgid "Origin &amp; <em>evolution</em>."
+msgstr "Ursprung &amp; <em>Entwicklung</em>."
+
+msgid "Other years"
+msgstr "Andere Jahre"
+
+msgid "Outdated info flagged · %s"
+msgstr "Veraltete Info gemeldet · %s"
+
+msgid "Overall"
+msgstr "Gesamt"
+
+msgid "Owned by nobody"
+msgstr "Gehört niemandem"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "PDF download available for your tier · forever-keepable."
+msgstr "PDF-Download für deine Stufe · für immer behaltbar."
+
+msgid "PDF download of every magazine issue · submission rights to the location map and studio directory · event discounts · early access to new issues · a member profile page. See the <a href=\"%s\">full membership comparison</a>."
+msgstr "PDF-Download jeder Magazin-Ausgabe · Einreichrechte für Location-Karte und Studio-Verzeichnis · Event-Rabatte · früher Zugriff auf neue Ausgaben · eine Member-Profilseite. Siehe den <a href=\"%s\">vollständigen Mitgliedschaftsvergleich</a>."
+
+msgid "PDF for members · print 2× a year"
+msgstr "PDF für Member · Print 2× im Jahr"
+
+msgid "Page break after"
+msgstr "Seitenumbruch danach"
+
+msgid "Pages created with templates assigned"
+msgstr "Seiten mit zugewiesenen Templates angelegt"
+
+msgid "Paid supporter tiers come <em>later</em>."
+msgstr "Bezahlte Supporter-Stufen kommen <em>später</em>."
+
+msgid "Palette"
+msgstr "Palette"
+
+msgid "Part of a series?"
+msgstr "Teil einer Serie?"
+
+msgid "Parts"
+msgstr "Teile"
+
+msgid "Passkey sign-in cancelled."
+msgstr "Passkey-Anmeldung abgebrochen."
+
+msgid "Passkey sign-in failed — use your password."
+msgstr "Passkey-Anmeldung fehlgeschlagen — nutz dein Passwort."
+
+msgid "Passkeys"
+msgstr "Passkeys"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Password incorrect · account unchanged."
+msgstr "Passwort falsch · Konto unverändert."
+
+msgid "Performance"
+msgstr "Leistung"
+
+msgid "Performance (0–10)"
+msgstr "Leistung (0–10)"
+
+msgid "Photo <em>events</em>."
+msgstr "Foto-<em>Events</em>."
+
+msgid "Photo of the week"
+msgstr "Foto der Woche"
+
+msgid "Photo spread"
+msgstr "Fotostrecke"
+
+msgid "Photo trail"
+msgstr "Foto-Trail"
+
+msgid "Photo · JPG/PNG/WebP, max 8 MB"
+msgstr "Foto · JPG/PNG/WebP, max. 8 MB"
+
+msgid "Photograph"
+msgstr "Fotografie"
+
+msgid "Photography by district — Vienna Photo Group"
+msgstr "Fotografie nach Bezirk — Vienna Photo Group"
+
+msgid "Photography in %1$s · %2$s — Vienna Photo Group"
+msgstr "Fotografieren in %1$s · %2$s — Vienna Photo Group"
+
+msgid "Photography vocabulary, explained in one honest sentence each — the companion to every tutorial."
+msgstr "Foto-Vokabular, erklärt in je einem ehrlichen Satz — der Begleiter zu jedem Tutorial."
+
+msgid "Photos · tick the plates for the spread"
+msgstr "Fotos · Tafeln für die Strecke anhaken"
+
+msgid "Photos · up to 4"
+msgstr "Fotos · bis zu 4"
+
+msgid "Photowalk / event"
+msgstr "Photowalk / Event"
+
+msgid "Photowalk buddies · members only"
+msgstr "Photowalk-Buddies · nur für Member"
+
+msgid "Photowalk buddies · optional"
+msgstr "Photowalk-Buddies · optional"
+
+msgid "Photowalk trail"
+msgstr "Photowalk-Trail"
+
+msgid "Photowalk trails"
+msgstr "Photowalk-Trails"
+
+msgid "Photowalks and meetups across the 23 Bezirke — shoot with people who look."
+msgstr "Photowalks und Meetups quer durch die 23 Bezirke — fotografier mit Menschen, die schauen."
+
+msgid "Pick <em>one</em>."
+msgstr "Wähl <em>eins</em>."
+
+msgid "Pick content"
+msgstr "Inhalt wählen"
+
+msgid "Pick images from the library"
+msgstr "Bilder aus der Mediathek wählen"
+
+msgid "Pick this entry as the winner and close the competition?"
+msgstr "Diesen Beitrag zum Sieger machen und den Wettbewerb schließen?"
+
+msgid "Pick winner"
+msgstr "Sieger wählen"
+
+msgid "Pin"
+msgstr "Pin"
+
+msgid "Pin a new shooting spot right in the form — map click, address search or photo GPS."
+msgstr "Pinne einen neuen Foto-Spot direkt im Formular — Kartenklick, Adresssuche oder Foto-GPS."
+
+msgid "Pin it → review desk"
+msgstr "Pinnen → Review-Desk"
+
+msgid "Pin set · "
+msgstr "Pin gesetzt · "
+
+msgid "Pin set · %s, %s"
+msgstr "Pin gesetzt · %s, %s"
+
+msgid "Pin the first"
+msgstr "Pinne den ersten"
+
+msgid "Pinned"
+msgstr "Gepinnt"
+
+msgid "Pinned places"
+msgstr "Verzeichnete Orte"
+
+msgid "Planned · for members who want to fund the print run and the platform."
+msgstr "Geplant · für Member, die Druck und Plattform mitfinanzieren wollen."
+
+msgid "Planned · for photographers who want to support the platform structurally · keeps VPG ad-free forever."
+msgstr "Geplant · für Fotograf:innen, die die Plattform strukturell unterstützen wollen · hält VPG für immer werbefrei."
+
+msgid "Plates"
+msgstr "Tafeln"
+
+msgid "Please <em>log in</em>."
+msgstr "Bitte <em>melde dich an</em>."
+
+msgid "Please confirm your email first · check your inbox or resend from the dashboard."
+msgstr "Bitte bestätige zuerst deine E-Mail · sieh in dein Postfach oder sende sie im Dashboard erneut."
+
+msgid "Please fill all required fields."
+msgstr "Bitte fülle alle Pflichtfelder aus."
+
+msgid "Portfolio"
+msgstr "Portfolio"
+
+msgid "Portrait"
+msgstr "Porträt"
+
+msgid "Position locked:"
+msgstr "Position gespeichert:"
+
+msgid "Position unavailable — editorial will place the pin from your note."
+msgstr "Position nicht verfügbar — die Redaktion setzt den Pin nach deiner Notiz."
+
+msgid "Position unavailable — search or click the map instead."
+msgstr "Position nicht verfügbar — such stattdessen oder klick auf die Karte."
+
+msgid "Post"
+msgstr "Beitrag"
+
+msgid "Post IDs · comma-separated, any public type"
+msgstr "Beitrags-IDs · kommagetrennt, jeder öffentliche Typ"
+
+msgid "Post note"
+msgstr "Notiz senden"
+
+msgid "Posts"
+msgstr "Beiträge"
+
+msgid "Prefer <em>RSS</em>?"
+msgstr "Lieber <em>RSS</em>?"
+
+msgid "Preview"
+msgstr "Vorschau"
+
+msgid "Price"
+msgstr "Preis"
+
+msgid "Primary menu + 4 footer menus wired to theme locations"
+msgstr "Hauptmenü + 4 Footer-Menüs mit Theme-Positionen verdrahtet"
+
+msgid "Primary navigation"
+msgstr "Hauptnavigation"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Printable guide · PDF"
+msgstr "Druckbarer Guide · PDF"
+
+msgid "Privacy"
+msgstr "Datenschutz"
+
+msgid "Privileges"
+msgstr "Privilegien"
+
+msgid "Privileges paused — confirm your email / open reports"
+msgstr "Privilegien pausiert — E-Mail bestätigen / offene Meldungen"
+
+msgid "Problem"
+msgstr "Problem"
+
+msgid "Produced by"
+msgstr "Produziert von"
+
+msgid "Producer"
+msgstr "Producer"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Profile look"
+msgstr "Profil-Look"
+
+msgid "Profile saved."
+msgstr "Profil gespeichert."
+
+msgid "Project"
+msgstr "Projekt"
+
+msgid "Project room"
+msgstr "Projekt-Raum"
+
+msgid "Project rooms"
+msgstr "Projekt-Räume"
+
+msgid "Project rooms open at Documentarian."
+msgstr "Projekt-Räume öffnen ab Documentarian."
+
+msgid "Project title — e.g. “Wien bei Regen”"
+msgstr "Projekttitel — z. B. „Wien bei Regen“"
+
+msgid "Project · finished — magazine-ready"
+msgstr "Projekt · fertig — heftreif"
+
+msgid "Project “%s” is finished — a group series ready for the magazine."
+msgstr "Projekt „%s“ ist fertig — eine Gruppenserie, bereit fürs Magazin."
+
+msgid "Promise"
+msgstr "Versprechen"
+
+msgid "Propose a meetup with date and meeting point — RSVP, reminders and check-in come built in. Unlocks at Documentarian."
+msgstr "Schlag ein Meetup mit Datum und Treffpunkt vor — RSVP, Erinnerungen und Check-in sind eingebaut. Ab Documentarian."
+
+msgid "Provider (self-hosted)"
+msgstr "Anbieter (selbst gehostet)"
+
+msgid "Public transport route ↗"
+msgstr "Öffi-Route ↗"
+
+msgid "Public · read-only"
+msgstr "Öffentlich · nur lesend"
+
+msgid "Publication date (free text)"
+msgstr "Erscheinungsdatum (Freitext)"
+
+msgid "Publish"
+msgstr "Veröffentlichen"
+
+msgid "Published"
+msgstr "Veröffentlicht"
+
+msgid "Published — the member got their “it’s live” mail."
+msgstr "Veröffentlicht — das Mitglied hat seine „Es ist live“-Mail bekommen."
+
+msgid "Published — your rank puts it live instantly. It's on the site now."
+msgstr "Veröffentlicht — dein Rang stellt es sofort live. Es ist jetzt auf der Seite."
+
+msgid "Publishes instantly (journal reviewed) · edit live"
+msgstr "Erscheint sofort (Journal wird geprüft) · live bearbeiten"
+
+msgid "Pull quote"
+msgstr "Zitat-Auszug"
+
+msgid "Push notifications"
+msgstr "Push-Benachrichtigungen"
+
+msgid "Put your name <em>down</em>."
+msgstr "Trag dich <em>ein</em>."
+
+msgid "Quick actions"
+msgstr "Schnellaktionen"
+
+msgid "Quick links"
+msgstr "Schnellzugriffe"
+
+msgid "Quick pin"
+msgstr "Quick Pin"
+
+msgid "RSS"
+msgstr "RSS"
+
+msgid "RSVPs"
+msgstr "Zusagen"
+
+msgid "Random coffee ☕"
+msgstr "Zufalls-Kaffee ☕"
+
+msgid "Random coffee ☕ · pair me with another member once a month"
+msgstr "Zufalls-Kaffee ☕ · lose mich einmal im Monat mit einem anderen Mitglied"
+
+msgid "Random coffee ☕ — this month you’re paired with %s."
+msgstr "Zufalls-Kaffee ☕ — diesen Monat bist du mit %s gelost."
+
+msgid "Random frame"
+msgstr "Zufallsbild"
+
+msgid "Range"
+msgstr "Umfang"
+
+msgid "Rank"
+msgstr "Rang"
+
+msgid "Rate"
+msgstr "Preis"
+
+msgid "Raveenthiran × on1.agency"
+msgstr "Raveenthiran × on1.agency"
+
+msgid "Re-derives from coords · uses Nominatim cache · runs in seconds."
+msgstr "Leitet neu aus Koordinaten ab · nutzt den Nominatim-Cache · läuft in Sekunden."
+
+msgid "Re-run setup"
+msgstr "Setup erneut ausführen"
+
+msgid "Read as PDF"
+msgstr "Als PDF lesen"
+
+msgid "Read offline"
+msgstr "Offline lesen"
+
+msgid "Read the magazine"
+msgstr "Magazin lesen"
+
+msgid "Read the magazine first"
+msgstr "Lies zuerst das Magazin"
+
+msgid "Read this issue"
+msgstr "Diese Ausgabe lesen"
+
+msgid "Read time (minutes)"
+msgstr "Lesezeit (Minuten)"
+
+msgid "Reader access"
+msgstr "Reader-Zugang"
+
+msgid "Reading"
+msgstr "Lesen"
+
+msgid "Reading your position…"
+msgstr "Lese deine Position…"
+
+msgid "Reads like promotion — we publish member experience, not listings."
+msgstr "Liest sich wie Werbung — wir veröffentlichen Member-Erfahrung, keine Einträge."
+
+msgid "Rebuild guide PDF"
+msgstr "Guide-PDF neu bauen"
+
+msgid "Rejected submissions are not deleted from the queue · the editor will message you with feedback so you can revise. Most submissions go through with light edits."
+msgstr "Zurückgegebene Einreichungen werden nicht aus der Queue gelöscht · die Redaktion schreibt dir Feedback, damit du überarbeiten kannst. Die meisten gehen mit leichten Änderungen durch."
+
+msgid "Remove"
+msgstr "Entfernen"
+
+msgid "Remove pin"
+msgstr "Pin entfernen"
+
+msgid "Remove this photo permanently?"
+msgstr "Dieses Foto endgültig entfernen?"
+
+msgid "Rental photography studios across Vienna — cycloramas, daylight spaces, full strobe kits and vehicle access. Curated by members."
+msgstr "Miet-Fotostudios in ganz Wien — Hohlkehlen, Tageslichträume, komplette Blitzanlagen und Fahrzeugzugang. Von Membern kuratiert."
+
+msgid "Rental studios + studio-share."
+msgstr "Mietstudios + Studio-Share."
+
+msgid "Reopen the room"
+msgstr "Raum wieder öffnen"
+
+msgid "Repair district format"
+msgstr "Bezirksformat reparieren"
+
+msgid "Repeat"
+msgstr "Wiederholen"
+
+msgid "Report"
+msgstr "Melden"
+
+msgid "Report this note to editorial?"
+msgstr "Diese Notiz der Redaktion melden?"
+
+msgid "Report to editorial"
+msgstr "An die Redaktion melden"
+
+msgid "Reported notes"
+msgstr "Gemeldete Notizen"
+
+msgid "Reports"
+msgstr "Meldungen"
+
+msgid "Request interview"
+msgstr "Interview anfragen"
+
+msgid "Resend the email"
+msgstr "E-Mail erneut senden"
+
+msgid "Reset it here"
+msgstr "Hier zurücksetzen"
+
+msgid "Resident"
+msgstr "Resident"
+
+msgid "Resident — everything you submit goes live instantly."
+msgstr "Resident — alles, was du einreichst, geht sofort live."
+
+msgid "Response"
+msgstr "Antwort"
+
+msgid "Results for <em>%s</em>."
+msgstr "Ergebnisse für <em>%s</em>."
+
+msgid "Return with feedback"
+msgstr "Mit Feedback zurückgeben"
+
+msgid "Returned with feedback — nothing disappears silently."
+msgstr "Mit Feedback zurückgegeben — nichts verschwindet still."
+
+msgid "Review"
+msgstr "Review"
+
+msgid "Review desk"
+msgstr "Review-Desk"
+
+msgid "Review scores"
+msgstr "Review-Wertungen"
+
+msgid "Reviewed"
+msgstr "Rezensiert"
+
+msgid "Reviewer"
+msgstr "Reviewer"
+
+msgid "Reviews"
+msgstr "Reviews"
+
+msgid "Reviews and approves location submissions, verifies coordinates, maintains the index."
+msgstr "Prüft und veröffentlicht Location-Einreichungen, verifiziert Koordinaten, pflegt den Index."
+
+msgid "Revise and resubmit any time — most submissions go through with light edits.\n\n— Vienna Photo Group"
+msgstr "Überarbeite und reiche jederzeit neu ein — die meisten Einreichungen gehen mit leichten Änderungen durch.\n\n— Vienna Photo Group"
+
+msgid "Rewrite rules flushed"
+msgstr "Rewrite-Regeln geleert"
+
+msgid "Right now"
+msgstr "Gerade jetzt"
+
+msgid "Right now at the meeting point: %1$s · %2$s"
+msgstr "Gerade am Treffpunkt: %1$s · %2$s"
+
+msgid "Right now at the spot: %1$s, %2$s — check the forecast before you pack."
+msgstr "Gerade am Spot: %1$s, %2$s — prüf die Vorhersage, bevor du packst."
+
+msgid "Roles"
+msgstr "Rollen"
+
+msgid "Rooftop line at Sophienbrücke"
+msgstr "Dachlinie an der Sophienbrücke"
+
+msgid "Run diagnostic scan"
+msgstr "Diagnose-Scan ausführen"
+
+msgid "Run setup now"
+msgstr "Setup jetzt ausführen"
+
+msgid "Runs ~22 s · stays well under PHP max_execution_time."
+msgstr "Läuft ~22 s · bleibt deutlich unter PHP max_execution_time."
+
+msgid "Safe"
+msgstr "Sicher"
+
+msgid "Save & build PDF"
+msgstr "Speichern & PDF bauen"
+
+msgid "Save an article for later"
+msgstr "Artikel für später merken"
+
+msgid "Save as draft"
+msgstr "Als Entwurf speichern"
+
+msgid "Save for later"
+msgstr "Für später merken"
+
+msgid "Save glossary"
+msgstr "Glossar speichern"
+
+msgid "Save interview"
+msgstr "Interview speichern"
+
+msgid "Save issue"
+msgstr "Ausgabe speichern"
+
+msgid "Save jury note"
+msgstr "Jury-Notiz speichern"
+
+msgid "Save portfolio"
+msgstr "Portfolio speichern"
+
+msgid "Save profile"
+msgstr "Profil speichern"
+
+msgid "Save settings"
+msgstr "Einstellungen speichern"
+
+msgid "Save to lightbox collection"
+msgstr "In Leuchtkasten-Sammlung speichern"
+
+msgid "Save to your lightbox — this browser only"
+msgstr "In deinen Leuchtkasten — nur dieser Browser"
+
+msgid "Saved"
+msgstr "Gespeichert"
+
+msgid "Saved for <em>later</em>."
+msgstr "Für <em>später</em> gemerkt."
+
+msgid "Saved offline"
+msgstr "Offline gespeichert"
+
+msgid "Saved searches"
+msgstr "Gespeicherte Suchen"
+
+msgid "Saved."
+msgstr "Gespeichert."
+
+msgid "Say it <em>kindly, clearly</em>."
+msgstr "Sag es <em>freundlich, klar</em>."
+
+msgid "Say thanks — quietly, to the author"
+msgstr "Sag Danke — leise, an den Autor"
+
+msgid "Scan now"
+msgstr "Jetzt scannen"
+
+msgid "Scans up to 5 sample posts per CPT, finds every meta key whose value looks like \"lat, lng\". Use this if the migration says it migrated 0 but the front-end still shows 0 pins · the report tells you the actual field name to look for."
+msgstr "Scannt bis zu 5 Beispiel-Beiträge je CPT und findet jeden Meta-Key, dessen Wert wie „lat, lng“ aussieht. Nutz das, wenn die Migration 0 meldet, aber das Frontend weiter 0 Pins zeigt · der Bericht nennt dir den echten Feldnamen."
+
+msgid "Schedule"
+msgstr "Zeitplan"
+
+msgid "Scope"
+msgstr "Umfang"
+
+msgid "Scored /10"
+msgstr "Bewertet /10"
+
+msgid "Scoring"
+msgstr "Bewertung"
+
+msgid "Search"
+msgstr "Suche"
+
+msgid "Search %s"
+msgstr "%s durchsuchen"
+
+msgid "Search (Cmd+K)"
+msgstr "Suche (Cmd+K)"
+
+msgid "Search address"
+msgstr "Adresse suchen"
+
+msgid "Search failed · click the map to drop a pin."
+msgstr "Suche fehlgeschlagen · klick auf die Karte für einen Pin."
+
+msgid "Search failed — click the map to drop the pin."
+msgstr "Suche fehlgeschlagen — klick auf die Karte, um den Pin zu setzen."
+
+msgid "Search locations, articles, issues…"
+msgstr "Locations, Artikel, Ausgaben suchen…"
+
+msgid "Search saved — we’ll notify you about new matches."
+msgstr "Suche gespeichert — wir melden uns bei neuen Treffern."
+
+msgid "Search the site, click to append…"
+msgstr "Seite durchsuchen, Klick fügt hinzu…"
+
+msgid "Search the site… (⌘K)"
+msgstr "Seite durchsuchen… (⌘K)"
+
+msgid "Section — groups the table of contents"
+msgstr "Ressort — gruppiert das Inhaltsverzeichnis"
+
+msgid "See you <em>soon</em>."
+msgstr "Bis <em>bald</em>."
+
+msgid "Seen it? <em>Pin it</em>."
+msgstr "Gesehen? <em>Pin es</em>."
+
+msgid "Selected works:"
+msgstr "Ausgewählte Arbeiten:"
+
+msgid "Send a <em>message</em>."
+msgstr "Schick eine <em>Nachricht</em>."
+
+msgid "Send a message"
+msgstr "Nachricht senden"
+
+msgid "Send login link"
+msgstr "Login-Link senden"
+
+msgid "Send me the member digest when an issue ships"
+msgstr "Schick mir den Member-Digest, wenn eine Ausgabe erscheint"
+
+msgid "Send message"
+msgstr "Nachricht senden"
+
+msgid "Sent anonymously by a member via the dashboard idea box."
+msgstr "Anonym von einem Mitglied über den Ideen-Briefkasten geschickt."
+
+msgid "Sent · thank you."
+msgstr "Gesendet · danke."
+
+msgid "Series"
+msgstr "Serie"
+
+msgid "Session"
+msgstr "Session"
+
+msgid "Set it up now →"
+msgstr "Jetzt einrichten →"
+
+msgid "Set up 2FA"
+msgstr "2FA einrichten"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Settings saved."
+msgstr "Einstellungen gespeichert."
+
+msgid "Setup & tools"
+msgstr "Setup & Werkzeuge"
+
+msgid "Setup complete · 17 pages + 5 menus created. Front page = Home, Journal = the posts page."
+msgstr "Setup fertig · 17 Seiten + 5 Menüs angelegt. Startseite = Home, Journal = die Beitragsseite."
+
+msgid "Setup wizard"
+msgstr "Setup-Assistent"
+
+msgid "Shareable preview link · works without login"
+msgstr "Teilbarer Vorschau-Link · funktioniert ohne Login"
+
+msgid "Shared series in progress — a Documentarian opens a room, members join and hang their own published works. Finished rooms become spreads in the magazine."
+msgstr "Gemeinsame Serien in Arbeit — ein Documentarian öffnet einen Raum, Member treten bei und hängen ihre veröffentlichten Arbeiten. Fertige Räume werden Strecken im Magazin."
+
+msgid "Shop"
+msgstr "Shop"
+
+msgid "Shop details"
+msgstr "Shop-Details"
+
+msgid "Shop guide"
+msgstr "Shop-Guide"
+
+msgid "Shops"
+msgstr "Shops"
+
+msgid "Show"
+msgstr "Anzeigen"
+
+msgid "Show entries processed"
+msgstr "Verarbeitete Einträge zeigen"
+
+msgid "Showing newcomers around"
+msgstr "Ich zeige Neuen die Runde"
+
+msgid "Shown to logged-in members on the directory page, nowhere else."
+msgstr "Nur eingeloggten Membern auf der Verzeichnisseite gezeigt, sonst nirgends."
+
+msgid "Sign in"
+msgstr "Anmelden"
+
+msgid "Sign in to access your dashboard, submissions and member-only resources."
+msgstr "Melde dich an für Dashboard, Einreichungen und Member-Bereiche."
+
+msgid "Sign in to access your dashboard, your submissions, and member-only resources."
+msgstr "Melde dich an für dein Dashboard, deine Einreichungen und Member-Bereiche."
+
+msgid "Sign in with Face ID, fingerprint or your device PIN — no password typed, nothing to phish."
+msgstr "Anmelden mit Face ID, Fingerabdruck oder Geräte-PIN — kein getipptes Passwort, nichts zu phishen."
+
+msgid "Sign in with a passkey"
+msgstr "Mit Passkey anmelden"
+
+msgid "Sign up"
+msgstr "Registrieren"
+
+msgid "Signed annual print collection"
+msgstr "Signierte Jahres-Print-Sammlung"
+
+msgid "Since your last visit"
+msgstr "Seit deinem letzten Besuch"
+
+msgid "Site domain / Matomo site id"
+msgstr "Site-Domain / Matomo-Site-ID"
+
+msgid "Sitemap"
+msgstr "Sitemap"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Size (m²)"
+msgstr "Größe (m²)"
+
+msgid "Skip to content"
+msgstr "Zum Inhalt springen"
+
+msgid "Soft paper"
+msgstr "Sanftes Papier"
+
+msgid "Something changed"
+msgstr "Etwas hat sich geändert"
+
+msgid "Something went wrong · please try again or send us a message."
+msgstr "Etwas ist schiefgelaufen · versuch es nochmal oder schreib uns."
+
+msgid "South-facing terrace · 35m elevation · free access via café"
+msgstr "Südterrasse · 35 m Höhe · freier Zugang übers Café"
+
+msgid "Specific"
+msgstr "Konkret"
+
+msgid "Specific beats vague. You shot there, you bought there, you <em>own</em> the gear."
+msgstr "Konkret schlägt vage. Du hast dort fotografiert, dort gekauft, dir <em>gehört</em> die Ausrüstung."
+
+msgid "Sporty"
+msgstr "Sportlich"
+
+msgid "Sporty · bring stamina"
+msgstr "Sportlich · bring Ausdauer mit"
+
+msgid "Spot of the week"
+msgstr "Spot der Woche"
+
+msgid "Stages are strictly sequential: sixty journal drafts don’t count until the locations exist. Instant publishing requires a confirmed email and a clean record — open reports pause every privilege until resolved, whatever your rank. You never lose a rank for taking a break. Rule changes never apply retroactively. And nothing here is for sale."
+msgstr "Die Stufen sind strikt sequenziell: Sechzig Journal-Entwürfe zählen nicht, solange die Locations fehlen. Sofort-Veröffentlichen braucht eine bestätigte E-Mail und eine saubere Akte — offene Meldungen pausieren jedes Privileg bis zur Klärung, egal welcher Rang. Für eine Pause verlierst du nie einen Rang. Regeländerungen gelten nie rückwirkend. Und nichts hier ist käuflich."
+
+msgid "Start at 01"
+msgstr "Beginn bei 01"
+
+msgid "Start the first issue of the Vienna Photo Group magazine."
+msgstr "Starte die erste Ausgabe des Vienna-Photo-Group-Magazins."
+
+msgid "Static (Home)"
+msgstr "Statisch (Home)"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Stay logged in"
+msgstr "Angemeldet bleiben"
+
+msgid "Stay yours · credited by name"
+msgstr "Bleiben deine · mit Namen gezeichnet"
+
+msgid "Step one"
+msgstr "Schritt eins"
+
+msgid "Still accurate"
+msgstr "Weiterhin korrekt"
+
+msgid "Still blank"
+msgstr "Noch leer"
+
+msgid "Still unsure"
+msgstr "Noch unsicher"
+
+msgid "Stop by <em>stop</em>."
+msgstr "Stop für <em>Stop</em>."
+
+msgid "Stops"
+msgstr "Stops"
+
+msgid "Stops · pick from the map (tick in walking order)"
+msgstr "Stops · von der Karte wählen (in Gehreihenfolge anhaken)"
+
+msgid "Stored on this site — no Gravatar, no third parties."
+msgstr "Auf dieser Seite gespeichert — kein Gravatar, keine Dritten."
+
+msgid "Straight to the issue. Members get the PDF link in the same email · readers get the web link."
+msgstr "Direkt zur Ausgabe. Member bekommen den PDF-Link in derselben Mail · Reader den Web-Link."
+
+msgid "Street"
+msgstr "Street"
+
+msgid "Street in five chapters"
+msgstr "Street in fünf Kapiteln"
+
+msgid "Structure"
+msgstr "Struktur"
+
+msgid "Studio"
+msgstr "Studio"
+
+msgid "Studio details"
+msgstr "Studio-Details"
+
+msgid "Studio directory"
+msgstr "Studio-Verzeichnis"
+
+msgid "Studio size, rate, daylight or strobe, vehicle access, booking link."
+msgstr "Studiogröße, Preis, Tageslicht oder Blitz, Fahrzeugzugang, Buchungslink."
+
+msgid "Studios"
+msgstr "Studios"
+
+msgid "Subject"
+msgstr "Betreff"
+
+msgid "Submission queue"
+msgstr "Einreichungs-Queue"
+
+msgid "Submission type"
+msgstr "Einreichungstyp"
+
+msgid "Submissions"
+msgstr "Einreichungen"
+
+msgid "Submissions are <em>members-only</em>."
+msgstr "Einreichungen sind <em>nur für Member</em>."
+
+msgid "Submissions are queued for editorial review. You’ll receive an email when your entry is approved and published. For map entries, drop the pin right in the form — or let your photo’s GPS set it."
+msgstr "Einreichungen gehen in die redaktionelle Prüfung. Du bekommst eine E-Mail, sobald dein Beitrag freigegeben und veröffentlicht ist. Bei Karteneinträgen setzt du den Pin direkt im Formular — oder das GPS deines Fotos übernimmt das."
+
+msgid "Submissions · portfolio · PDFs · events"
+msgstr "Einreichungen · Portfolio · PDFs · Events"
+
+msgid "Submit"
+msgstr "Einreichen"
+
+msgid "Submit a location, a photo or a story — everything members send in feeds the map, the journal and the monthly magazine."
+msgstr "Reich eine Location, ein Foto oder eine Geschichte ein — alles, was Member schicken, füttert Karte, Journal und Monatsmagazin."
+
+msgid "Submit a location, a review or a tutorial — with your photos. Editorial reviews within 72 hours, and your name goes under it."
+msgstr "Reich eine Location, ein Review oder ein Tutorial ein — mit deinen Fotos. Die Redaktion prüft binnen 72 Stunden, und dein Name steht darunter."
+
+msgid "Submit a place"
+msgstr "Einen Ort eintragen"
+
+msgid "Submit entry"
+msgstr "Beitrag einreichen"
+
+msgid "Submit for review"
+msgstr "Zur Prüfung einreichen"
+
+msgid "Submit something"
+msgstr "Etwas einreichen"
+
+msgid "Submit to the map and the journal — your work in the magazine, your name under it."
+msgstr "Reich für Karte und Journal ein — deine Arbeit im Magazin, dein Name darunter."
+
+msgid "Submit your first piece"
+msgstr "Reich dein erstes Stück ein"
+
+msgid "Submit your work"
+msgstr "Reich deine Arbeit ein"
+
+msgid "Submitted by"
+msgstr "Eingereicht von"
+
+msgid "Submitted → in review → live"
+msgstr "Eingereicht → in Prüfung → live"
+
+msgid "Subscribe"
+msgstr "Abonnieren"
+
+msgid "Subscribe to %s in your reader. Cover, PDF and issue text as enclosures."
+msgstr "Abonniere %s in deinem Reader. Cover, PDF und Ausgabentext als Anhänge."
+
+msgid "Subscribe · .ics ↓"
+msgstr "Abonnieren · .ics ↓"
+
+msgid "Supporter"
+msgstr "Supporter"
+
+msgid "Supporter tiers"
+msgstr "Supporter-Stufen"
+
+msgid "Supporter tiers · later"
+msgstr "Supporter-Stufen · später"
+
+msgid "Supporter · Later"
+msgstr "Supporter · Später"
+
+msgid "Surprise me"
+msgstr "Überrasch mich"
+
+msgid "Sustaining"
+msgstr "Sustaining"
+
+msgid "Sustaining · Later"
+msgstr "Sustaining · Später"
+
+msgid "Switch language"
+msgstr "Sprache wechseln"
+
+msgid "System &amp; architecture"
+msgstr "System &amp; Architektur"
+
+msgid "Take down"
+msgstr "Abhängen"
+
+msgid "Team"
+msgstr "Team"
+
+msgid "Technical"
+msgstr "Technisch"
+
+msgid "Tell us what you’ve <em>found</em>."
+msgstr "Erzähl uns, was du <em>gefunden</em> hast."
+
+msgid "Terms"
+msgstr "AGB"
+
+msgid "Tests gear, writes shop and studio reviews, scores entries on Design / Performance / Price."
+msgstr "Testet Ausrüstung, schreibt Shop- und Studio-Reviews, bewertet nach Design / Leistung / Preis."
+
+msgid "Thank you — the spot now carries today as its confirmed date."
+msgstr "Danke — der Spot trägt jetzt heute als bestätigtes Datum."
+
+msgid "Thanks delivered — quietly, to the author."
+msgstr "Danke übermittelt — leise, an den Autor."
+
+msgid "That confirmation link is invalid or expired · resend it from your dashboard."
+msgstr "Dieser Bestätigungslink ist ungültig oder abgelaufen · sende ihn im Dashboard neu."
+
+msgid "That login link is invalid or expired · request a fresh one."
+msgstr "Dieser Login-Link ist ungültig oder abgelaufen · fordere einen frischen an."
+
+msgid "The <em>calendar</em>."
+msgstr "Der <em>Kalender</em>."
+
+msgid "The <em>chronicle</em>."
+msgstr "Die <em>Chronik</em>."
+
+msgid "The <em>desk</em>."
+msgstr "Der <em>Desk</em>."
+
+msgid "The <em>quiet</em> magazine for photographers who <em>look</em>."
+msgstr "Das <em>leise</em> Magazin für Fotograf:innen, die <em>schauen</em>."
+
+msgid "The <em>reviews</em>."
+msgstr "Die <em>Reviews</em>."
+
+msgid "The <em>skill</em> series."
+msgstr "Die <em>Skill</em>-Serie."
+
+msgid "The <em>wall</em>."
+msgstr "Die <em>Wand</em>."
+
+msgid "The <em>walls</em>."
+msgstr "Die <em>Wände</em>."
+
+msgid "The <em>words</em>."
+msgstr "Die <em>Worte</em>."
+
+msgid "The Journal"
+msgstr "Das Journal"
+
+msgid "The Magazine"
+msgstr "Das Magazin"
+
+msgid "The Map"
+msgstr "Die Karte"
+
+msgid "The Map · member-curated"
+msgstr "Die Karte · von Membern kuratiert"
+
+msgid "The Stephansdom rooftop · golden hour"
+msgstr "Das Stephansdom-Dach · goldene Stunde"
+
+msgid "The archive"
+msgstr "Das Archiv"
+
+msgid "The backbone. Everything you submit goes live instantly, journal included, and your photos carry a VIP mark in the magazine’s photo picker — editorial reaches for your work first."
+msgstr "Das Rückgrat. Alles, was du einreichst, geht sofort live, Journal inklusive, und deine Fotos tragen ein VIP-Zeichen im Foto-Picker des Magazins — die Redaktion greift zuerst nach deiner Arbeit."
+
+msgid "The buying guide is being written. Members can submit from the dashboard."
+msgstr "Die Kaufberatung entsteht gerade. Member reichen über das Dashboard ein."
+
+msgid "The constants"
+msgstr "Die Konstanten"
+
+msgid "The critique thread"
+msgstr "Der Kritik-Thread"
+
+msgid "The door. You join free, confirm your email, and start feeding the map: locations, studios, shops — everything through the review desk within 72 hours."
+msgstr "Die Tür. Du trittst kostenlos bei, bestätigst deine E-Mail und beginnst, die Karte zu füttern: Locations, Studios, Shops — alles über den Review-Desk binnen 72 Stunden."
+
+msgid "The editorial circle stays small on purpose — so every issue still has a person responsible for every <em>line</em>."
+msgstr "Der Redaktionskreis bleibt absichtlich klein — damit jede Ausgabe für jede <em>Zeile</em> eine verantwortliche Person hat."
+
+msgid "The editor’s letter — opens the issue in the reader and the PDF."
+msgstr "Der Brief der Redaktion — eröffnet die Ausgabe im Reader und im PDF."
+
+msgid "The fine print — short and honest"
+msgstr "Das Kleingedruckte — kurz und ehrlich"
+
+msgid "The first issue is being assembled. Subscribe to be notified when it ships."
+msgstr "Die erste Ausgabe wird gerade gebaut. Abonniere, um zu erfahren, wenn sie erscheint."
+
+msgid "The full interactive map. Locations, studios and shops on one canvas — toggle any layer."
+msgstr "Die volle interaktive Karte. Locations, Studios und Shops auf einer Fläche — jede Ebene umschaltbar."
+
+msgid "The glossary is being written — first terms land soon."
+msgstr "Das Glossar entsteht gerade — die ersten Begriffe landen bald."
+
+msgid "The headlines of the lead pieces. No clickbait, no curiosity gaps."
+msgstr "Die Überschriften der Hauptstücke. Kein Clickbait, keine Neugierlücken."
+
+msgid "The jury"
+msgstr "Die Jury"
+
+msgid "The ladder"
+msgstr "Die Leiter"
+
+msgid "The location index, studios and shops stay public — explore the map while you wait."
+msgstr "Location-Index, Studios und Shops bleiben öffentlich — erkunde die Karte, während du wartest."
+
+msgid "The magazine"
+msgstr "Das Magazin"
+
+msgid "The map"
+msgstr "Die Karte"
+
+msgid "The map is <em>waiting</em>."
+msgstr "Die Karte <em>wartet</em>."
+
+msgid "The month at Vienna Photo Group — %s.\n\n"
+msgstr "Der Monat bei der Vienna Photo Group — %s.\n\n"
+
+msgid "The monthly Vienna Photo Group magazine. Members get every issue as a print-ready PDF, free, forever-keepable. Older issues are open-access here."
+msgstr "Das monatliche Magazin der Vienna Photo Group. Member bekommen jede Ausgabe als druckfertiges PDF, kostenlos, für immer behaltbar. Ältere Ausgaben sind hier frei zugänglich."
+
+msgid "The name under your photographs"
+msgstr "Der Name unter deinen Fotografien"
+
+msgid "The new month's challenge draft is created — add the theme and publish:\n"
+msgstr "Der Challenge-Entwurf für den neuen Monat ist angelegt — Thema ergänzen und veröffentlichen:\n"
+
+msgid "The page you're looking for isn't here. Search the whole index, or take one of the doors below."
+msgstr "Die gesuchte Seite ist nicht hier. Durchsuch den ganzen Index oder nimm eine der Türen unten."
+
+msgid "The people on the <em>wall</em>."
+msgstr "Die Menschen an der <em>Wand</em>."
+
+msgid "The photo"
+msgstr "Das Foto"
+
+msgid "The photographers who keep this running — everyone here chose to be listed. Click through to their work."
+msgstr "Die Fotograf:innen, die das hier am Laufen halten — alle hier haben sich für die Liste entschieden. Klick dich zu ihren Arbeiten."
+
+msgid "The pivot"
+msgstr "Der Wendepunkt"
+
+msgid "The quiet magazine for photographers who look"
+msgstr "Das leise Magazin für Fotograf:innen, die schauen"
+
+msgid "The review desk is where editorial works. Your submissions live in your dashboard."
+msgstr "Der Review-Desk ist der Arbeitsplatz der Redaktion. Deine Einreichungen wohnen in deinem Dashboard."
+
+msgid "The route"
+msgstr "Die Route"
+
+msgid "The walk, seen by its walkers"
+msgstr "Der Walk, gesehen von denen, die ihn gingen"
+
+msgid "The wall"
+msgstr "Die Wand"
+
+msgid "The wall so far"
+msgstr "Die Wand bisher"
+
+msgid "The week at Vienna Photo Group:\n\n"
+msgstr "Die Woche bei der Vienna Photo Group:\n\n"
+
+msgid "The week in numbers"
+msgstr "Die Woche in Zahlen"
+
+msgid "The winner"
+msgstr "Der Sieger"
+
+msgid "Theme"
+msgstr "Thema"
+
+msgid "Theme goes here — one line, open enough for every genre.\n\nDeadline: last Sunday of the month, midnight."
+msgstr "Thema hier — eine Zeile, offen genug für jedes Genre.\n\nDeadline: letzter Sonntag des Monats, Mitternacht."
+
+msgid "This <em>month</em>."
+msgstr "Dieser <em>Monat</em>."
+
+msgid "This authenticator uses an unsupported key type."
+msgstr "Dieser Authenticator nutzt einen nicht unterstützten Schlüsseltyp."
+
+msgid "This creates the 17 site pages (Home, Journal, About, Contact, Join, etc.) with the correct page templates assigned, sets Home as the front page and Journal as the posts page, plus 5 nav menus (Primary + 4 footer columns) wired to their theme locations."
+msgstr "Das legt die 17 Seiten der Website an (Home, Journal, About, Kontakt, Join usw.) mit den richtigen Templates, setzt Home als Startseite und Journal als Beitragsseite, plus 5 Menüs (Primär + 4 Footer-Spalten) an ihren Theme-Positionen."
+
+msgid "This place is already on the map — add your notes to the existing entry instead."
+msgstr "Dieser Ort ist schon auf der Karte — ergänze deine Notizen lieber am bestehenden Eintrag."
+
+msgid "Three article titles"
+msgstr "Drei Artikel-Titel"
+
+msgid "Three lines, <em>one link</em>."
+msgstr "Drei Zeilen, <em>ein Link</em>."
+
+msgid "Three lines, <em>one link</em>. No clickbait, no curiosity gaps."
+msgstr "Drei Zeilen, <em>ein Link</em>. Kein Clickbait, keine Neugierlücken."
+
+msgid "Three ways <em>in</em>."
+msgstr "Drei Wege <em>hinein</em>."
+
+msgid "Three ways to <em>belong</em>."
+msgstr "Drei Arten <em>dazuzugehören</em>."
+
+msgid "Tickets / RSVP URL"
+msgstr "Tickets- / RSVP-URL"
+
+msgid "Tier"
+msgstr "Stufe"
+
+msgid "Time"
+msgstr "Zeit"
+
+msgid "Time capsule"
+msgstr "Zeitkapsel"
+
+msgid "Tip: install the free Advanced Custom Fields plugin for a richer editing UI on the CPTs. The theme works without it — native field boxes are used as a fallback."
+msgstr "Tipp: Das kostenlose Plugin Advanced Custom Fields macht das Bearbeiten der CPTs komfortabler. Das Theme funktioniert auch ohne — native Feldboxen dienen als Fallback."
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "To"
+msgstr "An"
+
+msgid "To protect the integrity of the index. Public write-access invites spam, AI-generated junk and astroturfed listings. Submissions go through members who walked the city · the data stays clean."
+msgstr "Zum Schutz der Integrität des Index. Öffentlicher Schreibzugriff lädt Spam, KI-Müll und gekaufte Einträge ein. Einreichungen laufen über Member, die die Stadt wirklich gehen · die Daten bleiben sauber."
+
+msgid "Today · live"
+msgstr "Heute · live"
+
+msgid "Toggle menu"
+msgstr "Menü umschalten"
+
+msgid "Topic"
+msgstr "Thema"
+
+msgid "Topics"
+msgstr "Themen"
+
+msgid "Trail"
+msgstr "Trail"
+
+msgid "Trail stops"
+msgstr "Trail-Stops"
+
+msgid "Transparency"
+msgstr "Transparenz"
+
+msgid "Transport: PHP mail() — set the VPG_SMTP_* constants in wp-config.php for reliable delivery (see docs/runbooks/vpg-mail-deliverability.md)."
+msgstr "Transport: PHP mail() — setze die VPG_SMTP_*-Konstanten in wp-config.php für zuverlässige Zustellung (siehe docs/runbooks/vpg-mail-deliverability.md)."
+
+msgid "Transport: SMTP via %s"
+msgstr "Transport: SMTP über %s"
+
+msgid "Trash"
+msgstr "Papierkorb"
+
+msgid "Tripod\nND filter\nGood shoes"
+msgstr "Stativ\nND-Filter\nGutes Schuhwerk"
+
+msgid "Trusted"
+msgstr "Vertraut"
+
+msgid "Turn 2FA off"
+msgstr "2FA ausschalten"
+
+msgid "Tutorial"
+msgstr "Tutorial"
+
+msgid "Tutorial details"
+msgstr "Tutorial-Details"
+
+msgid "Tutorial pitch"
+msgstr "Tutorial-Pitch"
+
+msgid "Tutorials"
+msgstr "Tutorials"
+
+msgid "Tutorials by members, for members. Lighting, develop, scan, archive, print. Beginner to ambient-expert."
+msgstr "Tutorials von Membern, für Member. Licht, Entwicklung, Scan, Archiv, Druck. Einsteiger bis Ambient-Profi."
+
+msgid "Tutorials in the pipeline. Members can submit from the dashboard."
+msgstr "Tutorials in der Pipeline. Member reichen über das Dashboard ein."
+
+msgid "Twelve months, counted honestly. Only you see this page."
+msgstr "Zwölf Monate, ehrlich gezählt. Nur du siehst diese Seite."
+
+msgid "Twice-yearly print run, posted"
+msgstr "Halbjährlicher Druck, per Post"
+
+msgid "Two minutes, no fees. Contribute to the map and journal, build your public portfolio, download every issue as a PDF."
+msgstr "Zwei Minuten, keine Gebühren. Trag zu Karte und Journal bei, bau dein öffentliches Portfolio, lade jede Ausgabe als PDF."
+
+msgid "Two sentences, always"
+msgstr "Zwei Sätze, immer"
+
+msgid "Two-factor auth: a six-digit code from your phone on every login. Editors: this is expected of you."
+msgstr "Zwei-Faktor-Auth: ein sechsstelliger Code von deinem Handy bei jedem Login. Redaktion: Das wird von dir erwartet."
+
+msgid "Two-factor is on — codes from your authenticator app protect every login."
+msgstr "Zwei-Faktor ist an — Codes aus deiner Authenticator-App schützen jeden Login."
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Unapprove"
+msgstr "Freigabe zurückziehen"
+
+msgid "Under the <em>hood</em>."
+msgstr "Unter der <em>Haube</em>."
+
+msgid "Unlocks gear reviews, tutorial pitches and journal stories. Your map entries now publish instantly — you earned the map’s trust on the map."
+msgstr "Schaltet Gear-Reviews, Tutorial-Pitches und Journal-Storys frei. Deine Karteneinträge erscheinen jetzt sofort — das Vertrauen der Karte hast du auf der Karte verdient."
+
+msgid "Unlocks photowalk proposals and photo trails — curating routes and leading people needs deep map knowledge. Everything but journal stories publishes instantly, and you can edit your own live pieces."
+msgstr "Schaltet Photowalk-Vorschläge und Foto-Trails frei — Routen kuratieren und Menschen führen braucht tiefes Kartenwissen. Alles außer Journal-Storys erscheint sofort, und du kannst deine eigenen Live-Stücke bearbeiten."
+
+msgid "Unset"
+msgstr "Nicht gesetzt"
+
+msgid "Unsorted"
+msgstr "Unsortiert"
+
+msgid "Unsubscribe"
+msgstr "Abbestellen"
+
+msgid "Up to 12 stops · editorial fine-tunes the order before publishing."
+msgstr "Bis zu 12 Stops · die Redaktion feilt vor Veröffentlichung an der Reihenfolge."
+
+msgid "Updated"
+msgstr "Aktualisiert"
+
+msgid "Use my current position"
+msgstr "Meine aktuelle Position verwenden"
+
+msgid "Use the member submission flow · faster review · auto-mapped · proper data capture."
+msgstr "Nutz den Member-Einreichweg · schnellere Prüfung · automatisch kartiert · saubere Datenerfassung."
+
+msgid "VPG Member"
+msgstr "VPG-Mitglied"
+
+msgid "VPG functions as a highly structured, decentralised repository. Custom-coded · clean architecture · advanced data-mapping and location intelligence · optimised for seamless utility. To protect the integrity of the index, the frontend stays read-only for the public — a pure, uncompromised reference hub."
+msgstr "VPG funktioniert als hochstrukturiertes, dezentrales Repository. Custom-coded · saubere Architektur · fortgeschrittenes Daten-Mapping und Location-Intelligenz · optimiert für reibungslosen Nutzen. Zum Schutz des Index bleibt das Frontend für die Öffentlichkeit read-only — ein purer, unverfälschter Referenz-Hub."
+
+msgid "VPG is in open beta. The magazine, buying guide, tutorials and events are reserved for logged-in members while we finalise the platform."
+msgstr "VPG ist in offener Beta. Magazin, Kaufberatung, Tutorials und Events sind für eingeloggte Member reserviert, während wir die Plattform fertigstellen."
+
+msgid "VPG is member-run, ad-free, and built on people who actually walk the city. Membership is free — optional supporter tiers come later."
+msgstr "VPG ist member-run, werbefrei und gebaut auf Menschen, die die Stadt wirklich gehen. Die Mitgliedschaft ist kostenlos — optionale Supporter-Stufen kommen später."
+
+msgid "VPG membership"
+msgstr "VPG-Mitgliedschaft"
+
+msgid "VPG runs on its members, not on advertisers. There are no advertisers to please, no growth-at-all-costs investor expectations, no plan to flip to a content network. When supporter tiers arrive, they fund the print run — they never decide the editorial calendar. That stays in the hands of people who actually shoot Vienna."
+msgstr "VPG läuft auf seinen Membern, nicht auf Werbekunden. Es gibt keine Werbekunden zu gefallen, keine Wachstums-um-jeden-Preis-Erwartungen von Investoren, keinen Plan, an ein Content-Netzwerk zu verkaufen. Wenn Supporter-Stufen kommen, finanzieren sie den Druck — sie entscheiden nie über den Redaktionskalender. Der bleibt in den Händen von Menschen, die Wien wirklich fotografieren."
+
+msgid "VPG was founded by a collective of local photographers. The initial phase was an algorithmic feature page on Instagram, curating visual work within the city's creative ecosystem."
+msgstr "VPG wurde von einem Kollektiv lokaler Fotograf:innen gegründet. Die erste Phase war eine algorithmische Feature-Seite auf Instagram, die visuelle Arbeiten im kreativen Ökosystem der Stadt kuratierte."
+
+msgid "VPG · Analytics"
+msgstr "VPG · Analytics"
+
+msgid "VPG · Settings"
+msgstr "VPG · Einstellungen"
+
+msgid "Value (0–10)"
+msgstr "Preis-Leistung (0–10)"
+
+msgid "Venue"
+msgstr "Ort"
+
+msgid "Verifiable"
+msgstr "Nachprüfbar"
+
+msgid "Veteran"
+msgstr "Veteran:in"
+
+msgid "Via the review desk — 25 locations unlock Contributor"
+msgstr "Über den Review-Desk — 25 Locations schalten Contributor frei"
+
+msgid "Vienna Photo Group"
+msgstr "Vienna Photo Group"
+
+msgid "Vienna Photo Group · %s · %s · Member-run, ad-free, forever-keepable."
+msgstr "Vienna Photo Group · %s · %s · Member-run, werbefrei, für immer behaltbar."
+
+msgid "Vienna Photo Group · founded December 2019 · a decentralised, data-driven reference hub for photographers shooting Wien."
+msgstr "Vienna Photo Group · gegründet Dezember 2019 · ein dezentraler, datengetriebener Referenz-Hub für Fotograf:innen, die Wien fotografieren."
+
+msgid "Vienna · since 2019"
+msgstr "Wien · seit 2019"
+
+msgid "Vienna,"
+msgstr "Wien,"
+
+msgid "View %s"
+msgstr "%s ansehen"
+
+msgid "View public page"
+msgstr "Öffentliche Seite ansehen"
+
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+msgid "Visual mastery requires execution, not <em>validation</em>."
+msgstr "Visuelle Meisterschaft braucht Ausführung, nicht <em>Validierung</em>."
+
+msgid "Visually related"
+msgstr "Visuell verwandt"
+
+msgid "Vote"
+msgstr "Abstimmen"
+
+msgid "Wall"
+msgstr "Wand"
+
+msgid "Walls"
+msgstr "Wände"
+
+msgid "Walls · pick a curated hanging"
+msgstr "Wände · eine kuratierte Hängung wählen"
+
+msgid "Want to <em>submit</em> a location or studio?"
+msgstr "Willst du eine Location oder ein Studio <em>einreichen</em>?"
+
+msgid "Watch this search"
+msgstr "Diese Suche beobachten"
+
+msgid "We archive the city. We document the <em>light</em>."
+msgstr "Wir archivieren die Stadt. Wir dokumentieren das <em>Licht</em>."
+
+msgid "We read every message"
+msgstr "Wir lesen jede Nachricht"
+
+msgid "We sent you a confirmation link when you joined. One click and submissions unlock."
+msgstr "Wir haben dir beim Beitritt einen Bestätigungslink geschickt. Ein Klick und Einreichungen sind frei."
+
+msgid "We use your email only to send issue notifications. Unsubscribe with one click in any email. See <a href=\"%s\">privacy</a>."
+msgstr "Wir nutzen deine E-Mail nur für Ausgaben-Benachrichtigungen. Abmeldung mit einem Klick in jeder Mail. Siehe <a href=\"%s\">Datenschutz</a>."
+
+msgid "We'll email you a reminder the day before."
+msgstr "Wir mailen dir am Vortag eine Erinnerung."
+
+msgid "Website"
+msgstr "Website"
+
+msgid "Weekly · 4 dates"
+msgstr "Wöchentlich · 4 Termine"
+
+msgid "Welcome <em>back</em>."
+msgstr "Willkommen <em>zurück</em>."
+
+msgid "Welcome to Viennaphotogroup"
+msgstr "Willkommen bei Viennaphotogroup"
+
+msgid "Welcome — you're a member. Check your inbox to confirm your email."
+msgstr "Willkommen — du bist Mitglied. Bestätige deine E-Mail in deinem Postfach."
+
+msgid "Welcome, <em>%s</em>."
+msgstr "Willkommen, <em>%s</em>."
+
+msgid "What are you submitting?"
+msgstr "Was reichst du ein?"
+
+msgid "What are you working on next?"
+msgstr "Woran arbeitest du als Nächstes?"
+
+msgid "What do you shoot? · optional"
+msgstr "Was fotografierst du? · optional"
+
+msgid "What does Wien look like through your viewfinder?"
+msgstr "Wie sieht Wien durch deinen Sucher aus?"
+
+msgid "What does my membership get me?"
+msgstr "Was bringt mir die Mitgliedschaft?"
+
+msgid "What feeds the <em>index</em>."
+msgstr "Was den <em>Index</em> füttert."
+
+msgid "What gets <em>accepted</em>."
+msgstr "Was <em>angenommen</em> wird."
+
+msgid "What gets rejected?"
+msgstr "Was wird abgelehnt?"
+
+msgid "What is in your bag right now?"
+msgstr "Was ist gerade in deiner Tasche?"
+
+msgid "What is it?"
+msgstr "Was ist es?"
+
+msgid "What members get"
+msgstr "Was Member bekommen"
+
+msgid "What never <em>changes</em>."
+msgstr "Was sich nie <em>ändert</em>."
+
+msgid "What should the collective try?"
+msgstr "Was sollte das Kollektiv ausprobieren?"
+
+msgid "What we publish"
+msgstr "Was wir veröffentlichen"
+
+msgid "What you can submit"
+msgstr "Was du einreichen kannst"
+
+msgid "What you get"
+msgstr "Was du bekommst"
+
+msgid "What you photograph, and how you look at the city."
+msgstr "Was du fotografierst und wie du die Stadt anschaust."
+
+msgid "When editorial features you in an issue, these answers become your interview. Answer what you like, skip what you don’t — short and honest beats polished."
+msgstr "Wenn die Redaktion dich in einer Ausgabe featured, werden diese Antworten dein Interview. Beantworte, was du magst, lass aus, was nicht — kurz und ehrlich schlägt poliert."
+
+msgid "When it happens."
+msgstr "Wenn es passiert."
+
+msgid "When?"
+msgstr "Wann?"
+
+msgid "Where"
+msgstr "Wo"
+
+msgid "Where Vienna is worth looking — every spot with light notes, best times and honest access. Pick a category, click a place, go shoot."
+msgstr "Wo Wien das Hinschauen lohnt — jeder Spot mit Lichtnotizen, besten Zeiten und ehrlichem Zugang. Kategorie wählen, Ort anklicken, losziehen."
+
+msgid "Where exactly? · search or click the map"
+msgstr "Wo genau? · suchen oder auf die Karte klicken"
+
+msgid "Where you stand"
+msgstr "Wo du stehst"
+
+msgid "Which tier interests you?"
+msgstr "Welche Stufe interessiert dich?"
+
+msgid "Who"
+msgstr "Wer"
+
+msgid "Who are you, and what do you photograph?"
+msgstr "Wer bist du, und was fotografierst du?"
+
+msgid "Who creates"
+msgstr "Wer gründet"
+
+msgid "Who joins"
+msgstr "Wer beitritt"
+
+msgid "Who owns submitted content?"
+msgstr "Wem gehören eingereichte Inhalte?"
+
+msgid "Who runs Vienna Photo Group?"
+msgstr "Wer betreibt die Vienna Photo Group?"
+
+msgid "Who runs the <em>magazine</em>."
+msgstr "Wer das <em>Magazin</em> macht."
+
+msgid "Who we <em>are</em>."
+msgstr "Wer wir <em>sind</em>."
+
+msgid "Who's coming"
+msgstr "Wer kommt"
+
+msgid "Why is the public site read-only?"
+msgstr "Warum ist die öffentliche Seite read-only?"
+
+msgid "Why member-run"
+msgstr "Warum member-run"
+
+msgid "Why this picture won — two sentences from the jury."
+msgstr "Warum dieses Bild gewonnen hat — zwei Sätze der Jury."
+
+msgid "Winner"
+msgstr "Sieger"
+
+msgid "Winner picked"
+msgstr "Sieger gewählt"
+
+msgid "Winning photo by %s"
+msgstr "Siegerfoto von %s"
+
+msgid "Wired"
+msgstr "Verdrahtet"
+
+msgid "Within 72 hours"
+msgstr "Binnen 72 Stunden"
+
+msgid "Within 72 hours · weekday mornings, Vienna time."
+msgstr "Binnen 72 Stunden · werktags vormittags, Wiener Zeit."
+
+msgid "Words"
+msgstr "Worte"
+
+msgid "Work"
+msgstr "Arbeit"
+
+msgid "Works hung"
+msgstr "Gehängte Arbeiten"
+
+msgid "Workshops · walks · meetups"
+msgstr "Workshops · Walks · Meetups"
+
+msgid "Workshops, openings, walks and meetups for photographers in Vienna. Members get early access and discounts."
+msgstr "Workshops, Vernissagen, Walks und Meetups für Fotograf:innen in Wien. Member haben früher Zugriff und Rabatte."
+
+msgid "Workshops, walks, openings, meetups across Vienna."
+msgstr "Workshops, Walks, Vernissagen, Meetups in ganz Wien."
+
+msgid "Write a short bio"
+msgstr "Schreib eine kurze Bio"
+
+msgid "Write to the <em>desk</em>."
+msgstr "Schreib an den <em>Desk</em>."
+
+msgid "Writing for the weekly journal — a walk, a theme, a portrait of a place. Unlocks at Contributor."
+msgstr "Schreiben fürs wöchentliche Journal — ein Walk, ein Thema, das Porträt eines Ortes. Ab Contributor."
+
+msgid "Writing, free to <em>read</em>."
+msgstr "Texte, frei zu <em>lesen</em>."
+
+msgid "Written by"
+msgstr "Geschrieben von"
+
+msgid "X / Twitter URL"
+msgstr "X- / Twitter-URL"
+
+msgid "Year"
+msgstr "Jahr"
+
+msgid "Yes · members can pitch articles via the submission form. Editorial reviews every pitch within two weeks. Approved pitches land in a future issue with full credit and a member profile link."
+msgstr "Ja · Member können Artikel über das Einreichformular pitchen. Die Redaktion prüft jeden Pitch binnen zwei Wochen. Angenommene Pitches landen in einer künftigen Ausgabe mit vollem Credit und Profil-Link."
+
+msgid "You do. Members retain full copyright to text, photos and data. By submitting you grant VPG a non-exclusive, non-transferable licence to publish and archive the work indefinitely. Pull anytime."
+msgstr "Du. Member behalten das volle Urheberrecht an Texten, Fotos und Daten. Mit dem Einreichen gibst du VPG eine nicht-exklusive, nicht übertragbare Lizenz, die Arbeit unbegrenzt zu veröffentlichen und zu archivieren. Rückzug jederzeit."
+
+msgid "You get a notification when something new matches."
+msgstr "Du bekommst eine Benachrichtigung, wenn etwas Neues passt."
+
+msgid "You publish other people’s work — protect the keys."
+msgstr "Du veröffentlichst die Arbeit anderer — schütz die Schlüssel."
+
+msgid "You thanked the author for this."
+msgstr "Du hast dem Autor dafür gedankt."
+
+msgid "You voted this week"
+msgstr "Du hast diese Woche abgestimmt"
+
+msgid "You&rsquo;re a <em>member</em>."
+msgstr "Du bist <em>Mitglied</em>."
+
+msgid "You're checked in"
+msgstr "Du bist eingecheckt"
+
+msgid "You're off the list. No hard feelings."
+msgstr "Du bist von der Liste. Alles gut."
+
+msgid "You're on the list. We write when an issue ships."
+msgstr "Du bist auf der Liste. Wir schreiben, wenn eine Ausgabe erscheint."
+
+msgid "Your VPG login link"
+msgstr "Dein VPG-Login-Link"
+
+msgid "Your account email"
+msgstr "Deine Konto-E-Mail"
+
+msgid "Your account is deleted. Thank you for having been part of it."
+msgstr "Dein Konto ist gelöscht. Danke, dass du dabei warst."
+
+msgid "Your control centre — status, content and the tools that run the site. The look is managed in the Customizer; pages & menus by the setup wizard."
+msgstr "Deine Kommandozentrale — Status, Inhalte und die Werkzeuge, die die Seite betreiben. Der Look wird im Customizer verwaltet; Seiten & Menüs vom Setup-Assistenten."
+
+msgid "Your dashboard"
+msgstr "Dein Dashboard"
+
+msgid "Your dashboard, submissions and member-only resources live behind the door."
+msgstr "Dein Dashboard, Einreichungen und Member-Bereiche wohnen hinter der Tür."
+
+msgid "Your dashboard, your submissions, your <em>archive</em>."
+msgstr "Dein Dashboard, deine Einreichungen, dein <em>Archiv</em>."
+
+msgid "Your entry"
+msgstr "Dein Beitrag"
+
+msgid "Your first frame is <em>waiting</em>."
+msgstr "Dein erster Rahmen <em>wartet</em>."
+
+msgid "Your interview"
+msgstr "Dein Interview"
+
+msgid "Your most-seen piece"
+msgstr "Dein meistgesehenes Stück"
+
+msgid "Your name"
+msgstr "Dein Name"
+
+msgid "Your name belongs <em>here</em>."
+msgstr "Dein Name gehört <em>hierher</em>."
+
+msgid "Your note"
+msgstr "Deine Notiz"
+
+msgid "Your own member page — a quiet place to show your best frames."
+msgstr "Deine eigene Member-Seite — ein ruhiger Ort für deine besten Bilder."
+
+msgid "Your photo stays yours · credited by name · one winner goes into the next issue."
+msgstr "Dein Foto bleibt deins · mit Namen gezeichnet · ein Sieger kommt in die nächste Ausgabe."
+
+msgid "Your photo won a competition!"
+msgstr "Dein Foto hat einen Wettbewerb gewonnen!"
+
+msgid "Your photograph. Your name under it. <em>Every time.</em>"
+msgstr "Deine Fotografie. Dein Name darunter. <em>Jedes Mal.</em>"
+
+msgid "Your photos"
+msgstr "Deine Fotos"
+
+msgid "Your portfolio wall"
+msgstr "Deine Portfolio-Wand"
+
+msgid "Your profile"
+msgstr "Dein Profil"
+
+msgid "Your progress"
+msgstr "Dein Fortschritt"
+
+msgid "Your public member profile page"
+msgstr "Deine öffentliche Member-Profilseite"
+
+msgid "Your public profile"
+msgstr "Dein öffentliches Profil"
+
+msgid "Your published work"
+msgstr "Deine veröffentlichte Arbeit"
+
+msgid "Your rank"
+msgstr "Dein Rang"
+
+msgid "Your submission \"%s\" is live."
+msgstr "Deine Einreichung „%s“ ist live."
+
+msgid "Your work"
+msgstr "Deine Arbeit"
+
+msgid "Your year"
+msgstr "Dein Jahr"
+
+msgid "Your year is <em>yours</em>."
+msgstr "Dein Jahr gehört <em>dir</em>."
+
+msgid "You’re in"
+msgstr "Du bist dabei"
+
+msgid "You’re in — a spot opened up"
+msgstr "Du bist dabei — ein Platz wurde frei"
+
+msgid "[VPG] About your submission · %s"
+msgstr "[VPG] Zu deiner Einreichung · %s"
+
+msgid "[VPG] The month — %s"
+msgstr "[VPG] Der Monat — %s"
+
+msgid "[VPG] Tomorrow · %s"
+msgstr "[VPG] Morgen · %s"
+
+msgid "[VPG] We want to feature you"
+msgstr "[VPG] Wir wollen dich featuren"
+
+msgid "[VPG] Your work is live · %s"
+msgstr "[VPG] Deine Arbeit ist live · %s"
+
+msgid "a rental space"
+msgstr "ein Mietraum"
+
+msgid "a shooting spot"
+msgstr "ein Foto-Spot"
+
+msgid "a walking route"
+msgstr "eine Gehroute"
+
+msgid "awaiting review"
+msgstr "wartet auf Prüfung"
+
+msgid "built %s"
+msgstr "gebaut %s"
+
+msgid "checked in"
+msgstr "eingecheckt"
+
+msgid "cleanest path for URLs, attachments, longer threads."
+msgstr "sauberster Weg für URLs, Anhänge, längere Threads."
+
+msgid "clear"
+msgstr "klar"
+
+msgid "closed"
+msgstr "geschlossen"
+
+msgid "comments awaiting moderation"
+msgstr "Kommentare warten auf Moderation"
+
+msgid "current issue"
+msgstr "aktuelle Ausgabe"
+
+msgid "decided"
+msgstr "entschieden"
+
+msgid "drizzle"
+msgstr "Nieselregen"
+
+msgid "e.g. Film, labs, large format"
+msgstr "z. B. Film, Labore, Großformat"
+
+msgid "e.g. Golden hour · 06:00, or Blue hour in winter"
+msgstr "z. B. Goldene Stunde · 06:00, oder Blaue Stunde im Winter"
+
+msgid "e.g. Mon–Fri 10–18"
+msgstr "z. B. Mo–Fr 10–18"
+
+msgid "e.g. Spittelberg, 7. Bezirk"
+msgstr "z. B. Spittelberg, 7. Bezirk"
+
+msgid "e.g. €45 / h"
+msgstr "z. B. 45 € / h"
+
+msgid "editorial works"
+msgstr "redaktionelle Beiträge"
+
+msgid "est. 2019"
+msgstr "est. 2019"
+
+msgid "events & trails"
+msgstr "Events & Trails"
+
+msgid "featured image file missing"
+msgstr "Beitragsbild-Datei fehlt"
+
+msgid "fog"
+msgstr "Nebel"
+
+msgid "for the weekly journal"
+msgstr "fürs wöchentliche Journal"
+
+msgid "heavy rain"
+msgstr "starker Regen"
+
+msgid "in one place"
+msgstr "an einem Ort"
+
+msgid "in the review queue"
+msgstr "in der Review-Queue"
+
+msgid "live"
+msgstr "live"
+
+msgid "locations"
+msgstr "Locations"
+
+msgid "map"
+msgstr "Karte"
+
+msgid "meetings by appointment only."
+msgstr "Termine nur nach Vereinbarung."
+
+msgid "member since"
+msgstr "Mitglied seit"
+
+msgid "min"
+msgstr "min"
+
+msgid "min read"
+msgstr "Min. Lesezeit"
+
+msgid "missing"
+msgstr "fehlt"
+
+msgid "mostly clear"
+msgstr "überwiegend klar"
+
+msgid "new"
+msgstr "neu"
+
+msgid "new members"
+msgstr "neue Member"
+
+msgid "no interview yet"
+msgstr "noch kein Interview"
+
+msgid "no trespass, no endangered listings, no recommending hostile spaces."
+msgstr "kein Hausfriedensbruch, keine gefährdeten Orte, keine Empfehlung feindseliger Räume."
+
+msgid "none yet"
+msgstr "noch keine"
+
+msgid "notes on the walls"
+msgstr "Notizen an den Wänden"
+
+msgid "on the map"
+msgstr "auf der Karte"
+
+msgid "open"
+msgstr "offen"
+
+msgid "overcast"
+msgstr "bedeckt"
+
+msgid "partly cloudy"
+msgstr "teils bewölkt"
+
+msgid "pending"
+msgstr "ausstehend"
+
+msgid "pieces published"
+msgstr "veröffentlichte Stücke"
+
+msgid "pinned"
+msgstr "gepinnt"
+
+msgid "propose a meetup"
+msgstr "ein Meetup vorschlagen"
+
+msgid "quiet thank-yous received"
+msgstr "leise Dankeschöns erhalten"
+
+msgid "rain"
+msgstr "Regen"
+
+msgid "remove"
+msgstr "entfernen"
+
+msgid "reported notes"
+msgstr "gemeldete Notizen"
+
+msgid "scored /10"
+msgstr "bewertet /10"
+
+msgid "shop · lab · supplier"
+msgstr "Shop · Labor · Händler"
+
+msgid "showers"
+msgstr "Schauer"
+
+msgid "since %s"
+msgstr "seit %s"
+
+msgid "snow"
+msgstr "Schnee"
+
+msgid "submitting anyway is fine if yours adds something new."
+msgstr "trotzdem einreichen ist fein, wenn deins etwas Neues ergänzt."
+
+msgid "the ladder"
+msgstr "die Leiter"
+
+msgid "the place exists, the shop is still open, the lens is currently on sale."
+msgstr "der Ort existiert, der Shop hat noch offen, das Objektiv ist wirklich im Handel."
+
+msgid "there"
+msgstr "dort"
+
+msgid "thunderstorm"
+msgstr "Gewitter"
+
+msgid "times your work was seen"
+msgstr "Mal wurde deine Arbeit gesehen"
+
+msgid "unfinished"
+msgstr "unfertig"
+
+msgid "waiting in the review queue"
+msgstr "warten in der Review-Queue"
+
+msgid "walks you joined"
+msgstr "Walks, bei denen du dabei warst"
+
+msgid "we’ll discuss"
+msgstr "besprechen wir"
+
+msgid "while you wait"
+msgstr "während du wartest"
+
+msgid "works"
+msgstr "Arbeiten"
+
+msgid "wp_cron has stopped beating."
+msgstr "wp_cron hat aufgehört zu schlagen."
+
+msgid "you shot there, you bought from there, you actually own the gear."
+msgstr "du hast dort fotografiert, dort gekauft, dir gehört die Ausrüstung wirklich."
+
+msgid "— Editorial principle"
+msgstr "— Redaktionsprinzip"
+
+msgid "— Section"
+msgstr "— Ressort"
+
+msgid "— The Philosophy"
+msgstr "— Die Philosophie"
+
+msgid "— Vienna Photo Group · member-run, ad-free\nManage emails: "
+msgstr "— Vienna Photo Group · member-run, werbefrei\nE-Mails verwalten: "
+
+msgid "— the jury"
+msgstr "— die Jury"
+
+msgid "⁂ Mark finished"
+msgstr "⁂ Fertig markieren"
+
+msgid "← Newer"
+msgstr "← Neuere"
+
+msgid "← Previous"
+msgstr "← Zurück"
+
+msgid "↑ %1$s · ↓ %2$s"
+msgstr "↑ %1$s · ↓ %2$s"
+
+msgid "→ Review desk in the frontend (no wp-admin needed)"
+msgstr "→ Review-Desk im Frontend (kein wp-admin nötig)"
+
+msgid "↳ Draft issue from this month"
+msgstr "↳ Ausgabe aus diesem Monat entwerfen"
+
+msgid "↻ Duplicate Last"
+msgstr "↻ Letzte duplizieren"
+
+msgid "⌛ Reviewing"
+msgstr "⌛ In Prüfung"
+
+msgid "⏳ On the waitlist · leave"
+msgstr "⏳ Auf der Warteliste · verlassen"
+
+msgid "▦ Contact sheet"
+msgstr "▦ Kontaktbogen"
+
+msgid "● open — enter now"
+msgstr "● offen — jetzt mitmachen"
+
+msgid "⚑ Reports"
+msgstr "⚑ Meldungen"
+
+msgid "✉ Newsletter list"
+msgstr "✉ Newsletter-Liste"
+
+msgid "✎ Draft restored from this device."
+msgstr "✎ Entwurf von diesem Gerät wiederhergestellt."
+
+msgid "✓ In · leave"
+msgstr "✓ Dabei · verlassen"
+
+msgid "✓ On — this device now hears the collective."
+msgstr "✓ An — dieses Gerät hört jetzt das Kollektiv."
+
+msgid "✓ You're coming · cancel"
+msgstr "✓ Du kommst · absagen"
+
+msgid "📅 Calendar"
+msgstr "📅 Kalender"
+
+msgid "📖 Glossary"
+msgstr "📖 Glossar"
+
+msgid "📮 Mail log"
+msgstr "📮 Mail-Log"
+
+msgid "🖼 Broken media"
+msgstr "🖼 Kaputte Medien"
+
+msgid "%d article"
+msgid_plural "%d articles"
+msgstr[0] "%d Artikel"
+msgstr[1] "%d Artikel"
+
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] "%d Eintrag"
+msgstr[1] "%d Einträge"
+
+msgid "%d entry migrated."
+msgid_plural "%d entries migrated."
+msgstr[0] "%d Eintrag migriert."
+msgstr[1] "%d Einträge migriert."
+
+msgid "%d frame"
+msgid_plural "%d frames"
+msgstr[0] "%d Bild"
+msgstr[1] "%d Bilder"
+
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] "%d Ausgabe"
+msgstr[1] "%d Ausgaben"
+
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d Mitglied"
+msgstr[1] "%d Mitglieder"
+
+msgid "%d member-curated place to photograph in the %s."
+msgid_plural "%d member-curated places to photograph in the %s."
+msgstr[0] "%d von Membern kuratierter Foto-Ort im %s."
+msgstr[1] "%d von Membern kuratierte Foto-Orte im %s."
+
+msgid "%d note"
+msgid_plural "%d notes"
+msgstr[0] "%d Notiz"
+msgstr[1] "%d Notizen"
+
+msgid "%d on the waitlist"
+msgid_plural "%d on the waitlist"
+msgstr[0] "%d auf der Warteliste"
+msgstr[1] "%d auf der Warteliste"
+
+msgid "%d piece"
+msgid_plural "%d pieces"
+msgstr[0] "%d Stück"
+msgstr[1] "%d Stücke"
+
+msgid "%d pin"
+msgid_plural "%d pins"
+msgstr[0] "%d Pin"
+msgstr[1] "%d Pins"
+
+msgid "%d published work"
+msgid_plural "%d published works"
+msgstr[0] "%d veröffentlichte Arbeit"
+msgstr[1] "%d veröffentlichte Arbeiten"
+
+msgid "%d story"
+msgid_plural "%d stories"
+msgstr[0] "%d Geschichte"
+msgstr[1] "%d Geschichten"
+
+msgid "%d term"
+msgid_plural "%d terms"
+msgstr[0] "%d Begriff"
+msgstr[1] "%d Begriffe"
+
+msgid "%d view"
+msgid_plural "%d views"
+msgstr[0] "%d Aufruf"
+msgstr[1] "%d Aufrufe"
+
+msgid "%d work"
+msgid_plural "%d works"
+msgstr[0] "%d Arbeit"
+msgstr[1] "%d Arbeiten"
+
+msgid "%s — one district has no pin yet."
+msgid_plural "%s — these districts have no pins yet."
+msgstr[0] "%s — ein Bezirk hat noch keinen Pin."
+msgstr[1] "%s — diese Bezirke haben noch keine Pins."
+
+msgid "frame"
+msgid_plural "frames"
+msgstr[0] "Bild"
+msgstr[1] "Bilder"
+
+msgid "member"
+msgid_plural "members"
+msgstr[0] "Mitglied"
+msgstr[1] "Mitglieder"
+
+
+msgid "A frame that only works because of what is left out."
+msgstr "Ein Bild, das nur funktioniert wegen dem, was weggelassen wurde."
+
+msgid "A photograph you almost deleted — argue for it."
+msgstr "Eine Fotografie, die du fast gelöscht hättest — verteidige sie."
+
+msgid "AI suggestion"
+msgstr "KI-Vorschlag"
+
+msgid "Annual (PDF)"
+msgstr "Jahresband (PDF)"
+
+msgid "Bind a year of published issues — cover to colophon — into one PDF book."
+msgstr "Binde ein Jahr veröffentlichter Ausgaben — vom Cover bis zum Kolophon — in ein PDF-Buch."
+
+msgid "Bring one frame where the light did the work, not you."
+msgstr "Bring ein Bild, bei dem das Licht die Arbeit gemacht hat, nicht du."
+
+msgid "Build %d annual →"
+msgstr "Jahresband %d bauen →"
+
+msgid "By colour"
+msgstr "Nach Farbe"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Connected — suggestions are live."
+msgstr "Verbunden — Vorschläge sind live."
+
+msgid "Critique circles"
+msgstr "Kritik-Zirkel"
+
+msgid "Drag a box over a face or plate — release to pixelate. This overwrites the original."
+msgstr "Zieh ein Kästchen über ein Gesicht oder eine Tafel — loslassen pixelt. Das überschreibt das Original."
+
+msgid "EPUB"
+msgstr "EPUB"
+
+msgid "Each works once, in place of an app code, if you lose your phone."
+msgstr "Jeder funktioniert einmal, anstelle eines App-Codes, falls du dein Handy verlierst."
+
+msgid "Editorial"
+msgstr "Editorial"
+
+msgid "Enable push on this device first."
+msgstr "Aktiviere Push zuerst auf diesem Gerät."
+
+msgid "Event reminders"
+msgstr "Event-Erinnerungen"
+
+msgid "Every string the POT knows is translated to German. ✓"
+msgstr "Jeder String, den die POT kennt, ist auf Deutsch übersetzt. ✓"
+
+msgid "Everything else"
+msgstr "Alles andere"
+
+msgid "Fold along the lines · a pocket edition."
+msgstr "Entlang der Linien falten · eine Taschenausgabe."
+
+msgid "Language files not found in the theme’s /languages folder."
+msgstr "Sprachdateien nicht im /languages-Ordner des Themes gefunden."
+
+msgid "Listen"
+msgstr "Vorlesen"
+
+msgid "Mentioned this: %s"
+msgstr "Hat das erwähnt: %s"
+
+msgid "More in this colour"
+msgstr "Mehr in dieser Farbe"
+
+msgid "No published issues yet."
+msgstr "Noch keine veröffentlichten Ausgaben."
+
+msgid "Not connected — suggestions are off."
+msgstr "Nicht verbunden — Vorschläge sind aus."
+
+msgid "Nothing close enough yet — the archive grows with every upload."
+msgstr "Noch nichts nah genug — das Archiv wächst mit jedem Upload."
+
+msgid "One image, no crop — what would you reframe now?"
+msgstr "Ein Bild, kein Beschnitt — was würdest du jetzt anders rahmen?"
+
+msgid "Optional. A self-hosted image-captioning service (BLIP, llava, …) that accepts POST {image_url, want:[\"alt\",\"tags\"]} and returns {alt, tags:[…]}. When set, editors get alt-text and tag suggestions on member photos. Left empty, nothing is sent anywhere — the site stays local-first."
+msgstr "Optional. Ein selbst gehosteter Bild-Captioning-Dienst (BLIP, llava, …), der POST {image_url, want:[\"alt\",\"tags\"]} annimmt und {alt, tags:[…]} zurückgibt. Ist er gesetzt, bekommt die Redaktion Alt-Text- und Tag-Vorschläge zu Member-Fotos. Leer gelassen, verlässt nichts den Server — die Seite bleibt local-first."
+
+msgid "Pixelate this box"
+msgstr "Dieses Kästchen pixeln"
+
+msgid "Pocket zine PDF"
+msgstr "Taschen-Zine als PDF"
+
+msgid "Quiet hours · nothing 22:00–07:00"
+msgstr "Ruhezeiten · nichts von 22:00–07:00"
+
+msgid "Save endpoint"
+msgstr "Endpoint speichern"
+
+msgid "Save push preferences"
+msgstr "Push-Einstellungen speichern"
+
+msgid "Save these now — shown once"
+msgstr "Jetzt sichern — nur einmal gezeigt"
+
+msgid "Send a test push"
+msgstr "Test-Push senden"
+
+msgid "Sent — check your device."
+msgstr "Gesendet — sieh auf dein Gerät."
+
+msgid "Show a picture that breaks a rule you usually keep."
+msgstr "Zeig ein Bild, das eine Regel bricht, die du sonst einhältst."
+
+msgid "Silence by kind:"
+msgstr "Nach Art stummschalten:"
+
+msgid "Stop"
+msgstr "Stopp"
+
+msgid "Submission verdicts"
+msgstr "Einreichungs-Urteile"
+
+msgid "Suggest alt-text & tags"
+msgstr "Alt-Text & Tags vorschlagen"
+
+msgid "Test push — your lockscreen hears the collective. ✓"
+msgstr "Test-Push — dein Sperrbildschirm hört das Kollektiv. ✓"
+
+msgid "The chronicle →"
+msgstr "Die Chronik →"
+
+msgid "The quietest photo you made this month."
+msgstr "Das leiseste Foto, das du diesen Monat gemacht hast."
+
+msgid "This month in “%1$s”: %2$s"
+msgstr "Diesen Monat in „%1$s“: %2$s"
+
+msgid "Translation watch"
+msgstr "Übersetzungs-Wache"
+
+msgid "Translations"
+msgstr "Übersetzungen"
+
+msgid "Untitled"
+msgstr "Ohne Titel"
+
+msgid "Vienna Photo Group — the year %d"
+msgstr "Vienna Photo Group — das Jahr %d"
+
+msgid "Vision endpoint"
+msgstr "Vision-Endpoint"
+
+msgid "Visually similar"
+msgstr "Visuell ähnlich"
+
+msgid "more like this →"
+msgstr "mehr wie dieses →"
+
+msgid "this frame"
+msgstr "dieser Rahmen"
+
+msgid "via the Fediverse"
+msgstr "übers Fediverse"
+
+msgid "· generate backup codes"
+msgstr "· Backup-Codes erzeugen"
+
+msgid "· regenerate"
+msgstr "· neu erzeugen"
+
+msgid "⁂ Find visually similar"
+msgstr "⁂ Visuell Ähnliche finden"
+
+msgid "↓ Save this year as a postcard"
+msgstr "↓ Dieses Jahr als Postkarte sichern"
+
+msgid "◐ Anonymise a face / plate"
+msgstr "◐ Gesicht / Tafel anonymisieren"
+
+msgid "🌐 Translations"
+msgstr "🌐 Übersetzungen"
+
+msgid "📚 Annual (PDF)"
+msgstr "📚 Jahresband (PDF)"
+
+msgid "🔎 Vision endpoint"
+msgstr "🔎 Vision-Endpoint"
+
+msgid "%d backup code left."
+msgid_plural "%d backup codes left."
+msgstr[0] "%d Backup-Code übrig."
+msgstr[1] "%d Backup-Codes übrig."
+
+msgid "%d frame from the member archive."
+msgid_plural "%d frames from the member archive."
+msgstr[0] "%d Bild aus dem Member-Archiv."
+msgstr[1] "%d Bilder aus dem Member-Archiv."
+
+msgid "%d string still needs a German translation:"
+msgid_plural "%d strings still need a German translation:"
+msgstr[0] "%d String braucht noch eine deutsche Übersetzung:"
+msgstr[1] "%d Strings brauchen noch eine deutsche Übersetzung:"

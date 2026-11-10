@@ -4,7 +4,7 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
-## 4.8.0 — 2026-11-11 · The whole panel
+## 4.8.0 — 2026-11-10 · The whole panel
 
 The skin from Site Control now covers the rest of wp-admin. Frontend unchanged
 apart from the footer version. **Needs the new theme zip uploaded in WP → Themes.**

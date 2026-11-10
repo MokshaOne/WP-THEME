@@ -62,6 +62,7 @@ button { font-family: var(--font-body); }
 ::selection { background: var(--ink); color: var(--canvas); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; margin: 0; line-height: 0.9; letter-spacing: 0.005em; }
 
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skip-link {
 	position: absolute; left: -999px; top: 0; z-index: 100;
 	background: var(--ink); color: var(--canvas); padding: 12px 18px;
@@ -312,7 +313,8 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 /* ── Project page ────────────────────────────────────────────────────────── */
 .proj-hero { display: grid; grid-template-columns: 7fr 5fr; min-height: 80vh; border-bottom: var(--hair); }
 .proj-hero__left { padding: clamp(56px,6vw,88px) var(--gx) 44px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
-.proj-hero__title .line { font-family: var(--font-display); font-size: min(11vw, 150px); line-height: 0.9; letter-spacing: 0.005em; }
+.proj-hero__title { margin: 0; font-size: inherit; font-weight: inherit; }
+.proj-hero__title .line { display: block; font-family: var(--font-display); font-size: min(11vw, 150px); line-height: 0.9; letter-spacing: 0.005em; }
 .proj-hero__right { position: relative; border-left: var(--hair); overflow: hidden; background: var(--panel); }
 /* Show the photograph in its original crop — never cut a portrait's head off.
    The full frame is contained inside the panel, which acts as a gallery mat. */
@@ -410,7 +412,10 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 .notfound p { font-size: 13px; letter-spacing: 0.14em; color: var(--dim); margin: 24px 0; text-transform: uppercase; }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
+.enq__sum { display: none; }
 @media (max-width: 900px) {
+	.enq__sum { display: flex; justify-content: space-between; align-items: baseline; margin-top: 22px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .2em; color: var(--faint); }
+	.enq__sum b { font-family: var(--font-display); font-size: 30px; letter-spacing: 0; color: var(--ink); font-weight: 400; }
 	.nav, .hdr-clock { display: none; }
 	.burger { display: block; }
 	.hero, .proj-hero, .studio-hero, .enq { grid-template-columns: 1fr; }
@@ -521,6 +526,7 @@ a.live { color: var(--accent); border-bottom-color: var(--accent); }
 	.phero { height: auto; }
 	.phero .slides { position: relative; height: 58vh; }
 	.phero__top { position: absolute; }
+	.phero__top .exif { display: none; }
 	.phero__lede { position: static; max-width: none; text-align: left; align-items: flex-start; padding: 22px var(--gx) 0; }
 	.phero__cap { position: static; padding: 14px var(--gx) 0; }
 	.phero__wm { position: static; padding: 16px var(--gx) 22px; font-size: 15vw; white-space: normal; }
@@ -541,6 +547,7 @@ a.live { color: var(--accent); border-bottom-color: var(--accent); }
 .feat__exif { position: absolute; right: var(--gx); bottom: 38px; z-index: 2; color: var(--ink); background: rgba(11,11,11,.55); padding: 6px 10px; }
 .feat__pair { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(20px, 2.6vw, 44px); padding: clamp(70px, 9vw, 150px) var(--gx) 0; align-items: start; }
 .feat__b { grid-column: 1 / 8; position: relative; display: block; }
+.feat__pair > :only-child { grid-column: 5 / -1; }
 .feat__c { grid-column: 9 / 13; position: relative; display: block; margin-top: clamp(80px, 12vw, 210px); }
 .feat__plate { overflow: hidden; background: var(--panel); }
 .feat__plate img { width: 100%; height: auto; display: block; filter: grayscale(1) contrast(1.06); transition: filter .6s, transform .8s var(--ease-soft); }
@@ -573,6 +580,9 @@ a.live { color: var(--accent); border-bottom-color: var(--accent); }
 	.feat__pair { grid-template-columns: 1fr; }
 	.feat__b, .feat__c { grid-column: 1 / -1; margin-top: 0; }
 	.feat__title { max-width: 85%; }
+	.feat__title { bottom: 58px; }
+	.feat__exif { left: var(--gx); right: auto; bottom: 18px; }
+	.feat__pair > :only-child { grid-column: 1 / -1; }
 }
 
 /* ── Enquiry calculator — the full formula, set like an instrument panel ──── */

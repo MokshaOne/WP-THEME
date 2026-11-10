@@ -4,6 +4,27 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 4.6.3 — 2026-11-10 · Honest with little content
+
+The live site holds two projects and no honors yet; this release makes that
+state look intended and makes it impossible to ship placeholders.
+
+- **Deploys refuse sample data.** `WP_REQUIRE_LIVE=1` in the deploy workflow:
+  if WordPress does not answer, the build fails instead of uploading sample
+  projects. The nightly run tolerates it (site keeps its current build).
+- **No invented claims.** Stats, clients, logos, honors and testimonials show
+  only what WordPress holds; Recognition disappears when both lists are empty,
+  the journal shows an empty note instead of sample posts.
+- **Sparse layouts.** Heading counts the frames it shows (one / two / three),
+  a single second frame no longer leaves half a row empty; on phones the hero
+  kicker no longer collides with the slide arrows and the EXIF chip no longer
+  covers the frame title.
+- **Enquiry on phones:** the running estimate sits directly above SEND.
+- **Accessibility:** every page has exactly one `h1`, all form fields are
+  labelled, the decorative hover preview has an empty alt.
+- **Lighter:** self-portrait fallback is WebP (656 KB → 19 KB).
+- **Dependencies:** `npm audit fix` — 13 advisories → 5 (the rest need Astro 7).
+
 ## 4.6.2 — 2026-08-27 · One folder per domain
 
 The repository is reorganised: `raveenthiran.com/` now holds everything for

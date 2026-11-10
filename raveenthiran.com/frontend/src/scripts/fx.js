@@ -333,6 +333,7 @@ export function initFX(opts = {}) {
 
 	/* hover-peek floating preview */
 	const peek = document.createElement('img');
+	peek.alt = ''; // decorative preview; the row's own text is the label
 	peek.style.cssText = 'position:fixed;left:0;top:0;width:300px;height:auto;pointer-events:none;z-index:10003;opacity:0;transform:translate(-150px,-50%) rotate(3deg);transition:opacity .3s;filter:contrast(1.05)';
 	document.body.append(peek);
 	document.querySelectorAll('[data-peek]').forEach(row => {

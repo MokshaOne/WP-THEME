@@ -91,9 +91,9 @@ const breadcrumbLd = {
 		<div class="proj-hero__left">
 			<div>
 				<div class="eyebrow" data-intro style="margin-bottom:20px">{eyebrow}</div>
-				<div class="proj-hero__title">
-					{(titleLines.length ? titleLines : [up(p.title)]).map((l) => <div class="line" data-intro>{l}</div>)}
-				</div>
+				<h1 class="proj-hero__title">
+					{(titleLines.length ? titleLines : [up(p.title)]).map((l) => <span class="line" data-intro>{l}</span>)}
+				</h1>
 			</div>
 			{meta.length > 0 && (
 				<div class="meta-row" data-intro>

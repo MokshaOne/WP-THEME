@@ -246,7 +246,7 @@ function initEnquire() {
 		kmEcho: root.querySelector('[data-km-echo]'),
 		travelFmt: root.querySelector('[data-travel-fmt]'),
 		licenceFmt: root.querySelector('[data-licence-fmt]'),
-		total: root.querySelector('[data-total-fmt]'),
+		total: [...root.querySelectorAll('[data-total-fmt]')],
 		note: root.querySelector('[data-est-note]'),
 	};
 	const svc = () => svcs[sel];
@@ -288,7 +288,7 @@ function initEnquire() {
 		root.querySelectorAll('[data-tfp-line]').forEach((el) => { el.style.display = usage === 'tfp' ? '' : 'none'; });
 		const tfpFmt = root.querySelector('[data-tfp-fmt]');
 		tfpFmt && (tfpFmt.textContent = fmt(subtotal));
-		els.total && (els.total.textContent = fmt(total));
+		els.total.forEach((el) => { el.textContent = fmt(total); });
 		if (els.note) { const n = s.dataset.note || ''; els.note.textContent = n; els.note.style.display = n ? '' : 'none'; }
 		// stash for submit
 		root.dataset.selService = s.dataset.name;

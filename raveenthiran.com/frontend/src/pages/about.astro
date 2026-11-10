@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getSite } from '../lib/wp';
 
 const site = await getSite();
-const portrait = site.studio.portrait || '/sample/self-portrait.png';
+const portrait = site.studio.portrait || '/sample/self-portrait.webp';
 
 const statementLines = site.studio.statement;
 const bio = 'Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time. You deal with me directly, from first call to final print.';
@@ -15,6 +15,7 @@ const process = [
 ];
 ---
 <Base title="About — Raveenthiran" description="Nishuthan Raveenthiran — photographer based in Vienna, working across Austria." active="studio" page="studio" preload={portrait}>
+	<h1 class="sr-only">About Nishuthan Raveenthiran — photographer in Vienna</h1>
 	<section class="studio-hero">
 		<div class="studio-hero__portrait" data-intro>
 			<img src={portrait} alt="Nishuthan Raveenthiran" data-parallax="0.07" />

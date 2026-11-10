@@ -15,6 +15,8 @@ const honors = site.home.honors;
 const testimonials = site.home.testimonials;
 const hasRecog = honors.length > 0 || testimonials.length > 0;
 ---
+<h1 class="sr-only">Raveenthiran — portrait, fashion and editorial photography in Vienna</h1>
+
 <!-- POSTER HERO -->
 <section class="phero" data-hero data-intro>
 	<div class="slides">
@@ -64,7 +66,7 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 <section class="sec feat">
 	<div class="sec__head" data-reveal>
 		<div class="sec__hint">02 — SELECTED WORK</div>
-		<h2 data-letters>THREE FRAMES</h2>
+		<h2 data-letters>{['SELECTED FRAMES', 'ONE FRAME', 'TWO FRAMES', 'THREE FRAMES'][Math.min(3, featured.length)]}</h2>
 	</div>
 
 	{featured[0] && (
@@ -171,7 +173,7 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 <!-- THE PHOTOGRAPHER — the person behind the frames, one glance before the CTA -->
 <section class="whois" data-reveal>
 	<a class="whois__plate" href="/about/" aria-label="About Nishuthan Raveenthiran">
-		<img src={site.studio.portrait || '/sample/self-portrait.png'} alt="Nishuthan Raveenthiran" loading="lazy" />
+		<img src={site.studio.portrait || '/sample/self-portrait.webp'} alt="Nishuthan Raveenthiran" loading="lazy" />
 	</a>
 	<div class="whois__body">
 		<div class="sec__hint">{hasRecog ? '06' : '05'} — THE PHOTOGRAPHER</div>

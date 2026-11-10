@@ -1,12 +1,25 @@
 /**
  * WordPress data layer (headless). Queried at BUILD time by Astro's SSG.
- * If the API is unreachable (NAS offline, or the sandbox proxy blocking the
- * host), every function falls back to the built-in SAMPLE set so the build
- * still succeeds — never a broken build, never a blank site.
+ *
+ * Two modes:
+ *  · Development / preview — if the API is unreachable (NAS offline, sandbox
+ *    proxy), everything falls back to the built-in SAMPLE set so the build
+ *    still succeeds and the site looks finished.
+ *  · Deploy (WP_REQUIRE_LIVE=1) — an unreachable API FAILS the build. Sample
+ *    data must never be published over the live site; keeping yesterday's
+ *    build is always better.
+ *
+ * When the API IS reachable, content that makes a claim about the studio
+ * (honors, testimonials, stats, clients, journal posts) comes from WordPress
+ * only — an empty field renders nothing, never an invented placeholder.
  *
  * Override the endpoint at build time with:  WP_BASE=... npm run build
  */
-const WP_BASE = (import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2';
+const penv = (k: string): string => (typeof process !== 'undefined' && process.env && process.env[k]) || '';
+const WP_BASE = (import.meta.env.WP_BASE as string) || penv('WP_BASE') || 'https://wp.m1o.at/wp-json/wp/v2';
+// Astro coerces env values ("1" arrives as the number 1, "true" as a boolean),
+// so the flag is compared as a string.
+const REQUIRE_LIVE = ['1', 'true'].includes(String(import.meta.env.WP_REQUIRE_LIVE ?? penv('WP_REQUIRE_LIVE')));
 
 export interface GalleryImage {
 	src: string;
@@ -142,28 +155,74 @@ function mapProject(p: any): Project {
 	};
 }
 
-async function fetchJson(path: string): Promise<any[] | null> {
-	try {
-		const res = await fetch(WP_BASE + path);
-		if (!res.ok) throw new Error('HTTP ' + res.status);
-		const data = await res.json();
-		return Array.isArray(data) ? data : null;
-	} catch (e) {
-		console.warn('[wp] falling back to sample data — API unreachable:', (e as Error).message);
-		return null;
+/* ── transport: one snapshot per build ──
+   Every URL is requested once and shared by all pages (a build used to issue
+   one request per page, so a single flaky response could mix live and sample
+   content). Three attempts with backoff ride out a tunnel hiccup; the first
+   total failure marks the API down so the rest of the build doesn't wait. */
+type Res = { data: any; pages: number };
+const cache = new Map<string, Promise<Res | null>>();
+let apiDown = false;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function request(url: string): Promise<Res | null> {
+	let last = 'unreachable';
+	if (!apiDown) {
+		for (let i = 0; i < 3; i++) {
+			try {
+				const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
+				if (!res.ok) throw new Error('HTTP ' + res.status);
+				return { data: await res.json(), pages: Number(res.headers.get('x-wp-totalpages')) || 1 };
+			} catch (e) {
+				last = (e as Error).message;
+				if (i < 2) await sleep(700 * (i + 1));
+			}
+		}
+		apiDown = true;
 	}
+	if (REQUIRE_LIVE) {
+		throw new Error(`[wp] WP_REQUIRE_LIVE is set but the WordPress API did not answer (${last}) — refusing to build with sample data.`);
+	}
+	console.warn('[wp] falling back to sample data — API unreachable:', last);
+	return null;
 }
 
-export async function getProjects(): Promise<Project[]> {
-	const data = await fetchJson('/work?per_page=100&_embed&orderby=menu_order&order=asc');
-	if (!data || !data.length) return SAMPLE;
-	return data.map(mapProject);
+function cached(url: string): Promise<Res | null> {
+	let p = cache.get(url);
+	if (!p) { p = request(url); cache.set(url, p); }
+	return p;
+}
+
+/** A whole collection, following WordPress pagination. null = API unreachable. */
+async function list(path: string): Promise<any[] | null> {
+	const first = await cached(WP_BASE + path + '&page=1');
+	if (!first || !Array.isArray(first.data)) return null;
+	let out: any[] = first.data;
+	for (let page = 2; page <= first.pages; page++) {
+		const next = await cached(WP_BASE + path + '&page=' + page);
+		if (!next || !Array.isArray(next.data)) return null;
+		out = out.concat(next.data);
+	}
+	return out;
+}
+
+let projectsP: Promise<Project[]> | null = null;
+export function getProjects(): Promise<Project[]> {
+	if (!projectsP) {
+		projectsP = (async () => {
+			const data = await list('/work?per_page=100&_embed&orderby=menu_order&order=asc');
+			if (data && data.length) return data.map(mapProject);
+			if (data && REQUIRE_LIVE) {
+				throw new Error('[wp] WordPress answered with 0 published projects — refusing to deploy an empty archive.');
+			}
+			return SAMPLE;
+		})();
+	}
+	return projectsP;
 }
 
 export async function getProject(slug: string): Promise<Project | undefined> {
-	const data = await fetchJson('/work?slug=' + encodeURIComponent(slug) + '&_embed');
-	if (data && data.length) return mapProject(data[0]);
-	return SAMPLE.find((p) => p.slug === slug);
+	return (await getProjects()).find((p) => p.slug === slug);
 }
 
 /* ── Journal (native WordPress posts) ── */
@@ -219,16 +278,20 @@ function mapPost(p: any): Post {
 	};
 }
 
-export async function getPosts(): Promise<Post[]> {
-	const data = await fetchJson('/posts?per_page=50&_embed');
-	if (!data || !data.length) return SAMPLE_POSTS;
-	return data.map(mapPost);
+let postsP: Promise<Post[]> | null = null;
+export function getPosts(): Promise<Post[]> {
+	if (!postsP) {
+		postsP = (async () => {
+			const data = await list('/posts?per_page=100&_embed');
+			// Reachable but empty is a real state (no journal yet) — never invent posts.
+			return data ? data.map(mapPost) : SAMPLE_POSTS;
+		})();
+	}
+	return postsP;
 }
 
 export async function getPost(slug: string): Promise<Post | undefined> {
-	const data = await fetchJson('/posts?slug=' + encodeURIComponent(slug) + '&_embed');
-	if (data && data.length) return mapPost(data[0]);
-	return SAMPLE_POSTS.find((p) => p.slug === slug);
+	return (await getPosts()).find((p) => p.slug === slug);
 }
 
 /* ── Site settings (editable in WordPress → Site settings) ── */
@@ -317,12 +380,24 @@ const SITE_FALLBACK: Site = {
 function pick<T>(v: T | undefined | null | '', fb: T): T { return (v === undefined || v === null || v === '' ) ? fb : v; }
 function arr<T>(v: T[] | undefined | null, fb: T[]): T[] { return Array.isArray(v) && v.length ? v : fb; }
 
-export async function getSite(): Promise<Site> {
+/** Live value or nothing — for content that makes a claim about the studio. */
+function own<T>(v: T[] | undefined | null): T[] { return Array.isArray(v) ? v : []; }
+
+let siteP: Promise<Site> | null = null;
+export function getSite(): Promise<Site> {
+	if (!siteP) siteP = loadSite();
+	return siteP;
+}
+
+async function loadSite(): Promise<Site> {
 	const base = WP_BASE.replace(/\/wp\/v2\/?$/, '');
-	try {
-		const r = await fetch(base + '/rvn/v1/site', { mode: 'cors', credentials: 'omit' });
-		if (!r.ok) throw new Error('HTTP ' + r.status);
-		const d: any = await r.json();
+	const res = await cached(base + '/rvn/v1/site');
+	if (!res || !res.data || typeof res.data !== 'object') {
+		if (res && REQUIRE_LIVE) throw new Error('[wp] /rvn/v1/site returned no usable payload — refusing to deploy with sample settings.');
+		return SITE_FALLBACK;
+	}
+	{
+		const d: any = res.data;
 		const F = SITE_FALLBACK;
 		return {
 			studio: {
@@ -331,23 +406,23 @@ export async function getSite(): Promise<Site> {
 				portrait: pick(d?.studio?.portrait, ''),
 				statement: arr(d?.studio?.statement, F.studio.statement),
 				spec: arr(d?.studio?.spec, F.studio.spec),
-				stats: arr(d?.studio?.stats, F.studio.stats),
-				clients: arr(d?.studio?.clients, F.studio.clients),
-				client_logos: arr(d?.studio?.client_logos, F.studio.client_logos),
+				// Stats, clients, honors and testimonials are claims: the live site
+				// shows what WordPress holds, and hides the section when it is empty.
+				stats: own(d?.studio?.stats),
+				clients: own(d?.studio?.clients),
+				client_logos: own(d?.studio?.client_logos),
 			},
-			// Travel deliberately does NOT fall back to the sample dates: when the
-			// live backend predates the field (or has no rows), the strip stays
-			// hidden rather than showing fabricated availability.
+			// Travel likewise never falls back to the sample dates: no rows, no strip.
 			travel: {
 				open: d?.travel?.open === true,
-				dates: Array.isArray(d?.travel?.dates) ? d.travel.dates : [],
+				dates: own(d?.travel?.dates),
 			},
 			home: {
 				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),
 				hero_lede: pick(d?.home?.hero_lede, F.home.hero_lede),
 				marquee: pick(d?.home?.marquee, F.home.marquee),
-				honors: arr(d?.home?.honors, F.home.honors),
-				testimonials: arr(d?.home?.testimonials, F.home.testimonials),
+				honors: own(d?.home?.honors),
+				testimonials: own(d?.home?.testimonials),
 			},
 			contact: {
 				email: pick(d?.contact?.email, F.contact.email),
@@ -368,8 +443,5 @@ export async function getSite(): Promise<Site> {
 			faq: arr(d?.faq, F.faq),
 			security: { turnstile_site: pick(d?.security?.turnstile_site, '') },
 		};
-	} catch (e) {
-		console.warn('[wp] site settings fallback —', (e as Error).message);
-		return SITE_FALLBACK;
 	}
 }

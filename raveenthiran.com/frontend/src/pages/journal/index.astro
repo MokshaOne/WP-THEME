@@ -19,6 +19,9 @@ const up = (s: string) => (s || '').toUpperCase();
 				<span class="x">{up(post.category)} →</span>
 			</a>
 		))}
+		{posts.length === 0 && (
+			<p class="jempty">NOTHING PUBLISHED YET — THE FIRST NOTES ARE ON THEIR WAY.</p>
+		)}
 	</div>
 
 	<a class="cta cta--sm" href="/work/"><span>SEE THE WORK</span><span>→</span></a>

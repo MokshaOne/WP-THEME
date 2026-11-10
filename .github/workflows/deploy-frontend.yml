@@ -45,13 +45,27 @@ jobs:
         working-directory: raveenthiran.com/frontend
         run: npm ci
 
+      # WP_REQUIRE_LIVE makes the build FAIL when WordPress is unreachable
+      # instead of quietly falling back to sample data — sample content must
+      # never be uploaded over the live site. On the nightly schedule a failed
+      # build is tolerated (the NAS may simply be asleep): the job stays green,
+      # every later step is skipped, and the live site keeps its current build.
+      # On a push or manual run the failure is loud.
       - name: Build (pulls content from WordPress)
+        id: build
         working-directory: raveenthiran.com/frontend
+        continue-on-error: ${{ github.event_name == 'schedule' }}
         env:
           WP_BASE: ${{ secrets.WP_BASE }}
+          WP_REQUIRE_LIVE: "1"
         run: npm run build
 
+      - name: Note skipped deploy
+        if: steps.build.outcome != 'success'
+        run: echo "::warning title=Deploy skipped::WordPress did not answer during the build — nothing was uploaded; the live site keeps its current build."
+
       - name: Generate OG share cards
+        if: steps.build.outcome == 'success'
         working-directory: raveenthiran.com/frontend
         run: |
           npm i --no-save playwright@^1.48
@@ -60,6 +74,7 @@ jobs:
 
       - name: Check deploy config
         id: cfg
+        if: steps.build.outcome == 'success'
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}

@@ -256,6 +256,8 @@ a:hover .plate img, .card:hover .plate img { filter: none; transform: scale(1.05
 /* ── Recognition + quotes ────────────────────────────────────────────────── */
 /* Asymmetric split (7/5), divided by whitespace + a single rule, not a box. */
 .recog { display: grid; grid-template-columns: 1.15fr 0.85fr; column-gap: clamp(40px, 6vw, 110px); border-top: var(--hair); position: relative; z-index: 1; align-items: start; }
+.recog--single { grid-template-columns: minmax(0, 860px); }
+.jempty { margin: 0; padding: 56px var(--gx); font-family: var(--font-mono); font-size: 11px; letter-spacing: .2em; color: var(--faint); border-bottom: var(--hair); }
 .honor { display: grid; grid-template-columns: 60px 1fr auto; gap: clamp(16px, 1.8vw, 28px); align-items: baseline; padding: clamp(24px, 2.4vw, 34px) 0 clamp(24px, 2.4vw, 34px) var(--gx); border-bottom: var(--hair-soft); transition: color .3s, opacity .3s; }
 .honor:hover { color: var(--ink); }
 .honor .k { font-size: 11px; letter-spacing: 0.18em; color: var(--faint); }

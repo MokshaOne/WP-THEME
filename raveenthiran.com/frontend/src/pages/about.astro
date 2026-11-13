@@ -1,74 +1,86 @@
 ---
 import Base from '../layouts/Base.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
 import { getSite } from '../lib/wp';
+import { softenAll, soften } from '../lib/format';
 
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.webp';
 
-const statementLines = site.studio.statement;
-const bio = 'Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time. You deal with me directly, from first call to final print.';
-const spec = site.studio.spec.map((s) => [s.label, s.value] as [string, string]);
+const statementLines = softenAll(site.studio.statement);
+const bio = 'Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time.';
+const lede = 'You deal with me directly, from first call to final print. No agency layer, no hand-offs — one person responsible for the whole picture.';
+const spec = site.studio.spec.map((s) => [soften(s.label), s.value] as [string, string]);
 const process = [
-	['01', 'THE CALL', 'We talk intent, references and location. You get a fixed quote — no surprises later.'],
-	['02', 'THE SHOOT', 'Prepared, directed, unhurried. Most people hate being photographed — until this part.'],
-	['03', 'THE DELIVERY', 'Hand-edited selects in full resolution, ready for print — delivered when promised.'],
+	['01', 'The call', 'We talk intent, references and location. You get a fixed quote — no surprises later.'],
+	['02', 'The shoot', 'Prepared, directed, unhurried. Most people hate being photographed — until this part.'],
+	['03', 'The delivery', 'Hand-edited selects in full resolution, ready for print — delivered when promised.'],
 ];
 ---
 <Base title="About — Raveenthiran" description="Nishuthan Raveenthiran — photographer based in Vienna, working across Austria." active="studio" page="studio" preload={portrait}>
-	<h1 class="sr-only">About Nishuthan Raveenthiran — photographer in Vienna</h1>
 	<section class="studio-hero">
-		<div class="studio-hero__portrait" data-intro>
-			<img src={portrait} alt="Nishuthan Raveenthiran" data-parallax="0.07" />
-			<div class="credit">NISHUTHAN RAVEENTHIRAN — VIENNA</div>
-		</div>
+		<figure class="studio-hero__portrait media" data-intro>
+			<img src={portrait} alt="Nishuthan Raveenthiran" loading="eager" fetchpriority="high" />
+			<figcaption class="credit label">Nishuthan Raveenthiran — Vienna</figcaption>
+		</figure>
 		<div class="studio-hero__body">
 			<div>
-				<div class="eyebrow" data-intro style="margin-bottom:20px">01 — ABOUT THE STUDIO</div>
-				{statementLines.map((l, i) => (
-					<div class:list={['line', i === statementLines.length - 1 && 'line--outline']} data-intro>{l}</div>
-				))}
+				<p class="label" data-intro>About the studio</p>
+				<h1 class="studio-hero__title" aria-label={`About Nishuthan Raveenthiran — ${statementLines.join(' ')}`}>
+					{statementLines.map((l) => <span data-intro>{l}</span>)}
+				</h1>
 			</div>
-			<div data-intro style="display:flex;flex-direction:column;gap:34px">
-				<p>{bio}</p>
-				<div class="spec">
-					{spec.map(([k, v]) => <><span class="k">{k}</span><span>{v}</span></>)}
+			<div data-intro>
+				<p class="studio-hero__bio">{bio}</p>
+				<p class="studio-hero__lede copy">{lede}</p>
+				{spec.length > 0 && (
+					<dl class="spec-list">
+						{spec.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+					</dl>
+				)}
+				<div class="intro__actions studio-hero__actions">
+					<a class="btn btn--solid" href="/enquire/">Start a commission <span class="arr" aria-hidden="true">→</span></a>
+					<a class="btn btn--ghost" href="/work/">See the work</a>
 				</div>
-				<a class="btn" href="/enquire/" style="align-self:start">Start a commission</a>
 			</div>
 		</div>
 	</section>
 
-	<section class="process" data-reveal>
-		{process.map(([no, t, body]) => (
-			<div class="process__step">
-				<div class="no">{no}</div>
-				<div class="t">{t}</div>
-				<p>{body}</p>
-			</div>
-		))}
+	<section class="sec">
+		<SectionHead n="01" kicker="How it works" title="Three steps, <em>no surprises.</em>" />
+		<div class="process" data-reveal>
+			{process.map(([no, t, body]) => (
+				<div class="process__step">
+					<div class="no">{no}</div>
+					<h3 class="t">{t}</h3>
+					<p>{body}</p>
+				</div>
+			))}
+		</div>
 	</section>
 
-	<!-- PROOF — numbers, then names -->
+	<!-- PROOF — numbers, then names (only what WordPress provides) -->
 	{site.studio.stats.length > 0 && (
 		<section class="stats" data-reveal>
 			{site.studio.stats.map((s) => (
-				<div class="stat"><b>{s.value}</b><span>{s.label}</span></div>
+				<div class="stat"><b>{s.value}</b><span>{soften(s.label)}</span></div>
 			))}
 		</section>
 	)}
 	{site.studio.client_logos.length > 0 ? (
 		<section class="clients clients--logos" data-reveal>
-			<span class="k">SEEN AT · WORKED WITH</span>
+			<span class="label">Seen at · Worked with</span>
 			<div class="logowall">
 				{site.studio.client_logos.map((c) => <img src={c.logo} alt={c.name} title={c.name} loading="lazy" />)}
 			</div>
 		</section>
 	) : site.studio.clients.length > 0 && (
 		<section class="clients" data-reveal>
-			<span class="k">SEEN AT · WORKED WITH</span>
+			<span class="label">Seen at · Worked with</span>
 			{site.studio.clients.map((c) => <span>{c}</span>)}
 		</section>
 	)}
 
-	<a class="cta cta--sm" href="/enquire/"><span>LET'S TALK</span><span>→</span></a>
+	<CtaBand href="/enquire/" kicker="Get in touch" label="Let's <em>talk.</em>" />
 </Base>

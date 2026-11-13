@@ -1,28 +1,27 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/ui/PageIntro.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
 import { getPosts } from '../../lib/wp';
+import { pad, soften } from '../../lib/format';
 
 const posts = await getPosts();
-const up = (s: string) => (s || '').toUpperCase();
 ---
 <Base title="Journal — Raveenthiran" description="Notes on light, process and the work — from the Raveenthiran studio in Vienna." active="journal" page="journal">
-	<section class="phead">
-		<h1 data-intro>JOURNAL</h1>
-		<div class="phead__meta" data-intro>NOTES & STORIES<br />{String(posts.length).padStart(2, '0')} ENTRIES</div>
-	</section>
+	<PageIntro kicker={`Notes & stories · ${pad(posts.length)} entries`} title="The <em>journal.</em>" lede="Notes on light, process and the work — written between shoots." />
 
-	<div style="border-top:1px solid var(--line);margin-top:44px">
+	<div class="jlist" data-reveal>
 		{posts.map((post) => (
 			<a class="jrow" href={`/journal/${post.slug}/`}>
-				<span class="k">{post.dateLabel.toUpperCase()}</span>
-				<span class="t">{up(post.title)}</span>
-				<span class="x">{up(post.category)} →</span>
+				<span class="k">{post.dateLabel}</span>
+				<span class="t">{soften(post.title)}</span>
+				<span class="x">{soften(post.category)} <span aria-hidden="true">→</span></span>
 			</a>
 		))}
 		{posts.length === 0 && (
-			<p class="jempty">NOTHING PUBLISHED YET — THE FIRST NOTES ARE ON THEIR WAY.</p>
+			<p class="jempty">Nothing published yet — the first notes are on their way.</p>
 		)}
 	</div>
 
-	<a class="cta cta--sm" href="/work/"><span>SEE THE WORK</span><span>→</span></a>
+	<CtaBand href="/work/" kicker="Meanwhile" label="See the <em>work.</em>" />
 </Base>

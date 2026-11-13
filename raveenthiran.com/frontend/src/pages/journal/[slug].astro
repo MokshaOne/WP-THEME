@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import { getPosts, getPost } from '../../lib/wp';
 import { jsonForScript, cleanHtml } from '../../lib/safe';
+import CtaBand from '../../components/ui/CtaBand.astro';
+import { soften } from '../../lib/format';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -14,7 +16,7 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const { next } = Astro.props;
 const post = (await getPost(slug!))!;
-const up = (s: string) => (s || '').toUpperCase();
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const body = cleanHtml(post.content);
 
 const siteBase = (Astro.site?.href || 'https://raveenthiran.com/').replace(/\/$/, '');
@@ -48,18 +50,17 @@ const breadcrumbLd = {
 	<script type="application/ld+json" set:html={jsonForScript(articleLd)} is:inline />
 	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
 	<article class="article">
-		<div class="eyebrow" data-intro style="margin-bottom:20px">{up(post.category)} · {post.dateLabel.toUpperCase()}</div>
-		<h1 data-intro>{up(post.title)}</h1>
+		<header class="article__head">
+			<p class="label" data-intro><a class="link" href="/journal/">Journal</a> · {[soften(post.category), post.dateLabel].filter(Boolean).join(' · ')}</p>
+			<h1 data-intro>{soften(post.title)}</h1>
+		</header>
 		{post.image && (
-			<div class="plate" data-reveal style="margin:40px 0"><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></div>
+			<figure class="article__cover plate" data-reveal><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></figure>
 		)}
 		<div class="article__body" data-reveal set:html={body} />
 	</article>
 
 	{next && next.slug !== post.slug && (
-		<a class="cta cta--sm" href={`/journal/${next.slug}/`}>
-			<span style="font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;color:var(--faint)">NEXT ENTRY</span>
-			<span>{up(next.title)} →</span>
-		</a>
+		<CtaBand href={`/journal/${next.slug}/`} kicker="Next entry" label={esc(soften(next.title))} variant="next" />
 	)}
 </Base>

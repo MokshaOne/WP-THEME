@@ -1,5 +1,5 @@
 /* =============================================================================
-   Raveenthiran v3 — page behaviours. Boots the motion engine on every Astro
+   Raveenthiran v5 — page behaviours. Boots the motion engine on every Astro
    page-load (survives View Transitions) and wires the interactive modules that
    are present on the current page: mobile menu, home hero slider, RAW/FINAL
    compare, testimonial rotator, Work filter, Enquire calculator + submit.
@@ -52,40 +52,74 @@ function initMobileMenu() {
 	pageCleanups.push(() => { burger.removeEventListener('click', onBurger); removeEventListener('keydown', onKey); document.body.style.overflow = ''; });
 }
 
-/* ── home hero slider ────────────────────────────────────────────────────── */
+/* ── home hero slider (CSS crossfade; progress bar, pause, keyboard) ─────── */
 function initHeroSlider() {
 	const stage = document.querySelector('[data-hero]');
 	if (!stage) return;
 	const slides = [...stage.querySelectorAll('.slide')];
 	if (slides.length < 2) return;
 	const capEl = stage.querySelector('[data-cap]');
+	const titleEl = stage.querySelector('[data-title]');
+	const linkEl = stage.querySelector('[data-cap-link]');
 	const curEl = stage.querySelector('[data-count]');
+	const prog = stage.querySelector('[data-progress]');
+	const pauseBtn = stage.querySelector('[data-pause]');
+	const INTERVAL = 6000;
+	stage.style.setProperty('--hero-int', INTERVAL + 'ms');
 	let i = slides.findIndex((s) => s.classList.contains('on'));
 	if (i < 0) i = 0;
 	const total = slides.length;
-	let timer = 0;
+	let timer = 0, paused = false;
+	const restartProgress = () => {
+		if (!prog) return;
+		prog.classList.remove('run'); void prog.offsetWidth; prog.classList.add('run');
+	};
 	const render = () => {
-		slides.forEach((s, k) => s.classList.toggle('on', k === i));
-		if (capEl) capEl.textContent = slides[i].dataset.cap || '';
+		slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', String(k !== i)); });
+		const s = slides[i];
+		if (capEl) capEl.textContent = s.dataset.cap || '';
+		if (titleEl) titleEl.textContent = s.dataset.title || '';
+		if (linkEl && s.dataset.href) linkEl.setAttribute('href', s.dataset.href);
 		if (curEl) curEl.textContent = String(i + 1).padStart(2, '0');
+	};
+	const start = () => {
+		clearInterval(timer);
+		if (paused) return;
+		restartProgress();
+		timer = setInterval(() => go(1), INTERVAL);
 	};
 	const go = (d) => {
 		const from = i;
 		i = (i + d + total) % total;
-		// The WebGL displacement morph (fx.js) listens for this and, when it can,
-		// takes over the visual transition; the class toggle stays the source of truth.
 		stage.dispatchEvent(new CustomEvent('rvn:slide', { detail: { from, to: i } }));
 		render(); start();
 	};
-	const start = () => { clearInterval(timer); timer = setInterval(() => go(1), 6000); };
-	const prev = stage.querySelector('[data-prev]');
-	const next = stage.querySelector('[data-next]');
-	prev && prev.addEventListener('click', () => go(-1));
-	next && next.addEventListener('click', () => go(1));
-	const onKey = (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
-	addEventListener('keydown', onKey);
+	const setPaused = (v) => {
+		paused = v;
+		if (v) { clearInterval(timer); stage.dataset.paused = ''; } else { delete stage.dataset.paused; start(); }
+		if (pauseBtn) {
+			pauseBtn.setAttribute('aria-pressed', String(v));
+			pauseBtn.setAttribute('aria-label', v ? 'Play slideshow' : 'Pause slideshow');
+			pauseBtn.textContent = v ? '▶' : '❚❚';
+		}
+	};
+	stage.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
+	stage.querySelector('[data-next]')?.addEventListener('click', () => go(1));
+	pauseBtn?.addEventListener('click', () => setPaused(!paused));
+	// arrow keys only while focus is inside the hero — never hijack the page
+	stage.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+		if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+	});
+	// stop when the tab is hidden or the hero is off-screen
+	const onVis = () => { if (document.hidden) clearInterval(timer); else if (inView) start(); };
+	let inView = true;
+	const vio = new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) start(); else clearInterval(timer); });
+	vio.observe(stage);
+	document.addEventListener('visibilitychange', onVis);
+	if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
 	render(); start();
-	pageCleanups.push(() => { clearInterval(timer); removeEventListener('keydown', onKey); });
+	pageCleanups.push(() => { clearInterval(timer); vio.disconnect(); document.removeEventListener('visibilitychange', onVis); });
 }
 
 /* ── Cinema home slider (crossfade) ──────────────────────────────────────── */
@@ -211,7 +245,7 @@ function initFilter() {
 		serChip.className = 'chip';
 		const names = (first.dataset.seriesName || '').split(' · ');
 		const label = names[(first.dataset.series || '').split(/\s+/).indexOf(serSlug)] || serSlug;
-		serChip.textContent = 'SERIES — ' + label.toUpperCase();
+		serChip.textContent = 'Series — ' + label;
 		bar.insertBefore(serChip, chips[0] ? chips[0].nextSibling : null);
 		serChip.addEventListener('click', applySeries);
 		applySeries();
@@ -337,7 +371,7 @@ function initEnquire() {
 		if (!refBox) return;
 		refBox.hidden = !title;
 		const a = refBox.querySelector('[data-ref-link]');
-		if (a && title) { a.textContent = title.toUpperCase(); a.setAttribute('href', '/work/' + encodeURIComponent(slug) + '/'); }
+		if (a && title) { a.textContent = title; a.setAttribute('href', '/work/' + encodeURIComponent(slug) + '/'); }
 	};
 	const onRefClear = () => { setRef(''); save(); };
 	refBox?.querySelector('[data-ref-clear]')?.addEventListener('click', onRefClear);

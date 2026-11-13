@@ -4,6 +4,46 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 5.2.0 — 2026-11-13 · Vogue × Dazed (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed. A third design pass: every page is an
+exhibition — photographs dominate, text only where it must be, the rest is
+space. Data layer (`src/lib/wp.ts`), routes, `scripts/og.mjs` and the deploy
+pipeline are unchanged.
+
+- **Dual-tone.** The home hero is the one dark, photographic surface; every
+  other surface is warm cream `#F7F5F0` with ink `#111010` (secondary text at
+  60 %, hairlines at 8 %). Work, About and all inner pages are light.
+- **Type.** DM Sans 200/300 (self-hosted, `@fontsource/dm-sans`) replaces Space
+  Mono for all UI and body text: labels uppercase 10–12px, tracking .2–.3em;
+  body 15–16px, line-height 1.8. Instrument Serif Italic only for display
+  headlines. Space Mono + Anton are no longer loaded on the site (OG only).
+- **Header.** Fixed, transparent, `mix-blend-mode: difference`: RAVEENTHIRAN
+  left, WORK · STUDIO · ENQUIRE right — no button, no box, no underline, no
+  clock. Hides on scroll-down, returns on scroll-up.
+- **Hero.** 100vw × 100vh photograph, no overlay; a slow 3s cross-fade, quiet
+  dots bottom-right (pause stays keyboard-reachable). Project name + category
+  sit below the photograph on the cream ground.
+- **Work.** Filter pills removed. Asymmetric spread without gaps: 65 % left →
+  45 % right overlapping by −15vw → 70 % centred, repeating; same grid on the
+  home page. Caption "001 — NAME · CATEGORY · YEAR" at 10px, 50 % opacity;
+  "→" cursor and `scale(1.015)` on hover. `?series=` / `?cat=` deep links still
+  narrow the grid.
+- **Project page.** Italic serif title (~110px), one fact line "Category ·
+  Location · Year", cover full width, gallery stacked vertically 8vw apart
+  (rail/slider removed; lightbox kept).
+- **About.** Portrait left half, full height; right: RAVEENTHIRAN, the
+  headline "Portrait & Fashion Photographer, Vienna.", a hairline, a three-cell
+  data sheet (Based in / Available for / Since) and a short statement. Three
+  steps with "— 01 —" counters.
+- **Home.** Reduced to hero → selected work → statement → recognition → CTA
+  (manifest, road dates, peek index and photographer teaser removed).
+- **Footer.** Copyright (+ quiet Impressum / Datenschutz links, legally required
+  in AT) left, coordinates right, one hairline above.
+- **Motion.** Only an opacity fade on load (0.6s ease-out) and a 20px rise on
+  scroll. Removed: preloader, clip reveals, parallax, hover-peek, inertial
+  scroll, drag rails, pulse.
+
 ## 5.1.0 — 2026-11-13 · Vienna Monochrome (theme unchanged, 4.8.0)
 
 Frontend only — no theme upload needed. A second design pass that replaces the

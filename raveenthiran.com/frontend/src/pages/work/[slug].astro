@@ -28,8 +28,6 @@ const { slug } = Astro.params;
 const { index, next, siblings } = Astro.props;
 const p = (await getProject(slug!))!;
 
-// Title split on em-dash / middot: first line upright, the rest set in italic.
-const titleLines = soften(p.title).split(/\s*—\s*|\s*·\s*/).filter(Boolean);
 const catLabel = soften(p.category || 'Work');
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -48,10 +46,8 @@ const bookHref = `/enquire/?${session ? `session=${encodeURIComponent(p.category
 const bookLabel = session ? `Book a ${soften(p.category).toLowerCase()} session` : 'Start a commission';
 
 const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0, srcset: p.imageSrcset || '' }];
-// Gallery frames are 66vh tall with a natural width (theme.css .proj-gallery),
-// so the rendered width is 66vh × aspect — telling the browser lets it pick the
-// right srcset candidate instead of assuming 100vw.
-const gallerySizes = (w: number, h: number) => (w && h ? `calc(66vh * ${(w / h).toFixed(3)})` : undefined);
+// One quiet fact line under the title: "Category · Location · Year".
+const facts = [catLabel, p.location ? soften(p.location) : '', p.year].filter(Boolean).join(' · ');
 
 // CMS values rendered into the page: links are scheme-checked, HTML is cleaned.
 const website = safeUrl(p.website);
@@ -109,53 +105,30 @@ const breadcrumbLd = {
 	],
 };
 ---
-<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={ogImage} preload={p.image} preloadSrcset={p.imageSrcset || ''} preloadSizes="(max-width: 860px) 100vw, 42vw">
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={ogImage} preload={p.image} preloadSrcset={p.imageSrcset || ''} preloadSizes="100vw">
 	<script type="application/ld+json" set:html={jsonForScript(projectLd)} is:inline />
 	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
-	<!-- HERO — title + facts left, cover right -->
+	<!-- HERO — the title as a display line, one quiet fact line, then the cover full width -->
 	<section class="proj-hero">
-		<div class="proj-hero__left">
-			<div>
-				<nav class="proj-hero__crumb label" aria-label="Breadcrumb" data-intro>
-					<a href="/work/">Work</a><span aria-hidden="true">/</span>
-					<a href={`/work/?cat=${encodeURIComponent((p.category || '').toLowerCase())}`}>{catLabel}</a>
-					{p.year && <><span aria-hidden="true">/</span><span>{p.year}</span></>}
-					<span class="proj-hero__no" aria-hidden="true">No. {pad(index + 1, 3)}</span>
-				</nav>
-				<h1 class="proj-hero__title">
-					{(titleLines.length ? titleLines : [p.title]).map((l) => <span class="line" data-intro>{l}</span>)}
-				</h1>
-			</div>
-			{meta.length > 0 && (
-				<dl class="meta-row" data-intro>
-					{meta.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
-				</dl>
-			)}
-		</div>
-		<div class="proj-hero__right" data-intro>
-			<img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 860px) 100vw, 42vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="eager" fetchpriority="high" transition:name={`cover-${p.slug}`} />
-		</div>
+		<nav class="proj-hero__crumb label" aria-label="Breadcrumb" data-intro>
+			<a href="/work/">Work</a><span aria-hidden="true">/</span><span>No. {pad(index + 1, 3)}</span>
+		</nav>
+		<h1 class="proj-hero__title" data-intro>{soften(p.title)}</h1>
+		<p class="proj-hero__meta label" data-intro>{facts}</p>
 	</section>
+	<figure class="proj-cover" data-intro>
+		<img src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="eager" fetchpriority="high" data-zoom transition:name={`cover-${p.slug}`} />
+	</figure>
 
-	<!-- GALLERY RAIL -->
-	<section class="proj-gallery" aria-label="Gallery">
-		<div class="rail" data-drag data-rail tabindex="0" aria-label={`${p.title} — gallery, ${gallery.length} frames`}>
-			{gallery.map((g, i) => (
-				<figure class="card">
-					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} sizes={g.srcset ? gallerySizes(g.w, g.h) : undefined} width={g.w || undefined} height={g.h || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>
-					<figcaption class="cap"><span class="n">{pad(i + 1)}</span><span>/ {pad(gallery.length)}</span></figcaption>
-				</figure>
-			))}
-		</div>
-		<div class="rail-nav">
-			<span class="rail-nav__hint">Drag, scroll or use the arrows — click a frame to open it.</span>
-			<div class="slide-nav" data-rail-nav>
-				<button class="rbtn" data-rail-prev aria-label="Previous frame">←</button>
-				<span class="slide-count"><span data-rail-count>01</span><span class="of"> / {pad(gallery.length)}</span></span>
-				<button class="rbtn" data-rail-next aria-label="Next frame">→</button>
-			</div>
-		</div>
-	</section>
+	<!-- GALLERY — full width, frames stacked vertically, 8vw apart -->
+	{p.gallery.length > 0 && <section class="proj-gallery" aria-label={`${p.title} — gallery, ${gallery.length} frames`}>
+		{gallery.map((g, i) => (
+			<figure class="proj-frame" data-reveal-img>
+				<img src={g.src} srcset={g.srcset || undefined} sizes={g.srcset ? '(max-width: 900px) 100vw, 84vw' : undefined} width={g.w || undefined} height={g.h || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+				<figcaption class="proj-frame__n label">{pad(i + 1)} / {pad(gallery.length)}</figcaption>
+			</figure>
+		))}
+	</section>}
 
 	<!-- STATEMENT + CREDITS -->
 	<section class="proj-statement" data-reveal>
@@ -166,6 +139,7 @@ const breadcrumbLd = {
 				: <div class="proj-statement__body"><p>{`${catLabel === 'Work' ? 'A photographic' : catLabel} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p></div>}
 		</div>
 		<div class="credits">
+			{meta.filter(([k]) => k !== 'Location').map(([k, v]) => <><span class="k">{k}</span><span>{v}</span></>)}
 			{p.credits.length > 0
 				? p.credits.map((c) => { const href = safeUrl(c.url); return (<><span class="k">{soften(c.role)}</span><span>{href ? <a href={href} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>); })
 				: (<><span class="k">Photography</span><span>Nishuthan Raveenthiran</span></>)}
@@ -182,7 +156,7 @@ const breadcrumbLd = {
 	<section class="booklike" data-reveal>
 		<div>
 			<p class="label">Commission</p>
-			<p class="booklike__t">Want frames <em>like these?</em></p>
+			<p class="booklike__t">Frames <em>like these.</em></p>
 			<p class="booklike__p">The calculator opens with this project attached as your reference — you get an orientation figure now and a written offer within 24 hours.</p>
 		</div>
 		<a class="btn btn--solid" href={bookHref}>{bookLabel} <span class="arr" aria-hidden="true">→</span></a>
@@ -195,7 +169,7 @@ const breadcrumbLd = {
 				href={`/work/?series=${encodeURIComponent((p.series || [])[0]?.slug || '')}`} linkLabel="View the whole series" />
 			<div class="index" data-reveal>
 				{siblings.map((s, i) => (
-					<a class="index__row" href={`/work/${s.slug}/`} data-peek data-img={s.image}>
+					<a class="index__row" href={`/work/${s.slug}/`}>
 						<span class="k">{pad(i + 1, 3)}</span>
 						<span class="t">{s.title}</span>
 						<span class="k cat">{soften(s.category)}</span>

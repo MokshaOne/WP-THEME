@@ -1,13 +1,13 @@
 ---
-// One project tile: colour photograph with reveal + one mono caption line
-// "001 NAME — CATEGORY · YEAR" (upper-cased in CSS).
+// One project tile: the photograph, then one quiet line
+// "001 — NAME · CATEGORY · YEAR" (upper-cased in CSS). No frame, no overlay.
 // Extra attributes (data-cat, data-series …) are forwarded to the root <a>,
-// which keeps the `card` class the Work filter in ui.js relies on.
+// which keeps the `card` class the Work URL filter in ui.js relies on.
 import type { Project } from '../../lib/wp';
 import { pad, soften } from '../../lib/format';
 interface Props { project: Project; index: number; sizes: string; natural?: boolean; eager?: boolean; [key: string]: any }
 const { project: p, index, sizes, natural = false, eager = false, ...rest } = Astro.props;
-const cat = [soften(p.category), p.year].filter(Boolean).join(' · ');
+const tail = [soften(p.category), p.year].filter(Boolean);
 ---
 <a class:list={['pcard', 'card', natural && 'pcard--natural']} href={`/work/${p.slug}/`} {...rest}>
 	<div class="pcard__media media" data-reveal-img>
@@ -16,6 +16,6 @@ const cat = [soften(p.category), p.year].filter(Boolean).join(' · ');
 			transition:name={`cover-${p.slug}`} />
 	</div>
 	<p class="pcard__meta">
-		<span class="pcard__no">{pad(index, 3)}</span><span class="pcard__title">{p.title}</span>{cat && <><span class="pcard__sep" aria-hidden="true">—</span><span class="pcard__cat">{cat}</span></>}
+		<span class="pcard__no">{pad(index, 3)}</span><span class="pcard__sep" aria-hidden="true">—</span><span class="pcard__title">{p.title}</span>{tail.map((t) => <><span class="pcard__sep" aria-hidden="true">·</span><span class="pcard__cat">{t}</span></>)}
 	</p>
 </a>

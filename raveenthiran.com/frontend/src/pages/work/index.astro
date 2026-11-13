@@ -4,30 +4,21 @@ import PageIntro from '../../components/ui/PageIntro.astro';
 import ProjectCard from '../../components/ui/ProjectCard.astro';
 import CtaBand from '../../components/ui/CtaBand.astro';
 import { getProjects } from '../../lib/wp';
-import { pad, soften } from '../../lib/format';
+import { pad } from '../../lib/format';
 
 const projects = await getProjects();
-// data-cat stays upper-case: the filter in ui.js compares against category.toUpperCase()
+// data-cat stays upper-case: the URL filter in ui.js compares against category.toUpperCase()
 const up = (s: string) => (s || '').toUpperCase();
-
-const cats = Array.from(new Set(projects.map((p) => up(p.category)).filter(Boolean))).sort();
-const chips = [{ cat: 'ALL', label: 'All' }, ...cats.map((c) => ({ cat: c, label: soften(c) }))];
 const years = projects.map((p) => +p.year).filter(Boolean);
 const from = years.length ? Math.min(...years) : 2020;
 const to = years.length ? Math.max(...years) : new Date().getFullYear();
-// Asymmetric grid: the first frame runs ~75% wide, the second 55% on the right, then varied widths.
-const sizesFor = (i: number) => i === 0 ? '(max-width: 900px) 100vw, 75vw' : i === 1 ? '(max-width: 900px) 86vw, 55vw' : '(max-width: 900px) 86vw, 45vw';
+// Asymmetric grid, repeating 65% left / 45% right (overlapping) / 70% centred.
+const sizesFor = (i: number) => ['(max-width: 900px) 100vw, 65vw', '(max-width: 900px) 86vw, 45vw', '(max-width: 900px) 100vw, 70vw'][i % 3];
 ---
 <Base title="The Work — Raveenthiran" description="The full archive — portrait, fashion and editorial work from Vienna and across Austria." active="work" page="work">
-	<PageIntro kicker="" title="The <em>work.</em>" lede="Portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.">
-		<span slot="kicker">The archive · {from}–{to} · <span data-count>{pad(projects.length)}</span> projects</span>
+	<PageIntro kicker="" title="<em>Work.</em>">
+		<span slot="kicker">{from}–{to} · <span data-count>{pad(projects.length)}</span> projects</span>
 	</PageIntro>
-
-	<div class="chips" data-chips data-intro role="group" aria-label="Filter by category">
-		{chips.map((c) => (
-			<button class="chip" type="button" data-cat={c.cat} aria-pressed={c.cat === 'ALL' ? 'true' : 'false'}>{c.label}</button>
-		))}
-	</div>
 
 	<section class="wgrid" data-work-grid aria-label="Projects">
 		{projects.map((p, i) => (

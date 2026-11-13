@@ -58,9 +58,9 @@ WP_BASE=https://<wordpress-host>/wp-json/wp/v2 npm run build
 ```
 src/
   layouts/Base.astro       shell: <head> + SEO/JSON-LD, Header + Footer
-  components/ui/           reusable building blocks (v5.1 "Vienna Monochrome"):
-    Header.astro           wordmark · nav · clock · Enquire pill + mobile overlay
-    Footer.astro           signature footer
+  components/ui/           reusable building blocks (v5.2 "Vogue × Dazed"):
+    Header.astro           fixed, blend-difference header: wordmark · Work · Studio · Enquire + mobile overlay
+    Footer.astro           minimal footer: copyright (+ legal links) · coordinates
     PageIntro.astro        inner-page intro: kicker, serif H1, lede, actions
     SectionHead.astro      numbered section heading with optional link
     ProjectCard.astro      colour project tile with clip reveal
@@ -85,9 +85,9 @@ public/
 ```
 
 Fonts are **self-hosted** via Fontsource (no Google Fonts → GDPR-friendly):
-Space Mono (all text, labels and UI) + Instrument Serif (display headlines
-only). Anton stays installed only because `scripts/og.mjs` renders the share
-cards with it (together with Space Mono).
+DM Sans 200/300 (all UI and body text) + Instrument Serif Italic (display
+headlines only). Anton and Space Mono stay installed only because
+`scripts/og.mjs` renders the share cards with them — they are not loaded on the site.
 
 ---
 

@@ -1,37 +1,16 @@
 ---
-// Site footer: the studio's coordinates first, then contact, studio, follow and legal columns.
+// Site footer: copyright left, coordinates right, one hairline above — nothing else.
+// Impressum / Datenschutz stay as quiet text links next to the copyright: Austrian
+// law (§ 5 ECG, § 25 MedienG) requires them to be reachable from every page.
 interface Props { email: string; social: { label: string; href: string }[]; version: string; buildDate: string }
-const { email, social, version, buildDate } = Astro.props;
+const { version, buildDate } = Astro.props;
 const year = new Date().getFullYear();
 ---
-<footer class="site-footer">
-	<p class="foot-coord num">48.2082° N, 16.3738° E<span class="foot-place">Vienna, Austria</span></p>
-	<div class="foot-grid">
-		<div>
-			<span class="label">Contact</span>
-			<p class="foot-mailp"><a class="link foot-mail" href={`mailto:${email}`}>{email} <span class="arr" aria-hidden="true">→</span></a></p>
-		</div>
-		<div class="foot-col">
-			<span class="label">Studio</span>
-			<span>Vienna, Austria</span>
-			<a class="foot-live" href="/enquire/">Available for commissions</a>
-		</div>
-		<div class="foot-col">
-			<span class="label">Follow</span>
-			{social.length
-				? social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label} ↗</a>)
-				: <a href={`mailto:${email}`}>Email ↗</a>}
-			<a href="/journal/">Journal</a>
-		</div>
-		<div class="foot-col">
-			<span class="label">Legal</span>
-			<a href="/legal/impressum/">Impressum</a>
-			<a href="/legal/datenschutz/">Datenschutz</a>
-			<a href="/legal/agb/">AGB</a>
-		</div>
-	</div>
-	<div class="foot-bottom">
-		<span>© {year} Nishuthan Raveenthiran — Vienna</span>
-		<span class="num" title={`Built ${buildDate}`}>v{version} · {buildDate}</span>
-	</div>
+<footer class="site-footer" data-version={`v${version} · ${buildDate}`}>
+	<p class="foot-l">
+		<span>© {year} Nishuthan Raveenthiran</span>
+		<a href="/legal/impressum/">Impressum</a>
+		<a href="/legal/datenschutz/">Datenschutz</a>
+	</p>
+	<p class="foot-r num">48.2082° N, 16.3738° E</p>
 </footer>

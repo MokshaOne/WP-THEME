@@ -4,6 +4,40 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 5.0.0 — 2026-11-13 · Editorial (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed. Complete visual redesign; data layer
+(`src/lib/wp.ts`), routes and deploy pipeline are unchanged.
+
+- **Colour first.** Photographs are shown in full colour everywhere (no more
+  default black-and-white). Warm dark palette: background `#121110`, warm
+  ivory text `#ede8e0`, a quiet terracotta accent `#d9825b`.
+- **Two typefaces.** Instrument Serif for display (roman + one italic gesture
+  per headline) and Archivo variable for text, labels and UI. Anton/Space Mono
+  are no longer loaded by the site (kept only for the OG-image script).
+  Sentence case instead of all caps; all-caps CMS copy is softened on render.
+- **Design system.** Tokens for colour, type scale, spacing, easing and
+  duration in `theme.css`; reusable classes (`.label`, `.btn`, `.rbtn`,
+  `.link`, `.tag`, `.media`) and new components `Header`, `Footer`,
+  `PageIntro`, `SectionHead`, `ProjectCard`, `CtaBand`. Inline styles removed
+  from all pages (only JS-toggled `display:none` remains).
+- **Home.** Full-bleed colour hero with slow crossfade, progress line, working
+  pause button, linked caption; arrow keys only act while the hero has focus;
+  the slider stops off-screen and in hidden tabs.
+- **Pages.** Work archive with pill filters and natural-ratio masonry; project
+  page with breadcrumb, italic title line, fact row, gallery rail, statement
+  + credits; About with sticky portrait; Enquire calculator in numbered
+  blocks with a sticky orientation card; journal, legal, 404 and offline
+  pages on the same intro/article system.
+- **Fewer, better effects.** Removed grain/vignette, WebGL hero morph and
+  grain, RGB hover distortion, velocity skew, text scramble, letter reveals,
+  scroll marquee, film-strip progress bar and the cursor ring. Kept: a short
+  preloader, soft intro stagger, scroll reveals, clip-path image reveals,
+  hide-on-scroll header, lightbox, hover peek, drag rails, smooth wheel
+  scroll. Everything respects `prefers-reduced-motion`.
+- **Responsive.** Breakpoints at 1100 / 900 / 640 px, sticky elements released
+  on small screens, 44 px touch targets.
+
 ## 4.9.0 — 2026-11-11 · From looking to asking (theme unchanged, 4.8.0)
 
 Frontend only — no theme upload needed.

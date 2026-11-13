@@ -57,33 +57,36 @@ WP_BASE=https://<wordpress-host>/wp-json/wp/v2 npm run build
 
 ```
 src/
-  layouts/Base.astro     shell: <head> + SEO/JSON-LD, wordmark header,
-                         overlay menu, cinematic-hero-aware header,
-                         signature footer, EN/DE switch, preloader
-  lib/wp.ts              data layer — getProjects/getProject, getSite,
-                         getPosts/getPost, with sample-data fallbacks
-  i18n.ts                EN/DE dictionary for the interface strings
-  styles/theme.css       the whole design system (Opta-derived): Playfair +
-                         Montserrat + Roboto, gold accent, light/dark tokens
-  scripts/ui.js          all behaviour (theme, i18n, overlay, cinematic hero,
-                         work filter, lightbox+zoom, price engine, count-up,
-                         magnetic, focus traps) — re-inits on view transitions
-  pages/
-    index.astro          home: cinematic hero + lede + staggered gallery
-    work/index.astro     filterable / index-toggle gallery
-    work/[slug].astro    project: contained cover + meta + gallery + next
-    journal/index.astro  journal list
-    journal/[slug].astro article
-    about.astro          studio
-    enquire.astro        price calculator + FAQ + enquiry form
-    404.astro            bespoke not-found
-    rss.xml.ts           journal RSS feed
+  layouts/Base.astro       shell: <head> + SEO/JSON-LD, Header + Footer
+  components/ui/           reusable building blocks (v5 "Editorial"):
+    Header.astro           wordmark · nav · clock · Enquire pill + mobile overlay
+    Footer.astro           signature footer
+    PageIntro.astro        inner-page intro: kicker, serif H1, lede, actions
+    SectionHead.astro      numbered section heading with optional link
+    ProjectCard.astro      colour project tile with clip reveal
+    CtaBand.astro          closing call-to-action / "next project" band
+  components/home/         home page composition (Default.astro)
+  lib/wp.ts                data layer — getProjects/getProject, getSite,
+                           getPosts/getPost, with sample-data fallbacks
+  lib/format.ts            presentation helpers (pad, soften, caption)
+  styles/theme.css         the whole design system: tokens (colour, type,
+                           spacing, motion) + component classes
+  styles/a11y.css          focus, touch targets, forced-colours
+  scripts/fx.js            motion engine: preloader, reveals, header state,
+                           lightbox, hover-peek, rails, smooth scroll, cookies
+  scripts/ui.js            page behaviour: menu, hero slider, filter,
+                           enquiry calculator, gallery rail, quotes
+  pages/                   index, work/, work/[slug], about, enquire,
+                           journal/, journal/[slug], legal/*, 404, offline,
+                           rss.xml, image-sitemap.xml, og-data.json
 public/
-  .htaccess              Apache: 404, gzip, caching, security headers, HTTPS
+  .htaccess                Apache: 404, gzip, caching, security headers, HTTPS
   robots.txt, site.webmanifest, icon.svg
 ```
 
-Fonts are **self-hosted** via Fontsource (no Google Fonts → GDPR-friendly).
+Fonts are **self-hosted** via Fontsource (no Google Fonts → GDPR-friendly):
+Instrument Serif (display) + Archivo variable (text/UI). Anton and Space Mono
+stay installed only because `scripts/og.mjs` renders the share cards with them.
 
 ---
 

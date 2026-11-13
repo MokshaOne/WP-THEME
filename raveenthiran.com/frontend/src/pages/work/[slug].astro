@@ -1,6 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getProjects, getProject } from '../../lib/wp';
+import { getProjects, getProject, getSite } from '../../lib/wp';
+import { jsonForScript, safeUrl, cleanHtml } from '../../lib/safe';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
+import { pad, soften } from '../../lib/format';
 
 export async function getStaticPaths() {
 	const projects = await getProjects();
@@ -24,17 +28,39 @@ const { slug } = Astro.params;
 const { index, next, siblings } = Astro.props;
 const p = (await getProject(slug!))!;
 
-const up = (s: string) => (s || '').toUpperCase();
-const titleLines = up(p.title).split(/\s*—\s*|\s*·\s*/).filter(Boolean);
-const eyebrow = `FIG. ${String(index + 1).padStart(3, '0')} — ${up(p.category || 'WORK')} — ${p.year}`;
+// Title split on em-dash / middot: first line upright, the rest set in italic.
+const titleLines = soften(p.title).split(/\s*—\s*|\s*·\s*/).filter(Boolean);
+const catLabel = soften(p.category || 'Work');
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const meta = ([
-	['CLIENT', p.client],
-	['LOCATION', p.location],
-	['SERVICES', p.services.join(' · ')],
+	['Client', p.client],
+	['Location', p.location],
+	['Services', p.services.join(' · ')],
 ] as [string, string][]).filter(([, v]) => v);
 
-const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0 }];
+// Booking bridge: the enquiry calculator opens on the session that matches this
+// project's album (when the studio offers one) and carries the project along as
+// the visual reference.
+const site = await getSite();
+const session = site.pricing.sessions.find((s) => p.category && s.name.toLowerCase().includes(p.category.toLowerCase()));
+const bookHref = `/enquire/?${session ? `session=${encodeURIComponent(p.category.toLowerCase())}&` : ''}ref=${encodeURIComponent(p.slug)}`;
+const bookLabel = session ? `Book a ${soften(p.category).toLowerCase()} session` : 'Start a commission';
+
+const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0, srcset: p.imageSrcset || '' }];
+// Gallery frames are 66vh tall with a natural width (theme.css .proj-gallery),
+// so the rendered width is 66vh × aspect — telling the browser lets it pick the
+// right srcset candidate instead of assuming 100vw.
+const gallerySizes = (w: number, h: number) => (w && h ? `calc(66vh * ${(w / h).toFixed(3)})` : undefined);
+
+// CMS values rendered into the page: links are scheme-checked, HTML is cleaned.
+const website = safeUrl(p.website);
+const body = cleanHtml(p.content);
+
+// Share image: social scrapers do not render AVIF, so an AVIF og image gives
+// way to the generated /og/<slug>.jpg card.
+const isAvif = (u: string) => /\.avif(?:[?#]|$)/i.test(u || '');
+const ogImage = p.ogImage && !isAvif(p.ogImage) ? p.ogImage : `/og/${p.slug}.jpg`;
 
 // Unique, human meta description per project: prefer the statement text,
 // otherwise compose one from the project's own metadata.
@@ -83,23 +109,27 @@ const breadcrumbLd = {
 	],
 };
 ---
-<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={p.ogImage || `/og/${p.slug}.jpg`} preload={p.image}>
-	<script type="application/ld+json" set:html={JSON.stringify(projectLd)} is:inline />
-	<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} is:inline />
-	<!-- SPLIT HERO -->
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={ogImage} preload={p.image} preloadSrcset={p.imageSrcset || ''} preloadSizes="(max-width: 860px) 100vw, 42vw">
+	<script type="application/ld+json" set:html={jsonForScript(projectLd)} is:inline />
+	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
+	<!-- HERO — title + facts left, cover right -->
 	<section class="proj-hero">
 		<div class="proj-hero__left">
 			<div>
-				<div class="eyebrow" data-intro style="margin-bottom:20px">{eyebrow}</div>
+				<nav class="proj-hero__crumb label" aria-label="Breadcrumb" data-intro>
+					<a href="/work/">Work</a><span aria-hidden="true">/</span>
+					<a href={`/work/?cat=${encodeURIComponent((p.category || '').toLowerCase())}`}>{catLabel}</a>
+					{p.year && <><span aria-hidden="true">/</span><span>{p.year}</span></>}
+					<span class="proj-hero__no" aria-hidden="true">No. {pad(index + 1, 3)}</span>
+				</nav>
 				<h1 class="proj-hero__title">
-					{(titleLines.length ? titleLines : [up(p.title)]).map((l) => <span class="line" data-intro>{l}</span>)}
+					{(titleLines.length ? titleLines : [p.title]).map((l) => <span class="line" data-intro>{l}</span>)}
 				</h1>
 			</div>
 			{meta.length > 0 && (
-				<div class="meta-row" data-intro>
-					{meta.map(([k]) => <span class="k">{k}</span>)}
-					{meta.map(([, v]) => <span>{v}</span>)}
-				</div>
+				<dl class="meta-row" data-intro>
+					{meta.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+				</dl>
 			)}
 		</div>
 		<div class="proj-hero__right" data-intro>
@@ -108,49 +138,67 @@ const breadcrumbLd = {
 	</section>
 
 	<!-- GALLERY RAIL -->
-	<section class="proj-gallery">
-		<div class="rail" data-drag>
+	<section class="proj-gallery" aria-label="Gallery">
+		<div class="rail" data-drag data-rail tabindex="0" aria-label={`${p.title} — gallery, ${gallery.length} frames`}>
 			{gallery.map((g, i) => (
-				<div class="card">
-					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} /></div>
-					<div class="cap"><span class="n">{String(i + 1).padStart(2, '0')}</span><span>{up(p.title)}</span></div>
-				</div>
+				<figure class="card">
+					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} sizes={g.srcset ? gallerySizes(g.w, g.h) : undefined} width={g.w || undefined} height={g.h || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>
+					<figcaption class="cap"><span class="n">{pad(i + 1)}</span><span>/ {pad(gallery.length)}</span></figcaption>
+				</figure>
 			))}
 		</div>
-		<div class="wrap" style="padding-top:24px;font-size:11px;letter-spacing:0.2em;color:var(--faint)">SCROLL SIDEWAYS ——→</div>
+		<div class="rail-nav">
+			<span class="rail-nav__hint">Drag, scroll or use the arrows — click a frame to open it.</span>
+			<div class="slide-nav" data-rail-nav>
+				<button class="rbtn" data-rail-prev aria-label="Previous frame">←</button>
+				<span class="slide-count"><span data-rail-count>01</span><span class="of"> / {pad(gallery.length)}</span></span>
+				<button class="rbtn" data-rail-next aria-label="Next frame">→</button>
+			</div>
+		</div>
 	</section>
 
 	<!-- STATEMENT + CREDITS -->
 	<section class="proj-statement" data-reveal>
-		{p.content
-			? <div set:html={p.content} />
-			: <p>{`${p.category || 'A photographic'} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p>}
+		<div>
+			<p class="label proj-statement__kicker">About the project</p>
+			{body
+				? <div class="proj-statement__body" set:html={body} />
+				: <div class="proj-statement__body"><p>{`${catLabel === 'Work' ? 'A photographic' : catLabel} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p></div>}
+		</div>
 		<div class="credits">
 			{p.credits.length > 0
-				? p.credits.map((c) => (<><span class="k">{up(c.role)}</span><span>{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>))
-				: (<><span class="k">PHOTOGRAPHY</span><span>NISHUTHAN RAVEENTHIRAN</span></>)}
+				? p.credits.map((c) => { const href = safeUrl(c.url); return (<><span class="k">{soften(c.role)}</span><span>{href ? <a href={href} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>); })
+				: (<><span class="k">Photography</span><span>Nishuthan Raveenthiran</span></>)}
 			{(p.series || []).length > 0 && (
-				<><span class="k">SERIES</span><span>{(p.series || []).map((s) => <a class="chipline" href={`/work/?series=${s.slug}`}>{up(s.name)}</a>)}</span></>
+				<><span class="k">Series</span><span class="tags">{(p.series || []).map((s) => <a class="tag" href={`/work/?series=${encodeURIComponent(s.slug)}`}>{soften(s.name)}</a>)}</span></>
 			)}
-			{p.website && (
-				<><span class="k">WEBSITE</span><span><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
+			{website && (
+				<><span class="k">Website</span><span><a href={website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
 			)}
 		</div>
 	</section>
 
+	<!-- BOOKING BRIDGE — from looking to asking, with this project as the reference -->
+	<section class="booklike" data-reveal>
+		<div>
+			<p class="label">Commission</p>
+			<p class="booklike__t">Want frames <em>like these?</em></p>
+			<p class="booklike__p">The calculator opens with this project attached as your reference — you get an orientation figure now and a written offer within 24 hours.</p>
+		</div>
+		<a class="btn btn--solid" href={bookHref}>{bookLabel} <span class="arr" aria-hidden="true">→</span></a>
+	</section>
+
 	<!-- FROM THE SERIES — the other frames that belong to this series -->
 	{siblings.length > 0 && (
-		<section class="wrap" data-reveal style="padding:var(--sp-tight) var(--gx);border-bottom:var(--hair)">
-			<div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:28px">
-				<div class="sec__hint" style="margin:0">FROM THE SERIES — {up((p.series || []).map((s) => s.name).join(' · '))}</div>
-				<a class="chipline" href={`/work/?series=${(p.series || [])[0]?.slug || ''}`}>VIEW THE WHOLE SERIES →</a>
-			</div>
-			<div class="index">
+		<section class="series">
+			<SectionHead kicker={`From the series — ${(p.series || []).map((s) => soften(s.name)).join(' · ')}`}
+				href={`/work/?series=${encodeURIComponent((p.series || [])[0]?.slug || '')}`} linkLabel="View the whole series" />
+			<div class="index" data-reveal>
 				{siblings.map((s, i) => (
 					<a class="index__row" href={`/work/${s.slug}/`} data-peek data-img={s.image}>
-						<span class="k">{String(i + 1).padStart(3, '0')}</span>
-						<span class="t">{up(s.title)}</span>
-						<span class="k cat">{up(s.category)}</span>
+						<span class="k">{pad(i + 1, 3)}</span>
+						<span class="t">{s.title}</span>
+						<span class="k cat">{soften(s.category)}</span>
 						<span class="k year">{s.year}</span>
 					</a>
 				))}
@@ -160,9 +208,6 @@ const breadcrumbLd = {
 
 	<!-- NEXT PROJECT -->
 	{next && next.slug !== p.slug && (
-		<a class="cta cta--sm" href={`/work/${next.slug}/`}>
-			<span style="font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;color:var(--faint)">NEXT PROJECT</span>
-			<span>{up(next.title)} →</span>
-		</a>
+		<CtaBand href={`/work/${next.slug}/`} kicker="Next project" label={`${esc(next.title)}`} variant="next" />
 	)}
 </Base>

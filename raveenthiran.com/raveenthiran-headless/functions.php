@@ -258,7 +258,7 @@ add_action( 'admin_bar_menu', function ( $bar ) {
 	if ( ! current_user_can( 'edit_posts' ) || rvn_gh_token() === '' ) { return; }
 	$bar->add_node( array(
 		'id'    => 'rvn-publish',
-		'title' => '▲ Publish',
+		'title' => '▲ Publish' . ( ( $n = count( rvn_changes() ) ) ? ' (' . $n . ')' : '' ),
 		'href'  => wp_nonce_url( admin_url( 'admin-post.php?action=rvn_publish' ), 'rvn_publish' ),
 		'meta'  => array( 'title' => 'Publish changes to the live site' ),
 	) );
@@ -272,11 +272,9 @@ add_action( 'wp_head', function () {
 	if ( is_admin_bar_showing() ) { echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{color:#ffd76e!important;font-weight:600}</style>'; }
 } );
 
-/* ── Redesign WP Admin — icon-only sidebar + Site Control as the start screen ── */
-// Collapse the admin menu to icons by default (native folded look, with fly-out submenus).
-add_filter( 'admin_body_class', function ( $classes ) {
-	return trim( $classes . ' folded' );
-} );
+/* ── Site Control as the start screen ── */
+// The sidebar keeps its labels (it used to be forced to icons-only): with the
+// skin in inc/admin-skin.php the menu is short enough to read at a glance.
 // The default Dashboard becomes the Site Control tile board — only for users
 // who can actually open it; anyone else keeps the stock dashboard.
 add_action( 'load-index.php', function () {
@@ -305,42 +303,11 @@ add_action( 'acf/init', function () {
 	}
 } );
 
-/* Branded styles for the Site Control page only. */
-add_action( 'admin_head', function () {
-	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-	if ( ! $screen || strpos( (string) $screen->id, 'site-control' ) === false ) { return; }
-	echo '<style>
-	#wpcontent, #wpbody-content { background:#f3f1ec; }
-	.rvn-sc { max-width: 1240px; }
-	.rvn-sc__hero { background:#121110; color:#efece6; padding:30px 34px 26px; margin:16px 20px 0 0; border:1px solid #2b2925; }
-	.rvn-sc__wm { font-family:"Arial Narrow",Arial,sans-serif; font-weight:800; letter-spacing:.22em; font-size:14px; }
-	.rvn-sc__hero h1 { color:#efece6; font-size:40px; line-height:1; margin:12px 0 6px; font-weight:800; letter-spacing:-.5px; }
-	.rvn-sc__hero p { color:#8a847a; margin:0; letter-spacing:.02em; }
-	.rvn-sc__stats { display:flex; gap:30px; margin-top:20px; flex-wrap:wrap; }
-	.rvn-sc__stat b { display:block; font-size:26px; line-height:1; color:#efece6; font-weight:800; }
-	.rvn-sc__stat span { font-size:11px; letter-spacing:.14em; color:#6f6a60; text-transform:uppercase; }
-	/* Windows-8 / Metro tile board */
-	.rvn-tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); grid-auto-rows:146px; gap:10px; margin:14px 20px 0 0; }
-	.rvn-tile { position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:15px 16px; color:#fff!important; text-decoration:none; box-shadow:0 1px 2px rgba(0,0,0,.12); transition:transform .1s ease, filter .1s; }
-	.rvn-tile:hover { transform:scale(.965); filter:brightness(1.07); color:#fff!important; }
-	.rvn-tile:focus { outline:2px solid #fff; outline-offset:-5px; box-shadow:none; }
-	.rvn-tile .dashicons { font-size:30px; width:30px; height:30px; }
-	.rvn-tile__n { font-size:34px; font-weight:800; line-height:.9; }
-	.rvn-tile__l { font-size:14px; font-weight:700; letter-spacing:.01em; }
-	.rvn-tile__s { font-size:11px; opacity:.9; margin-top:2px; }
-	.rvn-tile--wide { grid-column:span 2; }
-	.rvn-tile--tall { grid-row:span 2; }
-	.rvn-tile--pub .dashicons { font-size:40px; width:40px; height:40px; }
-	.rvn-tile--pub .rvn-tile__l { font-size:20px; }
-	.rvn-sc__panel { background:#fff; border:1px solid #dcd7cf; padding:18px 22px; margin:16px 20px 0 0; }
-	.rvn-sc__panel h2 { margin-top:0; }
-	.rvn-sc__check { list-style:none; margin:0; padding:0; }
-	.rvn-sc__check li { padding:7px 0; border-bottom:1px solid #eee; font-size:13.5px; }
-	.rvn-sc__check li:last-child { border-bottom:none; }
-	.rvn-sc__ok { color:#2b7a2b; font-weight:700; } .rvn-sc__todo { color:#b26a00; font-weight:700; }
-	.rvn-sc__foot { color:#8a847a; font-size:12px; margin:16px 20px 30px 0; }
-	</style>';
-} );
+/* Branded styles + self-hosted fonts for the Site Control page only. */
+add_action( 'admin_enqueue_scripts', function ( $hook ) {
+	if ( $hook !== 'toplevel_page_site-control' ) { return; }
+	wp_enqueue_style( 'rvn-site-control', get_template_directory_uri() . '/assets/site-control.css', array( 'rvn-admin' ), wp_get_theme()->get( 'Version' ) );
+}, 10000 );
 
 /** GitHub deploy token — wp-config constant wins, else the Site settings field. */
 function rvn_gh_token() {
@@ -348,13 +315,20 @@ function rvn_gh_token() {
 	return trim( (string) rvn_site_opt( 'deploy_gh_token', '' ) );
 }
 
+/** Deploy target [repo, branch, workflow] — Site settings → Publishing, with defaults. */
+function rvn_deploy_target() {
+	return array(
+		trim( (string) rvn_site_opt( 'deploy_repo', '' ) ) ?: 'MokshaOne/WP-THEME',
+		trim( (string) rvn_site_opt( 'deploy_branch', '' ) ) ?: 'Theme-folder',
+		trim( (string) rvn_site_opt( 'deploy_workflow', '' ) ) ?: 'deploy-frontend.yml',
+	);
+}
+
 /** "Publish now" — trigger the GitHub Actions deploy workflow (token stays server-side). */
 add_action( 'admin_post_rvn_publish', function () {
 	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'rvn_publish' ) ) { wp_die( 'Not allowed.' ); }
 	$token  = rvn_gh_token();
-	$repo   = trim( (string) rvn_site_opt( 'deploy_repo', '' ) ) ?: 'MokshaOne/WP-THEME';
-	$branch = trim( (string) rvn_site_opt( 'deploy_branch', '' ) ) ?: 'Theme-folder';
-	$wf     = trim( (string) rvn_site_opt( 'deploy_workflow', '' ) ) ?: 'deploy-frontend.yml';
+	list( $repo, $branch, $wf ) = rvn_deploy_target();
 	$status = 'notoken';
 	if ( $token !== '' ) {
 		$res = wp_remote_post( 'https://api.github.com/repos/' . $repo . '/actions/workflows/' . rawurlencode( $wf ) . '/dispatches', array(
@@ -371,97 +345,21 @@ add_action( 'admin_post_rvn_publish', function () {
 		if ( is_wp_error( $res ) ) { $status = 'error'; }
 		else { $code = (int) wp_remote_retrieve_response_code( $res ); $status = ( $code === 204 ) ? 'ok' : ( 'http' . $code ); }
 	}
+	// A triggered deploy ships everything that changed — reset the change log.
+	if ( $status === 'ok' ) {
+		update_option( 'rvn_last_publish', time(), false );
+		delete_option( 'rvn_changes' );
+	}
 	wp_safe_redirect( add_query_arg( array( 'page' => 'site-control', 'rvn_deploy' => $status ), admin_url( 'admin.php' ) ) );
 	exit;
 } );
 
-function rvn_site_control_page() {
-	$theme    = wp_get_theme();
-	$ver      = $theme->get( 'Version' );
-	$work     = wp_count_posts( 'work' );
-	$work_n   = isset( $work->publish ) ? (int) $work->publish : 0;
-	$enq      = wp_count_posts( 'rvn_enquiry' );
-	$enq_n    = ( isset( $enq->private ) ? (int) $enq->private : 0 ) + ( isset( $enq->publish ) ? (int) $enq->publish : 0 );
-	$posts_n  = (int) wp_count_posts( 'post' )->publish;
-	$acf      = function_exists( 'get_field' );
-	$email    = (string) rvn_site_opt( 'contact_email', '' );
-	$smtp     = (int) rvn_site_opt( 'smtp_enable', 0 ) === 1;
-	$settings = admin_url( 'admin.php?page=rvn-site' );
+/* The Site Control screen itself (markup, change log, enquiry stats) lives in
+   inc/site-control.php; its styles in assets/site-control.css. */
+require_once get_template_directory() . '/inc/site-control.php';
 
-	$tile = function ( $href, $icon, $label, $color, $count = null, $sub = '', $cls = '' ) {
-		$n = ( $count !== null ) ? '<div class="rvn-tile__n">' . esc_html( $count ) . '</div>' : '';
-		$s = ( $sub !== '' ) ? '<div class="rvn-tile__s">' . esc_html( $sub ) . '</div>' : '';
-		printf(
-			'<a class="rvn-tile %s" href="%s" style="background:%s"><span class="dashicons %s"></span><div>%s<div class="rvn-tile__l">%s</div>%s</div></a>',
-			esc_attr( $cls ), esc_url( $href ), esc_attr( $color ), esc_attr( $icon ), $n, esc_html( $label ), $s
-		);
-	};
-	$row = function ( $ok, $text ) {
-		printf( '<li><span class="%s">%s</span> %s</li>', $ok ? 'rvn-sc__ok' : 'rvn-sc__todo', $ok ? '✓' : '›', wp_kses_post( $text ) );
-	};
-	?>
-	<div class="wrap rvn-sc">
-		<div class="rvn-sc__hero">
-			<div class="rvn-sc__wm">RAVEENTHIRAN</div>
-			<h1>Site Control</h1>
-			<p>Everything that runs raveenthiran.com — in one place.</p>
-			<div class="rvn-sc__stats">
-				<div class="rvn-sc__stat"><b><?php echo esc_html( $work_n ); ?></b><span>Projects</span></div>
-				<div class="rvn-sc__stat"><b><?php echo esc_html( $enq_n ); ?></b><span>Enquiries</span></div>
-				<div class="rvn-sc__stat"><b><?php echo esc_html( $posts_n ); ?></b><span>Journal</span></div>
-				<div class="rvn-sc__stat"><b>v<?php echo esc_html( $ver ); ?></b><span>Theme</span></div>
-			</div>
-		</div>
-
-		<?php
-		$dep = isset( $_GET['rvn_deploy'] ) ? sanitize_key( wp_unslash( $_GET['rvn_deploy'] ) ) : '';
-		if ( $dep === 'ok' ) {
-			echo '<div class="notice notice-success" style="margin:14px 20px 0 0"><p><strong>Publishing…</strong> the deploy was triggered — live in ~2 minutes, then hard-refresh the site (Ctrl/Cmd+Shift+R).</p></div>';
-		} elseif ( $dep === 'notoken' ) {
-			echo '<div class="notice notice-warning" style="margin:14px 20px 0 0"><p>No deploy token yet — add one under <a href="' . esc_url( $settings . '#acf-field_rvn_deploy_token' ) . '">Site settings → Publishing</a>.</p></div>';
-		} elseif ( $dep !== '' ) {
-			echo '<div class="notice notice-error" style="margin:14px 20px 0 0"><p>Deploy could not be triggered (' . esc_html( $dep ) . '). Check the token has <strong>Actions: Read &amp; write</strong> on the repo, and the branch/workflow are correct.</p></div>';
-		}
-		$has_token = rvn_gh_token() !== '';
-		$pub = $has_token ? wp_nonce_url( admin_url( 'admin-post.php?action=rvn_publish' ), 'rvn_publish' ) : ( $settings . '#acf-field_rvn_deploy_token' );
-		?>
-		<div class="rvn-tiles">
-			<?php
-			$tile( $pub, 'dashicons-upload', $has_token ? 'Publish now' : 'Set up publishing', '#e6a417', null, $has_token ? 'Push changes live' : 'Add a GitHub token', 'rvn-tile--wide rvn-tile--pub' );
-			$tile( admin_url( 'edit.php?post_type=work' ), 'dashicons-camera-alt', 'Projects', '#1ba1e2', $work_n, 'Albums & galleries', 'rvn-tile--tall' );
-			$tile( admin_url( 'edit.php?post_type=rvn_enquiry' ), 'dashicons-email-alt', 'Enquiries', '#4c9a2a', $enq_n, 'From the website' );
-			$tile( admin_url( 'edit.php' ), 'dashicons-edit-page', 'Journal', '#2d6cdf', $posts_n, 'Blog posts' );
-			$tile( $settings . '#acf-field_rvn_home_hero_lines', 'dashicons-layout', 'Homepage', '#7a3ff2', null, 'Hero & content' );
-			$tile( $settings, 'dashicons-admin-generic', 'Site settings', '#37474f', null, 'Content & config' );
-			$tile( admin_url( 'upload.php' ), 'dashicons-format-image', 'Media', '#0097a7', null, 'Images' );
-			$tile( $settings . '#acf-field_rvn_smtp_enable', 'dashicons-email', 'Mail', '#d9601a', null, 'SMTP delivery' );
-			$tile( $settings . '#acf-field_rvn_turnstile_site', 'dashicons-shield', 'Security', '#b3261e', null, 'Spam shield' );
-			$tile( admin_url( 'themes.php' ), 'dashicons-admin-appearance', 'Appearance', '#546e7a' );
-			$tile( admin_url( 'plugins.php' ), 'dashicons-admin-plugins', 'Plugins', '#546e7a' );
-			$tile( admin_url( 'users.php' ), 'dashicons-admin-users', 'Users', '#546e7a' );
-			$tile( admin_url( 'tools.php' ), 'dashicons-admin-tools', 'Tools', '#546e7a' );
-			$tile( admin_url( 'options-general.php' ), 'dashicons-admin-settings', 'WP Settings', '#546e7a' );
-			$tile( admin_url( 'edit.php?post_type=acf-field-group' ), 'dashicons-feedback', 'Fields (ACF)', '#455a64' );
-			?>
-		</div>
-
-		<div class="rvn-sc__panel">
-			<h2>Setup checklist</h2>
-			<ul class="rvn-sc__check">
-				<?php
-				$row( $acf, $acf ? 'ACF is active — all settings available.' : 'ACF Pro is not active — install/activate it to edit settings.' );
-				$row( $has_token, $has_token ? 'One-click publishing is set up.' : 'Add a GitHub token under <b>Site settings → Publishing</b> for one-click deploys.' );
-				$row( $work_n > 0, $work_n > 0 ? esc_html( $work_n ) . ' project(s) published.' : 'No projects yet — add your first album under <b>Projects</b>.' );
-				$row( $email !== '', $email !== '' ? 'Contact email set: <b>' . esc_html( $email ) . '</b>.' : 'Set your contact email in <b>Site settings → Contact</b>.' );
-				$row( $smtp, $smtp ? 'SMTP delivery is on.' : 'Configure <b>Mail</b> so enquiry emails reliably arrive.' );
-				?>
-			</ul>
-		</div>
-
-		<p class="rvn-sc__foot">Raveenthiran Headless · theme v<?php echo esc_html( $ver ); ?> · after activating a new theme version, ACF may prompt <b>Sync</b>, then save <b>Settings → Permalinks</b> once.</p>
-	</div>
-	<?php
-}
+/* The skin for the rest of the panel: menu, toolbar, lists, forms, ACF, login. */
+require_once get_template_directory() . '/inc/admin-skin.php';
 
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'rvn/v1', '/site', array(
@@ -958,37 +856,17 @@ add_action( 'wp_dashboard_setup', function () {
 } );
 
 function rvn_insights_widget() {
-	$ids = get_posts( array(
-		'post_type'      => 'rvn_enquiry',
-		'post_status'    => array( 'private', 'publish' ),
-		'posts_per_page' => -1,
-		'fields'         => 'ids',
-		'no_found_rows'  => true,
-	) );
-	$total = count( $ids );
-	$since = strtotime( '-30 days' );
-	$recent = 0; $types = array(); $sum = 0.0; $cur = '';
-	foreach ( $ids as $id ) {
-		if ( get_post_time( 'U', true, $id ) >= $since ) { $recent++; }
-		$t = get_post_meta( $id, '_rvn_type', true );
-		if ( $t ) { $types[ $t ] = ( $types[ $t ] ?? 0 ) + 1; }
-		$e = (string) get_post_meta( $id, '_rvn_estimate', true );
-		if ( $e !== '' ) {
-			if ( $cur === '' && preg_match( '/^\D+/', $e, $m ) ) { $cur = trim( $m[0] ); }
-			$sum += (float) preg_replace( '/[^0-9.]/', '', str_replace( ',', '', $e ) );
-		}
-	}
-	arsort( $types );
+	$s = rvn_enquiry_stats();
 
 	echo '<div style="display:flex;gap:1.5rem;margin-bottom:1rem">';
-	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">total enquiries</div></div>', $total );
-	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">last 30 days</div></div>', $recent );
-	if ( $sum > 0 ) { printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%s%s</div><div style="color:#777">pipeline (est.)</div></div>', esc_html( $cur ), number_format( $sum ) ); }
+	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">total enquiries</div></div>', $s['total'] );
+	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">last 30 days</div></div>', $s['recent'] );
+	if ( $s['sum'] > 0 ) { printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%s%s</div><div style="color:#777">pipeline (est.)</div></div>', esc_html( $s['cur'] ), esc_html( number_format( $s['sum'] ) ) ); }
 	echo '</div>';
 
-	if ( $types ) {
+	if ( $s['types'] ) {
 		echo '<table class="widefat striped" style="margin-top:.5rem"><thead><tr><th>Project type</th><th style="text-align:right">Enquiries</th></tr></thead><tbody>';
-		foreach ( $types as $t => $n ) { printf( '<tr><td>%s</td><td style="text-align:right">%d</td></tr>', esc_html( $t ), $n ); }
+		foreach ( $s['types'] as $t => $n ) { printf( '<tr><td>%s</td><td style="text-align:right">%d</td></tr>', esc_html( $t ), $n ); }
 		echo '</tbody></table>';
 	}
 	printf( '<p style="margin-top:1rem"><a href="%s">View all enquiries →</a></p>', esc_url( admin_url( 'edit.php?post_type=rvn_enquiry' ) ) );

@@ -1,11 +1,15 @@
 ---
 import '../styles/theme.css';
+import '../styles/a11y.css';
 import { ClientRouter } from 'astro:transitions';
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
 import { getSite, getProjects } from '../lib/wp';
+import { jsonForScript, safeUrl } from '../lib/safe';
 import pkg from '../../package.json';
 
 const VERSION = pkg.version;
-const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Europe/Vienna' });
 
 export interface Props {
 	title: string;
@@ -13,33 +17,34 @@ export interface Props {
 	active?: string;
 	ogImage?: string;
 	preload?: string;
+	preloadSrcset?: string;
+	preloadSizes?: string;
 	page?: string;
 }
-const { title, description = '', active = '', ogImage = '', preload = '', page = '' } = Astro.props;
+const { title, description = '', active = '', ogImage = '', preload = '', preloadSrcset = '', preloadSizes = '', page = '' } = Astro.props;
 
 const site = await getSite();
 const projects = await getProjects();
-const year = new Date().getFullYear();
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 // Open Graph / Twitter share image: make it absolute (scrapers reject relative
 // URLs) and always provide one — fall back to the first featured photograph so
 // every page shares a real, branded frame instead of a bare summary card.
+// Facebook, LinkedIn and X do not render AVIF previews, so an AVIF candidate
+// gives way to the first non-AVIF project image when one exists.
 const abs = (u: string) => (u ? new URL(u, Astro.site).href : '');
+const isAvif = (u: string) => /\.avif(?:[?#]|$)/i.test(u || '');
 const featuredOg = projects.find((p) => p.featured_home)?.image || projects[0]?.image || '';
-const ogFinal = abs(ogImage || featuredOg);
+const ogCandidate = ogImage || featuredOg;
+const ogFallback = projects.map((p) => p.ogImage || p.image).find((u) => u && !isAvif(u)) || '';
+const ogFinal = abs(isAvif(ogCandidate) && ogFallback ? ogFallback : ogCandidate);
 
-const nav = [
-	{ key: 'work', label: 'Work', href: '/work/' },
-	{ key: 'studio', label: 'About', href: '/about/' },
-	{ key: 'enquire', label: 'Enquiry', href: '/enquire/' },
-];
-
+// Social links come from WordPress; only http(s) targets are rendered.
 const social = [
-	site.contact.instagram && { label: 'Instagram', href: site.contact.instagram },
-	site.contact.behance && { label: 'Behance', href: site.contact.behance },
-	site.contact.linkedin && { label: 'LinkedIn', href: site.contact.linkedin },
-].filter(Boolean) as { label: string; href: string }[];
+	{ label: 'Instagram', href: safeUrl(site.contact.instagram) },
+	{ label: 'Behance', href: safeUrl(site.contact.behance) },
+	{ label: 'LinkedIn', href: safeUrl(site.contact.linkedin) },
+].filter((s) => s.href && /^https?:/i.test(s.href)) as { label: string; href: string }[];
 
 const jsonld = {
 	'@context': 'https://schema.org',
@@ -61,7 +66,7 @@ const jsonld = {
 	],
 };
 
-const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23121110'/%3E%3Ctext x='24' y='37' font-family='Arial Narrow,Arial,sans-serif' font-size='40' font-weight='700' fill='%23efece6' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E";
+const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23121110'/%3E%3Ctext x='24' y='36' font-family='Georgia,Times New Roman,serif' font-size='38' font-style='italic' fill='%23ede8e0' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E";
 ---
 <!doctype html>
 <html lang="en">
@@ -84,74 +89,31 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	{description && <meta name="twitter:description" content={description} />}
 	{ogFinal && <meta name="twitter:image" content={ogFinal} />}
 	<meta name="theme-color" content="#121110" />
-	{preload && <link rel="preload" as="image" href={preload} fetchpriority="high" />}
+	{/* LCP preload mirrors the <img>'s srcset/sizes, so the browser fetches the
+	    same candidate it will actually render instead of the full-size original. */}
+	{preload && <link rel="preload" as="image" href={preload} imagesrcset={preloadSrcset || undefined} imagesizes={preloadSrcset && preloadSizes ? preloadSizes : undefined} fetchpriority="high" />}
 	<link rel="preconnect" href="https://wp.m1o.at" crossorigin />
 	<link rel="dns-prefetch" href="https://wp.m1o.at" />
 	<link rel="icon" href={favicon} />
 	<link rel="apple-touch-icon" href="/icon.svg" />
-	<link rel="mask-icon" href="/icon.svg" color="#efece6" />
+	<link rel="mask-icon" href="/icon.svg" color="#ede8e0" />
 	<link rel="manifest" href="/site.webmanifest" />
 	<link rel="alternate" type="application/rss+xml" title="Raveenthiran — Journal" href="/rss.xml" />
-	<script type="application/ld+json" set:html={JSON.stringify(jsonld)} is:inline />
+	<script type="application/ld+json" set:html={jsonForScript(jsonld)} is:inline />
 	<!-- Speculation Rules: hover-intent prefetch of same-origin pages (Batch 16) -->
-	<script type="speculationrules" set:html={JSON.stringify({ prefetch: [{ source: 'document', where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/enquire/*' } }] }, eagerness: 'moderate' }] })} is:inline />
+	<script type="speculationrules" set:html={jsonForScript({ prefetch: [{ source: 'document', where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/enquire/*' } }] }, eagerness: 'moderate' }] })} is:inline />
 	<ClientRouter />
 </head>
 <body data-page={page}>
 	<a class="skip-link" href="#main">Skip to content</a>
 
-	<header class="site-header">
-		<a class="wordmark" href="/">RAVEENTHIRAN</a>
-		<span class="hdr-clock" data-clock></span>
-		<nav class="nav" aria-label="Primary">
-			{nav.map((n, i) => (
-				<a href={n.href} aria-current={active === n.key ? 'page' : undefined}>
-					<span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span>
-				</a>
-			))}
-		</nav>
-		<button class="burger" data-burger aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-	</header>
-
-	<div class="m-ovl" data-mobile-ovl>
-		<nav aria-label="Mobile">
-			{nav.map((n, i) => (
-				<a href={n.href}><span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span></a>
-			))}
-		</nav>
-		<div class="m-foot">
-			<a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
-			{social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label} ↗</a>)}
-		</div>
-	</div>
+	<Header active={active} email={site.contact.email} social={social} />
 
 	<main id="main">
 		<slot />
 	</main>
 
-	<footer class="site-footer">
-		<svg class="foot-ghost" viewBox="0 0 1000 62" aria-hidden="true">
-			<text x="0" y="52" textLength="1000" lengthAdjust="spacingAndGlyphs" font-size="70">RAVEENTHIRAN</text>
-		</svg>
-		<div class="foot-meta">
-			<span>48.2082° N, 16.3738° E</span>
-			<a class="live" href="/enquire/">AVAILABLE FOR COMMISSIONS</a>
-			<span>© {year} RAVEENTHIRAN — VIENNA</span>
-		</div>
-		<div class="foot-legal">
-			<div class="grp">
-				{social.length
-					? social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label.toUpperCase()} ↗</a>)
-					: <a href={`mailto:${site.contact.email}`}>EMAIL ↗</a>}
-			</div>
-			<div class="grp">
-				<a href="/legal/impressum/">IMPRESSUM</a>
-				<a href="/legal/datenschutz/">DATENSCHUTZ</a>
-				<a href="/legal/agb/">AGB</a>
-				<span class="foot-ver" title={`Built ${BUILD_DATE}`}>v{VERSION} · {BUILD_DATE}</span>
-			</div>
-		</div>
-	</footer>
+	<Footer email={site.contact.email} social={social} version={VERSION} buildDate={BUILD_DATE} />
 
 	<script>
 		import '../scripts/ui.js';

@@ -4,6 +4,109 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 5.0.0 — 2026-11-13 · Editorial (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed. Complete visual redesign; data layer
+(`src/lib/wp.ts`), routes and deploy pipeline are unchanged.
+
+- **Colour first.** Photographs are shown in full colour everywhere (no more
+  default black-and-white). Warm dark palette: background `#121110`, warm
+  ivory text `#ede8e0`, a quiet terracotta accent `#d9825b`.
+- **Two typefaces.** Instrument Serif for display (roman + one italic gesture
+  per headline) and Archivo variable for text, labels and UI. Anton/Space Mono
+  are no longer loaded by the site (kept only for the OG-image script).
+  Sentence case instead of all caps; all-caps CMS copy is softened on render.
+- **Design system.** Tokens for colour, type scale, spacing, easing and
+  duration in `theme.css`; reusable classes (`.label`, `.btn`, `.rbtn`,
+  `.link`, `.tag`, `.media`) and new components `Header`, `Footer`,
+  `PageIntro`, `SectionHead`, `ProjectCard`, `CtaBand`. Inline styles removed
+  from all pages (only JS-toggled `display:none` remains).
+- **Home.** Full-bleed colour hero with slow crossfade, progress line, working
+  pause button, linked caption; arrow keys only act while the hero has focus;
+  the slider stops off-screen and in hidden tabs.
+- **Pages.** Work archive with pill filters and natural-ratio masonry; project
+  page with breadcrumb, italic title line, fact row, gallery rail, statement
+  + credits; About with sticky portrait; Enquire calculator in numbered
+  blocks with a sticky orientation card; journal, legal, 404 and offline
+  pages on the same intro/article system.
+- **Fewer, better effects.** Removed grain/vignette, WebGL hero morph and
+  grain, RGB hover distortion, velocity skew, text scramble, letter reveals,
+  scroll marquee, film-strip progress bar and the cursor ring. Kept: a short
+  preloader, soft intro stagger, scroll reveals, clip-path image reveals,
+  hide-on-scroll header, lightbox, hover peek, drag rails, smooth wheel
+  scroll. Everything respects `prefers-reduced-motion`.
+- **Responsive.** Breakpoints at 1100 / 900 / 640 px, sticky elements released
+  on small screens, 44 px touch targets.
+
+## 4.9.0 — 2026-11-11 · From looking to asking (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed.
+
+- **Booking bridge.** Every project ends with "Want frames like these?". The
+  button opens the calculator on the matching session (`?session=portrait`)
+  with the project attached as reference (`?ref=<slug>`). The reference shows
+  as a removable chip and travels inside the enquiry message, so it reaches
+  the stored enquiry and both mails without a backend change.
+- **Enquiry draft.** Configuration and typed details survive a reload or a
+  detour to a project page (this tab only, sessionStorage). Cleared on send.
+- **Preferred date** opens the native date picker; no past dates.
+- **Gallery rail controls.** Arrow buttons, a frame counter (03 / 05) and
+  left/right keys; captions count frames instead of repeating the title.
+- **Fixed:** project meta labels sat above the wrong values when a project
+  has no client; cookie notice was squeezed and cut off on phones.
+- **Small archive:** with one or two projects the Work grid uses the full
+  width instead of leaving a third column empty.
+- **Home:** the photographer block carries the name, focus/base/since and a
+  real button; Recognition rows run the full width; the hero sub-copy is
+  readable over bright frames.
+- **Enquiry FAQ** gets a heading and lines up with the page gutter.
+- **Contrast:** secondary greys raised so small labels pass 4.5:1.
+
+## 4.8.0 — 2026-11-10 · The whole panel
+
+The skin from Site Control now covers the rest of wp-admin. Frontend unchanged
+apart from the footer version. **Needs the new theme zip uploaded in WP → Themes.**
+
+- **Dark skin everywhere:** sidebar, toolbar, list tables, forms, buttons,
+  notices, meta boxes, ACF fields (tabs, repeaters, switches), media, login.
+  Same palette and type as the live site; no rounded corners.
+- **How:** `assets/admin-dark.css` is generated — every colour in the stock
+  admin + ACF stylesheets remapped onto the site palette
+  (`tools/build-admin-dark.py`; re-run after a major WordPress/ACF update).
+  `assets/admin.css` is the hand-written layer on top.
+- **Leaner menu:** Site Control, Work, Journal (was "Posts"), Media first;
+  Dashboard and Comments removed (Dashboard already redirected; the static
+  site has no comments). Updates moved to Site Control → WordPress.
+- **Sidebar shows its labels again** instead of being forced to icons-only.
+- **Toolbar:** WordPress logo and comments bubble removed.
+- **Login:** wordmark instead of the WordPress logo, same skin.
+- Admin colour schemes are pinned to the default (the skin replaces them).
+- **Not skinned on purpose:** the block editor. It keeps the stock look.
+
+## 4.7.0 — 2026-11-10 · Site Control, rebuilt
+
+The WordPress start screen (theme `raveenthiran-headless`) now speaks the live
+site's language and says what to do next. Frontend unchanged apart from the
+version in the footer. **Needs the new theme zip uploaded in WP → Themes.**
+
+- **Publish knows what is waiting.** The theme keeps a change log (projects,
+  journal posts, albums/services/series, Site settings) since the last
+  publish. Headline: "2 changes to publish" with the list, or "Everything is
+  live". The toolbar button shows the count. Deploy result (triggered / no
+  token / failed with the HTTP code) is the headline, not a notice.
+- **Work shows what is unfinished.** Each project as a frame with its real
+  featured image (cropped at its focal point) and a data sheet: year/place,
+  gallery count, homepage flag, SEO description. Missing pieces are flagged.
+- **Enquiries on the start screen.** Total, last 30 days, estimated pipeline,
+  split by session — the dashboard widget's numbers, which the redirect to
+  Site Control had made unreachable.
+- **Settings as eight cells**, one per tab, with status where it can be
+  checked (contact email, SMTP, deploy token, Turnstile). Replaces the
+  separate setup checklist; Turnstile is a new check.
+- **Look:** Anton / Archivo / Space Mono self-hosted in the theme (OFL), dark
+  canvas, one accent, no rounded corners. Rainbow tiles are gone.
+- Code: screen moved to `inc/site-control.php` + `assets/site-control.css`.
+
 ## 4.6.3 — 2026-11-10 · Honest with little content
 
 The live site holds two projects and no honors yet; this release makes that

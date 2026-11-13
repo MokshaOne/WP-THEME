@@ -1,5 +1,5 @@
 /* =============================================================================
-   Raveenthiran v3 — page behaviours. Boots the motion engine on every Astro
+   Raveenthiran v5 — page behaviours. Boots the motion engine on every Astro
    page-load (survives View Transitions) and wires the interactive modules that
    are present on the current page: mobile menu, home hero slider, RAW/FINAL
    compare, testimonial rotator, Work filter, Enquire calculator + submit.
@@ -31,6 +31,7 @@ function boot() {
 	initQuotes();
 	initFilter();
 	initEnquire();
+	initRail();
 }
 
 /* ── mobile overlay menu ─────────────────────────────────────────────────── */
@@ -51,40 +52,74 @@ function initMobileMenu() {
 	pageCleanups.push(() => { burger.removeEventListener('click', onBurger); removeEventListener('keydown', onKey); document.body.style.overflow = ''; });
 }
 
-/* ── home hero slider ────────────────────────────────────────────────────── */
+/* ── home hero slider (CSS crossfade; progress bar, pause, keyboard) ─────── */
 function initHeroSlider() {
 	const stage = document.querySelector('[data-hero]');
 	if (!stage) return;
 	const slides = [...stage.querySelectorAll('.slide')];
 	if (slides.length < 2) return;
 	const capEl = stage.querySelector('[data-cap]');
+	const titleEl = stage.querySelector('[data-title]');
+	const linkEl = stage.querySelector('[data-cap-link]');
 	const curEl = stage.querySelector('[data-count]');
+	const prog = stage.querySelector('[data-progress]');
+	const pauseBtn = stage.querySelector('[data-pause]');
+	const INTERVAL = 6000;
+	stage.style.setProperty('--hero-int', INTERVAL + 'ms');
 	let i = slides.findIndex((s) => s.classList.contains('on'));
 	if (i < 0) i = 0;
 	const total = slides.length;
-	let timer = 0;
+	let timer = 0, paused = false;
+	const restartProgress = () => {
+		if (!prog) return;
+		prog.classList.remove('run'); void prog.offsetWidth; prog.classList.add('run');
+	};
 	const render = () => {
-		slides.forEach((s, k) => s.classList.toggle('on', k === i));
-		if (capEl) capEl.textContent = slides[i].dataset.cap || '';
+		slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', String(k !== i)); });
+		const s = slides[i];
+		if (capEl) capEl.textContent = s.dataset.cap || '';
+		if (titleEl) titleEl.textContent = s.dataset.title || '';
+		if (linkEl && s.dataset.href) linkEl.setAttribute('href', s.dataset.href);
 		if (curEl) curEl.textContent = String(i + 1).padStart(2, '0');
+	};
+	const start = () => {
+		clearInterval(timer);
+		if (paused) return;
+		restartProgress();
+		timer = setInterval(() => go(1), INTERVAL);
 	};
 	const go = (d) => {
 		const from = i;
 		i = (i + d + total) % total;
-		// The WebGL displacement morph (fx.js) listens for this and, when it can,
-		// takes over the visual transition; the class toggle stays the source of truth.
 		stage.dispatchEvent(new CustomEvent('rvn:slide', { detail: { from, to: i } }));
 		render(); start();
 	};
-	const start = () => { clearInterval(timer); timer = setInterval(() => go(1), 6000); };
-	const prev = stage.querySelector('[data-prev]');
-	const next = stage.querySelector('[data-next]');
-	prev && prev.addEventListener('click', () => go(-1));
-	next && next.addEventListener('click', () => go(1));
-	const onKey = (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
-	addEventListener('keydown', onKey);
+	const setPaused = (v) => {
+		paused = v;
+		if (v) { clearInterval(timer); stage.dataset.paused = ''; } else { delete stage.dataset.paused; start(); }
+		if (pauseBtn) {
+			pauseBtn.setAttribute('aria-pressed', String(v));
+			pauseBtn.setAttribute('aria-label', v ? 'Play slideshow' : 'Pause slideshow');
+			pauseBtn.textContent = v ? '▶' : '❚❚';
+		}
+	};
+	stage.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
+	stage.querySelector('[data-next]')?.addEventListener('click', () => go(1));
+	pauseBtn?.addEventListener('click', () => setPaused(!paused));
+	// arrow keys only while focus is inside the hero — never hijack the page
+	stage.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+		if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+	});
+	// stop when the tab is hidden or the hero is off-screen
+	const onVis = () => { if (document.hidden) clearInterval(timer); else if (inView) start(); };
+	let inView = true;
+	const vio = new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) start(); else clearInterval(timer); });
+	vio.observe(stage);
+	document.addEventListener('visibilitychange', onVis);
+	if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
 	render(); start();
-	pageCleanups.push(() => { clearInterval(timer); removeEventListener('keydown', onKey); });
+	pageCleanups.push(() => { clearInterval(timer); vio.disconnect(); document.removeEventListener('visibilitychange', onVis); });
 }
 
 /* ── Cinema home slider (crossfade) ──────────────────────────────────────── */
@@ -210,7 +245,7 @@ function initFilter() {
 		serChip.className = 'chip';
 		const names = (first.dataset.seriesName || '').split(' · ');
 		const label = names[(first.dataset.series || '').split(/\s+/).indexOf(serSlug)] || serSlug;
-		serChip.textContent = 'SERIES — ' + label.toUpperCase();
+		serChip.textContent = 'Series — ' + label;
 		bar.insertBefore(serChip, chips[0] ? chips[0].nextSibling : null);
 		serChip.addEventListener('click', applySeries);
 		applySeries();
@@ -316,7 +351,78 @@ function initEnquire() {
 	} else if (preset === 'private') {
 		sel = 0; usage = 'private';
 	}
+
+	// /enquire/?session=portrait&ref=<project-slug> — arriving from a project
+	// page: open on the matching session and attach the project as reference.
+	// The title comes from the build-time slug map, never from the URL.
+	const qs = new URLSearchParams(location.search);
+	const want = (qs.get('session') || '').toLowerCase();
+	if (want) {
+		const k = svcs.findIndex((b) => (b.dataset.name || '').toLowerCase().includes(want));
+		if (k >= 0) { sel = k; }
+	}
+	let refs = {};
+	try { refs = JSON.parse(document.getElementById('enquire-refs')?.textContent || '{}'); } catch (e) {}
+	const refBox = root.querySelector('[data-ref]');
+	const setRef = (slug) => {
+		const title = slug && Object.prototype.hasOwnProperty.call(refs, slug) ? refs[slug] : '';
+		root.dataset.refSlug = title ? slug : '';
+		root.dataset.refTitle = title;
+		if (!refBox) return;
+		refBox.hidden = !title;
+		const a = refBox.querySelector('[data-ref-link]');
+		if (a && title) { a.textContent = title; a.setAttribute('href', '/work/' + encodeURIComponent(slug) + '/'); }
+	};
+	const onRefClear = () => { setRef(''); save(); };
+	refBox?.querySelector('[data-ref-clear]')?.addEventListener('click', onRefClear);
+
+	// Draft: the configuration and the typed details survive a reload or a trip
+	// to a project page and back (this tab only — sessionStorage, nothing leaves
+	// the browser). An explicit ?for / ?session / ?ref link wins over the draft.
+	const form0 = root.querySelector('form');
+	const KEY = 'rvn-enquiry-draft';
+	const fieldNames = ['name', 'email', 'date', 'location', 'message'];
+	const save = () => {
+		try {
+			const f = {};
+			fieldNames.forEach((n) => { f[n] = form0?.elements[n]?.value || ''; });
+			sessionStorage.setItem(KEY, JSON.stringify({
+				sel, extra, usage, km: kmInput?.value || '0', ref: root.dataset.refSlug || '',
+				addons: addonBtns.filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.label), f,
+			}));
+		} catch (e) {}
+	};
+	let draft = null;
+	try { draft = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+	const linked = preset || want || qs.get('ref');
+	if (draft) {
+		if (!linked) {
+			if (draft.sel >= 0 && draft.sel < svcs.length) { sel = draft.sel; }
+			extra = Math.max(0, Math.min(8, Number(draft.extra) || 0));
+			if (['tfp', 'private', 'commercial'].includes(draft.usage)) { usage = draft.usage; }
+			if (kmInput) { kmInput.value = String(Math.max(0, Math.min(2000, Number(draft.km) || 0))); }
+			addonBtns.forEach((b) => b.setAttribute('aria-pressed', String((draft.addons || []).includes(b.dataset.label))));
+		}
+		fieldNames.forEach((n) => { const el = form0?.elements[n]; if (el && draft.f && typeof draft.f[n] === 'string') { el.value = draft.f[n]; } });
+	}
+	setRef(qs.get('ref') || (draft && !linked ? draft.ref : '') || '');
 	render();
+	const onDraft = () => save();
+	root.addEventListener('click', onDraft);
+	root.addEventListener('input', onDraft);
+	pageCleanups.push(() => { root.removeEventListener('click', onDraft); root.removeEventListener('input', onDraft); });
+
+	// Preferred date: a plain field until it is used, then the native date picker
+	// (keeps the placeholder readable; no past dates).
+	const dateEl = root.querySelector('[data-date]');
+	if (dateEl) {
+		const toDate = () => { dateEl.type = 'date'; dateEl.min = new Date().toISOString().slice(0, 10); try { dateEl.showPicker && dateEl.showPicker(); } catch (e) {} };
+		const toText = () => { if (!dateEl.value) { dateEl.type = 'text'; } };
+		if (/^\d{4}-\d{2}-\d{2}$/.test(dateEl.value)) { dateEl.type = 'date'; }
+		dateEl.addEventListener('focus', toDate);
+		dateEl.addEventListener('blur', toText);
+		pageCleanups.push(() => { dateEl.removeEventListener('focus', toDate); dateEl.removeEventListener('blur', toText); });
+	}
 
 	const form = root.querySelector('form');
 	if (form) {
@@ -331,6 +437,12 @@ function initEnquire() {
 			fd.set('km', root.dataset.selKm || '0');
 			fd.set('usage', root.dataset.selUsage || 'private');
 			fd.set('estimate', root.dataset.selTotal || '');
+			// The reference project travels inside the message, so it reaches the
+			// stored enquiry and both mails without a backend change.
+			const refLine = root.dataset.refTitle
+				? 'Reference: ' + root.dataset.refTitle + ' — ' + location.origin + '/work/' + root.dataset.refSlug + '/\n\n'
+				: '';
+			fd.set('message', refLine + (fd.get('message') || ''));
 			const btn = form.querySelector('[type="submit"]');
 			btn && (btn.disabled = true);
 			if (msg) { msg.className = 'est__msg'; msg.textContent = 'Sending…'; }
@@ -340,6 +452,8 @@ function initEnquire() {
 				if (!res.ok) throw new Error('HTTP ' + res.status);
 				if (msg) { msg.className = 'est__msg ok'; msg.textContent = 'Sent. You will have a written offer within 24 hours.'; }
 				form.reset();
+				try { sessionStorage.removeItem('rvn-enquiry-draft'); } catch (e) {}
+				setRef('');
 			} catch (err) {
 				// graceful fallback to a prefilled mail draft
 				const to = form.dataset.mailto || 'hello@raveenthiran.com';
@@ -391,4 +505,58 @@ if ('serviceWorker' in navigator) {
 }
 if (typeof caches !== 'undefined' && caches.keys) {
 	caches.keys().then((ks) => ks.forEach((k) => caches.delete(k))).catch(() => {});
+}
+
+/* ── project gallery rail: arrows, frame counter, keyboard ───────────────── */
+function initRail() {
+	const rail = document.querySelector('[data-rail]');
+	const nav = document.querySelector('[data-rail-nav]');
+	if (!rail || !nav) return;
+	const cards = [...rail.querySelectorAll('.card')];
+	const prev = nav.querySelector('[data-rail-prev]');
+	const next = nav.querySelector('[data-rail-next]');
+	const count = nav.querySelector('[data-rail-count]');
+	const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const pad = () => parseFloat(getComputedStyle(rail).paddingLeft) || 0;
+	// The current frame is the one whose left edge is closest to the rail's inset.
+	const current = () => {
+		const x = rail.scrollLeft + pad();
+		let best = 0, dist = Infinity;
+		cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - x); if (d < dist) { dist = d; best = i; } });
+		return best;
+	};
+	const go = (i) => {
+		const c = cards[Math.max(0, Math.min(cards.length - 1, i))];
+		c && rail.scrollTo({ left: c.offsetLeft - pad(), behavior: calm ? 'auto' : 'smooth' });
+	};
+	const sync = () => {
+		const max = rail.scrollWidth - rail.clientWidth;
+		const end = rail.scrollLeft >= max - 2;
+		const i = end ? cards.length - 1 : current();
+		count && (count.textContent = String(i + 1).padStart(2, '0'));
+		prev && (prev.disabled = rail.scrollLeft <= 2);
+		next && (next.disabled = end);
+		nav.hidden = max <= 2;
+	};
+	const onPrev = () => go(current() - 1);
+	const onNext = () => go(current() + 1);
+	const onKey = (e) => {
+		if (e.key === 'ArrowRight') { e.preventDefault(); onNext(); }
+		else if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev(); }
+	};
+	prev?.addEventListener('click', onPrev);
+	next?.addEventListener('click', onNext);
+	rail.addEventListener('keydown', onKey);
+	rail.addEventListener('scroll', sync, { passive: true });
+	window.addEventListener('resize', sync);
+	window.addEventListener('load', sync);
+	sync();
+	pageCleanups.push(() => {
+		prev?.removeEventListener('click', onPrev);
+		next?.removeEventListener('click', onNext);
+		rail.removeEventListener('keydown', onKey);
+		rail.removeEventListener('scroll', sync);
+		window.removeEventListener('resize', sync);
+		window.removeEventListener('load', sync);
+	});
 }

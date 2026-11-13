@@ -1,40 +1,42 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/ui/PageIntro.astro';
+import ProjectCard from '../../components/ui/ProjectCard.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
 import { getProjects } from '../../lib/wp';
+import { pad, soften } from '../../lib/format';
 
 const projects = await getProjects();
+// data-cat stays upper-case: the filter in ui.js compares against category.toUpperCase()
 const up = (s: string) => (s || '').toUpperCase();
-const num = (n: number) => String(n).padStart(3, '0');
 
 const cats = Array.from(new Set(projects.map((p) => up(p.category)).filter(Boolean))).sort();
-const chips = ['ALL', ...cats];
+const chips = [{ cat: 'ALL', label: 'All' }, ...cats.map((c) => ({ cat: c, label: soften(c) }))];
 const years = projects.map((p) => +p.year).filter(Boolean);
 const from = years.length ? Math.min(...years) : 2020;
 const to = years.length ? Math.max(...years) : new Date().getFullYear();
+const few = projects.length <= 2;
+const sizes = few ? '(max-width: 640px) 100vw, 50vw' : '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw';
 ---
 <Base title="The Work — Raveenthiran" description="The full archive — portrait, fashion and editorial work from Vienna and across Austria." active="work" page="work">
-	<section class="wrap" style="padding:clamp(72px,9vw,150px) var(--gx) 40px">
-		<div class="eyebrow" data-intro style="margin-bottom:18px">01 — THE ARCHIVE · {from} — {to}</div>
-		<h1 data-intro style="font-size:min(12vw,150px);line-height:0.9">THE WORK<span style="color:var(--accent)">.</span></h1>
-		<p class="enq__intro" data-intro><span class="chrome"><span data-count>{String(projects.length).padStart(2, '0')}</span> FRAMES</span> — portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.</p>
-	</section>
+	<PageIntro kicker="" title="The <em>work.</em>" lede="Portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.">
+		<span slot="kicker">The archive · {from}–{to} · <span data-count>{pad(projects.length)}</span> projects</span>
+	</PageIntro>
 
-	<div class="chips" data-chips data-intro>
+	<div class="chips" data-chips data-intro role="group" aria-label="Filter by category">
 		{chips.map((c) => (
-			<button class="chip" data-cat={c} aria-pressed={c === 'ALL' ? 'true' : 'false'}>{c}</button>
+			<button class="chip" type="button" data-cat={c.cat} aria-pressed={c.cat === 'ALL' ? 'true' : 'false'}>{c.label}</button>
 		))}
 	</div>
 
-	<section class="masonry" data-work-grid>
+	<section class:list={['masonry', few && 'masonry--few', projects.length === 1 && 'masonry--one']} data-work-grid aria-label="Projects">
 		{projects.map((p, i) => (
-			<a class="card" href={`/work/${p.slug}/`} data-cat={up(p.category)} data-series={(p.series || []).map((s) => s.slug).join(' ')} data-series-name={(p.series || []).map((s) => s.name).join(' · ')}>
-				<div class="plate"><img src={p.image} srcset={p.imageSrcset || undefined} sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading={i < 3 ? 'eager' : 'lazy'} transition:name={`cover-${p.slug}`} /></div>
-				<div class="cap"><span class="n">{num(i + 1)}</span><span>{up(p.title)}</span><span class="c">{up(p.category)}</span></div>
-			</a>
+			<ProjectCard project={p} index={i + 1} sizes={sizes} natural eager={i < 3}
+				data-cat={up(p.category)}
+				data-series={(p.series || []).map((s) => s.slug).join(' ')}
+				data-series-name={(p.series || []).map((s) => s.name).join(' · ')} />
 		))}
 	</section>
 
-	<a class="cta cta--sm" href="/enquire/">
-		<span>YOUR SESSION IS NEXT</span><span>→</span>
-	</a>
+	<CtaBand href="/enquire/" kicker="Book a session" label="Your session is <em>next.</em>" />
 </Base>

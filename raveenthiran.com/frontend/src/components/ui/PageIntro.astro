@@ -1,0 +1,16 @@
+---
+// Inner-page header: kicker, serif H1 (may contain <em>), optional lede + actions.
+interface Props { kicker: string; title: string; lede?: string; narrow?: boolean }
+const { kicker, title, lede, narrow } = Astro.props;
+const hasAside = !!lede || Astro.slots.has('default');
+---
+<section class:list={['intro', (narrow || !hasAside) && 'intro--narrow']}>
+	<div class="intro__kicker label" data-intro><slot name="kicker">{kicker}</slot></div>
+	<h1 class="intro__title" data-intro set:html={title} />
+	{hasAside && (
+		<div class="intro__aside" data-intro>
+			{lede && <p class="intro__lede">{lede}</p>}
+			<slot />
+		</div>
+	)}
+</section>

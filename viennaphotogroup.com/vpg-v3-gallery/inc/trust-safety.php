@@ -70,10 +70,6 @@ add_filter( 'pre_comment_approved', function ( $approved, $data ) {
  * 0796 · member-to-member block · 0797 · panic hide
  * ================================================================ */
 function vpg_blocked_by( $uid ) { return array_map( 'intval', (array) get_user_meta( (int) $uid, '_vpg_blocked', true ) ?: [] ); }
-function vpg_is_blocked_between( $a, $b ) {
-    if ( ! $a || ! $b ) return false;
-    return in_array( (int) $b, vpg_blocked_by( $a ), true ) || in_array( (int) $a, vpg_blocked_by( $b ), true );
-}
 add_action( 'wp_ajax_vpg_block_user', function () {
     check_ajax_referer( 'vpg_block', 'n' );
     $me = get_current_user_id(); $target = (int) ( $_POST['uid'] ?? 0 );

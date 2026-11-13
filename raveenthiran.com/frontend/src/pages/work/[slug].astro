@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getProjects, getProject, getSite } from '../../lib/wp';
+import { jsonForScript, safeUrl, cleanHtml } from '../../lib/safe';
 
 export async function getStaticPaths() {
 	const projects = await getProjects();
@@ -42,7 +43,20 @@ const session = site.pricing.sessions.find((s) => p.category && s.name.toLowerCa
 const bookHref = `/enquire/?${session ? `session=${encodeURIComponent(p.category.toLowerCase())}&` : ''}ref=${encodeURIComponent(p.slug)}`;
 const bookLabel = session ? `BOOK A ${up(p.category)} SESSION` : 'START A COMMISSION';
 
-const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0 }];
+const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0, srcset: p.imageSrcset || '' }];
+// Gallery frames are 66vh tall with a natural width (theme.css .proj-gallery),
+// so the rendered width is 66vh × aspect — telling the browser lets it pick the
+// right srcset candidate instead of assuming 100vw.
+const gallerySizes = (w: number, h: number) => (w && h ? `calc(66vh * ${(w / h).toFixed(3)})` : undefined);
+
+// CMS values rendered into the page: links are scheme-checked, HTML is cleaned.
+const website = safeUrl(p.website);
+const body = cleanHtml(p.content);
+
+// Share image: social scrapers do not render AVIF, so an AVIF og image gives
+// way to the generated /og/<slug>.jpg card.
+const isAvif = (u: string) => /\.avif(?:[?#]|$)/i.test(u || '');
+const ogImage = p.ogImage && !isAvif(p.ogImage) ? p.ogImage : `/og/${p.slug}.jpg`;
 
 // Unique, human meta description per project: prefer the statement text,
 // otherwise compose one from the project's own metadata.
@@ -91,9 +105,9 @@ const breadcrumbLd = {
 	],
 };
 ---
-<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={p.ogImage || `/og/${p.slug}.jpg`} preload={p.image}>
-	<script type="application/ld+json" set:html={JSON.stringify(projectLd)} is:inline />
-	<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} is:inline />
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={ogImage} preload={p.image} preloadSrcset={p.imageSrcset || ''} preloadSizes="(max-width: 860px) 100vw, 42vw">
+	<script type="application/ld+json" set:html={jsonForScript(projectLd)} is:inline />
+	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
 	<!-- SPLIT HERO -->
 	<section class="proj-hero">
 		<div class="proj-hero__left">
@@ -119,7 +133,7 @@ const breadcrumbLd = {
 		<div class="rail" data-drag data-rail tabindex="0" aria-label={`${p.title} — gallery, ${gallery.length} frames`}>
 			{gallery.map((g, i) => (
 				<div class="card">
-					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} /></div>
+					<div class="plate"><img src={g.src} srcset={g.srcset || undefined} sizes={g.srcset ? gallerySizes(g.w, g.h) : undefined} width={g.w || undefined} height={g.h || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>
 					<div class="cap"><span class="n">{String(i + 1).padStart(2, '0')}</span><span class="c">/ {String(gallery.length).padStart(2, '0')}</span></div>
 				</div>
 			))}
@@ -136,18 +150,18 @@ const breadcrumbLd = {
 
 	<!-- STATEMENT + CREDITS -->
 	<section class="proj-statement" data-reveal>
-		{p.content
-			? <div set:html={p.content} />
+		{body
+			? <div set:html={body} />
 			: <p>{`${p.category || 'A photographic'} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p>}
 		<div class="credits">
 			{p.credits.length > 0
-				? p.credits.map((c) => (<><span class="k">{up(c.role)}</span><span>{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>))
+				? p.credits.map((c) => { const href = safeUrl(c.url); return (<><span class="k">{up(c.role)}</span><span>{href ? <a href={href} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>); })
 				: (<><span class="k">PHOTOGRAPHY</span><span>NISHUTHAN RAVEENTHIRAN</span></>)}
 			{(p.series || []).length > 0 && (
-				<><span class="k">SERIES</span><span>{(p.series || []).map((s) => <a class="chipline" href={`/work/?series=${s.slug}`}>{up(s.name)}</a>)}</span></>
+				<><span class="k">SERIES</span><span>{(p.series || []).map((s) => <a class="chipline" href={`/work/?series=${encodeURIComponent(s.slug)}`}>{up(s.name)}</a>)}</span></>
 			)}
-			{p.website && (
-				<><span class="k">WEBSITE</span><span><a href={p.website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
+			{website && (
+				<><span class="k">WEBSITE</span><span><a href={website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
 			)}
 		</div>
 	</section>
@@ -167,7 +181,7 @@ const breadcrumbLd = {
 		<section class="wrap" data-reveal style="padding:var(--sp-tight) var(--gx);border-bottom:var(--hair)">
 			<div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:28px">
 				<div class="sec__hint" style="margin:0">FROM THE SERIES — {up((p.series || []).map((s) => s.name).join(' · '))}</div>
-				<a class="chipline" href={`/work/?series=${(p.series || [])[0]?.slug || ''}`}>VIEW THE WHOLE SERIES →</a>
+				<a class="chipline" href={`/work/?series=${encodeURIComponent((p.series || [])[0]?.slug || '')}`}>VIEW THE WHOLE SERIES →</a>
 			</div>
 			<div class="index">
 				{siblings.map((s, i) => (

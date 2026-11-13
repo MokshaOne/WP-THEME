@@ -1,18 +1,18 @@
 /* =============================================================================
    Accessibility layer — loaded right after theme.css (see Base.astro).
    v5: the editorial palette in theme.css is tuned for WCAG 2.2 AA on the
-   #121110 canvas (labels ≥ 5:1, form borders ≥ 3:1), so this file only keeps
+   #F7F5F0 canvas (labels ≥ 5:1, form borders ≥ 3:1), so this file only keeps
    the focus/interaction guarantees that must survive any future theme change.
    ============================================================================= */
 
 /* Every keyboard focus is visible, also on dark photographs. */
 a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
-	outline: 2px solid var(--c-accent, #d9825b);
+	outline: 1px solid var(--c-ink, #111010);
 	outline-offset: 3px;
 }
 
 /* Zoomable images are keyboard-focusable (fx.js); show where focus is. */
-img[data-zoom]:focus-visible { outline: 2px solid var(--c-accent, #d9825b); outline-offset: 3px; }
+img[data-zoom]:focus-visible { outline: 1px solid var(--c-ink, #111010); outline-offset: 3px; }
 
 /* Comfortable touch targets for primary controls (WCAG 2.5.8). */
 .rbtn, .stepper button, .burger, .enq__ref button { min-width: 44px; min-height: 44px; }

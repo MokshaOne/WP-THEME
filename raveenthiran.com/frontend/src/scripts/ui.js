@@ -17,13 +17,7 @@ function teardown() {
 
 function boot() {
 	teardown();
-	// The boot preloader is a brand moment, not a home feature — it plays once
-	// per session on whichever page the visitor lands on first.
-	let preloader = '';
-	try {
-		if (!sessionStorage.getItem('rvn-pre')) { preloader = 'RAVEENTHIRAN'; sessionStorage.setItem('rvn-pre', '1'); }
-	} catch (e) { preloader = 'RAVEENTHIRAN'; }
-	fxOff = initFX({ preloader });
+	fxOff = initFX();
 	initMobileMenu();
 	initHeroSlider();
 	initCinema();
@@ -64,7 +58,8 @@ function initHeroSlider() {
 	const curEl = stage.querySelector('[data-count]');
 	const prog = stage.querySelector('[data-progress]');
 	const pauseBtn = stage.querySelector('[data-pause]');
-	const INTERVAL = 6000;
+	const dots = [...stage.querySelectorAll('[data-dot]')];
+	const INTERVAL = 5500;
 	stage.style.setProperty('--hero-int', INTERVAL + 'ms');
 	let i = slides.findIndex((s) => s.classList.contains('on'));
 	if (i < 0) i = 0;
@@ -81,6 +76,7 @@ function initHeroSlider() {
 		if (titleEl) titleEl.textContent = s.dataset.title || '';
 		if (linkEl && s.dataset.href) linkEl.setAttribute('href', s.dataset.href);
 		if (curEl) curEl.textContent = String(i + 1).padStart(2, '0');
+		dots.forEach((d, k) => d.setAttribute('aria-current', String(k === i)));
 	};
 	const start = () => {
 		clearInterval(timer);
@@ -106,6 +102,7 @@ function initHeroSlider() {
 	stage.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
 	stage.querySelector('[data-next]')?.addEventListener('click', () => go(1));
 	pauseBtn?.addEventListener('click', () => setPaused(!paused));
+	dots.forEach((d, k) => d.addEventListener('click', () => { if (k !== i) go(k - i); }));
 	// arrow keys only while focus is inside the hero — never hijack the page
 	stage.addEventListener('keydown', (e) => {
 		if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
@@ -195,7 +192,7 @@ function initQuotes() {
 /* ── Work filter chips ───────────────────────────────────────────────────── */
 function initFilter() {
 	const bar = document.querySelector('[data-chips]');
-	if (!bar) return;
+	if (!bar) { urlFilter(); return; }
 	const chips = [...bar.querySelectorAll('.chip')];
 	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
 	const countEl = document.querySelector('[data-count]');
@@ -254,6 +251,23 @@ function initFilter() {
 	} else {
 		apply('ALL');
 	}
+}
+
+/* No filter bar (v5.2 archive): deep links /work/?series=<slug> and ?cat=<cat>
+   still narrow the grid, so links from project pages keep working. */
+function urlFilter() {
+	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
+	if (!cards.length) return;
+	const params = new URLSearchParams(location.search);
+	const ser = (params.get('series') || '').toLowerCase();
+	const cat = (params.get('cat') || '').toUpperCase();
+	if (!ser && !cat) return;
+	const match = (c) => ser ? (c.dataset.series || '').split(/\s+/).includes(ser) : (c.dataset.cat || '').toUpperCase() === cat;
+	if (!cards.some(match)) return;
+	let shown = 0;
+	cards.forEach((c) => { const m = match(c); c.classList.toggle('hide', !m); if (m) shown++; });
+	const countEl = document.querySelector('[data-count]');
+	if (countEl) countEl.textContent = String(shown).padStart(2, '0');
 }
 
 /* ── Enquire calculator + submit ─────────────────────────────────────────── */

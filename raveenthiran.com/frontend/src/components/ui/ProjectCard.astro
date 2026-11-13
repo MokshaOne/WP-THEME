@@ -1,0 +1,21 @@
+---
+// One project tile: colour photograph with reveal + title/category line.
+// Extra attributes (data-cat, data-series …) are forwarded to the root <a>,
+// which keeps the `card` class the Work filter in ui.js relies on.
+import type { Project } from '../../lib/wp';
+import { pad, soften } from '../../lib/format';
+interface Props { project: Project; index: number; sizes: string; natural?: boolean; eager?: boolean; [key: string]: any }
+const { project: p, index, sizes, natural = false, eager = false, ...rest } = Astro.props;
+---
+<a class:list={['pcard', 'card', natural && 'pcard--natural']} href={`/work/${p.slug}/`} {...rest}>
+	<div class="pcard__media media" data-reveal-img>
+		<img src={p.image} srcset={p.imageSrcset || undefined} sizes={sizes} width={p.imageW || undefined} height={p.imageH || undefined}
+			alt={p.title} style={p.focal ? `--focal:${p.focal}` : undefined} loading={eager ? 'eager' : 'lazy'} decoding="async"
+			transition:name={`cover-${p.slug}`} />
+	</div>
+	<div class="pcard__meta">
+		<span class="pcard__no">{pad(index, 3)}</span>
+		<span class="pcard__title">{p.title}</span>
+		<span class="pcard__cat">{[soften(p.category), p.year].filter(Boolean).join(' · ')}</span>
+	</div>
+</a>

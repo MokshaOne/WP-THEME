@@ -1,0 +1,10 @@
+---
+// Closing call-to-action band. `label` may contain one <em> for the italic accent.
+interface Props { href: string; kicker?: string; label: string; variant?: 'next' }
+const { href, kicker = '', label, variant } = Astro.props;
+---
+<a class:list={['cta', variant && `cta--${variant}`]} href={href} data-reveal>
+	{kicker && <span class="cta__kicker label">{kicker}</span>}
+	<span class="cta__label" set:html={label} />
+	<span class="cta__arrow" aria-hidden="true">→</span>
+</a>

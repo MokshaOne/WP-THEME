@@ -1,0 +1,13 @@
+---
+// Section heading: numbered kicker above a serif title, optional link on the right.
+interface Props { n?: string; kicker: string; title?: string; href?: string; linkLabel?: string }
+const { n, kicker, title, href, linkLabel } = Astro.props;
+---
+<header class="shead" data-reveal>
+	<div class="shead__main">
+		<div class="shead__kicker label">{n && <span class="n">{n}</span>}<span>{kicker}</span></div>
+		{title && <h2 class="shead__title" set:html={title} />}
+		<slot />
+	</div>
+	{href && linkLabel && <a class="link" href={href}>{linkLabel} <span class="arr" aria-hidden="true">→</span></a>}
+</header>

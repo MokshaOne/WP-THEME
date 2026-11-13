@@ -1,11 +1,13 @@
 ---
 import '../styles/theme.css';
+import '../styles/a11y.css';
 import { ClientRouter } from 'astro:transitions';
 import { getSite, getProjects } from '../lib/wp';
+import { jsonForScript, safeUrl } from '../lib/safe';
 import pkg from '../../package.json';
 
 const VERSION = pkg.version;
-const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Europe/Vienna' });
 
 export interface Props {
 	title: string;
@@ -13,9 +15,11 @@ export interface Props {
 	active?: string;
 	ogImage?: string;
 	preload?: string;
+	preloadSrcset?: string;
+	preloadSizes?: string;
 	page?: string;
 }
-const { title, description = '', active = '', ogImage = '', preload = '', page = '' } = Astro.props;
+const { title, description = '', active = '', ogImage = '', preload = '', preloadSrcset = '', preloadSizes = '', page = '' } = Astro.props;
 
 const site = await getSite();
 const projects = await getProjects();
@@ -25,9 +29,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 // Open Graph / Twitter share image: make it absolute (scrapers reject relative
 // URLs) and always provide one — fall back to the first featured photograph so
 // every page shares a real, branded frame instead of a bare summary card.
+// Facebook, LinkedIn and X do not render AVIF previews, so an AVIF candidate
+// gives way to the first non-AVIF project image when one exists.
 const abs = (u: string) => (u ? new URL(u, Astro.site).href : '');
+const isAvif = (u: string) => /\.avif(?:[?#]|$)/i.test(u || '');
 const featuredOg = projects.find((p) => p.featured_home)?.image || projects[0]?.image || '';
-const ogFinal = abs(ogImage || featuredOg);
+const ogCandidate = ogImage || featuredOg;
+const ogFallback = projects.map((p) => p.ogImage || p.image).find((u) => u && !isAvif(u)) || '';
+const ogFinal = abs(isAvif(ogCandidate) && ogFallback ? ogFallback : ogCandidate);
 
 const nav = [
 	{ key: 'work', label: 'Work', href: '/work/' },
@@ -35,11 +44,12 @@ const nav = [
 	{ key: 'enquire', label: 'Enquiry', href: '/enquire/' },
 ];
 
+// Social links come from WordPress; only http(s) targets are rendered.
 const social = [
-	site.contact.instagram && { label: 'Instagram', href: site.contact.instagram },
-	site.contact.behance && { label: 'Behance', href: site.contact.behance },
-	site.contact.linkedin && { label: 'LinkedIn', href: site.contact.linkedin },
-].filter(Boolean) as { label: string; href: string }[];
+	{ label: 'Instagram', href: safeUrl(site.contact.instagram) },
+	{ label: 'Behance', href: safeUrl(site.contact.behance) },
+	{ label: 'LinkedIn', href: safeUrl(site.contact.linkedin) },
+].filter((s) => s.href && /^https?:/i.test(s.href)) as { label: string; href: string }[];
 
 const jsonld = {
 	'@context': 'https://schema.org',
@@ -84,7 +94,9 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	{description && <meta name="twitter:description" content={description} />}
 	{ogFinal && <meta name="twitter:image" content={ogFinal} />}
 	<meta name="theme-color" content="#121110" />
-	{preload && <link rel="preload" as="image" href={preload} fetchpriority="high" />}
+	{/* LCP preload mirrors the <img>'s srcset/sizes, so the browser fetches the
+	    same candidate it will actually render instead of the full-size original. */}
+	{preload && <link rel="preload" as="image" href={preload} imagesrcset={preloadSrcset || undefined} imagesizes={preloadSrcset && preloadSizes ? preloadSizes : undefined} fetchpriority="high" />}
 	<link rel="preconnect" href="https://wp.m1o.at" crossorigin />
 	<link rel="dns-prefetch" href="https://wp.m1o.at" />
 	<link rel="icon" href={favicon} />
@@ -92,9 +104,9 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 	<link rel="mask-icon" href="/icon.svg" color="#efece6" />
 	<link rel="manifest" href="/site.webmanifest" />
 	<link rel="alternate" type="application/rss+xml" title="Raveenthiran — Journal" href="/rss.xml" />
-	<script type="application/ld+json" set:html={JSON.stringify(jsonld)} is:inline />
+	<script type="application/ld+json" set:html={jsonForScript(jsonld)} is:inline />
 	<!-- Speculation Rules: hover-intent prefetch of same-origin pages (Batch 16) -->
-	<script type="speculationrules" set:html={JSON.stringify({ prefetch: [{ source: 'document', where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/enquire/*' } }] }, eagerness: 'moderate' }] })} is:inline />
+	<script type="speculationrules" set:html={jsonForScript({ prefetch: [{ source: 'document', where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/enquire/*' } }] }, eagerness: 'moderate' }] })} is:inline />
 	<ClientRouter />
 </head>
 <body data-page={page}>
@@ -110,13 +122,13 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 				</a>
 			))}
 		</nav>
-		<button class="burger" data-burger aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+		<button class="burger" data-burger aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
 	</header>
 
-	<div class="m-ovl" data-mobile-ovl>
+	<div class="m-ovl" id="mobile-menu" data-mobile-ovl>
 		<nav aria-label="Mobile">
 			{nav.map((n, i) => (
-				<a href={n.href}><span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span></a>
+				<a href={n.href} aria-current={active === n.key ? 'page' : undefined}><span class="num">0{i + 1}</span><span class="lbl">{n.label.toUpperCase()}</span></a>
 			))}
 		</nav>
 		<div class="m-foot">

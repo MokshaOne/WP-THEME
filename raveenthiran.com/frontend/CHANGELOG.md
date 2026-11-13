@@ -4,6 +4,32 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 5.3.0 — 2026-11-13 · Refine: cursor, grain, transitions, grid (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed. Polishes v5.2 without touching the
+foundation; `src/lib/wp.ts`, `scripts/og.mjs`, routes and deploy unchanged.
+
+- **Page transitions.** `<ClientRouter />` (Astro 5's name for
+  `<ViewTransitions />`) now runs a plain 250 ms fade on every page
+  (`transition:animate={fade({ duration: '250ms' })}` on `<html>`).
+- **Cursor.** A 24px hairline ring (`#cursor`, `mix-blend-mode: exclusion`,
+  60 % opacity) follows the mouse; scales 1.6× over links/buttons, 2.5× over
+  work photographs. Fine pointers only — touch devices keep the native one.
+- **Grain.** `body::after` carries an SVG `feTurbulence` noise
+  (baseFrequency .65, 3 octaves) at 2.5 % opacity — inline data URI, no load.
+- **Work grid.** Every tile is a fixed aspect-ratio box (4:3 / 3:4 / 4:3) on
+  a warm `#E8E3DA` placeholder, so a missing or loading photograph never
+  leaves an empty cream hole. Hover shows a veil (rgba(10,9,8,.4)) with the
+  project name in Instrument Serif Italic, 24px.
+- **Statement.** `clamp(52px, 11vw, 160px)`, one line per row with hairlines
+  between; line 2 indented 8vw, line 3 1vw.
+- **Recognition.** Real table rows: year left (DM Sans 200, 11px, 40 %), name
+  right (300, 12px); hover dims the name to 60 % and darkens the row.
+- **About · Seen at.** Two columns, one name per line, 12px, .3em tracking
+  (one column on phones).
+- **Navigation.** The current page is marked only by a 0.5px underline
+  (offset 4px).
+
 ## 5.2.0 — 2026-11-13 · Vogue × Dazed (theme unchanged, 4.8.0)
 
 Frontend only — no theme upload needed. A third design pass: every page is an

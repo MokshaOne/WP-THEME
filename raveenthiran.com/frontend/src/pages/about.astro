@@ -3,12 +3,13 @@ import Base from '../layouts/Base.astro';
 import SectionHead from '../components/ui/SectionHead.astro';
 import CtaBand from '../components/ui/CtaBand.astro';
 import { getSite } from '../lib/wp';
-import { softenAll, soften } from '../lib/format';
+import { soften } from '../lib/format';
 
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.webp';
 
-const statementLines = softenAll(site.studio.statement);
+// Shown exactly as WordPress holds it (upper-case by design), like the home statement.
+const statementLines = site.studio.statement.filter(Boolean);
 const bio = 'Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time.';
 const lede = 'You deal with me directly, from first call to final print. No agency layer, no hand-offs — one person responsible for the whole picture.';
 const spec = site.studio.spec.map((s) => [soften(s.label), s.value] as [string, string]);
@@ -35,7 +36,7 @@ const process = [
 				<p class="studio-hero__bio">{bio}</p>
 				<p class="studio-hero__lede copy">{lede}</p>
 				{spec.length > 0 && (
-					<dl class="spec-list">
+					<dl class="spec-list" aria-label="Studio data sheet">
 						{spec.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
 					</dl>
 				)}
@@ -52,8 +53,8 @@ const process = [
 		<div class="process" data-reveal>
 			{process.map(([no, t, body]) => (
 				<div class="process__step">
-					<div class="no">{no}</div>
-					<h3 class="t">{t}</h3>
+					<div class="no" aria-hidden="true">— {no} —</div>
+					<h3 class="t"><span class="sr-only">Step {no}: </span>{t}</h3>
 					<p>{body}</p>
 				</div>
 			))}

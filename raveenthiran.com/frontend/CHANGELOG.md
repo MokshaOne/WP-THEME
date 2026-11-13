@@ -4,6 +4,44 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 5.1.0 — 2026-11-13 · Vienna Monochrome (theme unchanged, 4.8.0)
+
+Frontend only — no theme upload needed. A second design pass that replaces the
+generic "serif + sans + terracotta" look with a contact-sheet character. Data
+layer (`src/lib/wp.ts`), routes, `scripts/og.mjs` and the deploy pipeline are
+unchanged.
+
+- **Type.** Space Mono (self-hosted, 400/700) now sets everything below display
+  size: navigation, body, labels, metadata, buttons, forms and footer — labels
+  in upper case, 11px, `.15em` tracking. Instrument Serif is reserved for one
+  display headline per section (≥ 80px on desktop, max. 1–2 per page).
+  Archivo is removed (import and `@fontsource-variable/archivo` dependency).
+- **Colour.** Canvas `#0A0908`, ink `#E8E3DA`, grey steps as opacities of the
+  ink. The terracotta accent is gone — no accent colour at all; the
+  photographs are the only colour. Single exception: the estimate total in the
+  Enquire calculator is pure `#FFFFFF`.
+- **Home hero.** The photograph fills the viewport edge to edge; the only
+  overlay is a light bottom fade (transparent → `rgba(10,9,8,.4)`). The only
+  text is a mono label bottom-left: "001 — PROJECT" / "CATEGORY · VIENNA ·
+  YEAR". Headline, lede, buttons, progress line and slide controls are gone
+  (pause stays as a focus-only control for keyboard users). Header sits
+  directly on the photograph.
+- **Statement.** "NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME." as flush-left
+  Instrument Serif lines (≈ 128px desktop, 52px mobile) with hairlines between
+  them and no label.
+- **Work grid** (home + /work/). Asymmetric: first frame ~74% wide on the left,
+  second 55% on the right, then varying widths and heights. Every frame has one
+  mono caption "001 NAME — CATEGORY · YEAR"; hover is `scale(1.02)` only.
+- **About.** Portrait fills the left half at full viewport height, bleeding to
+  the left, top and bottom edges; the studio facts sit on the right as a
+  label/value data sheet. Process steps use large mono counters "— 01 —".
+- **Recognition.** A table: year (opacity .5) | name | type, hairlines between
+  rows, no bullets.
+- **Footer.** Coordinates "48.2082° N, 16.3738° E" lead the footer; the large
+  decorative wordmark is removed.
+- Square, mono, upper-case buttons, chips and controls instead of pills.
+  Theme colour, manifest and icons updated to the new canvas.
+
 ## 5.0.0 — 2026-11-13 · Editorial (theme unchanged, 4.8.0)
 
 Frontend only — no theme upload needed. Complete visual redesign; data layer

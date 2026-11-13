@@ -1,38 +1,25 @@
 /* =============================================================================
    Accessibility layer — loaded right after theme.css (see Base.astro).
-   Kept as a separate, small override file so theme.css stays untouched and
-   every change here is easy to review or revert.
+   v5: the editorial palette in theme.css is tuned for WCAG 2.2 AA on the
+   #121110 canvas (labels ≥ 5:1, form borders ≥ 3:1), so this file only keeps
+   the focus/interaction guarantees that must survive any future theme change.
    ============================================================================= */
 
-/* Text contrast on the #0B0B0B canvas (WCAG 2.2 AA, 4.5:1 for small text).
-   --faint carried most 10–11px labels at ~4.4:1; .est__fine sat near 2.9:1.
-   Screen only — the print palette in theme.css keeps its own values. */
-@media screen {
-	:root { --faint: #8f897f; }
-	.est__fine { color: #8a847a; }
+/* Every keyboard focus is visible, also on dark photographs. */
+a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+	outline: 2px solid var(--c-accent, #d9825b);
+	outline-offset: 3px;
 }
-
-/* Form-control and toggle borders need 3:1 against the canvas (non-text
-   contrast). The --chip token itself is left alone because it also drives the
-   scrollbar and decorative outlines. */
-.enq input,
-.enq textarea,
-.km input,
-.btn--ghost,
-.chipline,
-.usage button,
-.svc,
-.enq__ref button {
-	border-color: #6a655e;
-}
-
-/* The distance field had a colour-only focus state; give it the same visible
-   ring as the other enquiry inputs. */
-.km input:focus-visible { box-shadow: 0 0 0 2px var(--canvas), 0 0 0 4px var(--ink); }
-
-/* Hero slideshow pause control (Default.astro) — matches .rbtn. */
-.rbtn[data-pause] { font-size: 11px; letter-spacing: 0; }
-.rbtn[data-pause][aria-pressed='true'] { background: var(--ink); color: var(--canvas); }
 
 /* Zoomable images are keyboard-focusable (fx.js); show where focus is. */
-img[data-zoom]:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+img[data-zoom]:focus-visible { outline: 2px solid var(--c-accent, #d9825b); outline-offset: 3px; }
+
+/* Comfortable touch targets for primary controls (WCAG 2.5.8). */
+.rbtn, .stepper button, .burger, .enq__ref button { min-width: 44px; min-height: 44px; }
+.enq__ref button { min-width: 32px; min-height: 32px; }
+
+/* Windows high-contrast / forced colours: keep borders on custom controls. */
+@media (forced-colors: active) {
+	.btn, .rbtn, .chip, .svc, .usage button, .tag, .addon__box { border: 1px solid CanvasText; }
+	.chip[aria-pressed="true"], .svc[aria-pressed="true"], .usage button[aria-pressed="true"] { outline: 2px solid Highlight; }
+}

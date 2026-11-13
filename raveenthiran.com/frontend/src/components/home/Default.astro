@@ -1,5 +1,6 @@
 ---
 import type { Site, Project } from '../../lib/wp';
+import { jsonForScript } from '../../lib/safe';
 interface Props { site: Site; projects: Project[]; }
 const { site, projects } = Astro.props;
 
@@ -18,7 +19,7 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 <h1 class="sr-only">Raveenthiran — portrait, fashion and editorial photography in Vienna</h1>
 
 <!-- POSTER HERO -->
-<section class="phero" data-hero data-intro>
+<section class="phero" data-hero data-intro aria-roledescription="carousel" aria-label="Selected work">
 	<div class="slides">
 		{/* All hero frames load eagerly: the slideshow shows every one, and lazy
 		    images inside the fully-clipped slides never intersect — that would
@@ -31,16 +32,17 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 	<div class="phero__top">
 		<span class="exif">01 — SELECTED WORK</span>
 		<div class="slide-nav">
-			<button class="rbtn" data-prev aria-label="Previous">←</button>
+			<button class="rbtn" data-prev aria-label="Previous slide">←</button>
 			<span class="slide-count"><span data-count>01</span><span class="of"> / {String(featured.length).padStart(2, '0')}</span></span>
-			<button class="rbtn" data-next aria-label="Next">→</button>
+			<button class="rbtn" data-next aria-label="Next slide">→</button>
+			{featured.length > 1 && <button class="rbtn" data-pause aria-pressed="false" aria-label="Pause slideshow">❚❚</button>}
 		</div>
 	</div>
 	<div class="phero__lede">
 		<p>{heroLede}</p>
 		<a class="btn" href="/enquire/">Start a commission</a>
 	</div>
-	<div class="phero__cap"><span class="exif" data-cap>{up(featured[0]?.category || '')}</span></div>
+	<div class="phero__cap"><span class="exif" data-cap aria-live="off" aria-atomic="true">{up(featured[0]?.category || '')}</span></div>
 	<div class="phero__wm" aria-hidden="true">RAVEENTHIRAN</div>
 	<div class="vf" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
 </section>
@@ -151,7 +153,9 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 				{testimonials.length > 0 && (
 					<div class="quotes" data-reveal data-quotes>
 						<div class="quotes__mark" aria-hidden="true">&ldquo;</div>
-						<p class="quotes__text" data-quote-text>&ldquo;{testimonials[0].text}&rdquo;</p>
+						<div aria-live="polite" aria-atomic="true">
+							<p class="quotes__text" data-quote-text>&ldquo;{testimonials[0].text}&rdquo;</p>
+						</div>
 						<div class="quotes__foot">
 							<span class="quotes__by" data-quote-by>{testimonials[0].by}</span>
 							{testimonials.length > 1 && (
@@ -165,7 +169,7 @@ const hasRecog = honors.length > 0 || testimonials.length > 0;
 					</div>
 				)}
 			</div>
-			{testimonials.length > 0 && <script type="application/json" id="quotes-data" set:html={JSON.stringify(testimonials)} is:inline />}
+			{testimonials.length > 0 && <script type="application/json" id="quotes-data" set:html={jsonForScript(testimonials)} is:inline />}
 		</>
 	)}
 </section>

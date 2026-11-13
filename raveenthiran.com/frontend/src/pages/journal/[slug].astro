@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getPosts, getPost } from '../../lib/wp';
+import { jsonForScript, cleanHtml } from '../../lib/safe';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -14,6 +15,7 @@ const { slug } = Astro.params;
 const { next } = Astro.props;
 const post = (await getPost(slug!))!;
 const up = (s: string) => (s || '').toUpperCase();
+const body = cleanHtml(post.content);
 
 const siteBase = (Astro.site?.href || 'https://raveenthiran.com/').replace(/\/$/, '');
 const abs = (u: string) => (/^https?:\/\//.test(u) ? u : siteBase + (u.startsWith('/') ? '' : '/') + u);
@@ -42,16 +44,16 @@ const breadcrumbLd = {
 	],
 };
 ---
-<Base title={`${post.title} — Journal`} description={post.excerpt} active="journal" page="article" ogImage={post.image} preload={post.image}>
-	<script type="application/ld+json" set:html={JSON.stringify(articleLd)} is:inline />
-	<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} is:inline />
+<Base title={`${post.title} — Journal`} description={post.excerpt} active="journal" page="article" ogImage={post.image} preload={post.image} preloadSrcset={post.imageSrcset || ''} preloadSizes="(max-width: 900px) 100vw, 900px">
+	<script type="application/ld+json" set:html={jsonForScript(articleLd)} is:inline />
+	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
 	<article class="article">
 		<div class="eyebrow" data-intro style="margin-bottom:20px">{up(post.category)} · {post.dateLabel.toUpperCase()}</div>
 		<h1 data-intro>{up(post.title)}</h1>
 		{post.image && (
 			<div class="plate" data-reveal style="margin:40px 0"><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></div>
 		)}
-		<div class="article__body" data-reveal set:html={post.content} />
+		<div class="article__body" data-reveal set:html={body} />
 	</article>
 
 	{next && next.slug !== post.slug && (

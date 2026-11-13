@@ -1,9 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getSite, getProjects } from '../lib/wp';
+import { jsonForScript, cleanHtml } from '../lib/safe';
 
 const site = await getSite();
-const endpoint = ((import.meta.env.WP_BASE as string) || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
+// Same resolution order as lib/wp.ts (import.meta.env → process.env → default),
+// so a WP_BASE override at build time also moves the enquiry endpoint.
+const penv = (k: string): string => (typeof process !== 'undefined' && process.env && process.env[k]) || '';
+const endpoint = ((import.meta.env.WP_BASE as string) || penv('WP_BASE') || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
 const turnstile = site.security.turnstile_site;
 // slug → title, so /enquire/?ref=<slug> can name the reference project without
 // trusting any text from the URL.
@@ -149,7 +153,7 @@ const faqSchema = site.faq.length ? {
 			</div>
 			<div class="est__note" data-est-note style="display:none"></div>
 			<div class="est__fine">Every shoot is quoted individually — this is an orientation, not a price list. Written offer within 24 hours, then we shoot.</div>
-			<div class="est__msg" data-est-msg></div>
+			<div class="est__msg" data-est-msg role="status" aria-live="polite"></div>
 		</div>
 	</section>
 
@@ -172,15 +176,15 @@ const faqSchema = site.faq.length ? {
 		</div>
 	</section>
 
-	<script type="application/json" id="enquire-refs" set:html={JSON.stringify(refs)} is:inline />
-	{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />}
+	<script type="application/json" id="enquire-refs" set:html={jsonForScript(refs)} is:inline />
+	{faqSchema && <script type="application/ld+json" set:html={jsonForScript(faqSchema)} is:inline />}
 	{site.faq.length > 0 && (
 		<section class="faq">
 			<div class="faq__head"><div class="sec__hint">QUESTIONS</div><h2>BEFORE YOU ASK</h2></div>
 			{site.faq.map((f) => (
 				<details class="faq__item">
 					<summary class="faq__q">{f.q}<span class="pm" aria-hidden="true">+</span></summary>
-					<div class="faq__a" set:html={f.a} />
+					<div class="faq__a" set:html={cleanHtml(f.a)} />
 				</details>
 			))}
 		</section>

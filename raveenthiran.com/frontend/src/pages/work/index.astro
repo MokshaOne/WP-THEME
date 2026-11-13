@@ -15,8 +15,8 @@ const chips = [{ cat: 'ALL', label: 'All' }, ...cats.map((c) => ({ cat: c, label
 const years = projects.map((p) => +p.year).filter(Boolean);
 const from = years.length ? Math.min(...years) : 2020;
 const to = years.length ? Math.max(...years) : new Date().getFullYear();
-const few = projects.length <= 2;
-const sizes = few ? '(max-width: 640px) 100vw, 50vw' : '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw';
+// Asymmetric grid: the first frame runs ~75% wide, the second 55% on the right, then varied widths.
+const sizesFor = (i: number) => i === 0 ? '(max-width: 900px) 100vw, 75vw' : i === 1 ? '(max-width: 900px) 86vw, 55vw' : '(max-width: 900px) 86vw, 45vw';
 ---
 <Base title="The Work — Raveenthiran" description="The full archive — portrait, fashion and editorial work from Vienna and across Austria." active="work" page="work">
 	<PageIntro kicker="" title="The <em>work.</em>" lede="Portrait, fashion and editorial. Vienna, and wherever the light is worth the drive.">
@@ -29,9 +29,9 @@ const sizes = few ? '(max-width: 640px) 100vw, 50vw' : '(max-width: 640px) 100vw
 		))}
 	</div>
 
-	<section class:list={['masonry', few && 'masonry--few', projects.length === 1 && 'masonry--one']} data-work-grid aria-label="Projects">
+	<section class="wgrid" data-work-grid aria-label="Projects">
 		{projects.map((p, i) => (
-			<ProjectCard project={p} index={i + 1} sizes={sizes} natural eager={i < 3}
+			<ProjectCard project={p} index={i + 1} sizes={sizesFor(i)} eager={i < 2}
 				data-cat={up(p.category)}
 				data-series={(p.series || []).map((s) => s.slug).join(' ')}
 				data-series-name={(p.series || []).map((s) => s.name).join(' · ')} />

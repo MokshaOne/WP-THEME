@@ -1,7 +1,7 @@
 ---
 import type { Site, Project } from '../../lib/wp';
 import { jsonForScript } from '../../lib/safe';
-import { pad, soften, softenAll, caption } from '../../lib/format';
+import { pad, soften, caption } from '../../lib/format';
 import SectionHead from '../ui/SectionHead.astro';
 import ProjectCard from '../ui/ProjectCard.astro';
 import CtaBand from '../ui/CtaBand.astro';
@@ -13,10 +13,11 @@ const featured = featuredAll.slice(0, 6);
 const selected = (projects.length > featured.length ? featured : projects).slice(0, 6);
 const indexItems = projects.slice(0, 10);
 
-// Hero lines: the last line is set in italic — the one typographic gesture.
-const heroLines = softenAll(site.home.hero_lines);
-const heroLede = site.home.hero_lede;
-const statement = softenAll(site.studio.statement);
+// Hero label: "001 — PROJECT" / "CATEGORY · VIENNA · YEAR" (upper-cased in CSS).
+const heroTitle = (p: Project, i: number) => `${pad(i + 1, 3)} — ${p.title}`;
+const heroCap = (p: Project) => caption(p.category, p.location || 'Vienna', p.year);
+// Statement lines are shown exactly as WordPress holds them (upper-case by design).
+const statement = site.studio.statement.filter(Boolean);
 const honors = site.home.honors;
 const testimonials = site.home.testimonials;
 const hasRecog = honors.length > 0 || testimonials.length > 0;
@@ -25,7 +26,7 @@ const n = () => pad(++sec);
 ---
 <h1 class="sr-only">Raveenthiran — portrait, fashion and editorial photography in Vienna</h1>
 
-<!-- HERO — full-bleed colour slideshow, slow crossfade + settle -->
+<!-- HERO — the photograph, edge to edge; one small mono label bottom-left -->
 <section class="hero" data-hero aria-roledescription="carousel" aria-label="Selected work">
 	<div class="hero__slides">
 		{/* All frames load eagerly so the crossfade never reveals an empty slide;
@@ -33,43 +34,19 @@ const n = () => pad(++sec);
 		{featured.map((p, i) => (
 			<img class:list={['slide', i === 0 && 'on']} src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw"
 				width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title}
-				data-title={p.title} data-cap={caption(p.category, p.location, p.year)} data-href={`/work/${p.slug}/`}
+				data-title={heroTitle(p, i)} data-cap={heroCap(p)} data-href={`/work/${p.slug}/`}
 				style={p.focal ? `--focal:${p.focal}` : undefined} loading="eager" decoding="async" fetchpriority={i === 0 ? 'high' : 'low'} />
 		))}
 	</div>
 	<div class="hero__veil" aria-hidden="true"></div>
-
-	<div class="hero__body">
-		<div>
-			<p class="hero__kicker label" data-intro>Portrait · Fashion · Editorial — Vienna</p>
-			<p class="hero__title" data-intro aria-hidden="true">
-				{heroLines.map((l, i) => i === heroLines.length - 1 && heroLines.length > 1 ? <span><em>{l}</em></span> : <span>{l}</span>)}
-			</p>
-		</div>
-		<div class="hero__aside" data-intro>
-			<p class="hero__lede">{heroLede}</p>
-			<div class="hero__actions">
-				<a class="btn btn--solid" href="/enquire/">Start a commission <span class="arr" aria-hidden="true">→</span></a>
-				<a class="btn" href="/work/">View the work</a>
-			</div>
-		</div>
-	</div>
-
-	<div class="hero__bar" data-intro>
-		{featured.length > 1 && <span class="hero__progress" data-progress aria-hidden="true"></span>}
-		<a class="hero__cap" href={featured[0] ? `/work/${featured[0].slug}/` : '/work/'} data-cap-link>
-			<span data-title>{featured[0]?.title}</span>
-			<span class="label" data-cap aria-live="off">{caption(featured[0]?.category, featured[0]?.location, featured[0]?.year)}</span>
+	{featured[0] && (
+		<a class="hero__cap" href={`/work/${featured[0].slug}/`} data-cap-link>
+			<span data-title>{heroTitle(featured[0], 0)}</span>
+			<span data-cap aria-live="off">{heroCap(featured[0])}</span>
 		</a>
-		{featured.length > 1 && (
-			<div class="slide-nav">
-				<button class="rbtn" data-prev aria-label="Previous slide">←</button>
-				<span class="slide-count"><span data-count>01</span><span class="of"> / {pad(featured.length)}</span></span>
-				<button class="rbtn" data-next aria-label="Next slide">→</button>
-				<button class="rbtn" data-pause aria-pressed="false" aria-label="Pause slideshow">❚❚</button>
-			</div>
-		)}
-	</div>
+	)}
+	{/* Pause control stays for keyboard / screen-reader users (WCAG 2.2.2), visible only on focus. */}
+	{featured.length > 1 && <button class="btn hero__pause" data-pause aria-pressed="false" aria-label="Pause slideshow">❚❚</button>}
 </section>
 
 <!-- ON THE ROAD — planned city dates (only when WordPress holds some) -->
@@ -94,25 +71,24 @@ const n = () => pad(++sec);
 
 <!-- SELECTED WORK — an editorial, asymmetric spread -->
 <section class="sec">
-	<SectionHead n={n()} kicker="Selected work" title="Frames that <em>stay.</em>" href="/work/" linkLabel={`Full archive — ${pad(projects.length)} projects`} />
-	<div class="sel">
+	<SectionHead n={n()} kicker="Selected work" href="/work/" linkLabel={`Full archive — ${pad(projects.length)} projects`} />
+	<div class="wgrid">
 		{selected.map((p, i) => (
-			<ProjectCard project={p} index={i + 1} sizes={i % 6 === 4 ? '100vw' : '(max-width: 900px) 90vw, 50vw'} />
+			<ProjectCard project={p} index={i + 1} sizes={i === 0 ? '(max-width: 900px) 100vw, 75vw' : '(max-width: 900px) 86vw, 55vw'} />
 		))}
 	</div>
 </section>
 
-<!-- STATEMENT -->
+<!-- STATEMENT — flush-left serif lines, hairlines between, no label -->
 {statement.length > 0 && (
 	<section class="stmt" data-reveal>
-		<div class="label stmt__k">{n()} — Statement</div>
 		{statement.map((l) => <p class="stmt__line">{l}</p>)}
 	</section>
 )}
 
 <!-- THE INDEX — every project as a line of type, with a floating preview -->
 <section class="sec">
-	<SectionHead n={n()} kicker="The index" title="Every <em>project.</em>" />
+	<SectionHead n={n()} kicker="The index" title={`Every project — ${pad(indexItems.length)}`} />
 	<div class="index">
 		{indexItems.map((p, i) => (
 			<a class="index__row" href={`/work/${p.slug}/`} data-peek data-img={p.image}>
@@ -128,15 +104,15 @@ const n = () => pad(++sec);
 <!-- RECOGNITION — only what WordPress actually holds; never a placeholder -->
 {hasRecog && (
 	<section class="sec">
-		<SectionHead n={n()} kicker="Recognition" title="Kind <em>words.</em>" />
+		<SectionHead n={n()} kicker="Recognition" />
 		<div class:list={['recog', (!honors.length || !testimonials.length) && 'recog--single']}>
 			{honors.length > 0 && (
-				<div>
+				<div role="table" aria-label="Recognition" data-reveal>
 					{honors.map((h) => (
-						<div class="honor" data-reveal>
-							<span class="k">{h.year}</span>
-							<span class="t">{h.title}</span>
-							<span class="k">{h.tag}</span>
+						<div class="honor" role="row">
+							<span class="k" role="cell">{h.year}</span>
+							<span class="t" role="cell">{h.title}</span>
+							<span class="k" role="cell">{h.tag}</span>
 						</div>
 					))}
 				</div>

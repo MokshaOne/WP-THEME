@@ -506,6 +506,32 @@ function initEnquire() {
 	});
 })();
 
+/* ── custom cursor: a hairline ring that follows the mouse ───────────────────
+   Desktop only (hover + fine pointer). Listeners are bound once at document
+   level; #cursor is transition:persist'ed in Base.astro, so it survives page
+   swaps — it is simply looked up again when missing. Grows to 1.6 over links
+   and buttons, 2.5 over work photographs. */
+(function initCursor() {
+	if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+	let el = null;
+	const get = () => (el && el.isConnected ? el : (el = document.getElementById('cursor')));
+	document.documentElement.classList.add('has-cursor');
+	addEventListener('mousemove', (e) => {
+		const c = get(); if (!c) return;
+		c.style.left = (e.clientX - 12) + 'px';
+		c.style.top = (e.clientY - 12) + 'px';
+		c.classList.remove('is-off');
+	}, { passive: true });
+	document.addEventListener('mouseover', (e) => {
+		const c = get(); const t = e.target;
+		if (!c || !t || !t.closest) return;
+		const onImg = !!t.closest('.work-item .pcard__media');
+		c.classList.toggle('is-img', onImg);
+		c.classList.toggle('is-link', !onImg && !!t.closest('a, button'));
+	});
+	document.documentElement.addEventListener('mouseleave', () => get()?.classList.add('is-off'));
+})();
+
 /* ── boot ────────────────────────────────────────────────────────────────── */
 document.addEventListener('astro:page-load', boot);
 document.addEventListener('astro:before-swap', teardown);

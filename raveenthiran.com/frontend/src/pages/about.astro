@@ -72,7 +72,9 @@ const process = [
 	) : site.studio.clients.length > 0 && (
 		<section class="clients" data-reveal>
 			<span class="label">Seen at · Worked with</span>
-			{site.studio.clients.map((c) => <span>{c}</span>)}
+			<ul class="clients__list">
+				{site.studio.clients.map((c) => <li>{c}</li>)}
+			</ul>
 		</section>
 	)}
 

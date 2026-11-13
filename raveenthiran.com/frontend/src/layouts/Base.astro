@@ -1,7 +1,8 @@
 ---
 import '../styles/theme.css';
 import '../styles/a11y.css';
-import { ClientRouter } from 'astro:transitions';
+// <ClientRouter /> is Astro 5's name for <ViewTransitions /> (deprecated alias).
+import { ClientRouter, fade } from 'astro:transitions';
 import Header from '../components/ui/Header.astro';
 import Footer from '../components/ui/Footer.astro';
 import { getSite, getProjects } from '../lib/wp';
@@ -69,7 +70,7 @@ const jsonld = {
 const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23F7F5F0'/%3E%3Ctext x='24' y='36' font-family='Georgia,Times New Roman,serif' font-size='38' font-style='italic' fill='%23111010' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E";
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate={fade({ duration: '250ms' })}>
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -106,6 +107,8 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 </head>
 <body data-page={page}>
 	<a class="skip-link" href="#main">Skip to content</a>
+	{/* Custom cursor (desktop, fine pointer only — ui.js activates it). Persisted across page swaps. */}
+	<div id="cursor" aria-hidden="true" transition:persist="cursor"></div>
 
 	<Header active={active} email={site.contact.email} social={social} />
 

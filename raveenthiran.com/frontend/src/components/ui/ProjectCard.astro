@@ -1,6 +1,7 @@
 ---
 // One project tile: the photograph, then one quiet line
-// "001 — NAME · CATEGORY · YEAR" (upper-cased in CSS). No frame, no overlay.
+// "001 — NAME · CATEGORY · YEAR" (upper-cased in CSS). On hover a soft veil
+// shows the project name in Instrument Serif Italic.
 // Extra attributes (data-cat, data-series …) are forwarded to the root <a>,
 // which keeps the `card` class the Work URL filter in ui.js relies on.
 import type { Project } from '../../lib/wp';
@@ -9,11 +10,14 @@ interface Props { project: Project; index: number; sizes: string; natural?: bool
 const { project: p, index, sizes, natural = false, eager = false, ...rest } = Astro.props;
 const tail = [soften(p.category), p.year].filter(Boolean);
 ---
-<a class:list={['pcard', 'card', natural && 'pcard--natural']} href={`/work/${p.slug}/`} {...rest}>
+<a class:list={['pcard', 'card', 'work-item', natural && 'pcard--natural']} href={`/work/${p.slug}/`} {...rest}>
+	{/* Fixed aspect-ratio box with a warm placeholder tone: the tile keeps its
+	    shape even when the photograph is missing or still loading. */}
 	<div class="pcard__media media" data-reveal-img>
-		<img src={p.image} srcset={p.imageSrcset || undefined} sizes={sizes} width={p.imageW || undefined} height={p.imageH || undefined}
+		{p.image && <img src={p.image} srcset={p.imageSrcset || undefined} sizes={sizes} width={p.imageW || undefined} height={p.imageH || undefined}
 			alt={p.title} style={p.focal ? `--focal:${p.focal}` : undefined} loading={eager ? 'eager' : 'lazy'} decoding="async"
-			transition:name={`cover-${p.slug}`} />
+			transition:name={`cover-${p.slug}`} />}
+		<span class="pcard__ovl" aria-hidden="true">{p.title}</span>
 	</div>
 	<p class="pcard__meta">
 		<span class="pcard__no">{pad(index, 3)}</span><span class="pcard__sep" aria-hidden="true">—</span><span class="pcard__title">{p.title}</span>{tail.map((t) => <><span class="pcard__sep" aria-hidden="true">·</span><span class="pcard__cat">{t}</span></>)}

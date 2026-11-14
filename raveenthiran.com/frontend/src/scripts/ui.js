@@ -2,7 +2,7 @@
    Raveenthiran v5 — page behaviours. Boots the motion engine on every Astro
    page-load (survives View Transitions) and wires the interactive modules that
    are present on the current page: mobile menu, home hero slider, RAW/FINAL
-   compare, testimonial rotator, Work filter, Enquire calculator + submit.
+   compare, testimonial rotator, Work URL filter, Enquire calculator + submit.
    ============================================================================= */
 import { initFX } from './fx.js';
 
@@ -20,12 +20,10 @@ function boot() {
 	fxOff = initFX();
 	initMobileMenu();
 	initHeroSlider();
-	initCinema();
 	initCompare();
 	initQuotes();
-	initFilter();
+	urlFilter();
 	initEnquire();
-	initRail();
 }
 
 /* ── mobile overlay menu ─────────────────────────────────────────────────── */
@@ -46,7 +44,7 @@ function initMobileMenu() {
 	pageCleanups.push(() => { burger.removeEventListener('click', onBurger); removeEventListener('keydown', onKey); document.body.style.overflow = ''; });
 }
 
-/* ── home hero slider (CSS crossfade; progress bar, pause, keyboard) ─────── */
+/* ── home hero slider (CSS crossfade; dots, pause, keyboard) ──────────────── */
 function initHeroSlider() {
 	const stage = document.querySelector('[data-hero]');
 	if (!stage) return;
@@ -55,52 +53,39 @@ function initHeroSlider() {
 	const capEl = stage.querySelector('[data-cap]');
 	const titleEl = stage.querySelector('[data-title]');
 	const linkEl = stage.querySelector('[data-cap-link]');
-	const curEl = stage.querySelector('[data-count]');
-	const prog = stage.querySelector('[data-progress]');
 	const pauseBtn = stage.querySelector('[data-pause]');
 	const dots = [...stage.querySelectorAll('[data-dot]')];
 	const INTERVAL = 5500;
-	stage.style.setProperty('--hero-int', INTERVAL + 'ms');
 	let i = slides.findIndex((s) => s.classList.contains('on'));
 	if (i < 0) i = 0;
 	const total = slides.length;
 	let timer = 0, paused = false;
-	const restartProgress = () => {
-		if (!prog) return;
-		prog.classList.remove('run'); void prog.offsetWidth; prog.classList.add('run');
-	};
 	const render = () => {
 		slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', String(k !== i)); });
 		const s = slides[i];
 		if (capEl) capEl.textContent = s.dataset.cap || '';
 		if (titleEl) titleEl.textContent = s.dataset.title || '';
 		if (linkEl && s.dataset.href) linkEl.setAttribute('href', s.dataset.href);
-		if (curEl) curEl.textContent = String(i + 1).padStart(2, '0');
 		dots.forEach((d, k) => d.setAttribute('aria-current', String(k === i)));
 	};
 	const start = () => {
 		clearInterval(timer);
 		if (paused) return;
-		restartProgress();
 		timer = setInterval(() => go(1), INTERVAL);
 	};
 	const go = (d) => {
-		const from = i;
 		i = (i + d + total) % total;
-		stage.dispatchEvent(new CustomEvent('rvn:slide', { detail: { from, to: i } }));
 		render(); start();
 	};
 	const setPaused = (v) => {
 		paused = v;
-		if (v) { clearInterval(timer); stage.dataset.paused = ''; } else { delete stage.dataset.paused; start(); }
+		if (v) clearInterval(timer); else start();
 		if (pauseBtn) {
 			pauseBtn.setAttribute('aria-pressed', String(v));
 			pauseBtn.setAttribute('aria-label', v ? 'Play slideshow' : 'Pause slideshow');
 			pauseBtn.textContent = v ? '▶' : '❚❚';
 		}
 	};
-	stage.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
-	stage.querySelector('[data-next]')?.addEventListener('click', () => go(1));
 	pauseBtn?.addEventListener('click', () => setPaused(!paused));
 	dots.forEach((d, k) => d.addEventListener('click', () => { if (k !== i) go(k - i); }));
 	// arrow keys only while focus is inside the hero — never hijack the page
@@ -117,32 +102,6 @@ function initHeroSlider() {
 	if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
 	render(); start();
 	pageCleanups.push(() => { clearInterval(timer); vio.disconnect(); document.removeEventListener('visibilitychange', onVis); });
-}
-
-/* ── Cinema home slider (crossfade) ──────────────────────────────────────── */
-function initCinema() {
-	const stage = document.querySelector('[data-cinema]');
-	if (!stage) return;
-	const slides = [...stage.querySelectorAll('.hv-cin__img')];
-	if (slides.length < 2) return;
-	const kEl = stage.querySelector('[data-cin-kicker]');
-	const tEl = stage.querySelector('[data-cin-title]');
-	const cEl = stage.querySelector('[data-cin-count]');
-	let i = 0, timer = 0;
-	const render = () => {
-		slides.forEach((s, k) => s.classList.toggle('on', k === i));
-		if (kEl) kEl.textContent = slides[i].dataset.kicker || '';
-		if (tEl) tEl.textContent = slides[i].dataset.title || '';
-		if (cEl) cEl.textContent = String(i + 1).padStart(2, '0');
-	};
-	const go = (d) => { i = (i + d + slides.length) % slides.length; render(); start(); };
-	const start = () => { clearInterval(timer); timer = setInterval(() => go(1), 5000); };
-	stage.querySelector('[data-cin-prev]')?.addEventListener('click', () => go(-1));
-	stage.querySelector('[data-cin-next]')?.addEventListener('click', () => go(1));
-	const onKey = (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
-	addEventListener('keydown', onKey);
-	render(); start();
-	pageCleanups.push(() => { clearInterval(timer); removeEventListener('keydown', onKey); });
 }
 
 /* ── Before / after compare ([rvn_compare] shortcode in journal/project) ──── */
@@ -189,72 +148,8 @@ function initQuotes() {
 	render();
 }
 
-/* ── Work filter chips ───────────────────────────────────────────────────── */
-function initFilter() {
-	const bar = document.querySelector('[data-chips]');
-	if (!bar) { urlFilter(); return; }
-	const chips = [...bar.querySelectorAll('.chip')];
-	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
-	const countEl = document.querySelector('[data-count]');
-	// /work/?series=<slug> — deep link from a project's SERIES credit: the
-	// archive opens filtered to that series, shown as an extra pressed chip.
-	// Clicking any category chip leaves series mode; clicking the series chip
-	// re-applies it.
-	const params = new URLSearchParams(location.search);
-	const serSlug = (params.get('series') || '').toLowerCase();
-	const catParam = (params.get('cat') || '').toUpperCase();
-	// Every filter state is a shareable URL: chips write ?cat= / ?series= via
-	// replaceState (no history spam), and the page restores the filter on load.
-	const syncUrl = (cat, ser) => {
-		const url = new URL(location.href);
-		url.searchParams.delete('cat'); url.searchParams.delete('series');
-		if (ser) { url.searchParams.set('series', ser); }
-		else if (cat && cat !== 'ALL') { url.searchParams.set('cat', cat.toLowerCase()); }
-		history.replaceState(null, '', url);
-	};
-	const inSeries = (c) => (c.dataset.series || '').split(/\s+/).includes(serSlug);
-	let serChip = null;
-	const setCount = (n) => { if (countEl) countEl.textContent = String(n).padStart(2, '0'); };
-	const apply = (cat) => {
-		let shown = 0;
-		cards.forEach((c) => {
-			const match = cat === 'ALL' || (c.dataset.cat || '').toUpperCase() === cat;
-			c.classList.toggle('hide', !match);
-			if (match) shown++;
-		});
-		chips.forEach((ch) => ch.setAttribute('aria-pressed', String(ch.dataset.cat === cat)));
-		if (serChip) serChip.setAttribute('aria-pressed', 'false');
-		setCount(shown);
-		syncUrl(cat, '');
-	};
-	const applySeries = () => {
-		let shown = 0;
-		cards.forEach((c) => { const m = inSeries(c); c.classList.toggle('hide', !m); if (m) shown++; });
-		chips.forEach((ch) => ch.setAttribute('aria-pressed', 'false'));
-		serChip.setAttribute('aria-pressed', 'true');
-		setCount(shown);
-		syncUrl('', serSlug);
-	};
-	chips.forEach((ch) => ch.addEventListener('click', () => apply(ch.dataset.cat)));
-	const first = serSlug && cards.find(inSeries);
-	if (first) {
-		serChip = document.createElement('button');
-		serChip.className = 'chip';
-		const names = (first.dataset.seriesName || '').split(' · ');
-		const label = names[(first.dataset.series || '').split(/\s+/).indexOf(serSlug)] || serSlug;
-		serChip.textContent = 'Series — ' + label;
-		bar.insertBefore(serChip, chips[0] ? chips[0].nextSibling : null);
-		serChip.addEventListener('click', applySeries);
-		applySeries();
-	} else if (catParam && chips.some((ch) => ch.dataset.cat === catParam)) {
-		apply(catParam);
-	} else {
-		apply('ALL');
-	}
-}
-
-/* No filter bar (v5.2 archive): deep links /work/?series=<slug> and ?cat=<cat>
-   still narrow the grid, so links from project pages keep working. */
+/* Work archive deep links: /work/?series=<slug> and ?cat=<cat> narrow the
+   grid, so the series / category links on project pages keep working. */
 function urlFilter() {
 	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
 	if (!cards.length) return;
@@ -535,7 +430,6 @@ function initEnquire() {
 /* ── boot ────────────────────────────────────────────────────────────────── */
 document.addEventListener('astro:page-load', boot);
 document.addEventListener('astro:before-swap', teardown);
-if (document.readyState !== 'loading') { /* first load handled by astro:page-load */ }
 
 /* Remove any previously-registered PWA service worker + its caches — the old
    offline layer was serving stale builds, making the live site look reverted.
@@ -545,58 +439,4 @@ if ('serviceWorker' in navigator) {
 }
 if (typeof caches !== 'undefined' && caches.keys) {
 	caches.keys().then((ks) => ks.forEach((k) => caches.delete(k))).catch(() => {});
-}
-
-/* ── project gallery rail: arrows, frame counter, keyboard ───────────────── */
-function initRail() {
-	const rail = document.querySelector('[data-rail]');
-	const nav = document.querySelector('[data-rail-nav]');
-	if (!rail || !nav) return;
-	const cards = [...rail.querySelectorAll('.card')];
-	const prev = nav.querySelector('[data-rail-prev]');
-	const next = nav.querySelector('[data-rail-next]');
-	const count = nav.querySelector('[data-rail-count]');
-	const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-	const pad = () => parseFloat(getComputedStyle(rail).paddingLeft) || 0;
-	// The current frame is the one whose left edge is closest to the rail's inset.
-	const current = () => {
-		const x = rail.scrollLeft + pad();
-		let best = 0, dist = Infinity;
-		cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - x); if (d < dist) { dist = d; best = i; } });
-		return best;
-	};
-	const go = (i) => {
-		const c = cards[Math.max(0, Math.min(cards.length - 1, i))];
-		c && rail.scrollTo({ left: c.offsetLeft - pad(), behavior: calm ? 'auto' : 'smooth' });
-	};
-	const sync = () => {
-		const max = rail.scrollWidth - rail.clientWidth;
-		const end = rail.scrollLeft >= max - 2;
-		const i = end ? cards.length - 1 : current();
-		count && (count.textContent = String(i + 1).padStart(2, '0'));
-		prev && (prev.disabled = rail.scrollLeft <= 2);
-		next && (next.disabled = end);
-		nav.hidden = max <= 2;
-	};
-	const onPrev = () => go(current() - 1);
-	const onNext = () => go(current() + 1);
-	const onKey = (e) => {
-		if (e.key === 'ArrowRight') { e.preventDefault(); onNext(); }
-		else if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev(); }
-	};
-	prev?.addEventListener('click', onPrev);
-	next?.addEventListener('click', onNext);
-	rail.addEventListener('keydown', onKey);
-	rail.addEventListener('scroll', sync, { passive: true });
-	window.addEventListener('resize', sync);
-	window.addEventListener('load', sync);
-	sync();
-	pageCleanups.push(() => {
-		prev?.removeEventListener('click', onPrev);
-		next?.removeEventListener('click', onNext);
-		rail.removeEventListener('keydown', onKey);
-		rail.removeEventListener('scroll', sync);
-		window.removeEventListener('resize', sync);
-		window.removeEventListener('load', sync);
-	});
 }

@@ -2,11 +2,8 @@
 /**
  * Admin skin — the whole WordPress panel in the live site's language.
  *
- * Two stylesheets:
- *   assets/admin-dark.css  generated colour remap of the stock admin + ACF
- *                          (tools/build-admin-dark.py in the repo; re-run after
- *                          a major WordPress / ACF update)
- *   assets/admin.css       hand-written type, shape and component rules
+ * One stylesheet, assets/admin.css: the v5.3 cream / ink palette, DM Sans +
+ * Instrument Serif, hard edges — layered over the stock (light) admin and ACF.
  *
  * Plus a leaner menu / toolbar for a headless install and a branded login.
  * The block editor is left stock on purpose: it ships its own design system
@@ -20,8 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 function rvn_skin_enqueue() {
 	$ver  = wp_get_theme()->get( 'Version' );
 	$base = get_template_directory_uri() . '/assets/';
-	wp_enqueue_style( 'rvn-admin-dark', $base . 'admin-dark.css', array(), $ver );
-	wp_enqueue_style( 'rvn-admin', $base . 'admin.css', array( 'rvn-admin-dark' ), $ver );
+	wp_enqueue_style( 'rvn-admin', $base . 'admin.css', array(), $ver );
 }
 
 /** True on block-editor screens, where the skin stays off. */

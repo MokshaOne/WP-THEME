@@ -4,17 +4,12 @@ import SectionHead from '../components/ui/SectionHead.astro';
 import CtaBand from '../components/ui/CtaBand.astro';
 import { getSite } from '../lib/wp';
 import { soften } from '../lib/format';
+import { cleanHtml } from '../lib/safe';
 
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.webp';
-
-const bio = 'Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time.';
-// Data sheet, as specified for v5.2.
-const sheet: [string, string][] = [
-	['Based in', 'Vienna, Austria'],
-	['Available for', 'Portrait · Fashion · Editorial'],
-	['Since', '2020'],
-];
+const bio = cleanHtml(site.studio.bio);
+const sheet = site.studio.spec;
 const process = [
 	['01', 'The call', 'We talk intent, references and location. You get a fixed quote — no surprises later.'],
 	['02', 'The shoot', 'Prepared, directed, unhurried. Most people hate being photographed — until this part.'],
@@ -31,9 +26,9 @@ const process = [
 			<h1 class="studio-hero__title" data-intro>Portrait &amp; Fashion Photographer, Vienna.</h1>
 			<hr class="studio-hero__rule" data-intro />
 			<dl class="studio-hero__sheet" aria-label="Studio data sheet" data-intro>
-				{sheet.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+				{sheet.map((r) => <div><dt>{soften(r.label)}</dt><dd>{soften(r.value)}</dd></div>)}
 			</dl>
-			<p class="studio-hero__bio" data-intro>{bio}</p>
+			<div class="studio-hero__bio" data-intro set:html={bio} />
 			<p class="studio-hero__links" data-intro>
 				<a class="link" href="/enquire/">Start a commission</a>
 				<a class="link link--quiet" href="/work/">See the work</a>

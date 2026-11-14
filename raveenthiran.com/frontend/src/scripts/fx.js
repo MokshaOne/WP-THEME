@@ -65,7 +65,7 @@ export function initFX() {
                 const img = e.target.closest && e.target.closest('[data-zoom]');
                 if (!img) return;
                 e.preventDefault(); e.stopPropagation();
-                const scope = img.closest('.rail, [data-work-grid], .proj-gallery') || document;
+                const scope = img.closest('[data-work-grid], .proj-gallery') || document;
                 const set = [...scope.querySelectorAll('[data-zoom]')];
                 let idx = Math.max(0, set.indexOf(img));
                 const prevFocus = document.activeElement;

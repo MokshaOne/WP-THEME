@@ -75,9 +75,9 @@ src/
   scripts/fx.js            motion engine: preloader, reveals, header state,
                            lightbox, hover-peek, rails, smooth scroll, cookies
   scripts/ui.js            page behaviour: menu, hero slider, filter,
-                           enquiry calculator, gallery rail, quotes
+                           enquiry calculator, quotes
   pages/                   index, work/, work/[slug], about, enquire,
-                           journal/, journal/[slug], legal/*, 404, offline,
+                           journal/, journal/[slug], legal/*, 404,
                            rss.xml, image-sitemap.xml, og-data.json
 public/
   .htaccess                Apache: 404, gzip, caching, security headers, HTTPS

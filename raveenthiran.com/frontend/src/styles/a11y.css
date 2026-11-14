@@ -20,6 +20,6 @@ img[data-zoom]:focus-visible { outline: 1px solid var(--c-ink, #111010); outline
 
 /* Windows high-contrast / forced colours: keep borders on custom controls. */
 @media (forced-colors: active) {
-	.btn, .rbtn, .chip, .svc, .usage button, .tag, .addon__box { border: 1px solid CanvasText; }
-	.chip[aria-pressed="true"], .svc[aria-pressed="true"], .usage button[aria-pressed="true"] { outline: 2px solid Highlight; }
+	.btn, .rbtn, .svc, .usage button, .tag, .addon__box { border: 1px solid CanvasText; }
+	.svc[aria-pressed="true"], .usage button[aria-pressed="true"] { outline: 2px solid Highlight; }
 }

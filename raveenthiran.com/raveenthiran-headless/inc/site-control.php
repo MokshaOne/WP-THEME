@@ -178,9 +178,9 @@ function rvn_site_control_page() {
 	$smtp  = (int) rvn_site_opt( 'smtp_enable', 0 ) === 1;
 	$turn  = trim( (string) rvn_site_opt( 'turnstile_site', '' ) ) !== '';
 	$cells = array(
-		array( 'Home',             'Hero, marquee, recognition, testimonials, travel dates',    'field_rvn_home_hero_lines', null ),
-		array( 'Studio',           'Lede, bio, portrait, statement, spec, stats, clients',      'field_rvn_studio_lede',     null ),
-		array( 'Contact',          'Email, location, response time, social links',              'field_rvn_contact_email',   array( $email === '', $email === '' ? 'No email' : 'Email set' ) ),
+		array( 'Home',             'Hero sub-copy, recognition, testimonials, travel dates',    'field_rvn_home_hero_lede',  null ),
+		array( 'Studio',           'Bio, data sheet, portrait, stats, clients, home statement', 'field_rvn_studio_bio',      null ),
+		array( 'Contact',          'Email, location (estimate PDF), social links',              'field_rvn_contact_email',   array( $email === '', $email === '' ? 'No email' : 'Email set' ) ),
 		array( 'Price calculator', 'Currency, sessions, add-ons, licence, travel per km',       'field_rvn_currency',        null ),
 		array( 'FAQ',              'Questions and answers shown on the site',                   'field_rvn_faq',             null ),
 		array( 'Mail',             'SMTP delivery for enquiry emails and the PDF auto-reply',   'field_rvn_smtp_enable',     array( ! $smtp, $smtp ? 'SMTP on' : 'SMTP off' ) ),

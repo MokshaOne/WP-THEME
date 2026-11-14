@@ -10,19 +10,11 @@
    "placement": "top"
   },
   {
-   "key": "field_rvn_studio_lede",
-   "label": "Studio — lede",
-   "name": "studio_lede",
-   "type": "text",
-   "instructions": "Short one-line intro shown large on the Studio page.",
-   "required": 0
-  },
-  {
    "key": "field_rvn_studio_bio",
-   "label": "Studio — bio",
+   "label": "Studio — bio (About page)",
    "name": "studio_bio",
    "type": "wysiwyg",
-   "instructions": "The main studio / about text.",
+   "instructions": "Intro text under the About headline. Leave empty to keep the default text.",
    "required": 0,
    "tabs": "all",
    "toolbar": "basic",
@@ -33,7 +25,7 @@
    "label": "Studio — portrait",
    "name": "studio_portrait",
    "type": "image",
-   "instructions": "Optional portrait shown on the Studio page.",
+   "instructions": "Portrait on the About page (portrait format, about 4:5).",
    "required": 0,
    "return_format": "url",
    "preview_size": "medium",
@@ -41,20 +33,20 @@
   },
   {
    "key": "field_rvn_studio_statement",
-   "label": "Studio — statement (lines)",
+   "label": "Home — statement (lines)",
    "name": "studio_statement",
    "type": "textarea",
-   "instructions": "One line per row; the last line renders outlined. Default: NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME.",
+   "instructions": "Statement block on the homepage. One line per row.",
    "required": 0,
    "rows": 3,
    "new_lines": ""
   },
   {
    "key": "field_rvn_studio_spec",
-   "label": "Studio — spec",
+   "label": "Studio — data sheet (About page)",
    "name": "studio_spec",
    "type": "repeater",
-   "instructions": "Key/value facts (Focus, Base, Since, Languages).",
+   "instructions": "Label / value rows under the bio (e.g. Based in / Vienna, Austria). Leave empty to keep the default sheet.",
    "required": 0,
    "layout": "table",
    "button_label": "Add row",
@@ -111,7 +103,7 @@
    "label": "Studio — client logos (optional)",
    "name": "studio_client_logos",
    "type": "repeater",
-   "instructions": "With logos the About page shows a logo wall instead of the text row. Transparent PNG/SVG works best — logos are rendered as white silhouettes on the dark canvas.",
+   "instructions": "With logos the About page shows a logo wall instead of the text row. Transparent PNG/SVG works best — logos are shown in greyscale.",
    "required": 0,
    "layout": "table",
    "button_label": "Add logo",
@@ -140,16 +132,6 @@
    "placement": "top"
   },
   {
-   "key": "field_rvn_home_hero_lines",
-   "label": "Home — hero headline (lines)",
-   "name": "home_hero_lines",
-   "type": "textarea",
-   "instructions": "One line per row; the last line renders outlined. Default: PHOTOGRAPHS / THAT OUTLIVE / TRENDS.",
-   "required": 0,
-   "rows": 3,
-   "new_lines": ""
-  },
-  {
    "key": "field_rvn_home_hero_lede",
    "label": "Home — hero sub-copy",
    "name": "home_hero_lede",
@@ -157,14 +139,6 @@
    "required": 0,
    "rows": 3,
    "new_lines": "wpautop"
-  },
-  {
-   "key": "field_rvn_home_marquee",
-   "label": "Home — marquee text",
-   "name": "home_marquee",
-   "type": "text",
-   "instructions": "The scrolling band. End with ' — ' so it loops cleanly.",
-   "required": 0
   },
   {
    "key": "field_rvn_home_honors",
@@ -224,7 +198,7 @@
    "label": "Traveling — planned dates",
    "name": "travel_dates",
    "type": "repeater",
-   "instructions": "Shown as the ON THE ROAD strip on the homepage while dates exist (e.g. Dates: 10.–14. September · City: Berlin). Delete rows once past.",
+   "instructions": "Shown as the travel dates strip while dates exist (e.g. Dates: 10.–14. September · City: Berlin). Delete rows once past.",
    "required": 0,
    "layout": "table",
    "button_label": "Add dates",
@@ -242,15 +216,6 @@
      "type": "text"
     }
    ]
-  },
-  {
-   "key": "field_rvn_travel_open",
-   "label": "Traveling — show “open for traveling”",
-   "name": "travel_open",
-   "type": "true_false",
-   "instructions": "Adds the OPEN FOR TRAVELING note to the strip (strip also shows with no dates when this is on).",
-   "required": 0,
-   "ui": 1
   },
   {
    "key": "field_rvn_tab_contact",
@@ -272,14 +237,6 @@
    "name": "contact_location",
    "type": "text",
    "required": 0
-  },
-  {
-   "key": "field_rvn_contact_response",
-   "label": "Response time",
-   "name": "contact_response",
-   "type": "text",
-   "required": 0,
-   "default_value": "Within 24 hours"
   },
   {
    "key": "field_rvn_contact_instagram",
@@ -637,5 +594,5 @@
  "label_placement": "top",
  "active": true,
  "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
- "modified": 1787400761
+ "modified": 1794613609
 }

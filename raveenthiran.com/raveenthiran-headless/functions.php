@@ -227,6 +227,16 @@ add_action( 'after_setup_theme', function () {
         add_theme_support( 'title-tag' );
 } );
 
+/* ── Faster uploads on the NAS ──
+   Every upload is re-encoded once per image size, and AVIF encoding is slow on
+   a NAS CPU. medium_large (768) duplicates "large" for portrait frames and
+   1536x1536 sits between large and 2048, so both are skipped: two encodes fewer
+   per photo. thumbnail/medium stay (media library), large/2048/full stay (srcset). */
+add_filter( 'intermediate_image_sizes_advanced', function ( $sizes ) {
+        unset( $sizes['medium_large'], $sizes['1536x1536'] );
+        return $sizes;
+} );
+
 /* ══════════════════════════════════════════════════════════════════════
    SITE CONTROL — a single branded admin hub. One place to run the whole
    site instead of hunting through the default WordPress dashboard. The ACF

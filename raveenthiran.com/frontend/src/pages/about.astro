@@ -1,15 +1,31 @@
 ---
 import Base from '../layouts/Base.astro';
-import SectionHead from '../components/ui/SectionHead.astro';
-import CtaBand from '../components/ui/CtaBand.astro';
+import Quotes from '../components/ui/Quotes.astro';
 import { getSite } from '../lib/wp';
 import { soften } from '../lib/format';
 import { cleanHtml } from '../lib/safe';
 
 const site = await getSite();
 const portrait = site.studio.portrait || '/sample/self-portrait.webp';
-const bio = cleanHtml(site.studio.bio);
-const sheet = site.studio.spec;
+
+// WP fields "Studio — bio / spec / statement". lib/wp.ts already falls back
+// when the API is unreachable; these guards also cover fields that exist but
+// were saved empty in the admin.
+const FALLBACK_BIO = '<p>Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time.</p>';
+const FALLBACK_SPEC = [
+	{ label: 'Based in', value: 'Vienna, Austria' },
+	{ label: 'Available for', value: 'Portrait · Fashion · Editorial' },
+	{ label: 'Since', value: '2020' },
+];
+const FALLBACK_STATEMENT = ['No presets.', 'No shortcuts.', 'Just the frame.'];
+
+const bioHtml = cleanHtml(site.studio.bio || '');
+const bio = bioHtml.replace(/<[^>]+>/g, '').trim() ? bioHtml : FALLBACK_BIO;
+const spec = (site.studio.spec || []).filter((r) => r && (r.label || r.value));
+const sheet = spec.length ? spec : FALLBACK_SPEC;
+const lines = (site.studio.statement || []).map((l) => (l || '').trim()).filter(Boolean);
+const statement = lines.length ? lines : FALLBACK_STATEMENT;
+
 const process = [
 	['01', 'The call', 'We talk intent, references and location. You get a fixed quote — no surprises later.'],
 	['02', 'The shoot', 'Prepared, directed, unhurried. Most people hate being photographed — until this part.'],
@@ -17,61 +33,60 @@ const process = [
 ];
 ---
 <Base title="About — Raveenthiran" description="Nishuthan Raveenthiran — photographer based in Vienna, working across Austria." active="studio" page="studio" preload={portrait}>
-	<section class="studio-hero">
-		<figure class="studio-hero__portrait media" data-intro>
-			<img src={portrait} alt="Nishuthan Raveenthiran" loading="eager" fetchpriority="high" />
-		</figure>
-		<div class="studio-hero__body">
-			<p class="studio-hero__name" data-intro>RAVEENTHIRAN</p>
-			<h1 class="studio-hero__title" data-intro>Portrait &amp; Fashion Photographer, Vienna.</h1>
-			<hr class="studio-hero__rule" data-intro />
-			<dl class="studio-hero__sheet" aria-label="Studio data sheet" data-intro>
-				{sheet.map((r) => <div><dt>{soften(r.label)}</dt><dd>{soften(r.value)}</dd></div>)}
+	<h1 class="ptitle statement" data-intro>
+		{statement.map((l) => <span>{soften(l)}</span>)}
+	</h1>
+
+	<section class="s-grid">
+		<img class="s-portrait" src={portrait} alt="Nishuthan Raveenthiran" loading="eager" fetchpriority="high" />
+		<div class="s-body">
+			<p class="s-body__k mono">Nishuthan Raveenthiran — Photographer</p>
+			<div class="s-bio" set:html={bio} />
+			<dl class="s-spec mono" aria-label="Studio data sheet">
+				{sheet.map((r) => <div class="spec"><dt>{soften(r.label)}</dt><dd>{soften(r.value)}</dd></div>)}
 			</dl>
-			<div class="studio-hero__bio" data-intro set:html={bio} />
-			<p class="studio-hero__links" data-intro>
-				<a class="link" href="/enquire/">Start a commission</a>
-				<a class="link link--quiet" href="/work/">See the work</a>
-			</p>
 		</div>
 	</section>
 
-	<section class="sec">
-		<SectionHead kicker="How it works" />
-		<ol class="process" data-reveal>
+	{site.studio.stats.length > 0 && (
+		<section class="stats" aria-label="In numbers" data-reveal>
+			{site.studio.stats.map((s) => (
+				<div class="stat"><b>{s.value}</b><span class="mono">{soften(s.label)}</span></div>
+			))}
+		</section>
+	)}
+
+	{site.studio.client_logos.length > 0 ? (
+		<section class="seen" data-reveal>
+			<h2 class="mono mute">Seen at</h2>
+			<div class="logowall">
+				{site.studio.client_logos.map((c) => <span><img src={c.logo} alt={c.name} title={c.name} loading="lazy" /></span>)}
+			</div>
+		</section>
+	) : site.studio.clients.length > 0 && (
+		<section class="seen" data-reveal>
+			<h2 class="mono mute">Seen at</h2>
+			<ul>{site.studio.clients.map((c) => <li>{c}</li>)}</ul>
+		</section>
+	)}
+
+	<section class="process-b" aria-label="How it works">
+		<div class="says mono"><span>How it works</span><span>03 steps</span></div>
+		<ol class="quotes">
 			{process.map(([no, t, body]) => (
-				<li class="process__step">
-					<div class="no" aria-hidden="true">— {no} —</div>
-					<h3 class="t"><span class="sr-only">Step {no}: </span>{t}</h3>
+				<li class="quote">
+					<span class="mono acc">{no}</span>
+					<h3 class="process-b__t">{t}</h3>
 					<p>{body}</p>
 				</li>
 			))}
 		</ol>
 	</section>
 
-	<!-- PROOF — numbers, then names (only what WordPress provides) -->
-	{site.studio.stats.length > 0 && (
-		<section class="stats" data-reveal>
-			{site.studio.stats.map((s) => (
-				<div class="stat"><b>{s.value}</b><span>{soften(s.label)}</span></div>
-			))}
-		</section>
-	)}
-	{site.studio.client_logos.length > 0 ? (
-		<section class="clients clients--logos" data-reveal>
-			<span class="label">Seen at · Worked with</span>
-			<div class="logowall">
-				{site.studio.client_logos.map((c) => <img src={c.logo} alt={c.name} title={c.name} loading="lazy" />)}
-			</div>
-		</section>
-	) : site.studio.clients.length > 0 && (
-		<section class="clients" data-reveal>
-			<span class="label">Seen at · Worked with</span>
-			<ul class="clients__list">
-				{site.studio.clients.map((c) => <li>{c}</li>)}
-			</ul>
-		</section>
-	)}
+	<Quotes items={site.home.testimonials} class="s-end" />
 
-	<CtaBand href="/enquire/" kicker="Get in touch" label="Let's <em>talk.</em>" />
+	<a class="next" href="/enquire/">
+		<span class="next__k mono"><span>Get in touch</span><span>→</span></span>
+		<span class="next__t">Book a session</span>
+	</a>
 </Base>

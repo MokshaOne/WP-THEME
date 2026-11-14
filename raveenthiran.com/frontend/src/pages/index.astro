@@ -5,11 +5,10 @@ import Home from '../components/home/Default.astro';
 
 const projects = await getProjects();
 const site = await getSite();
-
-const featured = (projects.filter((p) => p.featured_home).length ? projects.filter((p) => p.featured_home) : projects).slice(0, 6);
-const preload = featured[0]?.image || '';
+const featured = projects.find((p) => p.featured_home) || projects[0];
 ---
-<Base title="Raveenthiran — Photographer, Vienna" description={site.home.hero_lede} active="" page="home" preload={preload}
-	ogImage={featured[0]?.ogImage || featured[0]?.image || ''}>
+<Base title="Raveenthiran — Photographer, Vienna" description={site.home.hero_lede} active="" page="home"
+	preload={featured?.image || ''} preloadSrcset={featured?.imageSrcset || ''} preloadSizes="100vw"
+	ogImage={featured?.ogImage || featured?.image || ''}>
 	<Home site={site} projects={projects} />
 </Base>

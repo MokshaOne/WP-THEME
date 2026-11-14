@@ -85,9 +85,9 @@ public/
 ```
 
 Fonts are **self-hosted** via Fontsource (no Google Fonts → GDPR-friendly):
-DM Sans 200/300 (all UI and body text) + Instrument Serif Italic (display
-headlines only). Anton and Space Mono stay installed only because
-`scripts/og.mjs` renders the share cards with them — they are not loaded on the site.
+Archivo 500/700 (body), Archivo Black (display) and Space Mono 400/700
+(captions, numbers). Anton stays installed only because `scripts/og.mjs` renders the share cards
+with it (together with Space Mono).
 
 ---
 

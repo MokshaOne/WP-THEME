@@ -4,13 +4,46 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
-## 5.4.0 — 2026-11-13 · Cleanup: About wired to WordPress, admin skin v5.3 (theme 5.4.0)
+## 5.4.0 — 2026-11-14 · Archived Brutalism + cleanup (theme 5.4.0)
 
 Theme upload needed (`raveenthiran-headless.zip`, 5.4.0).
 
-- **About page reads WordPress again.** `Studio — bio` and `Studio — data
-  sheet` (the old `spec` repeater) render on `/about/`; the previous fixed
-  copy stays as the fallback while the fields are empty.
+### Design — "Archived Brutalism"
+
+- **New visual language** from the chosen canvas direction: full-bleed
+  Archivo Black display type, Archivo 500/700 body, Space Mono captions
+  (all self-hosted via Fontsource; DM Sans + Instrument Serif removed).
+  Ink `#0C0C0B`, paper `#F2F0EB`, accent `oklch(0.68 0.2 35)` (sRGB fallback
+  `#FA5D36`). A hard 2px grid carries every screen.
+- **Numbered index + cursor preview.** Home, Work and Journal list rows
+  (`001  TITLE  CATEGORY  LOCATION  YEAR`) float the row's image beside the
+  cursor on desktop (hover + fine pointer, ≥ 720px); accent row hover.
+- **Home:** RAVEEN/THIRAN masthead with live Vienna clock, marquee, info strip
+  with "Book a session", featured frame, project index, studio statement,
+  lede + honours table, testimonials.
+- **Work:** WORK + live count, category chips, Index / Grid view with S/M/L
+  tile sizes (kept per tab); `?cat=` / `?series=` deep links still filter.
+- **Project:** big title, spec cells, numbered frames (lightbox), credits,
+  booking bridge, series rows, accent "Next" block.
+- **Studio (/about/):** statement lines as the headline (WP
+  `Studio — statement`), portrait + bio + spec rows, stats, "Seen at"
+  (client names or logo wall), process, testimonials.
+- **Enquire:** steps 01–06 (session, extra hours, add-ons, usage incl. TFP,
+  travel from Vienna, contact) with a sticky accent estimate and
+  "Send enquiry"; FAQ as a +/– accordion. Same calculator, submit endpoint,
+  Turnstile and mail fallback.
+- **Navigation:** fixed difference-blend header with numbered links (desktop)
+  and a sticky bottom tab bar (RVN · Work · Studio · Journal · Enquire);
+  the burger overlay is gone. Footer keeps Impressum / Datenschutz.
+- **Removed:** custom cursor, grain overlay, hero slider, quote rotator and
+  the components `CtaBand`, `PageIntro`, `ProjectCard`, `SectionHead`.
+
+### Cleanup
+
+- **About page reads WordPress again.** `Studio — bio`, `Studio — data
+  sheet` (the old `spec` repeater) and `Studio — statement` render on
+  `/about/`; the previous fixed copy stays as the fallback while the fields
+  are empty.
 - **Dead content fields removed** from the REST payload, `src/lib/wp.ts` and
   the ACF group: `studio_lede`, `home_hero_lines`, `home_marquee`,
   `travel_open`, `contact_response`. `contact_location` stays (estimate PDF).

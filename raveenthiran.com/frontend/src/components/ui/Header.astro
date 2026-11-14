@@ -1,29 +1,14 @@
 ---
-// Site header: wordmark left, three text links right — no box, no button, no rule.
-// Fixed and transparent; mix-blend-mode: difference keeps it legible over any
-// photograph. Tucks away on scroll-down, returns on scroll-up (fx.js).
-interface Props { active: string; email: string; social: { label: string; href: string }[] }
-const { active, email, social } = Astro.props;
-const nav = [
-	{ key: 'work', label: 'Work', href: '/work/' },
-	{ key: 'studio', label: 'Studio', href: '/about/' },
-	{ key: 'enquire', label: 'Enquire', href: '/enquire/' },
-];
+// Fixed header: wordmark left, numbered index links right ("01 Work").
+// mix-blend-mode: difference keeps it legible on ink, cream and photographs.
+import { NAV } from '../../lib/nav';
+import { pad } from '../../lib/format';
+interface Props { active: string }
+const { active } = Astro.props;
 ---
 <header class="site-header" data-header>
-	<a class="wordmark" href="/" aria-label="Raveenthiran — home">RAVEENTHIRAN</a>
+	<a class="wordmark" href="/" aria-label="Raveenthiran — home">Raveenthiran®</a>
 	<nav class="nav" aria-label="Primary">
-		{nav.map((n) => <a href={n.href} aria-current={active === n.key ? 'page' : undefined}>{n.label}</a>)}
+		{NAV.map((n, i) => <a href={n.href} aria-current={active === n.key ? 'page' : undefined}><span>{pad(i + 1, 2)}</span> {n.label}</a>)}
 	</nav>
-	<button class="burger" data-burger aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
 </header>
-
-<div class="m-ovl" id="mobile-menu" data-mobile-ovl>
-	<nav aria-label="Mobile">
-		{nav.map((n) => <a href={n.href} aria-current={active === n.key ? 'page' : undefined}>{n.label}</a>)}
-	</nav>
-	<div class="m-foot">
-		<a href={`mailto:${email}`}>{email}</a>
-		{social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
-	</div>
-</div>

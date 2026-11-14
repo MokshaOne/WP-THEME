@@ -16,58 +16,58 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 /* ── Post type + taxonomies ─────────────────────────────────────────────── */
 add_action( 'init', function () {
 
-	if ( ! post_type_exists( 'work' ) ) {
-		register_post_type( 'work', array(
-			'labels' => array(
-				'name'          => __( 'Work', 'rvn' ),
-				'singular_name' => __( 'Project', 'rvn' ),
-				'add_new_item'  => __( 'Add New Project', 'rvn' ),
-				'edit_item'     => __( 'Edit Project', 'rvn' ),
-				'all_items'     => __( 'All Work', 'rvn' ),
-				'menu_name'     => __( 'Work', 'rvn' ),
-			),
-			'public'        => true,
-			'has_archive'   => true,
-			'menu_icon'     => 'dashicons-camera-alt',
-			'menu_position' => 5,
-			'rewrite'       => array( 'slug' => 'work', 'with_front' => false ),
-			'supports'      => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
-			'show_in_rest'  => true,
-		) );
-	}
+        if ( ! post_type_exists( 'work' ) ) {
+                register_post_type( 'work', array(
+                        'labels' => array(
+                                'name'          => __( 'Work', 'rvn' ),
+                                'singular_name' => __( 'Project', 'rvn' ),
+                                'add_new_item'  => __( 'Add New Project', 'rvn' ),
+                                'edit_item'     => __( 'Edit Project', 'rvn' ),
+                                'all_items'     => __( 'All Work', 'rvn' ),
+                                'menu_name'     => __( 'Work', 'rvn' ),
+                        ),
+                        'public'        => true,
+                        'has_archive'   => true,
+                        'menu_icon'     => 'dashicons-camera-alt',
+                        'menu_position' => 5,
+                        'rewrite'       => array( 'slug' => 'work', 'with_front' => false ),
+                        'supports'      => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
+                        'show_in_rest'  => true,
+                ) );
+        }
 
-	if ( ! taxonomy_exists( 'work_category' ) ) {
-		register_taxonomy( 'work_category', 'work', array(
-			'labels'            => array( 'name' => __( 'Albums', 'rvn' ), 'singular_name' => __( 'Album', 'rvn' ) ),
-			'public'            => true,
-			'hierarchical'      => true,
-			'show_admin_column' => true,
-			'show_in_rest'      => true,
-			'rewrite'           => array( 'slug' => 'album', 'with_front' => false ),
-		) );
-	}
+        if ( ! taxonomy_exists( 'work_category' ) ) {
+                register_taxonomy( 'work_category', 'work', array(
+                        'labels'            => array( 'name' => __( 'Albums', 'rvn' ), 'singular_name' => __( 'Album', 'rvn' ) ),
+                        'public'            => true,
+                        'hierarchical'      => true,
+                        'show_admin_column' => true,
+                        'show_in_rest'      => true,
+                        'rewrite'           => array( 'slug' => 'album', 'with_front' => false ),
+                ) );
+        }
 
-	if ( ! taxonomy_exists( 'work_service' ) ) {
-		register_taxonomy( 'work_service', 'work', array(
-			'labels'            => array( 'name' => __( 'Services', 'rvn' ), 'singular_name' => __( 'Service', 'rvn' ) ),
-			'public'            => true,
-			'hierarchical'      => false,
-			'show_admin_column' => true,
-			'show_in_rest'      => true,
-			'rewrite'           => array( 'slug' => 'service', 'with_front' => false ),
-		) );
-	}
+        if ( ! taxonomy_exists( 'work_service' ) ) {
+                register_taxonomy( 'work_service', 'work', array(
+                        'labels'            => array( 'name' => __( 'Services', 'rvn' ), 'singular_name' => __( 'Service', 'rvn' ) ),
+                        'public'            => true,
+                        'hierarchical'      => false,
+                        'show_admin_column' => true,
+                        'show_in_rest'      => true,
+                        'rewrite'           => array( 'slug' => 'service', 'with_front' => false ),
+                ) );
+        }
 
-	if ( ! taxonomy_exists( 'work_series' ) ) {
-		register_taxonomy( 'work_series', 'work', array(
-			'labels'            => array( 'name' => __( 'Series', 'rvn' ), 'singular_name' => __( 'Series', 'rvn' ) ),
-			'public'            => true,
-			'hierarchical'      => false,
-			'show_admin_column' => true,
-			'show_in_rest'      => true,
-			'rewrite'           => array( 'slug' => 'series', 'with_front' => false ),
-		) );
-	}
+        if ( ! taxonomy_exists( 'work_series' ) ) {
+                register_taxonomy( 'work_series', 'work', array(
+                        'labels'            => array( 'name' => __( 'Series', 'rvn' ), 'singular_name' => __( 'Series', 'rvn' ) ),
+                        'public'            => true,
+                        'hierarchical'      => false,
+                        'show_admin_column' => true,
+                        'show_in_rest'      => true,
+                        'rewrite'           => array( 'slug' => 'series', 'with_front' => false ),
+                ) );
+        }
 } );
 
 /* Flush rewrite rules once when the theme is activated (so /work resolves).
@@ -75,156 +75,166 @@ add_action( 'init', function () {
    would flush without the CPT registered — flag it and flush after init. */
 add_action( 'after_switch_theme', function () { update_option( 'rvn_flush_rewrites', 1 ); } );
 add_action( 'init', function () {
-	if ( get_option( 'rvn_flush_rewrites' ) ) {
-		delete_option( 'rvn_flush_rewrites' );
-		flush_rewrite_rules();
-	}
+        if ( get_option( 'rvn_flush_rewrites' ) ) {
+                delete_option( 'rvn_flush_rewrites' );
+                flush_rewrite_rules();
+        }
 }, 99 );
 
 /* ── Helpers ────────────────────────────────────────────────────────────── */
 
 /** Read an ACF field if ACF is active, else the legacy `_still_<key>` meta. */
 function rvn_field( $post_id, $acf_key, $legacy_key = '' ) {
-	if ( function_exists( 'get_field' ) ) {
-		$v = get_field( $acf_key, $post_id );
-		if ( $v !== null && $v !== '' && $v !== false ) { return $v; }
-	}
-	if ( $legacy_key ) {
-		$v = get_post_meta( $post_id, $legacy_key, true );
-		if ( $v !== '' ) { return $v; }
-	}
-	return '';
+        if ( function_exists( 'get_field' ) ) {
+                $v = get_field( $acf_key, $post_id );
+                if ( $v !== null && $v !== '' && $v !== false ) { return $v; }
+        }
+        if ( $legacy_key ) {
+                $v = get_post_meta( $post_id, $legacy_key, true );
+                if ( $v !== '' ) { return $v; }
+        }
+        return '';
 }
 
 /** Normalize credits into [{role,name,url}]. Accepts an ACF repeater (array of
  *  rows) OR a textarea with one "Role — Name" per line (ACF-free friendly). */
 function rvn_credits( $post_id ) {
-	$raw = function_exists( 'get_field' ) ? get_field( 'credits', $post_id ) : '';
-	$out = array();
-	if ( is_array( $raw ) ) {
-		foreach ( $raw as $row ) {
-			$role = isset( $row['role'] ) ? trim( (string) $row['role'] ) : '';
-			$name = isset( $row['name'] ) ? trim( (string) $row['name'] ) : '';
-			$url  = isset( $row['url'] ) ? trim( (string) $row['url'] ) : '';
-			if ( $role || $name ) { $out[] = array( 'role' => $role, 'name' => $name, 'url' => $url ); }
-		}
-	} elseif ( is_string( $raw ) && $raw !== '' ) {
-		foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $line ) {
-			$line = trim( $line );
-			if ( $line === '' ) { continue; }
-			$parts = preg_split( '/\s*(?:—|–|-|:)\s*/u', $line, 2 );
-			$out[] = array( 'role' => trim( $parts[0] ), 'name' => isset( $parts[1] ) ? trim( $parts[1] ) : '', 'url' => '' );
-		}
-	}
-	return $out;
+        $raw = function_exists( 'get_field' ) ? get_field( 'credits', $post_id ) : '';
+        $out = array();
+        if ( is_array( $raw ) ) {
+                foreach ( $raw as $row ) {
+                        $role = isset( $row['role'] ) ? trim( (string) $row['role'] ) : '';
+                        $name = isset( $row['name'] ) ? trim( (string) $row['name'] ) : '';
+                        $url  = isset( $row['url'] ) ? trim( (string) $row['url'] ) : '';
+                        if ( $role || $name ) { $out[] = array( 'role' => $role, 'name' => $name, 'url' => $url ); }
+                }
+        } elseif ( is_string( $raw ) && $raw !== '' ) {
+                foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $line ) {
+                        $line = trim( $line );
+                        if ( $line === '' ) { continue; }
+                        $parts = preg_split( '/\s*(?:—|–|-|:)\s*/u', $line, 2 );
+                        $out[] = array( 'role' => trim( $parts[0] ), 'name' => isset( $parts[1] ) ? trim( $parts[1] ) : '', 'url' => '' );
+                }
+        }
+        return $out;
 }
 
 /** Build a responsive image record from an attachment id. */
 function rvn_image( $id, $size = 'large' ) {
-	$src = wp_get_attachment_image_src( $id, $size );
-	if ( ! $src ) { return null; }
-	return array(
-		'src'    => $src[0],
-		'w'      => (int) $src[1],
-		'h'      => (int) $src[2],
-		'srcset' => (string) wp_get_attachment_image_srcset( $id, $size ),
-		'alt'    => (string) get_post_meta( $id, '_wp_attachment_image_alt', true ),
-	);
+        $src = wp_get_attachment_image_src( $id, $size );
+        if ( ! $src ) { return null; }
+        return array(
+                'src'    => $src[0],
+                'w'      => (int) $src[1],
+                'h'      => (int) $src[2],
+                'srcset' => (string) wp_get_attachment_image_srcset( $id, $size ),
+                'alt'    => (string) get_post_meta( $id, '_wp_attachment_image_alt', true ),
+        );
 }
 
 /** Focal point as a CSS object-position string ("50% 30%"), from ACF or defaults. */
 function rvn_focal( $post_id ) {
-	$x = 50; $y = 30;
-	if ( function_exists( 'get_field' ) ) {
-		$fx = get_field( 'focal_x', $post_id ); $fy = get_field( 'focal_y', $post_id );
-		if ( $fx !== null && $fx !== '' ) { $x = max( 0, min( 100, (float) $fx ) ); }
-		if ( $fy !== null && $fy !== '' ) { $y = max( 0, min( 100, (float) $fy ) ); }
-	}
-	return $x . '% ' . $y . '%';
+        $x = 50; $y = 30;
+        if ( function_exists( 'get_field' ) ) {
+                $fx = get_field( 'focal_x', $post_id ); $fy = get_field( 'focal_y', $post_id );
+                if ( $fx !== null && $fx !== '' ) { $x = max( 0, min( 100, (float) $fx ) ); }
+                if ( $fy !== null && $fy !== '' ) { $y = max( 0, min( 100, (float) $fy ) ); }
+        }
+        return $x . '% ' . $y . '%';
 }
 
 /** Series terms for a project as [{name,slug}]. */
 function rvn_series_terms( $post_id ) {
-	$out = array();
-	$terms = wp_get_post_terms( $post_id, 'work_series' );
-	if ( ! is_wp_error( $terms ) ) {
-		foreach ( $terms as $t ) { $out[] = array( 'name' => $t->name, 'slug' => $t->slug ); }
-	}
-	return $out;
+        $out = array();
+        $terms = wp_get_post_terms( $post_id, 'work_series' );
+        if ( ! is_wp_error( $terms ) ) {
+                foreach ( $terms as $t ) { $out[] = array( 'name' => $t->name, 'slug' => $t->slug ); }
+        }
+        return $out;
 }
 
 /* ── REST contract: project / gallery / seo ─────────────────────────────── */
 add_action( 'rest_api_init', function () {
 
-	register_rest_field( 'work', 'project', array(
-		'get_callback' => function ( $post ) {
-			$id = $post['id'];
-			$services = array();
-			$terms = wp_get_post_terms( $id, 'work_service', array( 'fields' => 'names' ) );
-			if ( ! is_wp_error( $terms ) ) { $services = array_values( $terms ); }
-			return array(
-				'client'        => (string) rvn_field( $id, 'client',   '_still_client' ),
-				'year'          => (string) rvn_field( $id, 'year',     '_still_year' ),
-				'location'      => (string) rvn_field( $id, 'location', '_still_location' ),
-				'website'       => (string) rvn_field( $id, 'website',  '_still_website' ),
-				'services'      => $services,
-				'series'        => rvn_series_terms( $id ),
-				'credits'       => rvn_credits( $id ),
-				'featured_home' => (bool) ( function_exists( 'get_field' ) ? get_field( 'featured_home', $id ) : false ),
-				'focal'         => rvn_focal( $id ),
-			);
-		},
-		'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ) ),
-	) );
+        register_rest_field( 'work', 'project', array(
+                'get_callback' => function ( $post ) {
+                        $id = $post['id'];
+                        $services = array();
+                        $terms = wp_get_post_terms( $id, 'work_service', array( 'fields' => 'names' ) );
+                        if ( ! is_wp_error( $terms ) ) { $services = array_values( $terms ); }
+                        return array(
+                                'client'        => (string) rvn_field( $id, 'client',   '_still_client' ),
+                                'year'          => (string) rvn_field( $id, 'year',     '_still_year' ),
+                                'location'      => (string) rvn_field( $id, 'location', '_still_location' ),
+                                'website'       => (string) rvn_field( $id, 'website',  '_still_website' ),
+                                'services'      => $services,
+                                'series'        => rvn_series_terms( $id ),
+                                'credits'       => rvn_credits( $id ),
+                                'featured_home' => (bool) ( function_exists( 'get_field' ) ? get_field( 'featured_home', $id ) : false ),
+                                'focal'         => rvn_focal( $id ),
+                        );
+                },
+                'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ) ),
+        ) );
 
-	register_rest_field( 'work', 'gallery', array(
-		'get_callback' => function ( $post ) {
-			$out = array();
+        register_rest_field( 'work', 'gallery', array(
+                'get_callback' => function ( $post ) {
+                        $out = array();
 
-			// 1) ACF Gallery field (curated + ordered). return_format = id.
-			if ( function_exists( 'get_field' ) ) {
-				$g = get_field( 'gallery', $post['id'] );
-				if ( is_array( $g ) ) {
-					foreach ( $g as $item ) {
-						$aid = is_array( $item ) ? (int) ( $item['ID'] ?? $item['id'] ?? 0 ) : (int) $item;
-						$rec = $aid ? rvn_image( $aid, 'large' ) : null;
-						if ( $rec ) { $out[] = $rec; }
-					}
-				}
-			}
+                        // 1) ACF Gallery field (curated + ordered). return_format = id.
+                        if ( function_exists( 'get_field' ) ) {
+                                $g = get_field( 'gallery', $post['id'] );
+                                if ( is_array( $g ) ) {
+                                        foreach ( $g as $item ) {
+                                                $aid = is_array( $item ) ? (int) ( $item['ID'] ?? $item['id'] ?? 0 ) : (int) $item;
+                                                $rec = $aid ? rvn_image( $aid, 'large' ) : null;
+                                                if ( $rec ) { $out[] = $rec; }
+                                        }
+                                }
+                        }
 
-			// 2) Fallback: images attached to the post (excluding the featured one).
-			if ( empty( $out ) ) {
-				$featured = (int) get_post_thumbnail_id( $post['id'] );
-				foreach ( get_attached_media( 'image', $post['id'] ) as $img ) {
-					if ( (int) $img->ID === $featured ) { continue; }
-					$rec = rvn_image( $img->ID, 'large' );
-					if ( $rec ) { $out[] = $rec; }
-				}
-			}
+                        // 2) Fallback: images attached to the post (excluding the featured one).
+                        if ( empty( $out ) ) {
+                                $featured = (int) get_post_thumbnail_id( $post['id'] );
+                                foreach ( get_attached_media( 'image', $post['id'] ) as $img ) {
+                                        if ( (int) $img->ID === $featured ) { continue; }
+                                        $rec = rvn_image( $img->ID, 'large' );
+                                        if ( $rec ) { $out[] = $rec; }
+                                }
+                        }
 
-			return $out;
-		},
-		'schema' => array( 'type' => 'array', 'context' => array( 'view', 'edit', 'embed' ) ),
-	) );
+                        return $out;
+                },
+                'schema' => array( 'type' => 'array', 'context' => array( 'view', 'edit', 'embed' ) ),
+        ) );
 
-	register_rest_field( 'work', 'seo', array(
-		'get_callback' => function ( $post ) {
-			$desc = (string) rvn_field( $post['id'], 'seo_description' );
-			$ogid = function_exists( 'get_field' ) ? get_field( 'og_image', $post['id'] ) : 0;
-			if ( is_array( $ogid ) && isset( $ogid['id'] ) ) { $ogid = $ogid['id']; }
-			$og = '';
-			if ( $ogid ) { $rec = rvn_image( (int) $ogid, 'large' ); $og = $rec ? $rec['src'] : ''; }
-			return array( 'description' => $desc, 'og_image' => $og );
-		},
-		'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ) ),
-	) );
+        register_rest_field( 'work', 'seo', array(
+                'get_callback' => function ( $post ) {
+                        $desc = (string) rvn_field( $post['id'], 'seo_description' );
+                        $ogid = function_exists( 'get_field' ) ? get_field( 'og_image', $post['id'] ) : 0;
+                        if ( is_array( $ogid ) && isset( $ogid['id'] ) ) { $ogid = $ogid['id']; }
+                        $og = '';
+                        if ( $ogid ) { $rec = rvn_image( (int) $ogid, 'large' ); $og = $rec ? $rec['src'] : ''; }
+                        return array( 'description' => $desc, 'og_image' => $og );
+                },
+                'schema' => array( 'type' => 'object', 'context' => array( 'view', 'edit', 'embed' ) ),
+        ) );
 } );
 
 /* ── Tidy admin: no theme customizer/front-end noise for a headless install ── */
 add_action( 'after_setup_theme', function () {
-	add_theme_support( 'post-thumbnails' );
-	add_theme_support( 'title-tag' );
+        add_theme_support( 'post-thumbnails' );
+        add_theme_support( 'title-tag' );
+} );
+
+/* ── Faster uploads on the NAS ──
+   Every upload is re-encoded once per image size, and AVIF encoding is slow on
+   a NAS CPU. medium_large (768) duplicates "large" for portrait frames and
+   1536x1536 sits between large and 2048, so both are skipped: two encodes fewer
+   per photo. thumbnail/medium stay (media library), large/2048/full stay (srcset). */
+add_filter( 'intermediate_image_sizes_advanced', function ( $sizes ) {
+        unset( $sizes['medium_large'], $sizes['1536x1536'] );
+        return $sizes;
 } );
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -236,38 +246,38 @@ add_action( 'after_setup_theme', function () {
 /* Top-level "Site Control" menu with a branded overview page, plus quick-links
    to everything the owner manages — one hub instead of the scattered dashboard. */
 add_action( 'admin_menu', function () {
-	add_menu_page(
-		'Site Control',
-		'Site Control',
-		'edit_posts',
-		'site-control',
-		'rvn_site_control_page',
-		'dashicons-screenoptions',
-		2
-	);
-	// Rename the auto-created first item from "Site Control" to "Overview".
-	add_submenu_page( 'site-control', 'Site Control', 'Overview', 'edit_posts', 'site-control', 'rvn_site_control_page' );
-	// Quick-links to the content areas (Site settings + Enquiries attach themselves).
-	add_submenu_page( 'site-control', 'Projects', 'Projects', 'edit_posts', 'edit.php?post_type=work' );
-	add_submenu_page( 'site-control', 'Journal', 'Journal', 'edit_posts', 'edit.php' );
-	add_submenu_page( 'site-control', 'Media', 'Media', 'upload_files', 'upload.php' );
+        add_menu_page(
+                'Site Control',
+                'Site Control',
+                'edit_posts',
+                'site-control',
+                'rvn_site_control_page',
+                'dashicons-screenoptions',
+                2
+        );
+        // Rename the auto-created first item from "Site Control" to "Overview".
+        add_submenu_page( 'site-control', 'Site Control', 'Overview', 'edit_posts', 'site-control', 'rvn_site_control_page' );
+        // Quick-links to the content areas (Site settings + Enquiries attach themselves).
+        add_submenu_page( 'site-control', 'Projects', 'Projects', 'edit_posts', 'edit.php?post_type=work' );
+        add_submenu_page( 'site-control', 'Journal', 'Journal', 'edit_posts', 'edit.php' );
+        add_submenu_page( 'site-control', 'Media', 'Media', 'upload_files', 'upload.php' );
 }, 9 );
 
 /* "▲ Publish" in the top admin toolbar — trigger a deploy from anywhere. */
 add_action( 'admin_bar_menu', function ( $bar ) {
-	if ( ! current_user_can( 'edit_posts' ) || rvn_gh_token() === '' ) { return; }
-	$bar->add_node( array(
-		'id'    => 'rvn-publish',
-		'title' => '▲ Publish' . ( ( $n = count( rvn_changes() ) ) ? ' (' . $n . ')' : '' ),
-		'href'  => wp_nonce_url( admin_url( 'admin-post.php?action=rvn_publish' ), 'rvn_publish' ),
-		'meta'  => array( 'title' => 'Publish changes to the live site' ),
-	) );
+        if ( ! current_user_can( 'edit_posts' ) || rvn_gh_token() === '' ) { return; }
+        $bar->add_node( array(
+                'id'    => 'rvn-publish',
+                'title' => '▲ Publish' . ( ( $n = count( rvn_changes() ) ) ? ' (' . $n . ')' : '' ),
+                'href'  => wp_nonce_url( admin_url( 'admin-post.php?action=rvn_publish' ), 'rvn_publish' ),
+                'meta'  => array( 'title' => 'Publish changes to the live site' ),
+        ) );
 }, 100 );
 
 /* Block-editor screens keep the stock dark toolbar (the skin stays off there):
    a bit of colour so Publish still reads as an action. admin.css overrides it. */
 add_action( 'admin_head', function () {
-	echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{background:#FA5D36!important;color:#0C0C0B!important;font-weight:700}</style>';
+        echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{background:#FA5D36!important;color:#0C0C0B!important;font-weight:700}</style>';
 } );
 
 /* ── Site Control as the start screen ── */
@@ -276,80 +286,92 @@ add_action( 'admin_head', function () {
 // The default Dashboard becomes the Site Control tile board — only for users
 // who can actually open it; anyone else keeps the stock dashboard.
 add_action( 'load-index.php', function () {
-	if ( ! current_user_can( 'edit_posts' ) ) { return; }
-	wp_safe_redirect( admin_url( 'admin.php?page=site-control' ) );
-	exit;
+        if ( ! current_user_can( 'edit_posts' ) ) { return; }
+        wp_safe_redirect( admin_url( 'admin.php?page=site-control' ) );
+        exit;
 } );
 
 /* Site settings → a sub-page of Site Control (edit Home layout, Studio, Pricing,
    FAQ, Mail, Security, Booking) + the REST endpoint the Astro build reads. */
 add_action( 'acf/init', function () {
-	if ( function_exists( 'acf_add_options_sub_page' ) ) {
-		acf_add_options_sub_page( array(
-			'page_title'  => 'Site settings',
-			'menu_title'  => 'Site settings',
-			'menu_slug'   => 'rvn-site',
-			'parent_slug' => 'site-control',
-			'capability'  => 'edit_posts',
-			'redirect'    => false,
-		) );
-	} elseif ( function_exists( 'acf_add_options_page' ) ) {
-		acf_add_options_page( array(
-			'page_title' => 'Site settings', 'menu_title' => 'Site settings',
-			'menu_slug' => 'rvn-site', 'capability' => 'edit_posts', 'redirect' => false,
-		) );
-	}
+        if ( function_exists( 'acf_add_options_sub_page' ) ) {
+                acf_add_options_sub_page( array(
+                        'page_title'  => 'Site settings',
+                        'menu_title'  => 'Site settings',
+                        'menu_slug'   => 'rvn-site',
+                        'parent_slug' => 'site-control',
+                        'capability'  => 'edit_posts',
+                        'redirect'    => false,
+                ) );
+        } elseif ( function_exists( 'acf_add_options_page' ) ) {
+                acf_add_options_page( array(
+                        'page_title' => 'Site settings', 'menu_title' => 'Site settings',
+                        'menu_slug' => 'rvn-site', 'capability' => 'edit_posts', 'redirect' => false,
+                ) );
+        }
 } );
 
 /* Branded styles + self-hosted fonts for the Site Control page only. */
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
-	if ( $hook !== 'toplevel_page_site-control' ) { return; }
-	wp_enqueue_style( 'rvn-site-control', get_template_directory_uri() . '/assets/site-control.css', array( 'rvn-admin' ), wp_get_theme()->get( 'Version' ) );
+        if ( $hook !== 'toplevel_page_site-control' ) { return; }
+        wp_enqueue_style( 'rvn-site-control', get_template_directory_uri() . '/assets/site-control.css', array( 'rvn-admin' ), wp_get_theme()->get( 'Version' ) );
 }, 10000 );
 
 /** GitHub deploy token — wp-config constant wins, else the Site settings field. */
 function rvn_gh_token() {
-	if ( defined( 'RVN_GH_TOKEN' ) && RVN_GH_TOKEN ) { return RVN_GH_TOKEN; }
-	return trim( (string) rvn_site_opt( 'deploy_gh_token', '' ) );
+        if ( defined( 'RVN_GH_TOKEN' ) && RVN_GH_TOKEN ) { return RVN_GH_TOKEN; }
+        return trim( (string) rvn_site_opt( 'deploy_gh_token', '' ) );
 }
 
 /** Deploy target [repo, branch, workflow] — Site settings → Publishing, with defaults. */
 function rvn_deploy_target() {
-	return array(
-		trim( (string) rvn_site_opt( 'deploy_repo', '' ) ) ?: 'MokshaOne/WP-THEME',
-		trim( (string) rvn_site_opt( 'deploy_branch', '' ) ) ?: 'Theme-folder',
-		trim( (string) rvn_site_opt( 'deploy_workflow', '' ) ) ?: 'deploy-frontend.yml',
-	);
+        $repo   = trim( (string) rvn_site_opt( 'deploy_repo', '' ) );
+        $branch = trim( (string) rvn_site_opt( 'deploy_branch', '' ) );
+        $wf     = trim( (string) rvn_site_opt( 'deploy_workflow', '' ) );
+        // Forgive pasted "owner/repo @ branch" strings and full GitHub URLs.
+        if ( strpos( $repo, '@' ) !== false ) { $repo = trim( strstr( $repo, '@', true ) ); }
+        if ( strpos( $branch, '@' ) !== false ) { $branch = trim( substr( strrchr( $branch, '@' ), 1 ) ); }
+        $repo   = preg_replace( '#^(https?://)?(www\.)?github\.com/#i', '', $repo );
+        $repo   = preg_replace( '#\.git$#', '', trim( $repo, " /" ) );
+        $branch = preg_replace( '#^refs/heads/#', '', $branch );
+        $wf     = basename( $wf );
+        if ( ! preg_match( '#^[\w.-]+/[\w.-]+$#', $repo ) ) { $repo = ''; }
+        if ( preg_match( '#\s#', $branch ) ) { $branch = ''; }
+        return array(
+                $repo ?: 'MokshaOne/WP-THEME',
+                $branch ?: 'Theme-folder',
+                $wf ?: 'deploy-frontend.yml',
+        );
 }
 
 /** "Publish now" — trigger the GitHub Actions deploy workflow (token stays server-side). */
 add_action( 'admin_post_rvn_publish', function () {
-	if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'rvn_publish' ) ) { wp_die( 'Not allowed.' ); }
-	$token  = rvn_gh_token();
-	list( $repo, $branch, $wf ) = rvn_deploy_target();
-	$status = 'notoken';
-	if ( $token !== '' ) {
-		$res = wp_remote_post( 'https://api.github.com/repos/' . $repo . '/actions/workflows/' . rawurlencode( $wf ) . '/dispatches', array(
-			'timeout' => 15,
-			'headers' => array(
-				'Authorization'        => 'Bearer ' . $token,
-				'Accept'               => 'application/vnd.github+json',
-				'X-GitHub-Api-Version' => '2022-11-28',
-				'User-Agent'           => 'RaveenthiranSiteControl',
-				'Content-Type'         => 'application/json',
-			),
-			'body' => wp_json_encode( array( 'ref' => $branch ) ),
-		) );
-		if ( is_wp_error( $res ) ) { $status = 'error'; }
-		else { $code = (int) wp_remote_retrieve_response_code( $res ); $status = ( $code === 204 ) ? 'ok' : ( 'http' . $code ); }
-	}
-	// A triggered deploy ships everything that changed — reset the change log.
-	if ( $status === 'ok' ) {
-		update_option( 'rvn_last_publish', time(), false );
-		delete_option( 'rvn_changes' );
-	}
-	wp_safe_redirect( add_query_arg( array( 'page' => 'site-control', 'rvn_deploy' => $status ), admin_url( 'admin.php' ) ) );
-	exit;
+        if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'rvn_publish' ) ) { wp_die( 'Not allowed.' ); }
+        $token  = rvn_gh_token();
+        list( $repo, $branch, $wf ) = rvn_deploy_target();
+        $status = 'notoken';
+        if ( $token !== '' ) {
+                $res = wp_remote_post( 'https://api.github.com/repos/' . $repo . '/actions/workflows/' . rawurlencode( $wf ) . '/dispatches', array(
+                        'timeout' => 15,
+                        'headers' => array(
+                                'Authorization'        => 'Bearer ' . $token,
+                                'Accept'               => 'application/vnd.github+json',
+                                'X-GitHub-Api-Version' => '2022-11-28',
+                                'User-Agent'           => 'RaveenthiranSiteControl',
+                                'Content-Type'         => 'application/json',
+                        ),
+                        'body' => wp_json_encode( array( 'ref' => $branch ) ),
+                ) );
+                if ( is_wp_error( $res ) ) { $status = 'error'; }
+                else { $code = (int) wp_remote_retrieve_response_code( $res ); $status = ( $code === 204 ) ? 'ok' : ( 'http' . $code ); }
+        }
+        // A triggered deploy ships everything that changed — reset the change log.
+        if ( $status === 'ok' ) {
+                update_option( 'rvn_last_publish', time(), false );
+                delete_option( 'rvn_changes' );
+        }
+        wp_safe_redirect( add_query_arg( array( 'page' => 'site-control', 'rvn_deploy' => $status ), admin_url( 'admin.php' ) ) );
+        exit;
 } );
 
 /* The Site Control screen itself (markup, change log, enquiry stats) lives in
@@ -360,141 +382,141 @@ require_once get_template_directory() . '/inc/site-control.php';
 require_once get_template_directory() . '/inc/admin-skin.php';
 
 add_action( 'rest_api_init', function () {
-	register_rest_route( 'rvn/v1', '/site', array(
-		'methods'             => 'GET',
-		'permission_callback' => '__return_true',
-		'callback'            => 'rvn_site_payload',
-	) );
+        register_rest_route( 'rvn/v1', '/site', array(
+                'methods'             => 'GET',
+                'permission_callback' => '__return_true',
+                'callback'            => 'rvn_site_payload',
+        ) );
 } );
 
 /** Read an ACF options value with a fallback. */
 function rvn_site_opt( $key, $default = '' ) {
-	if ( ! function_exists( 'get_field' ) ) { return $default; }
-	$v = get_field( $key, 'option' );
-	return ( $v === null || $v === false || $v === '' ) ? $default : $v;
+        if ( ! function_exists( 'get_field' ) ) { return $default; }
+        $v = get_field( $key, 'option' );
+        return ( $v === null || $v === false || $v === '' ) ? $default : $v;
 }
 
 /** Normalized site payload for the headless frontend. */
 function rvn_site_payload() {
-	$rows_kv = function ( $key, $a = 'label', $b = 'value' ) {
-		$out = array();
-		foreach ( (array) rvn_site_opt( $key, array() ) as $r ) {
-			$la = isset( $r[ $a ] ) ? trim( (string) $r[ $a ] ) : '';
-			$lb = isset( $r[ $b ] ) ? $r[ $b ] : '';
-			if ( $la !== '' ) { $out[] = array( $a => $la, $b => $lb ); }
-		}
-		return $out;
-	};
-	$lines = function ( $key ) {
-		$out = array();
-		$raw = rvn_site_opt( $key, '' );
-		if ( is_string( $raw ) && $raw !== '' ) {
-			foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $l ) { $l = trim( $l ); if ( $l !== '' ) { $out[] = $l; } }
-		}
-		return $out;
-	};
+        $rows_kv = function ( $key, $a = 'label', $b = 'value' ) {
+                $out = array();
+                foreach ( (array) rvn_site_opt( $key, array() ) as $r ) {
+                        $la = isset( $r[ $a ] ) ? trim( (string) $r[ $a ] ) : '';
+                        $lb = isset( $r[ $b ] ) ? $r[ $b ] : '';
+                        if ( $la !== '' ) { $out[] = array( $a => $la, $b => $lb ); }
+                }
+                return $out;
+        };
+        $lines = function ( $key ) {
+                $out = array();
+                $raw = rvn_site_opt( $key, '' );
+                if ( is_string( $raw ) && $raw !== '' ) {
+                        foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $l ) { $l = trim( $l ); if ( $l !== '' ) { $out[] = $l; } }
+                }
+                return $out;
+        };
 
-	// Generic repeater reader → array of associative rows (only rows with a non-empty first key).
-	$rows = function ( $key, $keys ) {
-		$out = array();
-		foreach ( (array) rvn_site_opt( $key, array() ) as $r ) {
-			$first = isset( $r[ $keys[0] ] ) ? trim( (string) $r[ $keys[0] ] ) : '';
-			if ( $first === '' ) { continue; }
-			$row = array();
-			foreach ( $keys as $k ) { $row[ $k ] = isset( $r[ $k ] ) ? $r[ $k ] : ''; }
-			$out[] = $row;
-		}
-		return $out;
-	};
+        // Generic repeater reader → array of associative rows (only rows with a non-empty first key).
+        $rows = function ( $key, $keys ) {
+                $out = array();
+                foreach ( (array) rvn_site_opt( $key, array() ) as $r ) {
+                        $first = isset( $r[ $keys[0] ] ) ? trim( (string) $r[ $keys[0] ] ) : '';
+                        if ( $first === '' ) { continue; }
+                        $row = array();
+                        foreach ( $keys as $k ) { $row[ $k ] = isset( $r[ $k ] ) ? $r[ $k ] : ''; }
+                        $out[] = $row;
+                }
+                return $out;
+        };
 
-	$addons = array();
-	foreach ( $rows_kv( 'addons', 'label', 'price' ) as $r ) { $addons[] = array( 'label' => $r['label'], 'price' => (float) $r['price'] ); }
+        $addons = array();
+        foreach ( $rows_kv( 'addons', 'label', 'price' ) as $r ) { $addons[] = array( 'label' => $r['label'], 'price' => (float) $r['price'] ); }
 
-	// Redesign calculator sessions: [{name, base, hrs, extra, note}].
-	$sessions = array();
-	foreach ( $rows( 'price_sessions', array( 'name', 'base', 'hrs', 'extra', 'note' ) ) as $r ) {
-		$sessions[] = array(
-			'name'  => (string) $r['name'],
-			'base'  => (float) $r['base'],
-			'hrs'   => (float) $r['hrs'],
-			'extra' => (float) $r['extra'],
-			'note'  => (string) $r['note'],
-		);
-	}
+        // Redesign calculator sessions: [{name, base, hrs, extra, note}].
+        $sessions = array();
+        foreach ( $rows( 'price_sessions', array( 'name', 'base', 'hrs', 'extra', 'note' ) ) as $r ) {
+                $sessions[] = array(
+                        'name'  => (string) $r['name'],
+                        'base'  => (float) $r['base'],
+                        'hrs'   => (float) $r['hrs'],
+                        'extra' => (float) $r['extra'],
+                        'note'  => (string) $r['note'],
+                );
+        }
 
-	// Studio spec [{label, value}].
-	$spec = array();
-	foreach ( $rows_kv( 'studio_spec', 'label', 'value' ) as $r ) { $spec[] = array( 'label' => (string) $r['label'], 'value' => (string) $r['value'] ); }
+        // Studio spec [{label, value}].
+        $spec = array();
+        foreach ( $rows_kv( 'studio_spec', 'label', 'value' ) as $r ) { $spec[] = array( 'label' => (string) $r['label'], 'value' => (string) $r['value'] ); }
 
-	// Home recognition + testimonials.
-	$honors = array();
-	foreach ( $rows( 'home_honors', array( 'year', 'title', 'tag' ) ) as $r ) { $honors[] = array( 'year' => (string) $r['year'], 'title' => (string) $r['title'], 'tag' => (string) $r['tag'] ); }
-	$testimonials = array();
-	foreach ( $rows( 'home_testimonials', array( 'text', 'author' ) ) as $r ) { $testimonials[] = array( 'text' => (string) $r['text'], 'by' => (string) $r['author'] ); }
-	$stats = array();
-	foreach ( $rows_kv( 'studio_stats', 'label', 'value' ) as $r ) { $stats[] = array( 'label' => $r['label'], 'value' => (string) $r['value'] ); }
-	$faq = array();
-	foreach ( (array) rvn_site_opt( 'faq', array() ) as $r ) {
-		$q = isset( $r['question'] ) ? trim( (string) $r['question'] ) : '';
-		if ( $q === '' ) { continue; }
-		$faq[] = array( 'q' => $q, 'a' => isset( $r['answer'] ) ? (string) $r['answer'] : '' );
-	}
-	$portrait = rvn_site_opt( 'studio_portrait', '' );
-	if ( is_array( $portrait ) ) { $portrait = $portrait['url'] ?? ''; }
+        // Home recognition + testimonials.
+        $honors = array();
+        foreach ( $rows( 'home_honors', array( 'year', 'title', 'tag' ) ) as $r ) { $honors[] = array( 'year' => (string) $r['year'], 'title' => (string) $r['title'], 'tag' => (string) $r['tag'] ); }
+        $testimonials = array();
+        foreach ( $rows( 'home_testimonials', array( 'text', 'author' ) ) as $r ) { $testimonials[] = array( 'text' => (string) $r['text'], 'by' => (string) $r['author'] ); }
+        $stats = array();
+        foreach ( $rows_kv( 'studio_stats', 'label', 'value' ) as $r ) { $stats[] = array( 'label' => $r['label'], 'value' => (string) $r['value'] ); }
+        $faq = array();
+        foreach ( (array) rvn_site_opt( 'faq', array() ) as $r ) {
+                $q = isset( $r['question'] ) ? trim( (string) $r['question'] ) : '';
+                if ( $q === '' ) { continue; }
+                $faq[] = array( 'q' => $q, 'a' => isset( $r['answer'] ) ? (string) $r['answer'] : '' );
+        }
+        $portrait = rvn_site_opt( 'studio_portrait', '' );
+        if ( is_array( $portrait ) ) { $portrait = $portrait['url'] ?? ''; }
 
-	// Client logos (optional — About shows a logo wall when present).
-	$client_logos = array();
-	foreach ( (array) rvn_site_opt( 'studio_client_logos', array() ) as $r ) {
-		$logo = $r['logo'] ?? '';
-		if ( is_array( $logo ) ) { $logo = $logo['url'] ?? ''; }
-		$name = isset( $r['name'] ) ? trim( (string) $r['name'] ) : '';
-		if ( $logo ) { $client_logos[] = array( 'name' => $name, 'logo' => (string) $logo ); }
-	}
+        // Client logos (optional — About shows a logo wall when present).
+        $client_logos = array();
+        foreach ( (array) rvn_site_opt( 'studio_client_logos', array() ) as $r ) {
+                $logo = $r['logo'] ?? '';
+                if ( is_array( $logo ) ) { $logo = $logo['url'] ?? ''; }
+                $name = isset( $r['name'] ) ? trim( (string) $r['name'] ) : '';
+                if ( $logo ) { $client_logos[] = array( 'name' => $name, 'logo' => (string) $logo ); }
+        }
 
-	// Traveling strip: planned city dates.
-	$travel_dates = array();
-	foreach ( $rows( 'travel_dates', array( 'dates', 'city' ) ) as $r ) {
-		$travel_dates[] = array( 'dates' => (string) $r['dates'], 'city' => (string) $r['city'] );
-	}
+        // Traveling strip: planned city dates.
+        $travel_dates = array();
+        foreach ( $rows( 'travel_dates', array( 'dates', 'city' ) ) as $r ) {
+                $travel_dates[] = array( 'dates' => (string) $r['dates'], 'city' => (string) $r['city'] );
+        }
 
-	return array(
-		'studio'  => array(
-			'bio'       => (string) rvn_site_opt( 'studio_bio', '' ),
-			'portrait'  => (string) $portrait,
-			'statement' => $lines( 'studio_statement' ),
-			'spec'      => $spec,
-			'stats'     => $stats,
-			'clients'   => $lines( 'studio_clients' ),
-			'client_logos' => $client_logos,
-		),
-		'travel'  => array(
-			'dates' => $travel_dates,
-		),
-		'home'    => array(
-			'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
-			'honors'       => $honors,
-			'testimonials' => $testimonials,
-		),
-		'contact' => array(
-			'email'     => (string) rvn_site_opt( 'contact_email', '' ),
-			'instagram' => (string) rvn_site_opt( 'contact_instagram', '' ),
-			'behance'   => (string) rvn_site_opt( 'contact_behance', '' ),
-			'linkedin'  => (string) rvn_site_opt( 'contact_linkedin', '' ),
-			'coords'    => (string) rvn_site_opt( 'contact_coords', '' ),
-		),
-		'pricing' => array(
-			'currency' => (string) rvn_site_opt( 'currency', '€' ),
-			'addons'   => $addons,
-			'sessions' => $sessions,
-			'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
-			'commercial_extra' => (float) rvn_site_opt( 'commercial_extra', 250 ),
-			'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
-		),
-		'faq'      => $faq,
-		'security' => array(
-			'turnstile_site' => (string) rvn_site_opt( 'turnstile_site', '' ),
-		),
-	);
+        return array(
+                'studio'  => array(
+                        'bio'       => (string) rvn_site_opt( 'studio_bio', '' ),
+                        'portrait'  => (string) $portrait,
+                        'statement' => $lines( 'studio_statement' ),
+                        'spec'      => $spec,
+                        'stats'     => $stats,
+                        'clients'   => $lines( 'studio_clients' ),
+                        'client_logos' => $client_logos,
+                ),
+                'travel'  => array(
+                        'dates' => $travel_dates,
+                ),
+                'home'    => array(
+                        'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
+                        'honors'       => $honors,
+                        'testimonials' => $testimonials,
+                ),
+                'contact' => array(
+                        'email'     => (string) rvn_site_opt( 'contact_email', '' ),
+                        'instagram' => (string) rvn_site_opt( 'contact_instagram', '' ),
+                        'behance'   => (string) rvn_site_opt( 'contact_behance', '' ),
+                        'linkedin'  => (string) rvn_site_opt( 'contact_linkedin', '' ),
+                        'coords'    => (string) rvn_site_opt( 'contact_coords', '' ),
+                ),
+                'pricing' => array(
+                        'currency' => (string) rvn_site_opt( 'currency', '€' ),
+                        'addons'   => $addons,
+                        'sessions' => $sessions,
+                        'licence'  => (float) rvn_site_opt( 'licence_price', 0 ),
+                        'commercial_extra' => (float) rvn_site_opt( 'commercial_extra', 250 ),
+                        'per_km'   => (float) rvn_site_opt( 'per_km', 0 ),
+                ),
+                'faq'      => $faq,
+                'security' => array(
+                        'turnstile_site' => (string) rvn_site_opt( 'turnstile_site', '' ),
+                ),
+        );
 }
 
 /**
@@ -502,22 +524,22 @@ function rvn_site_payload() {
  * Turnstile is not configured (form keeps working) or the token verifies.
  */
 function rvn_turnstile_secret() {
-	if ( defined( 'RVN_TURNSTILE_SECRET' ) && RVN_TURNSTILE_SECRET ) { return RVN_TURNSTILE_SECRET; }
-	return trim( (string) rvn_site_opt( 'turnstile_secret', '' ) );
+        if ( defined( 'RVN_TURNSTILE_SECRET' ) && RVN_TURNSTILE_SECRET ) { return RVN_TURNSTILE_SECRET; }
+        return trim( (string) rvn_site_opt( 'turnstile_secret', '' ) );
 }
 function rvn_turnstile_passes( $token ) {
-	$secret = rvn_turnstile_secret();
-	if ( $secret === '' ) { return true; } // not configured → don't block
-	$token = trim( (string) $token );
-	if ( $token === '' ) { return false; }
-	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-	$res = wp_remote_post( 'https://challenges.cloudflare.com/turnstile/v0/siteverify', array(
-		'timeout' => 8,
-		'body'    => array( 'secret' => $secret, 'response' => $token, 'remoteip' => $ip ),
-	) );
-	if ( is_wp_error( $res ) ) { return true; } // fail open on network error
-	$data = json_decode( wp_remote_retrieve_body( $res ), true );
-	return ! empty( $data['success'] );
+        $secret = rvn_turnstile_secret();
+        if ( $secret === '' ) { return true; } // not configured → don't block
+        $token = trim( (string) $token );
+        if ( $token === '' ) { return false; }
+        $ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+        $res = wp_remote_post( 'https://challenges.cloudflare.com/turnstile/v0/siteverify', array(
+                'timeout' => 8,
+                'body'    => array( 'secret' => $secret, 'response' => $token, 'remoteip' => $ip ),
+        ) );
+        if ( is_wp_error( $res ) ) { return true; } // fail open on network error
+        $data = json_decode( wp_remote_retrieve_body( $res ), true );
+        return ! empty( $data['success'] );
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -526,151 +548,151 @@ function rvn_turnstile_passes( $token ) {
    ══════════════════════════════════════════════════════════════════════ */
 
 add_action( 'init', function () {
-	register_post_type( 'rvn_enquiry', array(
-		'labels'       => array( 'name' => 'Enquiries', 'singular_name' => 'Enquiry' ),
-		'public'       => false,
-		'show_ui'      => true,
-		'show_in_menu' => 'site-control',
-		'menu_icon'    => 'dashicons-email-alt',
-		'menu_position'=> 26,
-		'supports'     => array( 'title', 'editor' ),
-		'capability_type' => 'post',
-	) );
+        register_post_type( 'rvn_enquiry', array(
+                'labels'       => array( 'name' => 'Enquiries', 'singular_name' => 'Enquiry' ),
+                'public'       => false,
+                'show_ui'      => true,
+                'show_in_menu' => 'site-control',
+                'menu_icon'    => 'dashicons-email-alt',
+                'menu_position'=> 26,
+                'supports'     => array( 'title', 'editor' ),
+                'capability_type' => 'post',
+        ) );
 } );
 
 /* CORS for the rvn/v1 namespace so the static frontend (another origin) can POST. */
 add_action( 'rest_api_init', function () {
-	remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
-	add_filter( 'rest_pre_serve_request', function ( $value ) {
-		$origin  = get_http_origin();
-		$allowed = array(
-			'https://raveenthiran.com',
-			'https://www.raveenthiran.com',
-			'http://localhost:4321',
-			'http://localhost:4322',
-		);
-		// Vary on every response (not only allowed ones) so a shared cache never
-		// serves an origin-specific response to the wrong origin.
-		header( 'Vary: Origin', false );
-		if ( $origin && in_array( $origin, $allowed, true ) ) {
-			header( 'Access-Control-Allow-Origin: ' . $origin );
-			header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS' );
-			header( 'Access-Control-Allow-Headers: Content-Type' );
-			header( 'Access-Control-Max-Age: 600' );
-		}
-		return $value;
-	} );
+        remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+        add_filter( 'rest_pre_serve_request', function ( $value ) {
+                $origin  = get_http_origin();
+                $allowed = array(
+                        'https://raveenthiran.com',
+                        'https://www.raveenthiran.com',
+                        'http://localhost:4321',
+                        'http://localhost:4322',
+                );
+                // Vary on every response (not only allowed ones) so a shared cache never
+                // serves an origin-specific response to the wrong origin.
+                header( 'Vary: Origin', false );
+                if ( $origin && in_array( $origin, $allowed, true ) ) {
+                        header( 'Access-Control-Allow-Origin: ' . $origin );
+                        header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS' );
+                        header( 'Access-Control-Allow-Headers: Content-Type' );
+                        header( 'Access-Control-Max-Age: 600' );
+                }
+                return $value;
+        } );
 }, 15 );
 
 add_action( 'rest_api_init', function () {
-	register_rest_route( 'rvn/v1', '/enquiry', array(
-		'methods'             => 'POST',
-		'permission_callback' => '__return_true',
-		'callback'            => 'rvn_enquiry_submit',
-	) );
+        register_rest_route( 'rvn/v1', '/enquiry', array(
+                'methods'             => 'POST',
+                'permission_callback' => '__return_true',
+                'callback'            => 'rvn_enquiry_submit',
+        ) );
 } );
 
 /** Sliding-window rate limit per client IP (transients — no table, no plugin). */
 function rvn_enquiry_rate_ok() {
-	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-	if ( $ip === '' ) { return true; }
-	$key = 'rvn_enq_' . md5( $ip );
-	$n   = (int) get_transient( $key );
-	if ( $n >= 5 ) { return false; }
-	set_transient( $key, $n + 1, HOUR_IN_SECONDS );
-	return true;
+        $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+        if ( $ip === '' ) { return true; }
+        $key = 'rvn_enq_' . md5( $ip );
+        $n   = (int) get_transient( $key );
+        if ( $n >= 5 ) { return false; }
+        set_transient( $key, $n + 1, HOUR_IN_SECONDS );
+        return true;
 }
 
 /** Clip a value to a sane length before it reaches the database or an email. */
 function rvn_clip( $v, $max ) {
-	return mb_substr( (string) $v, 0, $max );
+        return mb_substr( (string) $v, 0, $max );
 }
 
 function rvn_enquiry_submit( WP_REST_Request $request ) {
-	$p = $request->get_json_params();
-	if ( ! is_array( $p ) ) { $p = $request->get_params(); }
+        $p = $request->get_json_params();
+        if ( ! is_array( $p ) ) { $p = $request->get_params(); }
 
-	// Honeypot — bots fill hidden "company"; drop silently as success.
-	if ( ! empty( $p['company'] ) ) { return new WP_REST_Response( array( 'ok' => true ), 200 ); }
+        // Honeypot — bots fill hidden "company"; drop silently as success.
+        if ( ! empty( $p['company'] ) ) { return new WP_REST_Response( array( 'ok' => true ), 200 ); }
 
-	// Each submission stores a post and sends two emails — cap the rate per IP
-	// so the endpoint can't be used for mail bombing or backscatter spam.
-	if ( ! rvn_enquiry_rate_ok() ) {
-		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Too many requests — please try again in an hour, or email directly.' ), 429 );
-	}
+        // Each submission stores a post and sends two emails — cap the rate per IP
+        // so the endpoint can't be used for mail bombing or backscatter spam.
+        if ( ! rvn_enquiry_rate_ok() ) {
+                return new WP_REST_Response( array( 'ok' => false, 'error' => 'Too many requests — please try again in an hour, or email directly.' ), 429 );
+        }
 
-	// Cloudflare Turnstile (only enforced when configured).
-	if ( ! rvn_turnstile_passes( $p['cf-turnstile-response'] ?? '' ) ) {
-		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Spam check failed — please try again.' ), 400 );
-	}
+        // Cloudflare Turnstile (only enforced when configured).
+        if ( ! rvn_turnstile_passes( $p['cf-turnstile-response'] ?? '' ) ) {
+                return new WP_REST_Response( array( 'ok' => false, 'error' => 'Spam check failed — please try again.' ), 400 );
+        }
 
-	$name  = rvn_clip( sanitize_text_field( $p['name'] ?? '' ), 200 );
-	$email = sanitize_email( rvn_clip( $p['email'] ?? '', 320 ) );
-	if ( $name === '' || ! is_email( $email ) ) {
-		return new WP_REST_Response( array( 'ok' => false, 'error' => 'Please add your name and a valid email.' ), 400 );
-	}
+        $name  = rvn_clip( sanitize_text_field( $p['name'] ?? '' ), 200 );
+        $email = sanitize_email( rvn_clip( $p['email'] ?? '', 320 ) );
+        if ( $name === '' || ! is_email( $email ) ) {
+                return new WP_REST_Response( array( 'ok' => false, 'error' => 'Please add your name and a valid email.' ), 400 );
+        }
 
-	// Full calculator model: session × duration × distance + add-ons (+ usage licence).
-	// Accepts both the current field names and the legacy ones.
-	$type     = rvn_clip( sanitize_text_field( $p['service'] ?? ( $p['project_type'] ?? '' ) ), 200 );
-	$hours    = rvn_clip( sanitize_text_field( $p['hours'] ?? '' ), 50 );
-	$addons   = rvn_clip( sanitize_text_field( $p['addons'] ?? '' ), 500 );
-	$km       = rvn_clip( sanitize_text_field( $p['km'] ?? '' ), 50 );
-	$usage    = rvn_clip( sanitize_text_field( $p['usage'] ?? '' ), 50 );
-	$estimate = rvn_clip( sanitize_text_field( $p['estimate'] ?? '' ), 100 );
-	$date     = rvn_clip( sanitize_text_field( $p['date'] ?? ( $p['preferred_date'] ?? '' ) ), 100 );
-	$loc      = rvn_clip( sanitize_text_field( $p['location'] ?? '' ), 300 );
-	$notes    = rvn_clip( sanitize_textarea_field( $p['message'] ?? ( $p['notes'] ?? '' ) ), 5000 );
+        // Full calculator model: session × duration × distance + add-ons (+ usage licence).
+        // Accepts both the current field names and the legacy ones.
+        $type     = rvn_clip( sanitize_text_field( $p['service'] ?? ( $p['project_type'] ?? '' ) ), 200 );
+        $hours    = rvn_clip( sanitize_text_field( $p['hours'] ?? '' ), 50 );
+        $addons   = rvn_clip( sanitize_text_field( $p['addons'] ?? '' ), 500 );
+        $km       = rvn_clip( sanitize_text_field( $p['km'] ?? '' ), 50 );
+        $usage    = rvn_clip( sanitize_text_field( $p['usage'] ?? '' ), 50 );
+        $estimate = rvn_clip( sanitize_text_field( $p['estimate'] ?? '' ), 100 );
+        $date     = rvn_clip( sanitize_text_field( $p['date'] ?? ( $p['preferred_date'] ?? '' ) ), 100 );
+        $loc      = rvn_clip( sanitize_text_field( $p['location'] ?? '' ), 300 );
+        $notes    = rvn_clip( sanitize_textarea_field( $p['message'] ?? ( $p['notes'] ?? '' ) ), 5000 );
 
-	$body  = "Name: {$name}\nEmail: {$email}\nSession: {$type}\nExtra hours: {$hours}\nAdd-ons: {$addons}\n";
-	$body .= "Distance: {$km} km\nUsage: {$usage}\nIndicative estimate: {$estimate}\n";
-	$body .= "Preferred date: {$date}\nLocation: {$loc}\n\n{$notes}";
+        $body  = "Name: {$name}\nEmail: {$email}\nSession: {$type}\nExtra hours: {$hours}\nAdd-ons: {$addons}\n";
+        $body .= "Distance: {$km} km\nUsage: {$usage}\nIndicative estimate: {$estimate}\n";
+        $body .= "Preferred date: {$date}\nLocation: {$loc}\n\n{$notes}";
 
-	wp_insert_post( array(
-		'post_type'    => 'rvn_enquiry',
-		'post_status'  => 'private',
-		'post_title'   => trim( $name . ' — ' . ( $type ?: 'Enquiry' ) . ( $estimate ? ' (' . $estimate . ')' : '' ) ),
-		'post_content' => $body,
-		'meta_input'   => array(
-			'_rvn_type'     => $type,
-			'_rvn_estimate' => $estimate,
-			'_rvn_email'    => $email,
-		),
-	) );
+        wp_insert_post( array(
+                'post_type'    => 'rvn_enquiry',
+                'post_status'  => 'private',
+                'post_title'   => trim( $name . ' — ' . ( $type ?: 'Enquiry' ) . ( $estimate ? ' (' . $estimate . ')' : '' ) ),
+                'post_content' => $body,
+                'meta_input'   => array(
+                        '_rvn_type'     => $type,
+                        '_rvn_estimate' => $estimate,
+                        '_rvn_email'    => $email,
+                ),
+        ) );
 
-	$studio  = rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
-	wp_mail( $studio, 'New enquiry — ' . $name, $body, array(
-		'Content-Type: text/plain; charset=UTF-8',
-		'Reply-To: ' . $name . ' <' . $email . '>',
-	) );
+        $studio  = rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
+        wp_mail( $studio, 'New enquiry — ' . $name, $body, array(
+                'Content-Type: text/plain; charset=UTF-8',
+                'Reply-To: ' . $name . ' <' . $email . '>',
+        ) );
 
-	$reply  = "Hi {$name},\n\nThank you for your enquiry — I've received it and will reply within 24 hours ";
-	$reply .= "with availability and a firm quote.\n\n";
-	if ( $estimate ) { $reply .= "A non-binding estimate is attached as a PDF.\n\n"; }
-	$reply .= "Here's what you sent:\n\n{$body}\n\n";
-	$reply .= "— Nishuthan Raveenthiran\nraveenthiran.com";
+        $reply  = "Hi {$name},\n\nThank you for your enquiry — I've received it and will reply within 24 hours ";
+        $reply .= "with availability and a firm quote.\n\n";
+        if ( $estimate ) { $reply .= "A non-binding estimate is attached as a PDF.\n\n"; }
+        $reply .= "Here's what you sent:\n\n{$body}\n\n";
+        $reply .= "— Nishuthan Raveenthiran\nraveenthiran.com";
 
-	// Branded PDF estimate (attached only when there's a calculated figure).
-	$attachments = array();
-	$pdf_path = '';
-	if ( $estimate && function_exists( 'rvn_quote_pdf_file' ) ) {
-		$pdf_path = rvn_quote_pdf_file( array(
-			'name'     => $name,
-			'type'     => $type,
-			'estimate' => $estimate,
-			'ref'      => 'RVN-' . gmdate( 'ymd' ) . '-' . wp_rand( 100, 999 ),
-		) );
-		if ( $pdf_path ) { $attachments[] = $pdf_path; }
-	}
+        // Branded PDF estimate (attached only when there's a calculated figure).
+        $attachments = array();
+        $pdf_path = '';
+        if ( $estimate && function_exists( 'rvn_quote_pdf_file' ) ) {
+                $pdf_path = rvn_quote_pdf_file( array(
+                        'name'     => $name,
+                        'type'     => $type,
+                        'estimate' => $estimate,
+                        'ref'      => 'RVN-' . gmdate( 'ymd' ) . '-' . wp_rand( 100, 999 ),
+                ) );
+                if ( $pdf_path ) { $attachments[] = $pdf_path; }
+        }
 
-	wp_mail( $email, 'Thanks for your enquiry — Raveenthiran', $reply, array(
-		'Content-Type: text/plain; charset=UTF-8',
-		'Reply-To: ' . $studio,
-	), $attachments );
+        wp_mail( $email, 'Thanks for your enquiry — Raveenthiran', $reply, array(
+                'Content-Type: text/plain; charset=UTF-8',
+                'Reply-To: ' . $studio,
+        ), $attachments );
 
-	if ( $pdf_path && file_exists( $pdf_path ) ) { @unlink( $pdf_path ); }
+        if ( $pdf_path && file_exists( $pdf_path ) ) { @unlink( $pdf_path ); }
 
-	return new WP_REST_Response( array( 'ok' => true ), 200 );
+        return new WP_REST_Response( array( 'ok' => true ), 200 );
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -681,47 +703,47 @@ function rvn_enquiry_submit( WP_REST_Request $request ) {
    ══════════════════════════════════════════════════════════════════════ */
 
 function rvn_smtp_password() {
-	if ( defined( 'RVN_SMTP_PASS' ) && RVN_SMTP_PASS ) { return RVN_SMTP_PASS; }
-	return (string) rvn_site_opt( 'smtp_pass', '' );
+        if ( defined( 'RVN_SMTP_PASS' ) && RVN_SMTP_PASS ) { return RVN_SMTP_PASS; }
+        return (string) rvn_site_opt( 'smtp_pass', '' );
 }
 
 add_action( 'phpmailer_init', function ( $phpmailer ) {
-	if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return; }
+        if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return; }
 
-	$host = trim( (string) rvn_site_opt( 'smtp_host', '' ) );
-	$user = trim( (string) rvn_site_opt( 'smtp_user', '' ) );
-	$pass = rvn_smtp_password();
-	if ( $host === '' || $user === '' || $pass === '' ) { return; } // not configured → leave default mail()
+        $host = trim( (string) rvn_site_opt( 'smtp_host', '' ) );
+        $user = trim( (string) rvn_site_opt( 'smtp_user', '' ) );
+        $pass = rvn_smtp_password();
+        if ( $host === '' || $user === '' || $pass === '' ) { return; } // not configured → leave default mail()
 
-	$phpmailer->isSMTP();
-	$phpmailer->Host       = $host;
-	$phpmailer->Port       = (int) ( rvn_site_opt( 'smtp_port', 587 ) ?: 587 );
-	$phpmailer->SMTPAuth   = true;
-	$phpmailer->Username   = $user;
-	$phpmailer->Password   = $pass;
-	$phpmailer->SMTPSecure = rvn_site_opt( 'smtp_secure', 'tls' ) === 'ssl' ? 'ssl' : 'tls';
+        $phpmailer->isSMTP();
+        $phpmailer->Host       = $host;
+        $phpmailer->Port       = (int) ( rvn_site_opt( 'smtp_port', 587 ) ?: 587 );
+        $phpmailer->SMTPAuth   = true;
+        $phpmailer->Username   = $user;
+        $phpmailer->Password   = $pass;
+        $phpmailer->SMTPSecure = rvn_site_opt( 'smtp_secure', 'tls' ) === 'ssl' ? 'ssl' : 'tls';
 
-	$from = trim( (string) rvn_site_opt( 'smtp_from', '' ) );
-	if ( $from === '' || ! is_email( $from ) ) { $from = $user; }
-	$name = (string) ( rvn_site_opt( 'smtp_fromname', '' ) ?: get_bloginfo( 'name' ) );
-	try {
-		$phpmailer->setFrom( $from, $name, false );
-		$phpmailer->Sender = $from; // envelope-from for SPF alignment
-	} catch ( \Exception $e ) {
-		// keep whatever From WP already set
-	}
+        $from = trim( (string) rvn_site_opt( 'smtp_from', '' ) );
+        if ( $from === '' || ! is_email( $from ) ) { $from = $user; }
+        $name = (string) ( rvn_site_opt( 'smtp_fromname', '' ) ?: get_bloginfo( 'name' ) );
+        try {
+                $phpmailer->setFrom( $from, $name, false );
+                $phpmailer->Sender = $from; // envelope-from for SPF alignment
+        } catch ( \Exception $e ) {
+                // keep whatever From WP already set
+        }
 }, 20 );
 
 add_filter( 'wp_mail_from', function ( $email ) {
-	if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return $email; }
-	$from = trim( (string) rvn_site_opt( 'smtp_from', '' ) );
-	return ( $from && is_email( $from ) ) ? $from : $email;
+        if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return $email; }
+        $from = trim( (string) rvn_site_opt( 'smtp_from', '' ) );
+        return ( $from && is_email( $from ) ) ? $from : $email;
 }, 20 );
 
 add_filter( 'wp_mail_from_name', function ( $name ) {
-	if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return $name; }
-	$n = trim( (string) rvn_site_opt( 'smtp_fromname', '' ) );
-	return $n ?: $name;
+        if ( (int) rvn_site_opt( 'smtp_enable', 0 ) !== 1 ) { return $name; }
+        $n = trim( (string) rvn_site_opt( 'smtp_fromname', '' ) );
+        return $n ?: $name;
 }, 20 );
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -731,111 +753,111 @@ add_filter( 'wp_mail_from_name', function ( $name ) {
    ══════════════════════════════════════════════════════════════════════ */
 
 function rvn_quote_pdf_file( $args ) {
-	$a = wp_parse_args( $args, array( 'name' => '', 'type' => '', 'date' => '', 'estimate' => '', 'ref' => '' ) );
+        $a = wp_parse_args( $args, array( 'name' => '', 'type' => '', 'date' => '', 'estimate' => '', 'ref' => '' ) );
 
-	$studio = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-	$mark   = 'Raveenthiran';
-	$addr   = (string) rvn_site_opt( 'contact_location', '' );
-	$email  = (string) rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
-	$accent = rvn_hex_rgb01( '#111010' );
+        $studio = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+        $mark   = 'Raveenthiran';
+        $addr   = (string) rvn_site_opt( 'contact_location', '' );
+        $email  = (string) rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
+        $accent = rvn_hex_rgb01( '#111010' );
 
-	$pdf   = new RVN_PDF();
-	$ink   = array( 0.10, 0.10, 0.09 );
-	$muted = array( 0.42, 0.42, 0.40 );
+        $pdf   = new RVN_PDF();
+        $ink   = array( 0.10, 0.10, 0.09 );
+        $muted = array( 0.42, 0.42, 0.40 );
 
-	$pdf->text( 72, 770, strtoupper( $mark ), 'B', 22, $ink );
-	$pdf->text( 523, 772, 'ESTIMATE', 'B', 11, $muted, 'right' );
-	$pdf->rect( 72, 752, 451, 2, $accent );
+        $pdf->text( 72, 770, strtoupper( $mark ), 'B', 22, $ink );
+        $pdf->text( 523, 772, 'ESTIMATE', 'B', 11, $muted, 'right' );
+        $pdf->rect( 72, 752, 451, 2, $accent );
 
-	$y = 712;
-	$rows = array(
-		array( 'PREPARED FOR', $a['name'] ?: '—' ),
-		array( 'DATE',         $a['date'] ?: date_i18n( 'j M Y' ) ),
-		array( 'PROJECT TYPE', $a['type'] ?: '—' ),
-	);
-	if ( $a['ref'] ) { $rows[] = array( 'REFERENCE', $a['ref'] ); }
-	foreach ( $rows as $r ) {
-		$pdf->text( 72, $y, $r[0], 'B', 9, $muted );
-		$pdf->text( 200, $y, (string) $r[1], '', 12, $ink );
-		$y -= 26;
-	}
+        $y = 712;
+        $rows = array(
+                array( 'PREPARED FOR', $a['name'] ?: '—' ),
+                array( 'DATE',         $a['date'] ?: date_i18n( 'j M Y' ) ),
+                array( 'PROJECT TYPE', $a['type'] ?: '—' ),
+        );
+        if ( $a['ref'] ) { $rows[] = array( 'REFERENCE', $a['ref'] ); }
+        foreach ( $rows as $r ) {
+                $pdf->text( 72, $y, $r[0], 'B', 9, $muted );
+                $pdf->text( 200, $y, (string) $r[1], '', 12, $ink );
+                $y -= 26;
+        }
 
-	$pdf->text( 72, $y - 36, 'ESTIMATED INVESTMENT', 'B', 10, $muted );
-	$pdf->text( 72, $y - 86, $a['estimate'] ?: '—', 'B', 44, $ink );
+        $pdf->text( 72, $y - 36, 'ESTIMATED INVESTMENT', 'B', 10, $muted );
+        $pdf->text( 72, $y - 86, $a['estimate'] ?: '—', 'B', 44, $ink );
 
-	$note = 'This is a non-binding estimate based on the brief you submitted. The final quote is confirmed after a short call to align on scope, locations, usage rights, and delivery. Valid for 30 days.';
-	$ny = $y - 140;
-	foreach ( rvn_pdf_wrap( $note, 92 ) as $line ) { $pdf->text( 72, $ny, $line, '', 11, $muted ); $ny -= 17; }
+        $note = 'This is a non-binding estimate based on the brief you submitted. The final quote is confirmed after a short call to align on scope, locations, usage rights, and delivery. Valid for 30 days.';
+        $ny = $y - 140;
+        foreach ( rvn_pdf_wrap( $note, 92 ) as $line ) { $pdf->text( 72, $ny, $line, '', 11, $muted ); $ny -= 17; }
 
-	$pdf->rect( 72, 96, 451, 1, array( 0.85, 0.84, 0.80 ) );
-	$pdf->text( 72, 78, $studio, 'B', 9, $ink );
-	if ( $addr )  { $pdf->text( 72, 64, $addr, '', 9, $muted ); }
-	if ( $email ) { $pdf->text( 72, 50, $email, '', 9, $muted ); }
+        $pdf->rect( 72, 96, 451, 1, array( 0.85, 0.84, 0.80 ) );
+        $pdf->text( 72, 78, $studio, 'B', 9, $ink );
+        if ( $addr )  { $pdf->text( 72, 64, $addr, '', 9, $muted ); }
+        if ( $email ) { $pdf->text( 72, 50, $email, '', 9, $muted ); }
 
-	$bytes = $pdf->output();
-	if ( ! $bytes ) { return ''; }
-	$dir  = trailingslashit( get_temp_dir() );
-	$name = wp_unique_filename( $dir, 'Estimate-Raveenthiran.pdf' );
-	$path = $dir . $name;
-	if ( @file_put_contents( $path, $bytes ) === false ) { return ''; }
-	return $path;
+        $bytes = $pdf->output();
+        if ( ! $bytes ) { return ''; }
+        $dir  = trailingslashit( get_temp_dir() );
+        $name = wp_unique_filename( $dir, 'Estimate-Raveenthiran.pdf' );
+        $path = $dir . $name;
+        if ( @file_put_contents( $path, $bytes ) === false ) { return ''; }
+        return $path;
 }
 
 function rvn_pdf_wrap( $text, $max ) {
-	$out = array(); $cur = '';
-	foreach ( preg_split( '/\s+/', trim( $text ) ) as $w ) {
-		$try = $cur === '' ? $w : $cur . ' ' . $w;
-		if ( strlen( $try ) > $max && $cur !== '' ) { $out[] = $cur; $cur = $w; } else { $cur = $try; }
-	}
-	if ( $cur !== '' ) { $out[] = $cur; }
-	return $out;
+        $out = array(); $cur = '';
+        foreach ( preg_split( '/\s+/', trim( $text ) ) as $w ) {
+                $try = $cur === '' ? $w : $cur . ' ' . $w;
+                if ( strlen( $try ) > $max && $cur !== '' ) { $out[] = $cur; $cur = $w; } else { $cur = $try; }
+        }
+        if ( $cur !== '' ) { $out[] = $cur; }
+        return $out;
 }
 
 function rvn_hex_rgb01( $hex ) {
-	$hex = ltrim( (string) $hex, '#' );
-	if ( strlen( $hex ) === 3 ) { $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
-	if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) { $hex = '111010'; }
-	return array( hexdec( substr( $hex, 0, 2 ) ) / 255, hexdec( substr( $hex, 2, 2 ) ) / 255, hexdec( substr( $hex, 4, 2 ) ) / 255 );
+        $hex = ltrim( (string) $hex, '#' );
+        if ( strlen( $hex ) === 3 ) { $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
+        if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) { $hex = '111010'; }
+        return array( hexdec( substr( $hex, 0, 2 ) ) / 255, hexdec( substr( $hex, 2, 2 ) ) / 255, hexdec( substr( $hex, 4, 2 ) ) / 255 );
 }
 
 class RVN_PDF {
-	private $ops = array();
-	private function esc( $s ) {
-		$s = wp_specialchars_decode( (string) $s, ENT_QUOTES );
-		if ( function_exists( 'mb_convert_encoding' ) ) { $s = @mb_convert_encoding( $s, 'Windows-1252', 'UTF-8' ); }
-		elseif ( function_exists( 'iconv' ) ) { $s = @iconv( 'UTF-8', 'Windows-1252//TRANSLIT//IGNORE', $s ); }
-		else { $s = remove_accents( $s ); }
-		return str_replace( array( '\\', '(', ')' ), array( '\\\\', '\\(', '\\)' ), (string) $s );
-	}
-	public function text( $x, $y, $str, $weight = '', $size = 12, $rgb = array( 0, 0, 0 ), $align = 'left' ) {
-		$font = $weight === 'B' ? '/F2' : '/F1';
-		if ( $align === 'right' ) { $x -= $this->width( $str, $size, $weight ); }
-		$this->ops[] = sprintf( '%.3f %.3f %.3f rg', $rgb[0], $rgb[1], $rgb[2] );
-		$this->ops[] = sprintf( 'BT %s %d Tf %.2f %.2f Td (%s) Tj ET', $font, $size, $x, $y, $this->esc( $str ) );
-	}
-	public function rect( $x, $y, $w, $h, $rgb ) {
-		$this->ops[] = sprintf( '%.3f %.3f %.3f rg %.2f %.2f %.2f %.2f re f', $rgb[0], $rgb[1], $rgb[2], $x, $y, $w, $h );
-	}
-	private function width( $str, $size, $weight ) {
-		return strlen( remove_accents( (string) $str ) ) * $size * ( $weight === 'B' ? 0.56 : 0.52 );
-	}
-	public function output() {
-		$content = implode( "\n", $this->ops );
-		$objs = array();
-		$objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-		$objs[2] = '<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
-		$objs[3] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>';
-		$objs[4] = "<< /Length " . strlen( $content ) . " >>\nstream\n" . $content . "\nendstream";
-		$objs[5] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
-		$objs[6] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
-		$pdf = "%PDF-1.4\n"; $offsets = array();
-		foreach ( $objs as $n => $body ) { $offsets[ $n ] = strlen( $pdf ); $pdf .= $n . " 0 obj\n" . $body . "\nendobj\n"; }
-		$xref_pos = strlen( $pdf ); $count = count( $objs ) + 1;
-		$pdf .= "xref\n0 " . $count . "\n0000000000 65535 f \n";
-		for ( $i = 1; $i < $count; $i++ ) { $pdf .= sprintf( "%010d 00000 n \n", $offsets[ $i ] ); }
-		$pdf .= "trailer\n<< /Size " . $count . " /Root 1 0 R >>\nstartxref\n" . $xref_pos . "\n%%EOF";
-		return $pdf;
-	}
+        private $ops = array();
+        private function esc( $s ) {
+                $s = wp_specialchars_decode( (string) $s, ENT_QUOTES );
+                if ( function_exists( 'mb_convert_encoding' ) ) { $s = @mb_convert_encoding( $s, 'Windows-1252', 'UTF-8' ); }
+                elseif ( function_exists( 'iconv' ) ) { $s = @iconv( 'UTF-8', 'Windows-1252//TRANSLIT//IGNORE', $s ); }
+                else { $s = remove_accents( $s ); }
+                return str_replace( array( '\\', '(', ')' ), array( '\\\\', '\\(', '\\)' ), (string) $s );
+        }
+        public function text( $x, $y, $str, $weight = '', $size = 12, $rgb = array( 0, 0, 0 ), $align = 'left' ) {
+                $font = $weight === 'B' ? '/F2' : '/F1';
+                if ( $align === 'right' ) { $x -= $this->width( $str, $size, $weight ); }
+                $this->ops[] = sprintf( '%.3f %.3f %.3f rg', $rgb[0], $rgb[1], $rgb[2] );
+                $this->ops[] = sprintf( 'BT %s %d Tf %.2f %.2f Td (%s) Tj ET', $font, $size, $x, $y, $this->esc( $str ) );
+        }
+        public function rect( $x, $y, $w, $h, $rgb ) {
+                $this->ops[] = sprintf( '%.3f %.3f %.3f rg %.2f %.2f %.2f %.2f re f', $rgb[0], $rgb[1], $rgb[2], $x, $y, $w, $h );
+        }
+        private function width( $str, $size, $weight ) {
+                return strlen( remove_accents( (string) $str ) ) * $size * ( $weight === 'B' ? 0.56 : 0.52 );
+        }
+        public function output() {
+                $content = implode( "\n", $this->ops );
+                $objs = array();
+                $objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+                $objs[2] = '<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
+                $objs[3] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>';
+                $objs[4] = "<< /Length " . strlen( $content ) . " >>\nstream\n" . $content . "\nendstream";
+                $objs[5] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+                $objs[6] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+                $pdf = "%PDF-1.4\n"; $offsets = array();
+                foreach ( $objs as $n => $body ) { $offsets[ $n ] = strlen( $pdf ); $pdf .= $n . " 0 obj\n" . $body . "\nendobj\n"; }
+                $xref_pos = strlen( $pdf ); $count = count( $objs ) + 1;
+                $pdf .= "xref\n0 " . $count . "\n0000000000 65535 f \n";
+                for ( $i = 1; $i < $count; $i++ ) { $pdf .= sprintf( "%010d 00000 n \n", $offsets[ $i ] ); }
+                $pdf .= "trailer\n<< /Size " . $count . " /Root 1 0 R >>\nstartxref\n" . $xref_pos . "\n%%EOF";
+                return $pdf;
+        }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -850,41 +872,41 @@ class RVN_PDF {
 add_shortcode( 'rvn_compare', 'rvn_compare_shortcode' );
 
 function rvn_compare_shortcode( $atts ) {
-	$a = shortcode_atts( array(
-		'before' => '', 'after' => '', 'before_label' => 'Before', 'after_label' => 'After', 'start' => '50',
-	), $atts, 'rvn_compare' );
+        $a = shortcode_atts( array(
+                'before' => '', 'after' => '', 'before_label' => 'Before', 'after_label' => 'After', 'start' => '50',
+        ), $atts, 'rvn_compare' );
 
-	$before = rvn_compare_resolve( $a['before'] );
-	$after  = rvn_compare_resolve( $a['after'] );
-	if ( ! $before || ! $after ) { return ''; }
-	$start = max( 0, min( 100, (int) $a['start'] ) );
+        $before = rvn_compare_resolve( $a['before'] );
+        $after  = rvn_compare_resolve( $a['after'] );
+        if ( ! $before || ! $after ) { return ''; }
+        $start = max( 0, min( 100, (int) $a['start'] ) );
 
-	ob_start(); ?>
-	<div class="rvn-compare" data-compare style="--start:<?php echo esc_attr( $start ); ?>%">
-		<figure class="rvn-compare__media rvn-compare__after">
-			<img src="<?php echo esc_url( $after['url'] ); ?>" alt="<?php echo esc_attr( $after['alt'] ); ?>" width="<?php echo esc_attr( $after['w'] ); ?>" height="<?php echo esc_attr( $after['h'] ); ?>" loading="lazy" decoding="async">
-			<?php if ( $a['after_label'] ) : ?><figcaption class="rvn-compare__label rvn-compare__label--after"><?php echo esc_html( $a['after_label'] ); ?></figcaption><?php endif; ?>
-		</figure>
-		<figure class="rvn-compare__media rvn-compare__before" data-compare-clip>
-			<img src="<?php echo esc_url( $before['url'] ); ?>" alt="<?php echo esc_attr( $before['alt'] ); ?>" width="<?php echo esc_attr( $before['w'] ); ?>" height="<?php echo esc_attr( $before['h'] ); ?>" loading="lazy" decoding="async">
-			<?php if ( $a['before_label'] ) : ?><figcaption class="rvn-compare__label rvn-compare__label--before"><?php echo esc_html( $a['before_label'] ); ?></figcaption><?php endif; ?>
-		</figure>
-		<input type="range" class="rvn-compare__range" min="0" max="100" value="<?php echo esc_attr( $start ); ?>" aria-label="Reveal before / after" data-compare-range>
-		<span class="rvn-compare__handle" aria-hidden="true"></span>
-	</div>
-	<?php
-	return ob_get_clean();
+        ob_start(); ?>
+        <div class="rvn-compare" data-compare style="--start:<?php echo esc_attr( $start ); ?>%">
+                <figure class="rvn-compare__media rvn-compare__after">
+                        <img src="<?php echo esc_url( $after['url'] ); ?>" alt="<?php echo esc_attr( $after['alt'] ); ?>" width="<?php echo esc_attr( $after['w'] ); ?>" height="<?php echo esc_attr( $after['h'] ); ?>" loading="lazy" decoding="async">
+                        <?php if ( $a['after_label'] ) : ?><figcaption class="rvn-compare__label rvn-compare__label--after"><?php echo esc_html( $a['after_label'] ); ?></figcaption><?php endif; ?>
+                </figure>
+                <figure class="rvn-compare__media rvn-compare__before" data-compare-clip>
+                        <img src="<?php echo esc_url( $before['url'] ); ?>" alt="<?php echo esc_attr( $before['alt'] ); ?>" width="<?php echo esc_attr( $before['w'] ); ?>" height="<?php echo esc_attr( $before['h'] ); ?>" loading="lazy" decoding="async">
+                        <?php if ( $a['before_label'] ) : ?><figcaption class="rvn-compare__label rvn-compare__label--before"><?php echo esc_html( $a['before_label'] ); ?></figcaption><?php endif; ?>
+                </figure>
+                <input type="range" class="rvn-compare__range" min="0" max="100" value="<?php echo esc_attr( $start ); ?>" aria-label="Reveal before / after" data-compare-range>
+                <span class="rvn-compare__handle" aria-hidden="true"></span>
+        </div>
+        <?php
+        return ob_get_clean();
 }
 
 function rvn_compare_resolve( $ref ) {
-	$ref = trim( (string) $ref );
-	if ( $ref === '' ) { return null; }
-	if ( ctype_digit( $ref ) ) {
-		$rec = rvn_image( (int) $ref, 'large' );
-		return $rec ? array( 'url' => $rec['src'], 'alt' => $rec['alt'], 'w' => $rec['w'], 'h' => $rec['h'] ) : null;
-	}
-	if ( filter_var( $ref, FILTER_VALIDATE_URL ) ) {
-		return array( 'url' => esc_url_raw( $ref ), 'alt' => '', 'w' => '', 'h' => '' );
-	}
-	return null;
+        $ref = trim( (string) $ref );
+        if ( $ref === '' ) { return null; }
+        if ( ctype_digit( $ref ) ) {
+                $rec = rvn_image( (int) $ref, 'large' );
+                return $rec ? array( 'url' => $rec['src'], 'alt' => $rec['alt'], 'w' => $rec['w'], 'h' => $rec['h'] ) : null;
+        }
+        if ( filter_var( $ref, FILTER_VALIDATE_URL ) ) {
+                return array( 'url' => esc_url_raw( $ref ), 'alt' => '', 'w' => '', 'h' => '' );
+        }
+        return null;
 }

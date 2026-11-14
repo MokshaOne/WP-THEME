@@ -559,7 +559,7 @@
    "label": "Branch",
    "name": "deploy_branch",
    "type": "text",
-   "instructions": "The branch the deploy workflow runs on.",
+   "instructions": "Only the branch name, e.g. Theme-folder. Leave empty for Theme-folder.",
    "required": 0,
    "default_value": "Theme-folder",
    "placeholder": "Theme-folder"
@@ -619,5 +619,5 @@
  "label_placement": "top",
  "active": true,
  "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
- "modified": 1794650703
+ "modified": 1794651509
 }

@@ -2,7 +2,6 @@
 import Base from '../../layouts/Base.astro';
 import { getPosts, getPost } from '../../lib/wp';
 import { jsonForScript, cleanHtml } from '../../lib/safe';
-import CtaBand from '../../components/ui/CtaBand.astro';
 import { soften } from '../../lib/format';
 
 export async function getStaticPaths() {
@@ -16,7 +15,6 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const { next } = Astro.props;
 const post = (await getPost(slug!))!;
-const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const body = cleanHtml(post.content);
 
 const siteBase = (Astro.site?.href || 'https://raveenthiran.com/').replace(/\/$/, '');
@@ -51,16 +49,19 @@ const breadcrumbLd = {
 	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
 	<article class="article">
 		<header class="article__head">
-			<p class="label" data-intro><a class="link" href="/journal/">Journal</a> · {[soften(post.category), post.dateLabel].filter(Boolean).join(' · ')}</p>
+			<p class="mono" data-intro><a href="/journal/">Journal</a> · {[soften(post.category), post.dateLabel].filter(Boolean).join(' · ')}</p>
 			<h1 data-intro>{soften(post.title)}</h1>
 		</header>
 		{post.image && (
-			<figure class="article__cover plate" data-reveal><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></figure>
+			<figure class="article__cover" data-reveal><img src={post.image} srcset={post.imageSrcset || undefined} sizes="(max-width: 900px) 100vw, 900px" width={post.imageW || undefined} height={post.imageH || undefined} alt={post.title} data-zoom loading="eager" fetchpriority="high" /></figure>
 		)}
 		<div class="article__body" data-reveal set:html={body} />
 	</article>
 
 	{next && next.slug !== post.slug && (
-		<CtaBand href={`/journal/${next.slug}/`} kicker="Next entry" label={esc(soften(next.title))} variant="next" />
+		<a class="next" href={`/journal/${next.slug}/`}>
+			<span class="next__k mono"><span>Next entry</span><span>→</span></span>
+			<span class="next__t">{soften(next.title)}</span>
+		</a>
 	)}
 </Base>

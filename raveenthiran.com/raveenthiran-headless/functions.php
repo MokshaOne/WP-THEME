@@ -264,12 +264,10 @@ add_action( 'admin_bar_menu', function ( $bar ) {
 	) );
 }, 100 );
 
-/* A tiny bit of colour so the toolbar Publish button reads as an action. */
+/* Block-editor screens keep the stock dark toolbar (the skin stays off there):
+   a bit of colour so Publish still reads as an action. admin.css overrides it. */
 add_action( 'admin_head', function () {
-	echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{color:#ffd76e!important;font-weight:600}</style>';
-} );
-add_action( 'wp_head', function () {
-	if ( is_admin_bar_showing() ) { echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{color:#ffd76e!important;font-weight:600}</style>'; }
+	echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{background:#FA5D36!important;color:#0C0C0B!important;font-weight:700}</style>';
 } );
 
 /* ── Site Control as the start screen ── */
@@ -424,7 +422,7 @@ function rvn_site_payload() {
 		);
 	}
 
-	// Studio spec [{label, value}] + statement lines.
+	// Studio spec [{label, value}].
 	$spec = array();
 	foreach ( $rows_kv( 'studio_spec', 'label', 'value' ) as $r ) { $spec[] = array( 'label' => (string) $r['label'], 'value' => (string) $r['value'] ); }
 
@@ -453,7 +451,7 @@ function rvn_site_payload() {
 		if ( $logo ) { $client_logos[] = array( 'name' => $name, 'logo' => (string) $logo ); }
 	}
 
-	// Traveling strip: planned city dates + the "open for traveling" note.
+	// Traveling strip: planned city dates.
 	$travel_dates = array();
 	foreach ( $rows( 'travel_dates', array( 'dates', 'city' ) ) as $r ) {
 		$travel_dates[] = array( 'dates' => (string) $r['dates'], 'city' => (string) $r['city'] );
@@ -461,7 +459,6 @@ function rvn_site_payload() {
 
 	return array(
 		'studio'  => array(
-			'lede'      => (string) rvn_site_opt( 'studio_lede', '' ),
 			'bio'       => (string) rvn_site_opt( 'studio_bio', '' ),
 			'portrait'  => (string) $portrait,
 			'statement' => $lines( 'studio_statement' ),
@@ -471,23 +468,19 @@ function rvn_site_payload() {
 			'client_logos' => $client_logos,
 		),
 		'travel'  => array(
-			'open'  => (int) rvn_site_opt( 'travel_open', 0 ) === 1,
 			'dates' => $travel_dates,
 		),
 		'home'    => array(
-			'hero_lines'   => $lines( 'home_hero_lines' ),
 			'hero_lede'    => (string) rvn_site_opt( 'home_hero_lede', '' ),
-			'marquee'      => (string) rvn_site_opt( 'home_marquee', '' ),
 			'honors'       => $honors,
 			'testimonials' => $testimonials,
 		),
 		'contact' => array(
 			'email'     => (string) rvn_site_opt( 'contact_email', '' ),
-			'location'  => (string) rvn_site_opt( 'contact_location', '' ),
-			'response'  => (string) rvn_site_opt( 'contact_response', '' ),
 			'instagram' => (string) rvn_site_opt( 'contact_instagram', '' ),
 			'behance'   => (string) rvn_site_opt( 'contact_behance', '' ),
 			'linkedin'  => (string) rvn_site_opt( 'contact_linkedin', '' ),
+			'coords'    => (string) rvn_site_opt( 'contact_coords', '' ),
 		),
 		'pricing' => array(
 			'currency' => (string) rvn_site_opt( 'currency', '€' ),
@@ -744,7 +737,7 @@ function rvn_quote_pdf_file( $args ) {
 	$mark   = 'Raveenthiran';
 	$addr   = (string) rvn_site_opt( 'contact_location', '' );
 	$email  = (string) rvn_site_opt( 'contact_email', get_option( 'admin_email' ) );
-	$accent = rvn_hex_rgb01( '#c8a253' );
+	$accent = rvn_hex_rgb01( '#111010' );
 
 	$pdf   = new RVN_PDF();
 	$ink   = array( 0.10, 0.10, 0.09 );
@@ -801,7 +794,7 @@ function rvn_pdf_wrap( $text, $max ) {
 function rvn_hex_rgb01( $hex ) {
 	$hex = ltrim( (string) $hex, '#' );
 	if ( strlen( $hex ) === 3 ) { $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
-	if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) { $hex = 'c8a253'; }
+	if ( ! preg_match( '/^[0-9a-f]{6}$/i', $hex ) ) { $hex = '111010'; }
 	return array( hexdec( substr( $hex, 0, 2 ) ) / 255, hexdec( substr( $hex, 2, 2 ) ) / 255, hexdec( substr( $hex, 4, 2 ) ) / 255 );
 }
 
@@ -843,33 +836,6 @@ class RVN_PDF {
 		$pdf .= "trailer\n<< /Size " . $count . " /Root 1 0 R >>\nstartxref\n" . $xref_pos . "\n%%EOF";
 		return $pdf;
 	}
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   Enquiry insights — a small dashboard widget over the stored enquiries.
-   No third-party analytics: answers "how many enquiries, of what kind".
-   ══════════════════════════════════════════════════════════════════════ */
-
-add_action( 'wp_dashboard_setup', function () {
-	if ( ! current_user_can( 'edit_posts' ) ) { return; }
-	wp_add_dashboard_widget( 'rvn_insights', 'Enquiry insights', 'rvn_insights_widget' );
-} );
-
-function rvn_insights_widget() {
-	$s = rvn_enquiry_stats();
-
-	echo '<div style="display:flex;gap:1.5rem;margin-bottom:1rem">';
-	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">total enquiries</div></div>', $s['total'] );
-	printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%d</div><div style="color:#777">last 30 days</div></div>', $s['recent'] );
-	if ( $s['sum'] > 0 ) { printf( '<div><div style="font-size:2rem;font-weight:600;line-height:1">%s%s</div><div style="color:#777">pipeline (est.)</div></div>', esc_html( $s['cur'] ), esc_html( number_format( $s['sum'] ) ) ); }
-	echo '</div>';
-
-	if ( $s['types'] ) {
-		echo '<table class="widefat striped" style="margin-top:.5rem"><thead><tr><th>Project type</th><th style="text-align:right">Enquiries</th></tr></thead><tbody>';
-		foreach ( $s['types'] as $t => $n ) { printf( '<tr><td>%s</td><td style="text-align:right">%d</td></tr>', esc_html( $t ), $n ); }
-		echo '</tbody></table>';
-	}
-	printf( '<p style="margin-top:1rem"><a href="%s">View all enquiries →</a></p>', esc_url( admin_url( 'edit.php?post_type=rvn_enquiry' ) ) );
 }
 
 /* ══════════════════════════════════════════════════════════════════════

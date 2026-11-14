@@ -1,27 +1,24 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PageIntro from '../../components/ui/PageIntro.astro';
-import CtaBand from '../../components/ui/CtaBand.astro';
 import { getPosts } from '../../lib/wp';
 import { pad, soften } from '../../lib/format';
 
 const posts = await getPosts();
 ---
 <Base title="Journal — Raveenthiran" description="Notes on light, process and the work — from the Raveenthiran studio in Vienna." active="journal" page="journal">
-	<PageIntro kicker={`Notes & stories · ${pad(posts.length)} entries`} title="The <em>journal.</em>" lede="Notes on light, process and the work — written between shoots." />
+	<h1 class="ptitle" data-intro>Journal<sup>{pad(posts.length, 3)}</sup></h1>
 
-	<div class="jlist" data-reveal>
-		{posts.map((post) => (
-			<a class="jrow" href={`/journal/${post.slug}/`}>
-				<span class="k">{post.dateLabel}</span>
-				<span class="t">{soften(post.title)}</span>
-				<span class="x">{soften(post.category)} <span aria-hidden="true">→</span></span>
+	<div class="rows" data-preview>
+		{posts.map((post, i) => (
+			<a class="jrow" href={`/journal/${post.slug}/`} data-img={post.image || undefined}>
+				<span class="jrow__m mono"><span>{pad(i + 1)} — {soften(post.category || 'Notes')}</span><span>{post.dateLabel}</span></span>
+				<h2>{soften(post.title)}</h2>
+				{post.excerpt && <p>{soften(post.excerpt)}</p>}
 			</a>
 		))}
 		{posts.length === 0 && (
-			<p class="jempty">Nothing published yet — the first notes are on their way.</p>
+			<p class="jempty mono">Nothing published yet — the first notes are on their way.</p>
 		)}
+		<img class="preview" alt="" aria-hidden="true" />
 	</div>
-
-	<CtaBand href="/work/" kicker="Meanwhile" label="See the <em>work.</em>" />
 </Base>

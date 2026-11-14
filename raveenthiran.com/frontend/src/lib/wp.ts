@@ -307,10 +307,10 @@ export interface ClientLogo { name: string; logo: string }
 export interface TravelDate { dates: string; city: string }
 
 export interface Site {
-	studio: { lede: string; bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[]; client_logos: ClientLogo[] };
-	home: { hero_lines: string[]; hero_lede: string; marquee: string; honors: Honor[]; testimonials: Testimonial[] };
-	travel: { open: boolean; dates: TravelDate[] };
-	contact: { email: string; location: string; response: string; instagram: string; behance: string; linkedin: string };
+	studio: { bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[]; client_logos: ClientLogo[] };
+	home: { hero_lede: string; honors: Honor[]; testimonials: Testimonial[] };
+	travel: { dates: TravelDate[] };
+	contact: { email: string; instagram: string; behance: string; linkedin: string; coords: string };
 	pricing: { currency: string; sessions: Session[]; addons: AddOn[]; licence: number; commercial_extra: number; per_km: number };
 	faq: Faq[];
 	security: { turnstile_site: string };
@@ -318,15 +318,13 @@ export interface Site {
 
 const SITE_FALLBACK: Site = {
 	studio: {
-		lede: 'A practice of looking slowly — and keeping only what lasts.',
-		bio: '<p>Nishuthan Raveenthiran is a photographer based in Vienna, working across Europe on portrait, fashion and street photography. The work favours available light, restraint, and the quiet spaces between moments.</p><p>Much of it begins as personal and collaborative work — TFP sessions with people who trust the process — and grows into commissions from there. Each project is kept as an album; the archive lives under Work.</p><p>For commissions and personal projects, start an enquiry — an instant estimate, with a firm quote by email within 24 hours.</p>',
+		bio: '<p>Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time.</p>',
 		portrait: '',
 		statement: ['NO PRESETS.', 'NO SHORTCUTS.', 'JUST THE FRAME.'],
 		spec: [
-			{ label: 'FOCUS', value: 'PORTRAIT · FASHION · EDITORIAL' },
-			{ label: 'BASE', value: 'VIENNA, AUSTRIA' },
-			{ label: 'SINCE', value: 'MMXX' },
-			{ label: 'LANGUAGES', value: 'EN · DE · TA' },
+			{ label: 'Based in', value: 'Vienna, Austria' },
+			{ label: 'Available for', value: 'Portrait · Fashion · Editorial' },
+			{ label: 'Since', value: '2020' },
 		],
 		stats: [
 			{ label: 'Projects kept', value: '120+' }, { label: 'Years behind the lens', value: '06' },
@@ -336,9 +334,7 @@ const SITE_FALLBACK: Site = {
 		client_logos: [],
 	},
 	home: {
-		hero_lines: ['PHOTOGRAPHS', 'THAT OUTLIVE', 'TRENDS.'],
 		hero_lede: 'Raveenthiran photographs people — portrait, fashion and editorial — in Vienna and across Austria. Prepared like a production, delivered like a promise.',
-		marquee: 'RAVEENTHIRAN — VIENNA — PORTRAIT — FASHION — EDITORIAL — ',
 		honors: [
 			{ year: '2026', title: 'INTERNATIONAL PORTRAIT AWARDS', tag: 'SHORTLIST' },
 			{ year: '2025', title: 'FOTO WIEN — GROUP SHOW', tag: 'EXHIBITION' },
@@ -351,7 +347,7 @@ const SITE_FALLBACK: Site = {
 			{ text: 'The only photographer who delivered earlier than promised. Every single frame usable.', by: 'LUNA M. — STREET PORTRAIT, 2025' },
 		],
 	},
-	contact: { email: 'hello@raveenthiran.com', location: 'Vienna, AT', response: 'Within 24 hours', instagram: '', behance: '', linkedin: '' },
+	contact: { email: 'hello@raveenthiran.com', instagram: '', behance: '', linkedin: '', coords: '48.2082° N, 16.3738° E' },
 	pricing: {
 		currency: '€',
 		sessions: [
@@ -368,7 +364,6 @@ const SITE_FALLBACK: Site = {
 		{ q: 'When do I receive the images?', a: 'Edited galleries are delivered within two to three weeks. Express delivery is available as an add-on.' },
 	],
 	travel: {
-		open: true,
 		dates: [
 			{ dates: '12.–14. SEPTEMBER', city: 'BERLIN' },
 			{ dates: '03.–05. OCTOBER', city: 'MUNICH' },
@@ -401,7 +396,6 @@ async function loadSite(): Promise<Site> {
 		const F = SITE_FALLBACK;
 		return {
 			studio: {
-				lede: pick(d?.studio?.lede, F.studio.lede),
 				bio: pick(d?.studio?.bio, F.studio.bio),
 				portrait: pick(d?.studio?.portrait, ''),
 				statement: arr(d?.studio?.statement, F.studio.statement),
@@ -413,24 +407,18 @@ async function loadSite(): Promise<Site> {
 				client_logos: own(d?.studio?.client_logos),
 			},
 			// Travel likewise never falls back to the sample dates: no rows, no strip.
-			travel: {
-				open: d?.travel?.open === true,
-				dates: own(d?.travel?.dates),
-			},
+			travel: { dates: own(d?.travel?.dates) },
 			home: {
-				hero_lines: arr(d?.home?.hero_lines, F.home.hero_lines),
 				hero_lede: pick(d?.home?.hero_lede, F.home.hero_lede),
-				marquee: pick(d?.home?.marquee, F.home.marquee),
 				honors: own(d?.home?.honors),
 				testimonials: own(d?.home?.testimonials),
 			},
 			contact: {
 				email: pick(d?.contact?.email, F.contact.email),
-				location: pick(d?.contact?.location, F.contact.location),
-				response: pick(d?.contact?.response, F.contact.response),
 				instagram: pick(d?.contact?.instagram, ''),
 				behance: pick(d?.contact?.behance, ''),
 				linkedin: pick(d?.contact?.linkedin, ''),
+				coords: pick(d?.contact?.coords, F.contact.coords),
 			},
 			pricing: {
 				currency: pick(d?.pricing?.currency, F.pricing.currency),

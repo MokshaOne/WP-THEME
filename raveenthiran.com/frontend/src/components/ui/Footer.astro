@@ -1,16 +1,13 @@
 ---
-// Site footer: copyright left, coordinates right, one hairline above — nothing else.
-// Impressum / Datenschutz stay as quiet text links next to the copyright: Austrian
-// law (§ 5 ECG, § 25 MedienG) requires them to be reachable from every page.
-interface Props { email: string; social: { label: string; href: string }[]; version: string; buildDate: string }
-const { version, buildDate } = Astro.props;
+// Footer: copyright, mail, coordinates — Space Mono on ink.
+// Impressum / Datenschutz stay linked on every page: Austrian law (§ 5 ECG,
+// § 25 MedienG) requires them to be reachable from everywhere.
+interface Props { email: string; social: { label: string; href: string }[]; version: string; buildDate: string; coords?: string }
+const { email, social, version, buildDate, coords = '48.2082° N, 16.3738° E' } = Astro.props;
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer" data-version={`v${version} · ${buildDate}`}>
-	<p class="foot-l">
-		<span>© {year} Nishuthan Raveenthiran</span>
-		<a href="/legal/impressum/">Impressum</a>
-		<a href="/legal/datenschutz/">Datenschutz</a>
-	</p>
-	<p class="foot-r num">48.2082° N, 16.3738° E</p>
+	<p><span>© {year} Raveenthiran</span><a href="/legal/impressum/">Impressum</a><a href="/legal/datenschutz/">Datenschutz</a></p>
+	<p><a href={`mailto:${email}`}>{email}</a>{social.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}</p>
+	<p><span>{coords}</span></p>
 </footer>

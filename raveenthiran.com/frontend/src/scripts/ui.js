@@ -1,8 +1,8 @@
 /* =============================================================================
    Raveenthiran v5 — page behaviours. Boots the motion engine on every Astro
    page-load (survives View Transitions) and wires the interactive modules that
-   are present on the current page: mobile menu, home hero slider, RAW/FINAL
-   compare, testimonial rotator, Work filter, Enquire calculator + submit.
+   are present on the current page: Vienna clock, cursor-following row preview,
+   RAW/FINAL compare, Work filter/view, Enquire calculator + submit.
    ============================================================================= */
 import { initFX } from './fx.js';
 
@@ -18,131 +18,11 @@ function teardown() {
 function boot() {
 	teardown();
 	fxOff = initFX();
-	initMobileMenu();
-	initHeroSlider();
-	initCinema();
+	initClock();
+	initPreview();
 	initCompare();
-	initQuotes();
-	initFilter();
+	initWorkView();
 	initEnquire();
-	initRail();
-}
-
-/* ── mobile overlay menu ─────────────────────────────────────────────────── */
-function initMobileMenu() {
-	const burger = document.querySelector('[data-burger]');
-	const ovl = document.querySelector('[data-mobile-ovl]');
-	if (!burger || !ovl) return;
-	const toggle = (open) => {
-		ovl.classList.toggle('open', open);
-		burger.setAttribute('aria-expanded', String(open));
-		document.body.style.overflow = open ? 'hidden' : '';
-	};
-	const onBurger = () => toggle(!ovl.classList.contains('open'));
-	burger.addEventListener('click', onBurger);
-	ovl.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => toggle(false)));
-	const onKey = (e) => { if (e.key === 'Escape') toggle(false); };
-	addEventListener('keydown', onKey);
-	pageCleanups.push(() => { burger.removeEventListener('click', onBurger); removeEventListener('keydown', onKey); document.body.style.overflow = ''; });
-}
-
-/* ── home hero slider (CSS crossfade; progress bar, pause, keyboard) ─────── */
-function initHeroSlider() {
-	const stage = document.querySelector('[data-hero]');
-	if (!stage) return;
-	const slides = [...stage.querySelectorAll('.slide')];
-	if (slides.length < 2) return;
-	const capEl = stage.querySelector('[data-cap]');
-	const titleEl = stage.querySelector('[data-title]');
-	const linkEl = stage.querySelector('[data-cap-link]');
-	const curEl = stage.querySelector('[data-count]');
-	const prog = stage.querySelector('[data-progress]');
-	const pauseBtn = stage.querySelector('[data-pause]');
-	const dots = [...stage.querySelectorAll('[data-dot]')];
-	const INTERVAL = 5500;
-	stage.style.setProperty('--hero-int', INTERVAL + 'ms');
-	let i = slides.findIndex((s) => s.classList.contains('on'));
-	if (i < 0) i = 0;
-	const total = slides.length;
-	let timer = 0, paused = false;
-	const restartProgress = () => {
-		if (!prog) return;
-		prog.classList.remove('run'); void prog.offsetWidth; prog.classList.add('run');
-	};
-	const render = () => {
-		slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', String(k !== i)); });
-		const s = slides[i];
-		if (capEl) capEl.textContent = s.dataset.cap || '';
-		if (titleEl) titleEl.textContent = s.dataset.title || '';
-		if (linkEl && s.dataset.href) linkEl.setAttribute('href', s.dataset.href);
-		if (curEl) curEl.textContent = String(i + 1).padStart(2, '0');
-		dots.forEach((d, k) => d.setAttribute('aria-current', String(k === i)));
-	};
-	const start = () => {
-		clearInterval(timer);
-		if (paused) return;
-		restartProgress();
-		timer = setInterval(() => go(1), INTERVAL);
-	};
-	const go = (d) => {
-		const from = i;
-		i = (i + d + total) % total;
-		stage.dispatchEvent(new CustomEvent('rvn:slide', { detail: { from, to: i } }));
-		render(); start();
-	};
-	const setPaused = (v) => {
-		paused = v;
-		if (v) { clearInterval(timer); stage.dataset.paused = ''; } else { delete stage.dataset.paused; start(); }
-		if (pauseBtn) {
-			pauseBtn.setAttribute('aria-pressed', String(v));
-			pauseBtn.setAttribute('aria-label', v ? 'Play slideshow' : 'Pause slideshow');
-			pauseBtn.textContent = v ? '▶' : '❚❚';
-		}
-	};
-	stage.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
-	stage.querySelector('[data-next]')?.addEventListener('click', () => go(1));
-	pauseBtn?.addEventListener('click', () => setPaused(!paused));
-	dots.forEach((d, k) => d.addEventListener('click', () => { if (k !== i) go(k - i); }));
-	// arrow keys only while focus is inside the hero — never hijack the page
-	stage.addEventListener('keydown', (e) => {
-		if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
-		if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
-	});
-	// stop when the tab is hidden or the hero is off-screen
-	const onVis = () => { if (document.hidden) clearInterval(timer); else if (inView) start(); };
-	let inView = true;
-	const vio = new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) start(); else clearInterval(timer); });
-	vio.observe(stage);
-	document.addEventListener('visibilitychange', onVis);
-	if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
-	render(); start();
-	pageCleanups.push(() => { clearInterval(timer); vio.disconnect(); document.removeEventListener('visibilitychange', onVis); });
-}
-
-/* ── Cinema home slider (crossfade) ──────────────────────────────────────── */
-function initCinema() {
-	const stage = document.querySelector('[data-cinema]');
-	if (!stage) return;
-	const slides = [...stage.querySelectorAll('.hv-cin__img')];
-	if (slides.length < 2) return;
-	const kEl = stage.querySelector('[data-cin-kicker]');
-	const tEl = stage.querySelector('[data-cin-title]');
-	const cEl = stage.querySelector('[data-cin-count]');
-	let i = 0, timer = 0;
-	const render = () => {
-		slides.forEach((s, k) => s.classList.toggle('on', k === i));
-		if (kEl) kEl.textContent = slides[i].dataset.kicker || '';
-		if (tEl) tEl.textContent = slides[i].dataset.title || '';
-		if (cEl) cEl.textContent = String(i + 1).padStart(2, '0');
-	};
-	const go = (d) => { i = (i + d + slides.length) % slides.length; render(); start(); };
-	const start = () => { clearInterval(timer); timer = setInterval(() => go(1), 5000); };
-	stage.querySelector('[data-cin-prev]')?.addEventListener('click', () => go(-1));
-	stage.querySelector('[data-cin-next]')?.addEventListener('click', () => go(1));
-	const onKey = (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
-	addEventListener('keydown', onKey);
-	render(); start();
-	pageCleanups.push(() => { clearInterval(timer); removeEventListener('keydown', onKey); });
 }
 
 /* ── Before / after compare ([rvn_compare] shortcode in journal/project) ──── */
@@ -166,108 +46,97 @@ function initCompare() {
 	});
 }
 
-/* ── testimonial rotator ─────────────────────────────────────────────────── */
-function initQuotes() {
-	const box = document.querySelector('[data-quotes]');
-	const data = document.querySelector('#quotes-data');
-	if (!box || !data) return;
-	let quotes = [];
-	try { quotes = JSON.parse(data.textContent || '[]'); } catch (e) { return; }
-	if (!quotes.length) return;
-	const tEl = box.querySelector('[data-quote-text]');
-	const bEl = box.querySelector('[data-quote-by]');
-	const cEl = box.querySelector('[data-quote-count]');
-	let q = 0;
-	const render = () => {
-		if (tEl) tEl.textContent = '“' + quotes[q].text + '”';
-		if (bEl) bEl.textContent = quotes[q].by;
-		if (cEl) cEl.textContent = String(q + 1).padStart(2, '0');
-	};
-	const go = (d) => { q = (q + d + quotes.length) % quotes.length; render(); };
-	box.querySelector('[data-q-prev]')?.addEventListener('click', () => go(-1));
-	box.querySelector('[data-q-next]')?.addEventListener('click', () => go(1));
-	render();
+/* ── Home clock: Vienna time, HH:MM:SS ───────────────────────────────────── */
+function initClock() {
+	const els = [...document.querySelectorAll('[data-clock]')];
+	if (!els.length) return;
+	let f;
+	try { f = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Vienna', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); } catch (e) { return; }
+	const tick = () => { const t = f.format(new Date()); els.forEach((el) => { el.textContent = t; }); };
+	tick();
+	const id = setInterval(tick, 1000);
+	pageCleanups.push(() => clearInterval(id));
 }
 
-/* ── Work filter chips ───────────────────────────────────────────────────── */
-function initFilter() {
-	const bar = document.querySelector('[data-chips]');
-	if (!bar) { urlFilter(); return; }
-	const chips = [...bar.querySelectorAll('.chip')];
-	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
-	const countEl = document.querySelector('[data-count]');
-	// /work/?series=<slug> — deep link from a project's SERIES credit: the
-	// archive opens filtered to that series, shown as an extra pressed chip.
-	// Clicking any category chip leaves series mode; clicking the series chip
-	// re-applies it.
-	const params = new URLSearchParams(location.search);
-	const serSlug = (params.get('series') || '').toLowerCase();
-	const catParam = (params.get('cat') || '').toUpperCase();
-	// Every filter state is a shareable URL: chips write ?cat= / ?series= via
-	// replaceState (no history spam), and the page restores the filter on load.
-	const syncUrl = (cat, ser) => {
-		const url = new URL(location.href);
-		url.searchParams.delete('cat'); url.searchParams.delete('series');
-		if (ser) { url.searchParams.set('series', ser); }
-		else if (cat && cat !== 'ALL') { url.searchParams.set('cat', cat.toLowerCase()); }
-		history.replaceState(null, '', url);
-	};
-	const inSeries = (c) => (c.dataset.series || '').split(/\s+/).includes(serSlug);
-	let serChip = null;
-	const setCount = (n) => { if (countEl) countEl.textContent = String(n).padStart(2, '0'); };
-	const apply = (cat) => {
-		let shown = 0;
-		cards.forEach((c) => {
-			const match = cat === 'ALL' || (c.dataset.cat || '').toUpperCase() === cat;
-			c.classList.toggle('hide', !match);
-			if (match) shown++;
+/* ── Cursor-following preview on index rows (Home / Work / Journal) ─────────
+   Desktop only: a hover-capable fine pointer and ≥ 720px. The row's data-img
+   is shown in the list's .preview, offset so it floats beside the cursor. */
+function initPreview() {
+	const canHover = matchMedia('(hover: hover) and (pointer: fine)');
+	document.querySelectorAll('[data-preview]').forEach((list) => {
+		const img = list.querySelector('.preview');
+		if (!img) return;
+		const on = () => canHover.matches && innerWidth >= 720;
+		const move = (e) => {
+			if (!on()) return;
+			const r = list.getBoundingClientRect();
+			const w = img.offsetWidth || 230;
+			const x = Math.max(8, Math.min(e.clientX - r.left - w / 2, r.width - w - 8));
+			const y = Math.max(e.clientY - r.top - w * 0.66, 8);
+			img.style.transform = `translate(${x}px, ${y}px)`;
+		};
+		const enter = (e) => {
+			const row = e.target.closest && e.target.closest('[data-img]');
+			if (!row || !list.contains(row) || !on()) { if (!row) img.classList.remove('on'); return; }
+			if (img.getAttribute('src') !== row.dataset.img) img.src = row.dataset.img;
+			img.classList.add('on');
+		};
+		const leave = () => img.classList.remove('on');
+		list.addEventListener('mousemove', move, { passive: true });
+		list.addEventListener('mouseover', enter);
+		list.addEventListener('mouseleave', leave);
+		pageCleanups.push(() => {
+			list.removeEventListener('mousemove', move);
+			list.removeEventListener('mouseover', enter);
+			list.removeEventListener('mouseleave', leave);
 		});
-		chips.forEach((ch) => ch.setAttribute('aria-pressed', String(ch.dataset.cat === cat)));
-		if (serChip) serChip.setAttribute('aria-pressed', 'false');
-		setCount(shown);
-		syncUrl(cat, '');
-	};
-	const applySeries = () => {
-		let shown = 0;
-		cards.forEach((c) => { const m = inSeries(c); c.classList.toggle('hide', !m); if (m) shown++; });
-		chips.forEach((ch) => ch.setAttribute('aria-pressed', 'false'));
-		serChip.setAttribute('aria-pressed', 'true');
-		setCount(shown);
-		syncUrl('', serSlug);
-	};
-	chips.forEach((ch) => ch.addEventListener('click', () => apply(ch.dataset.cat)));
-	const first = serSlug && cards.find(inSeries);
-	if (first) {
-		serChip = document.createElement('button');
-		serChip.className = 'chip';
-		const names = (first.dataset.seriesName || '').split(' · ');
-		const label = names[(first.dataset.series || '').split(/\s+/).indexOf(serSlug)] || serSlug;
-		serChip.textContent = 'Series — ' + label;
-		bar.insertBefore(serChip, chips[0] ? chips[0].nextSibling : null);
-		serChip.addEventListener('click', applySeries);
-		applySeries();
-	} else if (catParam && chips.some((ch) => ch.dataset.cat === catParam)) {
-		apply(catParam);
-	} else {
-		apply('ALL');
-	}
+	});
 }
 
-/* No filter bar (v5.2 archive): deep links /work/?series=<slug> and ?cat=<cat>
-   still narrow the grid, so links from project pages keep working. */
-function urlFilter() {
-	const cards = [...document.querySelectorAll('[data-work-grid] .card')];
-	if (!cards.length) return;
+/* ── Work: category chips, Index / Grid view, S/M/L tile size ────────────────
+   Chips filter rows and tiles together and update the count. View and size
+   persist for the tab (sessionStorage). Deep links /work/?cat=<cat> and
+   ?series=<slug> (from project pages) pre-narrow the archive. */
+function initWorkView() {
+	const root = document.querySelector('[data-work]');
+	if (!root) return;
+	const items = [...root.querySelectorAll('.row[data-cat], .tile[data-cat]')];
+	const chips = [...root.querySelectorAll('[data-filter]')];
+	const viewBtns = [...root.querySelectorAll('[data-view-btn]')];
+	const sizeBtns = [...root.querySelectorAll('[data-size-btn]')];
+	const countEl = root.querySelector('[data-count]');
+	const press = (btns, fn) => btns.forEach((b) => b.setAttribute('aria-pressed', String(fn(b))));
+	const apply = (match) => {
+		let shown = 0;
+		items.forEach((el) => { const m = match(el); el.classList.toggle('hide', !m); if (m && el.classList.contains('row')) shown++; });
+		if (countEl) countEl.textContent = String(shown).padStart(3, '0');
+	};
+	const byCat = (cat) => (el) => !cat || (el.dataset.cat || '') === cat;
+	const setCat = (cat) => { press(chips, (b) => (b.dataset.filter || '') === cat); apply(byCat(cat)); };
+	chips.forEach((b) => b.addEventListener('click', () => setCat(b.dataset.filter || '')));
+
+	const KEY = 'rvn-work-view';
+	let st = { view: 'index', size: 'M' };
+	try { st = { ...st, ...JSON.parse(sessionStorage.getItem(KEY) || '{}') }; } catch (e) {}
+	const render = () => {
+		root.dataset.view = st.view; root.dataset.size = st.size;
+		press(viewBtns, (b) => b.dataset.viewBtn === st.view);
+		press(sizeBtns, (b) => b.dataset.sizeBtn === st.size);
+		try { sessionStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+	};
+	viewBtns.forEach((b) => b.addEventListener('click', () => { st.view = b.dataset.viewBtn; render(); }));
+	sizeBtns.forEach((b) => b.addEventListener('click', () => { st.size = b.dataset.sizeBtn; st.view = 'grid'; render(); }));
+	render();
+
 	const params = new URLSearchParams(location.search);
 	const ser = (params.get('series') || '').toLowerCase();
 	const cat = (params.get('cat') || '').toUpperCase();
-	if (!ser && !cat) return;
-	const match = (c) => ser ? (c.dataset.series || '').split(/\s+/).includes(ser) : (c.dataset.cat || '').toUpperCase() === cat;
-	if (!cards.some(match)) return;
-	let shown = 0;
-	cards.forEach((c) => { const m = match(c); c.classList.toggle('hide', !m); if (m) shown++; });
-	const countEl = document.querySelector('[data-count]');
-	if (countEl) countEl.textContent = String(shown).padStart(2, '0');
+	if (ser) {
+		const m = (el) => (el.dataset.series || '').split(/\s+/).includes(ser);
+		if (items.some(m)) { press(chips, () => false); apply(m); }
+	} else if (cat && items.some(byCat(cat))) {
+		setCat(cat);
+	}
 }
 
 /* ── Enquire calculator + submit ─────────────────────────────────────────── */
@@ -457,7 +326,7 @@ function initEnquire() {
 				? 'Reference: ' + root.dataset.refTitle + ' — ' + location.origin + '/work/' + root.dataset.refSlug + '/\n\n'
 				: '';
 			fd.set('message', refLine + (fd.get('message') || ''));
-			const btn = form.querySelector('[type="submit"]');
+			const btn = form.querySelector('[type="submit"]') || (form.id && document.querySelector(`[type="submit"][form="${form.id}"]`));
 			btn && (btn.disabled = true);
 			if (msg) { msg.className = 'est__msg'; msg.textContent = 'Sending…'; }
 			try {
@@ -506,36 +375,9 @@ function initEnquire() {
 	});
 })();
 
-/* ── custom cursor: a hairline ring that follows the mouse ───────────────────
-   Desktop only (hover + fine pointer). Listeners are bound once at document
-   level; #cursor is transition:persist'ed in Base.astro, so it survives page
-   swaps — it is simply looked up again when missing. Grows to 1.6 over links
-   and buttons, 2.5 over work photographs. */
-(function initCursor() {
-	if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-	let el = null;
-	const get = () => (el && el.isConnected ? el : (el = document.getElementById('cursor')));
-	document.documentElement.classList.add('has-cursor');
-	addEventListener('mousemove', (e) => {
-		const c = get(); if (!c) return;
-		c.style.left = (e.clientX - 12) + 'px';
-		c.style.top = (e.clientY - 12) + 'px';
-		c.classList.remove('is-off');
-	}, { passive: true });
-	document.addEventListener('mouseover', (e) => {
-		const c = get(); const t = e.target;
-		if (!c || !t || !t.closest) return;
-		const onImg = !!t.closest('.work-item .pcard__media');
-		c.classList.toggle('is-img', onImg);
-		c.classList.toggle('is-link', !onImg && !!t.closest('a, button'));
-	});
-	document.documentElement.addEventListener('mouseleave', () => get()?.classList.add('is-off'));
-})();
-
 /* ── boot ────────────────────────────────────────────────────────────────── */
 document.addEventListener('astro:page-load', boot);
 document.addEventListener('astro:before-swap', teardown);
-if (document.readyState !== 'loading') { /* first load handled by astro:page-load */ }
 
 /* Remove any previously-registered PWA service worker + its caches — the old
    offline layer was serving stale builds, making the live site look reverted.
@@ -545,58 +387,4 @@ if ('serviceWorker' in navigator) {
 }
 if (typeof caches !== 'undefined' && caches.keys) {
 	caches.keys().then((ks) => ks.forEach((k) => caches.delete(k))).catch(() => {});
-}
-
-/* ── project gallery rail: arrows, frame counter, keyboard ───────────────── */
-function initRail() {
-	const rail = document.querySelector('[data-rail]');
-	const nav = document.querySelector('[data-rail-nav]');
-	if (!rail || !nav) return;
-	const cards = [...rail.querySelectorAll('.card')];
-	const prev = nav.querySelector('[data-rail-prev]');
-	const next = nav.querySelector('[data-rail-next]');
-	const count = nav.querySelector('[data-rail-count]');
-	const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-	const pad = () => parseFloat(getComputedStyle(rail).paddingLeft) || 0;
-	// The current frame is the one whose left edge is closest to the rail's inset.
-	const current = () => {
-		const x = rail.scrollLeft + pad();
-		let best = 0, dist = Infinity;
-		cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - x); if (d < dist) { dist = d; best = i; } });
-		return best;
-	};
-	const go = (i) => {
-		const c = cards[Math.max(0, Math.min(cards.length - 1, i))];
-		c && rail.scrollTo({ left: c.offsetLeft - pad(), behavior: calm ? 'auto' : 'smooth' });
-	};
-	const sync = () => {
-		const max = rail.scrollWidth - rail.clientWidth;
-		const end = rail.scrollLeft >= max - 2;
-		const i = end ? cards.length - 1 : current();
-		count && (count.textContent = String(i + 1).padStart(2, '0'));
-		prev && (prev.disabled = rail.scrollLeft <= 2);
-		next && (next.disabled = end);
-		nav.hidden = max <= 2;
-	};
-	const onPrev = () => go(current() - 1);
-	const onNext = () => go(current() + 1);
-	const onKey = (e) => {
-		if (e.key === 'ArrowRight') { e.preventDefault(); onNext(); }
-		else if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev(); }
-	};
-	prev?.addEventListener('click', onPrev);
-	next?.addEventListener('click', onNext);
-	rail.addEventListener('keydown', onKey);
-	rail.addEventListener('scroll', sync, { passive: true });
-	window.addEventListener('resize', sync);
-	window.addEventListener('load', sync);
-	sync();
-	pageCleanups.push(() => {
-		prev?.removeEventListener('click', onPrev);
-		next?.removeEventListener('click', onNext);
-		rail.removeEventListener('keydown', onKey);
-		rail.removeEventListener('scroll', sync);
-		window.removeEventListener('resize', sync);
-		window.removeEventListener('load', sync);
-	});
 }

@@ -1,25 +1,20 @@
 /* =============================================================================
    Accessibility layer — loaded right after theme.css (see Base.astro).
-   v5: the editorial palette in theme.css is tuned for WCAG 2.2 AA on the
-   #F7F5F0 canvas (labels ≥ 5:1, form borders ≥ 3:1), so this file only keeps
-   the focus/interaction guarantees that must survive any future theme change.
+   Keeps the focus/interaction guarantees that must survive any theme change.
    ============================================================================= */
 
-/* Every keyboard focus is visible, also on dark photographs. */
-a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
-	outline: 1px solid var(--c-ink, #111010);
-	outline-offset: 3px;
+/* Every keyboard focus is visible on ink, cream and photographs alike. */
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+	outline: 2px solid var(--acc, #FA5D36);
+	outline-offset: 2px;
 }
-
-/* Zoomable images are keyboard-focusable (fx.js); show where focus is. */
-img[data-zoom]:focus-visible { outline: 1px solid var(--c-ink, #111010); outline-offset: 3px; }
+img[data-zoom]:focus-visible { outline: 2px solid var(--acc, #FA5D36); outline-offset: -2px; }
 
 /* Comfortable touch targets for primary controls (WCAG 2.5.8). */
-.rbtn, .stepper button, .burger, .enq__ref button { min-width: 44px; min-height: 44px; }
-.enq__ref button { min-width: 32px; min-height: 32px; }
+.btn-b, .opt, .hrs button, .tabbar a { min-height: 44px; }
 
 /* Windows high-contrast / forced colours: keep borders on custom controls. */
 @media (forced-colors: active) {
-	.btn, .rbtn, .chip, .svc, .usage button, .tag, .addon__box { border: 1px solid CanvasText; }
-	.chip[aria-pressed="true"], .svc[aria-pressed="true"], .usage button[aria-pressed="true"] { outline: 2px solid Highlight; }
+	.btn-b, .opt, .hrs button { border: 2px solid CanvasText; }
+	.btn-b[aria-pressed="true"], .opt[aria-pressed="true"] { outline: 2px solid Highlight; }
 }

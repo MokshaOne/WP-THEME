@@ -4,6 +4,62 @@ The version + build date shown in the site footer matches the top entry here.
 Frontend version = `package.json`; WordPress theme version = `style.css` header.
 Both are bumped together on each meaningful update.
 
+## 5.4.0 — 2026-11-14 · Archived Brutalism + cleanup (theme 5.4.0)
+
+Theme upload needed (`raveenthiran-headless.zip`, 5.4.0).
+
+### Design — "Archived Brutalism"
+
+- **New visual language** from the chosen canvas direction: full-bleed
+  Archivo Black display type, Archivo 500/700 body, Space Mono captions
+  (all self-hosted via Fontsource; DM Sans + Instrument Serif removed).
+  Ink `#0C0C0B`, paper `#F2F0EB`, accent `oklch(0.68 0.2 35)` (sRGB fallback
+  `#FA5D36`). A hard 2px grid carries every screen.
+- **Numbered index + cursor preview.** Home, Work and Journal list rows
+  (`001  TITLE  CATEGORY  LOCATION  YEAR`) float the row's image beside the
+  cursor on desktop (hover + fine pointer, ≥ 720px); accent row hover.
+- **Home:** RAVEEN/THIRAN masthead with live Vienna clock, marquee, info strip
+  with "Book a session", featured frame, project index, studio statement,
+  lede + honours table, testimonials.
+- **Work:** WORK + live count, category chips, Index / Grid view with S/M/L
+  tile sizes (kept per tab); `?cat=` / `?series=` deep links still filter.
+- **Project:** big title, spec cells, numbered frames (lightbox), credits,
+  booking bridge, series rows, accent "Next" block.
+- **Studio (/about/):** statement lines as the headline (WP
+  `Studio — statement`), portrait + bio + spec rows, stats, "Seen at"
+  (client names or logo wall), process, testimonials.
+- **Enquire:** steps 01–06 (session, extra hours, add-ons, usage incl. TFP,
+  travel from Vienna, contact) with a sticky accent estimate and
+  "Send enquiry"; FAQ as a +/– accordion. Same calculator, submit endpoint,
+  Turnstile and mail fallback.
+- **Navigation:** fixed difference-blend header with numbered links (desktop)
+  and a sticky bottom tab bar (RVN · Work · Studio · Journal · Enquire);
+  the burger overlay is gone. Footer keeps Impressum / Datenschutz.
+- **Removed:** custom cursor, grain overlay, hero slider, quote rotator and
+  the components `CtaBand`, `PageIntro`, `ProjectCard`, `SectionHead`.
+
+### Cleanup
+
+- **About page reads WordPress again.** `Studio — bio`, `Studio — data
+  sheet` (the old `spec` repeater) and `Studio — statement` render on
+  `/about/`; the previous fixed copy stays as the fallback while the fields
+  are empty.
+- **Dead content fields removed** from the REST payload, `src/lib/wp.ts` and
+  the ACF group: `studio_lede`, `home_hero_lines`, `home_marquee`,
+  `travel_open`, `contact_response`. `contact_location` stays (estimate PDF).
+  Field labels/instructions now say where each field appears.
+- **Dead frontend code removed.** `ui.js`: cinema hero, rail, chip filter and
+  the unused hero hooks (counter, progress, prev/next); `theme.css`: ~25 unused
+  rule groups (`.manifest`, `.whois`, `.chips`, `.rail`, `.peek`, …);
+  `format.ts`: `softenAll`.
+- **Admin skin follows the site.** Cream `#F7F5F0` / ink `#111010`, DM Sans +
+  Instrument Serif Italic (self-hosted in `fonts/`); black instead of red
+  buttons; `#8A1C1C` only for errors and to-dos. `admin-dark.css` is no
+  longer loaded. Site Control cells link to the bio / hero sub-copy fields.
+- **Theme backend.** Unreachable "Enquiry insights" dashboard widget and the
+  front-end toolbar style removed (Site Control replaces the dashboard; the
+  theme renders no front end). Estimate PDF rule is ink instead of gold.
+
 ## 5.3.0 — 2026-11-13 · Refine: cursor, grain, transitions, grid (theme unchanged, 4.8.0)
 
 Frontend only — no theme upload needed. Polishes v5.2 without touching the

@@ -2,8 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getProjects, getProject, getSite } from '../../lib/wp';
 import { jsonForScript, safeUrl, cleanHtml } from '../../lib/safe';
-import SectionHead from '../../components/ui/SectionHead.astro';
-import CtaBand from '../../components/ui/CtaBand.astro';
+import IndexRows from '../../components/ui/IndexRows.astro';
 import { pad, soften } from '../../lib/format';
 
 export async function getStaticPaths() {
@@ -15,21 +14,20 @@ export async function getStaticPaths() {
 		const siblings = mine.size
 			? projects
 					.filter((q) => q.slug !== p.slug && (q.series || []).some((s) => mine.has(s.slug)))
-					.map((q) => ({ slug: q.slug, title: q.title, category: q.category, year: q.year, image: q.image }))
+					
 			: [];
 		return {
 			params: { slug: p.slug },
-			props: { index: i, next: projects[(i + 1) % projects.length], siblings },
+			props: { index: i, total: projects.length, next: projects[(i + 1) % projects.length], nextIndex: (i + 1) % projects.length, siblings },
 		};
 	});
 }
 
 const { slug } = Astro.params;
-const { index, next, siblings } = Astro.props;
+const { index, total, next, nextIndex, siblings } = Astro.props;
 const p = (await getProject(slug!))!;
 
 const catLabel = soften(p.category || 'Work');
-const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const meta = ([
 	['Client', p.client],
@@ -41,13 +39,21 @@ const meta = ([
 // project's album (when the studio offers one) and carries the project along as
 // the visual reference.
 const site = await getSite();
+const all = await getProjects();
+const projects_index = (slug: string) => all.findIndex((q) => q.slug === slug) + 1;
 const session = site.pricing.sessions.find((s) => p.category && s.name.toLowerCase().includes(p.category.toLowerCase()));
 const bookHref = `/enquire/?${session ? `session=${encodeURIComponent(p.category.toLowerCase())}&` : ''}ref=${encodeURIComponent(p.slug)}`;
 const bookLabel = session ? `Book a ${soften(p.category).toLowerCase()} session` : 'Start a commission';
 
-const gallery = p.gallery.length ? p.gallery : [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0, srcset: p.imageSrcset || '' }];
-// One quiet fact line under the title: "Category · Location · Year".
-const facts = [catLabel, p.location ? soften(p.location) : '', p.year].filter(Boolean).join(' · ');
+// Frames: the cover first, then the gallery (without repeating the cover).
+const cover = p.image ? [{ src: p.image, w: p.imageW || 0, h: p.imageH || 0, srcset: p.imageSrcset || '' }] : [];
+const frames = [...cover, ...p.gallery.filter((g) => g.src !== p.image)];
+const spec = [
+	['Category', catLabel],
+	['Year', p.year],
+	['Location', p.location ? soften(p.location) : ''],
+	['Frames', pad(frames.length)],
+].filter(([, v]) => v);
 
 // CMS values rendered into the page: links are scheme-checked, HTML is cleaned.
 const website = safeUrl(p.website);
@@ -105,83 +111,62 @@ const breadcrumbLd = {
 	],
 };
 ---
-<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={ogImage} preload={p.image} preloadSrcset={p.imageSrcset || ''} preloadSizes="100vw">
+<Base title={`${p.title} — Raveenthiran`} description={description} active="work" page="project" ogImage={ogImage} preload={p.image} preloadSrcset={p.imageSrcset || ''} preloadSizes="(max-width: 719px) 100vw, 50vw">
 	<script type="application/ld+json" set:html={jsonForScript(projectLd)} is:inline />
 	<script type="application/ld+json" set:html={jsonForScript(breadcrumbLd)} is:inline />
-	<!-- HERO — the title as a display line, one quiet fact line, then the cover full width -->
-	<section class="proj-hero">
-		<nav class="proj-hero__crumb label" aria-label="Breadcrumb" data-intro>
-			<a href="/work/">Work</a><span aria-hidden="true">/</span><span>No. {pad(index + 1, 3)}</span>
-		</nav>
-		<h1 class="proj-hero__title" data-intro>{soften(p.title)}</h1>
-		<p class="proj-hero__meta label" data-intro>{facts}</p>
-	</section>
-	<figure class="proj-cover" data-intro>
-		<img src={p.image} srcset={p.imageSrcset || undefined} sizes="100vw" width={p.imageW || undefined} height={p.imageH || undefined} alt={p.title} loading="eager" fetchpriority="high" data-zoom transition:name={`cover-${p.slug}`} />
-	</figure>
 
-	<!-- GALLERY — full width, frames stacked vertically, 8vw apart -->
-	{p.gallery.length > 0 && <section class="proj-gallery" aria-label={`${p.title} — gallery, ${gallery.length} frames`}>
-		{gallery.map((g, i) => (
-			<figure class="proj-frame" data-reveal-img>
-				<img src={g.src} srcset={g.srcset || undefined} sizes={g.srcset ? '(max-width: 900px) 100vw, 84vw' : undefined} width={g.w || undefined} height={g.h || undefined} alt={`${p.title} — ${i + 1}`} data-zoom loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
-				<figcaption class="proj-frame__n label">{pad(i + 1)} / {pad(gallery.length)}</figcaption>
-			</figure>
-		))}
-	</section>}
+	<nav class="p-top mono" aria-label="Breadcrumb" data-intro>
+		<a href="/work/">← All work</a><span class="acc">{pad(index + 1, 3)} / {pad(total, 3)}</span>
+	</nav>
+	<h1 class="p-title" data-intro>{p.title}</h1>
 
-	<!-- STATEMENT + CREDITS -->
-	<section class="proj-statement" data-reveal>
-		<div>
-			<p class="label proj-statement__kicker">About the project</p>
-			{body
-				? <div class="proj-statement__body" set:html={body} />
-				: <div class="proj-statement__body"><p>{`${catLabel === 'Work' ? 'A photographic' : catLabel} series${p.location ? ` made in ${p.location}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p></div>}
-		</div>
-		<div class="credits">
-			{meta.filter(([k]) => k !== 'Location').map(([k, v]) => <><span class="k">{k}</span><span>{v}</span></>)}
-			{p.credits.length > 0
-				? p.credits.map((c) => { const href = safeUrl(c.url); return (<><span class="k">{soften(c.role)}</span><span>{href ? <a href={href} target="_blank" rel="noopener">{c.name}</a> : c.name}</span></>); })
-				: (<><span class="k">Photography</span><span>Nishuthan Raveenthiran</span></>)}
-			{(p.series || []).length > 0 && (
-				<><span class="k">Series</span><span class="tags">{(p.series || []).map((s) => <a class="tag" href={`/work/?series=${encodeURIComponent(s.slug)}`}>{soften(s.name)}</a>)}</span></>
-			)}
-			{website && (
-				<><span class="k">Website</span><span><a href={website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span></>
-			)}
-		</div>
-	</section>
+	<dl class="cells p-spec mono" data-intro>
+		{spec.map(([k, v]) => <div class="cell"><dt class="k">{k}</dt><dd class="v v--big" style="margin-left:0">{v}</dd></div>)}
+	</dl>
 
-	<!-- BOOKING BRIDGE — from looking to asking, with this project as the reference -->
-	<section class="booklike" data-reveal>
-		<div>
-			<p class="label">Commission</p>
-			<p class="booklike__t">Frames <em>like these.</em></p>
-			<p class="booklike__p">The calculator opens with this project attached as your reference — you get an orientation figure now and a written offer within 24 hours.</p>
-		</div>
-		<a class="btn btn--solid" href={bookHref}>{bookLabel} <span class="arr" aria-hidden="true">→</span></a>
-	</section>
+	{body
+		? <div class="p-text" set:html={body} />
+		: <p class="p-text">{`${catLabel === 'Work' ? 'Photographed' : catLabel + ', photographed'}${p.location ? ` in ${soften(p.location)}` : ''}${p.year ? `, ${p.year}` : ''}.`}</p>}
 
-	<!-- FROM THE SERIES — the other frames that belong to this series -->
-	{siblings.length > 0 && (
-		<section class="series">
-			<SectionHead kicker={`From the series — ${(p.series || []).map((s) => soften(s.name)).join(' · ')}`}
-				href={`/work/?series=${encodeURIComponent((p.series || [])[0]?.slug || '')}`} linkLabel="View the whole series" />
-			<div class="index" data-reveal>
-				{siblings.map((s, i) => (
-					<a class="index__row" href={`/work/${s.slug}/`}>
-						<span class="k">{pad(i + 1, 3)}</span>
-						<span class="t">{s.title}</span>
-						<span class="k cat">{soften(s.category)}</span>
-						<span class="k year">{s.year}</span>
-					</a>
-				))}
-			</div>
+	{frames.length > 0 && (
+		<section class="frames proj-gallery" aria-label={`${p.title} — ${frames.length} frames`}>
+			{frames.map((g, i) => (
+				<figure class="frame">
+					<img src={g.src} srcset={g.srcset || undefined} sizes={g.srcset ? '(max-width: 719px) 100vw, 50vw' : undefined} width={g.w || undefined} height={g.h || undefined}
+						alt={`${p.title} — ${i + 1}`} data-zoom tabindex="0" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" transition:name={i === 0 ? `cover-${p.slug}` : undefined} />
+					<figcaption aria-hidden="true">{pad(i + 1)}</figcaption>
+				</figure>
+			))}
 		</section>
 	)}
 
-	<!-- NEXT PROJECT -->
+	<dl class="cells cells--wide mono">
+		{meta.filter(([k]) => k !== 'Location').map(([k, v]) => <div class="cell"><dt class="k">{k}</dt><dd class="v" style="margin-left:0">{v}</dd></div>)}
+		{(p.credits.length > 0 ? p.credits : [{ role: 'Photography', name: 'Nishuthan Raveenthiran', url: '' }]).map((c) => { const href = safeUrl(c.url); return (
+			<div class="cell"><dt class="k">{soften(c.role)}</dt><dd class="v" style="margin-left:0">{href ? <a href={href} target="_blank" rel="noopener">{c.name}</a> : c.name}</dd></div>
+		); })}
+		{(p.series || []).length > 0 && (
+			<div class="cell"><dt class="k">Series</dt><dd class="v" style="margin-left:0">{(p.series || []).map((s, i) => <>{i > 0 && ' · '}<a href={`/work/?series=${encodeURIComponent(s.slug)}`}>{soften(s.name)}</a></>)}</dd></div>
+		)}
+		{website && (
+			<div class="cell"><dt class="k">Website</dt><dd class="v" style="margin-left:0"><a href={website} target="_blank" rel="noopener">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></dd></div>
+		)}
+	</dl>
+
+	<!-- Booking bridge: the calculator opens with this project attached as reference -->
+	<a class="book mono" href={bookHref}><span>Commission — frames like these</span><b>{bookLabel} →</b></a>
+
+	{siblings.length > 0 && (
+		<section aria-label="From the series">
+			<p class="series-k mono">From the series — {(p.series || []).map((s) => soften(s.name)).join(' · ')}</p>
+			<IndexRows rows={siblings.map((q) => ({ p: q, n: projects_index(q.slug) }))} />
+		</section>
+	)}
+
 	{next && next.slug !== p.slug && (
-		<CtaBand href={`/work/${next.slug}/`} kicker="Next project" label={`${esc(next.title)}`} variant="next" />
+		<a class="next" href={`/work/${next.slug}/`}>
+			<span class="next__k mono"><span>Next — {pad(nextIndex + 1, 3)}</span><span aria-hidden="true">→</span></span>
+			<span class="next__t">{next.title}</span>
+		</a>
 	)}
 </Base>

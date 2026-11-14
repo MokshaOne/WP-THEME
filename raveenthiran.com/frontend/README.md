@@ -75,9 +75,9 @@ src/
   scripts/fx.js            motion engine: preloader, reveals, header state,
                            lightbox, hover-peek, rails, smooth scroll, cookies
   scripts/ui.js            page behaviour: menu, hero slider, filter,
-                           enquiry calculator, gallery rail, quotes
+                           enquiry calculator, quotes
   pages/                   index, work/, work/[slug], about, enquire,
-                           journal/, journal/[slug], legal/*, 404, offline,
+                           journal/, journal/[slug], legal/*, 404,
                            rss.xml, image-sitemap.xml, og-data.json
 public/
   .htaccess                Apache: 404, gzip, caching, security headers, HTTPS
@@ -85,9 +85,9 @@ public/
 ```
 
 Fonts are **self-hosted** via Fontsource (no Google Fonts → GDPR-friendly):
-DM Sans 200/300 (all UI and body text) + Instrument Serif Italic (display
-headlines only). Anton and Space Mono stay installed only because
-`scripts/og.mjs` renders the share cards with them — they are not loaded on the site.
+Archivo 500/700 (body), Archivo Black (display) and Space Mono 400/700
+(captions, numbers). Anton stays installed only because `scripts/og.mjs` renders the share cards
+with it (together with Space Mono).
 
 ---
 

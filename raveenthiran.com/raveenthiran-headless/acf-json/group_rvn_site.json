@@ -10,19 +10,11 @@
    "placement": "top"
   },
   {
-   "key": "field_rvn_studio_lede",
-   "label": "Studio — lede",
-   "name": "studio_lede",
-   "type": "text",
-   "instructions": "Short one-line intro shown large on the Studio page.",
-   "required": 0
-  },
-  {
    "key": "field_rvn_studio_bio",
    "label": "Studio — bio",
    "name": "studio_bio",
    "type": "wysiwyg",
-   "instructions": "The main studio / about text.",
+   "instructions": "Intro text on Studio (/about), next to the portrait. Leave empty to keep the default text.",
    "required": 0,
    "tabs": "all",
    "toolbar": "basic",
@@ -33,7 +25,7 @@
    "label": "Studio — portrait",
    "name": "studio_portrait",
    "type": "image",
-   "instructions": "Optional portrait shown on the Studio page.",
+   "instructions": "Portrait on Studio (/about), portrait format about 4:5. Shown in black & white.",
    "required": 0,
    "return_format": "url",
    "preview_size": "medium",
@@ -44,17 +36,17 @@
    "label": "Studio — statement (lines)",
    "name": "studio_statement",
    "type": "textarea",
-   "instructions": "One line per row; the last line renders outlined. Default: NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME.",
+   "instructions": "One line per row. Used twice: as the big headline on Studio (/about) and as the statement block on Home. Default: NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME.",
    "required": 0,
    "rows": 3,
    "new_lines": ""
   },
   {
    "key": "field_rvn_studio_spec",
-   "label": "Studio — spec",
+   "label": "Studio — data sheet",
    "name": "studio_spec",
    "type": "repeater",
-   "instructions": "Key/value facts (Focus, Base, Since, Languages).",
+   "instructions": "Label / value rows on Studio (/about), e.g. Based in / Vienna, Austria. The row labelled \"Since\" also feeds the year on Home. Leave empty to keep the defaults.",
    "required": 0,
    "layout": "table",
    "button_label": "Add row",
@@ -78,7 +70,7 @@
    "label": "Studio — stats",
    "name": "studio_stats",
    "type": "repeater",
-   "instructions": "Small figures (e.g. Projects / 120+).",
+   "instructions": "Big figures on Studio (/about), e.g. Projects / 120+.",
    "required": 0,
    "layout": "table",
    "button_label": "Add stat",
@@ -102,7 +94,7 @@
    "label": "Studio — selected clients",
    "name": "studio_clients",
    "type": "textarea",
-   "instructions": "One per line (e.g. SZ Magazin).",
+   "instructions": "One per line (e.g. SZ Magazin). Shown as a text list on Studio (/about) when no logos are set.",
    "required": 0,
    "rows": 5
   },
@@ -111,7 +103,7 @@
    "label": "Studio — client logos (optional)",
    "name": "studio_client_logos",
    "type": "repeater",
-   "instructions": "With logos the About page shows a logo wall instead of the text row. Transparent PNG/SVG works best — logos are rendered as white silhouettes on the dark canvas.",
+   "instructions": "With logos the About page shows a logo wall instead of the text row. Transparent PNG/SVG works best — logos are shown in greyscale.",
    "required": 0,
    "layout": "table",
    "button_label": "Add logo",
@@ -140,35 +132,18 @@
    "placement": "top"
   },
   {
-   "key": "field_rvn_home_hero_lines",
-   "label": "Home — hero headline (lines)",
-   "name": "home_hero_lines",
-   "type": "textarea",
-   "instructions": "One line per row; the last line renders outlined. Default: PHOTOGRAPHS / THAT OUTLIVE / TRENDS.",
-   "required": 0,
-   "rows": 3,
-   "new_lines": ""
-  },
-  {
    "key": "field_rvn_home_hero_lede",
-   "label": "Home — hero sub-copy",
+   "label": "Home — lede",
    "name": "home_hero_lede",
    "type": "textarea",
    "required": 0,
    "rows": 3,
-   "new_lines": "wpautop"
-  },
-  {
-   "key": "field_rvn_home_marquee",
-   "label": "Home — marquee text",
-   "name": "home_marquee",
-   "type": "text",
-   "instructions": "The scrolling band. End with ' — ' so it loops cleanly.",
-   "required": 0
+   "new_lines": "wpautop",
+   "instructions": "Short editorial paragraph on Home next to the recognition table. Also used as the homepage meta description."
   },
   {
    "key": "field_rvn_home_honors",
-   "label": "Home — recognition (awards / press)",
+   "label": "Home — recognition table",
    "name": "home_honors",
    "type": "repeater",
    "required": 0,
@@ -193,11 +168,12 @@
      "name": "tag",
      "type": "text"
     }
-   ]
+   ],
+   "instructions": "Rows of the recognition table on Home: year, title, source (awards / press)."
   },
   {
    "key": "field_rvn_home_testis",
-   "label": "Home — testimonials",
+   "label": "Testimonials",
    "name": "home_testimonials",
    "type": "repeater",
    "required": 0,
@@ -217,14 +193,15 @@
      "name": "author",
      "type": "text"
     }
-   ]
+   ],
+   "instructions": "Quotes shown on Home and on Studio (/about). Write the attribution as \"Name — Role, Company\"; the part after \" — \" is set smaller."
   },
   {
    "key": "field_rvn_travel_dates",
-   "label": "Traveling — planned dates",
+   "label": "Enquire — travel dates",
    "name": "travel_dates",
    "type": "repeater",
-   "instructions": "Shown as the ON THE ROAD strip on the homepage while dates exist (e.g. Dates: 10.–14. September · City: Berlin). Delete rows once past.",
+   "instructions": "Shown in the Travel step of the Enquire form (\"On the road …\") while dates exist. Dates: 10.–14. September · City: Berlin. Leave empty to hide.",
    "required": 0,
    "layout": "table",
    "button_label": "Add dates",
@@ -244,15 +221,6 @@
    ]
   },
   {
-   "key": "field_rvn_travel_open",
-   "label": "Traveling — show “open for traveling”",
-   "name": "travel_open",
-   "type": "true_false",
-   "instructions": "Adds the OPEN FOR TRAVELING note to the strip (strip also shows with no dates when this is on).",
-   "required": 0,
-   "ui": 1
-  },
-  {
    "key": "field_rvn_tab_contact",
    "label": "Contact",
    "name": "",
@@ -264,22 +232,36 @@
    "label": "Email",
    "name": "contact_email",
    "type": "email",
-   "required": 0
+   "required": 0,
+   "instructions": "Shown in the footer, on Enquire and used as the enquiry recipient."
   },
   {
    "key": "field_rvn_contact_location",
    "label": "Studio location",
    "name": "contact_location",
    "type": "text",
-   "required": 0
+   "required": 0,
+   "instructions": "Only printed on the estimate PDF."
   },
   {
-   "key": "field_rvn_contact_response",
-   "label": "Response time",
-   "name": "contact_response",
+   "key": "field_rvn_contact_coords",
+   "label": "Footer — coordinates",
+   "name": "contact_coords",
+   "aria-label": "",
    "type": "text",
+   "instructions": "Location line in the footer of every page. Leave empty for the default (48.2082° N, 16.3738° E).",
    "required": 0,
-   "default_value": "Within 24 hours"
+   "conditional_logic": 0,
+   "wrapper": {
+    "width": "",
+    "class": "",
+    "id": ""
+   },
+   "default_value": "",
+   "maxlength": "",
+   "placeholder": "48.2082° N, 16.3738° E",
+   "prepend": "",
+   "append": ""
   },
   {
    "key": "field_rvn_contact_instagram",
@@ -433,7 +415,7 @@
    "label": "FAQ",
    "name": "faq",
    "type": "repeater",
-   "instructions": "Questions shown under the enquiry form.",
+   "instructions": "Accordion under the Enquire calculator.",
    "required": 0,
    "layout": "block",
    "button_label": "Add question",
@@ -637,5 +619,5 @@
  "label_placement": "top",
  "active": true,
  "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
- "modified": 1787400761
+ "modified": 1794650703
 }

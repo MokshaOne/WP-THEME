@@ -1,0 +1,22 @@
+---
+// "What clients say" — testimonial grid. WordPress stores the attribution as
+// one line ("SARAH K. — PORTRAIT, 2024"); it is split into name and meta.
+import type { Testimonial } from '../../lib/wp';
+import { pad } from '../../lib/format';
+interface Props { items: Testimonial[]; class?: string }
+const { items, class: cls } = Astro.props;
+const split = (by: string) => { const [a, ...b] = (by || '').split(/\s+[—–-]\s+/); return { by: a, m: b.join(' — ') }; };
+---
+{items.length > 0 && (
+	<>
+		<div class="says mono"><span>What clients say</span><span class="acc">★ {pad(items.length)} on record</span></div>
+		<div class:list={['quotes', cls]} data-reveal>
+			{items.map((t) => { const s = split(t.by); return (
+				<figure class="quote">
+					<blockquote>“{t.text}”</blockquote>
+					<figcaption class="mono"><span>{s.by}</span>{s.m && <span class="mute"> — {s.m}</span>}</figcaption>
+				</figure>
+			); })}
+		</div>
+	</>
+)}

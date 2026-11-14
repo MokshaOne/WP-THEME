@@ -17,17 +17,5 @@ export function soften(s: string): string {
 	return lower.charAt(0).toLocaleUpperCase('en') + lower.slice(1);
 }
 
-/**
- * Lines that form ONE sentence (hero lines, statements): when every line is
- * all-caps, only the very first letter stays capital — "PHOTOGRAPHS / THAT
- * OUTLIVE / TRENDS." → "Photographs / that outlive / trends.". Mixed-case
- * input is returned unchanged.
- */
-export function softenAll(lines: string[]): string[] {
-	const clean = (lines || []).map((l) => (l || '').trim()).filter(Boolean);
-	if (!clean.length || clean.some((l) => /[a-zäöüß]/.test(l))) return clean;
-	return clean.map((l, i) => (i === 0 ? soften(l) : l.toLocaleLowerCase('en')));
-}
-
 /** Short caption "Portrait · Vienna · 2025" from project metadata. */
 export const caption = (...parts: (string | undefined)[]) => parts.map((p) => soften(p || '')).filter(Boolean).join(' · ');

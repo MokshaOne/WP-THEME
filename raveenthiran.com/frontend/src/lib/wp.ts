@@ -310,7 +310,7 @@ export interface Site {
 	studio: { bio: string; portrait: string; statement: string[]; spec: SpecRow[]; stats: SiteStat[]; clients: string[]; client_logos: ClientLogo[] };
 	home: { hero_lede: string; honors: Honor[]; testimonials: Testimonial[] };
 	travel: { dates: TravelDate[] };
-	contact: { email: string; instagram: string; behance: string; linkedin: string };
+	contact: { email: string; instagram: string; behance: string; linkedin: string; coords: string };
 	pricing: { currency: string; sessions: Session[]; addons: AddOn[]; licence: number; commercial_extra: number; per_km: number };
 	faq: Faq[];
 	security: { turnstile_site: string };
@@ -347,7 +347,7 @@ const SITE_FALLBACK: Site = {
 			{ text: 'The only photographer who delivered earlier than promised. Every single frame usable.', by: 'LUNA M. — STREET PORTRAIT, 2025' },
 		],
 	},
-	contact: { email: 'hello@raveenthiran.com', instagram: '', behance: '', linkedin: '' },
+	contact: { email: 'hello@raveenthiran.com', instagram: '', behance: '', linkedin: '', coords: '48.2082° N, 16.3738° E' },
 	pricing: {
 		currency: '€',
 		sessions: [
@@ -418,6 +418,7 @@ async function loadSite(): Promise<Site> {
 				instagram: pick(d?.contact?.instagram, ''),
 				behance: pick(d?.contact?.behance, ''),
 				linkedin: pick(d?.contact?.linkedin, ''),
+				coords: pick(d?.contact?.coords, F.contact.coords),
 			},
 			pricing: {
 				currency: pick(d?.pricing?.currency, F.pricing.currency),

@@ -11,10 +11,10 @@
   },
   {
    "key": "field_rvn_studio_bio",
-   "label": "Studio — bio (About page)",
+   "label": "Studio — bio",
    "name": "studio_bio",
    "type": "wysiwyg",
-   "instructions": "Intro text under the About headline. Leave empty to keep the default text.",
+   "instructions": "Intro text on Studio (/about), next to the portrait. Leave empty to keep the default text.",
    "required": 0,
    "tabs": "all",
    "toolbar": "basic",
@@ -25,7 +25,7 @@
    "label": "Studio — portrait",
    "name": "studio_portrait",
    "type": "image",
-   "instructions": "Portrait on the About page (portrait format, about 4:5).",
+   "instructions": "Portrait on Studio (/about), portrait format about 4:5. Shown in black & white.",
    "required": 0,
    "return_format": "url",
    "preview_size": "medium",
@@ -33,20 +33,20 @@
   },
   {
    "key": "field_rvn_studio_statement",
-   "label": "Home — statement (lines)",
+   "label": "Studio — statement (lines)",
    "name": "studio_statement",
    "type": "textarea",
-   "instructions": "Statement block on the homepage. One line per row.",
+   "instructions": "One line per row. Used twice: as the big headline on Studio (/about) and as the statement block on Home. Default: NO PRESETS. / NO SHORTCUTS. / JUST THE FRAME.",
    "required": 0,
    "rows": 3,
    "new_lines": ""
   },
   {
    "key": "field_rvn_studio_spec",
-   "label": "Studio — data sheet (About page)",
+   "label": "Studio — data sheet",
    "name": "studio_spec",
    "type": "repeater",
-   "instructions": "Label / value rows under the bio (e.g. Based in / Vienna, Austria). Leave empty to keep the default sheet.",
+   "instructions": "Label / value rows on Studio (/about), e.g. Based in / Vienna, Austria. The row labelled \"Since\" also feeds the year on Home. Leave empty to keep the defaults.",
    "required": 0,
    "layout": "table",
    "button_label": "Add row",
@@ -70,7 +70,7 @@
    "label": "Studio — stats",
    "name": "studio_stats",
    "type": "repeater",
-   "instructions": "Small figures (e.g. Projects / 120+).",
+   "instructions": "Big figures on Studio (/about), e.g. Projects / 120+.",
    "required": 0,
    "layout": "table",
    "button_label": "Add stat",
@@ -94,7 +94,7 @@
    "label": "Studio — selected clients",
    "name": "studio_clients",
    "type": "textarea",
-   "instructions": "One per line (e.g. SZ Magazin).",
+   "instructions": "One per line (e.g. SZ Magazin). Shown as a text list on Studio (/about) when no logos are set.",
    "required": 0,
    "rows": 5
   },
@@ -133,16 +133,17 @@
   },
   {
    "key": "field_rvn_home_hero_lede",
-   "label": "Home — hero sub-copy",
+   "label": "Home — lede",
    "name": "home_hero_lede",
    "type": "textarea",
    "required": 0,
    "rows": 3,
-   "new_lines": "wpautop"
+   "new_lines": "wpautop",
+   "instructions": "Short editorial paragraph on Home next to the recognition table. Also used as the homepage meta description."
   },
   {
    "key": "field_rvn_home_honors",
-   "label": "Home — recognition (awards / press)",
+   "label": "Home — recognition table",
    "name": "home_honors",
    "type": "repeater",
    "required": 0,
@@ -167,11 +168,12 @@
      "name": "tag",
      "type": "text"
     }
-   ]
+   ],
+   "instructions": "Rows of the recognition table on Home: year, title, source (awards / press)."
   },
   {
    "key": "field_rvn_home_testis",
-   "label": "Home — testimonials",
+   "label": "Testimonials",
    "name": "home_testimonials",
    "type": "repeater",
    "required": 0,
@@ -191,14 +193,15 @@
      "name": "author",
      "type": "text"
     }
-   ]
+   ],
+   "instructions": "Quotes shown on Home and on Studio (/about). Write the attribution as \"Name — Role, Company\"; the part after \" — \" is set smaller."
   },
   {
    "key": "field_rvn_travel_dates",
-   "label": "Traveling — planned dates",
+   "label": "Enquire — travel dates",
    "name": "travel_dates",
    "type": "repeater",
-   "instructions": "Shown as the travel dates strip while dates exist (e.g. Dates: 10.–14. September · City: Berlin). Delete rows once past.",
+   "instructions": "Shown in the Travel step of the Enquire form (\"On the road …\") while dates exist. Dates: 10.–14. September · City: Berlin. Leave empty to hide.",
    "required": 0,
    "layout": "table",
    "button_label": "Add dates",
@@ -229,14 +232,36 @@
    "label": "Email",
    "name": "contact_email",
    "type": "email",
-   "required": 0
+   "required": 0,
+   "instructions": "Shown in the footer, on Enquire and used as the enquiry recipient."
   },
   {
    "key": "field_rvn_contact_location",
    "label": "Studio location",
    "name": "contact_location",
    "type": "text",
-   "required": 0
+   "required": 0,
+   "instructions": "Only printed on the estimate PDF."
+  },
+  {
+   "key": "field_rvn_contact_coords",
+   "label": "Footer — coordinates",
+   "name": "contact_coords",
+   "aria-label": "",
+   "type": "text",
+   "instructions": "Location line in the footer of every page. Leave empty for the default (48.2082° N, 16.3738° E).",
+   "required": 0,
+   "conditional_logic": 0,
+   "wrapper": {
+    "width": "",
+    "class": "",
+    "id": ""
+   },
+   "default_value": "",
+   "maxlength": "",
+   "placeholder": "48.2082° N, 16.3738° E",
+   "prepend": "",
+   "append": ""
   },
   {
    "key": "field_rvn_contact_instagram",
@@ -390,7 +415,7 @@
    "label": "FAQ",
    "name": "faq",
    "type": "repeater",
-   "instructions": "Questions shown under the enquiry form.",
+   "instructions": "Accordion under the Enquire calculator.",
    "required": 0,
    "layout": "block",
    "button_label": "Add question",
@@ -594,5 +619,5 @@
  "label_placement": "top",
  "active": true,
  "description": "Editable site content for the headless frontend: Studio bio, contact, price calculator and FAQ.",
- "modified": 1794613609
+ "modified": 1794650703
 }

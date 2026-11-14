@@ -1,48 +1,53 @@
-/* Raveenthiran admin skin — v5.4, the live site's v5.3 language.
-   Warm cream ground (#F7F5F0), one near-black ink (#111010), opacity steps in
-   between; no second accent colour. DM Sans for all UI, Instrument Serif
-   Italic for page titles. Sits on top of the stock (light) admin; every
-   selector starts with `html` so it outranks core, ACF and plugin styles. */
+/* Raveenthiran admin skin — v5.4 "Archived Brutalism", the live site's language.
+   Paper ground (#F2F0EB), one ink (#0C0C0B), one accent (#FA5D36 /
+   oklch(0.68 0.2 35)) reserved for the primary action. Archivo for UI,
+   Archivo Black for headlines and big numbers, Space Mono for uppercase
+   labels. Hard 2px rules, no radii, no shadows. Sits on top of the stock
+   (light) admin; every selector starts with `html` so it outranks core,
+   ACF and plugin styles. */
 
-@font-face { font-family: "DM Sans"; src: url(../fonts/dm-sans-latin-300-normal.woff2) format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "DM Sans"; src: url(../fonts/dm-sans-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "DM Sans"; src: url(../fonts/dm-sans-latin-500-normal.woff2) format("woff2"); font-weight: 500 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Instrument Serif"; src: url(../fonts/instrument-serif-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Instrument Serif"; src: url(../fonts/instrument-serif-latin-400-italic.woff2) format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url(../fonts/archivo-latin-500-normal.woff2) format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url(../fonts/archivo-latin-700-normal.woff2) format("woff2"); font-weight: 600 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Archivo Black"; src: url(../fonts/archivo-black-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Space Mono"; src: url(../fonts/space-mono-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Space Mono"; src: url(../fonts/space-mono-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
 html {
-	--rvn-ink: #111010; --rvn-canvas: #F7F5F0; --rvn-panel: #EFECE5; --rvn-raised: #E7E3DA;
-	--rvn-muted: rgba(17, 16, 16, .72); --rvn-dim: rgba(17, 16, 16, .6); --rvn-line: rgba(17, 16, 16, .12);
-	--rvn-faint: rgba(17, 16, 16, .4); --rvn-accent: #111010; --rvn-error: #8A1C1C;
-	--rvn-display: "Instrument Serif", "Iowan Old Style", "Times New Roman", serif;
-	--rvn-body: "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	--rvn-mono: var(--rvn-body);
+	--rvn-ink: #0C0C0B; --rvn-canvas: #F2F0EB; --rvn-panel: #E9E6DF; --rvn-raised: #DFDBD2;
+	--rvn-muted: rgba(12, 12, 11, .74); --rvn-dim: rgba(12, 12, 11, .6); --rvn-line: rgba(12, 12, 11, .16);
+	--rvn-faint: rgba(12, 12, 11, .45); --rvn-rule: 2px solid var(--rvn-ink);
+	--rvn-accent: #FA5D36; --rvn-error: #B3261E;
+	--rvn-display: "Archivo Black", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+	--rvn-body: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--rvn-mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 	color-scheme: light;
 	background: var(--rvn-canvas);
 }
+@supports (color: oklch(0 0 0)) { html { --rvn-accent: oklch(0.68 0.2 35); } }
 
 /* ── Base ── */
 html body.wp-admin, html body.login, html body.wp-admin .wp-core-ui,
 html body.wp-admin input, html body.wp-admin select, html body.wp-admin textarea, html body.wp-admin button,
 html body.login input, html body.login button { font-family: var(--rvn-body); }
+html body.wp-admin { color: var(--rvn-ink); font-weight: 500; }
 html body.wp-admin code, html body.wp-admin kbd, html body.wp-admin pre { font-family: var(--rvn-mono); background: var(--rvn-raised); color: var(--rvn-ink); }
-html ::selection { background: var(--rvn-accent); color: var(--rvn-canvas); }
+html ::selection { background: var(--rvn-accent); color: var(--rvn-ink); }
 html #wpwrap, html #wpcontent, html #wpbody, html #wpbody-content { background: var(--rvn-canvas); }
 
-/* Hard edges everywhere; radio buttons stay round so they still read as radios. */
+/* Hard edges, no shadows; radio buttons stay round so they still read as radios. */
 html body.wp-admin *:not(input[type="radio"]), html body.wp-admin *::before, html body.wp-admin *::after,
 html body.login *:not(input[type="radio"]), html #wpadminbar * { border-radius: 0 !important; }
 html body.wp-admin input[type="radio"]::before { border-radius: 50% !important; }
 
-/* ── Sidebar ── */
+/* ── Sidebar: paper column, ink active row, accent on hover ── */
 html #adminmenu, html #adminmenuback, html #adminmenuwrap { background: var(--rvn-canvas); }
-html #adminmenuback { border-right: 1px solid var(--rvn-line); }
+html #adminmenuback { border-right: var(--rvn-rule); }
 html #adminmenu a { color: var(--rvn-ink); }
-html #adminmenu div.wp-menu-name { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; line-height: 18px; text-transform: uppercase; }
-html #adminmenu div.wp-menu-image::before { color: var(--rvn-dim); }
-html #adminmenu li.menu-top:hover, html #adminmenu li.opensub > a.menu-top, html #adminmenu li > a.menu-top:focus { background: var(--rvn-panel); color: var(--rvn-accent); }
+html #adminmenu div.wp-menu-name { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; line-height: 18px; text-transform: uppercase; }
+html #adminmenu div.wp-menu-image::before { color: var(--rvn-ink); }
+html #adminmenu li.menu-top:hover, html #adminmenu li.opensub > a.menu-top, html #adminmenu li > a.menu-top:focus { background: var(--rvn-accent); color: var(--rvn-ink); }
 html #adminmenu li.menu-top:hover div.wp-menu-image::before, html #adminmenu li.opensub > a.menu-top div.wp-menu-image::before,
-html #adminmenu li a:focus div.wp-menu-image::before { color: var(--rvn-accent); }
+html #adminmenu li a:focus div.wp-menu-image::before { color: var(--rvn-ink); }
 html #adminmenu li.current a.menu-top, html #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
 html #adminmenu li.wp-has-current-submenu .wp-submenu .wp-submenu-head, html .folded #adminmenu li.current.menu-top,
 html #adminmenu li.wp-has-current-submenu:hover a.wp-has-current-submenu { background: var(--rvn-ink); color: var(--rvn-canvas); }
@@ -55,181 +60,187 @@ html #adminmenu li.wp-has-submenu.wp-not-current-submenu.opensub:hover::after,
 html #adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within::after { display: none; }
 html #adminmenu .wp-submenu, html #adminmenu .wp-has-current-submenu .wp-submenu, html #adminmenu .wp-has-current-submenu.opensub .wp-submenu,
 html #adminmenu a.wp-has-current-submenu:focus + .wp-submenu { background: var(--rvn-panel); }
-html #adminmenu .wp-not-current-submenu .wp-submenu, html .folded #adminmenu .wp-has-current-submenu .wp-submenu { border: 1px solid var(--rvn-line); box-shadow: none; }
+html #adminmenu .wp-not-current-submenu .wp-submenu, html .folded #adminmenu .wp-has-current-submenu .wp-submenu { border: var(--rvn-rule); box-shadow: none; }
 html #adminmenu .wp-submenu a { color: var(--rvn-muted); font-size: 13px; }
-html #adminmenu .wp-submenu a:hover, html #adminmenu .wp-submenu a:focus { color: var(--rvn-accent); box-shadow: none; }
+html #adminmenu .wp-submenu a:hover, html #adminmenu .wp-submenu a:focus { color: var(--rvn-ink); background: var(--rvn-accent); box-shadow: none; }
 html #adminmenu .wp-submenu li.current a, html #adminmenu .wp-submenu li.current a:hover { color: var(--rvn-ink); font-weight: 700; }
-html #adminmenu .wp-submenu .wp-submenu-head { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-html #adminmenu li.wp-menu-separator { background: var(--rvn-line); height: 1px; margin: 12px 0; }
-html #adminmenu .awaiting-mod, html #adminmenu .update-plugins, html #adminmenu .menu-counter { background: var(--rvn-accent); color: var(--rvn-canvas); font-family: var(--rvn-mono); font-weight: 700; }
-html #collapse-button { color: var(--rvn-dim); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-html #collapse-button:hover, html #collapse-button:focus { color: var(--rvn-accent); }
+html #adminmenu .wp-submenu .wp-submenu-head { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+html #adminmenu li.wp-menu-separator { background: var(--rvn-ink); height: 2px; margin: 12px 0; }
+html #adminmenu .awaiting-mod, html #adminmenu .update-plugins, html #adminmenu .menu-counter { background: var(--rvn-accent); color: var(--rvn-ink); font-family: var(--rvn-mono); font-weight: 700; }
+html #collapse-button { color: var(--rvn-dim); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+html #collapse-button:hover, html #collapse-button:focus { color: var(--rvn-ink); }
 
-/* ── Toolbar ── */
-html #wpadminbar { background: var(--rvn-canvas); box-shadow: inset 0 -1px 0 var(--rvn-line); }
+/* ── Toolbar: ink bar like the live site's header ── */
+html #wpadminbar { background: var(--rvn-ink); box-shadow: none; }
 html #wpadminbar .ab-item, html #wpadminbar .ab-label, html #wpadminbar .display-name, html #wpadminbar .username {
-	font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
-html #wpadminbar .ab-submenu, html #wpadminbar .menupop .ab-sub-wrapper { background: var(--rvn-panel); box-shadow: none; }
-html #wpadminbar .menupop .ab-sub-wrapper { border: 1px solid var(--rvn-line); }
-html #wpadminbar .quicklinks .menupop ul.ab-sub-secondary, html #wpadminbar .quicklinks .menupop ul.ab-sub-secondary .ab-submenu { background: var(--rvn-raised); }
+	font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 html #wpadminbar .ab-item, html #wpadminbar a.ab-item, html #wpadminbar .ab-empty-item, html #wpadminbar #wp-toolbar span.ab-label,
-html #wpadminbar .ab-icon::before, html #wpadminbar .ab-item::before, html #wpadminbar .ab-item::after,
+html #wpadminbar .ab-icon::before, html #wpadminbar .ab-item::before, html #wpadminbar .ab-item::after { color: var(--rvn-canvas) !important; }
+html #wpadminbar .ab-submenu, html #wpadminbar .menupop .ab-sub-wrapper { background: var(--rvn-canvas); box-shadow: none; }
+html #wpadminbar .menupop .ab-sub-wrapper { border: var(--rvn-rule); }
+html #wpadminbar .quicklinks .menupop ul.ab-sub-secondary, html #wpadminbar .quicklinks .menupop ul.ab-sub-secondary .ab-submenu { background: var(--rvn-panel); }
+html #wpadminbar .menupop .ab-sub-wrapper .ab-item, html #wpadminbar .menupop .ab-sub-wrapper .ab-item::before, html #wpadminbar .menupop .ab-sub-wrapper .ab-label,
 html #wpadminbar .quicklinks .menupop ul li a, html #wpadminbar .quicklinks .menupop ul li a strong { color: var(--rvn-ink) !important; }
 html #wpadminbar:not(.mobile) .ab-top-menu > li:hover > .ab-item, html #wpadminbar:not(.mobile) .ab-top-menu > li > .ab-item:focus,
-html #wpadminbar .ab-top-menu > li.hover > .ab-item, html #wpadminbar .quicklinks .menupop ul li a:hover,
-html #wpadminbar .quicklinks .menupop ul li a:focus { background: var(--rvn-panel); }
-html #wpadminbar #wp-admin-bar-rvn-publish > .ab-item { background: var(--rvn-ink); color: var(--rvn-canvas) !important; font-weight: 500; }
-html #wpadminbar:not(.mobile) .ab-top-menu > li#wp-admin-bar-rvn-publish:hover > .ab-item { background: rgba(17, 16, 16, .82); }
+html #wpadminbar .ab-top-menu > li.hover > .ab-item { background: #26262A; }
+html #wpadminbar .quicklinks .menupop ul li a:hover, html #wpadminbar .quicklinks .menupop ul li a:focus { background: var(--rvn-accent); }
+html #wpadminbar #wp-admin-bar-rvn-publish > .ab-item { background: var(--rvn-accent); color: var(--rvn-ink) !important; font-weight: 700; }
+html #wpadminbar:not(.mobile) .ab-top-menu > li#wp-admin-bar-rvn-publish:hover > .ab-item { background: var(--rvn-canvas); color: var(--rvn-ink) !important; }
 
-/* ── Headings ── */
-html .wrap h1, html .wrap h1.wp-heading-inline { font-family: var(--rvn-display); font-size: 44px; font-style: italic; font-weight: 400; line-height: 1; letter-spacing: -.01em; text-transform: none; color: var(--rvn-ink); padding: 16px 0 12px; }
-html .wrap > h2, html .wrap > h3.title, html .form-wrap h2 { font-family: var(--rvn-display); font-size: 28px; font-style: italic; font-weight: 400; line-height: 1.1; text-transform: none; color: var(--rvn-ink); }
+/* ── Headings: Archivo Black, uppercase, tight ── */
+html .wrap h1, html .wrap h1.wp-heading-inline { font-family: var(--rvn-display); font-size: 44px; font-style: normal; font-weight: 400; line-height: .9; letter-spacing: -.04em; text-transform: uppercase; color: var(--rvn-ink); padding: 16px 0 12px; }
+html .wrap > h2, html .wrap > h3.title, html .form-wrap h2 { font-family: var(--rvn-display); font-size: 24px; font-style: normal; font-weight: 400; line-height: 1; letter-spacing: -.03em; text-transform: uppercase; color: var(--rvn-ink); }
 html .postbox-header h2, html .postbox .hndle, html .stuffbox h2, html #dashboard-widgets h2, html .acf-postbox .hndle,
-html .metabox-holder h2.hndle { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--rvn-ink); }
+html .metabox-holder h2.hndle { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--rvn-ink); }
 html .wrap .page-title-action, html .wrap .page-title-action:active {
-	top: -8px; min-height: 32px; padding: 0 12px; border: 1px solid var(--rvn-ink); background: none; color: var(--rvn-ink);
-	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .12em; line-height: 30px; text-transform: uppercase; }
+	top: -8px; min-height: 32px; padding: 0 12px; border: var(--rvn-rule); background: none; color: var(--rvn-ink);
+	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; line-height: 28px; text-transform: uppercase; }
 html .wrap .page-title-action:hover, html .wrap .page-title-action:focus { background: var(--rvn-ink); border-color: var(--rvn-ink); color: var(--rvn-canvas); box-shadow: none; }
 
 /* ── Buttons ── */
 html .wp-core-ui .button, html .wp-core-ui .button-secondary {
-	background: none; border: 1px solid var(--rvn-ink); color: var(--rvn-ink); box-shadow: none; text-shadow: none;
-	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+	background: none; border: var(--rvn-rule); color: var(--rvn-ink); box-shadow: none; text-shadow: none;
+	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 html .wp-core-ui .button:hover, html .wp-core-ui .button-secondary:hover,
 html .wp-core-ui .button:focus, html .wp-core-ui .button-secondary:focus { background: var(--rvn-ink); border-color: var(--rvn-ink); color: var(--rvn-canvas); }
-html .wp-core-ui .button:focus, html .wp-core-ui .button-secondary:focus { box-shadow: 0 0 0 2px var(--rvn-canvas), 0 0 0 4px var(--rvn-ink); outline: none; }
-html .wp-core-ui .button-primary, html .wp-core-ui .button-primary:visited { background: var(--rvn-accent); border-color: var(--rvn-accent); color: var(--rvn-canvas); }
+html .wp-core-ui .button:focus, html .wp-core-ui .button-secondary:focus { box-shadow: 0 0 0 2px var(--rvn-canvas), 0 0 0 4px var(--rvn-accent); outline: none; }
+html .wp-core-ui .button-primary, html .wp-core-ui .button-primary:visited { background: var(--rvn-accent); border: var(--rvn-rule); color: var(--rvn-ink); }
 html .wp-core-ui .button-primary:hover, html .wp-core-ui .button-primary:focus,
-html .wp-core-ui .button-primary:active { background: rgba(17, 16, 16, .82); border-color: rgba(17, 16, 16, .82); color: var(--rvn-canvas); }
+html .wp-core-ui .button-primary:active { background: var(--rvn-ink); border-color: var(--rvn-ink); color: var(--rvn-canvas); }
 html .wp-core-ui .button.disabled, html .wp-core-ui .button:disabled, html .wp-core-ui .button[disabled],
 html .wp-core-ui .button-primary.disabled, html .wp-core-ui .button-primary:disabled, html .wp-core-ui .button-primary[disabled] {
 	background: none !important; border-color: var(--rvn-faint) !important; color: var(--rvn-dim) !important; }
-html .wp-core-ui .button-link, html .wp-core-ui .button.button-link { border: 0; background: none; color: var(--rvn-ink); font-family: inherit; font-size: inherit; letter-spacing: 0; text-transform: none; font-weight: 400; }
+html .wp-core-ui .button-link, html .wp-core-ui .button.button-link { border: 0; background: none; color: var(--rvn-ink); font-family: inherit; font-size: inherit; letter-spacing: 0; text-transform: none; font-weight: 500; }
 html .wp-core-ui .button-link:hover, html .wp-core-ui .button.button-link:hover { background: none; color: var(--rvn-muted); }
 html .wp-core-ui .button-link-delete, html .wp-core-ui .button.button-link-delete,
 html body.wp-admin a.submitdelete, html .row-actions .trash a, html .row-actions .delete a, html .row-actions .spam a { color: var(--rvn-error); }
 html .wp-core-ui .button .dashicons, html .wp-core-ui .button::before { text-transform: none; letter-spacing: 0; }
 
-/* ── Form controls ── */
+/* ── Form controls: 2px ink frames ── */
 html input[type="text"], html input[type="password"], html input[type="email"], html input[type="url"], html input[type="search"],
 html input[type="number"], html input[type="tel"], html input[type="date"], html input[type="datetime-local"], html input[type="time"],
 html input[type="week"], html input[type="month"], html input[type="color"], html select, html textarea,
-html .wp-core-ui select { background-color: var(--rvn-canvas); border-color: var(--rvn-faint); color: var(--rvn-ink); box-shadow: none; }
-html input[type="checkbox"], html input[type="radio"] { background-color: var(--rvn-canvas); border-color: var(--rvn-faint); box-shadow: none; }
+html .wp-core-ui select { background-color: var(--rvn-canvas); border: 2px solid var(--rvn-faint); color: var(--rvn-ink); box-shadow: none; }
+html input[type="checkbox"], html input[type="radio"] { background-color: var(--rvn-canvas); border: 2px solid var(--rvn-ink); box-shadow: none; }
 html input[type="text"]:focus, html input[type="password"]:focus, html input[type="email"]:focus, html input[type="url"]:focus,
 html input[type="search"]:focus, html input[type="number"]:focus, html input[type="tel"]:focus, html input[type="date"]:focus,
 html input[type="checkbox"]:focus, html input[type="radio"]:focus, html select:focus, html textarea:focus,
-html .wp-core-ui select:focus { border-color: var(--rvn-ink); box-shadow: 0 0 0 1px var(--rvn-ink); outline: 2px solid transparent; color: var(--rvn-ink); }
+html .wp-core-ui select:focus { border-color: var(--rvn-ink); box-shadow: 4px 4px 0 var(--rvn-accent); outline: 2px solid transparent; color: var(--rvn-ink); }
 html ::placeholder { color: var(--rvn-dim); opacity: 1; }
 html input:disabled, html input.disabled, html select:disabled, html textarea:disabled, html input[readonly], html textarea[readonly] {
 	background-color: var(--rvn-panel); border-color: var(--rvn-line); color: var(--rvn-dim); }
 html .wp-core-ui select, html .wp-core-ui select:hover, html .wp-core-ui select:focus {
-	background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23111010%22%2F%3E%3C%2Fsvg%3E");
+	background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%230C0C0B%22%2F%3E%3C%2Fsvg%3E");
 	background-repeat: no-repeat; background-position: right 5px top 55%; background-size: 16px 16px; color: var(--rvn-ink); }
+html input[type="checkbox"]:checked { background-color: var(--rvn-accent); }
 html input[type="checkbox"]:checked::before {
-	content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23111010%27%2F%3E%3C%2Fsvg%3E"); }
+	content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%230C0C0B%27%2F%3E%3C%2Fsvg%3E"); }
 html input[type="radio"]:checked::before { background-color: var(--rvn-ink); }
 html .form-table th, html .form-wrap label, html label.screen-reader-text + input { color: var(--rvn-ink); }
-html .form-table th { font-weight: 600; }
+html .form-table th { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 html .description, html p.description, html .form-wrap p, html p.help, html span.description { color: var(--rvn-muted); }
 
-/* ── Surfaces ── */
+/* ── Surfaces: no shadows, 2px ink frames ── */
 html .postbox, html .stuffbox, html .card, html .welcome-panel, html .widefat, html .wp-list-table, html .tablenav .tablenav-pages .pagination-links .button,
 html .notice, html div.updated, html div.error, html .contextual-help-tabs-wrap, html #screen-meta, html #screen-meta-links .show-settings,
 html .theme-browser .theme, html .plugin-card, html .media-frame, html .attachment-details { box-shadow: none; }
-html .postbox, html .stuffbox, html .card { background: var(--rvn-panel); border: 1px solid var(--rvn-line); }
-html .postbox-header { border-bottom: 1px solid var(--rvn-line); }
-html #screen-meta-links .show-settings { border: 1px solid var(--rvn-line); border-top: 0; background: var(--rvn-canvas); color: var(--rvn-muted); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-html #screen-meta { background: var(--rvn-panel); border: 1px solid var(--rvn-line); border-top: 0; }
+html .postbox, html .stuffbox, html .card { background: var(--rvn-canvas); border: var(--rvn-rule); }
+html .postbox-header { border-bottom: var(--rvn-rule); background: var(--rvn-panel); }
+html #screen-meta-links .show-settings { border: var(--rvn-rule); border-top: 0; background: var(--rvn-canvas); color: var(--rvn-ink); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+html #screen-meta { background: var(--rvn-panel); border: var(--rvn-rule); border-top: 0; }
 
 /* ── List tables ── */
-html .widefat, html table.widefat { background: var(--rvn-canvas); border: 1px solid var(--rvn-line); }
+html .widefat, html table.widefat { background: var(--rvn-canvas); border: var(--rvn-rule); }
 html .widefat thead th, html .widefat thead td, html .widefat tfoot th, html .widefat tfoot td {
-	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rvn-ink); border-color: var(--rvn-ink); }
-html .widefat thead th, html .widefat thead td { border-bottom: 2px solid var(--rvn-ink); }
-html .widefat tfoot th, html .widefat tfoot td { border-top: 2px solid var(--rvn-ink); }
+	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--rvn-ink); border-color: var(--rvn-ink); }
+html .widefat thead th, html .widefat thead td { border-bottom: var(--rvn-rule); }
+html .widefat tfoot th, html .widefat tfoot td { border-top: var(--rvn-rule); }
 html .widefat thead th a, html .widefat tfoot th a, html th.sortable a, html th.sorted a { color: var(--rvn-ink); }
 html .widefat td, html .widefat th { color: var(--rvn-muted); }
 html .widefat tbody tr > * { box-shadow: inset 0 -1px 0 var(--rvn-line); }
 html .striped > tbody > :nth-child(odd), html ul.striped > :nth-child(odd), html .alternate { background-color: var(--rvn-panel); }
-html .row-title, html .wp-list-table .column-primary strong a, html .wp-list-table td.column-title strong, html .plugins .plugin-title strong { color: var(--rvn-ink); font-size: 14px; font-weight: 600; }
-html a.row-title:hover, html .wp-list-table .column-primary strong a:hover { color: var(--rvn-accent); }
-html .row-actions { color: var(--rvn-faint); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .04em; }
-html .subsubsub { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--rvn-faint); }
+html .row-title, html .wp-list-table .column-primary strong a, html .wp-list-table td.column-title strong, html .plugins .plugin-title strong { color: var(--rvn-ink); font-size: 14px; font-weight: 700; }
+html a.row-title:hover, html .wp-list-table .column-primary strong a:hover { color: var(--rvn-ink); background: var(--rvn-accent); }
+html .row-actions { color: var(--rvn-faint); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .02em; }
+html .subsubsub { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--rvn-faint); }
 html .subsubsub a { color: var(--rvn-muted); text-decoration: none; }
-html .subsubsub a.current { color: var(--rvn-ink); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+html .subsubsub a.current { color: var(--rvn-ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
 html .subsubsub a .count, html .subsubsub a.current .count { color: var(--rvn-dim); }
 html .tablenav .displaying-num, html .tablenav .tablenav-paging-text { color: var(--rvn-muted); font-family: var(--rvn-mono); font-size: 11px; font-style: normal; }
-html .post-state, html .post-state .dashicons { color: var(--rvn-accent); }
+html .post-state, html .post-state .dashicons { color: var(--rvn-ink); font-family: var(--rvn-mono); font-size: 11px; text-transform: uppercase; }
 html .plugins .active th.check-column, html .plugin-update-tr.active td { border-left-color: var(--rvn-accent); }
 
 /* ── Links ── */
 html body.wp-admin a, html body.login a { transition: none; color: var(--rvn-ink); }
 html body.wp-admin a:hover, html body.login a:hover { color: var(--rvn-muted); }
-html body.wp-admin #wpbody-content a:focus, html body.login a:focus { box-shadow: 0 0 0 2px var(--rvn-ink); outline: 2px solid transparent; color: var(--rvn-ink); }
+html body.wp-admin #wpbody-content a:focus, html body.login a:focus { box-shadow: 0 0 0 2px var(--rvn-accent); outline: 2px solid transparent; color: var(--rvn-ink); }
 
 /* ── Notices ── */
-html .notice, html div.updated, html div.error, html #setting-error-settings_updated { background: var(--rvn-panel); border: 1px solid var(--rvn-line); border-left-width: 8px; color: var(--rvn-ink); }
+html .notice, html div.updated, html div.error, html #setting-error-settings_updated { background: var(--rvn-canvas); border: var(--rvn-rule); border-left-width: 8px; color: var(--rvn-ink); }
 html .notice p, html div.updated p, html div.error p { color: var(--rvn-ink); }
 html .notice-success, html div.updated { border-left-color: #2E6B45; }
-html .notice-warning { border-left-color: #A86A12; }
+html .notice-warning { border-left-color: var(--rvn-accent); }
 html .notice-error, html div.error { border-left-color: var(--rvn-error); }
 html .notice-info { border-left-color: var(--rvn-ink); }
 
 /* ── Footer ── */
-html #wpfooter { color: var(--rvn-dim); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .06em; }
+html #wpfooter { color: var(--rvn-dim); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
 html #wpfooter p { font-size: 11px; }
-html #wpfooter a { color: var(--rvn-muted); }
+html #wpfooter a { color: var(--rvn-ink); }
 
 /* ── ACF (options page + project fields) ── */
 html .acf-fields > .acf-field { border-top-color: var(--rvn-line); }
-html .acf-field .acf-label label { color: var(--rvn-ink); font-weight: 600; }
+html .acf-field .acf-label label { color: var(--rvn-ink); font-family: var(--rvn-mono); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 html .acf-field .acf-label p.description, html .acf-field p.description { color: var(--rvn-muted); }
-html .acf-tab-wrap { background: var(--rvn-canvas); border-bottom-color: var(--rvn-line); }
-html .acf-fields > .acf-tab-wrap .acf-tab-group, html .acf-tab-group { border-color: var(--rvn-line); }
-html .acf-tab-group li a, html .acf-fields > .acf-tab-wrap .acf-tab-group li a { background: var(--rvn-canvas); border-color: var(--rvn-line); color: var(--rvn-muted);
-	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-html .acf-tab-group li a:hover, html .acf-fields > .acf-tab-wrap .acf-tab-group li a:hover { background: var(--rvn-panel); color: var(--rvn-accent); }
+html .acf-tab-wrap { background: var(--rvn-canvas); border-bottom: var(--rvn-rule); }
+html .acf-fields > .acf-tab-wrap .acf-tab-group, html .acf-tab-group { border-color: var(--rvn-ink); }
+html .acf-tab-group li a, html .acf-fields > .acf-tab-wrap .acf-tab-group li a { background: var(--rvn-canvas); border: var(--rvn-rule); color: var(--rvn-ink);
+	font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+html .acf-tab-group li a:hover, html .acf-fields > .acf-tab-wrap .acf-tab-group li a:hover { background: var(--rvn-accent); color: var(--rvn-ink); }
 html .acf-tab-group li.active a, html .acf-fields > .acf-tab-wrap .acf-tab-group li.active a { background: var(--rvn-ink); border-color: var(--rvn-ink); color: var(--rvn-canvas); }
-html .acf-table, html .acf-repeater .acf-table, html .acf-table > thead > tr > th, html .acf-table > tbody > tr > td, html .acf-table > tbody > tr > th { background: var(--rvn-panel); border-color: var(--rvn-line); color: var(--rvn-ink); }
-html .acf-table > thead > tr > th { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-html .acf-row-handle, html .acf-table > tbody > tr > td.acf-row-handle, html .acf-repeater .acf-row-handle.order { background: var(--rvn-raised); color: var(--rvn-dim); text-shadow: none; }
-html .acf-gallery, html .acf-gallery-main, html .acf-gallery-toolbar, html .acf-gallery-side, html .acf-gallery-side-inner, html .acf-gallery-side-data { background: var(--rvn-panel); border-color: var(--rvn-line); color: var(--rvn-ink); }
+html .acf-fields.-sidebar::before { background: var(--rvn-panel); border-right: var(--rvn-rule); }
+html .acf-table, html .acf-repeater .acf-table, html .acf-table > thead > tr > th, html .acf-table > tbody > tr > td, html .acf-table > tbody > tr > th { background: var(--rvn-canvas); border-color: var(--rvn-line); color: var(--rvn-ink); }
+html .acf-table, html .acf-repeater .acf-table { border: var(--rvn-rule); }
+html .acf-table > thead > tr > th { background: var(--rvn-panel); border-bottom: var(--rvn-rule); font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+html .acf-row-handle, html .acf-table > tbody > tr > td.acf-row-handle, html .acf-repeater .acf-row-handle.order { background: var(--rvn-panel); color: var(--rvn-ink); font-family: var(--rvn-mono); text-shadow: none; }
+html .acf-gallery, html .acf-gallery-main, html .acf-gallery-toolbar, html .acf-gallery-side, html .acf-gallery-side-inner, html .acf-gallery-side-data { background: var(--rvn-panel); border-color: var(--rvn-ink); color: var(--rvn-ink); }
+html .acf-gallery { border-width: 2px; }
 html .acf-gallery .acf-gallery-attachment .margin { background: var(--rvn-raised); border-color: var(--rvn-line); }
-html .acf-switch { background: var(--rvn-canvas); border-color: var(--rvn-faint); color: var(--rvn-muted); }
-html .acf-switch.-on { background: var(--rvn-accent); border-color: var(--rvn-accent); }
-html .acf-switch.-on .acf-switch-on, html .acf-switch .acf-switch-on { color: var(--rvn-canvas); text-shadow: none; }
+html .acf-gallery .acf-gallery-attachment.active .margin { box-shadow: 0 0 0 2px var(--rvn-canvas), 0 0 0 5px var(--rvn-accent); }
+html .acf-switch { background: var(--rvn-canvas); border: var(--rvn-rule); color: var(--rvn-ink); font-family: var(--rvn-mono); text-transform: uppercase; }
+html .acf-switch.-on { background: var(--rvn-accent); border-color: var(--rvn-ink); }
+html .acf-switch.-on .acf-switch-on, html .acf-switch .acf-switch-on { color: var(--rvn-ink); text-shadow: none; }
 html .acf-switch .acf-switch-off { color: var(--rvn-muted); }
 html .acf-switch .acf-switch-slider { background: var(--rvn-ink); border-color: var(--rvn-ink); }
-html .acf-switch.-on .acf-switch-slider { background: var(--rvn-canvas); border-color: var(--rvn-ink); }
-html .acf-input-prepend, html .acf-input-append { background: var(--rvn-raised); border-color: var(--rvn-faint); color: var(--rvn-muted); }
-html .acf-image-uploader .image-wrap, html .acf-file-uploader .file-wrap { background: var(--rvn-panel); border-color: var(--rvn-line); }
-html .acf-admin-toolbar, html .acf-headerbar { background: var(--rvn-canvas); border-color: var(--rvn-line); }
+html .acf-switch.-on .acf-switch-slider { background: var(--rvn-ink); border-color: var(--rvn-ink); }
+html .acf-input-prepend, html .acf-input-append { background: var(--rvn-ink); border-color: var(--rvn-ink); color: var(--rvn-canvas); font-family: var(--rvn-mono); }
+html .acf-image-uploader .image-wrap, html .acf-file-uploader .file-wrap { background: var(--rvn-panel); border: var(--rvn-rule); }
+html .acf-admin-toolbar, html .acf-headerbar { background: var(--rvn-canvas); border-color: var(--rvn-ink); }
 html .select2-container--default .select2-selection--single, html .select2-container--default .select2-selection--multiple,
-html .select2-dropdown, html .select2-search--dropdown .select2-search__field, html .select2-results__option { background: var(--rvn-canvas); border-color: var(--rvn-faint); color: var(--rvn-ink); }
+html .select2-dropdown, html .select2-search--dropdown .select2-search__field, html .select2-results__option { background: var(--rvn-canvas); border-color: var(--rvn-ink); color: var(--rvn-ink); }
 html .select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--rvn-ink); }
 html .select2-container--default .select2-results__option--highlighted[aria-selected],
-html .select2-container--default .select2-results__option--highlighted[data-selected] { background: var(--rvn-ink); color: var(--rvn-canvas); }
+html .select2-container--default .select2-results__option--highlighted[data-selected] { background: var(--rvn-accent); color: var(--rvn-ink); }
 
 /* ── Classic editor chrome (TinyMCE toolbar / text tab) ── */
-html .wp-editor-container { border-color: var(--rvn-line); }
-html .wp-switch-editor { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+html .wp-editor-container { border: var(--rvn-rule); }
+html .wp-switch-editor { font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 html .wp-editor-area { background: var(--rvn-canvas); color: var(--rvn-ink); }
 
-/* ── Login ── */
+/* ── Login: the wordmark set in Archivo Black on paper ── */
 html body.login { background: var(--rvn-canvas); color: var(--rvn-ink); }
 html .login h1 a { width: auto; height: auto; margin: 0 0 24px; padding: 0; background: none; overflow: visible; text-indent: 0;
-	font-family: var(--rvn-body); font-size: 15px; font-weight: 500; letter-spacing: .3em; line-height: 1; color: var(--rvn-ink); text-decoration: none; }
-html .login h1 a:hover, html .login h1 a:focus { color: var(--rvn-accent); box-shadow: none; }
-html .login form { margin-top: 0; padding: 32px; background: var(--rvn-canvas); border: 1px solid var(--rvn-line); box-shadow: none; }
-html .login label { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rvn-ink); }
-html .login form .input, html .login input[type="text"], html .login input[type="password"] { background: var(--rvn-canvas); border-color: var(--rvn-faint); color: var(--rvn-ink); }
+	font-family: var(--rvn-display); font-size: 28px; font-weight: 400; letter-spacing: -.04em; line-height: .9; text-transform: uppercase; color: var(--rvn-ink); text-decoration: none; }
+html .login h1 a:hover, html .login h1 a:focus { color: var(--rvn-ink); background: var(--rvn-accent); box-shadow: none; }
+html .login form { margin-top: 0; padding: 32px; background: var(--rvn-canvas); border: var(--rvn-rule); box-shadow: none; }
+html .login label { font-family: var(--rvn-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--rvn-ink); }
+html .login form .input, html .login input[type="text"], html .login input[type="password"] { background: var(--rvn-canvas); border: 2px solid var(--rvn-ink); color: var(--rvn-ink); }
 html .login .button.wp-hide-pw { border: 0; background: none; color: var(--rvn-muted); }
 html .login .button.wp-hide-pw:hover, html .login .button.wp-hide-pw:focus { background: none; color: var(--rvn-ink); box-shadow: none; border: 0; }
-html .login .button-primary { min-height: 44px; padding: 0 24px; line-height: 42px; }
-html .login #nav, html .login #backtoblog { padding: 0; font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+html .login .button-primary { min-height: 44px; padding: 0 24px; line-height: 40px; }
+html .login #nav, html .login #backtoblog { padding: 0; font-family: var(--rvn-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 html .login #nav a, html .login #backtoblog a, html .login .privacy-policy-page-link a { color: var(--rvn-muted); }
-html .login #nav a:hover, html .login #backtoblog a:hover { color: var(--rvn-accent); }
-html .login .message, html .login .notice, html .login .success, html .login #login_error { background: var(--rvn-panel); border: 1px solid var(--rvn-line); border-left-width: 8px; box-shadow: none; color: var(--rvn-ink); }
+html .login #nav a:hover, html .login #backtoblog a:hover { color: var(--rvn-ink); }
+html .login .message, html .login .notice, html .login .success, html .login #login_error { background: var(--rvn-canvas); border: var(--rvn-rule); border-left-width: 8px; box-shadow: none; color: var(--rvn-ink); }
 html .login #login_error { border-left-color: var(--rvn-error); }
 html .login .message, html .login .success { border-left-color: var(--rvn-ink); }

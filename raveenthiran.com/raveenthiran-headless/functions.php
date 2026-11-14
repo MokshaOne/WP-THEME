@@ -267,7 +267,7 @@ add_action( 'admin_bar_menu', function ( $bar ) {
 /* Block-editor screens keep the stock dark toolbar (the skin stays off there):
    a bit of colour so Publish still reads as an action. admin.css overrides it. */
 add_action( 'admin_head', function () {
-	echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{color:#ffd76e!important;font-weight:600}</style>';
+	echo '<style>#wpadminbar #wp-admin-bar-rvn-publish > .ab-item{background:#FA5D36!important;color:#0C0C0B!important;font-weight:700}</style>';
 } );
 
 /* ── Site Control as the start screen ── */
@@ -480,6 +480,7 @@ function rvn_site_payload() {
 			'instagram' => (string) rvn_site_opt( 'contact_instagram', '' ),
 			'behance'   => (string) rvn_site_opt( 'contact_behance', '' ),
 			'linkedin'  => (string) rvn_site_opt( 'contact_linkedin', '' ),
+			'coords'    => (string) rvn_site_opt( 'contact_coords', '' ),
 		),
 		'pricing' => array(
 			'currency' => (string) rvn_site_opt( 'currency', '€' ),

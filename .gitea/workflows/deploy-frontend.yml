@@ -1,0 +1,41 @@
+name: Deploy frontend
+
+# Builds the Astro site on the NAS itself (Gitea + act_runner in Docker) and
+# publishes it to easyname over FTPS, so a live deploy no longer depends on
+# GitHub. Content is pulled from WordPress at build time.
+#
+# Repository secrets: FTP_USER, FTP_PASS
+# Optional secrets:   FTP_HOST (default ftp.easyname.com), FTP_DIR (default
+#                     /html/), WP_BASE (default site-local REST API)
+#
+# The job runs inside a node image, so the NAS host itself needs no Node.
+
+on:
+  push:
+    branches: [ Theme-folder ]
+    paths:
+      - "frontends/raveenthiran/astro/**"
+      - "tools/deploy/nas-deploy.sh"
+      - ".gitea/workflows/deploy-frontend.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: node:22-bookworm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and publish
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_DIR: ${{ secrets.FTP_DIR }}
+          WP_BASE: ${{ secrets.WP_BASE }}
+        run: |
+          chmod +x tools/deploy/nas-deploy.sh
+          tools/deploy/nas-deploy.sh

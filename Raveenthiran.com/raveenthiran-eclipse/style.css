@@ -1,0 +1,16 @@
+/*
+Theme Name: ECLIPSE — raveenthiran
+Theme URI: https://raveenthiran.com
+Author: Nishuthan Raveenthiran
+Author URI: https://raveenthiran.com
+Description: ECLIPSE — a fusion of the three sibling themes. Aurelius's cinematic editorial scroll and Bodoni Moda display, VOID's obsidian canvas + tactical HUD (gilt hairlines, Syne labels, scanline, fixed coordinate status bar), and Obscura's warm amber ember accent. A real WebGL 3D hero renders site-wide on desktop (never on mobile). Shares the same content engine as Obscura / Aurelius / VOID — the nr_* Custom Post Types, ACF fields, shortcodes and Theme Settings all stay intact, so you can install it alongside them and switch freely. Bodoni Moda + Syne + Inter Tight + JetBrains Mono, self-hosted. Filterable portfolio, price-estimate popover, self-built WebP / PWA / SMTP. Compatible with ACF Pro.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: raveenthiran
+Tags: photography, portfolio, dark, obsidian, gold, amber, editorial, webgl, 3d, hud, multipage
+*/
+
+/* All visual styles live in assets/css/theme.css */

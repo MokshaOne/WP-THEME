@@ -141,3 +141,90 @@ add_action( 'rest_api_init', function () {
 		),
 	) );
 } );
+
+/* ── GitHub <-> WordPress: rebuild the Astro site when content changes ───────
+ *
+ * The frontend is built by GitHub Actions
+ * (.github/workflows/deploy-frontend.yml), which pulls this site's REST API at
+ * build time. Without a hook, new content waits for the nightly 04:00 UTC
+ * rebuild; this fires a repository_dispatch instead, so a publish goes live in
+ * a couple of minutes.
+ *
+ * Setup, once:
+ *   1. GitHub -> Settings -> Developer settings -> Fine-grained token, limited
+ *      to this repository, permission "Contents: Read and write".
+ *   2. Store it on the WordPress side, either in wp-config.php:
+ *          define( 'RVN_GITHUB_TOKEN', 'github_pat_...' );
+ *      or in the database:
+ *          wp option update rvn_github_token 'github_pat_...'
+ *   3. Optional overrides: RVN_GITHUB_REPO (default MokshaOne/WP-THEME) and
+ *      RVN_GITHUB_EVENT (default wp-content-updated).
+ *
+ * No token configured -> every call is a silent no-op and the cron still runs.
+ */
+
+function rvn_github_option( $const, $option, $default ) {
+	if ( defined( $const ) && constant( $const ) ) { return constant( $const ); }
+	$value = get_option( $option );
+	return $value ? $value : $default;
+}
+
+function rvn_dispatch_github_rebuild( $reason = '' ) {
+	$token = rvn_github_option( 'RVN_GITHUB_TOKEN', 'rvn_github_token', '' );
+	if ( ! $token ) { return false; }
+
+	/* At most one rebuild per minute: a bulk save would otherwise fire dozens
+	   of dispatches that cancel each other through the workflow concurrency. */
+	if ( get_transient( 'rvn_github_dispatch' ) ) { return false; }
+	set_transient( 'rvn_github_dispatch', 1, 60 );
+
+	$repo  = rvn_github_option( 'RVN_GITHUB_REPO', 'rvn_github_repo', 'MokshaOne/WP-THEME' );
+	$event = rvn_github_option( 'RVN_GITHUB_EVENT', 'rvn_github_event', 'wp-content-updated' );
+
+	$response = wp_remote_post(
+		'https://api.github.com/repos/' . $repo . '/dispatches',
+		array(
+			'timeout'  => 5,
+			'blocking' => false,
+			'headers'  => array(
+				'Authorization'        => 'Bearer ' . $token,
+				'Accept'               => 'application/vnd.github+json',
+				'X-GitHub-Api-Version' => '2022-11-28',
+				'User-Agent'           => 'rvn-headless-wordpress',
+				'Content-Type'         => 'application/json',
+			),
+			'body'     => wp_json_encode(
+				array(
+					'event_type'     => $event,
+					'client_payload' => array(
+						'source' => 'wordpress',
+						'site'   => home_url(),
+						'reason' => $reason,
+					),
+				)
+			),
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		error_log( '[rvn] GitHub dispatch failed: ' . $response->get_error_message() );
+		return false;
+	}
+	return true;
+}
+
+/* Publishing or unpublishing anything the site renders triggers a rebuild. */
+add_action( 'transition_post_status', function ( $new_status, $old_status, $post ) {
+	if ( ! $post instanceof WP_Post ) { return; }
+	if ( ! in_array( $post->post_type, array( 'work', 'post', 'page' ), true ) ) { return; }
+	if ( ( 'publish' === $old_status ) === ( 'publish' === $new_status ) ) { return; }
+	rvn_dispatch_github_rebuild( $post->post_type . ':' . $post->ID . ' ' . $old_status . '->' . $new_status );
+}, 10, 3 );
+
+/* Deleting live content changes the site too. */
+add_action( 'before_delete_post', function ( $post_id ) {
+	$post = get_post( $post_id );
+	if ( $post && in_array( $post->post_type, array( 'work', 'post', 'page' ), true ) ) {
+		rvn_dispatch_github_rebuild( $post->post_type . ':' . $post_id . ' deleted' );
+	}
+} );

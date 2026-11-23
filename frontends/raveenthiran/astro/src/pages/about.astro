@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import Quotes from '../components/ui/Quotes.astro';
+import { getSite } from '../lib/wp';
+import { soften } from '../lib/format';
+import { cleanHtml } from '../lib/safe';
+
+const site = await getSite();
+const portrait = site.studio.portrait || '/sample/self-portrait.webp';
+
+// WP fields "Studio — bio / spec / statement". lib/wp.ts already falls back
+// when the API is unreachable; these guards also cover fields that exist but
+// were saved empty in the admin.
+const FALLBACK_BIO = '<p>Vienna-based, working across Austria. Portrait, fashion and editorial — planned like productions, shot with intent, delivered on time.</p>';
+const FALLBACK_SPEC = [
+	{ label: 'Based in', value: 'Vienna, Austria' },
+	{ label: 'Available for', value: 'Portrait · Fashion · Editorial' },
+	{ label: 'Since', value: '2020' },
+];
+const FALLBACK_STATEMENT = ['No presets.', 'No shortcuts.', 'Just the frame.'];
+
+const bioHtml = cleanHtml(site.studio.bio || '');
+const bio = bioHtml.replace(/<[^>]+>/g, '').trim() ? bioHtml : FALLBACK_BIO;
+const spec = (site.studio.spec || []).filter((r) => r && (r.label || r.value));
+const sheet = spec.length ? spec : FALLBACK_SPEC;
+const lines = (site.studio.statement || []).map((l) => (l || '').trim()).filter(Boolean);
+const statement = lines.length ? lines : FALLBACK_STATEMENT;
+
+const process = [
+	['01', 'The call', 'We talk intent, references and location. You get a fixed quote — no surprises later.'],
+	['02', 'The shoot', 'Prepared, directed, unhurried. Most people hate being photographed — until this part.'],
+	['03', 'The delivery', 'Hand-edited selects in full resolution, ready for print — delivered when promised.'],
+];
+---
+<Base title="About — Raveenthiran" description="Nishuthan Raveenthiran — photographer based in Vienna, working across Austria." active="studio" page="studio" preload={portrait}>
+	<h1 class="ptitle statement" data-intro>
+		{statement.map((l) => <span>{soften(l)}</span>)}
+	</h1>
+
+	<section class="s-grid">
+		<img class="s-portrait" src={portrait} alt="Nishuthan Raveenthiran" loading="eager" fetchpriority="high" />
+		<div class="s-body">
+			<p class="s-body__k mono">Nishuthan Raveenthiran — Photographer</p>
+			<div class="s-bio" set:html={bio} />
+			<dl class="s-spec mono" aria-label="Studio data sheet">
+				{sheet.map((r) => <div class="spec"><dt>{soften(r.label)}</dt><dd>{soften(r.value)}</dd></div>)}
+			</dl>
+		</div>
+	</section>
+
+	{site.studio.stats.length > 0 && (
+		<section class="stats" aria-label="In numbers" data-reveal>
+			{site.studio.stats.map((s) => (
+				<div class="stat"><b>{s.value}</b><span class="mono">{soften(s.label)}</span></div>
+			))}
+		</section>
+	)}
+
+	{site.studio.client_logos.length > 0 ? (
+		<section class="seen" data-reveal>
+			<h2 class="mono mute">Seen at</h2>
+			<div class="logowall">
+				{site.studio.client_logos.map((c) => <span><img src={c.logo} alt={c.name} title={c.name} loading="lazy" /></span>)}
+			</div>
+		</section>
+	) : site.studio.clients.length > 0 && (
+		<section class="seen" data-reveal>
+			<h2 class="mono mute">Seen at</h2>
+			<ul>{site.studio.clients.map((c) => <li>{c}</li>)}</ul>
+		</section>
+	)}
+
+	<section class="process-b" aria-label="How it works">
+		<div class="says mono"><span>How it works</span><span>03 steps</span></div>
+		<ol class="quotes">
+			{process.map(([no, t, body]) => (
+				<li class="quote">
+					<span class="mono acc">{no}</span>
+					<h3 class="process-b__t">{t}</h3>
+					<p>{body}</p>
+				</li>
+			))}
+		</ol>
+	</section>
+
+	<Quotes items={site.home.testimonials} class="s-end" />
+
+	<a class="next" href="/enquire/">
+		<span class="next__k mono"><span>Get in touch</span><span>→</span></span>
+		<span class="next__t">Book a session</span>
+	</a>
+</Base>

@@ -1,0 +1,165 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSite, getProjects } from '../lib/wp';
+import { soften } from '../lib/format';
+import { jsonForScript, cleanHtml } from '../lib/safe';
+
+const site = await getSite();
+// Same resolution order as lib/wp.ts (import.meta.env → process.env → default),
+// so a WP_BASE override at build time also moves the enquiry endpoint.
+const penv = (k: string): string => (typeof process !== 'undefined' && process.env && process.env[k]) || '';
+const endpoint = ((import.meta.env.WP_BASE as string) || penv('WP_BASE') || 'https://wp.m1o.at/wp-json/wp/v2').replace(/\/wp\/v2\/?$/, '') + '/rvn/v1/enquiry';
+const turnstile = site.security.turnstile_site;
+// slug → title, so /enquire/?ref=<slug> can name the reference project without
+// trusting any text from the URL.
+const refs = Object.fromEntries((await getProjects()).map((p) => [p.slug, p.title]));
+
+// The calculator follows the studio's real pricing model: there is no price
+// list — session type × duration × distance from Vienna + add-ons define the
+// figure, and the number shown is an ORIENTATION. The firm quote comes by mail.
+const cur = site.pricing.currency || '€';
+const fmt = (n: number) => n.toLocaleString('de-AT');
+const services = site.pricing.sessions.map((s) => ({
+	name: soften(s.name),
+	base: s.base,
+	hrs: s.hrs,
+	extra: s.extra,
+	note: s.note,
+	meta: `${s.hrs} hrs · from ${fmt(s.base)} ${cur}`,
+}));
+const s0 = services[0];
+const addons = site.pricing.addons;
+const perKm = site.pricing.per_km;
+const licence = site.pricing.licence;
+const commx = site.pricing.commercial_extra;
+const usageCost = licence + commx;
+
+// FAQ rich-results schema — only when FAQ content exists.
+const faqSchema = site.faq.length ? {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: site.faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') },
+	})),
+} : null;
+---
+<Base title="Enquire — Raveenthiran" description="Commission a shoot. An honest orientation figure now, a firm written offer within 24 hours." active="enquire" page="enquire">
+	<h1 class="ptitle" data-intro>Enquire</h1>
+
+	<section class="enq" data-enquire data-perkm={perKm} data-licence={licence} data-commx={commx}>
+		<div class="enq__form">
+			<div class="step">
+				<p class="step__k"><b>01</b> — Session</p>
+				<div class="opts">
+					{services.map((s, i) => (
+						<button type="button" class="opt opt--svc svc" aria-pressed={i === 0 ? 'true' : 'false'}
+							data-name={s.name} data-base={s.base} data-hrs={s.hrs} data-extra={s.extra} data-meta={s.meta} data-note={s.note}>
+							<span class="name">{s.name}</span>
+							<span class="m">{s.meta}</span>
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div class="step">
+				<p class="step__k"><b>02</b> — Extra hours</p>
+				<div class="hrs">
+					<button type="button" data-minus aria-label="Fewer hours">−</button>
+					<span class="hrs__v" data-extra-hours aria-live="polite">0</span>
+					<button type="button" data-plus aria-label="More hours">+</button>
+					<span class="mute">× <span data-extra-rate>{s0.extra}</span> {cur} / hr</span>
+				</div>
+			</div>
+
+			<div class="step">
+				<p class="step__k"><b>03</b> — Add-ons</p>
+				<div class="opts">
+					{addons.map((a) => (
+						<button type="button" class="opt" aria-pressed="false" data-addon data-label={a.label} data-price={a.price}>
+							<span>{a.label}</span><span class="p">+ {fmt(a.price)} {cur}</span>
+						</button>
+					))}
+				</div>
+				<p class="note" data-addons-lock style="display:none">Not available on TFP collaborations.</p>
+			</div>
+
+			<div class="step">
+				<p class="step__k"><b>04</b> — Usage</p>
+				<div class="opts">
+					<button type="button" class="opt" data-usage="private" aria-pressed="true"><span>Private</span><span class="p">0 {cur}</span></button>
+					<button type="button" class="opt" data-usage="commercial" aria-pressed="false"><span>Commercial</span><span class="p">+ {fmt(usageCost)} {cur}</span></button>
+					<button type="button" class="opt" data-usage="tfp" aria-pressed="false"><span>TFP</span><span class="p">Collab · 0 {cur}</span></button>
+				</div>
+				<p class="note">TFP — time for print: a collaborative shoot, both sides keep the frames, no fee. Offered at my discretion; tell me your idea below.</p>
+			</div>
+
+			<div class="step">
+				<p class="step__k"><b>05</b> — Travel from Vienna</p>
+				<label class="km">
+					<input type="number" inputmode="numeric" min="0" max="2000" step="5" value="0" data-km-input aria-label="Kilometres from Vienna" />
+					<span class="mute">km · round trip × {perKm} {cur}/km</span>
+					{site.travel.dates.length > 0 && (
+						<span class="km__road">On the road: {site.travel.dates.map((t) => `${t.dates} ${t.city}`).join(' · ')} — ask about a slot</span>
+					)}
+				</label>
+			</div>
+
+			<div class="step">
+				<p class="step__k"><b>06</b> — Contact</p>
+				<p class="ref" data-ref hidden>
+					<span class="mute">Reference</span>
+					<a data-ref-link href="/work/"></a>
+					<button type="button" data-ref-clear aria-label="Remove the reference project">×</button>
+				</p>
+				<form id="enq-form" action={endpoint} method="POST" data-mailto={site.contact.email}>
+					<div class="fields">
+						<input name="name" placeholder="Name" aria-label="Name" required autocomplete="name" />
+						<input name="email" type="email" placeholder="Email" aria-label="Email" required autocomplete="email" />
+						<input name="date" placeholder="Preferred date" aria-label="Preferred date" data-date />
+						<input name="location" placeholder="Location" aria-label="Location" />
+					</div>
+					<textarea name="message" placeholder="About the project" aria-label="About the project" rows="3"></textarea>
+					<!-- honeypot: real users leave this empty -->
+					<input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+					{turnstile && (
+						<>
+							<div class="cf-turnstile enq__captcha" data-sitekey={turnstile}></div>
+							<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
+						</>
+					)}
+				</form>
+			</div>
+		</div>
+
+		<aside class="est" aria-label="Your estimate">
+			<div class="est__h"><span>Estimate</span><span data-est-name>{s0.name}</span></div>
+			<div class="est__l"><span>Session</span><span data-est-meta>{s0.meta}</span></div>
+			<div class="est__l"><span>Base · <span data-base-hrs>{s0.hrs}</span> hrs</span><span><span data-base-fmt>{fmt(s0.base)}</span> {cur}</span></div>
+			<div class="est__l"><span>Extra hours × <span data-extra-hours>0</span></span><span><span data-extra-fmt>0</span> {cur}</span></div>
+			<div class="est__l"><span>Add-ons</span><span><span data-addons-fmt>0</span> {cur}</span></div>
+			<div class="est__l"><span>Travel · <span data-km-echo>0</span> km rt</span><span><span data-travel-fmt>0</span> {cur}</span></div>
+			<div class="est__l"><span>Commercial usage</span><span><span data-licence-fmt>0</span> {cur}</span></div>
+			<div class="est__l" data-tfp-line style="display:none"><span>TFP collaboration</span><span>− <span data-tfp-fmt>0</span> {cur}</span></div>
+			<div class="est__total">{cur}<span data-total-fmt>{fmt(s0.base)}</span></div>
+			<p class="est__note" data-est-note style="display:none"></p>
+			<p class="est__fine">Indicative. The firm quote follows by email within 24 hours.</p>
+			<button type="submit" form="enq-form" class="est__send"><span>Send enquiry</span><span aria-hidden="true">→</span></button>
+			<div class="est__msg" data-est-msg role="status" aria-live="polite"></div>
+		</aside>
+	</section>
+
+	<script type="application/json" id="enquire-refs" set:html={jsonForScript(refs)} is:inline />
+	{faqSchema && <script type="application/ld+json" set:html={jsonForScript(faqSchema)} is:inline />}
+	{site.faq.length > 0 && (
+		<section class="faq" aria-label="Questions">
+			{site.faq.map((f) => (
+				<details>
+					<summary>{f.q}</summary>
+					<div class="faq__a" set:html={cleanHtml(f.a)} />
+				</details>
+			))}
+		</section>
+	)}
+</Base>

@@ -1,0 +1,127 @@
+---
+import '../styles/theme.css';
+import '../styles/a11y.css';
+// <ClientRouter /> is Astro 5's name for <ViewTransitions /> (deprecated alias).
+import { ClientRouter, fade } from 'astro:transitions';
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
+import TabBar from '../components/ui/TabBar.astro';
+import { getSite, getProjects } from '../lib/wp';
+import { jsonForScript, safeUrl } from '../lib/safe';
+import pkg from '../../package.json';
+
+const VERSION = pkg.version;
+const BUILD_DATE = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Europe/Vienna' });
+
+export interface Props {
+	title: string;
+	description?: string;
+	active?: string;
+	ogImage?: string;
+	preload?: string;
+	preloadSrcset?: string;
+	preloadSizes?: string;
+	page?: string;
+}
+const { title, description = '', active = '', ogImage = '', preload = '', preloadSrcset = '', preloadSizes = '', page = '' } = Astro.props;
+
+const site = await getSite();
+const projects = await getProjects();
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+// Open Graph / Twitter share image: make it absolute (scrapers reject relative
+// URLs) and always provide one — fall back to the first featured photograph so
+// every page shares a real, branded frame instead of a bare summary card.
+// Facebook, LinkedIn and X do not render AVIF previews, so an AVIF candidate
+// gives way to the first non-AVIF project image when one exists.
+const abs = (u: string) => (u ? new URL(u, Astro.site).href : '');
+const isAvif = (u: string) => /\.avif(?:[?#]|$)/i.test(u || '');
+const featuredOg = projects.find((p) => p.featured_home)?.image || projects[0]?.image || '';
+const ogCandidate = ogImage || featuredOg;
+const ogFallback = projects.map((p) => p.ogImage || p.image).find((u) => u && !isAvif(u)) || '';
+const ogFinal = abs(isAvif(ogCandidate) && ogFallback ? ogFallback : ogCandidate);
+
+// Social links come from WordPress; only http(s) targets are rendered.
+const social = [
+	{ label: 'Instagram', href: safeUrl(site.contact.instagram) },
+	{ label: 'Behance', href: safeUrl(site.contact.behance) },
+	{ label: 'LinkedIn', href: safeUrl(site.contact.linkedin) },
+].filter((s) => s.href && /^https?:/i.test(s.href)) as { label: string; href: string }[];
+
+const jsonld = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'ProfessionalService',
+			'@id': (Astro.site || '') + '#studio',
+			name: 'Raveenthiran Photography',
+			image: ogFinal || undefined,
+			email: site.contact.email,
+			url: Astro.site,
+			areaServed: 'Austria',
+			address: { '@type': 'PostalAddress', addressLocality: 'Vienna', addressCountry: 'AT' },
+			geo: { '@type': 'GeoCoordinates', latitude: 48.2082, longitude: 16.3738 },
+			founder: { '@type': 'Person', name: 'Nishuthan Raveenthiran', jobTitle: 'Photographer' },
+			sameAs: social.map((s) => s.href),
+		},
+		{ '@type': 'WebSite', url: Astro.site, name: 'Raveenthiran', inLanguage: 'en' },
+	],
+};
+
+const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%230C0C0B'/%3E%3Ctext x='24' y='38' font-family='Arial Black,Helvetica,sans-serif' font-weight='900' font-size='36' fill='%23FA5D36' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E";
+// Ground per page: ink for Home / Project / Enquire, cream for the rest.
+const LIGHT = ['work', 'studio', 'journal', 'article', 'legal'];
+const ground = LIGHT.includes(page) ? 'light' : 'dark';
+---
+<!doctype html>
+<html lang="en" transition:animate={fade({ duration: '250ms' })}>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>{title}</title>
+	{description && <meta name="description" content={description} />}
+	<link rel="canonical" href={canonical} />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Raveenthiran" />
+	<meta property="og:title" content={title} />
+	<meta property="og:url" content={canonical} />
+	{description && <meta property="og:description" content={description} />}
+	{ogFinal && <meta property="og:image" content={ogFinal} />}
+	{ogFinal && <meta property="og:image:alt" content={`${title} — Raveenthiran Photography`} />}
+	<meta name="twitter:card" content={ogFinal ? 'summary_large_image' : 'summary'} />
+	<meta name="twitter:title" content={title} />
+	{description && <meta name="twitter:description" content={description} />}
+	{ogFinal && <meta name="twitter:image" content={ogFinal} />}
+	<meta name="theme-color" content="#0C0C0B" />
+	{/* LCP preload mirrors the <img>'s srcset/sizes, so the browser fetches the
+	    same candidate it will actually render instead of the full-size original. */}
+	{preload && <link rel="preload" as="image" href={preload} imagesrcset={preloadSrcset || undefined} imagesizes={preloadSrcset && preloadSizes ? preloadSizes : undefined} fetchpriority="high" />}
+	<link rel="preconnect" href="https://wp.m1o.at" crossorigin />
+	<link rel="dns-prefetch" href="https://wp.m1o.at" />
+	<link rel="icon" href={favicon} />
+	<link rel="apple-touch-icon" href="/icon.svg" />
+	<link rel="mask-icon" href="/icon.svg" color="#0C0C0B" />
+	<link rel="manifest" href="/site.webmanifest" />
+	<link rel="alternate" type="application/rss+xml" title="Raveenthiran — Journal" href="/rss.xml" />
+	<script type="application/ld+json" set:html={jsonForScript(jsonld)} is:inline />
+	<!-- Speculation Rules: hover-intent prefetch of same-origin pages (Batch 16) -->
+	<script type="speculationrules" set:html={jsonForScript({ prefetch: [{ source: 'document', where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/enquire/*' } }] }, eagerness: 'moderate' }] })} is:inline />
+	<ClientRouter />
+</head>
+<body data-page={page}>
+	<a class="skip-link" href="#main">Skip to content</a>
+	<Header active={active} />
+
+	<main id="main" class={ground} data-screen-label={page}>
+		<slot />
+	</main>
+
+	<Footer email={site.contact.email} social={social} coords={site.contact.coords} version={VERSION} buildDate={BUILD_DATE} />
+	<TabBar active={active} />
+
+	<script>
+		import '../scripts/ui.js';
+	</script>
+</body>
+</html>

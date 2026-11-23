@@ -1,0 +1,22 @@
+---
+// Numbered index rows (Home / Work / series): "001  TITLE  CAT  LOC  2026".
+// The wrapper carries data-preview: on desktop ui.js floats the row's image
+// next to the cursor. Extra attributes per row (data-cat …) come from `attrs`.
+import type { Project } from '../../lib/wp';
+import { pad, soften } from '../../lib/format';
+interface Row { p: Project; n: number; attrs?: Record<string, string> }
+interface Props { rows: Row[]; variant?: 'work' }
+const { rows, variant } = Astro.props;
+---
+<div class:list={['rows', variant && `rows--${variant}`]} data-preview>
+	{rows.map(({ p, n, attrs = {} }) => (
+		<a class="row" href={`/work/${p.slug}/`} data-img={p.image || undefined} {...attrs}>
+			<span class="n">{pad(n, 3)}</span>
+			<span class="t">{p.title}</span>
+			<span class="c mono">{soften(p.category || 'Work')}</span>
+			<span class="l mono">{soften(p.location || 'Vienna')}</span>
+			<span class="y">{p.year}</span>
+		</a>
+	))}
+	<img class="preview" alt="" aria-hidden="true" />
+</div>

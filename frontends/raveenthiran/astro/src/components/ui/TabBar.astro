@@ -1,0 +1,11 @@
+---
+// Bottom tab bar (sticky, every width): RVN + the four sections, the current
+// one in the accent.
+import { NAV } from '../../lib/nav';
+interface Props { active: string }
+const { active } = Astro.props;
+---
+<nav class="tabbar" aria-label="Sections">
+	<a href="/" aria-label="Home">RVN</a>
+	{NAV.map((n) => <a href={n.href} aria-current={active === n.key ? 'page' : undefined}>{n.label}</a>)}
+</nav>

@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts } from '../../lib/wp';
+import { pad, soften } from '../../lib/format';
+
+const posts = await getPosts();
+---
+<Base title="Journal — Raveenthiran" description="Notes on light, process and the work — from the Raveenthiran studio in Vienna." active="journal" page="journal">
+	<h1 class="ptitle" data-intro>Journal<sup>{pad(posts.length, 3)}</sup></h1>
+
+	<div class="rows" data-preview>
+		{posts.map((post, i) => (
+			<a class="jrow" href={`/journal/${post.slug}/`} data-img={post.image || undefined}>
+				<span class="jrow__m mono"><span>{pad(i + 1)} — {soften(post.category || 'Notes')}</span><span>{post.dateLabel}</span></span>
+				<h2>{soften(post.title)}</h2>
+				{post.excerpt && <p>{soften(post.excerpt)}</p>}
+			</a>
+		))}
+		{posts.length === 0 && (
+			<p class="jempty mono">Nothing published yet — the first notes are on their way.</p>
+		)}
+		<img class="preview" alt="" aria-hidden="true" />
+	</div>
+</Base>

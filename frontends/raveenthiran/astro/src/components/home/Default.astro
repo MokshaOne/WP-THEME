@@ -1,0 +1,68 @@
+---
+// Home — "Archived Brutalism": meta line with the Vienna clock, the name in
+// full-bleed Archivo Black, marquee, booking strip, the featured frame, the
+// numbered index (cursor preview), statement, lede + recognition, testimonials.
+import type { Site, Project } from '../../lib/wp';
+import { pad, soften } from '../../lib/format';
+import IndexRows from '../ui/IndexRows.astro';
+import Quotes from '../ui/Quotes.astro';
+interface Props { site: Site; projects: Project[]; }
+const { site, projects } = Astro.props;
+
+const featured = projects.find((p) => p.featured_home) || projects[0];
+const featN = featured ? projects.indexOf(featured) + 1 : 1;
+const statement = site.studio.statement.filter(Boolean);
+const honors = site.home.honors;
+const marquee = ['Portrait', 'Fashion', 'Editorial', 'Vienna & across Austria', `Booking ${new Date().getFullYear()}`, 'Available for commissions'];
+const since = (site.studio.spec.find((r) => /since/i.test(r.label))?.value || '2020');
+---
+<div class="h-meta mono" data-intro>
+	<span>Photographic archive — Vienna</span>
+	<span>Vienna <b data-clock>--:--:--</b> CET</span>
+	<span>Index 001–{pad(projects.length, 3)}</span>
+</div>
+<h1 class="h-name" aria-label="Raveenthiran — portrait, fashion and editorial photography in Vienna" data-intro>
+	<span aria-hidden="true">Raveen</span><span aria-hidden="true">thiran</span>
+</h1>
+
+<div class="marq" aria-hidden="true">
+	<div class="marq__track">
+		{[0, 1].map(() => <span>{marquee.map((m) => <>{m}<i>✦</i></>)}</span>)}
+	</div>
+</div>
+
+<div class="strip">
+	<div>Portrait / Fashion / Editorial</div>
+	<div>Working since {soften(since)}</div>
+	<a class="strip__cta" href="/enquire/"><span>Book a session</span><span aria-hidden="true">→</span></a>
+</div>
+
+{featured && (
+	<a class="feat" href={`/work/${featured.slug}/`} data-reveal>
+		{featured.image && <img src={featured.image} srcset={featured.imageSrcset || undefined} sizes="100vw" width={featured.imageW || undefined} height={featured.imageH || undefined}
+			alt={featured.title} style={featured.focal ? `--focal:${featured.focal}` : undefined} loading="eager" fetchpriority="high" decoding="async" />}
+		<span class="feat__c feat__tl mono">Featured — {pad(featN, 3)}</span>
+		<span class="feat__c feat__tr mono">{soften(featured.category || 'Work')} · {featured.year}</span>
+		<span class="feat__c feat__br mono">View →</span>
+		<span class="feat__t">{featured.title}</span>
+	</a>
+)}
+
+<IndexRows rows={projects.map((p, i) => ({ p, n: i + 1 }))} />
+
+{statement.length > 0 && (
+	<p class="statement h-stmt" data-reveal>{statement.map((l) => <span>{l}</span>)}</p>
+)}
+
+<div class="h-split">
+	<p class="lede">{site.home.hero_lede}</p>
+	{honors.length > 0 && (
+		<div class="mono" role="table" aria-label="Recognition">
+			{honors.map((h) => (
+				<div class="honor" role="row"><span class="y" role="cell">{h.year}</span><span class="t" role="cell">{h.title}</span><span class="s" role="cell">{h.tag}</span></div>
+			))}
+		</div>
+	)}
+</div>
+
+<Quotes items={site.home.testimonials} />

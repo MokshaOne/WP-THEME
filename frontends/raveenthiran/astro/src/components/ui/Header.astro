@@ -1,0 +1,14 @@
+---
+// Fixed header: wordmark left, numbered index links right ("01 Work").
+// mix-blend-mode: difference keeps it legible on ink, cream and photographs.
+import { NAV } from '../../lib/nav';
+import { pad } from '../../lib/format';
+interface Props { active: string }
+const { active } = Astro.props;
+---
+<header class="site-header" data-header>
+	<a class="wordmark" href="/" aria-label="Raveenthiran — home">Raveenthiran®</a>
+	<nav class="nav" aria-label="Primary">
+		{NAV.map((n, i) => <a href={n.href} aria-current={active === n.key ? 'page' : undefined}><span>{pad(i + 1, 2)}</span> {n.label}</a>)}
+	</nav>
+</header>

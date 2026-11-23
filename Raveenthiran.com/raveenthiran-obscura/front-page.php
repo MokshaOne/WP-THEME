@@ -138,6 +138,9 @@ $first        = $slides[0] ?? [];
 			</div>
 		<?php endforeach; ?>
 
+		<div class="nr-hero__glow" aria-hidden="true"></div>
+		<div class="nr-hero__scan" aria-hidden="true"></div>
+
 		<div class="nr-hero__meta nr-hero__meta--tl">
 			<div><span class="tick"></span><b data-meta-cat><?php echo esc_html( $first['cat'] ?? '' ); ?></b></div>
 			<div data-meta-loc><?php echo esc_html( ( $first['loc'] ?? '' ) . ' · ' . $coords ); ?></div>

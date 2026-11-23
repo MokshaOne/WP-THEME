@@ -1,0 +1,16 @@
+/*
+Theme Name: Still
+Theme URI: https://raveenthiran.com
+Author: Nishuthan Raveenthiran
+Author URI: https://raveenthiran.com
+Description: Still — a minimal, cinematic photographer theme. Pure black, thin white type, small tasteful 3D. The homepage boots like a terminal (loading → runs "portfolio" → the name decodes in), slides horizontally into a dock-navigated home of teaser panels, then vertical snap-scroll. Every home panel links out to a real, full page — Work, Journal, Studio, Contact, Enquire — all CMS-driven for unlimited galleries and journal entries. Classic PHP, no page builder, no ACF.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: still
+Tags: photography, portfolio, dark, minimal, custom-menu, featured-images, translation-ready, threaded-comments
+*/
+
+/* Visual styles live in assets/css/main.css (enqueued in functions.php). */

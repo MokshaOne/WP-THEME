@@ -1,0 +1,682 @@
+<!doctype html>
+<!--
+  Still — static homepage (the "safe zone" frontpage).
+  Self-contained: no WordPress, no PHP, no build step. Drop this single file
+  into your static web root on easyname (e.g. public_html/index.html).
+
+  Content management stays in WordPress. Point the links below at your WP
+  install (dock items + the "Open →" buttons): replace /work, /about and
+  /enquire with your real pages, e.g. https://cms.raveenthiran.com/work .
+  On this homepage the dock smooth-scrolls to the panels; the hrefs are used
+  as the real destinations (and as the no-JS fallback).
+
+  Derived from the "Still" WordPress theme (still/still/) — same markup, CSS
+  and JS, with the cinematic intro decoding the name on load.
+-->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Raveenthiran — Photography</title>
+	<meta name="description" content="Portraiture, architecture and the quiet spaces between. Selected work by Nishuthan Raveenthiran — Vienna, working across Europe.">
+	<script>
+	/* Intro fail-safe: never trap the visitor behind a black overlay.
+	   The main script clears this timer when it initialises; if the script is
+	   missing or stale, the intro is revealed-away after a few seconds. */
+	document.documentElement.className += ' js';
+	window.__stillFail = setTimeout(function () { document.documentElement.className += ' still-fallback'; }, 6000);
+	</script>
+	<noscript><style>#intro{display:none!important}body.intro #home{position:relative!important;transform:none!important;height:auto!important;overflow:visible!important}body.intro,body.intro.entered{overflow:auto!important}</style></noscript>
+	<style>
+/* ══════════════════════════════════════════════════════════════════════
+   Still — minimal, cinematic photographer theme
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root{
+	--bg:#050505; --fg:#f4f3f1; --mut:#7d7b77; --line:rgba(255,255,255,.13);
+	--sans:"Helvetica Neue","Arial Nova",Arial,system-ui,sans-serif;
+	--mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+	--gut:clamp(1.5rem,5vw,5rem);
+	--wrap:1440px;
+}
+*{margin:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:#fff;color:#000}
+.label{font-family:var(--mono);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mut)}
+.skip-link{position:absolute;left:-9999px}
+.skip-link:focus{left:1rem;top:1rem;z-index:200;background:#fff;color:#000;padding:.6rem 1rem;font-family:var(--mono);font-size:.7rem}
+:focus-visible{outline:1px solid var(--fg);outline-offset:3px}
+
+/* fixed brand (top-left) — hidden during the intro */
+.brand-fixed{position:fixed;top:1.4rem;left:var(--gut);z-index:60;font-family:var(--mono);font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;mix-blend-mode:difference}
+body.intro .brand-fixed{opacity:0;transition:opacity .6s}
+body.intro.entered .brand-fixed{opacity:1}
+
+/* ══ INTRO (front page only) ══ */
+/* fail-safe: if the script never runs (stale cache / blocked JS), don't trap
+   the visitor behind the black overlay — reveal the home content instead. */
+html.still-fallback #intro{opacity:0;pointer-events:none;transition:opacity .6s}
+html.still-fallback body.intro #home{position:relative;transform:none;height:auto;overflow-y:visible}
+html.still-fallback body.intro,html.still-fallback body.intro.entered{overflow:auto}
+#intro{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:transform 1s cubic-bezier(.76,0,.24,1),opacity .8s}
+#intro.gone{transform:translateX(-100%);opacity:0;pointer-events:none}
+.intro__in{width:min(560px,86vw)}
+.boot{transition:opacity .4s}
+.boot.hide{opacity:0;pointer-events:none;position:absolute}
+.boot__row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);margin-bottom:.9rem}
+.bar{height:1px;background:rgba(255,255,255,.14);position:relative;overflow:hidden}
+.bar__fill{position:absolute;inset:0;width:0;background:var(--fg);transition:width 2.8s cubic-bezier(.5,0,.1,1)}
+.term{font-family:var(--mono);font-size:.82rem;line-height:1.9;color:#d7d5d1;opacity:0;transition:opacity .35s;position:absolute;left:0;right:0}
+.term.show{opacity:1;position:static}
+.term .muted{color:var(--mut)}
+.term .ok{color:#8fb98f}
+.term .cursor{display:inline-block;width:8px;height:1.05em;background:var(--fg);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.titlewrap{position:absolute;left:0;right:0;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s}
+.titlewrap.show{opacity:1;pointer-events:auto}
+.titlewrap::before{content:"";position:absolute;left:50%;top:50%;width:74vw;height:74vw;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,255,255,.11),transparent 70%);opacity:0}
+.titlewrap.show::before{animation:glow 2.1s ease forwards}
+.bigtitle{position:relative;display:inline-flex;justify-content:center;font-weight:200;font-size:clamp(2.1rem,8.4vw,6.4rem);letter-spacing:.1em}
+.titlewrap.show .bigtitle{animation:settle 1.6s cubic-bezier(.19,1,.22,1)}
+.bigtitle .ch{display:inline-block;min-width:.6em;text-align:center;color:var(--mut);transform:translateY(.07em);transition:color .25s,text-shadow .5s,transform .5s cubic-bezier(.19,1,.22,1)}
+.bigtitle .ch.lock{color:var(--fg);transform:none;text-shadow:0 0 26px rgba(255,255,255,.45)}
+.titlewrap.decoded .bigtitle .ch{text-shadow:0 0 24px rgba(255,255,255,.2)}
+.bigtitle::after{content:"";position:absolute;inset:-.25em -.15em;pointer-events:none;background:linear-gradient(100deg,transparent 43%,rgba(255,255,255,.32) 50%,transparent 57%);transform:translateX(-140%);opacity:0}
+.titlewrap.decoded .bigtitle::after{animation:sweep 1.2s .05s ease}
+/* video-sequence intro */
+.intro-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.intro-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.4),transparent 28%,transparent 62%,rgba(0,0,0,.6));pointer-events:none}
+#intro[data-mode="video"] .titlewrap,#intro[data-mode="video"] .enter-big{z-index:2}
+.enter-big{position:absolute;left:50%;bottom:2.4rem;transform:translateX(-50%) translateY(20px);display:flex;flex-direction:column;align-items:center;gap:1rem;opacity:0;transition:opacity 1s,transform 1s;font-family:var(--mono);font-size:.92rem;letter-spacing:.44em;text-transform:uppercase;text-indent:.44em;color:var(--fg);z-index:2}
+.enter-big.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.enter-big .chev{width:1px;height:52px;background:linear-gradient(var(--fg),rgba(255,255,255,0));transform-origin:top;animation:scrollpulse 1.9s ease-in-out infinite}
+@keyframes settle{from{transform:scale(1.06)}to{transform:scale(1)}}
+@keyframes glow{0%{opacity:0}45%{opacity:1}100%{opacity:.32}}
+@keyframes sweep{0%{transform:translateX(-140%);opacity:1}100%{transform:translateX(140%);opacity:1}}
+@keyframes scrollpulse{0%,100%{transform:scaleY(.35);opacity:.4}50%{transform:scaleY(1);opacity:1}}
+
+/* ══ HOME (teaser panels) ══ */
+#home{position:relative}
+body.intro #home{position:fixed;inset:0;transform:translateX(100%);transition:transform 1s cubic-bezier(.76,0,.24,1);height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory}
+body.intro #home.in{transform:none}
+body.intro.entered{overflow:hidden}
+.panel{min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:6rem var(--gut);position:relative;border-bottom:1px solid var(--line);overflow:hidden}
+body.intro .panel{min-height:100%}
+.panel>*{position:relative;z-index:1}
+/* monumental ghost numeral — presence in the empty half */
+.panel__ghost{position:absolute;z-index:0;right:clamp(-.5rem,1vw,2rem);bottom:clamp(-3rem,-4vh,-1rem);font-weight:200;font-size:clamp(12rem,40vw,34rem);line-height:.66;letter-spacing:-.05em;color:rgba(255,255,255,.035);pointer-events:none;user-select:none}
+.panel__idx{position:absolute;top:clamp(4rem,10vh,7rem);left:var(--gut);font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--mut)}
+.panel__name{font-weight:200;font-size:clamp(3rem,12vw,10rem);line-height:.92;letter-spacing:-.03em}
+.panel__name em{font-style:italic;opacity:.5}
+.panel__row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.5rem;margin-top:2rem}
+.panel__desc{max-width:40ch;color:var(--mut)}
+.panel__go{position:relative;font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;padding-bottom:5px;white-space:nowrap;overflow:hidden}
+.panel__go::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--line)}
+.panel__go::before{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--fg);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.19,1,.22,1);z-index:1}
+.panel__go:hover::before{transform:scaleX(1)}
+.thumbs{display:flex;gap:1.2rem;margin-top:2.5rem;flex-wrap:wrap}
+.thumbs a{width:clamp(90px,10vw,150px)}
+.thumbs .frame{aspect-ratio:4/5;border:1px solid var(--line);background:#0d0d0d;overflow:hidden;display:grid;place-items:center;transition:transform .4s}
+.thumbs a:hover .frame{transform:translateY(-6px)}
+.thumbs .frame img{width:100%;height:100%;object-fit:cover}
+.thumbs .frame .ph{font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;color:#3a3a3a}
+.mini-stage{position:absolute;right:var(--gut);top:50%;transform:translateY(-50%);perspective:800px}
+@media(max-width:820px){.mini-stage{display:none}}
+.cube{position:relative;width:120px;height:120px;transform-style:preserve-3d;animation:spin 20s linear infinite}
+.cube f{position:absolute;inset:0;border:1px solid rgba(255,255,255,.45)}
+.cube f:nth-child(1){transform:translateZ(60px)}.cube f:nth-child(2){transform:rotateY(180deg) translateZ(60px)}
+.cube f:nth-child(3){transform:rotateY(90deg) translateZ(60px)}.cube f:nth-child(4){transform:rotateY(-90deg) translateZ(60px)}
+.cube f:nth-child(5){transform:rotateX(90deg) translateZ(60px)}.cube f:nth-child(6){transform:rotateX(-90deg) translateZ(60px)}
+@keyframes spin{to{transform:rotateX(360deg) rotateY(360deg)}}
+
+/* ══ DOCK (global nav) ══ */
+#dock{position:fixed;left:50%;bottom:1.4rem;transform:translate(-50%,0);z-index:80;display:flex;gap:.25rem;padding:.5rem;background:rgba(20,20,20,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:999px;transition:transform .7s cubic-bezier(.34,1.4,.5,1),opacity .5s}
+body.intro #dock{transform:translate(-50%,180%);opacity:0}
+body.intro #dock.show{transform:translate(-50%,0);opacity:1}
+#dock a{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);padding:.6rem 1rem;border-radius:999px;transition:color .25s,background .25s,transform .2s}
+#dock a:hover{color:var(--fg);transform:translateY(-4px) scale(1.06)}
+#dock a.active{color:#000;background:var(--fg)}
+@media(max-width:600px){#dock a{padding:.55rem .7rem;font-size:.58rem}}
+
+/* ══ INNER PAGES (real Work / Journal / About / Contact / Enquire) ══ */
+.page-wrap{max-width:var(--wrap);margin:0 auto;padding:clamp(7rem,13vw,10rem) var(--gut) clamp(6rem,10vw,9rem)}
+.page-head{margin-bottom:clamp(2.5rem,6vw,5rem)}
+.page-head .label{display:block;margin-bottom:1rem}
+.page-title{font-weight:200;font-size:clamp(2.6rem,8vw,6rem);letter-spacing:-.03em;line-height:.98}
+.page-lead{margin-top:1.6rem;max-width:52ch;color:var(--mut);font-size:1.08rem}
+
+/* work archive — staggered two-column editorial grid, unlimited items */
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,6vw,6rem) clamp(1.5rem,4vw,3.5rem)}
+.work-grid .item:nth-child(even){margin-top:clamp(2.5rem,9vw,8rem)}
+@media(max-width:640px){.work-grid{grid-template-columns:1fr;gap:clamp(2rem,8vw,3rem)}.work-grid .item:nth-child(even){margin-top:0}}
+.work-grid .item{perspective:1200px}
+.work-card{display:block;transform-style:preserve-3d;transition:transform .3s cubic-bezier(.22,.61,.2,1);will-change:transform}
+.work-card .frame{position:relative;overflow:hidden;background:#0d0d0d;border:1px solid var(--line)}
+.work-card .frame img{width:100%;height:auto;display:block;transition:transform 1s cubic-bezier(.22,.61,.2,1);filter:grayscale(.15) brightness(.94)}
+.work-card:hover .frame img{transform:scale(1.045);filter:grayscale(0) brightness(1)}
+.work-card .frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.5));opacity:.5;transition:opacity .5s}
+.work-card:hover .frame::after{opacity:.15}
+.work-card .m{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:1rem;margin-top:1.1rem;transform:translateZ(30px)}
+.work-card .m .idx{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--mut)}
+.work-card .m h3{font-weight:300;font-size:clamp(1.15rem,1.7vw,1.5rem);letter-spacing:-.01em;position:relative;display:inline-block}
+.work-card .m h3::after{content:"";position:absolute;left:0;bottom:-3px;width:100%;height:1px;background:var(--fg);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.19,1,.22,1)}
+.work-card:hover .m h3::after{transform:scaleX(1)}
+.work-card .m .cat{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);white-space:nowrap}
+
+/* journal list */
+.journal-list{border-top:1px solid var(--line)}
+.journal-item{display:block;padding:clamp(1.6rem,3vw,2.6rem) 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:baseline;transition:padding-left .4s}
+.journal-item:hover{padding-left:1rem}
+.journal-item h2{font-weight:300;font-size:clamp(1.5rem,3.4vw,2.4rem);letter-spacing:-.02em}
+.journal-item .date{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);white-space:nowrap}
+.journal-item .ex{grid-column:1/-1;color:var(--mut);max-width:60ch;margin-top:.5rem}
+
+/* single work / journal — text stays readable; PHOTOS break out big */
+.single-hero{margin:clamp(2.5rem,6vw,5rem) 0;border:1px solid var(--line);overflow:hidden}
+.single-hero img{width:100%;display:block}
+.single-meta{display:flex;gap:1.5rem;flex-wrap:wrap;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-top:1.4rem}
+.prose{max-width:none}
+.prose>*{max-width:72ch}                                  /* running text = comfortable measure */
+.prose p{margin:0 0 1.3rem;color:#d3d1cd;font-size:clamp(1rem,1.1vw,1.14rem)}
+.prose h2,.prose h3{font-weight:300;margin:2.6rem 0 1rem;letter-spacing:-.01em;font-size:clamp(1.4rem,2.4vw,2rem)}
+.prose a{border-bottom:1px solid var(--mut)}
+.prose a:hover{border-color:var(--fg);color:var(--fg)}
+/* media breaks the measure and fills the content column */
+.prose>figure,.prose>img,.prose>.wp-block-image,.prose>.wp-block-gallery{max-width:none;width:100%}
+.prose figure{margin:clamp(2.5rem,6vw,4.5rem) 0}
+.prose figure img,.prose>img,.prose .wp-block-image img{width:100%;border:1px solid var(--line);display:block}
+.prose figcaption{margin-top:.9rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+/* native Gallery block → clean full-width grid = the project gallery */
+.prose .wp-block-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(1rem,2.5vw,2rem);margin:clamp(2.5rem,6vw,4.5rem) 0}
+.prose .wp-block-gallery figure{margin:0}
+.prose .wp-block-gallery img{width:100%;border:1px solid var(--line)}
+@media(max-width:640px){.prose .wp-block-gallery{grid-template-columns:1fr}}
+.entry-nav{display:flex;justify-content:space-between;gap:1rem;border-top:1px solid var(--line);margin-top:clamp(3.5rem,7vw,6rem);padding-top:1.6rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase}
+.entry-nav a{position:relative;transition:color .25s}
+.entry-nav a:hover{color:var(--fg)}
+
+/* pagination */
+.pagination{display:flex;gap:.5rem;justify-content:center;align-items:center;margin-top:clamp(3rem,6vw,5rem);flex-wrap:wrap}
+.pagination .page-numbers{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--mut);padding:.5rem .8rem;border:1px solid transparent}
+.pagination .page-numbers.current{color:var(--fg);border-color:var(--line)}
+.pagination a.page-numbers:hover{color:var(--fg)}
+
+/* footer (inner pages) */
+.site-footer{border-top:1px solid var(--line);padding:2.4rem var(--gut);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:5rem}
+.site-footer span,.site-footer a{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.site-footer a:hover{color:var(--fg)}
+
+/* ══ ENQUIRE — price-engine form + FAQ (minimal, thin-line) ══ */
+.enquire-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+@media(max-width:820px){.enquire-grid{grid-template-columns:1fr}}
+.still-form{max-width:640px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.field{margin-bottom:1.8rem}
+.field-label,.still-form label{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:.7rem}
+.still-form input[type=text],.still-form input[type=email],.still-form input[type=date],.still-form textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--fg);font-family:var(--sans);font-size:1rem;padding:.7rem 0;transition:border-color .3s}
+.still-form input:focus,.still-form textarea:focus{outline:none;border-color:var(--fg)}
+.still-form textarea{resize:vertical;min-height:120px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem}
+.chip{display:inline-flex;margin:0!important}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:.55rem 1rem;cursor:pointer;transition:color .25s,border-color .25s,background .25s}
+.chip:hover span{color:var(--fg)}
+.chip input:checked+span{color:#000;background:var(--fg);border-color:var(--fg)}
+.chip input:focus-visible+span{outline:1px solid var(--fg);outline-offset:2px}
+.field--inline{display:flex;flex-wrap:wrap;gap:1.6rem 2.2rem;align-items:center}
+.km{display:inline-flex;align-items:center;gap:1rem;margin:0}
+.km>span{margin:0;white-space:nowrap}
+.km input{width:88px;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--fg);padding:.5rem .2rem;font-family:var(--mono);text-align:center}
+.km input:focus{outline:none;border-color:var(--fg)}
+.estimate{display:flex;align-items:baseline;flex-wrap:wrap;gap:.5rem 1.2rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.4rem 0;margin:2rem 0}
+.estimate__k{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.estimate__v{font-weight:200;font-size:clamp(2rem,5vw,3rem);letter-spacing:-.02em;line-height:1}
+.estimate__note{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;color:var(--mut);flex-basis:100%}
+.form-submit{margin-top:1rem;background:transparent;border:1px solid var(--fg);color:var(--fg);font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;padding:1rem 1.8rem;cursor:pointer;transition:background .25s,color .25s}
+.form-submit:hover{background:var(--fg);color:#000}
+.form-note{border:1px solid var(--line);padding:1rem 1.2rem;margin-bottom:2.5rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em}
+.form-note.ok{border-color:#8fb98f;color:#bfe0bf}
+.form-note.bad{border-color:#c98a8a;color:#e6bcbc}
+.form-note a{border-bottom:1px solid currentColor}
+.enquire-side{position:sticky;top:clamp(6rem,12vh,9rem);display:flex;flex-direction:column;gap:2.2rem}
+@media(max-width:820px){.enquire-side{position:static;top:auto}}
+.side-estimate{border:1px solid var(--line);padding:1.6rem 1.4rem;display:flex;flex-direction:column;gap:.5rem}
+.side-estimate .estimate__k{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.side-estimate .estimate__v{font-weight:200;font-size:clamp(2.2rem,3vw,2.8rem);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.side-estimate .estimate__note{font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;color:var(--mut);line-height:1.6}
+@media(max-width:820px){.side-estimate{display:none}}
+.estimate__v{font-variant-numeric:tabular-nums}
+.enquire-side .contact-list{border-top:1px solid var(--line)}
+.contact-list .row{display:flex;justify-content:space-between;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
+.contact-list .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.contact-list a:hover{color:var(--fg);border-bottom:1px solid var(--fg)}
+.enquire-note{margin-top:2rem;font-size:.95rem}
+.faq{margin-top:clamp(4rem,9vw,7rem);max-width:820px}
+.faq-title{font-weight:200;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.02em;margin-bottom:1.5rem}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:1.3rem 0;display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:1.1rem;font-weight:300;transition:color .25s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--mono);color:var(--mut);transition:transform .3s,color .25s}
+.faq details[open] summary::after{transform:rotate(45deg);color:var(--fg)}
+.faq summary:hover{color:var(--fg)}
+.faq .a{padding:0 0 1.4rem;color:var(--mut);max-width:64ch}
+.faq .a p{margin:0}
+
+/* ══ HORIZONTAL SUBPAGES — every subpage scrolls sideways as full-page panels.
+   Wheel/trackpad → sideways (JS); native touch swipe on mobile; tall panels
+   (prose / form / faq) scroll vertically inside themselves first. Native
+   scroll-snap (no sticky → robust against body{overflow-x:hidden}). ══ */
+.hx{height:100vh;height:100dvh}
+.hx__track{display:flex;height:100vh;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+.hx__track::-webkit-scrollbar{width:0;height:0;display:none}
+.hx-panel{flex:0 0 100vw;width:100vw;height:100vh;height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:clamp(6rem,11vh,9rem) var(--gut) clamp(5rem,9vh,7rem);overflow:hidden;position:relative}
+.hx-panel>*{max-width:1100px}
+.hx-panel .page-head{margin:0}
+.hx-panel .panel__ghost{max-width:none}
+/* media panel — one photograph, filling the height */
+.hx-panel--media{align-items:center;justify-content:center;padding:6vh var(--gut)}
+.hx-panel--media figure{margin:0;max-width:none;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.1rem}
+.hx-panel--media img{max-height:78vh;width:auto;max-width:calc(100vw - 2*var(--gut));display:block;border:1px solid var(--line);object-fit:contain}
+.hx-panel--media figcaption{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);text-align:center;display:flex;gap:1rem;align-items:baseline}
+.hx-panel--media figcaption .idx{opacity:.6}
+/* text-heavy panels scroll vertically inside themselves */
+.hx-panel--wide,.hx-panel--form,.hx-panel--faq{justify-content:flex-start;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-block:9vh}
+.hx-panel--wide .prose{max-width:760px}
+.hx-panel--form .still-form,.hx-panel--faq .faq{max-width:720px;width:100%}
+.hx-panel--faq .faq{margin-top:0}
+.hx-panel--contact .contact-list{max-width:560px;width:100%;border-top:1px solid var(--line)}
+.hx-panel--end{align-items:flex-start}
+.hx-panel--end .entry-nav{border:0;margin:0;padding:0;flex-direction:column;align-items:flex-start;gap:1.4rem;font-size:.82rem}
+/* sideways scroll cue */
+.hx-cue{position:fixed;right:var(--gut);bottom:1.9rem;z-index:70;display:flex;align-items:center;gap:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);pointer-events:none}
+.hx-cue i{width:36px;height:1px;background:linear-gradient(90deg,var(--mut),transparent);animation:hxcue 2.4s ease-in-out infinite}
+@keyframes hxcue{0%,100%{transform:scaleX(.35);opacity:.4}50%{transform:scaleX(1);opacity:1}}
+@media(max-width:820px){
+	.hx-panel{padding:4.5rem var(--gut) 4rem}
+	.hx-panel--media{padding:4vh var(--gut)}
+	.hx-panel--media img{max-height:66vh}
+	.hx-cue{left:var(--gut);right:auto}
+}
+/* NOTE: subpages stay HORIZONTAL for everyone — including Reduce-Motion —
+   because horizontal is the intended design. (Native snap is instant, so it
+   does not cause the motion Reduce-Motion guards against.) */
+
+/* reveals */
+[data-rise]{opacity:0;transform:translateY(30px);transition:opacity 1s,transform 1s}
+[data-rise].in{opacity:1;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+	*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.2s!important;scroll-behavior:auto!important}
+	.cube{animation:spin 40s linear infinite}
+	[data-rise]{opacity:1;transform:none}
+}
+	</style>
+</head>
+<body class="intro">
+<a class="skip-link" href="#home">Skip to content</a>
+
+<div id="intro" aria-hidden="true">
+	<div class="intro__in">
+		<div class="boot" id="boot">
+			<div class="boot__row"><span>Initializing</span><span id="pct">0%</span></div>
+			<div class="bar"><div class="bar__fill" id="fill"></div></div>
+		</div>
+		<div class="term" id="term"></div>
+		<div class="titlewrap" id="titlewrap">
+			<h1 class="bigtitle" id="bigtitle" data-text="Raveenthiran">Raveenthiran</h1>
+		</div>
+	</div>
+	<div class="enter-big" id="enterbig"><span>Scroll right</span><span class="chev"></span></div>
+</div>
+
+<a class="brand-fixed" href="/">Raveenthiran</a>
+
+<div id="home">
+	<section class="panel" id="panel-work" data-key="work">
+		<span class="panel__ghost" aria-hidden="true">01</span>
+		<span class="panel__idx">01 — Work</span>
+		<h2 class="panel__name">Work</h2>
+		<div class="panel__row">
+			<p class="panel__desc">Portraiture, architecture and the quiet spaces between. Selected projects — new work added continually.</p>
+			<a class="panel__go" href="/work">Open portfolio →</a>
+		</div>
+		<div class="thumbs">
+			<a href="/work"><span class="frame"><span class="ph">Photo</span></span></a>
+			<a href="/work"><span class="frame"><span class="ph">Photo</span></span></a>
+			<a href="/work"><span class="frame"><span class="ph">Photo</span></span></a>
+			<a href="/work"><span class="frame"><span class="ph">Photo</span></span></a>
+		</div>
+	</section>
+
+	<section class="panel" id="panel-studio" data-key="studio">
+		<span class="panel__ghost" aria-hidden="true">02</span>
+		<span class="panel__idx">02 — Studio</span>
+		<h2 class="panel__name">Studio</h2>
+		<div class="panel__row">
+			<p class="panel__desc">A practice of looking slowly — and keeping only what lasts. Based in Vienna, working across Europe.</p>
+			<a class="panel__go" href="/about">Read more →</a>
+		</div>
+	</section>
+
+	<section class="panel" id="panel-enquire" data-key="enquire">
+		<span class="panel__ghost" aria-hidden="true">03</span>
+		<span class="panel__idx">03 — Enquire</span>
+		<h2 class="panel__name">Enquire<em>.</em></h2>
+		<div class="panel__row">
+			<p class="panel__desc">Commissions, editorial and personal series. Start a project.</p>
+			<a class="panel__go" href="/enquire">Start a project →</a>
+		</div>
+		<div class="mini-stage" aria-hidden="true"><div class="cube"><f></f><f></f><f></f><f></f><f></f><f></f></div></div>
+	</section>
+</div>
+
+<nav id="dock" aria-label="Primary">
+	<a href="/work" data-key="work" class="">Work</a>
+	<a href="/about" data-key="studio" class="">Studio</a>
+	<a href="/enquire" data-key="enquire" class="">Enquire</a>
+</nav>
+
+<script>
+/* Still — theme interactions: cinematic intro (front page), dock nav,
+   3D card tilt, scroll reveals. Vanilla, no dependencies. */
+(function () {
+	'use strict';
+	// main.js is running — cancel the header's intro fail-safe timer.
+	if (window.__stillFail) { clearTimeout(window.__stillFail); }
+	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+	var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+	var $ = function (s, c) { return (c || document).querySelector(s); };
+	var $$ = function (s, c) { return [].slice.call((c || document).querySelectorAll(s)); };
+	function after(ms, fn) { setTimeout(fn, reduce ? Math.min(ms, 120) : ms); }
+
+	var intro = $('#intro');
+	var home = $('#home');
+	var dock = $('#dock');
+	var panels = $$('.panel');
+
+	/* ── scroll reveals (works on any page) ── */
+	(function reveals() {
+		var els = $$('[data-rise]');
+		if (!els.length) return;
+		if (!('IntersectionObserver' in window) || reduce) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+		var root = (home && document.body.classList.contains('intro')) ? home : null;
+		var io = new IntersectionObserver(function (es) {
+			es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+		}, { root: root, threshold: 0.15 });
+		els.forEach(function (e) { io.observe(e); });
+	})();
+
+	/* ── 3D tilt on cards (skip reduced-motion / touch) ── */
+	(function tilt() {
+		if (reduce || coarse) return;
+		$$('.tilt-wrap').forEach(function (w) {
+			var c = w.querySelector('.tilt-el');
+			if (!c) return;
+			w.addEventListener('mousemove', function (e) {
+				var r = w.getBoundingClientRect();
+				var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+				c.style.transform = 'rotateY(' + (px * 8).toFixed(2) + 'deg) rotateX(' + (-py * 8).toFixed(2) + 'deg) translateZ(6px)';
+			});
+			w.addEventListener('mouseleave', function () { c.style.transform = ''; });
+		});
+	})();
+
+	/* ── dock (global nav) ── */
+	function dockScrollNav() {
+		if (!dock) return;
+		// On the home, dock items smooth-scroll to the matching teaser panel.
+		dock.querySelectorAll('a[data-key]').forEach(function (a) {
+			a.addEventListener('click', function (e) {
+				var target = document.getElementById('panel-' + a.getAttribute('data-key'));
+				if (target) { e.preventDefault(); target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
+			});
+		});
+		// active state follows the visible panel
+		if ('IntersectionObserver' in window && panels.length) {
+			var io = new IntersectionObserver(function (es) {
+				es.forEach(function (en) {
+					if (en.isIntersecting) {
+						var key = en.target.getAttribute('data-key');
+						dock.querySelectorAll('a[data-key]').forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-key') === key); });
+					}
+				});
+			}, { root: (document.body.classList.contains('intro') ? home : null), threshold: 0.55 });
+			panels.forEach(function (p) { io.observe(p); });
+		}
+	}
+
+	/* ── if not the cinematic home, just show the dock and wire nav ── */
+	if (!intro) {
+		if (home) dockScrollNav();   // static home fallback (no intro)
+		return;
+	}
+
+	/* ══ CINEMATIC INTRO (front page) ══ */
+	var boot = $('#boot'), fill = $('#fill'), pct = $('#pct'),
+		term = $('#term'), titlewrap = $('#titlewrap'),
+		bigtitle = $('#bigtitle'), enterbig = $('#enterbig');
+	var state = 'boot';
+
+	function boot1() {
+		requestAnimationFrame(function () { if (fill) fill.style.width = '100%'; });
+		var t0 = performance.now(), dur = reduce ? 150 : 2800;
+		(function tick() {
+			var p = Math.min(1, (performance.now() - t0) / dur);
+			if (pct) pct.textContent = Math.round(p * 100) + '%';
+			if (p < 1) requestAnimationFrame(tick); else after(520, boot2);
+		})();
+	}
+
+	function boot2() {
+		if (boot) boot.classList.add('hide');
+		if (term) term.classList.add('show');
+		var prompt = 'visitor@' + (location.hostname || 'raveenthiran') + ':~$ ';
+		var typed = 'portfolio';
+		var logs = [
+			'<span class="muted">› resolving archive…</span>',
+			'<span class="muted">› compositing interface…</span>',
+			'<span class="ok">✓ ready</span>'
+		];
+		term.innerHTML = '<div><span class="muted">' + prompt + '</span><span id="typed"></span><span class="cursor"></span></div>';
+		var tEl = $('#typed'), i = 0;
+		(function type() {
+			if (i <= typed.length) { tEl.textContent = typed.slice(0, i++); after(120, type); }
+			else after(620, runLogs);
+		})();
+		function runLogs() {
+			term.innerHTML = '<div><span class="muted">' + prompt + '</span>portfolio</div>';
+			var j = 0;
+			(function next() {
+				if (j < logs.length) { var d = document.createElement('div'); d.innerHTML = logs[j++]; term.appendChild(d); after(500, next); }
+				else after(850, boot3);
+			})();
+		}
+	}
+
+	function epicTitle(done) {
+		var target = (bigtitle.getAttribute('data-text') || 'RAVEENTHIRAN').toUpperCase();
+		var pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/<>*+';
+		var spans = [];
+		bigtitle.innerHTML = '';
+		for (var k = 0; k < target.length; k++) {
+			var s = document.createElement('span');
+			s.className = 'ch';
+			s.textContent = target[k] === ' ' ? ' ' : pool[(Math.random() * pool.length) | 0];
+			bigtitle.appendChild(s); spans.push(s);
+		}
+		if (reduce) {
+			spans.forEach(function (s, k) { s.textContent = target[k] === ' ' ? ' ' : target[k]; s.classList.add('lock'); });
+			titlewrap.classList.add('decoded'); done && done(); return;
+		}
+		var start = performance.now(), settle = 420, per = 140;
+		(function run(now) {
+			var t = now - start, allDone = true;
+			for (var k = 0; k < target.length; k++) {
+				var lockAt = settle + k * per;
+				if (t >= lockAt) {
+					if (!spans[k].classList.contains('lock')) { spans[k].textContent = target[k] === ' ' ? ' ' : target[k]; spans[k].classList.add('lock'); }
+				} else { allDone = false; spans[k].textContent = pool[(Math.random() * pool.length) | 0]; }
+			}
+			if (!allDone) requestAnimationFrame(run);
+			else { titlewrap.classList.add('decoded'); done && done(); }
+		})(start);
+	}
+
+	function boot3() {
+		if (term) term.classList.remove('show');
+		after(240, function () {
+			titlewrap.classList.add('show');
+			epicTitle(function () {
+				after(520, function () { enterbig.classList.add('show'); state = 'ready'; arm(); });
+			});
+		});
+	}
+
+	var evs = ['wheel', 'touchstart', 'keydown', 'click'];
+	function arm() { evs.forEach(function (ev) { window.addEventListener(ev, tryEnter, { passive: true }); }); }
+	function tryEnter(e) {
+		if (state !== 'ready') return;
+		if (e.type === 'keydown' && ['Enter', ' ', 'ArrowDown', 'PageDown'].indexOf(e.key) === -1) return;
+		state = 'entering';
+		evs.forEach(function (ev) { window.removeEventListener(ev, tryEnter); });
+		home.classList.add('in'); intro.classList.add('gone');
+		after(1000, function () {
+			intro.style.display = 'none';
+			document.body.classList.add('entered');
+			state = 'home';
+			dockScrollNav();
+			armDockReveal();
+		});
+	}
+
+	function armDockReveal() {
+		if (!dock) return;
+		var shown = false;
+		function show() { if (!shown) { shown = true; dock.classList.add('show'); } }
+		home.addEventListener('scroll', function () { if (home.scrollTop > 40) show(); });
+		after(1400, show); // discoverable even without scroll
+	}
+
+	/* ══ VIDEO-SEQUENCE INTRO ══ — plays the intro video, reveals the
+	   "scroll right" cue, then the same rightward slide into home. Falls back
+	   to the animated sequence if the video is missing or can't play. */
+	function videoIntro() {
+		var v = document.getElementById('introvid');
+		function ready() { if (state === 'boot') { state = 'ready'; enterbig.classList.add('show'); arm(); } }
+		if (!v) { ready(); return; }
+		var p = v.play && v.play();
+		if (p && p.catch) { p.catch(function () {}); }
+		v.addEventListener('ended', ready);
+		v.addEventListener('error', ready);
+		// let the viewer scroll on past the video at any point…
+		after(1400, ready);
+		// …and a hard safety net in case 'ended' never fires
+		after(reduce ? 300 : 12000, ready);
+	}
+
+	// GO
+	document.body.classList.add('js-intro');
+	if (intro.getAttribute('data-mode') === 'video') { videoIntro(); }
+	else { boot1(); }
+})();
+
+/* ── price engine (Enquire) — isolated + guarded: only runs if the form is on
+   the page, so it can never affect the intro / home / work. Computes a live
+   estimate and writes it (plus a breakdown) into hidden fields for the email. */
+(function () {
+	'use strict';
+	var form = document.querySelector('[data-price-engine]');
+	if (!form) return;
+	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+	var cur = form.getAttribute('data-currency') || '€';
+	// Every estimate readout on the page (the inline one + the sticky sidebar mirror).
+	var outs = [].slice.call(document.querySelectorAll('[data-estimate]'));
+	function money(n) { return cur + Math.round(n).toLocaleString(); }
+	function num(el, attr) { return el ? (parseFloat(el.getAttribute(attr)) || 0) : 0; }
+
+	// Count-up: tween the displayed number to a new total (skipped for reduced-motion).
+	var shown = 0, raf = null;
+	function paint(v) { var t = money(v); outs.forEach(function (o) { o.textContent = t; }); }
+	function animateTo(total) {
+		if (reduce || shown === total) { shown = total; paint(total); return; }
+		if (raf) cancelAnimationFrame(raf);
+		var from = shown, delta = total - from, t0 = performance.now(), dur = 420;
+		(function step(now) {
+			var p = Math.min(1, (now - t0) / dur);
+			var e = 1 - Math.pow(1 - p, 3); // easeOutCubic
+			paint(from + delta * e);
+			if (p < 1) raf = requestAnimationFrame(step); else { shown = total; paint(total); }
+		})(t0);
+	}
+
+	function compute() {
+		var parts = [], total = 0;
+		var type = form.querySelector('input[name="project_type"]:checked');
+		if (type) { total += num(type, 'data-base'); parts.push(type.value); }
+		[].forEach.call(form.querySelectorAll('input[name="addons[]"]:checked'), function (x) {
+			total += num(x, 'data-price'); parts.push(x.value);
+		});
+		var lic = form.querySelector('input[name="license"]');
+		if (lic && lic.checked) { total += num(lic, 'data-price'); parts.push('Commercial licence'); }
+		var km = form.querySelector('input[name="travel_km"]');
+		if (km) { var k = parseFloat(km.value) || 0; if (k > 0) { total += k * num(km, 'data-per-km'); parts.push(Math.round(k) + ' km'); } }
+
+		animateTo(total);
+		var hid = form.querySelector('[data-estimate-input]'); if (hid) hid.value = money(total);
+		var bd = form.querySelector('[data-breakdown]'); if (bd) bd.value = parts.join(' · ');
+	}
+
+	form.addEventListener('change', compute);
+	form.addEventListener('input', function (e) { if (e.target && e.target.name === 'travel_km') compute(); });
+	compute();
+})();
+
+/* ── horizontal subpages — wheel / trackpad drives the filmstrip sideways.
+   Isolated + guarded: only runs where an .hx__track exists. Tall panels
+   (prose / form / faq) consume vertical intent until they bottom out, then
+   hand back to the sideways scroll. Touch swipe is native; reduced-motion
+   and phones-in-reduced-motion fall back to the vertical stack (see CSS). ── */
+(function () {
+	'use strict';
+	var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+	var tracks = [].slice.call(document.querySelectorAll('.hx__track'));
+	if (!tracks.length) return;
+	// Desktop: convert vertical wheel to sideways. Mobile (<=820) uses native
+	// touch-swipe on the track. Reduce-Motion does NOT disable this — otherwise
+	// a wheel user could get stuck on a full-height horizontal panel.
+	function active() { return window.innerWidth > 820; }
+
+	tracks.forEach(function (track) {
+		track.addEventListener('wheel', function (e) {
+			if (!active()) return;              // touch/reduced-motion: native behaviour
+			if (e.ctrlKey) return;              // pinch-zoom
+			// let a tall inner panel take the vertical scroll until it reaches an edge
+			var panel = e.target.closest && e.target.closest('.hx-panel--wide, .hx-panel--form, .hx-panel--faq');
+			if (panel && panel.scrollHeight > panel.clientHeight + 1) {
+				var atTop = panel.scrollTop <= 0;
+				var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+				if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return;
+			}
+			var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+			if (!d) return;
+			track.scrollLeft += d;
+			e.preventDefault();
+		}, { passive: false });
+
+		// keyboard paging when the filmstrip has focus
+		track.setAttribute('tabindex', '-1');
+		track.addEventListener('keydown', function (e) {
+			if (!active()) return;
+			var step = window.innerWidth, beh = reduce ? 'auto' : 'smooth';
+			if (e.key === 'ArrowRight' || e.key === 'PageDown') { track.scrollBy({ left: step, behavior: beh }); e.preventDefault(); }
+			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { track.scrollBy({ left: -step, behavior: beh }); e.preventDefault(); }
+		});
+	});
+})();
+</script>
+</body>
+</html>

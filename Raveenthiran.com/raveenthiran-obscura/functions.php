@@ -6,18 +6,23 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'NR_THEME_VERSION', '4.32.0' );
+define( 'NR_THEME_VERSION', '4.80.0' );
 
 /* ─────────────────────────────────────────────────────────────
  * Setup
  * ───────────────────────────────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
+	load_theme_textdomain( 'raveenthiran', get_template_directory() . '/languages' );
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'html5', [ 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ] );
 	add_theme_support( 'automatic-feed-links' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'custom-logo', [ 'width' => 320, 'height' => 80, 'flex-width' => true, 'flex-height' => true ] );
+	// Block editor reflects the Obscura look (dark canvas + theme fonts).
+	add_theme_support( 'editor-styles' );
+	add_theme_support( 'dark-editor-style' );
+	add_editor_style( 'assets/css/editor-style.css' );
 
 	register_nav_menus( [
 		'primary'   => __( 'Primary Menu (top bar + sidebar)', 'raveenthiran' ),
@@ -40,11 +45,12 @@ add_action( 'wp_enqueue_scripts', function () {
 	// fonts.css (~2.5KB of @font-face) is inlined into <head> below to drop a
 	// render-blocking request; only the main stylesheet loads externally.
 	wp_enqueue_style( 'nr-theme', get_template_directory_uri() . '/assets/css/theme.css', [], NR_THEME_VERSION );
-	// Preload the two above-the-fold weights (Inter Tight 500 body + 700 display em).
+	// Preload the Inter Tight variable file — every declared weight (300 hero
+	// display title / 500 body / 700 display em) resolves to this one URL, so a
+	// single preload warms them all (v4.80: the per-weight duplicates are gone).
 	add_action( 'wp_head', function () {
 		$u = get_template_directory_uri() . '/assets/fonts/';
-		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-500.woff2' ) . '">' . "\n";
-		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight-700.woff2' ) . '">' . "\n";
+		echo '<link rel="preload" as="font" type="font/woff2" crossorigin href="' . esc_url( $u . 'inter-tight.woff2' ) . '">' . "\n";
 	}, 1 );
 
 	wp_enqueue_script(
@@ -54,6 +60,12 @@ add_action( 'wp_enqueue_scripts', function () {
 		NR_THEME_VERSION,
 		true
 	);
+
+	// Batch 6 — GPU/canvas effects bundle (off unless enabled in Theme Settings).
+	if ( nr_opt( 'nr_fx_gpu', '0' ) === '1' ) {
+		wp_enqueue_script( 'nr-gpu-fx', get_template_directory_uri() . '/assets/js/gpu-fx.js', [ 'nr-theme' ], NR_THEME_VERSION, true );
+		wp_enqueue_script( 'nr-awwwards', get_template_directory_uri() . '/assets/js/awwwards.js', [ 'nr-theme' ], NR_THEME_VERSION, true );
+	}
 
 	// #1 — optional WebGL hero transitions (off unless enabled in Theme Settings).
 	if ( is_front_page() && nr_opt( 'nr_fx_webgl', '0' ) === '1' ) {
@@ -190,12 +202,38 @@ function nr_recognition_list( $option_key ) {
 	foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $line ) {
 		$line = trim( $line );
 		if ( $line === '' ) continue;
-		$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
+		if ( preg_match( '/[·|]/u', $line ) ) {
+			// Explicit columns: "year · name · org · url" (url optional, any order).
+			$parts = array_map( 'trim', preg_split( '/\s*·\s*|\s*\|\s*/u', $line ) );
+		} else {
+			// No delimiter (e.g. "2025 Heute.at https://…"): pull the URL, take a
+			// leading 4-digit year, treat the remaining words as the name.
+			$tokens = preg_split( '/\s+/', $line );
+			$u0 = ''; $kept = [];
+			foreach ( $tokens as $t ) {
+				if ( $u0 === '' && preg_match( '#^(https?://|www\.)#i', $t ) ) { $u0 = $t; continue; }
+				$kept[] = $t;
+			}
+			$y0    = ( isset( $kept[0] ) && preg_match( '/^(19|20)\d{2}$/', $kept[0] ) ) ? array_shift( $kept ) : '';
+			$parts = [ $y0, trim( implode( ' ', $kept ) ) ];
+			if ( $u0 !== '' ) $parts[] = $u0;
+		}
+		// A URL can sit in any position — pull it out as the link and never show
+		// it as text, so "year · name · url" works as well as "year · name · org · url".
+		$url  = '';
+		$rest = [];
+		foreach ( $parts as $p ) {
+			if ( $url === '' && preg_match( '#^(https?://|www\.)#i', $p ) ) {
+				$url = ( stripos( $p, 'http' ) === 0 ) ? $p : 'https://' . $p;
+				continue;
+			}
+			$rest[] = $p;
+		}
 		$row = [
-			'year' => $parts[0] ?? '',
-			'title' => $parts[1] ?? '',
-			'org'   => $parts[2] ?? '',
-			'url'   => $parts[3] ?? '',
+			'year'  => $rest[0] ?? '',
+			'title' => $rest[1] ?? '',
+			'org'   => $rest[2] ?? '',
+			'url'   => $url,
 		];
 		// Skip ghost rows (blank / punctuation-only lines) so an empty
 		// Awards or Press list hides cleanly instead of showing a stray dash.
@@ -266,15 +304,20 @@ function nr_placeholder( $label = 'photo', $dark = true, $aspect = '3/4' ) {
 /**
  * Print thumbnail OR placeholder if missing.
  */
-function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true ) {
+function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dark = true, $eager = false, $sizes = '(max-width:900px) 90vw, 42vw' ) {
 	if ( has_post_thumbnail( $post_id ) ) {
-		echo get_the_post_thumbnail( $post_id, $size, [
+		$attr = [
 			'class'    => 'nr-img',
 			'style'    => 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover',
 			'alt'      => esc_attr( get_the_title( $post_id ) ),
-			'loading'  => 'lazy',
+			'loading'  => $eager ? 'eager' : 'lazy',
 			'decoding' => 'async',
-		] );
+		];
+		// Accurate sizes so the browser picks a card-width candidate instead of
+		// WordPress' default full-width guess (cuts mobile image payload).
+		if ( $sizes ) $attr['sizes'] = $sizes;
+		if ( $eager ) $attr['fetchpriority'] = 'high';
+		echo get_the_post_thumbnail( $post_id, $size, $attr );
 	} else {
 		echo '<div style="position:absolute;inset:0">';
 		echo nr_placeholder( $label ?: get_the_title( $post_id ), $dark );
@@ -290,7 +333,7 @@ function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dar
  *   functions-additions — helpers, sticky CTA, shortcodes, asset enqueue
  *   acf-fields          — registers ACF field groups (no-op without ACF)
  *   admin-panel         — Site Control admin dashboard
- *   performance         — WebP / LQIP / EXIF on upload
+ *   performance         — WebP / LQIP on upload
  *   seo                 — schema.org, sitemap.xml, robots.txt
  *
  * Define NR_DISABLE_FEATURES in wp-config.php to skip all modules and
@@ -298,6 +341,7 @@ function nr_image_or_placeholder( $post_id, $size = 'nr-card', $label = '', $dar
  * ───────────────────────────────────────────────────────────── */
 if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 	foreach ( [
+		'lib.php',
 		'acf-polyfill.php',
 		'functions-additions.php',
 		'acf-fields.php',
@@ -320,6 +364,28 @@ if ( ! defined( 'NR_DISABLE_FEATURES' ) || ! NR_DISABLE_FEATURES ) {
 		'smtp.php',
 		'insights.php',
 		'webp.php',
+		'admin-extras.php',
+		'ideas-next.php',
+		'seo-extra.php',
+		'conversion-extra.php',
+		'quickwins.php',
+		'smallwins.php',
+		'mediumwins.php',
+		'admin-simplify.php',
+		'mediumwins2.php',
+		'infra.php',
+		'studio-ops.php',
+		'finishing.php',
+		'medium-next.php',
+		'medium2.php',
+		'leftovers.php',
+		'medium3.php',
+		'districts.php',
+		'medium4.php',
+			'preshoot.php',
+			'invoices.php',
+			'cal-booking.php',
+		'admin-hub.php',
 	] as $nr_inc_file ) {
 		$nr_inc_path = get_template_directory() . '/inc/' . $nr_inc_file;
 		if ( ! file_exists( $nr_inc_path ) ) continue;
@@ -371,6 +437,7 @@ function nr_handle_contact_send() {
 	$type    = sanitize_text_field( wp_unslash( $_POST['project_type']   ?? '' ) );
 	$date    = sanitize_text_field( wp_unslash( $_POST['preferred_date'] ?? '' ) );
 	$est     = sanitize_text_field( wp_unslash( $_POST['estimate']       ?? '' ) );
+	$estb    = substr( sanitize_text_field( wp_unslash( $_POST['estimate_breakdown'] ?? '' ) ), 0, 600 );
 	// Attribution — which project / source drove the enquiry.
 	$ref_in   = sanitize_text_field( wp_unslash( $_POST['nr_ref']      ?? '' ) );
 	$service  = sanitize_text_field( wp_unslash( $_POST['nr_service']  ?? '' ) );
@@ -382,6 +449,7 @@ function nr_handle_contact_send() {
 	if ( $type ) $lines[] = "Project type: {$type}";
 	if ( $date ) $lines[] = "Preferred date: {$date}";
 	if ( $est )  $lines[] = "Estimate: {$est}";
+	if ( $estb ) $lines[] = 'Calculation: ' . str_replace( ' ;; ', '; ', $estb );
 	$body    = implode( "\n", $lines ) . "\n\n{$notes}";
 	$headers = [ 'Content-Type: text/plain; charset=UTF-8' ];
 	if ( $email ) $headers[] = 'Reply-To: ' . $email;
@@ -399,10 +467,39 @@ function nr_handle_contact_send() {
 			update_post_meta( $eid, '_nr_email', $email );
 			update_post_meta( $eid, '_nr_type',  $type );
 			update_post_meta( $eid, '_nr_est',   $est );
+			if ( $estb ) update_post_meta( $eid, '_nr_breakdown', $estb );
 			update_post_meta( $eid, '_nr_date',  $date );
 			if ( $ref_in )   update_post_meta( $eid, '_nr_ref',      $ref_in );
 			if ( $service )  update_post_meta( $eid, '_nr_service',  $service );
 			if ( $referrer ) update_post_meta( $eid, '_nr_referrer', $referrer );
+			// #42 — optional reference images: validate (image, ≤5MB, ≤4) and
+			// attach to the enquiry. Skips silently on any problem.
+			if ( ! empty( $_FILES['nr_refs'] ) && is_array( $_FILES['nr_refs']['name'] ) ) {
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				require_once ABSPATH . 'wp-admin/includes/media.php';
+				require_once ABSPATH . 'wp-admin/includes/image.php';
+				$ref_ids = [];
+				$count   = count( $_FILES['nr_refs']['name'] );
+				for ( $fi = 0; $fi < min( 4, $count ); $fi++ ) {
+					if ( empty( $_FILES['nr_refs']['name'][ $fi ] ) ) continue;
+					if ( (int) ( $_FILES['nr_refs']['error'][ $fi ] ?? 1 ) !== UPLOAD_ERR_OK ) continue;
+					if ( (int) ( $_FILES['nr_refs']['size'][ $fi ] ?? 0 ) > 5 * 1024 * 1024 ) continue;
+					$ft = wp_check_filetype( (string) $_FILES['nr_refs']['name'][ $fi ] );
+					if ( strpos( (string) $ft['type'], 'image/' ) !== 0 ) continue;
+					$file = [
+						'name'     => $_FILES['nr_refs']['name'][ $fi ],
+						'type'     => $_FILES['nr_refs']['type'][ $fi ],
+						'tmp_name' => $_FILES['nr_refs']['tmp_name'][ $fi ],
+						'error'    => $_FILES['nr_refs']['error'][ $fi ],
+						'size'     => $_FILES['nr_refs']['size'][ $fi ],
+					];
+					$_FILES['nr_ref_single'] = $file;
+					$aid = media_handle_upload( 'nr_ref_single', $eid );
+					if ( ! is_wp_error( $aid ) ) $ref_ids[] = (int) $aid;
+				}
+				unset( $_FILES['nr_ref_single'] );
+				if ( $ref_ids ) update_post_meta( $eid, '_nr_ref_images', $ref_ids );
+			}
 		}
 	}
 
@@ -419,6 +516,7 @@ function nr_handle_contact_send() {
 				'type'     => $type,
 				'date'     => $date,
 				'estimate' => $est,
+				'breakdown' => $estb,
 			] );
 		}
 		$est_note = $pdf_path ? __( "\n\nI've attached a non-binding estimate as a PDF for your records.", 'raveenthiran' ) : '';

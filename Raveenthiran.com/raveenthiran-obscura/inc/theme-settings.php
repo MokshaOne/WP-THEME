@@ -43,6 +43,12 @@ function nr_settings_defaults() {
 		'nr_available'       => '1',
 		'nr_avail_text'      => __( 'Available · 2026', 'raveenthiran' ),
 		'nr_booking_url'     => '',
+		'nr_inv_business'    => '',   // sender block: name / street / ZIP city (one per line)
+		'nr_inv_iban'        => '',
+		'nr_inv_bic'         => '',
+		'nr_inv_prefix'      => '',   // empty = current year, e.g. 2026-0001
+		'nr_inv_terms'       => '14',
+		'nr_inv_note'        => 'Umsatzsteuerfrei gemäß § 6 Abs. 1 Z 27 UStG (Kleinunternehmerregelung).',
 		'nr_whatsapp'        => '',
 		'nr_presskit_url'    => '',
 		'nr_footer_cta'      => __( 'Start a project', 'raveenthiran' ),
@@ -122,16 +128,49 @@ function nr_settings_defaults() {
 		'nr_fx_wipe'         => '1',
 		'nr_fx_ken'          => '1',
 		'nr_fx_anchors'      => '1',
+		'nr_fx_preloader'    => '0',  // intro splash — off by default (revealed the hero mid-load → desktop CLS)
 		'nr_fx_webgl'        => '0',
 		'nr_fx_viewtrans'    => '0',
 		'nr_fx_distort'      => '0',
 		'nr_fx_lines'        => '0',
-		'nr_fx_sound'        => '0',
 		'nr_fx_favicon'      => '0',
 		'nr_fx_interlink'    => '0',
+		'nr_fx_cinematic'    => '0',  // Batch 1 — GPU/motion craft layer + visitor motion switch
 
 		/* Performance */
 		'nr_perf_async_css'  => '0',
+		'nr_signature'       => '',
+
+		/* Conversion & editorial (IDEAS-NEXT, v4.41) — all opt-in */
+		'nr_fx_speculation'  => '0',  // Speculation Rules prerender-on-hover
+		'nr_avail_dates'     => '',   // "next open dates" line
+		'nr_clients_logos'   => '',   // "url | name" per line
+		'nr_indexnow_key'    => '',   // IndexNow key (8–128 hex chars)
+
+		/* Conversion & SEO extras (IDEAS-200 Batch 2+3, v4.44) — opt-in / empty */
+		'nr_fx_shortlist'    => '0',  // visitor "selection" hearts on cards
+		'nr_fx_exit'         => '0',  // exit-intent soft offer
+		'nr_exit_text'       => '',   // exit-intent line (blank → a default)
+		'nr_trust_text'      => '',   // reassurance line under the Enquire form
+		'nr_packages'        => '',   // [nr_packages] — "Name | €from | feat;feat"
+		'nr_promo_text'      => '',   // seasonal banner (HTML <a>/<strong> ok)
+		'nr_promo_until'     => '',   // YYYY-MM-DD — banner auto-hides after
+		'nr_meta_title_tpl'  => '',   // #114 token <title> template for projects
+		'nr_block_ai'        => '0',  // robots.txt: disallow AI crawlers
+		'nr_clean_uninstall' => '0',  // #193 remove theme options when switching away
+		'nr_vat_rate'        => '20', // #55 VAT % shown on estimates (0 = hide)
+		'nr_glossary'        => '',   // #144 "term = definition" per line (journal)
+		'nr_followup_days'   => '3',  // #66 remind the owner about enquiries unanswered after N days
+		'nr_shows'           => '',   // #35 exhibitions: Title | Venue | YYYY-MM-DD | url (per line)
+		'nr_busy_dates'      => '',   // #41 availability: busy YYYY-MM-DD per line
+		'nr_admin_simplify'  => '1',  // declutter wp-admin (menus + one combined dashboard widget)
+		'nr_fx_gpu'          => '0',  // Batch 6: GPU/canvas effects (haze, dither, blob trail, iris)
+		'nr_csp_mode'        => 'off', // Content-Security-Policy: off | report | enforce
+		'nr_csp_extra'       => '',   // extra allowed hosts (space-separated)
+		'nr_fx_analytics'    => '0',  // self-hosted pageview analytics
+		'nr_fx_sw'           => '0',  // service worker (offline + SWR)
+		'nr_fx_vrails'       => '0',  // virtualised rails (content-visibility)
+		'nr_cta_view_b'      => '',   // #48 A/B variant for the hero CTA label
 
 		/* Color mode — dark (default) / light / system (honor prefers-color-scheme) */
 		'nr_color_mode'      => 'dark',
@@ -187,13 +226,18 @@ function nr_settings_default_filter( $value ) { return $value; }
    Admin menu — top-level "Theme Settings" page
    ============================================================= */
 add_action( 'admin_menu', function () {
-	add_theme_page(
+	// Top-level "Obscura" hub next to Dashboard (was an Appearance sub-page).
+	add_menu_page(
 		__( 'Theme Settings — Catalogue Noir', 'raveenthiran' ),
-		__( 'Theme Settings', 'raveenthiran' ),
+		__( 'Obscura', 'raveenthiran' ),
 		'manage_options',
 		'nr-theme-settings',
-		'nr_theme_settings_page'
+		'nr_theme_settings_page',
+		'dashicons-camera',
+		3
 	);
+	// Relabel the auto-generated first sub-item.
+	add_submenu_page( 'nr-theme-settings', __( 'Settings', 'raveenthiran' ), __( 'Settings', 'raveenthiran' ), 'manage_options', 'nr-theme-settings', 'nr_theme_settings_page' );
 } );
 
 /* register all options so they're saveable */
@@ -233,7 +277,7 @@ function nr_settings_sanitize_raw_html( $v ) {
    Enqueue color picker on our settings page only
    ============================================================= */
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
-	if ( $hook !== 'appearance_page_nr-theme-settings' ) return;
+	if ( $hook !== 'toplevel_page_nr-theme-settings' ) return;
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'wp-color-picker' );
 	add_action( 'admin_footer', function () {
@@ -266,6 +310,123 @@ function nr_field_textarea( $key, $rows = 4 ) {
 		esc_attr( $key ), (int) $rows, esc_textarea( $v )
 	);
 }
+
+/* Column repeater for the recognition lists (Press, Awards). $cols defines the
+ * visible inputs; they are NOT submitted — a hidden <textarea name="$key"> (the
+ * real option) is kept in sync by JS as canonical " | "-joined lines, so the
+ * existing save pipeline and nr_recognition_list() parser are untouched. With
+ * JS off the hidden textarea is still editable, so it degrades gracefully.
+ * Each column: f (data-f id) · label · get (row key, or array of fallbacks) ·
+ * optional ph (placeholder) · type (input type) · cls (cell class). */
+function nr_field_rec_rows( $key, $cols ) {
+	$defs = nr_settings_defaults();
+	$raw  = get_option( $key, $defs[ $key ] ?? '' );
+	$rows = function_exists( 'nr_recognition_list' ) ? nr_recognition_list( $key ) : [];
+	if ( ! $rows ) $rows = [ [ 'year' => '', 'title' => '', 'org' => '', 'url' => '' ] ];
+
+	static $assets = false;
+	if ( ! $assets ) {
+		$assets = true;
+		echo '<style id="nr-rep-css">'
+			. '.nr-rep__t{border-collapse:collapse;margin:0 0 8px;max-width:760px;width:100%}'
+			. '.nr-rep__t th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#646970;padding:0 8px 4px;font-weight:600}'
+			. '.nr-rep__t td{padding:3px 8px 3px 0;vertical-align:middle}'
+			. '.nr-rep__t input{width:100%}.nr-rep__t .nr-rep__y input{width:90px}'
+			. '.nr-rep__del{color:#b32d2e;text-decoration:none;font-size:15px;line-height:1;cursor:pointer}'
+			. '</style>';
+	}
+	?>
+	<div class="nr-rep" data-rep>
+		<table class="nr-rep__t">
+			<thead><tr>
+				<?php foreach ( $cols as $c ) : ?>
+					<th class="<?php echo esc_attr( $c['cls'] ?? '' ); ?>"><?php echo esc_html( $c['label'] ); ?></th>
+				<?php endforeach; ?>
+				<th></th>
+			</tr></thead>
+			<tbody data-rep-body>
+				<?php foreach ( $rows as $r ) : ?>
+					<tr>
+						<?php foreach ( $cols as $c ) :
+							$v = '';
+							foreach ( (array) $c['get'] as $g ) {
+								if ( trim( (string) ( $r[ $g ] ?? '' ) ) !== '' ) { $v = trim( (string) $r[ $g ] ); break; }
+							}
+						?>
+							<td class="<?php echo esc_attr( $c['cls'] ?? '' ); ?>"><input type="<?php echo esc_attr( $c['type'] ?? 'text' ); ?>" data-f="<?php echo esc_attr( $c['f'] ); ?>" value="<?php echo esc_attr( $v ); ?>" placeholder="<?php echo esc_attr( $c['ph'] ?? '' ); ?>" aria-label="<?php echo esc_attr( $c['label'] ); ?>"></td>
+						<?php endforeach; ?>
+						<td><button type="button" class="nr-rep__del" data-rep-del aria-label="<?php esc_attr_e( 'Remove row', 'raveenthiran' ); ?>">✕</button></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<p><button type="button" class="button" data-rep-add>＋ <?php esc_html_e( 'Add row', 'raveenthiran' ); ?></button></p>
+		<textarea name="<?php echo esc_attr( $key ); ?>" data-rep-sync hidden><?php echo esc_textarea( $raw ); ?></textarea>
+	</div>
+	<?php if ( empty( $GLOBALS['nr_rep_js'] ) ) : $GLOBALS['nr_rep_js'] = true; ?>
+	<script>
+	(function () {
+		function rebuild( rep ) {
+			var lines = [];
+			rep.querySelectorAll( '[data-rep-body] tr' ).forEach( function ( tr ) {
+				var vals = [];
+				tr.querySelectorAll( '[data-f]' ).forEach( function ( el ) { vals.push( el.value.trim() ); } );
+				if ( ! vals.some( function ( v ) { return v !== ''; } ) ) return;
+				while ( vals.length > 1 && vals[ vals.length - 1 ] === '' ) vals.pop();
+				lines.push( vals.join( ' | ' ) );
+			} );
+			rep.querySelector( '[data-rep-sync]' ).value = lines.join( '\n' );
+		}
+		function init() {
+			document.querySelectorAll( '[data-rep]' ).forEach( function ( rep ) {
+				if ( rep.dataset.repInit ) return;
+				rep.dataset.repInit = '1';
+				var body = rep.querySelector( '[data-rep-body]' );
+				var tmpl = body.querySelector( 'tr' );
+				rep.addEventListener( 'input', function () { rebuild( rep ); } );
+				rep.addEventListener( 'click', function ( e ) {
+					if ( e.target.closest( '[data-rep-add]' ) ) {
+						e.preventDefault();
+						var clone = tmpl.cloneNode( true );
+						clone.querySelectorAll( 'input' ).forEach( function ( i ) { i.value = ''; } );
+						body.appendChild( clone );
+						var first = clone.querySelector( 'input' ); if ( first ) first.focus();
+						rebuild( rep );
+					} else if ( e.target.closest( '[data-rep-del]' ) ) {
+						e.preventDefault();
+						var rows = body.querySelectorAll( 'tr' );
+						if ( rows.length > 1 ) { e.target.closest( 'tr' ).remove(); }
+						else { e.target.closest( 'tr' ).querySelectorAll( 'input' ).forEach( function ( i ) { i.value = ''; } ); }
+						rebuild( rep );
+					}
+				} );
+				rebuild( rep );
+			} );
+		}
+		// The script prints once, after the FIRST repeater — later repeaters on
+		// the same page don't exist yet at parse time, so init after DOM ready.
+		if ( document.readyState === 'loading' ) { document.addEventListener( 'DOMContentLoaded', init ); } else { init(); }
+	})();
+	</script>
+	<?php endif;
+}
+/* Press: Year · Publisher · Link → "year | publisher | url" lines. */
+function nr_field_press_rows( $key ) {
+	nr_field_rec_rows( $key, [
+		[ 'f' => 'year', 'label' => __( 'Year', 'raveenthiran' ), 'ph' => '2025', 'get' => 'year', 'cls' => 'nr-rep__y' ],
+		[ 'f' => 'name', 'label' => __( 'Publisher', 'raveenthiran' ), 'ph' => __( 'Publication', 'raveenthiran' ), 'get' => [ 'title', 'org' ] ],
+		[ 'f' => 'url', 'label' => __( 'Link', 'raveenthiran' ), 'ph' => 'https://…', 'type' => 'url', 'get' => 'url' ],
+	] );
+}
+/* Awards: Year · Award · Organisation · Link → "year | title | org | url" lines. */
+function nr_field_award_rows( $key ) {
+	nr_field_rec_rows( $key, [
+		[ 'f' => 'year', 'label' => __( 'Year', 'raveenthiran' ), 'ph' => '2025', 'get' => 'year', 'cls' => 'nr-rep__y' ],
+		[ 'f' => 'title', 'label' => __( 'Award', 'raveenthiran' ), 'ph' => __( 'Award title', 'raveenthiran' ), 'get' => 'title' ],
+		[ 'f' => 'org', 'label' => __( 'Organisation', 'raveenthiran' ), 'ph' => __( 'Awarding body', 'raveenthiran' ), 'get' => 'org' ],
+		[ 'f' => 'url', 'label' => __( 'Link', 'raveenthiran' ), 'ph' => 'https://…', 'type' => 'url', 'get' => 'url' ],
+	] );
+}
 function nr_field_color( $key ) {
 	$defs = nr_settings_defaults();
 	$v    = get_option( $key, $defs[ $key ] ?? '' );
@@ -293,7 +454,7 @@ function nr_field_toggle( $key, $label = '' ) {
  */
 add_action( 'admin_init', function () {
 	if ( empty( $_POST ) || empty( $_POST['option_page'] ) || $_POST['option_page'] !== 'nr_theme_settings_group' ) return;
-	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css' ];
+	$toggle_keys = [ 'nr_available', 'nr_show_inquiry_fab', 'nr_show_cookie_notice', 'nr_smtp_enable', 'nr_perf_async_css', 'nr_block_ai', 'nr_clean_uninstall', 'nr_admin_simplify', 'nr_fx_gpu', 'nr_fx_analytics', 'nr_fx_sw', 'nr_fx_vrails', 'nr_fx_shortlist', 'nr_fx_exit' ];
 	foreach ( array_keys( nr_settings_defaults() ) as $k ) {
 		if ( strpos( $k, 'nr_fx_' ) !== 0 && ! in_array( $k, $toggle_keys, true ) ) continue;
 		if ( isset( $_POST[ $k . '_present' ] ) && ! isset( $_POST[ $k ] ) ) {
@@ -367,6 +528,9 @@ function nr_theme_settings_page() {
 							<p class="description"><?php esc_html_e( 'e.g. ATU12345678. Leave blank to show “auf Anfrage”.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Trade / Gewerbe', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_gewerbe', 40 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Signature (Studio page)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_signature', 30 ); ?>
+							<p class="description"><?php esc_html_e( 'Your name in a handwritten-style script at the end of the Studio bio. Leave blank to hide.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Instagram URL', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_text( 'nr_instagram', 60 ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Behance URL', 'raveenthiran' ); ?></label></th>
@@ -393,6 +557,27 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Instagram grid', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_textarea( 'nr_ig_grid', 5 ); ?>
 							<p class="description"><?php esc_html_e( 'One image per line: image_url | post_url — a curated grid on the Studio page (Meta\'s API no longer allows auto-feeds).', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Invoices</h2></summary>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Business details', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_inv_business', 3 ); ?>
+							<p class="description"><?php esc_html_e( 'Sender block, one line each: name · street · ZIP city. Appears on every invoice (legally required).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'IBAN', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_iban', 40 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'BIC', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_bic', 20 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Number prefix', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_prefix', 12 ); ?>
+							<p class="description"><?php esc_html_e( 'Empty = current year (e.g. 2026-0001). The counter itself never resets or skips.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Payment terms (days)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_inv_terms', 6 ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Tax note', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_inv_note', 2 ); ?>
+							<p class="description"><?php esc_html_e( 'Printed on every invoice. Default is the Austrian small-business VAT exemption (§ 6 Abs. 1 Z 27 UStG).', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 
@@ -505,11 +690,11 @@ function nr_theme_settings_page() {
 				<summary><h2>§ Awards &amp; Press</h2></summary>
 				<table class="form-table" role="presentation">
 					<tr><th><label><?php esc_html_e( 'Awards', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_textarea( 'nr_awards_list', 5 ); ?>
-							<p class="description"><?php esc_html_e( 'One per line as: year · title · organisation · url (url optional). Rendered as a list on the About page.', 'raveenthiran' ); ?></p></td></tr>
+						<td><?php nr_field_award_rows( 'nr_awards_list' ); ?>
+							<p class="description"><?php esc_html_e( 'Year, award title, awarding organisation and an optional link. Rendered as a list on the About page.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Press', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_textarea( 'nr_press_list', 5 ); ?>
-							<p class="description"><?php esc_html_e( 'One per line as: year · article · publication · url (url optional).', 'raveenthiran' ); ?></p></td></tr>
+						<td><?php nr_field_press_rows( 'nr_press_list' ); ?>
+							<p class="description"><?php esc_html_e( 'Year, publisher and an optional link. The publisher shows as a clickable link on the site (Press wall, “As featured in”, and the About page).', 'raveenthiran' ); ?></p></td></tr>
 				</table>
 			</details>
 
@@ -705,6 +890,9 @@ function nr_theme_settings_page() {
 						<td><?php nr_field_toggle( 'nr_fx_ken', __( 'Slow scale on the active hero image', 'raveenthiran' ) ); ?></td></tr>
 					<tr><th><label><?php esc_html_e( 'Section anchors', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_anchors', __( 'Big faded §-numerals in corner of sub-pages', 'raveenthiran' ) ); ?></td></tr>
+						<tr><th><label><?php esc_html_e( 'Intro preloader', 'raveenthiran' ); ?></label></th>
+							<td><?php nr_field_toggle( 'nr_fx_preloader', __( 'Full-screen intro splash with a loading counter (once per session, desktop)', 'raveenthiran' ) ); ?>
+								<p class="description"><?php esc_html_e( 'Off by default. It runs on a fixed timer and reveals the page while the hero is still loading, which caused a large layout shift (CLS) on desktop. Leave off unless you specifically want the intro.', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'WebGL hero transitions', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_webgl', __( 'Shader-based displacement dissolve between hero slides (desktop, motion-on)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Adds a lightweight WebGL canvas over the homepage hero for a premium "melt" transition. Falls back to the normal crossfade on older devices, reduced-motion, or if WebGL is unavailable — so it is always safe to leave on.', 'raveenthiran' ); ?></p></td></tr>
@@ -723,15 +911,125 @@ function nr_theme_settings_page() {
 					<tr><th><label><?php esc_html_e( 'Non-blocking stylesheet', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_perf_async_css', __( 'Load the main CSS asynchronously (faster mobile FCP/LCP)', 'raveenthiran' ) ); ?>
 							<p class="description"><?php esc_html_e( 'Off by default. Removes ~2s of render-blocking on slow mobile — but can cause a brief unstyled flash on the first paint. Turn it on, hard-reload a few times on mobile, and keep it only if the flash is acceptable.', 'raveenthiran' ); ?></p></td></tr>
-					<tr><th><label><?php esc_html_e( 'Interface sound', 'raveenthiran' ); ?></label></th>
-						<td><?php nr_field_toggle( 'nr_fx_sound', __( 'Tiny hover/click ticks with a mute control (off until the visitor opts in)', 'raveenthiran' ) ); ?>
-							<p class="description"><?php esc_html_e( 'Off by default. When on, a small speaker toggle appears; sound only plays after the visitor unmutes (browsers block autoplay audio anyway).', 'raveenthiran' ); ?></p></td></tr>
 					<tr><th><label><?php esc_html_e( 'Generative favicon', 'raveenthiran' ); ?></label></th>
 						<td><?php nr_field_toggle( 'nr_fx_favicon', __( 'Draw an accent-colored monogram favicon at runtime (used when no Site Icon is set)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'GPU effects', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_gpu', __( 'Heat-haze idle shader, animated dither field, metaball cursor trail, aperture-iris reveal (desktop, cinematic level)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Loads a separate small script only when on; no WebGL → effects silently skip. Pairs with the Cinematic motion toggle below.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Cinematic motion', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_cinematic', __( 'Enable the cinematic motion layer + a visitor "calm / standard / cinematic" switch (desktop)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. When on, adds card tilt + glare, chromatic-aberration hover, scroll-velocity image shear, decode-reveal eyebrows, drawn-in dividers, split-flap stat counters, and a film-frame scroll indicator — with a bottom-left switch so each visitor can pick calm/standard/cinematic. Honors reduced-motion (defaults to calm). Try it on and reload a portfolio page.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Conversion &amp; editorial</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'Quiet, owned-audience features. Everything here is off by default and only appears on scrolling pages (never the fixed home hero or single-project view). Turn one on, preview a sub-page, keep what fits.', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Next open dates', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_avail_dates', 50 ); ?>
+							<p class="description"><?php esc_html_e( 'e.g. "Booking April–June 2026 · 2 windows left". Leave blank to hide.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Client logos', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_clients_logos', 5 ); ?>
+							<p class="description"><?php esc_html_e( 'One per line as "https://logo.svg | Client name", or just a plain name. Renders a small "Trusted by" strip.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Speculation Rules', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_speculation', __( 'Prerender same-site links on hover for instant navigation (modern browsers)', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Uses the browser Speculation Rules API; ignored where unsupported.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'IndexNow key', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_indexnow_key', 40 ); ?>
+							<p class="description"><?php esc_html_e( '8–128 hex characters. When set, publishing a project/journal/page instantly pings Bing & Yandex. A matching key file is served automatically at /<key>.txt.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Conversion &amp; SEO extras</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'IDEAS-200 batch 2+3. Visitor-facing toggles are off by default. Packages/press render via the [nr_packages] and [nr_press] shortcodes (drop them on any page).', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Visitor shortlist', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_shortlist', __( 'Let visitors ♥ projects into a "selection" and send it as a brief (localStorage)', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Exit-intent offer', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_exit', __( 'Show a one-time soft prompt when the cursor leaves toward the tab bar (desktop)', 'raveenthiran' ) ); ?>
+							<p><?php nr_field_text( 'nr_exit_text', 60 ); ?></p>
+							<p class="description"><?php esc_html_e( 'The prompt line. Blank uses a sensible default. Never shown on single-project pages.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Trust line (Enquire)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_trust_text', 70 ); ?>
+							<p class="description"><?php esc_html_e( 'Reassurance shown under the Enquire form, e.g. "Reply within 24h · no spam · your data stays private".', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Packages', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_textarea( 'nr_packages', 5 ); ?>
+							<p class="description"><?php esc_html_e( 'One tier per line: "Name | €from 1,200 | half-day; 30 edits; web licence". Render with [nr_packages].', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Seasonal banner', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_promo_text', 70 ); ?>
+							<p><?php esc_html_e( 'Auto-hide after', 'raveenthiran' ); ?> <input type="date" name="nr_promo_until" value="<?php echo esc_attr( get_option( 'nr_promo_until', '' ) ); ?>"></p>
+							<p class="description"><?php esc_html_e( 'A dismissible bar. Basic <a>/<strong> allowed. Leave the date blank to show indefinitely.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Project <title> template', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_meta_title_tpl', 60 ); ?>
+							<p class="description"><?php esc_html_e( 'Tokens: %title% %cat% %year% %site%. e.g. "%title% — %cat% photography, Vienna · %site%". Blank keeps the default title.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Block AI crawlers', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_block_ai', __( 'Disallow GPTBot / CCBot / Google-Extended / ClaudeBot etc. in robots.txt', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'A/B hero CTA (variant B)', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_text( 'nr_cta_view_b', 30 ); ?>
+							<p class="description"><?php esc_html_e( 'Alternative label for the hero "View project" button. Blank = no test. Views/clicks are counted per variant (option nr_ab).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Sample content', 'raveenthiran' ); ?></label></th>
+						<td><a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nr_sample_content' ), 'nr_sample_content' ) ); ?>"><?php esc_html_e( 'Create demo drafts', 'raveenthiran' ); ?></a>
+							<span class="description"><?php esc_html_e( '3 projects + 2 journal entries as drafts — for a fresh install.', 'raveenthiran' ); ?></span></td></tr>
+					<tr><th><label><?php esc_html_e( 'Simplified admin', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_admin_simplify', __( 'Hide Posts/Comments/ACF menus, merge the dashboard widgets into one, trim the Appearance menu', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'On by default. Turn off to restore the stock admin.', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Clean uninstall', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_clean_uninstall', __( 'Remove all of this theme’s settings when switching away from Obscura', 'raveenthiran' ) ); ?>
+							<p class="description"><?php esc_html_e( 'Off by default. Only deletes Obscura’s own options/transients, only on theme switch.', 'raveenthiran' ); ?></p></td></tr>
+				</table>
+			</details>
+
+			<details open class="nr-settings__group">
+				<summary><h2>§ Security &amp; infrastructure</h2></summary>
+				<p class="description" style="max-width:820px"><?php esc_html_e( 'All off by default. Turn CSP on as “report” first and watch the violation log before enforcing.', 'raveenthiran' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><label><?php esc_html_e( 'Content-Security-Policy', 'raveenthiran' ); ?></label></th>
+						<td><?php $cm = get_option( 'nr_csp_mode', 'off' ); ?>
+							<select name="nr_csp_mode">
+								<option value="off"     <?php selected( $cm, 'off' ); ?>><?php esc_html_e( 'Off', 'raveenthiran' ); ?></option>
+								<option value="report"  <?php selected( $cm, 'report' ); ?>><?php esc_html_e( 'Report-only (safe — never blocks)', 'raveenthiran' ); ?></option>
+								<option value="enforce" <?php selected( $cm, 'enforce' ); ?>><?php esc_html_e( 'Enforce', 'raveenthiran' ); ?></option>
+							</select>
+							<p><?php nr_field_text( 'nr_csp_extra', 50 ); ?></p>
+							<p class="description"><?php esc_html_e( 'Extra allowed hosts (space-separated) for any analytics/embeds you add. Violations are logged (option nr_csp_log).', 'raveenthiran' ); ?></p></td></tr>
+					<tr><th><label><?php esc_html_e( 'Self-hosted analytics', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_analytics', __( 'Count logged-out pageviews (cookieless, no PII) → dashboard widget', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Service worker', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_sw', __( 'Offline fallback page + stale-while-revalidate caching of theme assets', 'raveenthiran' ) ); ?></td></tr>
+					<tr><th><label><?php esc_html_e( 'Virtualised rails', 'raveenthiran' ); ?></label></th>
+						<td><?php nr_field_toggle( 'nr_fx_vrails', __( 'Skip rendering off-screen rail cards (content-visibility) — smoother huge archives', 'raveenthiran' ) ); ?></td></tr>
 				</table>
 			</details>
 
 			<?php submit_button( __( 'Save settings', 'raveenthiran' ) ); ?>
+		</form>
+
+		<?php if ( isset( $_GET['nr_import'] ) ) : ?>
+			<div class="notice notice-success" style="margin-top:16px"><p><?php printf( esc_html__( 'Imported %d settings.', 'raveenthiran' ), (int) $_GET['nr_import'] ); ?></p></div>
+		<?php endif; ?>
+
+		<div style="margin-top:24px;padding-top:16px;border-top:1px solid #ddd">
+			<h2 style="font-size:16px"><?php esc_html_e( '§ Backup & migration', 'raveenthiran' ); ?></h2>
+			<p class="description" style="max-width:780px"><?php esc_html_e( 'Export every Theme Settings value as a JSON file (e.g. to copy a staging configuration to the live site), or import one back. Only known theme keys are restored; passwords/secrets are included, so keep the file private.', 'raveenthiran' ); ?></p>
+			<p>
+				<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nr_settings_export' ), 'nr_settings_export' ) ); ?>"><?php esc_html_e( 'Export settings (JSON)', 'raveenthiran' ); ?></a>
+			</p>
+			<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:8px">
+				<input type="hidden" name="action" value="nr_settings_diff">
+				<?php wp_nonce_field( 'nr_settings_import' ); ?>
+				<input type="file" name="nr_settings_file" accept="application/json,.json" required>
+				<button type="submit" class="button"><?php esc_html_e( 'Import settings', 'raveenthiran' ); ?></button>
+			</form>
+		</div>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:24px;padding-top:16px;border-top:1px solid #ddd"
+			onsubmit="return confirm('<?php echo esc_js( __( 'Reset ALL theme settings to their defaults? This cannot be undone.', 'raveenthiran' ) ); ?>');">
+			<input type="hidden" name="action" value="nr_reset_settings">
+			<?php wp_nonce_field( 'nr_reset_settings' ); ?>
+			<button type="submit" class="button button-link-delete"><?php esc_html_e( 'Reset all settings to defaults', 'raveenthiran' ); ?></button>
+			<span class="description" style="margin-left:8px"><?php esc_html_e( 'Restores every Theme Settings field to its default value.', 'raveenthiran' ); ?></span>
 		</form>
 	</div>
 
@@ -842,8 +1140,8 @@ add_filter( 'body_class', function ( $classes ) {
 	if ( get_option( 'nr_fx_webgl',   '0' ) === '1' ) $classes[] = 'nr-has-webgl';
 	if ( get_option( 'nr_fx_distort', '0' ) === '1' ) $classes[] = 'nr-has-distort';
 	if ( get_option( 'nr_fx_lines',   '0' ) === '1' ) $classes[] = 'nr-has-lines';
-	if ( get_option( 'nr_fx_sound',   '0' ) === '1' ) $classes[] = 'nr-has-sound';
 	if ( get_option( 'nr_fx_favicon', '0' ) === '1' ) $classes[] = 'nr-has-favicon';
+	if ( get_option( 'nr_fx_cinematic', '0' ) === '1' ) $classes[] = 'nr-cinematic';
 	$mode = get_option( 'nr_color_mode', 'dark' );
 	if ( $mode === 'light' )  $classes[] = 'nr-light';
 	if ( $mode === 'system' ) $classes[] = 'nr-mode-system';

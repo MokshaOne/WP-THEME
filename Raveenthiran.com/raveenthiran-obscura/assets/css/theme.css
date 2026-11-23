@@ -9,7 +9,7 @@
   --bg-3:#181A20;
   --ink:#F2EFE9;
   --ink-2:rgba(242,239,233,.62);
-  --ink-3:rgba(242,239,233,.42); /* lifted from .32 → .42 for WCAG AA (4.5:1) on small body text */
+  --ink-3:rgba(242,239,233,.50); /* WCAG AA: .50 ≈ 4.7:1 on the near-black canvas (was .42 ≈ 3.7:1) */
   --ink-4:rgba(242,239,233,.12);
   --ink-5:rgba(242,239,233,.06);
   --amber:#F2A03D;
@@ -650,6 +650,14 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
    Portfolio archive
    ========================================================= */
 .nr-portfolio-archive .nr-page__head{padding-bottom:18px}
+/* Head sizes to content; the grid below fills the rest and scrolls vertically.
+   (Explicit rows so it holds even where :has() isn't honoured.) */
+.nr-portfolio-archive.nr-fullscreen{grid-template-rows:auto minmax(0,1fr)}
+/* v4.68.1 — the horizontal slider (rail) is back on the portfolio archive
+   (the v4.64 grid was a misunderstanding: the owner disliked the v4.63
+   collapse bug, not the slider). Height floor = belt-and-braces so cards
+   keep their shape even if the rail row ever collapses again. */
+.nr-portfolio-archive .nr-portfolio-rail{min-height:min(72vh,640px)}
 .nr-chips{display:flex;flex-wrap:wrap;gap:18px;justify-content:flex-end}
 .nr-chips--center{justify-content:flex-end}
 .nr-chip{
@@ -716,9 +724,10 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
   display:grid;grid-template-rows:auto 1fr;overflow:hidden;
 }
 .nr-project__crumbs{
-  display:flex;align-items:center;gap:14px;padding:14px var(--pad);
+  display:flex;align-items:center;gap:14px;padding:30px var(--pad) 16px;
+  background:transparent;
   font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
-  border-bottom:1px solid var(--hair);position:relative;z-index:5;
+  position:relative;z-index:5;
 }
 .nr-project__crumbs a{color:var(--ink-2);transition:color .25s var(--ease)}
 .nr-project__crumbs a:hover{color:var(--ink)}
@@ -727,9 +736,10 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 
 .nr-project__layout{display:grid;grid-template-columns:420px 1fr;overflow:hidden;position:relative;height:100%}
 .nr-project__body{
-  padding:40px 40px 40px var(--pad);
+  padding:34px 40px 70px var(--pad);
   display:flex;flex-direction:column;gap:20px;
-  border-right:1px solid var(--hair);overflow:hidden;position:relative;
+  border-right:1px solid var(--hair);position:relative;
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--ink-5) transparent;
 }
 .nr-project__body::after{
   content:'§02·a';position:absolute;right:24px;bottom:18px;
@@ -817,7 +827,7 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
 
 .nr-stats{
   display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:6px;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:-22px;margin-bottom:14px;
 }
 .nr-stats > div{
   padding:22px 14px 18px;display:flex;flex-direction:column;gap:6px;
@@ -1042,11 +1052,18 @@ body.is-wiping .nr-wipe::before{transform:scaleX(1)}
    ========================================================= */
 .nr-modal{
   position:fixed;inset:0;z-index:80;
-  display:flex;align-items:center;justify-content:center;padding:32px;
+  /* display:none when closed so the modal never participates in layout — a
+     laid-out (display:flex) but hidden viewport-size modal was scoring ~1.0 CLS
+     on desktop. Fade preserved via discrete transition where supported. */
+  display:none;align-items:center;justify-content:center;padding:32px;
   background:rgba(11,12,16,.85);backdrop-filter:blur(10px);
-  opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s var(--ease),visibility .35s,display .35s allow-discrete;
 }
-.nr-modal.is-on, .nr-modal[aria-hidden="false"]{opacity:1;visibility:visible}
+.nr-modal.is-on, .nr-modal[aria-hidden="false"]{display:flex;opacity:1;visibility:visible}
+@starting-style{
+  .nr-modal.is-on, .nr-modal[aria-hidden="false"]{opacity:0}
+}
 .nr-modal__panel{
   position:relative;background:var(--bg-2);border:1px solid var(--hair);
   max-width:920px;width:100%;max-height:90vh;overflow:hidden;
@@ -1818,11 +1835,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .nr-rl.is-in .nr-line__i{transform:translateY(0)}
 .nr-rl .nr-w.is-em{font-style:normal;font-weight:700;letter-spacing:-.055em;color:var(--ink)}
 
-/* #58 — interface-sound toggle */
-.nr-sound{position:fixed;left:18px;bottom:18px;z-index:60;width:38px;height:38px;border-radius:50%;border:1px solid var(--hair);background:rgba(11,12,16,.6);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;backdrop-filter:blur(6px);transition:border-color .2s,transform .2s}
-.nr-sound:hover{border-color:var(--amber);transform:translateY(-2px)}
-.nr-sound.is-on{border-color:var(--amber)}
-@media (max-width:900px){.nr-sound{left:12px;bottom:84px;width:34px;height:34px}}
+/* #58 interface-sound CSS removed v4.68.0 (feature retired). */
 
 /* #83 — card hover distortion (filter applied per-image only while hovered) */
 .nr-has-distort .nr-card img{will-change:filter}
@@ -1889,3 +1902,702 @@ picture{display:contents}
 @media (max-width:900px){
   .nr-static{position:static;height:auto;overflow:visible;padding:96px 0 80px}
 }
+
+/* ── Batch 1 (v4.33.0): journal/card polish + fixes ─────────────── */
+/* fix: article column must clear the fixed global footer */
+.nr-jpost__body{padding-bottom:110px}
+
+/* #11 — catalogue plate number on work cards */
+.nr-card__no{position:absolute;top:56px;right:14px;z-index:4;writing-mode:vertical-rl;
+  font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.3em;color:var(--ink-3);
+  pointer-events:none;transition:color .25s var(--ease)}
+.nr-card:hover .nr-card__no{color:var(--amber)}
+
+/* #12 — journal cards: index-card character (amber rule, big mono date, subdued image) */
+.nr-card--journal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);z-index:5}
+.nr-card--journal img{filter:contrast(1.02) saturate(.8) brightness(.6)}
+.nr-card--journal:hover img{filter:contrast(1.06) saturate(.95) brightness(.85)}
+.nr-card--journal .nr-card__head span:first-child{font-size:var(--fs-md);font-weight:500;color:var(--ink)}
+/* #9 — stronger bottom shade so the excerpt stays AA on bright photos */
+.nr-card--journal .nr-card__shade{background:linear-gradient(180deg,rgba(11,12,16,.25) 0%,transparent 30%,rgba(11,12,16,.96) 100%)}
+.nr-card--journal .nr-card__excerpt{color:var(--ink)}
+
+/* term/search archive head description */
+.nr-page__head-desc{color:var(--ink-2);font-size:var(--fs-md);line-height:1.6;max-width:60ch;margin-top:10px}
+.nr-search-form{display:flex;gap:10px;max-width:480px;margin-top:18px}
+.nr-search-form input[type=search]{flex:1;background:transparent;border:1px solid var(--hair);color:var(--ink);
+  padding:12px 14px;font-family:inherit;font-size:var(--fs-md)}
+.nr-search-form input[type=search]:focus{outline:none;border-color:var(--amber)}
+
+/* ── Batch 2 (v4.34.0): hero ghost numeral · chip counts · journal depth ── */
+/* #13 — oversized outlined slide number behind the hero title.
+   NB: .nr-hero__center is already position:absolute (its own containing block),
+   so we must NOT re-position it here — that broke the bottom-anchored layout. */
+.nr-hero__ghost{position:absolute;left:-2px;top:-.34em;z-index:0;pointer-events:none;
+  font-weight:300;font-size:clamp(140px,26vw,360px);line-height:.8;letter-spacing:-.04em;
+  color:transparent;-webkit-text-stroke:1px var(--ink-5);
+  font-feature-settings:"tnum";opacity:.9}
+.nr-hero__center > *:not(.nr-hero__ghost){position:relative;z-index:1}
+@media (max-width:900px){.nr-hero__ghost{display:none}}
+
+/* #17 — counts on filter chips */
+.nr-chip__n{font-size:.62em;vertical-align:super;margin-left:3px;color:var(--ink-3);
+  font-family:var(--ff-mono);letter-spacing:0}
+.nr-chip.is-on .nr-chip__n{color:var(--amber)}
+.nr-chip--tag.is-on .nr-chip__n{color:var(--bg)}
+
+/* #18 — journal prose: pull-quotes + drop cap */
+.nr-jpost__prose > p:first-of-type::first-letter{
+  float:left;font-weight:300;font-size:3.4em;line-height:.72;padding:6px 12px 0 0;color:var(--amber)}
+.nr-jpost__prose blockquote{margin:24px 0;padding:4px 0 4px 22px;border-left:2px solid var(--amber)}
+.nr-jpost__prose blockquote p{font-weight:300;font-size:clamp(20px,2.4vw,27px);line-height:1.3;
+  letter-spacing:-.01em;color:var(--ink)}
+.nr-jpost__prose blockquote cite{display:block;margin-top:8px;font-style:normal;
+  font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+
+/* #20/#37 — "More notes" strip at the end of a journal post */
+.nr-jpost__more{margin-top:34px;padding-top:24px;border-top:1px solid var(--hair)}
+.nr-jpost__more-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:stretch;margin-top:12px}
+.nr-jpost__more-card{display:flex;flex-direction:column;gap:6px;padding:16px;border:1px solid var(--hair);
+  text-decoration:none;transition:border-color .25s var(--ease),transform .25s var(--ease)}
+.nr-jpost__more-card:hover{border-color:var(--amber);transform:translateY(-3px)}
+.nr-jpost__more-date{font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.nr-jpost__more-title{font-size:var(--fs-md);line-height:1.25;color:var(--ink)}
+.nr-jpost__more-all{display:flex;align-items:center;padding:0 18px;white-space:nowrap;text-decoration:none;
+  font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--hair)}
+.nr-jpost__more-all:hover{color:var(--amber);border-color:var(--amber)}
+@media (max-width:600px){.nr-jpost__more-grid{grid-template-columns:1fr}}
+
+/* Date input on dark UI — white calendar icon + dark native picker.
+   We REPLACE the native glyph with our own white SVG so it doesn't depend on
+   color-scheme/invert cancelling out (the v4.38 bug: color-scheme:dark made the
+   glyph white, then invert(1) flipped it back to black → invisible). */
+.nr-form input[type=date],.nr-enquire__form input[type=date]{color-scheme:dark}
+.nr-form input[type=date]::-webkit-calendar-picker-indicator,
+.nr-enquire__form input[type=date]::-webkit-calendar-picker-indicator{
+  opacity:.7;cursor:pointer;width:18px;height:18px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2EFE9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
+  background-size:contain;background-repeat:no-repeat;background-position:center}
+.nr-form input[type=date]::-webkit-calendar-picker-indicator:hover,
+.nr-enquire__form input[type=date]::-webkit-calendar-picker-indicator:hover{opacity:1}
+
+/* ── Batch 7 (v4.39.0): marquee · signature · divider ─────────── */
+/* #14 footer marquee CSS removed v4.68.0 (feature retired). */
+
+/* #19 — handwritten-style signature on the Studio page */
+.nr-signature{font-family:'Segoe Script','Bradley Hand','Brush Script MT','Snell Roundhand',cursive;
+  font-size:clamp(30px,4.4vw,52px);line-height:1;color:var(--amber);transform:rotate(-3deg);
+  transform-origin:left center;margin:6px 0 26px;opacity:.92}
+
+/* #22 — reusable amber hairline section divider */
+.nr-divider{height:1px;border:0;margin:34px 0;
+  background:linear-gradient(90deg,transparent,var(--hair) 18%,var(--hair) 82%,transparent)}
+.nr-divider--amber{background:linear-gradient(90deg,transparent,var(--amber-soft) 50%,transparent)}
+
+/* ── IDEAS-NEXT (v4.41.0): conversion · editorial · a11y ───────── */
+
+/* Footer-extras region — sits above the footer on scrolling pages. */
+.nr-extras{max-width:1100px;margin:0 auto;padding:48px 24px 8px;display:flex;flex-direction:column;gap:32px}
+
+/* #8 testimonials-band CSS removed v4.68.0 (feature retired; [nr_testimonial_videos] keeps .nr-testi-vid). */
+
+/* #6 — recently viewed strip */
+.nr-recent__label,.nr-clients__label{display:block;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);margin-bottom:12px}
+.nr-recent__track{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nr-recent__track::-webkit-scrollbar{display:none}
+.nr-recent__card{flex:0 0 auto;width:148px;text-decoration:none;color:var(--ink-2)}
+.nr-recent__card img{width:148px;height:96px;object-fit:cover;border-radius:3px;display:block;background:var(--bg-2,#14151A)}
+.nr-recent__card span{display:block;margin-top:7px;font-size:12.5px;line-height:1.35}
+.nr-recent__card:hover{color:var(--ink)}
+
+/* #19 — client logos */
+.nr-clients__row{display:flex;flex-wrap:wrap;align-items:center;gap:26px}
+.nr-clients__row img{height:26px;width:auto;opacity:.6;filter:grayscale(1) brightness(1.6);transition:opacity .25s}
+.nr-clients__row img:hover{opacity:1}
+.nr-clients__name{font-size:13px;letter-spacing:.04em;color:var(--ink-3)}
+
+/* #9 — availability line */
+.nr-availability{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin:0}
+.nr-availability b{color:var(--ink)}
+.nr-availability .tick{width:7px;height:7px;border-radius:50%;background:#54d27a;box-shadow:0 0 0 3px rgba(84,210,122,.18)}
+
+/* #7 newsletter-capture CSS removed v4.68.0 (feature retired). */
+
+/* #16 — project process / behind-the-scenes */
+.nr-process{margin-top:26px;padding-top:20px;border-top:1px solid var(--hair)}
+.nr-process__body{margin-top:8px;color:var(--ink-2);font-size:14.5px;line-height:1.65;max-width:46ch}
+.nr-process__body p{margin:0 0 .7em}
+
+/* #20 — series cover */
+.nr-series-cover{position:relative;margin:0 0 22px;border-radius:4px;overflow:hidden}
+.nr-series-cover__img{width:100%;height:clamp(180px,30vh,320px);object-fit:cover;display:block}
+.nr-series-cover__statement{margin:14px 2px 0;max-width:62ch;font-size:clamp(15px,2vw,19px);line-height:1.5;color:var(--ink-2);font-weight:300}
+.nr-series-cover__img + .nr-series-cover__statement{position:absolute;left:0;right:0;bottom:0;margin:0;padding:20px 22px;color:var(--ink);background:linear-gradient(0deg,rgba(11,12,16,.9),transparent)}
+
+/* #21 — Save-Data: drop decorative grain + heavy backdrop work. */
+body.nr-savedata .nr-grain,
+body.nr-savedata .nr-scan,
+body.nr-savedata .nr-clients__row img{display:none!important}
+body.nr-savedata .nr-recent__card img{background:var(--bg-2,#14151A)}
+
+/* #21 — prefers-contrast: firm up hairlines + muted text for AAA contrast. */
+@media (prefers-contrast:more){
+  :root{--hair:rgba(242,239,233,.34);--ink-2:#E7E3DB;--ink-3:#D8D3CA;--ink-4:#C9C3B8}
+  .nr-btn{border-color:var(--ink)}
+  .nr-card__shade{background:linear-gradient(0deg,rgba(11,12,16,.92),transparent)}
+}
+
+/* #21 — prefers-reduced-data (Chrome): skip non-critical imagery. */
+@media (prefers-reduced-data:reduce){
+  .nr-clients__row img{display:none}
+}
+
+@media (max-width:640px){
+  .nr-extras{padding:32px 18px 4px;gap:24px}
+  .nr-recent__card,.nr-recent__card img{width:124px}
+}
+
+/* ── Batch 1 (v4.42.0): cinematic motion layer (opt-in) ───────── */
+/* Active only when the master toggle (body.nr-cinematic) AND the visitor's
+   motion level agree. Default level is "cinematic" (or "calm" under
+   prefers-reduced-motion); the bottom-left switch lets visitors choose. */
+
+/* #40 — motion switch */
+.nr-motion{position:fixed;left:16px;bottom:16px;z-index:60;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px}
+.nr-motion__btn{background:rgba(11,12,16,.66);color:var(--ink-2);border:1px solid var(--hair);border-radius:999px;padding:7px 12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-motion__btn:hover{color:var(--ink);border-color:var(--ink-4)}
+.nr-motion__menu{position:absolute;left:0;bottom:calc(100% + 8px);display:flex;flex-direction:column;min-width:130px;background:rgba(11,12,16,.94);border:1px solid var(--hair);border-radius:8px;overflow:hidden;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.nr-motion__menu button{background:none;border:0;color:var(--ink-3);text-align:left;padding:9px 14px;cursor:pointer;text-transform:capitalize;letter-spacing:.04em}
+.nr-motion__menu button:hover{background:rgba(242,239,233,.06);color:var(--ink)}
+.nr-motion__menu button[aria-checked="true"]{color:var(--amber)}
+.nr-motion__menu button[aria-checked="true"]::before{content:"● ";font-size:8px;vertical-align:middle}
+@media (max-width:900px){.nr-motion{display:none}}
+
+/* #24 — 3D tilt + glare on cards (cinematic) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card.nr-tilt-on{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .09s linear}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card.nr-tilt-on::after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:inherit;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.18),transparent 62%);mix-blend-mode:screen}
+
+/* #7 — chromatic aberration on hover (uses the injected SVG filter) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card img{transition:filter .22s ease}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-card:hover img{filter:url(#nr-rgbsplit)}
+
+/* #12 — scroll-velocity image shear (skew the image, never the card transform) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-portfolio-rail .nr-card img,
+.nr-cinematic[data-nr-motion="cinematic"] .nr-project__rail-track img{transform:skewX(var(--skew,0deg));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+
+/* #36 — dividers draw in (standard + cinematic; calm leaves them static) */
+.nr-cinematic[data-nr-motion="standard"] .nr-divider,
+.nr-cinematic[data-nr-motion="cinematic"] .nr-divider{transform:scaleX(0);transform-origin:left;transition:transform .85s cubic-bezier(.2,.8,.2,1)}
+.nr-cinematic .nr-divider.nr-divider--drawn{transform:scaleX(1)}
+
+/* #18 — film-frame scroll counter */
+.nr-filmframe{position:fixed;right:16px;bottom:16px;z-index:55;display:none;align-items:baseline;gap:3px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.12em;color:var(--ink-3);background:rgba(11,12,16,.6);border:1px solid var(--hair);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-filmframe.is-on{display:inline-flex}
+.nr-filmframe__cur{color:var(--amber)}
+.nr-filmframe__sep{opacity:.5}
+@media (max-width:900px){.nr-filmframe{bottom:calc(var(--nr-tabbar-h,64px) + 12px)}}
+
+/* Respect reduced-motion: kill transitions on the new layer regardless of level. */
+@media (prefers-reduced-motion:reduce){
+  .nr-cinematic .nr-card,.nr-cinematic .nr-card img,.nr-cinematic .nr-divider{transition:none!important;transform:none!important}
+  .nr-cinematic .nr-card:hover img{filter:none!important}
+}
+
+/* ── Batch 1 (v4.43.0): cinematic motion layer, part 2 (lightweight) ── */
+/* (Also fixes v4.42: data-nr-motion now lives on <body> with .nr-cinematic,
+   so these compound selectors match.) */
+
+/* #23 — viewfinder AF bracket on press */
+.nr-viewfinder{position:fixed;width:46px;height:46px;margin:-23px 0 0 -23px;z-index:58;pointer-events:none;
+  animation:nrVf .5s ease-out forwards}
+.nr-viewfinder::before,.nr-viewfinder::after{content:"";position:absolute;width:14px;height:14px;border:1.5px solid var(--amber)}
+.nr-viewfinder::before{top:0;left:0;border-right:0;border-bottom:0}
+.nr-viewfinder::after{bottom:0;right:0;border-left:0;border-top:0}
+@keyframes nrVf{0%{opacity:0;transform:scale(1.4)}30%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+
+/* #37 — aspect-matched loading skeleton (shimmer until the image loads) */
+.nr-cinematic .nr-card.nr-skel,.nr-cinematic .nr-project__plate.nr-skel{position:relative;background:var(--bg-2,#14151A)}
+.nr-cinematic .nr-card.nr-skel::after,.nr-cinematic .nr-project__plate.nr-skel::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(100deg,transparent 20%,rgba(242,239,233,.07) 50%,transparent 80%);
+  background-size:220% 100%;animation:nrSkel 1.25s linear infinite}
+.nr-cinematic .nr-card.nr-skel img,.nr-cinematic .nr-project__plate.nr-skel img{opacity:0}
+@keyframes nrSkel{from{background-position:120% 0}to{background-position:-120% 0}}
+
+/* #27 — directional draw-on underline for prose links */
+.nr-cinematic[data-nr-motion="standard"] a.nr-ul,
+.nr-cinematic[data-nr-motion="cinematic"] a.nr-ul{position:relative;border-bottom-color:transparent!important;text-decoration:none}
+.nr-cinematic[data-nr-motion="standard"] a.nr-ul::after,
+.nr-cinematic[data-nr-motion="cinematic"] a.nr-ul::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--amber);
+  transform:scaleX(0);transform-origin:var(--ul-origin,left) bottom;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.nr-cinematic[data-nr-motion="standard"] a.nr-ul:hover::after,
+.nr-cinematic[data-nr-motion="cinematic"] a.nr-ul:hover::after{transform:scaleX(1)}
+
+/* #28 — cursor "drag" affordance over rails */
+.nr-cur.is-drag .nr-cur__lbl{opacity:1}
+.nr-cur.is-drag{mix-blend-mode:normal}
+
+/* #25 — wordmark reveal/draw on first load (standard + cinematic) */
+.nr-cinematic[data-nr-motion="standard"] .nr-logo,
+.nr-cinematic[data-nr-motion="cinematic"] .nr-logo{animation:nrLogoWipe .8s .15s cubic-bezier(.2,.8,.2,1) both}
+@keyframes nrLogoWipe{from{clip-path:inset(0 100% 0 0);opacity:.45}to{clip-path:inset(0 0 0 0);opacity:1}}
+
+/* #16 — gentle scroll-snap on the rails (cinematic; proximity so arrows still work) */
+.nr-cinematic[data-nr-motion="cinematic"] .nr-portfolio-rail{scroll-snap-type:x proximity}
+.nr-cinematic[data-nr-motion="cinematic"] .nr-portfolio-rail .nr-card{scroll-snap-align:center}
+
+/* #35 — drift-grain: the film grain slowly translates so it never looks frozen */
+.nr-cinematic[data-nr-motion="standard"]::after,
+.nr-cinematic[data-nr-motion="cinematic"]::after{animation:nrGrainDrift 6s steps(5) infinite}
+@keyframes nrGrainDrift{from{background-position:0 0,0 0}to{background-position:-240px 240px,0 0}}
+
+@media (prefers-reduced-motion:reduce){
+  .nr-viewfinder,.nr-cinematic .nr-card.nr-skel::after{animation:none!important}
+  .nr-cinematic .nr-logo{animation:none!important}
+  .nr-cinematic[data-nr-motion="standard"]::after,
+  .nr-cinematic[data-nr-motion="cinematic"]::after{animation:none!important}
+}
+
+/* ── IDEAS-200 Batch 2 (v4.44.0): conversion UI ───────────────── */
+
+/* #47 trust line + #49 availability on Enquire */
+.nr-trust{font-size:12.5px;color:var(--ink-3);margin:10px 2px 0;letter-spacing:.01em}
+.nr-form__avail{display:block;margin-top:6px;font-size:12px;color:var(--amber);letter-spacing:.02em}
+
+/* #69 packages comparison */
+.nr-packages{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0}
+.nr-package{display:flex;flex-direction:column;gap:12px;padding:22px;border:1px solid var(--hair);border-radius:6px;background:var(--bg-2,#14151A)}
+.nr-package__head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.nr-package__name{font-size:16px;color:var(--ink);font-weight:600}
+.nr-package__price{font-family:var(--mono,'JetBrains Mono',monospace);font-size:13px;color:var(--amber)}
+.nr-package ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.nr-package li{font-size:13.5px;color:var(--ink-2);padding-left:16px;position:relative}
+.nr-package li::before{content:"·";position:absolute;left:2px;color:var(--amber)}
+.nr-package .nr-btn{margin-top:auto;align-self:flex-start}
+
+/* #71 press wall */
+.nr-press{display:flex;flex-direction:column;border-top:1px solid var(--hair)}
+.nr-press__item{display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--hair);text-decoration:none;color:var(--ink-2);transition:color .2s}
+.nr-press__item:hover{color:var(--ink)}
+.nr-press__medium{font-weight:600;color:var(--ink);min-width:140px}
+.nr-press__title{flex:1}
+.nr-press__year{font-family:var(--mono,'JetBrains Mono',monospace);font-size:12px;color:var(--ink-4)}
+
+/* #73 seasonal banner */
+.nr-promo{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:9px 44px;background:var(--amber);color:#0B0C10;font-size:13px;letter-spacing:.01em;text-align:center}
+.nr-promo a{color:#0B0C10;text-decoration:underline}
+.nr-promo__x{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:0;color:#0B0C10;cursor:pointer;font-size:14px;opacity:.7}
+.nr-promo__x:hover{opacity:1}
+
+/* #44 exit-intent */
+.nr-exitp{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;background:rgba(11,12,16,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:nrFadeIn .2s ease}
+.nr-exitp__box{position:relative;max-width:420px;margin:20px;padding:34px 30px;background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:10px;text-align:center}
+.nr-exitp__box p{font-size:18px;line-height:1.45;color:var(--ink);margin:0 0 18px;font-weight:300}
+.nr-exitp__x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--ink-3);font-size:15px;cursor:pointer}
+@keyframes nrFadeIn{from{opacity:0}to{opacity:1}}
+
+/* #41 visitor shortlist — hearts + tray */
+.nr-shortlist .nr-card{position:relative}
+.nr-heart{position:absolute;top:10px;right:10px;z-index:7;width:30px;height:30px;border-radius:50%;border:1px solid var(--hair);
+  background:rgba(11,12,16,.5);color:var(--ink-3);cursor:pointer;line-height:1;font-size:14px;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:transform .15s,color .2s}
+.nr-heart::before{content:"♡"}
+.nr-heart.is-on{color:var(--amber);border-color:var(--amber)}
+.nr-heart.is-on::before{content:"♥"}
+.nr-heart:hover{transform:scale(1.12)}
+.nr-tray{position:fixed;right:16px;bottom:16px;z-index:60;font-family:var(--mono,'JetBrains Mono',monospace)}
+.nr-tray__btn{background:var(--amber);color:#0B0C10;border:0;border-radius:999px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:600;letter-spacing:.04em}
+.nr-tray__panel{position:absolute;right:0;bottom:calc(100% + 8px);min-width:220px;max-width:280px;background:rgba(11,12,16,.96);border:1px solid var(--hair);border-radius:10px;padding:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.nr-tray__panel strong{display:block;color:var(--ink);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.nr-tray__panel ul{list-style:none;margin:0 0 14px;padding:0;max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.nr-tray__panel li{font-size:13px;color:var(--ink-2);font-family:'Inter Tight',sans-serif}
+@media (max-width:900px){.nr-tray{bottom:calc(var(--nr-tabbar-h,64px) + 12px)}}
+
+/* #77 share button inherits .nr-btn */
+.nr-share{cursor:pointer}
+
+/* ── IDEAS-200 quick wins (v4.45.0) ───────────────────────────── */
+
+/* #136 — related-by-tag chips on the project page */
+.nr-project__tags{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+.nr-chip--sm{font-size:11px;padding:3px 9px;letter-spacing:.02em}
+
+/* #146 — pull-quotes on projects + process */
+.nr-process blockquote,.nr-project__body blockquote{margin:18px 0;padding-left:18px;border-left:2px solid var(--amber);
+  font-size:clamp(17px,2.2vw,21px);line-height:1.45;color:var(--ink);font-weight:300}
+
+/* #141 — reading time + scroll-progress bar */
+.nr-readtime{font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin:0 0 18px}
+.nr-readbar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--amber);transform:scaleX(0);transform-origin:left;z-index:80;pointer-events:none}
+
+/* #142 — auto table of contents */
+.nr-toc{margin:0 0 26px;padding:14px 16px;border:1px solid var(--hair);border-radius:6px;background:var(--bg-2,#14151A)}
+.nr-toc ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.nr-toc a{color:var(--ink-2);text-decoration:none;font-size:13.5px;border:0}
+.nr-toc a:hover{color:var(--amber)}
+.nr-toc__h3{padding-left:14px;font-size:12.5px;opacity:.85}
+
+/* #158 — quote of the day (empty states) */
+.nr-qotd{margin:34px auto 0;max-width:600px;text-align:center}
+.nr-qotd blockquote{margin:0;font-size:clamp(16px,2.2vw,20px);line-height:1.5;color:var(--ink-2);font-weight:300}
+.nr-qotd figcaption{margin-top:10px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+
+/* #148 — print stylesheet: a clean, ink-on-paper layout */
+@media print{
+  :root{--bg:#fff;--ink:#111;--ink-2:#333;--ink-3:#555;--amber:#a66b16;--hair:#ddd}
+  body{background:#fff!important;color:#111!important}
+  body::before,body::after,.nr-cur,.nr-wipe,.nr-grain,.nr-motion,.nr-filmframe,.nr-readbar,
+  .nr-marquee,.nr-promo,.nr-tray,.nr-extras,.nr-hero__nav,.nr-hero__thumbs,
+  nav.nr-menu,.nr-mobile-tabs,.nr-footer,.nr-cmd,.nr-sheet,.nr-heart{display:none!important}
+  .nr-fullscreen,.nr-page{position:static!important;height:auto!important;overflow:visible!important;display:block!important}
+  .nr-portfolio-rail,.nr-project__rail,.nr-project__rail-track{overflow:visible!important;display:block!important}
+  img{max-width:100%!important;height:auto!important;page-break-inside:avoid}
+  a{color:#111!important;text-decoration:underline}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-size:10px;color:#777}
+}
+
+/* ── IDEAS-200 "Small" tier (v4.46.0) ─────────────────────────── */
+
+/* sr-only utility (#161/#162) */
+.nr-sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* #163 keyboard help overlay */
+.nr-keys{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;background:rgba(11,12,16,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.nr-keys__box{position:relative;background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:10px;padding:28px 30px;min-width:300px}
+.nr-keys__box h3{margin:0 0 12px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.nr-keys__box ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;color:var(--ink-2);font-size:13.5px}
+.nr-keys kbd{background:#0b0c10;border:1px solid var(--hair);border-radius:4px;padding:1px 6px;font-family:var(--mono,monospace);font-size:11px}
+.nr-keys__x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--ink-3);cursor:pointer}
+
+/* #6 click shockwave (cinematic) */
+.nr-shock{position:fixed;width:14px;height:14px;margin:-7px 0 0 -7px;border:1.5px solid var(--amber);border-radius:50%;pointer-events:none;z-index:58;animation:nrShock .65s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes nrShock{to{width:170px;height:170px;margin:-85px 0 0 -85px;opacity:0}}
+
+/* #21 spring release */
+.nr-spring{animation:nrSpring .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes nrSpring{0%{transform:translate(0,0)}40%{transform:translate(0,-3px) scale(1.02)}100%{transform:translate(0,0)}}
+
+/* #19 idle screensaver: dim chrome, let the hero breathe */
+body.nr-idle .nr-hero__bottom,body.nr-idle .nr-hero__meta,body.nr-idle nav.nr-menu,body.nr-idle .nr-topbar{opacity:0;transition:opacity 1.2s ease}
+body.nr-idle .nr-hero__plate.is-active img{animation-duration:24s!important}
+
+/* #30 hover sound waveform (only when sound fx is on) */
+body:not(.nr-has-sound) .nr-wave{display:none}
+.nr-wave{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
+.nr-wave i{width:2px;background:var(--amber);height:30%}
+.nr-has-sound .nr-sound-toggle:hover .nr-wave i{animation:nrWave .8s ease-in-out infinite}
+.nr-wave i:nth-child(2){animation-delay:.15s}.nr-wave i:nth-child(3){animation-delay:.3s}.nr-wave i:nth-child(4){animation-delay:.45s}
+@keyframes nrWave{0%,100%{height:30%}50%{height:100%}}
+
+/* #38 compare slider labels */
+.nr-compare__before::after{content:"BEFORE";position:absolute;top:10px;left:10px}
+.nr-compare__after::after{content:"AFTER";position:absolute;top:10px;right:10px}
+.nr-compare__before::after,.nr-compare__after::after{font-family:var(--mono,monospace);font-size:10px;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,.5);padding:2px 6px;border-radius:3px;pointer-events:none}
+
+/* #122 full-bleed first plate · #126 contact sheet · #128 focus (inline) */
+body.nr-fullbleed .nr-project__plate[data-plate="0"]{flex:0 0 100%;width:100%}
+.nr-project__rail.is-sheet .nr-project__rail-track{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;overflow:visible}
+.nr-project__rail.is-sheet .nr-project__plate{width:auto!important;height:auto;aspect-ratio:4/5}
+.nr-sheet-toggle,.nr-cap-toggle{background:none;border:1px solid var(--hair);color:var(--ink-3);border-radius:999px;padding:3px 10px;font-family:var(--mono,monospace);font-size:11px;cursor:pointer;margin-left:8px}
+.nr-sheet-toggle:hover,.nr-cap-toggle:hover{color:var(--ink);border-color:var(--ink-4)}
+
+/* #157 captions hidden until toggled on */
+.nr-plate-cap{opacity:0;transition:opacity .25s}
+body.nr-caps-on .nr-plate-cap,.nr-project__plate:hover .nr-plate-cap{opacity:1}
+
+/* #130 treatment presets (project-level filter) */
+body.nr-treat-noir .nr-project__plate img{filter:grayscale(1) contrast(1.12)}
+body.nr-treat-warm .nr-project__plate img{filter:sepia(.18) saturate(1.15) hue-rotate(-8deg)}
+body.nr-treat-cool .nr-project__plate img{filter:saturate(1.05) hue-rotate(8deg) brightness(1.02)}
+body.nr-treat-sepia .nr-project__plate img{filter:sepia(.55) contrast(1.05)}
+
+/* #140 credits · #139 map · #145 kicker/dek · #137 on-this-day · #143 footnotes · #144 glossary */
+.nr-credits{display:flex;flex-wrap:wrap;gap:6px 22px;margin:14px 0;font-size:12.5px}
+.nr-credits div{display:flex;gap:6px}.nr-credits dt{color:var(--ink-4)}.nr-credits dd{margin:0;color:var(--ink-2)}
+.nr-project__map{margin:16px 0;border-radius:4px;overflow:hidden;border:1px solid var(--hair)}
+.nr-kicker{font-family:var(--mono,monospace);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin:0 0 4px}
+.nr-dek{font-size:clamp(16px,2.2vw,20px);line-height:1.45;color:var(--ink-2);font-weight:300;margin:0 0 18px}
+.nr-otd__row{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
+.nr-otd__row a{color:var(--ink-2);text-decoration:none}.nr-otd__row a span{color:var(--ink-4);font-family:var(--mono,monospace);font-size:11px}
+.nr-fn a{color:var(--amber);text-decoration:none}.nr-fnlist{font-size:13px;color:var(--ink-3);border-top:1px solid var(--hair);margin-top:24px;padding-top:14px}
+.nr-howto{color:var(--ink-2);line-height:1.6}
+abbr.nr-gloss{text-decoration:underline dotted var(--ink-4);cursor:help}
+
+/* #20 mobile section-snap (gentle) */
+@media (max-width:900px){.nr-extras{scroll-snap-type:y proximity}.nr-extras>*{scroll-snap-align:start}}
+
+/* #45 similar work · #165 reduced-transparency · #166 focus-visible */
+.nr-similar{display:flex;flex-direction:column;gap:6px;margin:18px 0;max-width:520px}
+.nr-similar a{color:var(--ink-2);text-decoration:none;font-size:14px;border-bottom:1px solid var(--hair);padding:6px 0}
+.nr-similar a:hover{color:var(--amber)}
+.nr-cal-link{display:inline-block;margin-top:6px;font-size:12px;color:var(--amber);text-decoration:none}
+@media (prefers-reduced-transparency:reduce){
+  .nr-motion__btn,.nr-motion__menu,.nr-filmframe,.nr-tray__panel,.nr-keys,.nr-exitp,.nr-promo,
+  .nr-cmd,.nr-sheet{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--bg-2,#14151A)!important}
+}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:2px}
+
+/* ── IDEAS-200 "Medium" r1 (v4.47.0) ──────────────────────────── */
+
+/* #31 immersive lightbox */
+.nr-lightbox{position:fixed;inset:0;z-index:140;display:flex;align-items:center;justify-content:center;background:rgba(8,9,12,.94);animation:nrFadeIn .2s ease}
+.nr-lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;cursor:zoom-in;transition:transform .25s}
+.nr-lightbox img.is-zoom{transform:scale(2);cursor:zoom-out}
+.nr-lightbox button{position:absolute;background:rgba(255,255,255,.06);border:1px solid var(--hair);color:var(--ink);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:18px}
+.nr-lightbox__x{top:18px;right:18px}.nr-lightbox__p{left:18px;top:50%;transform:translateY(-50%)}.nr-lightbox__n{right:18px;top:50%;transform:translateY(-50%)}
+.nr-lightbox__c{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:var(--mono,monospace);font-size:12px;color:var(--ink-3)}
+
+/* #32 video scrubber */
+.nr-plate-video{position:relative}
+.nr-vbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.18);cursor:pointer}
+.nr-vbar i{display:block;height:100%;width:0;background:var(--amber)}
+
+/* #33 film-strip */
+.nr-filmstrip{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.nr-filmstrip::-webkit-scrollbar{display:none}
+.nr-filmstrip button{flex:0 0 auto;width:54px;height:40px;border:1px solid var(--hair);border-radius:2px;background-size:cover;background-position:center;cursor:pointer;opacity:.6;transition:opacity .2s}
+.nr-filmstrip button:hover{opacity:1;border-color:var(--amber)}
+
+/* #17 parallax layers (smoothing) · #26 spotlight */
+.nr-hero__gradient,.nr-hero__meta--tl,.nr-hero__meta--br,.nr-hero__center{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.nr-hero__frame.nr-spot::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(260px circle at var(--spot-x,50%) var(--spot-y,50%),rgba(255,255,255,.12),transparent 70%);mix-blend-mode:soft-light}
+
+/* #121 diptych / triptych rhythm (rail pairs/threes) */
+body.nr-rhythm-diptych .nr-project__rail-track{display:grid;grid-auto-flow:column;grid-template-rows:1fr 1fr;gap:10px}
+body.nr-rhythm-triptych .nr-project__rail-track{display:grid;grid-auto-flow:column;grid-template-rows:1fr 1fr 1fr;gap:8px}
+@media (max-width:700px){body.nr-rhythm-diptych .nr-project__rail-track,body.nr-rhythm-triptych .nr-project__rail-track{grid-template-rows:1fr}}
+
+/* #129 cover aspect */
+body.nr-cover-4-5 .nr-card img{aspect-ratio:4/5;object-fit:cover}
+body.nr-cover-5-4 .nr-card img{aspect-ratio:5/4;object-fit:cover}
+body.nr-cover-16-9 .nr-card img{aspect-ratio:16/9;object-fit:cover}
+body.nr-cover-1-1 .nr-card img{aspect-ratio:1/1;object-fit:cover}
+
+/* #132 chapters · #133 timeline · #170 transcript · #134 map */
+.nr-chapters{display:flex;flex-direction:column;gap:6px;margin:18px 0;border-top:1px solid var(--hair);padding-top:12px}
+.nr-chapters__nav{display:flex;justify-content:space-between;gap:14px;font-size:13px}
+.nr-chapters__nav a{color:var(--ink-2);text-decoration:none}.nr-chapters__nav a:hover{color:var(--amber)}
+.nr-timeline{display:flex;flex-direction:column;gap:22px;max-width:760px;margin:0 auto}
+.nr-timeline__year{display:grid;grid-template-columns:80px 1fr;gap:18px;border-top:1px solid var(--hair);padding-top:14px}
+.nr-timeline__y{font-family:var(--mono,monospace);font-size:13px;color:var(--amber)}
+.nr-timeline ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.nr-timeline a{color:var(--ink-2);text-decoration:none}.nr-timeline a:hover{color:var(--ink)}
+.nr-transcript{margin:14px 0;font-size:13px}.nr-transcript summary{cursor:pointer;color:var(--ink-3)}
+.nr-map-all{margin:18px 0;border:1px solid var(--hair);border-radius:4px;overflow:hidden}
+
+/* #39 reduced-motion elegant-static: freeze, don't break */
+@media (prefers-reduced-motion:reduce){
+  .nr-filmframe,.nr-readbar{transition:none!important}
+  .nr-hero__plate.is-active img{animation:none!important}
+  *{scroll-behavior:auto!important}
+}
+
+/* #164 forced-colors (Windows High Contrast) */
+@media (forced-colors:active){
+  .nr-btn,.nr-card,.nr-chip,.nr-motion__btn,.nr-tray__btn{border:1px solid CanvasText}
+  .nr-card__shade,.nr-hero__gradient,body::before,body::after{display:none!important}
+  .nr-heart.is-on,.nr-filmframe__cur,.nr-timeline__y{forced-color-adjust:none}
+}
+
+/* #167 WCAG 2.2 target size — min 24px interactive targets */
+.nr-chip,.nr-footer__links a,.nr-hero__thumb,.nr-motion__menu button,.nr-toc a{min-height:24px}
+.nr-heart,.nr-hero__arrow,.nr-icon-btn{min-width:32px;min-height:32px}
+
+/* #168 cognitive-load: 'calm' motion also flattens decoration */
+body.nr-cinematic[data-nr-motion="calm"] body::after,
+.nr-cinematic[data-nr-motion="calm"]::after{display:none}
+.nr-cinematic[data-nr-motion="calm"] .nr-card__shade{background:linear-gradient(0deg,rgba(11,12,16,.85),transparent)}
+
+/* #174 RTL pass — logical flips for the main rails/nav */
+[dir="rtl"] .nr-hero__meta--tl{right:auto;left:24px}
+[dir="rtl"] .nr-project__crumbs,[dir="rtl"] .nr-chapters__nav{direction:rtl}
+[dir="rtl"] .nr-filmframe{right:auto;left:16px}
+[dir="rtl"] .nr-motion{left:auto;right:16px}
+[dir="rtl"] .nr-tray{right:auto;left:16px}
+
+/* ── IDEAS-200 "Medium" r2 (v4.49.0) ──────────────────────────── */
+
+/* #42 enquire-wizard CSS removed v4.68.0 (feature retired). */
+
+/* #10 variable-font axis morph (needs the var font + cinematic level) */
+.nr-varfont.nr-cinematic[data-nr-motion="cinematic"] .nr-hero__title .nr-hero__word{animation:nrWeight 1.1s cubic-bezier(.2,.8,.2,1) both}
+.nr-varfont.nr-cinematic[data-nr-motion="cinematic"] .nr-hero__title .nr-hero__word:nth-child(2n){animation-delay:.08s}
+@keyframes nrWeight{from{font-weight:200;letter-spacing:.02em;opacity:.4}to{font-weight:300;letter-spacing:-.045em;opacity:1}}
+@media (prefers-reduced-motion:reduce){.nr-varfont .nr-hero__word{animation:none!important}}
+
+/* #131 story mode — vertical captioned plates */
+body.nr-rhythm-story .nr-project__rail{overflow-y:auto;overflow-x:hidden}
+body.nr-rhythm-story .nr-project__rail-track{display:flex;flex-direction:column;gap:42px;max-width:760px;margin:0 auto}
+body.nr-rhythm-story .nr-project__plate{width:100%!important}
+body.nr-rhythm-story .nr-plate-cap{opacity:1;position:static;margin-top:8px;text-align:center}
+
+/* #62 case study · #60 delivery */
+.nr-case{margin:18px 0;border-top:1px solid var(--hair);padding-top:14px}
+.nr-case dl{display:flex;flex-direction:column;gap:10px;margin:10px 0 0}
+.nr-case dt{font-family:var(--mono,monospace);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+.nr-case dd{margin:2px 0 0;color:var(--ink-2);font-size:14px;line-height:1.55;max-width:46ch}
+.nr-delivery{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.nr-delivery__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;margin-top:14px}
+.nr-delivery__item{margin:0;display:flex;flex-direction:column;gap:8px}
+.nr-delivery__item img{width:100%;border-radius:3px}
+.nr-delivery__until{font-family:var(--mono,monospace);font-size:12px;color:var(--amber)}
+.nr-delivery__expired{color:var(--ink-2)}
+
+/* #135 mood-chip CSS removed v4.68.0 (feature retired). */
+
+/* ── Batch 6 r1 (v4.50.0): GPU/canvas effects (opt-in, .nr-gpu) ── */
+.nr-iris{position:fixed;inset:0;z-index:160;background:#0B0C10;pointer-events:none;
+  clip-path:circle(120% at 50% 50%);transition:clip-path 1.1s cubic-bezier(.7,0,.2,1)}
+.nr-iris.is-open{clip-path:circle(0% at 50% 50%)}
+.nr-dither{position:fixed;inset:0;width:100vw;height:100vh;z-index:1;pointer-events:none;opacity:.12;image-rendering:pixelated}
+.nr-blob{position:fixed;inset:0;z-index:45;pointer-events:none;mix-blend-mode:screen}
+.nr-haze{position:absolute;inset:auto 0 0 0;width:100%;height:55%;z-index:3;pointer-events:none;opacity:0;transition:opacity 2s ease}
+.nr-haze.is-on{opacity:1}
+body.nr-savedata .nr-dither,body.nr-savedata .nr-blob,body.nr-savedata .nr-haze{display:none!important}
+@media (max-width:900px){.nr-blob,.nr-haze{display:none}}
+@media (prefers-reduced-motion:reduce){.nr-iris,.nr-dither,.nr-blob,.nr-haze{display:none!important}}
+
+/* ── Batch 6 r2 (v4.51.0): virtualised rails (#88) ── */
+.nr-vrail > .nr-card,.nr-vrail > *{content-visibility:auto;contain-intrinsic-size:480px 640px}
+
+/* ── v4.51.1 hotfix: project layout ───────────────────────────── */
+.nr-project__rail{position:relative}
+.nr-filmstrip{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;
+  max-width:min(72%,720px);padding:6px 8px;border:1px solid var(--hair);border-radius:10px;
+  background:rgba(11,12,16,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+@media (max-width:900px){.nr-filmstrip{display:none}}
+/* keep the §-anchor from colliding with scrolled content */
+.nr-project__body::after{pointer-events:none;opacity:.5}
+
+/* ── v4.51.5: Studio — stats as a 2×2 block beside the bio ────── */
+.nr-bio-row{display:flex;gap:36px;align-items:flex-start}
+.nr-bio-row .nr-about__sub{flex:1;min-width:0}
+.nr-bio-row .nr-stats{flex:0 0 250px;grid-template-columns:repeat(2,1fr);gap:18px 24px;
+  margin:4px 0 0;border:0;border-left:1px solid var(--hair);padding-left:28px}
+.nr-bio-row .nr-stats > div{border:0;padding:0}
+@media (max-width:760px){.nr-bio-row{flex-direction:column;gap:18px}
+  .nr-bio-row .nr-stats{flex:none;width:100%;border-left:0;padding-left:0;border-top:1px solid var(--hair);padding-top:16px}}
+
+/* ── v4.51.6: enquire FAQ as a popover ────────────────────────── */
+.nr-faq-open{align-self:flex-start;margin-top:18px}
+.nr-faq-pop{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;
+  background:rgba(11,12,16,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:nrFadeIn .2s ease}
+.nr-faq-pop[hidden]{display:none}
+.nr-faq-pop__box{position:relative;max-width:640px;width:calc(100% - 40px);max-height:80vh;overflow-y:auto;
+  background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:12px;padding:30px 30px 24px}
+.nr-faq-pop__x{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--ink-3);font-size:15px;cursor:pointer}
+.nr-faq-pop__x:hover{color:var(--ink)}
+
+/* ── v4.51.7: journal prose in 2 columns on wide screens ──────── */
+@media (min-width:1200px){
+  .nr-jpost__prose{column-count:2;column-gap:48px;column-rule:1px solid var(--hair)}
+  .nr-jpost__prose h2,.nr-jpost__prose h3,.nr-jpost__prose blockquote,
+  .nr-jpost__prose figure,.nr-jpost__prose img,.nr-jpost__prose ul,.nr-jpost__prose ol{break-inside:avoid}
+  .nr-jpost__prose h2,.nr-jpost__prose h3{column-span:none}
+  /* let the first paragraph (with the drop-cap) start clean */
+  .nr-jpost__prose > p:first-child{break-inside:avoid}
+}
+@media (min-width:1700px){ .nr-jpost__prose{column-gap:64px} }
+
+/* ── v4.52.0: trusted-by count · resume bar ───────────────────── */
+.nr-clients__count{color:var(--amber);font-weight:600}
+.nr-clients__item{display:inline-flex;align-items:center}
+.nr-resume{display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:10px 14px;border:1px solid var(--amber);border-radius:8px;background:rgba(242,160,61,.07);font-size:13.5px;color:var(--ink-2)}
+.nr-resume span{flex:1}.nr-resume b{color:var(--ink)}
+.nr-resume__y{background:var(--amber);color:#0B0C10;border:0;border-radius:999px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer}
+.nr-resume__x{background:none;border:0;color:var(--ink-3);cursor:pointer}
+
+/* ── v4.53.0: #3 particle dispersion overlay ──────────────────── */
+.nr-pd{position:absolute;inset:0;z-index:8;pointer-events:none}
+
+/* ── v4.54.0: #59 proofing selection ──────────────────────────── */
+.nr-delivery__item{position:relative}
+.nr-proof__heart{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:1px solid var(--hair);background:rgba(11,12,16,.55);color:var(--ink-3);cursor:pointer;line-height:1;font-size:14px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:transform .15s,color .2s}
+.nr-proof__heart::before{content:"♡"}
+.nr-proof__heart.is-on{color:var(--amber);border-color:var(--amber)}
+.nr-proof__heart.is-on::before{content:"♥"}
+.nr-proof__heart:hover{transform:scale(1.12)}
+.nr-delivery__item.is-picked img{outline:2px solid var(--amber);outline-offset:-2px}
+.nr-proof__bar{position:sticky;bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding:12px 16px;border:1px solid var(--amber);border-radius:10px;background:rgba(11,12,16,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:20}
+.nr-proof__count{font-family:var(--mono,monospace);font-size:13px;color:var(--ink-2)}.nr-proof__count b{color:var(--amber)}
+
+/* ── v4.55.0: Awwwards layer (opt-in, GPU toggle) ─────────────── */
+/* #14 scrollytelling */
+.nr-scrolly{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;margin:40px 0}
+.nr-scrolly__media{position:sticky;top:calc(var(--bar-h) + 30px);height:70vh;align-self:start}
+.nr-scrolly__media img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+.nr-scrolly__step{min-height:70vh;display:flex;align-items:center;opacity:.35;transition:opacity .4s}
+.nr-scrolly__step.is-on{opacity:1}
+.nr-scrolly__step p{font-size:clamp(18px,2.4vw,26px);line-height:1.45;color:var(--ink);font-weight:300}
+@media (max-width:760px){.nr-scrolly{grid-template-columns:1fr}.nr-scrolly__media{height:46vh;position:relative;top:0}.nr-scrolly__step{min-height:auto;margin:18px 0}}
+/* #123 scroll-video */
+.nr-scrollvid{position:relative}
+.nr-scrollvid__sticky{position:sticky;top:var(--bar-h);height:calc(100vh - var(--bar-h));overflow:hidden}
+.nr-scrollvid__sticky video{width:100%;height:100%;object-fit:cover}
+
+/* ── v4.56.0: finishing batch 1 ───────────────────────────────── */
+/* #8 site-wide B&W (media only; UI keeps its amber) */
+body.nr-bw .nr-card img,body.nr-bw .nr-hero__plate img,body.nr-bw .nr-project__plate img,
+body.nr-bw .nr-jpost img,body.nr-bw .nr-about__portrait img{filter:grayscale(1) contrast(1.04)!important;transition:filter .4s}
+/* #46 reading mode — calmer measure + spacing on journal prose */
+body.nr-readmode .nr-jpost__prose{column-count:1!important;max-width:64ch;margin:0 auto;font-size:17px;line-height:1.85;letter-spacing:.01em}
+body.nr-readmode .nr-jpost__prose p{margin-bottom:1.1em}
+/* #8/#46 control */
+.nr-view{position:fixed;left:16px;bottom:56px;z-index:60;display:flex;gap:6px;font-family:var(--mono,'JetBrains Mono',monospace);font-size:11px}
+.nr-view button{background:rgba(11,12,16,.66);color:var(--ink-3);border:1px solid var(--hair);border-radius:999px;padding:6px 10px;cursor:pointer;letter-spacing:.06em;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-view button[aria-pressed="true"]{color:var(--amber);border-color:var(--amber)}
+.nr-view button:hover{color:var(--ink)}
+@media (max-width:900px){.nr-view{display:none}}
+/* #20 surprise chip */
+.nr-surprise{color:var(--amber)}
+/* #29 kill display-font CLS with a metric-matched fallback */
+@font-face{font-family:'Inter Tight Fallback';src:local('Arial');size-adjust:96%;ascent-override:92%;descent-override:23%;line-gap-override:0%}
+.nr-display,.nr-hero__title,.nr-jpost h1{font-family:'Inter Tight','Inter Tight Fallback',system-ui,sans-serif}
+/* #48 Save-Data hero — one static frame, no slider machinery */
+body.nr-savedata .nr-hero__plate:not(.is-active){display:none!important}
+body.nr-savedata .nr-hero__thumbs,body.nr-savedata .nr-hero__nav{display:none!important}
+
+/* ── v4.57.0: finishing batch 2 ───────────────────────────────── */
+/* #21 lightbox slideshow */
+.nr-lightbox__play{position:absolute;bottom:16px;right:18px;background:rgba(255,255,255,.06);border:1px solid var(--hair);color:var(--ink);width:40px;height:40px;border-radius:50%;cursor:pointer}
+.nr-lightbox img.is-ken{animation:nrLbKen 4s ease both}
+@keyframes nrLbKen{from{transform:scale(1)}to{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.nr-lightbox img.is-ken{animation:none}}
+/* #26 rail scroll-compass */
+.nr-compass{position:absolute;left:var(--pad,24px);right:var(--pad,24px);bottom:10px;height:2px;background:var(--hair);border-radius:2px;z-index:6;pointer-events:none}
+.nr-compass i{display:block;height:100%;width:0;background:var(--amber);transition:width .1s linear}
+/* #24 PWA nudge */
+.nr-pwa{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg-2,#14151A);border:1px solid var(--hair);border-radius:999px;font-size:13px;color:var(--ink-2);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.nr-pwa button[data-y]{background:var(--amber);color:#0B0C10;border:0;border-radius:999px;padding:5px 14px;font-weight:600;cursor:pointer}
+.nr-pwa button[data-n]{background:none;border:0;color:var(--ink-4);cursor:pointer}
+/* #40 featured logo band · #45 testimonial videos */
+.nr-featured{margin:26px 0;text-align:center}
+.nr-featured__label{display:block;font-family:var(--mono,monospace);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:12px}
+.nr-featured__row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:30px}
+.nr-featured__row img{height:30px;width:auto;opacity:.6;filter:grayscale(1) brightness(1.6);transition:opacity .25s}
+.nr-featured__row img:hover{opacity:1}
+.nr-testi-vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin:24px 0}
+.nr-testi-vid{margin:0}.nr-testi-vid iframe,.nr-testi-vid video{width:100%;aspect-ratio:16/9;border:0;border-radius:6px;display:block}
+.nr-testi-vid figcaption{margin-top:8px;font-family:var(--mono,monospace);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4)}
+
+/* ── v4.58.0: shows · availability calendar ───────────────────── */
+.nr-shows{list-style:none;margin:18px 0;padding:0}
+.nr-shows li{border-top:1px solid var(--hair);padding:12px 0}
+.nr-shows a,.nr-shows li>span:first-child{text-decoration:none;color:var(--ink)}
+.nr-shows__t{font-weight:600}.nr-shows__v{color:var(--ink-2);margin-left:10px}
+.nr-shows__d{float:right;font-family:var(--mono,monospace);font-size:12px;color:var(--amber)}
+.nr-cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:26px;margin:20px 0}
+.nr-cal__h{font-family:var(--mono,monospace);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.nr-cal__grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.nr-cal__dow{font-size:10px;color:var(--ink-4);text-align:center;padding-bottom:4px}
+.nr-cal__d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:3px;color:var(--ink-2)}
+.nr-cal__d.is-open{background:rgba(84,210,122,.12);color:var(--ink)}
+.nr-cal__d.is-busy{background:rgba(242,160,61,.18);color:var(--amber);text-decoration:line-through}
+.nr-cal__d.is-past{opacity:.25}
+.nr-cal__pad{aspect-ratio:1}
+.nr-cal__key{grid-column:1/-1;font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+.nr-cal__key span{width:12px;height:12px;border-radius:3px;display:inline-block}
+.nr-cal__key .is-open{background:rgba(84,210,122,.3)}.nr-cal__key .is-busy{background:rgba(242,160,61,.4)}

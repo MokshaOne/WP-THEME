@@ -15,7 +15,10 @@ $nr_legal = [
 ];
 $nr_ig = nr_opt( 'nr_instagram', '' );
 $nr_show_footer = $nr_footer_text || $nr_legal['datenschutz'] || $nr_legal['agb'] || $nr_legal['impressum'];
+
 ?>
+<?php /* IDEAS-NEXT v4.41 — conversion/editorial bands (scrolling pages, opt-in) */ ?>
+<?php if ( function_exists( 'nr_render_footer_extras' ) ) nr_render_footer_extras(); ?>
 <?php if ( $nr_show_footer && ! is_front_page() && ! is_singular( 'nr_project' ) && ! is_post_type_archive( 'nr_project' ) ) : ?>
 <footer class="nr-footer" role="contentinfo">
 	<span><?php echo esc_html( $nr_footer_text ); ?></span>

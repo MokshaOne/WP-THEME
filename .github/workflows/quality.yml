@@ -1,0 +1,86 @@
+name: Quality (manual)
+
+# #23 + #24 — Lighthouse + Playwright against a live/staging URL.
+# These need a running WordPress, so they are MANUAL (workflow_dispatch) and
+# never gate a pull request. Run from the Actions tab and pass a base URL.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL of a live/staging site to test"
+        required: true
+        default: "https://raveenthiran.com"
+
+defaults:
+  run:
+    working-directory: Raveenthiran.com/raveenthiran-obscura
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          LHCI_URL="${{ github.event.inputs.base_url }}" \
+            lhci autorun --collect.url="${{ github.event.inputs.base_url }}" --config=./lighthouserc.json
+
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install -D @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Smoke test
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url }}
+        run: npx playwright test
+
+  # #169 — axe-core accessibility scan against the staging URL.
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: axe-core
+        run: |
+          npm install -g @axe-core/cli
+          npx playwright install --with-deps chromium || true
+          axe "${{ github.event.inputs.base_url }}" --exit || true
+
+  # #109 — structured-data lint: fetch the URL and validate every JSON-LD block.
+  seo-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate JSON-LD
+        run: |
+          node -e '
+            const url = process.env.URL;
+            fetch(url).then(r => r.text()).then(html => {
+              const re = /<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi;
+              let m, n = 0, bad = 0;
+              while ((m = re.exec(html))) { n++; try { JSON.parse(m[1]); } catch (e) { bad++; console.error("Invalid JSON-LD #" + n + ": " + e.message); } }
+              console.log("Found " + n + " JSON-LD blocks, " + bad + " invalid.");
+              if (n === 0) { console.error("No JSON-LD found"); process.exit(1); }
+              if (bad > 0) process.exit(1);
+            }).catch(e => { console.error(e); process.exit(1); });
+          '
+        env:
+          URL: ${{ github.event.inputs.base_url }}

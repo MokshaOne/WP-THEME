@@ -1,0 +1,38 @@
+name: Release theme ZIP
+
+# #196 — on a version tag (v4.45.0, …) build the installable theme ZIP and
+# attach it to a GitHub Release automatically.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build theme ZIP
+        run: |
+          cd Raveenthiran.com
+          zip -rq "../raveenthiran-obscura-${GITHUB_REF_NAME}.zip" raveenthiran-obscura \
+            -x 'raveenthiran-obscura/tests/*' \
+            -x 'raveenthiran-obscura/playwright.config.js' \
+            -x 'raveenthiran-obscura/lighthouserc.json' \
+            -x 'raveenthiran-obscura/.eslintrc.json' \
+            -x 'raveenthiran-obscura/.prettierrc.json' \
+            -x 'raveenthiran-obscura/.stylelintrc.json' \
+            -x 'raveenthiran-obscura/.editorconfig' \
+            -x 'raveenthiran-obscura/bin/*' \
+            -x '*/.DS_Store'
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: raveenthiran-obscura-${{ github.ref_name }}.zip
+          generate_release_notes: true

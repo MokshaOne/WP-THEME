@@ -126,10 +126,13 @@ $lede = get_the_excerpt();
 					[ nr_opt( 'nr_meta_year',       __( 'Year',       'raveenthiran' ) ), (string) $m['yr'] ],
 					[ nr_opt( 'nr_meta_location',   __( 'Location',   'raveenthiran' ) ), $m['loc'] ?: '—' ],
 					[ nr_opt( 'nr_meta_discipline', __( 'Discipline', 'raveenthiran' ) ), $m['cat'] ?: 'Editorial' ],
-					[ nr_opt( 'nr_meta_frames',     __( 'Frames',     'raveenthiran' ) ), function_exists( 'nr_field' ) ? ( nr_field( 'project_frames' ) ?: '—' ) : '—' ],
+					[ nr_opt( 'nr_meta_frames',     __( 'Frames',     'raveenthiran' ) ), function_exists( 'nr_field_str' ) ? ( nr_field_str( 'project_frames' ) ?: '—' ) : '—' ],
 				];
-				$format = function_exists( 'nr_field' ) ? nr_field( 'project_format' ) : '';
+				$format = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_format' ) : '';
 				if ( $format ) $rows[] = [ nr_opt( 'nr_meta_format', __( 'Format', 'raveenthiran' ) ), $format ];
+				// #156 — gear / setup metadata
+				$gear = function_exists( 'nr_field_str' ) ? nr_field_str( 'project_gear' ) : '';
+				if ( $gear ) $rows[] = [ __( 'Setup', 'raveenthiran' ), $gear ];
 				// #63 — series / collection
 				$nr_series = function_exists( 'nr_project_series' ) ? nr_project_series( get_the_ID() ) : null;
 				if ( $nr_series ) $rows[] = [ __( 'Series', 'raveenthiran' ), $nr_series->name ];
@@ -141,12 +144,21 @@ $lede = get_the_excerpt();
 				<?php endforeach; ?>
 			</ul>
 
+				<?php if ( function_exists( 'nr_project_tag_chips' ) ) echo nr_project_tag_chips( get_the_ID() ); // #136 ?>
+
+			<?php if ( function_exists( 'nr_project_credits_markup' ) ) echo nr_project_credits_markup( get_the_ID() ); // #140 ?>
+				<?php if ( function_exists( 'nr_project_process_markup' ) ) echo nr_project_process_markup( get_the_ID() ); // #16 ?>
+				<?php if ( function_exists( 'nr_project_map_markup' ) ) echo nr_project_map_markup( get_the_ID() ); // #139 ?>
+				<?php if ( function_exists( 'nr_project_transcript_markup' ) ) echo nr_project_transcript_markup( get_the_ID() ); // #170 ?>
+				<?php if ( function_exists( 'nr_series_chapter_nav' ) ) echo nr_series_chapter_nav( get_the_ID() ); // #132 ?>
+				<?php if ( function_exists( 'nr_project_case_markup' ) ) echo nr_project_case_markup( get_the_ID() ); // #62 ?>
+
 			<div class="nr-project__actions">
 				<a class="nr-btn nr-btn--primary"
 				   href="<?php echo esc_url( add_query_arg( [ 'service' => sanitize_title( $m['cat'] ?: 'editorial' ), 'ref' => get_the_title() ], function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/enquire' ) ) ); ?>">
 					<span><?php echo esc_html( nr_opt( 'nr_cta_commission', __( 'Commission similar', 'raveenthiran' ) ) ); ?></span> <span>→</span>
 				</a>
-				<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
+					<a class="nr-btn" href="<?php echo esc_url( get_post_type_archive_link( 'nr_project' ) ); ?>"><span><?php echo esc_html( nr_opt( 'nr_cta_back', __( 'Back to work', 'raveenthiran' ) ) ); ?></span></a>
 			</div>
 
 				<?php
@@ -176,14 +188,10 @@ $lede = get_the_excerpt();
 			</div>
 			<div class="nr-project__rail-track">
 				<?php foreach ( $plates as $i => $p ) :
-					$alt   = sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
-					// "Shot on" — built from EXIF captured on upload (inc/performance.php).
-					$exif_str = '';
-					if ( $p['id'] && function_exists( 'nr_get_exif' ) ) {
-						$ex   = nr_get_exif( $p['id'] );
-						$bits = array_filter( [ $ex['camera'] ?? '', $ex['focal'] ?? '', $ex['aperture'] ?? '', $ex['shutter'] ?? '', $ex['iso'] ?? '' ] );
-						$exif_str = implode( '  ·  ', $bits );
-					}
+					// Prefer the attachment's own alt text (set in the Media library) for
+					// accessibility + image SEO; fall back to a positional label.
+					$real_alt = ! empty( $p['id'] ) ? trim( (string) get_post_meta( $p['id'], '_wp_attachment_image_alt', true ) ) : '';
+					$alt   = $real_alt !== '' ? $real_alt : sprintf( __( '%1$s — plate %2$s', 'raveenthiran' ), get_the_title(), $i + 1 );
 				?>
 					<figure class="nr-project__plate is-<?php echo esc_attr( $p['orient'] ); ?>" data-plate="<?php echo (int) $i; ?>"<?php echo $i === 0 ? ' style="view-transition-name:vt-project-' . (int) get_the_ID() . '"' : ''; ?>>
 							<?php if ( ( $p['type'] ?? '' ) === 'video' ) : ?>
@@ -194,16 +202,16 @@ $lede = get_the_excerpt();
 									</video>
 								</div>
 							<?php elseif ( $p['id'] ) :
-								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, [
-									'alt'      => $alt,
-									'sizes'    => '(max-width:900px) 100vw, 70vw',
-									'loading'  => $i === 0 ? 'eager' : 'lazy',
-									'decoding' => 'async',
-								] );
+								echo wp_get_attachment_image( $p['id'], 'nr-hero', false, array_filter( [
+									'alt'           => $alt,
+									'sizes'         => '(max-width:900px) 96vw, 70vw',
+									'loading'       => $i === 0 ? 'eager' : 'lazy',
+									'fetchpriority' => $i === 0 ? 'high' : '',
+									'decoding'      => 'async',
+								] ) );
 							else : ?>
 								<img src="<?php echo esc_url( $p['url'] ); ?>" alt="<?php echo esc_attr( $alt ); ?>" width="<?php echo (int) $p['w']; ?>" height="<?php echo (int) $p['h']; ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
 							<?php endif; ?>
-						<?php if ( $exif_str ) : ?><figcaption class="nr-plate-cap"><?php echo esc_html( $exif_str ); ?></figcaption><?php endif; ?>
 					</figure>
 				<?php endforeach; ?>
 			</div>

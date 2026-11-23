@@ -47,6 +47,10 @@ After uploading & activating the theme (**Appearance → Themes → Add New → 
   - **Auto internal linking** — links the first mention of another project's title inside project text (SEO).
 - **Map of project locations (new in 4.25)** — add coordinates in the **"Location (map)"** box on each project, then place the shortcode **`[nr_map]`** on any page (e.g. a "Map" page) for a dark Leaflet/OpenStreetMap with a pin per project. `[nr_map height="600"]` to set the height.
 
+- **FAQ in posts/pages (new in 4.39)** — drop `[nr_faq]` with one `Question | Answer` per line; it renders an accordion **and** emits FAQPage schema. Example:
+  `[nr_faq]\nHow far ahead should I book? | 2–4 weeks is ideal.\nDo you travel? | Yes, worldwide.\n[/nr_faq]`
+- **Footer marquee / Signature (new in 4.39)** — optional, under **Theme Settings**: a slow ticker above the footer (§ Visual effects) and a handwritten-style signature at the end of the Studio bio (§ Studio).
+
 ## 6. Email delivery — Google Workspace SMTP (new in 4.27)
 So enquiries + auto-replies arrive instead of going to spam. **Theme Settings → § Mail (SMTP)**:
 1. In the **real mailbox** (the account you log into, e.g. `hq@m1o.at`): enable **2-Step Verification**, then **Google Account → Security → App passwords** → create a 16-char password.

@@ -77,7 +77,7 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 				<p class="nr-enquire__lede"><?php echo esc_html( nr_opt( 'nr_enquire_lede', __( 'Booking and saying hello live in one place. Tell me what you have in mind — or check pricing first.', 'raveenthiran' ) ) ); ?></p>
 			</header>
 
-			<form class="nr-form nr-enquire__form" data-enquire-form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<form class="nr-form nr-enquire__form" data-enquire-form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="nr_contact_send">
 				<?php wp_nonce_field( 'nr_contact', '_nr_nonce' ); ?>
 				<input type="text" name="nr_company" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="nr-hp">
@@ -114,12 +114,20 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 							<output data-enquire-estimate><?php echo $est ? esc_html( $cur . number_format_i18n( (float) $est ) ) : '—'; ?></output>
 							<button type="button" class="nr-enquire__price-link" data-modal="nr-quote"><?php esc_html_e( 'Check pricing', 'raveenthiran' ); ?> →</button>
 						</span>
+						<small class="nr-enquire__breakdown" data-enquire-breakdown></small>
 						<input type="hidden" name="estimate" data-enquire-estimate-input value="<?php echo $est ? esc_attr( $cur . $est ) : ''; ?>">
+						<input type="hidden" name="estimate_breakdown" data-enquire-breakdown-input value="">
 					</label>
 				</div>
 
 				<label class="nr-form__wide"><span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Tell me about the project', 'raveenthiran' ); ?></span>
 					<textarea name="notes" rows="4" placeholder="<?php esc_attr_e( 'A few sentences — a place, a person, an hour of the day.', 'raveenthiran' ); ?>"><?php echo $ref ? esc_textarea( sprintf( __( 'Re: %s — I saw this project and would like something in the same spirit.', 'raveenthiran' ), $ref ) ) : ''; ?></textarea>
+				</label>
+
+				<label class="nr-form__wide nr-form__refs">
+					<span class="nr-eyebrow nr-eyebrow--plain"><?php esc_html_e( 'Reference images (optional)', 'raveenthiran' ); ?></span>
+					<input type="file" name="nr_refs[]" accept="image/*" multiple>
+					<span class="nr-form__hint"><?php esc_html_e( 'Up to 4 images, 5MB each — a mood-board or examples of the look you want.', 'raveenthiran' ); ?></span>
 				</label>
 
 				<?php if ( function_exists( 'nr_turnstile_field' ) ) nr_turnstile_field(); ?>
@@ -133,7 +141,13 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 				</div>
 			</form>
 
-			<section class="nr-enquire__faq" id="faq">
+			<button type="button" class="nr-btn nr-btn--ghost nr-faq-open" aria-haspopup="dialog" aria-controls="faq">
+				<span><?php esc_html_e( 'Common questions', 'raveenthiran' ); ?></span> <span>?</span>
+			</button>
+
+			<section class="nr-enquire__faq nr-faq-pop" id="faq" role="dialog" aria-modal="true" aria-label="FAQ" hidden>
+				<div class="nr-faq-pop__box">
+				<button type="button" class="nr-faq-pop__x" aria-label="<?php esc_attr_e( 'Close', 'raveenthiran' ); ?>">✕</button>
 				<span class="nr-eyebrow nr-eyebrow--plain"><?php echo esc_html( nr_opt( 'nr_faq_eyebrow', __( 'FAQ · §05', 'raveenthiran' ) ) ); ?></span>
 				<div class="nr-faq__list nr-faq__list--compact">
 					<?php foreach ( ( function_exists( 'nr_faq_items' ) ? nr_faq_items() : [] ) as $i => $f ) : ?>
@@ -146,6 +160,7 @@ $sel = $sel ?: ( $chips[0]['slug'] ?? 'other' );
 							<button type="button" class="nr-faq__toggle" aria-label="<?php esc_attr_e( 'Toggle answer', 'raveenthiran' ); ?>">+</button>
 						</div>
 					<?php endforeach; ?>
+				</div>
 				</div>
 			</section>
 		</div>

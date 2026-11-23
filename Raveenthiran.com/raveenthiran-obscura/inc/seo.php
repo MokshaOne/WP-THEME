@@ -97,6 +97,21 @@ function nr_schema_markup_extended_render() {
             $schema['@graph'][0]['image'] = $hero;
         }
 
+        // #11 — aggregateRating + a few reviews from the Testimonials CPT.
+        if ( function_exists( 'nr_testimonial_rating_data' ) ) {
+            $rd = nr_testimonial_rating_data();
+            if ( ! empty( $rd['count'] ) ) {
+                $schema['@graph'][0]['aggregateRating'] = [
+                    '@type'       => 'AggregateRating',
+                    'ratingValue' => (string) $rd['avg'],
+                    'reviewCount' => (int) $rd['count'],
+                    'bestRating'  => '5',
+                    'worstRating' => '1',
+                ];
+                if ( ! empty( $rd['reviews'] ) ) $schema['@graph'][0]['review'] = $rd['reviews'];
+            }
+        }
+
         echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
     }
 
@@ -150,6 +165,27 @@ function nr_schema_markup_extended_render() {
         echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
     }
 
+    // Article schema on journal posts (headline/date/author/image).
+    if ( is_singular( 'nr_journal' ) && $post ) {
+        $schema = [
+            '@context'      => 'https://schema.org',
+            '@type'         => 'Article',
+            'headline'      => get_the_title(),
+            'url'           => get_permalink(),
+            'datePublished' => get_the_date( 'c' ),
+            'dateModified'  => get_the_modified_date( 'c' ),
+            'author'        => [ '@type' => 'Person', 'name' => $name, 'url' => $site_url ],
+            'publisher'     => [ '@type' => 'Person', 'name' => $name, 'url' => $site_url ],
+            'mainEntityOfPage' => get_permalink(),
+        ];
+        if ( has_excerpt( $post ) ) $schema['description'] = wp_strip_all_tags( get_the_excerpt() );
+        if ( has_post_thumbnail( $post ) ) {
+            $u = get_the_post_thumbnail_url( $post, 'nr-hero' );
+            if ( $u ) $schema['image'] = $u;
+        }
+        echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+    }
+
     // FAQPage Schema — FAQ now lives on the merged Enquire page.
     $is_enquire = ( is_page() && get_page_template_slug( get_queried_object_id() ) === 'page-enquire.php' ) || is_page( 'enquire' );
     if ( $is_enquire && function_exists( 'nr_faq_items' ) ) {
@@ -188,6 +224,7 @@ function nr_serve_sitemap() {
     if ( ! get_query_var( 'nr_sitemap' ) ) return;
 
     header( 'Content-Type: application/xml; charset=UTF-8' );
+    header( 'Cache-Control: public, max-age=3600' ); // #32
 
     $urls = [];
 
@@ -197,6 +234,7 @@ function nr_serve_sitemap() {
         [ 'loc' => home_url( '/portfolio' ),  'priority' => '0.9', 'changefreq' => 'weekly' ],
         [ 'loc' => home_url( '/about' ),      'priority' => '0.7', 'changefreq' => 'monthly' ],
         [ 'loc' => home_url( '/enquire' ),    'priority' => '0.9', 'changefreq' => 'monthly' ],
+        [ 'loc' => home_url( '/journal' ),    'priority' => '0.7', 'changefreq' => 'weekly' ],
     ];
     $urls = array_merge( $urls, $static );
 
@@ -225,6 +263,23 @@ function nr_serve_sitemap() {
             'priority'   => '0.8',
             'changefreq' => 'monthly',
             'images'     => array_slice( array_values( array_unique( $imgs ) ), 0, 1000 ),
+        ];
+    }
+
+    // Journal entries (text content — important for SEO posts/guides)
+    $journal = get_posts( [ 'post_type' => 'nr_journal', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+    foreach ( $journal as $id ) {
+        $imgs = [];
+        if ( has_post_thumbnail( $id ) ) {
+            $u = get_the_post_thumbnail_url( $id, 'nr-hero' );
+            if ( $u ) $imgs[] = $u;
+        }
+        $urls[] = [
+            'loc'        => get_permalink( $id ),
+            'lastmod'    => get_the_modified_date( 'Y-m-d', $id ),
+            'priority'   => '0.6',
+            'changefreq' => 'monthly',
+            'images'     => $imgs,
         ];
     }
 
@@ -282,6 +337,15 @@ function nr_social_meta() {
 	} elseif ( is_singular() && ! is_front_page() ) {
 		$post_content = trim( wp_strip_all_tags( get_post()->post_content ?? '' ) );
 		if ( $post_content ) $desc = mb_substr( $post_content, 0, 200 );
+	} elseif ( is_tax() || is_category() || is_tag() ) {
+		// #34 — term description, else a sensible label.
+		$t = get_queried_object();
+		$td = $t ? trim( wp_strip_all_tags( term_description( $t ) ) ) : '';
+		$desc = $td ?: ( $t ? sprintf( __( '%s — selected work and notes by %s.', 'raveenthiran' ), $t->name, get_bloginfo( 'name' ) ) : $desc );
+	} elseif ( is_post_type_archive( 'nr_journal' ) ) {
+		$desc = __( 'Journal — field notes, process, and behind-the-scenes from the studio.', 'raveenthiran' );
+	} elseif ( is_post_type_archive( 'nr_project' ) ) {
+		$desc = __( 'The complete portfolio — editorial, portrait, and architectural photography.', 'raveenthiran' );
 	}
 
 	$image = '';
@@ -314,6 +378,18 @@ function nr_social_meta() {
 	printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) ); // #12
 	if ( is_paged() ) echo '<meta name="robots" content="noindex,follow">' . "\n"; // #19
 
+	// #39 — self-referencing hreflang (single-language site → en + x-default).
+	printf( '<link rel="alternate" hreflang="en" href="%s">' . "\n", esc_url( $canonical ) );
+	printf( '<link rel="alternate" hreflang="x-default" href="%s">' . "\n", esc_url( $canonical ) );
+
+	// #35 — rel=prev/next pagination hints on archives.
+	if ( is_archive() || is_home() || is_search() ) {
+		$paged = max( 1, (int) get_query_var( 'paged' ) );
+		$max   = isset( $GLOBALS['wp_query']->max_num_pages ) ? (int) $GLOBALS['wp_query']->max_num_pages : 1;
+		if ( $paged > 1 )    printf( '<link rel="prev" href="%s">' . "\n", esc_url( get_pagenum_link( $paged - 1 ) ) );
+		if ( $paged < $max ) printf( '<link rel="next" href="%s">' . "\n", esc_url( get_pagenum_link( $paged + 1 ) ) );
+	}
+
 	// Open Graph
 	printf( '<meta property="og:type" content="%s">' . "\n", esc_attr( $type ) );
 	printf( '<meta property="og:site_name" content="%s">' . "\n", esc_attr( get_bloginfo( 'name' ) ) );
@@ -323,7 +399,7 @@ function nr_social_meta() {
 	printf( '<meta property="og:locale" content="%s">' . "\n", esc_attr( $locale ) );
 	// #69 — prefer a composited 1200x630 share card for single projects.
 	$og_w = 2400; $og_h = 1600;
-	if ( is_singular( 'nr_project' ) && function_exists( 'nr_og_card_url' ) ) {
+	if ( ( is_singular( 'nr_project' ) || is_singular( 'nr_journal' ) ) && function_exists( 'nr_og_card_url' ) ) {
 		$card = nr_og_card_url( get_queried_object_id() );
 		if ( $card ) { $image = $card; $og_w = 1200; $og_h = 630; }
 	}
@@ -369,6 +445,21 @@ function nr_breadcrumb_schema() {
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
 	} elseif ( is_post_type_archive( 'nr_project' ) ) {
 		$items[] = [ 'name' => __( 'Work', 'raveenthiran' ), 'item' => get_post_type_archive_link( 'nr_project' ) ];
+	} elseif ( is_singular( 'nr_journal' ) ) {
+		$jurl = function_exists( 'nr_journal_url' ) ? nr_journal_url() : get_post_type_archive_link( 'nr_journal' );
+		if ( $jurl ) $items[] = [ 'name' => __( 'Journal', 'raveenthiran' ), 'item' => $jurl ];
+		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
+	} elseif ( is_post_type_archive( 'nr_journal' ) ) {
+		$items[] = [ 'name' => __( 'Journal', 'raveenthiran' ), 'item' => get_post_type_archive_link( 'nr_journal' ) ];
+	} elseif ( is_tax( [ 'nr_project_cat', 'nr_project_tag', 'nr_project_series' ] ) ) {
+		$items[] = [ 'name' => __( 'Work', 'raveenthiran' ), 'item' => get_post_type_archive_link( 'nr_project' ) ];
+		$t = get_queried_object();
+		if ( $t ) $items[] = [ 'name' => $t->name, 'item' => get_term_link( $t ) ];
+	} elseif ( is_tax( 'nr_journal_cat' ) ) {
+		$jurl = function_exists( 'nr_journal_url' ) ? nr_journal_url() : get_post_type_archive_link( 'nr_journal' );
+		if ( $jurl ) $items[] = [ 'name' => __( 'Journal', 'raveenthiran' ), 'item' => $jurl ];
+		$t = get_queried_object();
+		if ( $t ) $items[] = [ 'name' => $t->name, 'item' => get_term_link( $t ) ];
 	} elseif ( is_page() ) {
 		$items[] = [ 'name' => get_the_title(), 'item' => get_permalink() ];
 	} else {

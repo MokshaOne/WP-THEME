@@ -29,7 +29,7 @@ $nr_j_orient = function ( $post_id ) {
 			<div class="nr-chips nr-chips--center" data-group="main" role="tablist" aria-label="<?php esc_attr_e( 'Filter journal', 'raveenthiran' ); ?>">
 				<button type="button" class="nr-chip is-on" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'raveenthiran' ); ?></button>
 				<?php foreach ( $nr_jcats as $c ) : ?>
-					<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
+					<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?><sup class="nr-chip__n"><?php echo (int) $c->count; ?></sup></button>
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
@@ -45,7 +45,7 @@ $nr_j_orient = function ( $post_id ) {
 				$orient = $nr_j_orient( get_the_ID() );
 			?>
 				<a class="nr-card nr-card--journal is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $terms ?: [] ) ); ?>" style="--i:<?php echo (int) $i; ?>">
-					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
+					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true, $i === 0 ); ?>
 					<div class="nr-card__shade"></div>
 					<div class="nr-card__head">
 						<span><?php echo esc_html( get_the_date( 'M Y' ) ); ?></span>

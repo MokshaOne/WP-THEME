@@ -23,7 +23,17 @@ add_action( 'acf/init', function () {
 		'page_title'  => __( 'Pricing & Quote', 'raveenthiran' ),
 		'menu_title'  => __( 'Pricing & Quote', 'raveenthiran' ),
 		'menu_slug'   => 'nr-site-settings',
-		'parent_slug' => 'themes.php',
+		'parent_slug' => 'nr-theme-settings',
+		'capability'  => 'manage_options',
+		'redirect'    => false,
+	] );
+	// Local business / SEO schema fields live on their own page (kept off the
+	// Pricing & Quote page, which now holds only quote/licence fields).
+	acf_add_options_page( [
+		'page_title'  => __( 'Business & SEO', 'raveenthiran' ),
+		'menu_title'  => __( 'Business & SEO', 'raveenthiran' ),
+		'menu_slug'   => 'nr-business-seo',
+		'parent_slug' => 'nr-theme-settings',
 		'capability'  => 'manage_options',
 		'redirect'    => false,
 	] );
@@ -45,10 +55,10 @@ function nr_quote_data() {
 
 	if ( ! is_array( $raw_types ) || empty( $raw_types ) ) {
 		$raw_types = [
-			[ 'type' => 'Portrait',   'base_price' => 450,  'hours' => 2 ],
-			[ 'type' => 'Editorial',  'base_price' => 1200, 'hours' => 6 ],
-			[ 'type' => 'Event',      'base_price' => 900,  'hours' => 4 ],
-			[ 'type' => 'Commercial', 'base_price' => 1800, 'hours' => 8 ],
+			[ 'type' => 'Portrait',   'base_price' => 450,  'hours' => 2, 'hourly_rate' => 225, 'max_hours' => 6  ],
+			[ 'type' => 'Editorial',  'base_price' => 1200, 'hours' => 6, 'hourly_rate' => 200, 'max_hours' => 10 ],
+			[ 'type' => 'Event',      'base_price' => 900,  'hours' => 4, 'hourly_rate' => 225, 'max_hours' => 12 ],
+			[ 'type' => 'Commercial', 'base_price' => 1800, 'hours' => 8, 'hourly_rate' => 225, 'max_hours' => 12 ],
 		];
 	}
 	if ( ! is_array( $raw_extras ) || empty( $raw_extras ) ) {
@@ -64,11 +74,21 @@ function nr_quote_data() {
 	foreach ( $raw_types as $r ) {
 		$label = trim( (string) ( $r['type'] ?? '' ) );
 		if ( $label === '' ) continue;
+		$base  = (float) ( $r['base_price'] ?? 0 );
+		$min_h = max( 1.0, (float) ( $r['hours'] ?? 0 ) );
+		// Hourly rate drives the booking price; derive from base ÷ min-hours when blank.
+		$rate  = (float) ( $r['hourly_rate'] ?? 0 );
+		if ( $rate <= 0 ) $rate = ( $min_h > 0 && $base > 0 ) ? round( $base / $min_h ) : 0;
+		$max_h = (float) ( $r['max_hours'] ?? 0 );
+		if ( $max_h < $min_h ) $max_h = max( $min_h + 4, 10 );
 		$types[] = [
 			'slug'  => sanitize_title( $label ),
 			'label' => $label,
-			'base'  => (float) ( $r['base_price'] ?? 0 ),
+			'base'  => $base,
 			'hours' => (float) ( $r['hours'] ?? 0 ),
+			'rate'  => $rate,
+			'min'   => $min_h,
+			'max'   => $max_h,
 		];
 	}
 
@@ -165,3 +185,52 @@ add_action( 'template_redirect', function () {
 		exit;
 	}
 } );
+
+/* ─────────────────────────────────────────────────────────────
+ * #40 — [nr_faq] shortcode for journal posts / pages.
+ * Content = one "Question | Answer" per line. Renders the same
+ * accordion as the Enquire FAQ and emits FAQPage schema.
+ * ───────────────────────────────────────────────────────────── */
+$GLOBALS['nr_faq_shortcode_items'] = [];
+
+add_shortcode( 'nr_faq', function ( $atts, $content = '' ) {
+	$raw = trim( (string) $content );
+	if ( $raw === '' ) return '';
+	$pairs = [];
+	foreach ( preg_split( '/\r\n|\r|\n/', wp_strip_all_tags( $raw ) ) as $line ) {
+		$line = trim( $line );
+		if ( $line === '' || strpos( $line, '|' ) === false ) continue;
+		list( $q, $a ) = array_map( 'trim', explode( '|', $line, 2 ) );
+		if ( $q !== '' && $a !== '' ) $pairs[] = [ 'q' => $q, 'a' => $a ];
+	}
+	if ( ! $pairs ) return '';
+
+	// collect for the page-level FAQPage schema (printed in wp_footer)
+	$GLOBALS['nr_faq_shortcode_items'] = array_merge( $GLOBALS['nr_faq_shortcode_items'], $pairs );
+
+	$out = '<div class="nr-faq__list nr-faq__list--compact nr-faq--shortcode">';
+	foreach ( $pairs as $i => $f ) {
+		$out .= '<div class="nr-faq__item">'
+			. '<span class="nr-faq__n">' . esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ) . '</span>'
+			. '<div><div class="nr-faq__q">' . esc_html( $f['q'] ) . '</div>'
+			. '<div class="nr-faq__a">' . esc_html( $f['a'] ) . '</div></div>'
+			. '<button type="button" class="nr-faq__toggle" aria-label="' . esc_attr__( 'Toggle answer', 'raveenthiran' ) . '">+</button>'
+			. '</div>';
+	}
+	return $out . '</div>';
+} );
+
+add_action( 'wp_footer', function () {
+	$items = $GLOBALS['nr_faq_shortcode_items'] ?? [];
+	if ( ! $items ) return;
+	$entities = [];
+	foreach ( $items as $f ) {
+		$entities[] = [
+			'@type'          => 'Question',
+			'name'           => $f['q'],
+			'acceptedAnswer' => [ '@type' => 'Answer', 'text' => $f['a'] ],
+		];
+	}
+	$schema = [ '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $entities ];
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}, 20 );

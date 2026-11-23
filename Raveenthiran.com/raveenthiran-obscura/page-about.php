@@ -26,7 +26,7 @@ $stats = [
 ];
 ?>
 <section class="nr-page nr-fullscreen nr-about">
-	<div class="nr-about__portrait">
+	<div class="nr-about__portrait"<?php if ( ! $portrait ) echo ' style="display:none"'; ?>>
 		<?php if ( $portrait ) : ?>
 			<img src="<?php echo esc_url( $portrait ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="1200" height="1600" loading="eager" fetchpriority="high" decoding="async">
 		<?php else : ?>
@@ -85,6 +85,7 @@ $stats = [
 		   from one place. Blank the Bio field in Theme Settings to fall back
 		   to the WP page editor. */
 		?>
+		<div class="nr-bio-row">
 		<?php if ( $settings_bio !== '' ) : ?>
 			<div class="nr-about__sub"><?php echo wp_kses_post( wpautop( $settings_bio ) ); ?></div>
 		<?php elseif ( $rendered_content !== '' ) : ?>
@@ -112,6 +113,7 @@ $stats = [
 				</div>
 			<?php endforeach; ?>
 		</div>
+		</div><?php /* /nr-bio-row */ ?>
 
 		<?php
 		/* Clients — horizontal auto-scrolling marquee of client names.
@@ -145,6 +147,10 @@ $stats = [
 			</div>
 		</section>
 
+		<?php /* #19 — handwritten-style signature */ ?>
+		<?php $nr_sig = trim( (string) nr_opt( 'nr_signature', '' ) ); if ( $nr_sig !== '' ) : ?>
+			<div class="nr-signature"><?php echo esc_html( $nr_sig ); ?></div>
+		<?php endif; ?>
 
 		<?php
 		$awards = nr_recognition_list( 'nr_awards_list' );

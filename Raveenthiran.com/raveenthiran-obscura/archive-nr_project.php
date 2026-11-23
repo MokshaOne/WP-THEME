@@ -34,7 +34,7 @@ $nr_card_orient = function ( $post_id ) {
 		<div class="nr-chips nr-chips--center" data-group="main" role="tablist" aria-label="<?php esc_attr_e( 'Filter by category', 'raveenthiran' ); ?>">
 			<button type="button" class="nr-chip is-on" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'raveenthiran' ); ?></button>
 			<?php foreach ( $cats as $c ) : ?>
-				<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?></button>
+				<button type="button" class="nr-chip" data-filter="<?php echo esc_attr( $c->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $c->name ); ?><sup class="nr-chip__n"><?php echo (int) $c->count; ?></sup></button>
 			<?php endforeach; ?>
 			<?php $nr_years = function_exists( 'nr_project_years' ) ? nr_project_years() : []; foreach ( $nr_years as $yy ) : ?>
 				<button type="button" class="nr-chip nr-chip--year" data-filter="year-<?php echo esc_attr( $yy ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $yy ); ?></button>
@@ -47,7 +47,7 @@ $nr_card_orient = function ( $post_id ) {
 		if ( ! is_wp_error( $nr_tags ) && $nr_tags ) : ?>
 			<div class="nr-chips nr-chips--center nr-chips--tags" data-group="tags" aria-label="<?php esc_attr_e( 'Filter by keyword (combine freely)', 'raveenthiran' ); ?>">
 				<?php foreach ( $nr_tags as $t ) : ?>
-					<button type="button" class="nr-chip nr-chip--tag" data-filter="tag-<?php echo esc_attr( $t->slug ); ?>" aria-pressed="false"><?php echo esc_html( $t->name ); ?></button>
+					<button type="button" class="nr-chip nr-chip--tag" data-filter="tag-<?php echo esc_attr( $t->slug ); ?>" aria-pressed="false"><?php echo esc_html( $t->name ); ?><sup class="nr-chip__n"><?php echo (int) $t->count; ?></sup></button>
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
@@ -80,8 +80,9 @@ $nr_card_orient = function ( $post_id ) {
 				$plate_label = sprintf( _n( '%d plate', '%d plates', $plate_count, 'raveenthiran' ), $plate_count );
 				?>
 				<a class="nr-card is-<?php echo esc_attr( $orient ); ?>" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( trim( implode( ' ', $terms ?: [] ) . ' year-' . $m['yr'] . ' ' . implode( ' ', $tag_tokens ) ) ); ?>" style="--i:<?php echo (int) $i; ?>;view-transition-name:vt-project-<?php the_ID(); ?>">
-					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true ); ?>
+					<?php nr_image_or_placeholder( get_the_ID(), 'nr-card', strtolower( get_the_title() ), true, $i === 0 ); ?>
 					<div class="nr-card__shade"></div>
+					<span class="nr-card__no" aria-hidden="true">PL—<?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 					<div class="nr-card__head"><span><?php echo esc_html( $plate_label ); ?></span><span><?php echo esc_html( $m['yr'] ); ?></span></div>
 					<div class="nr-card__foot">
 						<span class="nr-card__cat"><?php echo esc_html( $m['cat'] ?: 'Editorial' ); ?></span>

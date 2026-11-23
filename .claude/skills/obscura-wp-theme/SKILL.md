@@ -21,8 +21,9 @@ self-hosted, theme-built solutions over plugins. Ships as an installable ZIP.
 - Feature modules: `inc/*.php` (loaded via the `$includes` array in `functions.php`)
 - Assets: `assets/css/theme.css`, `assets/css/fonts.css`, `assets/js/theme.js`,
   `assets/fonts/*.woff2` (+ `*.ttf` for GD text), `assets/js/webgl-hero.js`
-- Docs: `docs/IDEAS-100.md` (the tiered roadmap, items marked ✅ with version),
-  `SETUP.md` (owner setup checklist)
+- Docs: `docs/IDEAS-200.md` (the live backlog — 200 items in 5 batches, tick ✅ with
+  version), `docs/ROADMAP-ARCHIVE.md` (completed history), `docs/OBSCURA-PLAYBOOK.md`
+  (method), `SETUP.md` (owner setup checklist)
 - Release ZIPs: repo **root**, named `raveenthiran-obscura-vX.Y.Z.zip`
 - Work branch: `claude/obscura-rebuild` → **PR #7** (draft). Repo `mokshaone/wp-theme`.
 
@@ -65,7 +66,7 @@ regression on a live site.
    network error with backoff).
 7. **Deliver the ZIP** to the user with `SendUserFile` + a short "what changed /
    how to test" note.
-8. Mark the idea ✅ in `docs/IDEAS-100.md`; update `SETUP.md` if owner action is needed.
+8. Mark the idea ✅ in `docs/IDEAS-200.md` (with the version); update `SETUP.md` if owner action is needed.
 
 ## Performance playbook (measure first, then in this order)
 Diagnose with a fresh **pagespeed.web.dev** mobile run. Read the **LCP breakdown**

@@ -5,6 +5,9 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 if ( nr_opt( 'nr_show_cookie_notice', '1' ) !== '1' ) return;
+// #48 — returning visitors who already decided carry an nr_consent cookie;
+// skip rendering the notice entirely for them (no markup, no JS).
+if ( in_array( $_COOKIE['nr_consent'] ?? '', [ 'accepted', 'declined' ], true ) ) return;
 
 $policy_url = home_url( '/datenschutz' );
 ?>

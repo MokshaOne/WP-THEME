@@ -89,6 +89,7 @@ function nr_pwa_serve_sw() {
 	$cache_name = 'nr-shell-' . $ver;
 	?>
 const CACHE = '<?php echo esc_js( $cache_name ); ?>';
+const READER = 'nr-reader';   // #25 — opened journal articles, kept across updates
 const PRECACHE = <?php echo $precache; ?>;
 const OFFLINE = '<?php echo esc_js( $offline ); ?>';
 
@@ -100,7 +101,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k !== CACHE && k !== READER).map((k) => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });
@@ -131,10 +132,13 @@ self.addEventListener('fetch', (e) => {
 
   // Network-first for navigations, with cached shell / offline fallback.
   if (req.mode === 'navigate') {
+    // #25 — journal articles go to a persistent cache so they're readable
+    // offline (a tunnel/flight) and survive theme updates.
+    const bucket = url.pathname.indexOf('/journal') === 0 ? READER : CACHE;
     e.respondWith(
       fetch(req).then((res) => {
         const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        caches.open(bucket).then((c) => c.put(req, copy)).catch(() => {});
         return res;
       }).catch(() => caches.match(req).then((hit) => hit || caches.match(OFFLINE) || caches.match('<?php echo esc_js( $home ); ?>')))
     );

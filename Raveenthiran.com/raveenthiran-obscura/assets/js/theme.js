@@ -215,6 +215,7 @@
     const yearEl  = $('[data-meta-year]', hero);
     const currEl  = $('[data-hero-curr]', hero);
     const bigEl   = $('[data-hero-curr-big]', hero);
+    const ghostEl = $('[data-hero-ghost]', hero);
     const fillEl  = $('[data-hero-fill]', hero);
     const thumbs  = $$('[data-hero-thumb]', hero);
     const prevBtn = $('[data-hero-prev]', hero);
@@ -294,10 +295,7 @@
         if (yearEl && s.yr)     yearEl.textContent = s.yr;
         if (linkEl && s.url)    linkEl.setAttribute('href', s.url);
         if (currEl)             currEl.textContent = String(i + 1).padStart(2, '0');
-        if (bigEl) {
-          bigEl.textContent = String(i + 1).padStart(2, '0');
-          requestAnimationFrame(() => requestAnimationFrame(() => bigEl.classList.remove('is-flipping')));
-        }
+
         if (fillEl)             fillEl.style.width = (((i + 1) / N) * 100) + '%';
         thumbs.forEach((t, k) => {
           t.classList.toggle('is-on', k === i);
@@ -499,23 +497,31 @@
 
     function fmt(n){ return cur + Math.round(n).toLocaleString(); }
 
-    function compute(){
+    /* Full calculation as line items [{l: label, a: amount}] — shown in the
+       modal, mirrored onto the enquiry form, and carried server-side so the
+       estimate PDF / backend / invoice can display the whole breakdown. */
+    function items(){
+      var out = [];
       var typeInput = form.querySelector('input[name="nr_q_type"]:checked');
-      var base = typeInput ? (parseFloat(typeInput.getAttribute('data-base')) || 0) : 0;
-      var total = base, parts = [];
-      if (typeInput) parts.push((typeInput.getAttribute('data-label') || '') + ' ' + fmt(base));
-      var extras = form.querySelectorAll('input[name="nr_q_extra"]:checked');
-      extras.forEach(function (x) { total += parseFloat(x.getAttribute('data-price')) || 0; });
-      if (extras.length) parts.push(extras.length + (extras.length > 1 ? ' add-ons' : ' add-on'));
+      if (typeInput) out.push({ l: typeInput.getAttribute('data-label') || 'Session', a: parseFloat(typeInput.getAttribute('data-base')) || 0 });
+      form.querySelectorAll('input[name="nr_q_extra"]:checked').forEach(function (x) {
+        out.push({ l: x.getAttribute('data-label') || 'Add-on', a: parseFloat(x.getAttribute('data-price')) || 0 });
+      });
       var lic = form.querySelector('input[name="nr_q_license"]');
-      if (lic && lic.checked) { total += parseFloat(lic.getAttribute('data-price')) || 0; parts.push('license'); }
+      if (lic && lic.checked) out.push({ l: lic.getAttribute('data-label') || 'Usage license', a: parseFloat(lic.getAttribute('data-price')) || 0 });
       var km = form.querySelector('input[name="nr_q_km"]');
       if (km && parseFloat(km.value) > 0) {
-        total += parseFloat(km.value) * (parseFloat(km.getAttribute('data-per-km')) || 0);
-        parts.push(Math.round(parseFloat(km.value)) + ' km');
+        var n = parseFloat(km.value), rate = parseFloat(km.getAttribute('data-per-km')) || 0;
+        out.push({ l: 'Travel ' + Math.round(n) + ' km', a: n * rate });
       }
+      return out;
+    }
+
+    function compute(){
+      var list = items(), total = 0;
+      list.forEach(function (i) { total += i.a; });
       if (sumEl) sumEl.textContent = fmt(total);
-      if (noteEl) noteEl.textContent = parts.join('  ·  ');
+      if (noteEl) noteEl.textContent = list.map(function (i) { return i.l + ' ' + fmt(i.a); }).join('  +  ');
       return total;
     }
 
@@ -549,6 +555,12 @@
         }
         var out = ef.querySelector('[data-enquire-estimate]'); if (out) out.textContent = fmt(total);
         var hidden = ef.querySelector('[data-enquire-estimate-input]'); if (hidden) hidden.value = cur + Math.round(total);
+        // carry + show the whole calculation, not just the total
+        var list = items();
+        var bd = ef.querySelector('[data-enquire-breakdown-input]');
+        if (bd) bd.value = list.map(function (i) { return i.l + ' | ' + (Math.round(i.a * 100) / 100); }).join(' ;; ');
+        var bdOut = ef.querySelector('[data-enquire-breakdown]');
+        if (bdOut) bdOut.textContent = list.map(function (i) { return i.l + ' ' + fmt(i.a); }).join('  +  ');
         var modal = form.closest('.nr-modal');
         var close = modal && modal.querySelector('[data-modal-close]'); if (close) close.click();
         ef.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -714,13 +726,13 @@
 (function () {
   'use strict';
   var home = ( window.NR && NR.home ) ? NR.home : '/';
-  var data = null, loading = null;
+  var data = null, journalData = [], loading = null;
   function load(){
     if ( data ) return Promise.resolve( data );
     if ( ! loading ) loading = fetch( home + 'projects.json', { credentials:'same-origin' } )
       .then(function(r){ return r.ok ? r.json() : { projects: [] }; })
-      .then(function(j){ data = ( j && j.projects ) || []; return data; })
-      .catch(function(){ data = []; return data; });
+      .then(function(j){ data = ( j && j.projects ) || []; journalData = ( j && j.journal ) || []; return data; })
+      .catch(function(){ data = []; journalData = []; return data; });
     return loading;
   }
   var pages = [
@@ -757,6 +769,7 @@
     items.push({ title:'▦  All projects — contact sheet', action:function(){ closePalette(); openSheet(); } });
     pages.forEach(function(p){ if(!q||p.title.toLowerCase().indexOf(q)>=0) items.push(p); });
     (data||[]).forEach(function(p){ if(!q||(p.title||'').toLowerCase().indexOf(q)>=0) items.push({ title:p.title, sub:p.year, url:p.url }); });
+    (journalData||[]).forEach(function(p){ if(!q||(p.title||'').toLowerCase().indexOf(q)>=0) items.push({ title:p.title, sub:'Journal', url:p.url }); });
     palItems=items.slice(0,40); palIdx=0;
     palList.innerHTML=palItems.map(function(it,i){ return '<li class="nr-cmd__item'+(i===0?' is-sel':'')+'" data-i="'+i+'">'+esc(it.title)+(it.sub?'<span class="nr-cmd__sub">'+esc(String(it.sub))+'</span>':'')+'</li>'; }).join('');
     Array.prototype.forEach.call(palList.children,function(li){ li.addEventListener('click',function(){ go(palItems[+li.dataset.i]); }); });
@@ -989,36 +1002,7 @@
   });
 })();
 
-/* #58 — opt-in interface sound with a mute toggle (body.nr-has-sound) */
-(function () {
-  if (!document.body.classList.contains('nr-has-sound')) return;
-  var muted = localStorage.getItem('nr_sound') !== 'on'; // starts muted
-  var ctx = null;
-  function tone(freq, vol, dur) {
-    if (muted) return;
-    try {
-      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
-      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
-      o.type = 'sine'; o.frequency.value = freq; o.connect(g); g.connect(ctx.destination);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(vol, t + 0.006);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + (dur || 0.09));
-      o.start(t); o.stop(t + (dur || 0.1));
-    } catch (e) {}
-  }
-  var btn = document.createElement('button');
-  btn.type = 'button'; btn.className = 'nr-sound'; btn.setAttribute('aria-label', 'Toggle interface sound');
-  function paint() { btn.classList.toggle('is-on', !muted); btn.textContent = muted ? '🔇' : '🔊'; btn.setAttribute('aria-pressed', String(!muted)); }
-  paint();
-  btn.addEventListener('click', function () {
-    muted = !muted; localStorage.setItem('nr_sound', muted ? 'off' : 'on');
-    if (!muted) { try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} tone(880, 0.05, 0.12); }
-    paint();
-  });
-  document.body.appendChild(btn);
-  document.body.addEventListener('pointerover', function (e) { if (e.target.closest('a,button,.nr-card,.nr-chip,.nr-hero__thumb')) tone(620, 0.012, 0.06); }, { passive: true });
-  document.body.addEventListener('click', function (e) { if (e.target.closest('a,button')) tone(880, 0.03, 0.1); }, true);
-})();
+/* #58 interface sound — removed v4.68.0 (toggle retired in v4.65, code unused). */
 
 /* #59 — generative monogram favicon (opt-in: body.nr-has-favicon) */
 (function () {
@@ -1050,4 +1034,1224 @@
     var r = document.referrer || '';
     if (r) { var u = new URL(r); if (u.host !== location.host) f.value = u.host; }
   } catch (e) {}
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-NEXT v4.41 — front-end behaviours
+   ───────────────────────────────────────────────────────────── */
+
+/* #21 — honor Save-Data even when the server header didn't reach us
+   (CDN edge, etc.). The class lets CSS skip heavy backgrounds. */
+(function () {
+  try {
+    var c = navigator.connection || navigator.webkitConnection;
+    if ((c && c.saveData) && !document.body.classList.contains('nr-savedata')) {
+      document.body.classList.add('nr-savedata');
+    }
+  } catch (e) {}
+})();
+
+/* #22 — focus trap for the ⌘K palette and contact-sheet dialogs.
+   Keeps Tab inside the open dialog (WCAG 2.4.3); Escape already closes. */
+(function () {
+  var sel = 'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var dlg = document.querySelector('.nr-cmd.is-on, .nr-sheet.is-on');
+    if (!dlg) return;
+    var f = Array.prototype.slice.call(dlg.querySelectorAll(sel)).filter(function (el) {
+      return el.offsetParent !== null;
+    });
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    else if (!dlg.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+  });
+})();
+
+/* #6 recently-viewed + #8 testimonials band — removed v4.68.0 (toggles retired in v4.65, code unused). */
+
+/* ─────────────────────────────────────────────────────────────
+   Batch 1 (v4.42.0) — cinematic motion layer (opt-in).
+   Master toggle adds body.nr-cinematic; a visitor switch sets
+   <html data-nr-motion="calm|standard|cinematic">. Effects gate on
+   the level, so the live look only changes when both opt in.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  if (!body.classList.contains('nr-cinematic')) return;     // master toggle off → nothing
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  var LEVELS = ['calm', 'standard', 'cinematic'];
+
+  function getLevel() {
+    var l = null; try { l = localStorage.getItem('nr_motion'); } catch (e) {}
+    if (LEVELS.indexOf(l) < 0) l = reduce ? 'calm' : 'cinematic';
+    return l;
+  }
+  function setLevel(l) { try { localStorage.setItem('nr_motion', l); } catch (e) {} body.setAttribute('data-nr-motion', l); root.setAttribute('data-nr-motion', l); }
+  setLevel(getLevel());
+  function level() { return body.getAttribute('data-nr-motion'); }
+  function cinematic() { return level() === 'cinematic'; }
+  function notCalm() { return level() !== 'calm'; }
+
+  /* #40 — the visitor motion switch (desktop; CSS hides it on small screens). */
+  var panel = document.createElement('div');
+  panel.className = 'nr-motion';
+  panel.innerHTML = '<button class="nr-motion__btn" aria-haspopup="true" aria-expanded="false">◐ motion</button>'
+    + '<div class="nr-motion__menu" role="menu" hidden>'
+    + LEVELS.map(function (l) { return '<button role="menuitemradio" data-level="' + l + '">' + l + '</button>'; }).join('')
+    + '</div>';
+  body.appendChild(panel);
+  var btn = panel.querySelector('.nr-motion__btn'), menu = panel.querySelector('.nr-motion__menu');
+  function mark() { panel.querySelectorAll('[data-level]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.level === level() ? 'true' : 'false'); }); }
+  mark();
+  btn.addEventListener('click', function () { var open = !menu.hidden; menu.hidden = open; btn.setAttribute('aria-expanded', String(!open)); });
+  panel.querySelectorAll('[data-level]').forEach(function (b) {
+    b.addEventListener('click', function () { setLevel(b.dataset.level); mark(); menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); });
+  });
+  document.addEventListener('click', function (e) { if (!panel.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+
+  /* #7 — chromatic-aberration SVG filter (CSS applies it on card hover). */
+  if (!document.getElementById('nr-rgbsplit')) {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
+    svg.style.cssText = 'position:absolute;width:0;height:0';
+    svg.innerHTML = '<filter id="nr-rgbsplit" x="-20%" y="-20%" width="140%" height="140%">'
+      + '<feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>'
+      + '<feOffset in="r" dx="2.5" dy="0" result="ro"/>'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>'
+      + '<feOffset in="b" dx="-2.5" dy="0" result="bo"/>'
+      + '<feBlend in="ro" in2="g" mode="screen" result="rg"/>'
+      + '<feBlend in="rg" in2="bo" mode="screen"/></filter>';
+    body.appendChild(svg);
+  }
+
+  /* #24 — 3D tilt + glare on cards (desktop, cinematic level). */
+  if (hover) {
+    document.querySelectorAll('.nr-card').forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        if (!cinematic()) return;
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--rx', ((py - 0.5) * -6).toFixed(2) + 'deg');
+        card.style.setProperty('--ry', ((px - 0.5) * 6).toFixed(2) + 'deg');
+        card.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        card.classList.add('nr-tilt-on');
+      });
+      card.addEventListener('pointerleave', function () {
+        card.classList.remove('nr-tilt-on');
+        card.style.removeProperty('--rx'); card.style.removeProperty('--ry');
+      });
+    });
+  }
+
+  /* #12 — scroll-velocity image shear on the rails (cinematic level). */
+  document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+    var last = rail.scrollLeft, raf;
+    rail.addEventListener('scroll', function () {
+      if (!cinematic()) { rail.style.setProperty('--skew', '0deg'); return; }
+      var v = rail.scrollLeft - last; last = rail.scrollLeft;
+      var sk = Math.max(-7, Math.min(7, v * 0.22));
+      rail.style.setProperty('--skew', sk.toFixed(2) + 'deg');
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () { rail.style.setProperty('--skew', '0deg'); });
+    }, { passive: true });
+  });
+
+  /* #22 — decode/scramble reveal on the mono eyebrow labels (cinematic level). */
+  if (!reduce) {
+    var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·—/';
+    function scramble(el) {
+      var target = el.textContent, len = target.length, frame = 0, dur = Math.min(30, 10 + len);
+      var id = setInterval(function () {
+        var out = '', reveal = (frame / dur) * len;
+        for (var i = 0; i < len; i++) {
+          if (i < reveal || target[i] === ' ') out += target[i];
+          else out += glyphs[Math.floor(Math.random() * glyphs.length)];
+        }
+        el.textContent = out; frame++;
+        if (frame > dur) { clearInterval(id); el.textContent = target; }
+      }, 28);
+    }
+    var ioS = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (en.isIntersecting && cinematic() && !en.target.dataset.scrambled) {
+          en.target.dataset.scrambled = '1'; scramble(en.target); ioS.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.nr-eyebrow').forEach(function (el) { if (el.children.length === 0) ioS.observe(el); });
+  }
+
+  /* #36 — dividers draw in on scroll (standard + cinematic). */
+  var ioD = new IntersectionObserver(function (es) {
+    es.forEach(function (en) { if (en.isIntersecting && notCalm()) { en.target.classList.add('nr-divider--drawn'); ioD.unobserve(en.target); } });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.nr-divider').forEach(function (d) { ioD.observe(d); });
+
+  /* #29 — split-flap stat counters (standard + cinematic). */
+  if (!reduce) {
+    var ioF = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting || en.target.dataset.flapped || !notCalm()) return;
+        en.target.dataset.flapped = '1';
+        var el = en.target, full = el.textContent.trim(), num = parseInt(full.replace(/\D/g, ''), 10);
+        if (isNaN(num)) return;
+        var suffix = full.replace(/[0-9]/g, ''), steps = 22, i = 0;
+        var id = setInterval(function () {
+          i++; el.textContent = Math.round(num * (i / steps)) + suffix;
+          if (i >= steps) { clearInterval(id); el.textContent = full; }
+        }, 38);
+        ioF.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.nr-stats__n').forEach(function (el) { ioF.observe(el); });
+  }
+
+  /* #18 — scroll progress as a 35mm film-frame counter (scrolling pages). */
+  (function () {
+    var ind = document.createElement('div');
+    ind.className = 'nr-filmframe'; ind.setAttribute('aria-hidden', 'true');
+    ind.innerHTML = '<span class="nr-filmframe__cur">000</span><span class="nr-filmframe__sep">/</span><span>100</span>';
+    body.appendChild(ind);
+    var cur = ind.querySelector('.nr-filmframe__cur');
+    function pad(n) { n = String(n); return n.length >= 3 ? n : ('000' + n).slice(-3); }
+    function upd() {
+      if (level() === 'calm') { ind.classList.remove('is-on'); return; }
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      cur.textContent = pad(h > 0 ? Math.round(window.scrollY / h * 100) : 0);
+      ind.classList.toggle('is-on', h > 60);
+    }
+    window.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', upd); upd();
+  })();
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   Batch 1 (v4.43.0) — cinematic motion layer, part 2 (lightweight).
+   Reads the motion level set by part 1 (on <body>). Same opt-in gate.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  if (!body.classList.contains('nr-cinematic')) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  function level() { return body.getAttribute('data-nr-motion') || 'standard'; }
+  function notCalm() { return level() !== 'calm'; }
+  function cinematic() { return level() === 'cinematic'; }
+
+  /* #23 — viewfinder AF-bracket feedback on card/button press. */
+  if (!reduce) {
+    document.addEventListener('pointerdown', function (e) {
+      if (!notCalm()) return;
+      if (!e.target.closest('.nr-card, .nr-btn, .nr-hero__thumb')) return;
+      var b = document.createElement('span');
+      b.className = 'nr-viewfinder'; b.setAttribute('aria-hidden', 'true');
+      b.style.left = e.clientX + 'px'; b.style.top = e.clientY + 'px';
+      document.body.appendChild(b);
+      setTimeout(function () { b.remove(); }, 520);
+    }, { passive: true });
+  }
+
+  /* #37 — aspect-matched loading skeleton on portfolio/plate images. */
+  document.querySelectorAll('.nr-card img, .nr-project__plate img').forEach(function (img) {
+    var fig = img.closest('.nr-card, .nr-project__plate');
+    if (!fig || (img.complete && img.naturalWidth > 0)) return;
+    fig.classList.add('nr-skel');
+    var done = function () { fig.classList.remove('nr-skel'); };
+    img.addEventListener('load', done, { once: true });
+    img.addEventListener('error', done, { once: true });
+  });
+
+  /* #15 — elastic overscroll: rubber-band the rails past their ends. */
+  if (!reduce) {
+    document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+      var raf;
+      rail.addEventListener('wheel', function (e) {
+        if (!cinematic()) return;
+        var d = e.deltaX || e.deltaY;
+        var atStart = rail.scrollLeft <= 0, atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 1;
+        if ((atStart && d < 0) || (atEnd && d > 0)) {
+          var push = Math.max(-26, Math.min(26, -d * 0.16));
+          rail.style.transition = 'none';
+          rail.style.transform = 'translateX(' + push.toFixed(1) + 'px)';
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(function () {
+            rail.style.transition = 'transform .5s cubic-bezier(.2,.8,.2,1)';
+            rail.style.transform = 'translateX(0)';
+            setTimeout(function () { rail.style.transition = ''; }, 520);
+          });
+        }
+      }, { passive: true });
+    });
+  }
+
+  /* #28 — contextual cursor: "drag" over the scrollable rails. */
+  if (hover) {
+    var cur = document.querySelector('.nr-cur');
+    var lbl = cur && cur.querySelector('.nr-cur__lbl');
+    if (cur) {
+      document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail').forEach(function (r) {
+        r.addEventListener('mouseenter', function () { cur.classList.add('is-drag'); if (lbl) lbl.textContent = 'drag'; });
+        r.addEventListener('mouseleave', function () { cur.classList.remove('is-drag'); });
+      });
+    }
+  }
+
+  /* #27 — directional draw-on underline for prose links. */
+  document.querySelectorAll('.nr-prose a, .nr-jpost a, .nr-static a, .nr-process__body a').forEach(function (a) {
+    if (a.classList.contains('nr-ul')) return;
+    a.classList.add('nr-ul');
+    a.addEventListener('mouseenter', function (e) {
+      var r = a.getBoundingClientRect();
+      a.style.setProperty('--ul-origin', (e.clientX - r.left) < r.width / 2 ? 'left' : 'right');
+    });
+  });
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 Batch 2 — conversion behaviours (v4.44.0).
+   Reads #nr-conv config. Toggles gate via body classes from PHP.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var cfg = {};
+  try { cfg = JSON.parse((document.getElementById('nr-conv') || {}).textContent || '{}'); } catch (e) {}
+  var body = document.body;
+
+  /* #68 — referral capture: ?via=CODE → localStorage, appended to the brief. */
+  try {
+    var via = new URLSearchParams(location.search).get('via');
+    if (via) localStorage.setItem('nr_via', via.slice(0, 40));
+  } catch (e) {}
+
+  /* #47 trust line + #49 availability + #74 WhatsApp ref + #68 brief tag — on Enquire. */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form) {
+    if (cfg.trust) {
+      var t = document.createElement('p'); t.className = 'nr-trust'; t.textContent = cfg.trust;
+      (form.querySelector('.nr-form__actions') || form).insertAdjacentElement('afterend', t);
+    }
+    if (cfg.avail) {
+      var d = form.querySelector('input[type="date"]');
+      if (d && d.parentElement) {
+        var a = document.createElement('span'); a.className = 'nr-form__avail'; a.textContent = cfg.avail;
+        d.parentElement.appendChild(a);
+      }
+    }
+    // append referral code to notes on submit so it reaches the email
+    form.addEventListener('submit', function () {
+      try {
+        var v = localStorage.getItem('nr_via');
+        var notes = form.querySelector('[name="notes"]');
+        if (v && notes && notes.value.indexOf('[ref:') < 0) notes.value += '\n\n[ref: ' + v + ']';
+      } catch (e) {}
+    });
+    // enrich the WhatsApp link with the project ref if present
+    try {
+      var ref = new URLSearchParams(location.search).get('ref');
+      if (ref) {
+        var wa = form.parentElement && form.parentElement.querySelector('a[href*="wa.me"]');
+        if (wa) { var u = new URL(wa.href); u.searchParams.set('text', 'Re: ' + ref); wa.href = u.toString(); }
+      }
+    } catch (e) {}
+  }
+
+  /* #77 — share button on single projects (Web Share API → clipboard fallback). */
+  if (body.classList.contains('single-nr_project') || document.querySelector('.nr-project')) {
+    var actions = document.querySelector('.nr-project__actions');
+    if (actions && !actions.querySelector('.nr-share')) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'nr-btn nr-share'; b.innerHTML = '<span>Share</span>';
+      b.addEventListener('click', function () {
+        var data = { title: document.title, url: location.href };
+        if (navigator.share) { navigator.share(data).catch(function () {}); }
+        else if (navigator.clipboard) { navigator.clipboard.writeText(location.href); b.querySelector('span').textContent = 'Copied'; setTimeout(function () { b.querySelector('span').textContent = 'Share'; }, 1600); }
+      });
+      actions.appendChild(b);
+    }
+  }
+
+  /* #73 — seasonal banner dismiss (persisted). */
+  var promo = document.querySelector('[data-promo]');
+  if (promo) {
+    var key = 'nr_promo_seen';
+    try { if (localStorage.getItem(key) === promo.textContent.trim()) promo.remove(); } catch (e) {}
+    var x = promo.querySelector('.nr-promo__x');
+    if (x) x.addEventListener('click', function () { try { localStorage.setItem(key, promo.textContent.trim()); } catch (e) {} promo.remove(); });
+  }
+
+  /* #44 — exit-intent soft offer (desktop, once per session). */
+  if (body.classList.contains('nr-exit') && window.matchMedia('(hover:hover)').matches) {
+    var shown = false;
+    try { shown = sessionStorage.getItem('nr_exit') === '1'; } catch (e) {}
+    document.addEventListener('mouseout', function (e) {
+      if (shown || e.relatedTarget || e.clientY > 12) return;
+      shown = true; try { sessionStorage.setItem('nr_exit', '1'); } catch (e2) {}
+      var o = document.createElement('div'); o.className = 'nr-exitp'; o.setAttribute('role', 'dialog');
+      o.innerHTML = '<div class="nr-exitp__box"><button class="nr-exitp__x" aria-label="Close">✕</button>'
+        + '<p>' + (cfg.exit || 'Before you go — tell me about your project.') + '</p>'
+        + '<a class="nr-btn nr-btn--primary" href="' + (cfg.enquire || '/enquire') + '"><span>Start a brief</span> <span>→</span></a></div>';
+      document.body.appendChild(o);
+      var close = function () { o.remove(); };
+      o.addEventListener('click', function (e3) { if (e3.target === o || e3.target.closest('.nr-exitp__x')) close(); });
+    });
+  }
+
+  /* #41 — visitor shortlist: ♥ on cards → a "selection" tray → send as brief. */
+  if (body.classList.contains('nr-shortlist')) {
+    var SK = 'nr_shortlist_v1';
+    var read = function () { try { return JSON.parse(localStorage.getItem(SK) || '[]'); } catch (e) { return []; } };
+    var write = function (a) { try { localStorage.setItem(SK, JSON.stringify(a)); } catch (e) {} };
+    var titleOf = function (card) {
+      var el = card.querySelector('.nr-card__title, .nr-card__t');
+      return (el ? el.textContent : (card.getAttribute('aria-label') || '')).trim();
+    };
+    // #23 — import a shared selection from ?shortlist=… , then clean the URL.
+    (function () {
+      try {
+        var sp = new URLSearchParams(location.search), raw = sp.get('shortlist');
+        if (!raw) return;
+        var inc = JSON.parse(decodeURIComponent(escape(atob(raw))));
+        if (!Array.isArray(inc)) return;
+        var cur = read();
+        inc.forEach(function (x) { if (x && x.t && !cur.some(function (y) { return y.t === x.t; })) cur.push({ t: String(x.t), u: String(x.u || '') }); });
+        write(cur);
+        sp.delete('shortlist');
+        history.replaceState(null, '', location.pathname + (sp.toString() ? '?' + sp.toString() : '') + location.hash);
+      } catch (e) {}
+    })();
+    var list = read();
+    // inject hearts
+    document.querySelectorAll('.nr-card').forEach(function (card) {
+      if (card.querySelector('.nr-heart')) return;
+      var href = card.getAttribute('href') || (card.querySelector('a') && card.querySelector('a').getAttribute('href')) || '';
+      var t = titleOf(card); if (!t) return;
+      var h = document.createElement('button');
+      h.type = 'button'; h.className = 'nr-heart'; h.setAttribute('aria-label', 'Add to selection');
+      if (list.some(function (x) { return x.t === t; })) h.classList.add('is-on');
+      h.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var l = read(), i = l.findIndex(function (x) { return x.t === t; });
+        if (i >= 0) { l.splice(i, 1); h.classList.remove('is-on'); } else { l.push({ t: t, u: href }); h.classList.add('is-on'); }
+        write(l); render();
+      });
+      card.appendChild(h);
+    });
+    // tray
+    var tray = document.createElement('div'); tray.className = 'nr-tray'; tray.hidden = true;
+    tray.innerHTML = '<button class="nr-tray__btn" aria-expanded="false">♥ <span data-tray-n>0</span></button>'
+      + '<div class="nr-tray__panel" hidden><strong>Your selection</strong><ul data-tray-list></ul>'
+      + '<button type="button" class="nr-btn nr-tray__share" data-tray-share>⧉ <span>Copy share link</span></button>'
+      + '<a class="nr-btn nr-btn--primary" data-tray-send><span>Send as brief</span> <span>→</span></a></div>';
+    document.body.appendChild(tray);
+    var btn = tray.querySelector('.nr-tray__btn'), panel = tray.querySelector('.nr-tray__panel');
+    btn.addEventListener('click', function () { var o = panel.hidden; panel.hidden = !o; btn.setAttribute('aria-expanded', String(o)); });
+    function render() {
+      var l = read();
+      tray.hidden = l.length === 0;
+      tray.querySelector('[data-tray-n]').textContent = l.length;
+      tray.querySelector('[data-tray-list]').innerHTML = l.map(function (x) { return '<li>' + (x.t || '').replace(/[<>&]/g, '') + '</li>'; }).join('');
+      var send = tray.querySelector('[data-tray-send]');
+      var titles = l.map(function (x) { return x.t; }).join(', ');
+      var base = cfg.enquire || '/enquire';
+      send.href = base + (base.indexOf('?') < 0 ? '?' : '&') + 'ref=' + encodeURIComponent(titles.slice(0, 180));
+    }
+    render();
+    // #23 — copy a shareable link to the current selection.
+    var shareBtn = tray.querySelector('[data-tray-share]');
+    if (shareBtn) shareBtn.addEventListener('click', function () {
+      var l = read(); if (!l.length) return;
+      var enc; try { enc = btoa(unescape(encodeURIComponent(JSON.stringify(l)))); } catch (e) { return; }
+      var url = location.origin + location.pathname + '?shortlist=' + encodeURIComponent(enc);
+      var lab = shareBtn.querySelector('span'), txt = lab ? lab.textContent : '';
+      var done = function () { if (lab) { lab.textContent = 'Link copied ✓'; setTimeout(function () { lab.textContent = txt; }, 1600); } };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { window.prompt('Copy this link', url); });
+      else window.prompt('Copy this link', url);
+    });
+  }
+
+  /* #110 — search-term capture: beacon ⌘K palette queries (debounced). */
+  (function () {
+    if (!(window.NR && NR.home)) return;
+    var input = document.querySelector('.nr-cmd__input'); // exists once the palette is built
+    var bind = function (el) {
+      var tmr;
+      el.addEventListener('input', function () {
+        clearTimeout(tmr);
+        tmr = setTimeout(function () {
+          var q = el.value.trim();
+          if (q.length < 3) return;
+          try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/search-log', new Blob([JSON.stringify({ q: q })], { type: 'application/json' })); } catch (e) {}
+        }, 1200);
+      });
+    };
+    if (input) bind(input);
+    else {
+      // the palette is built lazily; observe for it
+      var mo = new MutationObserver(function () {
+        var i = document.querySelector('.nr-cmd__input');
+        if (i) { bind(i); mo.disconnect(); }
+      });
+      mo.observe(document.body, { childList: true });
+    }
+  })();
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 quick wins (v4.45.0) — journal reading aids.
+   #141 reading time + scroll progress · #142 auto table of contents.
+   Pure progressive enhancement on the journal single (.nr-jpost).
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var art = document.querySelector('.nr-jpost__article, .nr-jpost article, article.nr-jpost');
+  if (!art) return;
+
+  /* #141 — reading time, injected once near the top of the article. */
+  var words = (art.textContent || '').trim().split(/\s+/).length;
+  var mins = Math.max(1, Math.round(words / 200));
+  if (!art.querySelector('.nr-readtime')) {
+    var rt = document.createElement('p');
+    rt.className = 'nr-readtime';
+    rt.textContent = mins + ' min read';
+    art.insertBefore(rt, art.firstChild);
+  }
+
+  /* #141 — top scroll-progress bar tracking the article. */
+  var bar = document.createElement('div');
+  bar.className = 'nr-readbar'; bar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(bar);
+  var upd = function () {
+    var r = art.getBoundingClientRect();
+    var total = art.offsetHeight - window.innerHeight;
+    var done = Math.min(1, Math.max(0, (-r.top) / (total > 0 ? total : 1)));
+    bar.style.transform = 'scaleX(' + done.toFixed(3) + ')';
+  };
+  window.addEventListener('scroll', upd, { passive: true });
+  window.addEventListener('resize', upd); upd();
+
+  /* #142 — auto table of contents from h2/h3 (only if ≥3 headings). */
+  var heads = art.querySelectorAll('h2, h3');
+  if (heads.length >= 3) {
+    var toc = document.createElement('nav');
+    toc.className = 'nr-toc'; toc.setAttribute('aria-label', 'Contents');
+    var ul = document.createElement('ul');
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + i + '-' + (h.textContent || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 32);
+      var li = document.createElement('li');
+      li.className = 'nr-toc__' + h.tagName.toLowerCase();
+      var a = document.createElement('a');
+      a.href = '#' + h.id; a.textContent = h.textContent;
+      li.appendChild(a); ul.appendChild(li);
+    });
+    toc.appendChild(ul);
+    var rt2 = art.querySelector('.nr-readtime');
+    if (rt2) rt2.insertAdjacentElement('afterend', toc); else art.insertBefore(toc, art.firstChild);
+  }
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 "Small" tier (v4.46.0) — front-end behaviours.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  var cine = body.classList.contains('nr-cinematic');
+  function level() { return body.getAttribute('data-nr-motion') || 'standard'; }
+
+  /* #161 — a polite live-region for screen readers. */
+  var live = document.createElement('div');
+  live.className = 'nr-sr-only'; live.setAttribute('aria-live', 'polite'); live.setAttribute('aria-atomic', 'true');
+  body.appendChild(live);
+  window.nrAnnounce = function (msg) { live.textContent = ''; setTimeout(function () { live.textContent = msg; }, 60); };
+
+  /* #162 — landmark hygiene: label main + primary nav if unlabelled. */
+  var main = document.querySelector('main'); if (main && !main.getAttribute('role')) main.setAttribute('role', 'main');
+  var nav = document.querySelector('.nr-menu'); if (nav && !nav.getAttribute('aria-label')) nav.setAttribute('aria-label', 'Primary');
+
+  /* #163 — keyboard shortcuts help overlay ("?"). */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== '?' || e.target.matches('input,textarea,select,[contenteditable]')) return;
+    if (document.querySelector('.nr-keys')) return;
+    var o = document.createElement('div'); o.className = 'nr-keys'; o.setAttribute('role', 'dialog');
+    o.innerHTML = '<div class="nr-keys__box"><button class="nr-keys__x" aria-label="Close">✕</button><h3>Keyboard</h3><ul>'
+      + '<li><kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> — search</li><li><kbd>←</kbd><kbd>→</kbd> — hero / plates</li>'
+      + '<li><kbd>Esc</kbd> — close</li><li><kbd>?</kbd> — this help</li></ul></div>';
+    body.appendChild(o);
+    var close = function () { o.remove(); };
+    o.addEventListener('click', function (e2) { if (e2.target === o || e2.target.closest('.nr-keys__x')) close(); });
+    document.addEventListener('keydown', function k(e3) { if (e3.key === 'Escape') { close(); document.removeEventListener('keydown', k); } });
+  });
+
+  /* #181 — consent beacon when the cookie notice is accepted. */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-consent-accept], .nr-cookie__accept, .nr-cookie button');
+    if (!b || !(window.NR && NR.home)) return;
+    try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/consent', new Blob([''], { type: 'text/plain' })); } catch (x) {}
+  });
+
+  /* #95 — idle prefetch of a few internal links (saves a hop on first nav). */
+  var pf = function () {
+    if (body.classList.contains('nr-savedata')) return;
+    var seen = {}, n = 0;
+    document.querySelectorAll('a.nr-card[href], .nr-hero__thumb[href]').forEach(function (a) {
+      var h = a.getAttribute('href'); if (!h || seen[h] || n >= 5) return;
+      try { if (new URL(h, location.href).host !== location.host) return; } catch (e) { return; }
+      seen[h] = 1; n++;
+      var l = document.createElement('link'); l.rel = 'prefetch'; l.href = h; document.head.appendChild(l);
+    });
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(pf, { timeout: 4000 }); else setTimeout(pf, 3000);
+
+  /* #38 — compare-slider keyboard + labels. */
+  document.querySelectorAll('[data-compare] input[type="range"], .nr-compare__range').forEach(function (r) {
+    r.setAttribute('aria-label', r.getAttribute('aria-label') || 'Compare before and after');
+  });
+
+  /* #126 — contact-sheet toggle on a project page. */
+  var rail = document.querySelector('.nr-project__rail');
+  if (rail && !document.querySelector('.nr-sheet-toggle')) {
+    var crumbs = document.querySelector('.nr-project__crumbs');
+    if (crumbs) {
+      var t = document.createElement('button');
+      t.type = 'button'; t.className = 'nr-sheet-toggle'; t.textContent = '▦ contact sheet';
+      t.setAttribute('aria-pressed', 'false');
+      t.addEventListener('click', function () {
+        var on = rail.classList.toggle('is-sheet');
+        t.setAttribute('aria-pressed', String(on));
+        t.textContent = on ? '▭ single' : '▦ contact sheet';
+      });
+      crumbs.appendChild(t);
+    }
+  }
+
+  /* ── Enquire-page helpers ── */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form) {
+    /* #80 — autosave/restore the brief (localStorage). */
+    var FK = 'nr_brief_v1';
+    var fields = form.querySelectorAll('input[name="name"],input[name="email"],textarea[name="notes"]');
+    try {
+      var saved = JSON.parse(localStorage.getItem(FK) || '{}');
+      fields.forEach(function (f) { if (saved[f.name] && !f.value) f.value = saved[f.name]; });
+    } catch (e) {}
+    form.addEventListener('input', function () {
+      var o = {}; fields.forEach(function (f) { o[f.name] = f.value; });
+      try { localStorage.setItem(FK, JSON.stringify(o)); } catch (e) {}
+    });
+    form.addEventListener('submit', function () { try { localStorage.removeItem(FK); } catch (e) {} });
+
+    /* #75 — "hold two dates": add an alternative date, folded into notes. */
+    var d = form.querySelector('input[type="date"][name="preferred_date"]');
+    if (d && !form.querySelector('[name="preferred_date_2"]')) {
+      var wrap = document.createElement('label');
+      wrap.innerHTML = '<span class="nr-eyebrow nr-eyebrow--plain">' + 'Alternative date' + '</span>';
+      var d2 = document.createElement('input'); d2.type = 'date'; d2.name = 'preferred_date_2';
+      wrap.appendChild(d2);
+      if (d.parentElement && d.parentElement.parentElement) d.parentElement.insertAdjacentElement('afterend', wrap);
+      form.addEventListener('submit', function () {
+        var notes = form.querySelector('[name="notes"]');
+        if (d2.value && notes && notes.value.indexOf(d2.value) < 0) notes.value += '\n\nAlternative date: ' + d2.value;
+      });
+      /* #54 — "add to calendar" link once a date is chosen. */
+      var cal = document.createElement('a'); cal.className = 'nr-cal-link'; cal.target = '_blank'; cal.rel = 'noopener'; cal.hidden = true; cal.textContent = '+ add to calendar';
+      d.insertAdjacentElement('afterend', cal);
+      d.addEventListener('change', function () {
+        if (!d.value) { cal.hidden = true; return; }
+        var day = d.value.replace(/-/g, '');
+        cal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Shoot — ' + (document.title)) + '&dates=' + day + '/' + day;
+        cal.hidden = false;
+      });
+    }
+
+    /* #45 — "similar work" for the chosen service (from /projects.json). */
+    try {
+      var svc = new URLSearchParams(location.search).get('service');
+      if (svc && window.NR && NR.home) {
+        fetch(NR.home + 'projects.json').then(function (r) { return r.json(); }).then(function (data) {
+          var list = (data.projects || data || []).filter(function (p) {
+            return (p.cat || p.category || '').toLowerCase().indexOf(svc.replace(/-/g, ' ')) >= 0;
+          }).slice(0, 3);
+          if (!list.length) return;
+          var box = document.createElement('div'); box.className = 'nr-similar';
+          box.innerHTML = '<span class="nr-eyebrow nr-eyebrow--xs">Similar work</span>'
+            + list.map(function (p) { return '<a href="' + encodeURI(p.url) + '">' + (p.title || '').replace(/[<>&]/g, '') + '</a>'; }).join('');
+          form.insertAdjacentElement('afterend', box);
+        }).catch(function () {});
+      }
+    } catch (e) {}
+  }
+
+  /* ── Cinematic-gated motion (only when master toggle + level agree) ── */
+  if (cine && !reduce) {
+    /* #6 — click shockwave. */
+    document.addEventListener('pointerdown', function (e) {
+      if (level() !== 'cinematic') return;
+      if (e.target.closest('input,textarea,select')) return;
+      var s = document.createElement('span'); s.className = 'nr-shock';
+      s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px';
+      body.appendChild(s); setTimeout(function () { s.remove(); }, 650);
+    }, { passive: true });
+
+    /* #21 — spring release on magnetic buttons (overshoot back to rest). */
+    document.querySelectorAll('.nr-btn, [data-magnetic]').forEach(function (b) {
+      b.addEventListener('mouseleave', function () {
+        if (level() === 'calm') return;
+        b.classList.add('nr-spring'); setTimeout(function () { b.classList.remove('nr-spring'); }, 420);
+      });
+    });
+
+    /* #19 — idle "screensaver" on the home hero. */
+    if (body.classList.contains('nr-page-home')) {
+      var idle; var arm = function () { clearTimeout(idle); body.classList.remove('nr-idle'); idle = setTimeout(function () { if (level() !== 'calm') body.classList.add('nr-idle'); }, 60000); };
+      ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function (ev) { window.addEventListener(ev, arm, { passive: true }); });
+      arm();
+    }
+  }
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 "Medium" r1 (v4.47.0) — motion + field metrics.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover = window.matchMedia('(hover:hover)').matches;
+  var cine = body.classList.contains('nr-cinematic');
+  function level() { return body.getAttribute('data-nr-motion') || 'standard'; }
+
+  /* #107 — Core Web Vitals beacon (LCP/CLS/INP/FCP/TTFB), sampled. */
+  if (window.NR && NR.home && Math.random() < 0.5) {
+    var send = function (m, v) { try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/cwv', new Blob([JSON.stringify({ m: m, v: Math.round(v) })], { type: 'application/json' })); } catch (e) {} };
+    try {
+      var po = function (type, cb) { try { new PerformanceObserver(cb).observe({ type: type, buffered: true }); } catch (e) {} };
+      var cls = 0;
+      po('largest-contentful-paint', function (l) { var e = l.getEntries(); send('LCP', e[e.length - 1].startTime); });
+      po('layout-shift', function (l) { l.getEntries().forEach(function (e) { if (!e.hadRecentInput) cls += e.value; }); });
+      po('paint', function (l) { l.getEntries().forEach(function (e) { if (e.name === 'first-contentful-paint') send('FCP', e.startTime); }); });
+      po('event', function (l) { l.getEntries().forEach(function (e) { if (e.interactionId) send('INP', e.duration); }); });
+      addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') send('CLS', cls * 1000); }, { once: true });
+      var nav = performance.getEntriesByType('navigation')[0]; if (nav) send('TTFB', nav.responseStart);
+    } catch (e) {}
+  }
+
+  /* #108 — funnel step beacon. */
+  if (window.NR && NR.home) {
+    var step = body.classList.contains('nr-page-home') ? 'home'
+      : (/\/portfolio|nr-portfolio-archive/.test(location.pathname + ' ' + body.className) ? 'portfolio'
+        : (document.querySelector('.nr-enquire__form') ? 'enquire' : ''));
+    if (step) { try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/funnel', new Blob([JSON.stringify({ s: step })], { type: 'application/json' })); } catch (e) {} }
+  }
+
+  /* #31 — pointer-lock-ish immersive lightbox for project plates. */
+  (function () {
+    var figs = Array.prototype.slice.call(document.querySelectorAll('.nr-project__plate'));
+    if (!figs.length) return;
+    var imgs = figs.map(function (f) { var i = f.querySelector('img'); return i ? (i.currentSrc || i.src) : ''; }).filter(Boolean);
+    if (!imgs.length) return;
+    var lb, idx = 0, playing = false, timer = null;
+    function open(i) {
+      idx = i;
+      lb = document.createElement('div'); lb.className = 'nr-lightbox'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
+      lb.innerHTML = '<button class="nr-lightbox__x" aria-label="Close">✕</button><button class="nr-lightbox__p" aria-label="Previous">←</button><img alt=""><button class="nr-lightbox__n" aria-label="Next">→</button>'
+        + '<button class="nr-lightbox__play" aria-label="Play slideshow">▶</button><span class="nr-lightbox__c"></span>';
+      body.appendChild(lb); body.classList.add('is-modal-open');
+      render();
+      lb.querySelector('.nr-lightbox__x').onclick = close;
+      lb.querySelector('.nr-lightbox__p').onclick = function () { stop(); go(-1); };
+      lb.querySelector('.nr-lightbox__n').onclick = function () { stop(); go(1); };
+      lb.querySelector('.nr-lightbox__play').onclick = toggle;       // #21
+      lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+      var im = lb.querySelector('img');
+      im.addEventListener('click', function () { im.classList.toggle('is-zoom'); });
+      document.addEventListener('keydown', key);
+      lb.querySelector('.nr-lightbox__x').focus();
+    }
+    function render() {
+      var im = lb.querySelector('img'); im.classList.remove('is-zoom'); im.src = imgs[idx];
+      if (playing && !reduceLb()) { im.classList.remove('is-ken'); void im.offsetWidth; im.classList.add('is-ken'); }
+      lb.querySelector('.nr-lightbox__c').textContent = (idx + 1) + ' / ' + imgs.length;
+      try { history.replaceState(null, '', '#frame-' + (idx + 1)); } catch (e) {}   // #22
+    }
+    function reduceLb() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+    function go(d) { idx = (idx + d + imgs.length) % imgs.length; render(); }
+    function toggle() { playing ? stop() : play(); }
+    function play() { playing = true; lb.classList.add('is-playing'); lb.querySelector('.nr-lightbox__play').textContent = '❚❚'; render(); timer = setInterval(function () { go(1); }, 4000); }
+    function stop() { playing = false; if (lb) { lb.classList.remove('is-playing'); var b = lb.querySelector('.nr-lightbox__play'); if (b) b.textContent = '▶'; } clearInterval(timer); }
+    function close() { stop(); if (!lb) return; lb.remove(); lb = null; body.classList.remove('is-modal-open'); document.removeEventListener('keydown', key); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+    function key(e) { if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight') { stop(); go(1); } else if (e.key === 'ArrowLeft') { stop(); go(-1); } else if (e.key === ' ') { e.preventDefault(); toggle(); } }
+    figs.forEach(function (f, i) {
+      var im = f.querySelector('img'); if (!im) return;
+      im.style.cursor = 'zoom-in';
+      f.addEventListener('click', function (e) { if (e.target.closest('a')) return; e.preventDefault(); open(i); });
+    });
+    /* #22 — open a specific frame from the URL (#frame-3 or ?frame=3). */
+    (function () {
+      var n = 0, mm = (location.hash.match(/^#frame-(\d+)$/) || []);
+      if (mm[1]) n = parseInt(mm[1], 10);
+      else { try { n = parseInt(new URLSearchParams(location.search).get('frame') || '0', 10); } catch (e) {} }
+      if (n >= 1 && n <= imgs.length) setTimeout(function () { open(n - 1); }, 300);
+    })();
+  })();
+
+  /* #32 — video plate scrubber (seek bar over motion plates). */
+  document.querySelectorAll('.nr-plate-video video').forEach(function (v) {
+    if (v.closest('.nr-plate-video').querySelector('.nr-vbar')) return;
+    var bar = document.createElement('div'); bar.className = 'nr-vbar'; var fill = document.createElement('i'); bar.appendChild(fill);
+    v.closest('.nr-plate-video').appendChild(bar);
+    v.addEventListener('timeupdate', function () { if (v.duration) fill.style.width = (v.currentTime / v.duration * 100) + '%'; });
+    bar.addEventListener('click', function (e) { var r = bar.getBoundingClientRect(); if (v.duration) v.currentTime = ((e.clientX - r.left) / r.width) * v.duration; });
+  });
+
+  /* #33 — film-strip thumbnail nav for the project rail. */
+  (function () {
+    var track = document.querySelector('.nr-project__rail-track');
+    if (!track) return;
+    var plates = track.querySelectorAll('.nr-project__plate'); if (plates.length < 3) return;
+    var strip = document.createElement('div'); strip.className = 'nr-filmstrip';
+    plates.forEach(function (p, i) {
+      var im = p.querySelector('img'); var b = document.createElement('button'); b.setAttribute('aria-label', 'Plate ' + (i + 1));
+      if (im) b.style.backgroundImage = 'url(' + (im.currentSrc || im.src) + ')';
+      b.addEventListener('click', function () { p.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', inline: 'center', block: 'nearest' }); });
+      strip.appendChild(b);
+    });
+    var rail = document.querySelector('.nr-project__rail'); if (rail) rail.appendChild(strip);
+  })();
+
+  if (!cine) return;
+
+  /* #17 — layered hero parallax (gradient + meta move at different rates). */
+  if (hover && !reduce) {
+    var frame = document.querySelector('.nr-hero__frame');
+    if (frame) {
+      var layers = [
+        [frame.querySelector('.nr-hero__gradient'), 8],
+        [document.querySelector('.nr-hero__meta--tl'), 16],
+        [document.querySelector('.nr-hero__meta--br'), 16],
+        [document.querySelector('.nr-hero__center'), 5]
+      ].filter(function (l) { return l[0]; });
+      frame.addEventListener('pointermove', function (e) {
+        if (level() !== 'cinematic') return;
+        var r = frame.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        layers.forEach(function (l) { l[0].style.transform = 'translate(' + (-x * l[1]).toFixed(1) + 'px,' + (-y * l[1]).toFixed(1) + 'px)'; });
+      });
+      frame.addEventListener('pointerleave', function () { layers.forEach(function (l) { l[0].style.transform = ''; }); });
+    }
+  }
+
+  /* #26 — spotlight cursor over the hero (brightness reveal). */
+  if (hover && !reduce) {
+    var hero = document.querySelector('.nr-hero__frame');
+    if (hero) {
+      hero.addEventListener('pointermove', function (e) {
+        if (level() !== 'cinematic') { hero.style.removeProperty('--spot'); return; }
+        var r = hero.getBoundingClientRect();
+        hero.style.setProperty('--spot-x', ((e.clientX - r.left) / r.width * 100) + '%');
+        hero.style.setProperty('--spot-y', ((e.clientY - r.top) / r.height * 100) + '%');
+        hero.classList.add('nr-spot');
+      });
+      hero.addEventListener('pointerleave', function () { hero.classList.remove('nr-spot'); });
+    }
+  }
+
+  /* #11 — conservative inertial (Lenis-style) smooth scroll, desktop + cinematic. */
+  if (hover && !reduce && level() === 'cinematic' && !document.querySelector('.nr-fullscreen')) {
+    var target = window.scrollY, current = window.scrollY, ticking = false;
+    var ease = function () {
+      current += (target - current) * 0.12;
+      if (Math.abs(target - current) < 0.5) { current = target; ticking = false; window.scrollTo(0, current); return; }
+      window.scrollTo(0, current); requestAnimationFrame(ease);
+    };
+    window.addEventListener('wheel', function (e) {
+      if (e.ctrlKey || Math.abs(e.deltaY) < 2) return;
+      e.preventDefault();
+      target = Math.max(0, Math.min(document.documentElement.scrollHeight - window.innerHeight, target + e.deltaY));
+      if (!ticking) { ticking = true; requestAnimationFrame(ease); }
+    }, { passive: false });
+    window.addEventListener('scroll', function () { if (!ticking) { target = current = window.scrollY; } }, { passive: true });
+  }
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-200 "Medium" r2 (v4.49.0) — wizard, A/B, palette filter.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body;
+
+  /* #42 — multi-step enquire wizard (opt-in, progressive over the real form). */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form && body.classList.contains('nr-wizard') && !form.dataset.wizard) {
+    form.dataset.wizard = '1';
+    var labels = Array.prototype.slice.call(form.querySelectorAll(':scope > label, :scope > fieldset'));
+    if (labels.length >= 4) {
+      var steps = [[], [], []];
+      labels.forEach(function (el) {
+        var t = (el.textContent || '').toLowerCase();
+        var i = /name|email/.test(t) ? 0 : (/type|date|budget|estimate/.test(t) ? 1 : 2);
+        steps[i].push(el);
+      });
+      var bar = document.createElement('div'); bar.className = 'nr-wiz';
+      bar.innerHTML = '<span class="nr-wiz__t">1 / 3</span><span class="nr-wiz__bar"><i></i></span>'
+        + '<span class="nr-wiz__nav"><button type="button" data-wb hidden>← Back</button><button type="button" data-wn>Next →</button></span>';
+      form.insertBefore(bar, form.firstChild);
+      var cur = 0, fill = bar.querySelector('.nr-wiz__bar i'), txt = bar.querySelector('.nr-wiz__t');
+      var bb = bar.querySelector('[data-wb]'), bn = bar.querySelector('[data-wn]');
+      var actions = form.querySelector('.nr-form__actions') || form.querySelector('[type="submit"]');
+      function show() {
+        steps.forEach(function (els, i) { els.forEach(function (el) { el.style.display = i === cur ? '' : 'none'; }); });
+        if (actions) actions.style.display = cur === 2 ? '' : 'none';
+        bb.hidden = cur === 0; bn.hidden = cur === 2;
+        txt.textContent = (cur + 1) + ' / 3';
+        fill.style.width = ((cur + 1) / 3 * 100) + '%';
+      }
+      bn.addEventListener('click', function () {
+        // native-validate the visible required fields before advancing
+        var ok = steps[cur].every(function (el) {
+          return Array.prototype.every.call(el.querySelectorAll('input,textarea,select'), function (f) { return f.reportValidity ? f.reportValidity() : true; });
+        });
+        if (ok && cur < 2) { cur++; show(); }
+      });
+      bb.addEventListener('click', function () { if (cur > 0) { cur--; show(); } });
+      show();
+    }
+  }
+
+  /* #48 — A/B hero CTA: stable per-visitor variant, log view + click. */
+  var ab = document.getElementById('nr-ab');
+  if (ab && window.NR && NR.home) {
+    try {
+      var cfg = JSON.parse(ab.textContent || '{}');
+      var v = localStorage.getItem('nr_ab_v');
+      if (v !== 'a' && v !== 'b') { v = Math.random() < 0.5 ? 'a' : 'b'; localStorage.setItem('nr_ab_v', v); }
+      var btn = document.querySelector('[data-hero-link] span');
+      if (v === 'b' && cfg.b && btn) btn.textContent = cfg.b;
+      var ping = function (k) { try { navigator.sendBeacon(NR.home + '?rest_route=/nr/v1/ab', new Blob([JSON.stringify({ k: k })], { type: 'application/json' })); } catch (e) {} };
+      ping(v + '_view');
+      var link = document.querySelector('[data-hero-link]');
+      if (link) link.addEventListener('click', function () { ping(v + '_click'); });
+    } catch (e) {}
+  }
+
+  /* #135 — colour-mood filter chips (Warm/Cool/Mono) on archive rails, opt-in.
+     Dominant colour is computed client-side from each thumbnail (same-origin). */
+  if (body.classList.contains('nr-palette')) {
+    var rail = document.querySelector('.nr-portfolio-rail');
+    var cards = rail ? Array.prototype.slice.call(rail.querySelectorAll('.nr-card')) : [];
+    if (cards.length >= 4) {
+      var done = 0;
+      cards.forEach(function (card) {
+        var img = card.querySelector('img'); if (!img) { done++; return; }
+        var probe = new Image();
+        probe.crossOrigin = 'anonymous';
+        probe.onload = function () {
+          try {
+            var c = document.createElement('canvas'); c.width = c.height = 1;
+            var x = c.getContext('2d'); x.drawImage(probe, 0, 0, 1, 1);
+            var d = x.getImageData(0, 0, 1, 1).data, r = d[0], g = d[1], b = d[2];
+            var max = Math.max(r, g, b), min = Math.min(r, g, b), sat = max - min;
+            card.dataset.mood = sat < 18 ? 'mono' : (r >= b ? 'warm' : 'cool');
+          } catch (e) { card.dataset.mood = ''; }
+          if (++done === cards.length) chips();
+        };
+        probe.onerror = function () { if (++done === cards.length) chips(); };
+        probe.src = img.currentSrc || img.src;
+      });
+      function chips() {
+        if (document.querySelector('.nr-moods')) return;
+        var moods = { warm: 0, cool: 0, mono: 0 };
+        cards.forEach(function (c) { if (moods[c.dataset.mood] !== undefined) moods[c.dataset.mood]++; });
+        if (!moods.warm && !moods.cool && !moods.mono) return;
+        var box = document.createElement('div'); box.className = 'nr-moods nr-chips nr-chips--center';
+        box.innerHTML = '<button class="nr-chip is-on" data-mood="">All</button>'
+          + ['warm', 'cool', 'mono'].filter(function (m) { return moods[m]; })
+            .map(function (m) { return '<button class="nr-chip" data-mood="' + m + '">' + m + '</button>'; }).join('');
+        rail.parentElement.insertBefore(box, rail);
+        box.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-mood]'); if (!b) return;
+          box.querySelectorAll('.nr-chip').forEach(function (c) { c.classList.toggle('is-on', c === b); });
+          var m = b.dataset.mood;
+          cards.forEach(function (c) { c.style.display = (!m || c.dataset.mood === m) ? '' : 'none'; });
+        });
+      }
+    }
+  }
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   Batch 6 r2 (v4.51.0) — infra: service worker, analytics beacon,
+   offline enquiry queue (#94), virtualised rails (#88).
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var X = window.NRX || {};
+
+  /* #93 — register the root-scoped service worker. */
+  if (X.sw && 'serviceWorker' in navigator) {
+    addEventListener('load', function () { navigator.serviceWorker.register(X.sw_url, { scope: '/' }).catch(function () {}); });
+  }
+
+  /* #106 — pageview beacon (logged-out only; flag set server-side). */
+  if (X.analytics && X.home) {
+    try { navigator.sendBeacon(X.home + '?rest_route=/nr/v1/pv', new Blob([JSON.stringify({ p: location.pathname })], { type: 'application/json' })); } catch (e) {}
+  }
+
+  /* #94 — offline enquiry queue: if the brief is submitted while offline,
+     stash it and replay (fetch) when the connection returns. */
+  var form = document.querySelector('.nr-enquire__form');
+  if (form) {
+    var QK = 'nr_enq_queue';
+    form.addEventListener('submit', function (e) {
+      if (navigator.onLine) return; // online → let the normal POST happen
+      e.preventDefault();
+      try {
+        var fd = new FormData(form), o = {}; fd.forEach(function (v, k) { o[k] = v; });
+        localStorage.setItem(QK, JSON.stringify({ action: form.action, data: o, t: Date.now() }));
+        var s = document.createElement('div'); s.className = 'nr-status nr-status--ok'; s.setAttribute('role', 'status');
+        s.textContent = 'Saved offline — it will send automatically when you’re back online.';
+        document.body.appendChild(s);
+      } catch (x) { form.submit(); }
+    });
+    var flush = function () {
+      var raw; try { raw = localStorage.getItem(QK); } catch (e) { return; }
+      if (!raw || !navigator.onLine) return;
+      var q; try { q = JSON.parse(raw); } catch (e) { localStorage.removeItem(QK); return; }
+      var body = new URLSearchParams(q.data);
+      fetch(q.action, { method: 'POST', body: body, credentials: 'same-origin' }).then(function () {
+        try { localStorage.removeItem(QK); } catch (e) {}
+      }).catch(function () {});
+    };
+    addEventListener('online', flush); flush();
+  }
+
+  /* #88 — virtualised rails: let the browser skip off-screen card layout/paint.
+     content-visibility:auto + an intrinsic size keeps scroll position stable. */
+  if (X.vrails) {
+    document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+      var cards = rail.children;
+      if (cards.length < 24) return; // only worth it on big archives
+      rail.classList.add('nr-vrail');
+    });
+  }
+})();
+
+/* v4.51.6 — enquire FAQ popover */
+(function () {
+  var open = document.querySelector('.nr-faq-open'), pop = document.querySelector('.nr-faq-pop');
+  if (!open || !pop) return;
+  var x = pop.querySelector('.nr-faq-pop__x');
+  function show() { pop.hidden = false; document.body.classList.add('is-modal-open'); (x || pop).focus && (x || pop).focus(); }
+  function hide() { pop.hidden = true; document.body.classList.remove('is-modal-open'); open.focus(); }
+  open.addEventListener('click', show);
+  if (x) x.addEventListener('click', hide);
+  pop.addEventListener('click', function (e) { if (e.target === pop) hide(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) hide(); });
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   v4.52.0 — small wins: count-up (#70) + abandoned-quote (#67)
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  /* #70 — animate any [data-count] number into view once. */
+  var els = document.querySelectorAll('[data-count]');
+  if (els.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting || en.target.dataset.counted) return;
+        en.target.dataset.counted = '1';
+        var el = en.target, end = parseInt(el.dataset.count, 10) || 0, t0 = 0;
+        function step(t) { if (!t0) t0 = t; var p = Math.min(1, (t - t0) / 900); el.textContent = Math.round(end * (p * (2 - p))); if (p < 1) requestAnimationFrame(step); }
+        requestAnimationFrame(step); io.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    els.forEach(function (e) { io.observe(e); });
+  }
+
+  /* #67 — abandoned-quote recovery: remember an unfinished estimate, offer to
+     resume it next visit (localStorage; cleared on submit/sent). */
+  var form = document.querySelector('.nr-enquire__form');
+  if (!form) return;
+  var QK = 'nr_quote_v1';
+  var est = form.querySelector('[data-enquire-estimate-input], input[name="estimate"]');
+  if (est) {
+    var save = function () { try { if (est.value) localStorage.setItem(QK, JSON.stringify({ v: est.value, t: Date.now() })); } catch (e) {} };
+    est.addEventListener('change', save);
+    form.addEventListener('submit', function () { try { localStorage.removeItem(QK); } catch (e) {} });
+  }
+  try {
+    var sent = new URLSearchParams(location.search).get('nr_sent');
+    var raw = localStorage.getItem(QK);
+    if (raw && sent === null && (!est || !est.value)) {
+      var q = JSON.parse(raw);
+      // only offer for ~14 days
+      if (q && q.v && (Date.now() - (q.t || 0) < 12096e5)) {
+        var bar = document.createElement('div');
+        bar.className = 'nr-resume';
+        bar.innerHTML = '<span>' + 'Pick up where you left off — last estimate <b>' + String(q.v).replace(/[<>&]/g, '') + '</b>.</span>'
+          + '<button type="button" class="nr-resume__y">Resume</button><button type="button" class="nr-resume__x" aria-label="Dismiss">✕</button>';
+        form.insertBefore(bar, form.firstChild);
+        bar.querySelector('.nr-resume__y').addEventListener('click', function () {
+          if (est) { est.value = q.v; var p = form.querySelector('[data-enquire-estimate-out], .nr-enquire__estimate'); if (p) p.textContent = q.v; }
+          bar.remove();
+        });
+        bar.querySelector('.nr-resume__x').addEventListener('click', function () { try { localStorage.removeItem(QK); } catch (e) {} bar.remove(); });
+      }
+    }
+  } catch (e) {}
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   v4.54.0 — #59 proofing selection on the delivery page.
+   Client hearts favourites; "Send my selection" emails the studio
+   the chosen filenames (no login). Picks persist per delivery URL.
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var grid = document.querySelector('[data-proof-grid]');
+  if (!grid) return;
+  var page = grid.dataset.page, url = grid.dataset.proofUrl;
+  if (!page || !url) return;
+  var KEY = 'nr_proof_' + page;
+  var picks = {};
+  try { picks = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var save = function () { try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {} };
+  var fname = function (fig) { var i = fig.querySelector('img'); var s = i ? (i.currentSrc || i.src) : ''; return s.split('/').pop().split('?')[0]; };
+
+  var bar = document.createElement('form');
+  bar.className = 'nr-proof__bar'; bar.method = 'post'; bar.action = url; bar.hidden = true;
+  bar.innerHTML = '<input type="hidden" name="action" value="nr_proof"><input type="hidden" name="page" value="' + parseInt(page, 10) + '">'
+    + '<span class="nr-proof__count"><b data-c>0</b> selected</span>'
+    + '<button type="submit" class="nr-btn nr-btn--primary"><span>Send my selection</span> <span>→</span></button>';
+  grid.insertAdjacentElement('afterend', bar);
+  var counter = bar.querySelector('[data-c]');
+
+  function refresh() {
+    var keys = Object.keys(picks);
+    counter.textContent = keys.length;
+    bar.hidden = keys.length === 0;
+    bar.querySelectorAll('input[name="picks[]"]').forEach(function (i) { i.remove(); });
+    keys.forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = 'picks[]'; i.value = k; bar.appendChild(i); });
+  }
+  grid.querySelectorAll('.nr-delivery__item').forEach(function (fig) {
+    var f = fname(fig); if (!f) return;
+    var h = document.createElement('button');
+    h.type = 'button'; h.className = 'nr-proof__heart'; h.setAttribute('aria-label', 'Mark as favourite');
+    if (picks[f]) { h.classList.add('is-on'); fig.classList.add('is-picked'); }
+    h.addEventListener('click', function () {
+      if (picks[f]) { delete picks[f]; h.classList.remove('is-on'); fig.classList.remove('is-picked'); }
+      else { picks[f] = 1; h.classList.add('is-on'); fig.classList.add('is-picked'); }
+      save(); refresh();
+    });
+    fig.appendChild(h);
+  });
+  bar.addEventListener('submit', function () { try { localStorage.removeItem(KEY); } catch (e) {} });
+  refresh();
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   IDEAS-50-NEXT small batch 1 (v4.56.0)
+   #8 B&W toggle · #46 reading mode · #19 keyboard gallery ·
+   #20 surprise chip · #13 reading-position · #30 decode-before-show
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  var body = document.body, root = document.documentElement;
+
+  /* #8 + #46 — a tiny "view" control: B&W and reading-mode toggles, persisted. */
+  try {
+    if (localStorage.getItem('nr_bw') === '1') body.classList.add('nr-bw');
+    if (localStorage.getItem('nr_read') === '1') body.classList.add('nr-readmode');
+  } catch (e) {}
+  if (window.matchMedia('(min-width:901px)').matches) {
+    var view = document.createElement('div');
+    view.className = 'nr-view';
+    view.innerHTML = '<button data-bw aria-pressed="false" title="Black & white">B/W</button>'
+      + '<button data-read aria-pressed="false" title="Reading mode">Aa</button>';
+    body.appendChild(view);
+    var sync = function () {
+      view.querySelector('[data-bw]').setAttribute('aria-pressed', body.classList.contains('nr-bw'));
+      view.querySelector('[data-read]').setAttribute('aria-pressed', body.classList.contains('nr-readmode'));
+    };
+    view.querySelector('[data-bw]').addEventListener('click', function () { var on = body.classList.toggle('nr-bw'); try { localStorage.setItem('nr_bw', on ? '1' : '0'); } catch (e) {} sync(); });
+    view.querySelector('[data-read]').addEventListener('click', function () { var on = body.classList.toggle('nr-readmode'); try { localStorage.setItem('nr_read', on ? '1' : '0'); } catch (e) {} sync(); });
+    sync();
+  }
+
+  /* #19 — keyboard gallery: j/k move through cards, Enter opens, r = random. */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.matches('input,textarea,select,[contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return;
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.nr-portfolio-rail .nr-card, .nr-portfolio-rail .nr-card--journal'));
+    if ((e.key === 'j' || e.key === 'k') && cards.length) {
+      e.preventDefault();
+      var cur = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.nr-card') : null;
+      var i = cards.indexOf(cur);
+      i = e.key === 'j' ? Math.min(cards.length - 1, i + 1) : Math.max(0, i - 1);
+      if (i < 0) i = 0;
+      cards[i].focus({ preventScroll: true });
+      cards[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    } else if (e.key === 'r' && (document.querySelector('.nr-portfolio-archive') || body.classList.contains('nr-page-home'))) {
+      if (window.NR && NR.home) location.href = NR.home + '?nr_random=1';
+    }
+  });
+
+  /* #20 — "surprise me" chip on the portfolio archive. */
+  var head = document.querySelector('.nr-portfolio-archive .nr-chips');
+  if (head && window.NR && NR.home && !head.querySelector('.nr-surprise')) {
+    var a = document.createElement('a');
+    a.className = 'nr-chip nr-surprise'; a.href = NR.home + '?nr_random=1';
+    a.innerHTML = '↯ ' + 'surprise me';
+    head.appendChild(a);
+  }
+
+  /* #13 — reading-position memory on journal singles. */
+  if (body.classList.contains('single-nr_journal')) {
+    var art = document.querySelector('.nr-jpost__body, .nr-jpost__article');
+    if (art) {
+      var KEY = 'nr_read_' + location.pathname;
+      try { var y = parseInt(localStorage.getItem(KEY) || '0', 10); if (y > 200) art.scrollTop = y; } catch (e) {}
+      var t; art.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(function () { try { localStorage.setItem(KEY, String(art.scrollTop | 0)); } catch (e) {} }, 400); }, { passive: true });
+    }
+  }
+
+  /* #30 — decode large hero/plate images before they swap in (less jank). */
+  if ('decode' in HTMLImageElement.prototype) {
+    document.querySelectorAll('.nr-hero__plate img, .nr-project__plate img').forEach(function (img) {
+      if (img.complete) return;
+      img.decoding = 'async';
+      img.addEventListener('load', function () { try { img.decode(); } catch (e) {} }, { once: true });
+    });
+  }
+})();
+
+/* ─────────────────────────────────────────────────────────────
+   v4.57.0 — #24 PWA install nudge · #26 rail scroll-compass
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  /* #24 — unobtrusive "add to home screen" nudge (dismissible, once). */
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e;
+    try { if (localStorage.getItem('nr_pwa_no') === '1') return; } catch (x) {}
+    var b = document.createElement('div');
+    b.className = 'nr-pwa';
+    b.innerHTML = '<span>Install this portfolio as an app?</span><button data-y>Install</button><button data-n aria-label="Dismiss">✕</button>';
+    document.body.appendChild(b);
+    b.querySelector('[data-y]').addEventListener('click', function () { b.remove(); if (deferred) { deferred.prompt(); deferred = null; } });
+    b.querySelector('[data-n]').addEventListener('click', function () { b.remove(); try { localStorage.setItem('nr_pwa_no', '1'); } catch (x) {} });
+  });
+
+  /* #26 — scroll-compass: a slim progress bar showing how much rail is left. */
+  document.querySelectorAll('.nr-portfolio-rail, .nr-project__rail-track').forEach(function (rail) {
+    if (rail.scrollWidth <= rail.clientWidth + 8) return;
+    var c = document.createElement('div'); c.className = 'nr-compass'; c.setAttribute('aria-hidden', 'true');
+    var fill = document.createElement('i'); c.appendChild(fill);
+    (rail.closest('.nr-portfolio-archive, .nr-project__rail, .nr-page') || rail.parentElement).appendChild(c);
+    var upd = function () {
+      var max = rail.scrollWidth - rail.clientWidth;
+      fill.style.width = (max > 0 ? Math.min(100, rail.scrollLeft / max * 100) : 0) + '%';
+    };
+    rail.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
+  });
 })();

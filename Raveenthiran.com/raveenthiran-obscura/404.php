@@ -33,5 +33,7 @@ $nr_enq = function_exists( 'nr_enquire_url' ) ? nr_enquire_url() : home_url( '/e
 			</div>
 		</div>
 	<?php endif; ?>
+
+	<?php if ( function_exists( 'nr_random_testimonial_markup' ) ) echo nr_random_testimonial_markup(); // #158 ?>
 </section>
 <?php get_footer(); ?>
